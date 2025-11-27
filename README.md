@@ -28,6 +28,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1dobbbv_ujqtPfH4jbdcMab
 5. If you previously used the **Deploy from a branch** option, switch the source to **GitHub Actions** and remove any old `gh-pages` branch so only this workflow publishes—otherwise GitHub Pages will report a deployment conflict.
 
 ### If GitHub shows a merge conflict on `deploy-gh-pages.yml`
+> The repo now tags this file in `.gitattributes` to auto-prefer the canonical version from your current branch, so most conflicts should resolve automatically. If GitHub still shows a conflict:
 1. In the GitHub UI, click **Resolve conflicts** on the pull request.
 2. Delete any conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) in `.github/workflows/deploy-gh-pages.yml` and paste in the exact file content from this repository's `main` branch (the canonical workflow lives at `.github/workflows/deploy-gh-pages.yml`).
 3. Save the resolution and commit it in the UI, then re-run the workflow. Keeping the canonical workflow avoids legacy branch-based deployments from conflicting with the GitHub Actions Pages flow.

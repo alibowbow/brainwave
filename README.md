@@ -25,3 +25,4 @@ View your app in AI Studio: https://ai.studio/apps/drive/1dobbbv_ujqtPfH4jbdcMab
 2. In GitHub → **Settings → Pages**, set **Source** to **GitHub Actions** (not a branch build) so the workflow can publish the site.
 3. The workflow sets `VITE_BASE_URL` to `/${repo-name}/` automatically; no manual edits are needed even if you fork or rename the repo. For local previews, you can set the same value in `.env.local`.
 4. GitHub Actions will build with `npm run build` and publish the `dist` folder to GitHub Pages. After it completes, your site will be available at `https://<username>.github.io/<repo>/`.
+5. If you previously used the **Deploy from a branch** option, switch the source to **GitHub Actions** and remove any old `gh-pages` branch so only this workflow publishes—otherwise GitHub Pages will report a deployment conflict.

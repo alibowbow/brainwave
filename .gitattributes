@@ -1,0 +1,2 @@
+# Keep the GitHub Pages workflow canonical to avoid merge conflicts
+.github/workflows/deploy-gh-pages.yml merge=ours

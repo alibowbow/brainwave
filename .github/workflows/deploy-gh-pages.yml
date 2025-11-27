@@ -1,4 +1,7 @@
 name: Deploy to GitHub Pages
+# Canonical workflow for this repo. If GitHub reports a merge conflict on this
+# file, replace the conflicted version with this content so Pages keeps using
+# the GitHub Actions deployment path.
 
 on:
   push:

@@ -26,3 +26,8 @@ View your app in AI Studio: https://ai.studio/apps/drive/1dobbbv_ujqtPfH4jbdcMab
 3. The workflow sets `VITE_BASE_URL` to `/${repo-name}/` automatically; no manual edits are needed even if you fork or rename the repo. For local previews, you can set the same value in `.env.local`.
 4. GitHub Actions will build with `npm run build` and publish the `dist` folder to GitHub Pages. After it completes, your site will be available at `https://<username>.github.io/<repo>/`.
 5. If you previously used the **Deploy from a branch** option, switch the source to **GitHub Actions** and remove any old `gh-pages` branch so only this workflow publishes—otherwise GitHub Pages will report a deployment conflict.
+
+### If GitHub shows a merge conflict on `deploy-gh-pages.yml`
+1. In the GitHub UI, click **Resolve conflicts** on the pull request.
+2. Delete any conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) in `.github/workflows/deploy-gh-pages.yml` and paste in the exact file content from this repository's `main` branch (the canonical workflow lives at `.github/workflows/deploy-gh-pages.yml`).
+3. Save the resolution and commit it in the UI, then re-run the workflow. Keeping the canonical workflow avoids legacy branch-based deployments from conflicting with the GitHub Actions Pages flow.

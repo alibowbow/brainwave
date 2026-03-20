@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, Maximize2, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, CloudRain, Wind, CloudMoon, Flame, Bird, Volume1 } from 'lucide-react';
-import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, AiSessionSuggestion, getBrainWaveLabel } from './types';
+import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
 import { BinauralEngine } from './services/audioEngine';
 import { Player } from './components/Player';
 
 export default function App() {
   // --- Global State ---
-  const [activeTab, setActiveTab] = useState<'session' | 'ai' | 'history' | 'settings'>('session');
+  const [activeTab, setActiveTab] = useState<'session' | 'history' | 'settings'>('session');
   const [settings, setSettings] = useState<AppSettings>({
     darkMode: true,
     defaultSessionDuration: 25,
@@ -25,10 +25,6 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [volumes, setVolumes] = useState({ master: 0.5, binaural: 0.4, bg: 0.5 });
 
-  // --- AI State ---
-  const [aiInput, setAiInput] = useState('');
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiSuggestion, setAiSuggestion] = useState<AiSessionSuggestion | null>(null);
 
   // --- Refs ---
   const audioEngine = useRef(new BinauralEngine());
@@ -94,8 +90,8 @@ export default function App() {
   const handleCustomMode = () => {
     const customPreset: SessionPreset = {
       id: 'custom',
-      name: '커스텀 모드',
-      description: '나만의 뇌파와 사운드를 직접 조합해보세요.',
+      name: '而ㅼ뒪? 紐⑤뱶',
+      description: '?섎쭔???뚰뙆? ?ъ슫?쒕? 吏곸젒 議고빀?대낫?몄슂.',
       defaultDurationMinutes: 30,
       brainWaveType: 'alpha',
       defaultBackgroundSound: 'rain',
@@ -150,55 +146,6 @@ export default function App() {
     }
   };
 
-  // Mock AI Generator
-  const generateAiSession = async () => {
-    if (!aiInput.trim()) return;
-    setIsAiLoading(true);
-    
-    // Simulating API latency
-    setTimeout(() => {
-      let type: BrainWaveType = 'alpha';
-      let bg: BackgroundSoundType = 'rain';
-      let name = "AI 맞춤 세션";
-      
-      const lower = aiInput.toLowerCase();
-      if (lower.includes('잠') || lower.includes('수면') || lower.includes('밤') || lower.includes('sleep')) {
-        type = 'delta'; bg = 'night'; name = "굿나잇 슬립";
-      } else if (lower.includes('집중') || lower.includes('공부') || lower.includes('시험') || lower.includes('focus')) {
-        type = 'alpha'; bg = 'none'; name = "초집중 모드";
-      } else if (lower.includes('화') || lower.includes('스트레스') || lower.includes('휴식') || lower.includes('relax')) {
-        type = 'theta'; bg = 'wave'; name = "마음 진정";
-      }
-
-      setAiSuggestion({
-        name,
-        description: `입력하신 내용 "${aiInput}"에 최적화된 세션입니다.`,
-        durationMinutes: 30,
-        brainWaveType: type,
-        backgroundSound: bg,
-        guidance: "편안한 자세를 취하고 호흡에 집중하며 시작해보세요."
-      });
-      setIsAiLoading(false);
-    }, 1500);
-  };
-
-  const applyAiSession = () => {
-    if(!aiSuggestion) return;
-    const tempPreset: SessionPreset = {
-      id: 'ai-gen',
-      name: aiSuggestion.name,
-      description: aiSuggestion.description,
-      defaultDurationMinutes: aiSuggestion.durationMinutes,
-      brainWaveType: aiSuggestion.brainWaveType,
-      defaultBackgroundSound: aiSuggestion.backgroundSound,
-      baseFreq: 200, beatFreq: 10 // defaults, handled by type
-    };
-    handlePresetSelect(tempPreset);
-    setActiveTab('session');
-    setAiInput('');
-    setAiSuggestion(null);
-  };
-
   const saveFeedback = (mood: number) => {
     if (!selectedPreset) return;
     const newLog: SessionLog = {
@@ -232,14 +179,14 @@ export default function App() {
 
   const getSoundLabel = (type: BackgroundSoundType) => {
     switch(type) {
-        case 'none': return '없음';
-        case 'white': return '백색소음';
-        case 'rain': return '빗소리';
-        case 'wave': return '파도';
-        case 'forest': return '바람(숲)';
-        case 'birds': return '새소리';
-        case 'night': return '밤벌레';
-        case 'fire': return '모닥불';
+        case 'none': return 'None';
+        case 'white': return 'White Noise';
+        case 'rain': return 'Rain';
+        case 'wave': return 'Waves';
+        case 'forest': return 'Forest';
+        case 'birds': return 'Birds';
+        case 'night': return 'Night';
+        case 'fire': return 'Fire';
         default: return type;
     }
   };
@@ -249,8 +196,8 @@ export default function App() {
   const renderSessionList = () => (
     <div className="grid grid-cols-1 gap-4 p-4 pb-24 md:grid-cols-2">
       <div className="md:col-span-2 mb-2">
-         <h2 className="text-xl font-bold text-slate-900 dark:text-white">세션 선택</h2>
-         <p className="text-slate-500 dark:text-slate-400 text-sm">원하는 모드를 선택하여 시작하세요.</p>
+         <h2 className="text-xl font-bold text-slate-900 dark:text-white">?몄뀡 ?좏깮</h2>
+         <p className="text-slate-500 dark:text-slate-400 text-sm">?먰븯??紐⑤뱶瑜??좏깮?섏뿬 ?쒖옉?섏꽭??</p>
       </div>
       
       {/* Custom Mode Card */}
@@ -263,11 +210,11 @@ export default function App() {
               <Sliders size={24} />
             </div>
             <span className="text-xs font-bold px-2 py-1 rounded bg-white/20 backdrop-blur-sm text-white">
-              자유 설정
+              ?먯쑀 ?ㅼ젙
             </span>
         </div>
-        <h3 className="text-lg font-bold mb-1">커스텀 모드</h3>
-        <p className="text-sm text-indigo-100 leading-snug">뇌파와 배경음을 직접 선택하여 나만의 세션을 만드세요.</p>
+        <h3 className="text-lg font-bold mb-1">而ㅼ뒪? 紐⑤뱶</h3>
+        <p className="text-sm text-indigo-100 leading-snug">?뚰뙆? 諛곌꼍?뚯쓣 吏곸젒 ?좏깮?섏뿬 ?섎쭔???몄뀡??留뚮뱶?몄슂.</p>
       </div>
 
       {/* Preset Cards */}
@@ -282,8 +229,7 @@ export default function App() {
                <Brain size={24} />
              </div>
              <span className="text-xs font-bold px-2 py-1 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">
-               {preset.defaultDurationMinutes}분
-             </span>
+               {preset.defaultDurationMinutes}遺?             </span>
           </div>
           <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">{preset.name}</h3>
           <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold mb-1">{getBrainWaveLabel(preset.brainWaveType).split(' ')[0]}</p>
@@ -311,8 +257,8 @@ export default function App() {
             {/* Time */}
             <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Activity size={16}/> 재생 시간</span>
-                    <span className="text-xl font-bold text-primary-600">{Math.floor(timeLeft / 60)}분</span>
+                    <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Activity size={16}/> Duration</span>
+                    <span className="text-xl font-bold text-primary-600">{Math.floor(timeLeft / 60)} min</span>
                 </div>
                 <input 
                     type="range" min="1" max="120" 
@@ -325,7 +271,7 @@ export default function App() {
             {/* Brainwave Selection (Always visible for Custom, or just helpful info for others) */}
             <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                 <div className="flex justify-between items-center mb-3">
-                    <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Brain size={16}/> 뇌파 선택</span>
+                    <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Brain size={16}/> ?뚰뙆 ?좏깮</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                     {(['alpha', 'beta', 'theta', 'delta'] as BrainWaveType[]).map(wave => (
@@ -347,7 +293,7 @@ export default function App() {
             {/* Sound Selection */}
             <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                 <div className="flex justify-between items-center mb-3">
-                    <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Volume2 size={16}/> 배경음 선택</span>
+                    <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Volume2 size={16}/> 諛곌꼍???좏깮</span>
                 </div>
                 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                     {(['none', 'rain', 'fire', 'birds', 'night', 'wave', 'forest', 'white'] as BackgroundSoundType[]).map(sound => (
@@ -372,7 +318,7 @@ export default function App() {
           onClick={startSession}
           className="w-full py-4 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-bold text-lg shadow-lg shadow-primary-500/30 active:scale-[0.99] transition-transform flex items-center justify-center gap-2"
         >
-          <Play size={24} fill="currentColor" /> 세션 시작
+          <Play size={24} fill="currentColor" /> ?몄뀡 ?쒖옉
         </button>
       </div>
     );
@@ -381,8 +327,8 @@ export default function App() {
   const renderFeedback = () => (
     <div className="p-8 h-full flex flex-col items-center justify-center animate-fade-in text-center pb-24">
        <Sparkles size={48} className="text-yellow-400 mb-6" />
-       <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">세션 종료</h2>
-       <p className="text-slate-500 dark:text-slate-400 mb-8">기분이 어떠신가요?</p>
+       <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">?몄뀡 醫낅즺</h2>
+       <p className="text-slate-500 dark:text-slate-400 mb-8">湲곕텇???대뼚?좉???</p>
        
        <div className="flex gap-4 mb-8">
          {[1, 2, 3, 4, 5].map(score => (
@@ -391,68 +337,23 @@ export default function App() {
              onClick={() => saveFeedback(score)}
              className="w-12 h-12 rounded-full border-2 border-slate-200 dark:border-slate-700 hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-xl transition-all"
            >
-             {score === 1 ? '😫' : score === 2 ? '😕' : score === 3 ? '😐' : score === 4 ? '🙂' : '🤩'}
+             {score === 1 ? '?삮' : score === 2 ? '?삎' : score === 3 ? '?삉' : score === 4 ? '?셽' : '?ㄹ'}
            </button>
          ))}
        </div>
-       <button onClick={() => setViewMode('list')} className="text-slate-400 underline">건너뛰기</button>
-    </div>
-  );
-
-  const renderAiTab = () => (
-    <div className="p-6 pb-24 h-full flex flex-col">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-          <Sparkles className="text-primary-500"/> AI 코디네이터
-        </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">현재 상태나 목표를 알려주세요. (예: "잠이 안 와요", "집중이 필요해요")</p>
-      </div>
-
-      <div className="flex-1">
-        <textarea 
-          className="w-full h-32 p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none resize-none shadow-sm mb-4"
-          placeholder="여기에 입력하세요..."
-          value={aiInput}
-          onChange={(e) => setAiInput(e.target.value)}
-          disabled={isAiLoading}
-        />
-        <button 
-          onClick={generateAiSession}
-          disabled={!aiInput.trim() || isAiLoading}
-          className="w-full py-3 rounded-xl bg-primary-600 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-bold transition-all"
-        >
-          {isAiLoading ? '분석 중...' : 'AI 추천 받기'}
-        </button>
-
-        {aiSuggestion && (
-          <div className="mt-8 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-primary-200 dark:border-primary-900 shadow-md animate-slide-up">
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{aiSuggestion.name}</h3>
-              <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 text-xs rounded font-bold uppercase">AI 추천</span>
-            </div>
-            <p className="text-slate-600 dark:text-slate-300 mb-4 italic">"{aiSuggestion.guidance}"</p>
-            <div className="flex gap-4 mb-6 text-sm text-slate-500 dark:text-slate-400">
-               <span className="flex items-center gap-1"><Brain size={14}/> {getBrainWaveLabel(aiSuggestion.brainWaveType).split(' ')[0]}</span>
-               <span className="flex items-center gap-1"><Settings size={14}/> {aiSuggestion.backgroundSound}</span>
-            </div>
-            <button onClick={applyAiSession} className="w-full py-2 rounded-lg border border-primary-500 text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
-              이 세션으로 시작하기
-            </button>
-          </div>
-        )}
-      </div>
+       <button onClick={() => setViewMode('list')} className="text-slate-400 underline">嫄대꼫?곌린</button>
     </div>
   );
 
   const renderHistory = () => (
     <div className="p-6 pb-24">
       <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-        <BarChart2 /> 나의 기록
+        <BarChart2 /> ?섏쓽 湲곕줉
       </h2>
       
       {logs.length === 0 ? (
         <div className="text-center text-slate-400 mt-20">
-          <p>아직 기록된 세션이 없습니다.</p>
+          <p>?꾩쭅 湲곕줉???몄뀡???놁뒿?덈떎.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -463,8 +364,8 @@ export default function App() {
                 <span className="text-xs text-slate-500">{new Date(log.startedAt).toLocaleDateString()}</span>
               </div>
               <div className="text-right">
-                <div className="font-mono text-primary-600 dark:text-primary-400 font-bold">{log.durationMinutes}분</div>
-                <div className="text-xs text-slate-400">기분: {log.moodAfter}/5</div>
+                <div className="font-mono text-primary-600 dark:text-primary-400 font-bold">{log.durationMinutes} min</div>
+                <div className="text-xs text-slate-400">Mood: {log.moodAfter}/5</div>
               </div>
             </div>
           ))}
@@ -475,13 +376,13 @@ export default function App() {
 
   const renderSettings = () => (
     <div className="p-6 pb-24">
-       <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">설정</h2>
+       <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">?ㅼ젙</h2>
        
        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
          <div className="p-4 flex justify-between items-center">
             <div className="flex items-center gap-3">
               {settings.darkMode ? <Moon className="text-indigo-400"/> : <Sun className="text-orange-400"/>}
-              <span className="font-medium text-slate-700 dark:text-slate-200">다크 모드</span>
+              <span className="font-medium text-slate-700 dark:text-slate-200">?ㅽ겕 紐⑤뱶</span>
             </div>
             <button 
               onClick={() => setSettings(s => ({...s, darkMode: !s.darkMode}))}
@@ -494,7 +395,7 @@ export default function App() {
 
        <div className="mt-8 text-center text-xs text-slate-400">
          <p>MC Brain Care v1.2.0</p>
-         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
+         <p className="mt-2">紐⑤뱺 ?ㅻ뵒?ㅻ뒗 湲곌린?먯꽌 ?ㅼ떆媛꾩쑝濡??앹꽦?⑸땲??</p>
        </div>
     </div>
   );
@@ -535,7 +436,6 @@ export default function App() {
             />
           ) : renderFeedback()
         )}
-        {activeTab === 'ai' && renderAiTab()}
         {activeTab === 'history' && renderHistory()}
         {activeTab === 'settings' && renderSettings()}
       </main>
@@ -572,19 +472,15 @@ export default function App() {
       <nav className="h-16 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-around items-center shrink-0 z-30">
         <button onClick={() => setActiveTab('session')} className={`flex flex-col items-center gap-1 ${activeTab === 'session' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
           <Home size={20} />
-          <span className="text-[10px] font-medium">홈</span>
-        </button>
-        <button onClick={() => setActiveTab('ai')} className={`flex flex-col items-center gap-1 ${activeTab === 'ai' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
-          <Sparkles size={20} />
-          <span className="text-[10px] font-medium">AI 코디</span>
+          <span className="text-[10px] font-medium">Session</span>
         </button>
         <button onClick={() => setActiveTab('history')} className={`flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
           <BarChart2 size={20} />
-          <span className="text-[10px] font-medium">기록</span>
+          <span className="text-[10px] font-medium">History</span>
         </button>
         <button onClick={() => setActiveTab('settings')} className={`flex flex-col items-center gap-1 ${activeTab === 'settings' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
           <Settings size={20} />
-          <span className="text-[10px] font-medium">설정</span>
+          <span className="text-[10px] font-medium">Settings</span>
         </button>
       </nav>
     </div>

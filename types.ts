@@ -30,15 +30,6 @@ export interface AppSettings {
   showSoundNotice: boolean;
 }
 
-export interface AiSessionSuggestion {
-  name: string;
-  description: string;
-  durationMinutes: number;
-  brainWaveType: BrainWaveType;
-  backgroundSound: BackgroundSoundType;
-  guidance: string;
-}
-
 export const WAVE_FREQS = {
     alpha: { base: 200, beat: 10 },
     beta: { base: 250, beat: 20 },

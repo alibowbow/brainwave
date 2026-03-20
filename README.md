@@ -2,11 +2,9 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# Run and deploy your app
 
 This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/drive/1dobbbv_ujqtPfH4jbdcMabTs2brkBa7j
 
 ## Run Locally
 
@@ -31,7 +29,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1dobbbv_ujqtPfH4jbdcMab
 
 ## Notes
 
-- This app is currently a static Vite app. No required runtime environment variables are used by the checked-in code.
+- This app is a static Vite app. No required runtime environment variables are used by the checked-in code.
 - `VITE_BASE_URL` is only needed when deploying under a subpath such as GitHub Pages (`/brainwave/`).
 
 ## Deploy to GitHub Pages

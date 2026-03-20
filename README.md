@@ -15,9 +15,24 @@ View your app in AI Studio: https://ai.studio/apps/drive/1dobbbv_ujqtPfH4jbdcMab
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Run the app:
    `npm run dev`
+
+## Deploy to Vercel
+
+1. Push the repository to GitHub.
+2. In Vercel, choose **Add New Project** and import this repository.
+3. Use the project root as the **Root Directory**.
+4. Vercel can auto-detect Vite, and this repository also includes `vercel.json` with:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. Leave `VITE_BASE_URL` unset for Vercel so the app uses the default `/`.
+6. Deploy.
+
+## Notes
+
+- This app is currently a static Vite app. No required runtime environment variables are used by the checked-in code.
+- `VITE_BASE_URL` is only needed when deploying under a subpath such as GitHub Pages (`/brainwave/`).
 
 ## Deploy to GitHub Pages
 

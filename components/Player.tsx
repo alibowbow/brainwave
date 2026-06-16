@@ -2,6 +2,7 @@
 import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType, getBrainWaveLabel } from '../types';
 import { SOUND_ORDER, WAVE_ORDER, getSoundIcon, getSoundLabel, getWaveShortLabel } from '../audioOptions';
+import { Toggle } from './Toggle';
 
 interface PlayerProps {
   sessionName: string;
@@ -18,6 +19,8 @@ interface PlayerProps {
   onSoundChange: (val: BackgroundSoundType) => void;
   volumes: { master: number; binaural: number; bg: number };
   onVolumeChange: (key: 'master' | 'binaural' | 'bg', val: number) => void;
+  brainwaveEnabled: boolean;
+  onToggleBrainwave: () => void;
 }
 
 export const Player: React.FC<PlayerProps> = ({
@@ -35,6 +38,8 @@ export const Player: React.FC<PlayerProps> = ({
   onSoundChange,
   volumes,
   onVolumeChange,
+  brainwaveEnabled,
+  onToggleBrainwave,
 }) => {
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -65,8 +70,12 @@ export const Player: React.FC<PlayerProps> = ({
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{sessionName}</h2>
         <div className="text-slate-500 dark:text-slate-400 text-sm flex items-center justify-center gap-2">
-          <Activity size={14} /> {getBrainWaveLabel(currentBrainWave).split(' ')[0]}
-          <span>·</span>
+          {brainwaveEnabled && (
+            <>
+              <Activity size={14} /> {getBrainWaveLabel(currentBrainWave).split(' ')[0]}
+              <span>·</span>
+            </>
+          )}
           <Volume2 size={14} /> {getSoundLabel(currentSound)}
         </div>
       </div>
@@ -106,14 +115,18 @@ export const Player: React.FC<PlayerProps> = ({
         </div>
 
         <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="flex items-center gap-2 mb-3 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-            <Activity size={14} /> 뇌파 선택 (Brainwave)
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <Activity size={14} /> 뇌파음 (Brainwave)
+            </div>
+            <Toggle checked={brainwaveEnabled} onChange={onToggleBrainwave} label="뇌파음 사용" />
           </div>
-          <div className="grid grid-cols-4 gap-2">
+          <div className={`grid grid-cols-4 gap-2 transition-opacity ${brainwaveEnabled ? '' : 'opacity-40 pointer-events-none'}`}>
             {WAVE_ORDER.map((wave) => (
               <button
                 key={wave}
                 onClick={() => onWaveChange(wave)}
+                disabled={!brainwaveEnabled}
                 aria-pressed={currentBrainWave === wave}
                 className={`py-2 px-1 rounded-lg text-sm font-medium transition-all ${
                   currentBrainWave === wave
@@ -125,6 +138,9 @@ export const Player: React.FC<PlayerProps> = ({
               </button>
             ))}
           </div>
+          {!brainwaveEnabled && (
+            <p className="text-[11px] text-slate-400 mt-2">자연음만 재생 중이에요.</p>
+          )}
         </div>
 
         <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -157,7 +173,7 @@ export const Player: React.FC<PlayerProps> = ({
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
+            <div className={`flex items-center gap-4 transition-opacity ${brainwaveEnabled ? '' : 'opacity-40'}`}>
               <span className="text-xs font-semibold w-16 text-slate-600 dark:text-slate-300">뇌파음</span>
               <input
                 type="range"
@@ -165,9 +181,10 @@ export const Player: React.FC<PlayerProps> = ({
                 max="1"
                 step="0.01"
                 aria-label="뇌파음 볼륨"
+                disabled={!brainwaveEnabled}
                 value={volumes.binaural}
                 onChange={(e) => onVolumeChange('binaural', Number(e.target.value))}
-                className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed"
               />
             </div>
             <div className="flex items-center gap-4">

@@ -4,6 +4,16 @@
 
 /* --- Global styles that aren't expressible as utility classes --- */
 
+/* Typography refinement: slightly tighter tracking + crisper rendering to suit
+   the Pretendard typeface. */
+body {
+  letter-spacing: -0.01em;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 {
+  letter-spacing: -0.02em;
+}
+
 /* Custom scrollbar (webkit) */
 ::-webkit-scrollbar {
   width: 6px;

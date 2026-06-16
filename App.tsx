@@ -3,6 +3,7 @@ import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, 
 import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
 import { BinauralEngine } from './services/audioEngine';
 import { Player } from './components/Player';
+import { Toggle } from './components/Toggle';
 import { SOUND_ORDER, WAVE_ORDER, getSoundIcon, getSoundLabel } from './audioOptions';
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -24,6 +25,7 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [volumes, setVolumes] = useState({ master: 0.5, binaural: 0.4, bg: 0.5 });
   const [noticeOpen, setNoticeOpen] = useState(false);
+  const [brainwaveEnabled, setBrainwaveEnabled] = useState(true);
 
   // Lazily create a single, stable audio engine (avoids re-allocating each render).
   const audioEngine = useRef<BinauralEngine | null>(null);
@@ -74,9 +76,9 @@ export default function App() {
 
   useEffect(() => {
     if (playbackStatus === 'running') {
-      engine.setVolumes(volumes.master, volumes.binaural, volumes.bg);
+      engine.setVolumes(volumes.master, brainwaveEnabled ? volumes.binaural : 0, volumes.bg);
     }
-  }, [volumes, playbackStatus]);
+  }, [volumes, playbackStatus, brainwaveEnabled]);
 
   // Keep the screen awake during a session and resume audio when the tab
   // becomes visible again (mitigates background audio being suspended).
@@ -152,7 +154,7 @@ export default function App() {
     setPlaybackStatus('running');
     setViewMode('player');
     const freqs = WAVE_FREQS[currentBrainWave];
-    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, volumes.binaural);
+    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, brainwaveEnabled ? volumes.binaural : 0);
   };
 
   const pauseSession = () => {
@@ -165,7 +167,7 @@ export default function App() {
     beginRun(timeLeft);
     setPlaybackStatus('running');
     const freqs = WAVE_FREQS[currentBrainWave];
-    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, volumes.binaural);
+    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, brainwaveEnabled ? volumes.binaural : 0);
   };
 
   const stopSession = () => {
@@ -319,13 +321,15 @@ export default function App() {
 
           <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Brain size={16} /> 뇌파 선택</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Brain size={16} /> 뇌파음</span>
+              <Toggle checked={brainwaveEnabled} onChange={() => setBrainwaveEnabled((v) => !v)} label="뇌파음 사용" />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className={`grid grid-cols-2 gap-2 transition-opacity ${brainwaveEnabled ? '' : 'opacity-40 pointer-events-none'}`}>
               {WAVE_ORDER.map((wave) => (
                 <button
                   key={wave}
                   onClick={() => setCurrentBrainWave(wave)}
+                  disabled={!brainwaveEnabled}
                   aria-pressed={currentBrainWave === wave}
                   className={`py-2 px-3 rounded-xl text-sm font-medium transition-all text-left ${
                     currentBrainWave === wave
@@ -337,6 +341,9 @@ export default function App() {
                 </button>
               ))}
             </div>
+            {!brainwaveEnabled && (
+              <p className="text-[11px] text-slate-400 mt-3">뇌파음을 끄고 자연음만 재생합니다.</p>
+            )}
           </div>
 
           <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
@@ -464,7 +471,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v1.4.0</p>
+        <p>MC Brain Care v1.5.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
@@ -499,6 +506,8 @@ export default function App() {
               onSoundChange={handleLiveSoundChange}
               volumes={volumes}
               onVolumeChange={(k, v) => setVolumes((prev) => ({ ...prev, [k]: v }))}
+              brainwaveEnabled={brainwaveEnabled}
+              onToggleBrainwave={() => setBrainwaveEnabled((v) => !v)}
             />
           ) : renderFeedback()
         )}

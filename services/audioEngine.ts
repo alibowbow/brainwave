@@ -379,26 +379,32 @@ export class BinauralEngine {
     lfo.start();
     this.registerNode(lfo);
 
-    const bubble = () => {
-      if (!this.ctx || !this.bgGain) return;
+    // Water drips are short resonant noise bursts with a slight upward pitch
+    // bend ("plip"), deliberately noise-based and low/mid-pitched so they read
+    // as water rather than the pure-tone downward sweep that sounded bird-like.
+    const drip = () => {
+      if (!this.ctx || !this.bgGain || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
-      osc.type = 'sine';
-      const start = 700 + Math.random() * 900;
-      osc.frequency.setValueAtTime(start, t);
-      osc.frequency.exponentialRampToValueAtTime(start * 0.6, t + 0.08);
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bpf = this.ctx.createBiquadFilter();
+      bpf.type = 'bandpass';
+      const f = 250 + Math.random() * 450;
+      bpf.frequency.setValueAtTime(f, t);
+      bpf.frequency.exponentialRampToValueAtTime(f * 1.6, t + 0.05);
+      bpf.Q.value = 3 + Math.random() * 3;
       const gain = this.ctx.createGain();
-      const dur = 0.07 + Math.random() * 0.12;
+      const dur = 0.05 + Math.random() * 0.08;
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.12 + Math.random() * 0.1, t + 0.005);
+      gain.gain.linearRampToValueAtTime(0.09 + Math.random() * 0.05, t + 0.004);
       gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      osc.connect(gain).connect(this.makePan(Math.random() * 1.4 - 0.7));
-      osc.start(t); osc.stop(t + dur + 0.02);
+      src.connect(bpf).connect(gain).connect(this.makePan(Math.random() * 1.4 - 0.7));
+      src.start(t); src.stop(t + dur + 0.02);
 
-      const id = window.setTimeout(bubble, 90 + Math.random() * 420);
+      const id = window.setTimeout(drip, 120 + Math.random() * 380);
       this.timeouts.push(id);
     };
-    bubble();
+    drip();
   }
 
   // --- 4. BIRDS ---
@@ -745,7 +751,7 @@ export class BinauralEngine {
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass'; filter.frequency.value = 9000;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.28;
+    gain.gain.value = 0.15;
     node.connect(filter).connect(gain).connect(this.bgGain);
     node.start();
     this.registerNode(node);
@@ -756,7 +762,7 @@ export class BinauralEngine {
     if (!this.ctx || !this.bgGain || !this.pinkNoiseBuffer) return;
     const node = this.noiseSource(this.pinkNoiseBuffer)!;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.5;
+    gain.gain.value = 0.25;
     node.connect(gain).connect(this.bgGain);
     node.start();
     this.registerNode(node);

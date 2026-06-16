@@ -8,8 +8,6 @@ export interface SessionPreset {
   defaultDurationMinutes: number;
   brainWaveType: BrainWaveType;
   defaultBackgroundSound: BackgroundSoundType;
-  baseFreq: number;
-  beatFreq: number;
 }
 
 export interface SessionLog {
@@ -26,7 +24,6 @@ export interface SessionLog {
 
 export interface AppSettings {
   darkMode: boolean;
-  defaultSessionDuration: number;
   showSoundNotice: boolean;
 }
 
@@ -48,10 +45,10 @@ export const getBrainWaveLabel = (type: BrainWaveType) => {
 };
 
 export const PRESETS: SessionPreset[] = [
-  { id: 'focus', name: '깊은 집중 (Focus)', description: '학습 및 업무 효율을 높여주는 집중 모드', defaultDurationMinutes: 40, brainWaveType: 'alpha', defaultBackgroundSound: 'rain', baseFreq: 200, beatFreq: 10 },
-  { id: 'relax', name: '불멍 힐링 (Relax)', description: '따뜻한 장작불 소리와 함께하는 휴식', defaultDurationMinutes: 20, brainWaveType: 'theta', defaultBackgroundSound: 'fire', baseFreq: 150, beatFreq: 6 },
-  { id: 'country_morning', name: '상쾌한 아침 (Morning)', description: '새소리와 함께 활기찬 하루 시작', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'birds', baseFreq: 180, beatFreq: 9 },
-  { id: 'sleep_prep', name: '수면 준비 (Sleep)', description: '깊은 잠을 유도하는 델타파 세션', defaultDurationMinutes: 30, brainWaveType: 'delta', defaultBackgroundSound: 'night', baseFreq: 190, beatFreq: 2.5 },
-  { id: 'power_nap', name: '파워 냅 (Nap)', description: '짧고 가볍게 피로를 푸는 낮잠', defaultDurationMinutes: 15, brainWaveType: 'theta', defaultBackgroundSound: 'forest', baseFreq: 140, beatFreq: 5 },
-  { id: 'meditation', name: '마음 챙김 (Meditation)', description: '내면의 평화를 찾는 명상 시간', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'none', baseFreq: 180, beatFreq: 8 },
+  { id: 'focus', name: '깊은 집중 (Focus)', description: '학습 및 업무 효율을 높여주는 집중 모드', defaultDurationMinutes: 40, brainWaveType: 'alpha', defaultBackgroundSound: 'rain' },
+  { id: 'relax', name: '불멍 힐링 (Relax)', description: '따뜻한 장작불 소리와 함께하는 휴식', defaultDurationMinutes: 20, brainWaveType: 'theta', defaultBackgroundSound: 'fire' },
+  { id: 'country_morning', name: '상쾌한 아침 (Morning)', description: '새소리와 함께 활기찬 하루 시작', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'birds' },
+  { id: 'sleep_prep', name: '수면 준비 (Sleep)', description: '깊은 잠을 유도하는 델타파 세션', defaultDurationMinutes: 30, brainWaveType: 'delta', defaultBackgroundSound: 'night' },
+  { id: 'power_nap', name: '파워 냅 (Nap)', description: '짧고 가볍게 피로를 푸는 낮잠', defaultDurationMinutes: 15, brainWaveType: 'theta', defaultBackgroundSound: 'forest' },
+  { id: 'meditation', name: '마음 챙김 (Meditation)', description: '내면의 평화를 찾는 명상 시간', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'none' },
 ];

@@ -465,9 +465,51 @@ export class BinauralEngine {
       this.intervals.push(id);
   }
 
+  // Re-activate the context after the browser suspends it (e.g. on tab/screen lock).
+  resume() {
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  }
+
+  // Gentle ascending bell played when a session finishes, so users who aren't
+  // looking at the screen still notice the session has ended.
+  playCompletionChime() {
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const out = this.ctx.createGain();
+    out.gain.value = 0.6;
+    out.connect(this.ctx.destination);
+
+    const notes = [523.25, 659.25, 783.99]; // C5 - E5 - G5
+    notes.forEach((freq, i) => {
+      const t = now + i * 0.18;
+      const osc = this.ctx!.createOscillator();
+      const gain = this.ctx!.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      osc.connect(gain).connect(out);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.5, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+      osc.start(t);
+      osc.stop(t + 1.3);
+    });
+  }
+
   stop() {
     if (this.leftOsc) { try { this.leftOsc.stop(); } catch(e){} this.leftOsc = null; }
     if (this.rightOsc) { try { this.rightOsc.stop(); } catch(e){} this.rightOsc = null; }
     this.stopBackgroundSounds();
+  }
+
+  // Fully release audio resources (called when the app unmounts).
+  dispose() {
+    this.stop();
+    if (this.ctx) { try { this.ctx.close(); } catch(e){} this.ctx = null; }
+    this.pinkNoiseBuffer = null;
+    this.brownNoiseBuffer = null;
+    this.masterGain = null;
+    this.binauralGain = null;
+    this.bgGain = null;
   }
 }

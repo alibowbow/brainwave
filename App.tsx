@@ -1,16 +1,18 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
-import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, CloudRain, Wind, CloudMoon, Flame, Bird, Volume1 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones } from 'lucide-react';
 import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
 import { BinauralEngine } from './services/audioEngine';
 import { Player } from './components/Player';
+import { SOUND_ORDER, WAVE_ORDER, getSoundIcon, getSoundLabel } from './audioOptions';
+
+const DEFAULT_SETTINGS: AppSettings = {
+  darkMode: true,
+  showSoundNotice: true,
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'session' | 'history' | 'settings'>('session');
-  const [settings, setSettings] = useState<AppSettings>({
-    darkMode: true,
-    defaultSessionDuration: 25,
-    showSoundNotice: true,
-  });
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
   const [logs, setLogs] = useState<SessionLog[]>([]);
 
   const [playbackStatus, setPlaybackStatus] = useState<'idle' | 'running' | 'paused'>('idle');
@@ -21,16 +23,30 @@ export default function App() {
   const [currentSound, setCurrentSound] = useState<BackgroundSoundType>('rain');
   const [timeLeft, setTimeLeft] = useState(0);
   const [volumes, setVolumes] = useState({ master: 0.5, binaural: 0.4, bg: 0.5 });
+  const [noticeOpen, setNoticeOpen] = useState(false);
 
-  const audioEngine = useRef(new BinauralEngine());
-  const timerRef = useRef<number | null>(null);
+  // Lazily create a single, stable audio engine (avoids re-allocating each render).
+  const audioEngine = useRef<BinauralEngine | null>(null);
+  if (!audioEngine.current) audioEngine.current = new BinauralEngine();
+  const engine = audioEngine.current!;
+
+  // Timestamp-based timer state: drift-free and recovers correctly after the
+  // browser throttles timers in a backgrounded tab.
+  const endTimeRef = useRef<number | null>(null);   // wall-clock ms when the countdown hits 0
+  const runStartRef = useRef<number | null>(null);  // wall-clock ms the current run began
+  const playedMsRef = useRef<number>(0);            // actually-played time accumulated across runs
+  const wakeLockRef = useRef<any>(null);
 
   useEffect(() => {
     const savedLogs = localStorage.getItem('mc_brain_logs');
     if (savedLogs) setLogs(JSON.parse(savedLogs));
 
     const savedSettings = localStorage.getItem('mc_brain_settings');
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+    const merged: AppSettings = savedSettings
+      ? { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) }
+      : DEFAULT_SETTINGS;
+    setSettings(merged);
+    setNoticeOpen(merged.showSoundNotice);
   }, []);
 
   useEffect(() => {
@@ -42,31 +58,71 @@ export default function App() {
     localStorage.setItem('mc_brain_settings', JSON.stringify(settings));
   }, [settings]);
 
+  // Drive the countdown from wall-clock time rather than counting interval ticks.
   useEffect(() => {
-    if (playbackStatus === 'running' && timeLeft > 0) {
-      timerRef.current = window.setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            handleSessionComplete();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+    if (playbackStatus !== 'running') return;
+    const tick = () => {
+      if (endTimeRef.current == null) return;
+      const remaining = Math.max(0, Math.round((endTimeRef.current - Date.now()) / 1000));
+      setTimeLeft(remaining);
+      if (remaining <= 0) handleSessionComplete();
     };
-  }, [playbackStatus, timeLeft]);
+    tick();
+    const id = window.setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [playbackStatus]);
 
   useEffect(() => {
     if (playbackStatus === 'running') {
-      audioEngine.current.setVolumes(volumes.master, volumes.binaural, volumes.bg);
+      engine.setVolumes(volumes.master, volumes.binaural, volumes.bg);
     }
   }, [volumes, playbackStatus]);
+
+  // Keep the screen awake during a session and resume audio when the tab
+  // becomes visible again (mitigates background audio being suspended).
+  useEffect(() => {
+    if (playbackStatus !== 'running') return;
+    let active = true;
+
+    const requestWakeLock = async () => {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+        }
+      } catch { /* wake lock unsupported or denied */ }
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        engine.resume();
+        if (active) requestWakeLock();
+      }
+    };
+
+    requestWakeLock();
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      active = false;
+      document.removeEventListener('visibilitychange', onVisibility);
+      try { wakeLockRef.current?.release?.(); } catch { /* ignore */ }
+      wakeLockRef.current = null;
+    };
+  }, [playbackStatus]);
+
+  // Release all audio resources when the app unmounts.
+  useEffect(() => () => engine.dispose(), []);
+
+  const beginRun = (seconds: number) => {
+    endTimeRef.current = Date.now() + seconds * 1000;
+    runStartRef.current = Date.now();
+  };
+
+  const accumulateRun = () => {
+    if (runStartRef.current != null) {
+      playedMsRef.current += Date.now() - runStartRef.current;
+      runStartRef.current = null;
+    }
+  };
 
   const handlePresetSelect = (preset: SessionPreset) => {
     setSelectedPreset(preset);
@@ -86,55 +142,72 @@ export default function App() {
       defaultDurationMinutes: 30,
       brainWaveType: 'alpha',
       defaultBackgroundSound: 'rain',
-      baseFreq: 200,
-      beatFreq: 10,
     };
     handlePresetSelect(customPreset);
   };
 
   const startSession = () => {
+    playedMsRef.current = 0;
+    beginRun(timeLeft);
     setPlaybackStatus('running');
     setViewMode('player');
     const freqs = WAVE_FREQS[currentBrainWave];
-    audioEngine.current.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, volumes.binaural);
+    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, volumes.binaural);
   };
 
   const pauseSession = () => {
+    accumulateRun();
     setPlaybackStatus('paused');
-    audioEngine.current.stop();
+    engine.stop();
   };
 
   const resumeSession = () => {
+    beginRun(timeLeft);
     setPlaybackStatus('running');
     const freqs = WAVE_FREQS[currentBrainWave];
-    audioEngine.current.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, volumes.binaural);
+    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, volumes.binaural);
   };
 
   const stopSession = () => {
+    accumulateRun();
+    endTimeRef.current = null;
     setPlaybackStatus('idle');
     setViewMode('list');
-    audioEngine.current.stop();
+    engine.stop();
     setTimeLeft(0);
   };
 
   const handleSessionComplete = () => {
+    accumulateRun();
+    endTimeRef.current = null;
     setPlaybackStatus('idle');
     setViewMode('feedback');
-    audioEngine.current.stop();
+    engine.stop();
+    // Completion alert: a gentle chime plus haptic feedback.
+    engine.playCompletionChime();
+    try { navigator.vibrate?.([180, 90, 180]); } catch { /* ignore */ }
   };
 
   const handleLiveWaveChange = (wave: BrainWaveType) => {
     setCurrentBrainWave(wave);
     if (playbackStatus === 'running') {
       const freqs = WAVE_FREQS[wave];
-      audioEngine.current.updateBinauralParams(freqs.base, freqs.beat);
+      engine.updateBinauralParams(freqs.base, freqs.beat);
     }
   };
 
   const handleLiveSoundChange = (sound: BackgroundSoundType) => {
     setCurrentSound(sound);
     if (playbackStatus === 'running') {
-      audioEngine.current.changeBackgroundSound(sound);
+      engine.changeBackgroundSound(sound);
+    }
+  };
+
+  const handleTimeChange = (minutes: number) => {
+    const seconds = minutes * 60;
+    setTimeLeft(seconds);
+    if (playbackStatus === 'running') {
+      endTimeRef.current = Date.now() + seconds * 1000;
     }
   };
 
@@ -146,7 +219,7 @@ export default function App() {
       modeId: selectedPreset.id,
       modeName: selectedPreset.name,
       startedAt: new Date().toISOString(),
-      durationMinutes: Math.floor((selectedPreset.defaultDurationMinutes * 60 - timeLeft) / 60),
+      durationMinutes: Math.max(1, Math.round(playedMsRef.current / 60000)),
       moodBefore: 3,
       moodAfter: mood,
       helpfulScore: mood,
@@ -158,31 +231,9 @@ export default function App() {
     setViewMode('list');
   };
 
-  const getSoundIcon = (type: BackgroundSoundType) => {
-    switch (type) {
-      case 'rain': return <CloudRain size={20} />;
-      case 'wave': return <Wind size={20} />;
-      case 'forest': return <Sun size={20} />;
-      case 'white': return <Activity size={20} />;
-      case 'birds': return <Bird size={20} />;
-      case 'night': return <CloudMoon size={20} />;
-      case 'fire': return <Flame size={20} />;
-      case 'none': return <Volume1 size={20} />;
-    }
-  };
-
-  const getSoundLabel = (type: BackgroundSoundType) => {
-    switch (type) {
-      case 'none': return '없음';
-      case 'white': return '백색소음';
-      case 'rain': return '빗소리';
-      case 'wave': return '파도';
-      case 'forest': return '숲바람';
-      case 'birds': return '새소리';
-      case 'night': return '밤 벌레';
-      case 'fire': return '모닥불';
-      default: return type;
-    }
+  const dismissNotice = (rememberChoice: boolean) => {
+    setNoticeOpen(false);
+    if (rememberChoice) setSettings((s) => ({ ...s, showSoundNotice: false }));
   };
 
   const renderSessionList = () => (
@@ -235,13 +286,18 @@ export default function App() {
 
     return (
       <div className="p-6 h-full flex flex-col animate-fade-in pb-24">
-        <button onClick={() => setViewMode('list')} className="self-start mb-6 p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+        <button onClick={() => setViewMode('list')} aria-label="뒤로 가기" className="self-start mb-6 p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
           <ArrowLeft size={24} />
         </button>
 
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{selectedPreset.name}</h2>
           <p className="text-slate-500 dark:text-slate-400">{selectedPreset.description}</p>
+        </div>
+
+        <div className="flex items-center justify-center gap-2 mb-6 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-full py-2 px-3">
+          <Headphones size={14} className="text-primary-500 shrink-0" />
+          <span>좌우 뇌파 효과를 위해 헤드폰·이어폰 착용을 권장해요</span>
         </div>
 
         <div className="space-y-4 mb-8">
@@ -254,6 +310,7 @@ export default function App() {
               type="range"
               min="1"
               max="120"
+              aria-label="재생 시간 (분)"
               value={timeLeft / 60}
               onChange={(e) => setTimeLeft(Number(e.target.value) * 60)}
               className="w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-primary-500"
@@ -265,10 +322,11 @@ export default function App() {
               <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Brain size={16} /> 뇌파 선택</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {(['alpha', 'beta', 'theta', 'delta'] as BrainWaveType[]).map((wave) => (
+              {WAVE_ORDER.map((wave) => (
                 <button
                   key={wave}
                   onClick={() => setCurrentBrainWave(wave)}
+                  aria-pressed={currentBrainWave === wave}
                   className={`py-2 px-3 rounded-xl text-sm font-medium transition-all text-left ${
                     currentBrainWave === wave
                       ? 'bg-primary-500 text-white shadow-md'
@@ -286,10 +344,12 @@ export default function App() {
               <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Volume2 size={16} /> 배경음 선택</span>
             </div>
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {(['none', 'rain', 'fire', 'birds', 'night', 'wave', 'forest', 'white'] as BackgroundSoundType[]).map((sound) => (
+              {SOUND_ORDER.map((sound) => (
                 <button
                   key={sound}
                   onClick={() => setCurrentSound(sound)}
+                  aria-pressed={currentSound === sound}
+                  aria-label={getSoundLabel(sound)}
                   className={`flex flex-col items-center gap-2 p-3 rounded-xl min-w-[70px] border transition-all ${
                     currentSound === sound
                       ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
@@ -325,6 +385,7 @@ export default function App() {
           <button
             key={score}
             onClick={() => saveFeedback(score)}
+            aria-label={`기분 ${score}점`}
             className="w-12 h-12 rounded-full border-2 border-slate-200 dark:border-slate-700 hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-xl transition-all"
           >
             {score}
@@ -376,15 +437,34 @@ export default function App() {
           </div>
           <button
             onClick={() => setSettings((s) => ({ ...s, darkMode: !s.darkMode }))}
+            role="switch"
+            aria-checked={settings.darkMode}
+            aria-label="다크 모드"
             className={`w-12 h-6 rounded-full p-1 transition-colors ${settings.darkMode ? 'bg-primary-600' : 'bg-slate-300'}`}
           >
             <div className={`w-4 h-4 bg-white rounded-full transition-transform ${settings.darkMode ? 'translate-x-6' : 'translate-x-0'}`} />
           </button>
         </div>
+
+        <div className="p-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <Headphones className="text-primary-500" />
+            <span className="font-medium text-slate-700 dark:text-slate-200">헤드폰 안내 표시</span>
+          </div>
+          <button
+            onClick={() => setSettings((s) => ({ ...s, showSoundNotice: !s.showSoundNotice }))}
+            role="switch"
+            aria-checked={settings.showSoundNotice}
+            aria-label="헤드폰 안내 표시"
+            className={`w-12 h-6 rounded-full p-1 transition-colors ${settings.showSoundNotice ? 'bg-primary-600' : 'bg-slate-300'}`}
+          >
+            <div className={`w-4 h-4 bg-white rounded-full transition-transform ${settings.showSoundNotice ? 'translate-x-6' : 'translate-x-0'}`} />
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v1.2.0</p>
+        <p>MC Brain Care v1.3.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
@@ -412,7 +492,7 @@ export default function App() {
               onPause={pauseSession}
               onStop={stopSession}
               onMinimize={() => setViewMode('list')}
-              onTimeChange={(val) => setTimeLeft(val * 60)}
+              onTimeChange={handleTimeChange}
               currentBrainWave={currentBrainWave}
               onWaveChange={handleLiveWaveChange}
               currentSound={currentSound}
@@ -443,10 +523,10 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={(e) => { e.stopPropagation(); playbackStatus === 'running' ? pauseSession() : resumeSession(); }} className="p-2 text-slate-700 dark:text-slate-200">
+            <button onClick={(e) => { e.stopPropagation(); playbackStatus === 'running' ? pauseSession() : resumeSession(); }} aria-label={playbackStatus === 'running' ? '일시정지' : '재생'} className="p-2 text-slate-700 dark:text-slate-200">
               {playbackStatus === 'running' ? <Pause size={20} /> : <Play size={20} />}
             </button>
-            <button onClick={(e) => { e.stopPropagation(); stopSession(); }} className="p-2 text-red-500">
+            <button onClick={(e) => { e.stopPropagation(); stopSession(); }} aria-label="세션 종료" className="p-2 text-red-500">
               <X size={20} />
             </button>
           </div>
@@ -454,19 +534,33 @@ export default function App() {
       )}
 
       <nav className="h-16 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-around items-center shrink-0 z-30">
-        <button onClick={() => setActiveTab('session')} className={`flex flex-col items-center gap-1 ${activeTab === 'session' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
+        <button onClick={() => setActiveTab('session')} aria-current={activeTab === 'session' ? 'page' : undefined} className={`flex flex-col items-center gap-1 ${activeTab === 'session' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
           <Home size={20} />
           <span className="text-[10px] font-medium">세션</span>
         </button>
-        <button onClick={() => setActiveTab('history')} className={`flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
+        <button onClick={() => setActiveTab('history')} aria-current={activeTab === 'history' ? 'page' : undefined} className={`flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
           <BarChart2 size={20} />
           <span className="text-[10px] font-medium">기록</span>
         </button>
-        <button onClick={() => setActiveTab('settings')} className={`flex flex-col items-center gap-1 ${activeTab === 'settings' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
+        <button onClick={() => setActiveTab('settings')} aria-current={activeTab === 'settings' ? 'page' : undefined} className={`flex flex-col items-center gap-1 ${activeTab === 'settings' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
           <Settings size={20} />
           <span className="text-[10px] font-medium">설정</span>
         </button>
       </nav>
+
+      {noticeOpen && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-6" role="dialog" aria-modal="true" aria-labelledby="notice-title">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-xs w-full shadow-2xl animate-fade-in">
+            <div className="flex justify-center mb-4 text-primary-500"><Headphones size={40} /></div>
+            <h3 id="notice-title" className="text-lg font-bold text-center text-slate-900 dark:text-white mb-2">헤드폰을 착용해 주세요</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 text-center mb-5 leading-relaxed">
+              바이노럴 비트는 좌우 귀에 서로 다른 주파수를 들려주어 작동합니다. 스테레오 헤드폰이나 이어폰을 착용해야 제대로 된 효과를 느낄 수 있어요. 볼륨은 편안한 수준에서 시작하세요.
+            </p>
+            <button onClick={() => dismissNotice(false)} className="w-full py-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white font-bold mb-2 transition-colors">확인했어요</button>
+            <button onClick={() => dismissNotice(true)} className="w-full py-2 text-xs text-slate-400 underline">다시 보지 않기</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

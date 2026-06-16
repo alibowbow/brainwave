@@ -1,6 +1,7 @@
 ﻿import React from 'react';
-import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders, Bird, CloudRain, Wind, Sun, CloudMoon, Flame, Volume1 } from 'lucide-react';
+import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType, getBrainWaveLabel } from '../types';
+import { SOUND_ORDER, WAVE_ORDER, getSoundIcon, getSoundLabel, getWaveShortLabel } from '../audioOptions';
 
 interface PlayerProps {
   sessionName: string;
@@ -41,33 +42,6 @@ export const Player: React.FC<PlayerProps> = ({
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const getSoundIcon = (type: BackgroundSoundType) => {
-    switch (type) {
-      case 'rain': return <CloudRain size={20} />;
-      case 'wave': return <Wind size={20} />;
-      case 'forest': return <Sun size={20} />;
-      case 'white': return <Activity size={20} />;
-      case 'birds': return <Bird size={20} />;
-      case 'night': return <CloudMoon size={20} />;
-      case 'fire': return <Flame size={20} />;
-      case 'none': return <Volume1 size={20} />;
-    }
-  };
-
-  const getSoundLabel = (type: BackgroundSoundType) => {
-    switch (type) {
-      case 'none': return '없음';
-      case 'white': return '백색소음';
-      case 'rain': return '빗소리';
-      case 'wave': return '파도';
-      case 'forest': return '숲바람';
-      case 'birds': return '새소리';
-      case 'night': return '밤 벌레';
-      case 'fire': return '모닥불';
-      default: return type;
-    }
-  };
-
   return (
     <div className="flex flex-col animate-slide-up pb-32">
       <div className="flex justify-center mb-6 pt-2">
@@ -99,15 +73,15 @@ export const Player: React.FC<PlayerProps> = ({
 
       <div className="flex justify-center items-center gap-6 mb-10">
         {!isPlaying ? (
-          <button onClick={onPlay} className="w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-500 text-white flex items-center justify-center shadow-lg shadow-primary-500/30 transition-all hover:scale-105 active:scale-95">
+          <button onClick={onPlay} aria-label="재생" className="w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-500 text-white flex items-center justify-center shadow-lg shadow-primary-500/30 transition-all hover:scale-105 active:scale-95">
             <Play size={32} fill="currentColor" className="ml-1" />
           </button>
         ) : (
-          <button onClick={onPause} className="w-16 h-16 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95">
+          <button onClick={onPause} aria-label="일시정지" className="w-16 h-16 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95">
             <Pause size={32} fill="currentColor" />
           </button>
         )}
-        <button onClick={onStop} className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500 hover:bg-red-200 dark:hover:bg-red-900/50 flex items-center justify-center transition-all">
+        <button onClick={onStop} aria-label="세션 종료" className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500 hover:bg-red-200 dark:hover:bg-red-900/50 flex items-center justify-center transition-all">
           <Square size={20} fill="currentColor" />
         </button>
       </div>
@@ -122,6 +96,7 @@ export const Player: React.FC<PlayerProps> = ({
               type="range"
               min="1"
               max="120"
+              aria-label="재생 시간 (분)"
               value={Math.ceil(timeLeft / 60)}
               onChange={(e) => onTimeChange(Number(e.target.value))}
               className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
@@ -135,17 +110,18 @@ export const Player: React.FC<PlayerProps> = ({
             <Activity size={14} /> 뇌파 선택 (Brainwave)
           </div>
           <div className="grid grid-cols-4 gap-2">
-            {(['alpha', 'beta', 'theta', 'delta'] as BrainWaveType[]).map((wave) => (
+            {WAVE_ORDER.map((wave) => (
               <button
                 key={wave}
                 onClick={() => onWaveChange(wave)}
+                aria-pressed={currentBrainWave === wave}
                 className={`py-2 px-1 rounded-lg text-sm font-medium transition-all ${
                   currentBrainWave === wave
                     ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20'
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                 }`}
               >
-                {wave === 'alpha' ? '알파' : wave === 'beta' ? '베타' : wave === 'theta' ? '세타' : '델타'}
+                {getWaveShortLabel(wave)}
               </button>
             ))}
           </div>
@@ -156,10 +132,12 @@ export const Player: React.FC<PlayerProps> = ({
             <Volume2 size={14} /> 배경음 (Atmosphere)
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {(['none', 'rain', 'fire', 'birds', 'night', 'wave', 'forest', 'white'] as BackgroundSoundType[]).map((sound) => (
+            {SOUND_ORDER.map((sound) => (
               <button
                 key={sound}
                 onClick={() => onSoundChange(sound)}
+                aria-pressed={currentSound === sound}
+                aria-label={getSoundLabel(sound)}
                 className={`flex flex-col items-center gap-2 p-3 rounded-xl min-w-[70px] transition-all border ${
                   currentSound === sound
                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
@@ -186,6 +164,7 @@ export const Player: React.FC<PlayerProps> = ({
                 min="0"
                 max="1"
                 step="0.01"
+                aria-label="뇌파음 볼륨"
                 value={volumes.binaural}
                 onChange={(e) => onVolumeChange('binaural', Number(e.target.value))}
                 className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
@@ -198,6 +177,7 @@ export const Player: React.FC<PlayerProps> = ({
                 min="0"
                 max="1"
                 step="0.01"
+                aria-label="자연음 볼륨"
                 value={volumes.bg}
                 onChange={(e) => onVolumeChange('bg', Number(e.target.value))}
                 className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
@@ -210,6 +190,7 @@ export const Player: React.FC<PlayerProps> = ({
                 min="0"
                 max="1"
                 step="0.01"
+                aria-label="전체 볼륨"
                 value={volumes.master}
                 onChange={(e) => onVolumeChange('master', Number(e.target.value))}
                 className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-600"

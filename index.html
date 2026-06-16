@@ -1,109 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="description" content="바이노럴 비트와 자연음으로 집중·이완·수면을 돕는 뇌파 케어 앱" />
     <title>MC Brain Care</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              slate: {
-                850: '#151f32',
-                950: '#020617',
-              },
-              primary: {
-                50: '#eef2ff',
-                100: '#e0e7ff',
-                500: '#6366f1',
-                600: '#4f46e5',
-                700: '#4338ca',
-              }
-            },
-            animation: {
-              'breathe': 'breathe 8s infinite ease-in-out',
-              'equalizer': 'equalizer 1s infinite ease-in-out',
-              'fade-in': 'fadeIn 0.3s ease-out forwards',
-              'slide-up': 'slideUp 0.3s ease-out forwards',
-            },
-            keyframes: {
-              breathe: {
-                '0%, 100%': { transform: 'scale(1)', opacity: '0.3' },
-                '50%': { transform: 'scale(1.1)', opacity: '0.6' },
-              },
-              equalizer: {
-                '0%, 100%': { transform: 'scaleY(0.5)' },
-                '50%': { transform: 'scaleY(1)' },
-              },
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              slideUp: {
-                '0%': { transform: 'translateY(20px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' },
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Custom scrollbar for webkit */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #94a3b8;
-        border-radius: 3px;
-        opacity: 0.5;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #475569;
-      }
-      /* Range slider styling */
-      input[type=range] {
-        -webkit-appearance: none; 
-        background: transparent; 
-      }
-      input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        height: 16px;
-        width: 16px;
-        border-radius: 50%;
-        background: #6366f1;
-        margin-top: -6px; 
-        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      }
-      input[type=range]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 4px;
-        cursor: pointer;
-        background: #cbd5e1;
-        border-radius: 2px;
-      }
-      .dark input[type=range]::-webkit-slider-runnable-track {
-        background: #334155;
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0"
-  }
-}
-</script>
-</head>
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
   <body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-primary-500 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>

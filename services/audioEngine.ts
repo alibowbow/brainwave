@@ -324,31 +324,49 @@ export class BinauralEngine {
     this.startRain();
 
     const boom = () => {
-      if (!this.ctx || !this.bgGain || !this.brownNoiseBuffer) return;
+      if (!this.ctx || !this.bgGain || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      const pan = this.makePan(Math.random() * 0.8 - 0.4);
+
+      // Bright initial crack (the lightning) so the storm reads as more than rain.
+      const crackSrc = this.ctx.createBufferSource();
+      crackSrc.buffer = this.pinkNoiseBuffer;
+      const crackBp = this.ctx.createBiquadFilter();
+      crackBp.type = 'bandpass';
+      crackBp.frequency.value = 1800 + Math.random() * 1200;
+      crackBp.Q.value = 0.7;
+      const crackGain = this.ctx.createGain();
+      crackGain.gain.setValueAtTime(0, t);
+      crackGain.gain.linearRampToValueAtTime(0.9, t + 0.01);
+      crackGain.gain.exponentialRampToValueAtTime(0.02, t + 0.25 + Math.random() * 0.2);
+      crackSrc.connect(crackBp).connect(crackGain).connect(pan);
+      crackSrc.start(t); crackSrc.stop(t + 0.7);
+      this.registerNode(crackSrc, true);
+
+      // Rolling rumble with mid presence, sweeping down to a deep tail.
       const src = this.ctx.createBufferSource();
       src.buffer = this.brownNoiseBuffer;
       const lp = this.ctx.createBiquadFilter();
       lp.type = 'lowpass';
       const gain = this.ctx.createGain();
-      src.connect(lp).connect(gain).connect(this.makePan(Math.random() * 0.8 - 0.4));
+      src.connect(lp).connect(gain).connect(pan);
 
-      const dur = 2.5 + Math.random() * 2.5;
-      const peak = 0.55 + Math.random() * 0.35;
+      const dur = 3 + Math.random() * 3;
+      const peak = 1.1 + Math.random() * 0.5;
       gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(peak, t + 0.15 + Math.random() * 0.4);
+      gain.gain.exponentialRampToValueAtTime(peak, t + 0.08 + Math.random() * 0.25);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      lp.frequency.setValueAtTime(420, t);
-      lp.frequency.exponentialRampToValueAtTime(70, t + dur);
+      lp.frequency.setValueAtTime(900, t);
+      lp.frequency.exponentialRampToValueAtTime(110, t + dur);
 
       src.start(t); src.stop(t + dur + 0.1);
       this.registerNode(src, true);
 
-      const id = window.setTimeout(boom, 9000 + Math.random() * 17000);
+      const id = window.setTimeout(boom, 7000 + Math.random() * 12000);
       this.timeouts.push(id);
     };
 
-    const id = window.setTimeout(boom, 4000 + Math.random() * 6000);
+    const id = window.setTimeout(boom, 2500 + Math.random() * 4000);
     this.timeouts.push(id);
   }
 
@@ -509,9 +527,9 @@ export class BinauralEngine {
 
     const rumble = this.noiseSource(this.brownNoiseBuffer)!;
     const rFilter = this.ctx.createBiquadFilter();
-    rFilter.type = 'lowpass'; rFilter.frequency.value = 350;
+    rFilter.type = 'lowpass'; rFilter.frequency.value = 400;
     const rGain = this.ctx.createGain();
-    rGain.gain.value = 0.6;
+    rGain.gain.value = 1.0;
     rumble.connect(rFilter).connect(rGain).connect(this.bgGain);
     rumble.start();
     this.registerNode(rumble);
@@ -520,7 +538,7 @@ export class BinauralEngine {
     const roarFilter = this.ctx.createBiquadFilter();
     roarFilter.type = 'lowpass'; roarFilter.frequency.value = 600;
     const roarGain = this.ctx.createGain();
-    roarGain.gain.value = 0.3;
+    roarGain.gain.value = 0.55;
     roar.connect(roarFilter).connect(roarGain).connect(this.bgGain);
     roar.start();
     this.registerNode(roar);
@@ -557,8 +575,10 @@ export class BinauralEngine {
     if (!this.ctx || !this.bgGain || !this.pinkNoiseBuffer) return;
     const node = this.noiseSource(this.pinkNoiseBuffer)!;
     const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass'; filter.frequency.value = 300; filter.Q.value = 0;
-    node.connect(filter).connect(this.bgGain);
+    filter.type = 'lowpass'; filter.frequency.value = 380; filter.Q.value = 0;
+    const windGain = this.ctx.createGain();
+    windGain.gain.value = 2.6;
+    node.connect(filter).connect(windGain).connect(this.bgGain);
     node.start();
     this.registerNode(node);
 
@@ -578,7 +598,7 @@ export class BinauralEngine {
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass'; filter.frequency.value = 500;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.2;
+    gain.gain.value = 0.5;
     node.connect(filter).connect(gain).connect(this.bgGain);
     node.start();
     this.registerNode(node);
@@ -586,9 +606,9 @@ export class BinauralEngine {
     const animate = () => {
       if (!this.ctx) return; const t = this.ctx.currentTime;
       filter.frequency.exponentialRampToValueAtTime(1200, t + 4);
-      gain.gain.linearRampToValueAtTime(0.8, t + 4);
+      gain.gain.linearRampToValueAtTime(1.6, t + 4);
       filter.frequency.exponentialRampToValueAtTime(300, t + 8);
-      gain.gain.linearRampToValueAtTime(0.2, t + 8);
+      gain.gain.linearRampToValueAtTime(0.5, t + 8);
     };
     animate();
     const id = window.setInterval(animate, 8000);
@@ -669,15 +689,15 @@ export class BinauralEngine {
   // --- 11. DEEP DRONE (meditative space pad) ---
   startDrone() {
     if (!this.ctx || !this.bgGain) return;
-    const base = 55; // A1
-    const ratios = [1, 1.5, 2, 3];
+    const base = 110; // A2 — an octave up so the pad carries on small speakers
+    const ratios = [1, 1.5, 2, 3, 4];
 
     const lp = this.ctx.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.value = 600;
-    lp.Q.value = 4;
+    lp.frequency.value = 1200;
+    lp.Q.value = 1;
     const droneGain = this.ctx.createGain();
-    droneGain.gain.value = 0.5;
+    droneGain.gain.value = 0.9;
     lp.connect(droneGain).connect(this.bgGain);
 
     ratios.forEach((ratio, i) => {
@@ -686,7 +706,7 @@ export class BinauralEngine {
         osc.type = i === 0 ? 'sine' : 'triangle';
         osc.frequency.value = base * ratio * (1 + sign * 0.0015);
         const gain = this.ctx!.createGain();
-        gain.gain.value = (0.22 / (i + 1));
+        gain.gain.value = (0.34 / (i + 1));
         osc.connect(gain).connect(lp);
         osc.start();
         this.registerNode(osc);
@@ -705,7 +725,7 @@ export class BinauralEngine {
     const aLfo = this.ctx.createOscillator();
     aLfo.frequency.value = 0.08;
     const aLfoGain = this.ctx.createGain();
-    aLfoGain.gain.value = 0.15;
+    aLfoGain.gain.value = 0.18;
     aLfo.connect(aLfoGain).connect(droneGain.gain);
     aLfo.start();
     this.registerNode(aLfo);
@@ -751,7 +771,7 @@ export class BinauralEngine {
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass'; filter.frequency.value = 9000;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.15;
+    gain.gain.value = 0.09;
     node.connect(filter).connect(gain).connect(this.bgGain);
     node.start();
     this.registerNode(node);

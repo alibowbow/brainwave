@@ -1,5 +1,20 @@
 ﻿export type BrainWaveType = 'alpha' | 'beta' | 'theta' | 'delta';
-export type BackgroundSoundType = 'none' | 'rain' | 'wave' | 'forest' | 'white' | 'birds' | 'night' | 'fire';
+export type BackgroundSoundType =
+  | 'none'
+  | 'rain'
+  | 'thunder'
+  | 'stream'
+  | 'wave'
+  | 'fire'
+  | 'forest'
+  | 'birds'
+  | 'night'
+  | 'chimes'
+  | 'bowl'
+  | 'drone'
+  | 'fan'
+  | 'white'
+  | 'pink';
 
 export interface SessionPreset {
   id: string;

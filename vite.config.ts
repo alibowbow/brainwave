@@ -38,6 +38,19 @@ export default defineConfig(({ mode }) => {
           },
           workbox: {
             globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+            runtimeCaching: [
+              {
+                // Cache the self-hosted Pretendard font on first load so it works
+                // offline, without bloating the precache with a ~2MB file.
+                urlPattern: /\.woff2$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'fonts',
+                  expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 365 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
+            ],
           },
         }),
       ],

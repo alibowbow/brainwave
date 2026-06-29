@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones } from 'lucide-react';
 import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
-import { BinauralEngine } from './services/audioEngine';
+import { BinauralEngine, SoundLayer, ToneMode } from './services/audioEngine';
 import { Player } from './components/Player';
 import { Toggle } from './components/Toggle';
-import { SOUND_ORDER, WAVE_ORDER, getSoundIcon, getSoundLabel } from './audioOptions';
+import { SoundLayerPicker } from './components/SoundLayerPicker';
+import { WAVE_ORDER } from './audioOptions';
 
 const DEFAULT_SETTINGS: AppSettings = {
   darkMode: true,
   showSoundNotice: true,
 };
+
+const DEFAULT_LAYER_VOL = 0.8;
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'session' | 'history' | 'settings'>('session');
@@ -21,7 +24,8 @@ export default function App() {
   const [selectedPreset, setSelectedPreset] = useState<SessionPreset | null>(null);
 
   const [currentBrainWave, setCurrentBrainWave] = useState<BrainWaveType>('alpha');
-  const [currentSound, setCurrentSound] = useState<BackgroundSoundType>('rain');
+  const [activeLayers, setActiveLayers] = useState<SoundLayer[]>([{ type: 'rain', volume: DEFAULT_LAYER_VOL }]);
+  const [toneMode, setToneMode] = useState<ToneMode>('binaural');
   const [timeLeft, setTimeLeft] = useState(0);
   const [volumes, setVolumes] = useState({ master: 0.5, binaural: 0.4, bg: 0.5 });
   const [noticeOpen, setNoticeOpen] = useState(false);
@@ -129,7 +133,7 @@ export default function App() {
   const handlePresetSelect = (preset: SessionPreset) => {
     setSelectedPreset(preset);
     setCurrentBrainWave(preset.brainWaveType);
-    setCurrentSound(preset.defaultBackgroundSound);
+    setActiveLayers(preset.defaultBackgroundSound === 'none' ? [] : [{ type: preset.defaultBackgroundSound, volume: DEFAULT_LAYER_VOL }]);
     setTimeLeft(preset.defaultDurationMinutes * 60);
 
     if (playbackStatus !== 'idle') stopSession();
@@ -154,7 +158,15 @@ export default function App() {
     setPlaybackStatus('running');
     setViewMode('player');
     const freqs = WAVE_FREQS[currentBrainWave];
-    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, brainwaveEnabled ? volumes.binaural : 0);
+    engine.start({
+      base: freqs.base,
+      beat: freqs.beat,
+      mode: toneMode,
+      masterVol: volumes.master,
+      binauralVol: brainwaveEnabled ? volumes.binaural : 0,
+      bgVol: volumes.bg,
+      sounds: activeLayers,
+    });
   };
 
   const pauseSession = () => {
@@ -167,7 +179,15 @@ export default function App() {
     beginRun(timeLeft);
     setPlaybackStatus('running');
     const freqs = WAVE_FREQS[currentBrainWave];
-    engine.start(freqs.base, freqs.beat, volumes.master, currentSound, volumes.bg, brainwaveEnabled ? volumes.binaural : 0);
+    engine.start({
+      base: freqs.base,
+      beat: freqs.beat,
+      mode: toneMode,
+      masterVol: volumes.master,
+      binauralVol: brainwaveEnabled ? volumes.binaural : 0,
+      bgVol: volumes.bg,
+      sounds: activeLayers,
+    });
   };
 
   const stopSession = () => {
@@ -194,15 +214,29 @@ export default function App() {
     setCurrentBrainWave(wave);
     if (playbackStatus === 'running') {
       const freqs = WAVE_FREQS[wave];
-      engine.updateBinauralParams(freqs.base, freqs.beat);
+      engine.setBrainwave(freqs.base, freqs.beat);
     }
   };
 
-  const handleLiveSoundChange = (sound: BackgroundSoundType) => {
-    setCurrentSound(sound);
-    if (playbackStatus === 'running') {
-      engine.changeBackgroundSound(sound);
-    }
+  const toggleLayer = (type: BackgroundSoundType) => {
+    setActiveLayers((prev) => {
+      if (prev.some((l) => l.type === type)) {
+        if (playbackStatus === 'running') engine.removeSound(type);
+        return prev.filter((l) => l.type !== type);
+      }
+      if (playbackStatus === 'running') engine.addSound(type, DEFAULT_LAYER_VOL);
+      return [...prev, { type, volume: DEFAULT_LAYER_VOL }];
+    });
+  };
+
+  const setLayerVolume = (type: BackgroundSoundType, vol: number) => {
+    setActiveLayers((prev) => prev.map((l) => (l.type === type ? { ...l, volume: vol } : l)));
+    if (playbackStatus === 'running') engine.setSoundVolume(type, vol);
+  };
+
+  const handleToneModeChange = (mode: ToneMode) => {
+    setToneMode(mode);
+    if (playbackStatus === 'running') engine.setMode(mode);
   };
 
   const handleTimeChange = (minutes: number) => {
@@ -237,6 +271,29 @@ export default function App() {
     setNoticeOpen(false);
     if (rememberChoice) setSettings((s) => ({ ...s, showSoundNotice: false }));
   };
+
+  // Lock-screen / notification media controls, where the platform supports it.
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    const ms = navigator.mediaSession;
+    try {
+      ms.metadata = new MediaMetadata({
+        title: selectedPreset?.name ?? 'MC Brain Care',
+        artist: brainwaveEnabled ? getBrainWaveLabel(currentBrainWave).split(' ')[0] : '자연음',
+        album: 'MC Brain Care',
+      });
+    } catch { /* MediaMetadata unsupported */ }
+    ms.playbackState = playbackStatus === 'running' ? 'playing' : playbackStatus === 'paused' ? 'paused' : 'none';
+    const set = (action: MediaSessionAction, handler: MediaSessionActionHandler | null) => {
+      try { ms.setActionHandler(action, handler); } catch { /* action unsupported */ }
+    };
+    set('play', () => resumeSession());
+    set('pause', () => pauseSession());
+    set('stop', () => stopSession());
+    return () => {
+      set('play', null); set('pause', null); set('stop', null);
+    };
+  }, [playbackStatus, selectedPreset, currentBrainWave, brainwaveEnabled]);
 
   const renderSessionList = () => (
     <div className="grid grid-cols-1 gap-4 p-4 pb-24 md:grid-cols-2">
@@ -341,6 +398,29 @@ export default function App() {
                 </button>
               ))}
             </div>
+            {brainwaveEnabled && (
+              <div className="mt-3">
+                <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                  {(['binaural', 'isochronic'] as ToneMode[]).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => handleToneModeChange(m)}
+                      aria-pressed={toneMode === m}
+                      className={`flex-1 py-1.5 rounded-md text-xs font-bold transition-all ${
+                        toneMode === m
+                          ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-primary-400 shadow-sm'
+                          : 'text-slate-500 dark:text-slate-400'
+                      }`}
+                    >
+                      {m === 'binaural' ? '바이노럴' : '아이소크로닉'}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1.5">
+                  {toneMode === 'isochronic' ? '아이소크로닉: 스피커로도 효과를 느낄 수 있어요.' : '바이노럴: 헤드폰·이어폰을 착용하세요.'}
+                </p>
+              </div>
+            )}
             {!brainwaveEnabled && (
               <p className="text-[11px] text-slate-400 mt-3">뇌파음을 끄고 자연음만 재생합니다.</p>
             )}
@@ -348,26 +428,9 @@ export default function App() {
 
           <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Volume2 size={16} /> 배경음 선택</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Volume2 size={16} /> 배경음 (여러 개 가능)</span>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {SOUND_ORDER.map((sound) => (
-                <button
-                  key={sound}
-                  onClick={() => setCurrentSound(sound)}
-                  aria-pressed={currentSound === sound}
-                  aria-label={getSoundLabel(sound)}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-xl min-w-[70px] border transition-all ${
-                    currentSound === sound
-                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                      : 'border-transparent bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                  }`}
-                >
-                  {getSoundIcon(sound)}
-                  <span className="text-[10px] font-bold whitespace-nowrap">{getSoundLabel(sound)}</span>
-                </button>
-              ))}
-            </div>
+            <SoundLayerPicker activeLayers={activeLayers} onToggle={toggleLayer} onVolume={setLayerVolume} />
           </div>
         </div>
 
@@ -471,7 +534,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v1.5.0</p>
+        <p>MC Brain Care v1.6.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
@@ -502,12 +565,15 @@ export default function App() {
               onTimeChange={handleTimeChange}
               currentBrainWave={currentBrainWave}
               onWaveChange={handleLiveWaveChange}
-              currentSound={currentSound}
-              onSoundChange={handleLiveSoundChange}
+              activeLayers={activeLayers}
+              onToggleLayer={toggleLayer}
+              onLayerVolume={setLayerVolume}
               volumes={volumes}
               onVolumeChange={(k, v) => setVolumes((prev) => ({ ...prev, [k]: v }))}
               brainwaveEnabled={brainwaveEnabled}
               onToggleBrainwave={() => setBrainwaveEnabled((v) => !v)}
+              toneMode={toneMode}
+              onToneModeChange={handleToneModeChange}
             />
           ) : renderFeedback()
         )}

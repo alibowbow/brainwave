@@ -1,4 +1,4 @@
-﻿export type BrainWaveType = 'alpha' | 'beta' | 'theta' | 'delta';
+﻿export type BrainWaveType = 'alpha' | 'beta' | 'gamma' | 'theta' | 'delta';
 export type BackgroundSoundType =
   | 'none'
   | 'rain'
@@ -45,6 +45,7 @@ export interface AppSettings {
 export const WAVE_FREQS = {
   alpha: { base: 200, beat: 10 },
   beta: { base: 250, beat: 20 },
+  gamma: { base: 220, beat: 40 },
   theta: { base: 150, beat: 6 },
   delta: { base: 190, beat: 2.5 },
 };
@@ -53,6 +54,7 @@ export const getBrainWaveLabel = (type: BrainWaveType) => {
   switch (type) {
     case 'alpha': return '알파파 (집중/안정)';
     case 'beta': return '베타파 (각성/활동)';
+    case 'gamma': return '감마파 (몰입/각성)';
     case 'theta': return '세타파 (이완/명상)';
     case 'delta': return '델타파 (수면/회복)';
     default: return type;

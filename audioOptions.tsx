@@ -12,7 +12,7 @@ export const SOUND_ORDER: BackgroundSoundType[] = [
 ];
 
 // Display order of the selectable brain waves.
-export const WAVE_ORDER: BrainWaveType[] = ['alpha', 'beta', 'theta', 'delta'];
+export const WAVE_ORDER: BrainWaveType[] = ['alpha', 'beta', 'gamma', 'theta', 'delta'];
 
 export const getSoundIcon = (type: BackgroundSoundType) => {
   switch (type) {
@@ -58,6 +58,7 @@ export const getSoundLabel = (type: BackgroundSoundType) => {
 const WAVE_SHORT: Record<BrainWaveType, string> = {
   alpha: '알파',
   beta: '베타',
+  gamma: '감마',
   theta: '세타',
   delta: '델타',
 };

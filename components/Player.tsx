@@ -1,8 +1,10 @@
 ﻿import React from 'react';
 import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType, getBrainWaveLabel } from '../types';
-import { SOUND_ORDER, WAVE_ORDER, getSoundIcon, getSoundLabel, getWaveShortLabel } from '../audioOptions';
+import { WAVE_ORDER, getSoundLabel, getWaveShortLabel } from '../audioOptions';
+import { SoundLayer, ToneMode } from '../services/audioEngine';
 import { Toggle } from './Toggle';
+import { SoundLayerPicker } from './SoundLayerPicker';
 
 interface PlayerProps {
   sessionName: string;
@@ -15,12 +17,15 @@ interface PlayerProps {
   onTimeChange: (val: number) => void;
   currentBrainWave: BrainWaveType;
   onWaveChange: (val: BrainWaveType) => void;
-  currentSound: BackgroundSoundType;
-  onSoundChange: (val: BackgroundSoundType) => void;
+  activeLayers: SoundLayer[];
+  onToggleLayer: (type: BackgroundSoundType) => void;
+  onLayerVolume: (type: BackgroundSoundType, vol: number) => void;
   volumes: { master: number; binaural: number; bg: number };
   onVolumeChange: (key: 'master' | 'binaural' | 'bg', val: number) => void;
   brainwaveEnabled: boolean;
   onToggleBrainwave: () => void;
+  toneMode: ToneMode;
+  onToneModeChange: (mode: ToneMode) => void;
 }
 
 export const Player: React.FC<PlayerProps> = ({
@@ -34,12 +39,15 @@ export const Player: React.FC<PlayerProps> = ({
   onTimeChange,
   currentBrainWave,
   onWaveChange,
-  currentSound,
-  onSoundChange,
+  activeLayers,
+  onToggleLayer,
+  onLayerVolume,
   volumes,
   onVolumeChange,
   brainwaveEnabled,
   onToggleBrainwave,
+  toneMode,
+  onToneModeChange,
 }) => {
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -69,14 +77,14 @@ export const Player: React.FC<PlayerProps> = ({
 
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{sessionName}</h2>
-        <div className="text-slate-500 dark:text-slate-400 text-sm flex items-center justify-center gap-2">
+        <div className="text-slate-500 dark:text-slate-400 text-sm flex items-center justify-center gap-2 flex-wrap px-4">
           {brainwaveEnabled && (
             <>
               <Activity size={14} /> {getBrainWaveLabel(currentBrainWave).split(' ')[0]}
               <span>·</span>
             </>
           )}
-          <Volume2 size={14} /> {getSoundLabel(currentSound)}
+          <Volume2 size={14} /> {activeLayers.length ? activeLayers.map((l) => getSoundLabel(l.type)).join(', ') : '자연음 없음'}
         </div>
       </div>
 
@@ -138,6 +146,29 @@ export const Player: React.FC<PlayerProps> = ({
               </button>
             ))}
           </div>
+          {brainwaveEnabled && (
+            <div className="mt-3">
+              <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                {(['binaural', 'isochronic'] as ToneMode[]).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => onToneModeChange(m)}
+                    aria-pressed={toneMode === m}
+                    className={`flex-1 py-1.5 rounded-md text-xs font-bold transition-all ${
+                      toneMode === m
+                        ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-primary-400 shadow-sm'
+                        : 'text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {m === 'binaural' ? '바이노럴' : '아이소크로닉'}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-slate-400 mt-1.5">
+                {toneMode === 'isochronic' ? '아이소크로닉: 스피커로도 효과를 느낄 수 있어요.' : '바이노럴: 헤드폰·이어폰을 착용하세요.'}
+              </p>
+            </div>
+          )}
           {!brainwaveEnabled && (
             <p className="text-[11px] text-slate-400 mt-2">자연음만 재생 중이에요.</p>
           )}
@@ -145,26 +176,9 @@ export const Player: React.FC<PlayerProps> = ({
 
         <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
           <div className="flex items-center gap-2 mb-3 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-            <Volume2 size={14} /> 배경음 (Atmosphere)
+            <Volume2 size={14} /> 배경음 (Layers)
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {SOUND_ORDER.map((sound) => (
-              <button
-                key={sound}
-                onClick={() => onSoundChange(sound)}
-                aria-pressed={currentSound === sound}
-                aria-label={getSoundLabel(sound)}
-                className={`flex flex-col items-center gap-2 p-3 rounded-xl min-w-[70px] transition-all border ${
-                  currentSound === sound
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                    : 'border-transparent bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                }`}
-              >
-                {getSoundIcon(sound)}
-                <span className="text-[10px] font-bold">{getSoundLabel(sound)}</span>
-              </button>
-            ))}
-          </div>
+          <SoundLayerPicker activeLayers={activeLayers} onToggle={onToggleLayer} onVolume={onLayerVolume} />
         </div>
 
         <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mb-8">

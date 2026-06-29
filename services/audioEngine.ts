@@ -250,6 +250,10 @@ export class BinauralEngine {
     }
   }
 
+  activeSoundTypes(): BackgroundSoundType[] {
+    return [...this.voices.keys()];
+  }
+
   private disposeVoice(voice: Voice) {
     voice.bucket.nodes.forEach((n) => {
       try { (n as OscillatorNode).stop?.(); n.disconnect(); } catch (e) { /* ignore */ }
@@ -893,6 +897,15 @@ export class BinauralEngine {
   // Re-activate the context after the browser suspends it (e.g. on tab/screen lock).
   resume() {
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  }
+
+  // Gradually fade the whole mix to silence over `seconds`, then tear down.
+  // Used by sleep mode so a session ends gently instead of cutting out.
+  fadeOutStop(seconds = 10) {
+    if (!this.ctx || !this.masterGain) { this.stop(); return; }
+    this.masterGain.gain.setTargetAtTime(0, this.ctx.currentTime, seconds / 4);
+    const id = window.setTimeout(() => this.stop(), Math.ceil(seconds * 1000) + 500);
+    this.pendingCleanups.push(id);
   }
 
   // Gentle ascending bell played when a session finishes.

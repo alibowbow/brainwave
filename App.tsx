@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones } from 'lucide-react';
+import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save } from 'lucide-react';
 import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
 import { BinauralEngine, SoundLayer, ToneMode } from './services/audioEngine';
 import { Player } from './components/Player';
@@ -13,6 +13,16 @@ const DEFAULT_SETTINGS: AppSettings = {
 };
 
 const DEFAULT_LAYER_VOL = 0.8;
+
+interface UserPreset {
+  id: string;
+  name: string;
+  brainWaveType: BrainWaveType;
+  toneMode: ToneMode;
+  brainwaveEnabled: boolean;
+  durationMinutes: number;
+  layers: SoundLayer[];
+}
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'session' | 'history' | 'settings'>('session');
@@ -30,6 +40,10 @@ export default function App() {
   const [volumes, setVolumes] = useState({ master: 0.5, binaural: 0.4, bg: 0.5 });
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [brainwaveEnabled, setBrainwaveEnabled] = useState(true);
+  const [userPresets, setUserPresets] = useState<UserPreset[]>([]);
+  const [sleepMode, setSleepMode] = useState(false);
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [presetNameDraft, setPresetNameDraft] = useState('');
 
   // Lazily create a single, stable audio engine (avoids re-allocating each render).
   const audioEngine = useRef<BinauralEngine | null>(null);
@@ -46,6 +60,9 @@ export default function App() {
   useEffect(() => {
     const savedLogs = localStorage.getItem('mc_brain_logs');
     if (savedLogs) setLogs(JSON.parse(savedLogs));
+
+    const savedPresets = localStorage.getItem('mc_brain_presets');
+    if (savedPresets) setUserPresets(JSON.parse(savedPresets));
 
     const savedSettings = localStorage.getItem('mc_brain_settings');
     const merged: AppSettings = savedSettings
@@ -203,6 +220,12 @@ export default function App() {
     accumulateRun();
     endTimeRef.current = null;
     setPlaybackStatus('idle');
+    // Sleep mode: fade out gently and end silently (no chime/haptics).
+    if (sleepMode) {
+      engine.fadeOutStop(12);
+      setViewMode('list');
+      return;
+    }
     setViewMode('feedback');
     engine.stop();
     // Completion alert: a gentle chime plus haptic feedback.
@@ -267,6 +290,50 @@ export default function App() {
     setViewMode('list');
   };
 
+  const persistPresets = (next: UserPreset[]) => {
+    setUserPresets(next);
+    localStorage.setItem('mc_brain_presets', JSON.stringify(next));
+  };
+
+  const confirmSavePreset = () => {
+    const name = presetNameDraft.trim() || '내 프리셋';
+    const preset: UserPreset = {
+      id: Date.now().toString(),
+      name,
+      brainWaveType: currentBrainWave,
+      toneMode,
+      brainwaveEnabled,
+      durationMinutes: Math.max(1, Math.round(timeLeft / 60)),
+      layers: activeLayers,
+    };
+    persistPresets([preset, ...userPresets]);
+    setSaveOpen(false);
+    setPresetNameDraft('');
+  };
+
+  const deleteUserPreset = (id: string) => {
+    persistPresets(userPresets.filter((p) => p.id !== id));
+  };
+
+  const loadUserPreset = (p: UserPreset) => {
+    const synthetic: SessionPreset = {
+      id: `user:${p.id}`,
+      name: p.name,
+      description: '내 프리셋',
+      defaultDurationMinutes: p.durationMinutes,
+      brainWaveType: p.brainWaveType,
+      defaultBackgroundSound: 'none',
+    };
+    if (playbackStatus !== 'idle') stopSession();
+    setSelectedPreset(synthetic);
+    setCurrentBrainWave(p.brainWaveType);
+    setToneMode(p.toneMode);
+    setBrainwaveEnabled(p.brainwaveEnabled);
+    setActiveLayers(p.layers);
+    setTimeLeft(p.durationMinutes * 60);
+    setViewMode('config');
+  };
+
   const dismissNotice = (rememberChoice: boolean) => {
     setNoticeOpen(false);
     if (rememberChoice) setSettings((s) => ({ ...s, showSoundNotice: false }));
@@ -317,6 +384,35 @@ export default function App() {
         <h3 className="text-lg font-bold mb-1">커스텀 모드</h3>
         <p className="text-sm text-indigo-100 leading-snug">뇌파와 배경음을 직접 조합해 나만의 세션을 만들어보세요.</p>
       </div>
+
+      {userPresets.length > 0 && (
+        <div className="md:col-span-2 -mb-1">
+          <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400">내 프리셋</h3>
+        </div>
+      )}
+      {userPresets.map((p) => (
+        <div
+          key={p.id}
+          onClick={() => loadUserPreset(p)}
+          className="relative bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-primary-500 cursor-pointer transition-all active:scale-[0.98]"
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); deleteUserPreset(p.id); }}
+            aria-label="프리셋 삭제"
+            className="absolute top-3 right-3 p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
+            <X size={16} />
+          </button>
+          <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-primary-600 dark:text-primary-400 w-fit mb-3">
+            <Sliders size={24} />
+          </div>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1 pr-6">{p.name}</h3>
+          <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold mb-1">
+            {p.brainwaveEnabled ? getBrainWaveLabel(p.brainWaveType).split(' ')[0] : '자연음 전용'} · 사운드 {p.layers.length}개
+          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{p.durationMinutes}분</p>
+        </div>
+      ))}
 
       {PRESETS.map((preset) => (
         <div
@@ -432,6 +528,14 @@ export default function App() {
             </div>
             <SoundLayerPicker activeLayers={activeLayers} onToggle={toggleLayer} onVolume={setLayerVolume} />
           </div>
+
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+            <div>
+              <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Moon size={16} /> 수면 모드</span>
+              <p className="text-[11px] text-slate-400 mt-1">종료 시 알림음 없이 서서히 페이드아웃돼요.</p>
+            </div>
+            <Toggle checked={sleepMode} onChange={() => setSleepMode((v) => !v)} label="수면 모드" />
+          </div>
         </div>
 
         <button
@@ -439,6 +543,13 @@ export default function App() {
           className="w-full py-4 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-bold text-lg shadow-lg shadow-primary-500/30 active:scale-[0.99] transition-transform flex items-center justify-center gap-2"
         >
           <Play size={24} fill="currentColor" /> 세션 시작
+        </button>
+
+        <button
+          onClick={() => { setPresetNameDraft(selectedPreset?.name ?? ''); setSaveOpen(true); }}
+          className="w-full mt-3 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-semibold flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          <Save size={18} /> 현재 조합을 내 프리셋으로 저장
         </button>
       </div>
     );
@@ -534,7 +645,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v1.6.0</p>
+        <p>MC Brain Care v1.7.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
@@ -633,6 +744,25 @@ export default function App() {
             </p>
             <button onClick={() => dismissNotice(false)} className="w-full py-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white font-bold mb-2 transition-colors">확인했어요</button>
             <button onClick={() => dismissNotice(true)} className="w-full py-2 text-xs text-slate-400 underline">다시 보지 않기</button>
+          </div>
+        </div>
+      )}
+
+      {saveOpen && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-6" role="dialog" aria-modal="true" aria-labelledby="save-title">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-xs w-full shadow-2xl animate-fade-in">
+            <h3 id="save-title" className="text-lg font-bold text-center text-slate-900 dark:text-white mb-4">프리셋 저장</h3>
+            <input
+              autoFocus
+              value={presetNameDraft}
+              onChange={(e) => setPresetNameDraft(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') confirmSavePreset(); }}
+              placeholder="프리셋 이름"
+              maxLength={20}
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white mb-4 outline-none focus:border-primary-500"
+            />
+            <button onClick={confirmSavePreset} className="w-full py-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white font-bold mb-2 transition-colors">저장</button>
+            <button onClick={() => setSaveOpen(false)} className="w-full py-2 text-xs text-slate-400 underline">취소</button>
           </div>
         </div>
       )}

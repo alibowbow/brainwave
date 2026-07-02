@@ -81,6 +81,13 @@ export default function App() {
   const runStartRef = useRef<number | null>(null);  // wall-clock ms the current run began
   const playedMsRef = useRef<number>(0);            // actually-played time accumulated across runs
   const wakeLockRef = useRef<any>(null);
+  const mainRef = useRef<HTMLElement>(null);
+
+  // Screens share one scroll container; reset it when the visible screen changes
+  // so e.g. the player always opens at the timer, not mid-scroll.
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0 });
+  }, [viewMode, activeTab]);
 
   useEffect(() => {
     const savedLogs = localStorage.getItem('mc_brain_logs');
@@ -734,7 +741,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v2.0.0</p>
+        <p>MC Brain Care v2.1.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
@@ -749,7 +756,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto scrollbar-hide">
+      <main ref={mainRef} className="flex-1 overflow-y-auto scrollbar-hide">
         {activeTab === 'session' && (
           viewMode === 'list' ? renderSessionList() :
           viewMode === 'config' ? renderConfig() :
@@ -809,18 +816,23 @@ export default function App() {
       )}
 
       <nav className="h-16 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-around items-center shrink-0 z-30">
-        <button onClick={() => setActiveTab('session')} aria-current={activeTab === 'session' ? 'page' : undefined} className={`flex flex-col items-center gap-1 ${activeTab === 'session' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
-          <Home size={20} />
-          <span className="text-[10px] font-medium">세션</span>
-        </button>
-        <button onClick={() => setActiveTab('history')} aria-current={activeTab === 'history' ? 'page' : undefined} className={`flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
-          <BarChart2 size={20} />
-          <span className="text-[10px] font-medium">기록</span>
-        </button>
-        <button onClick={() => setActiveTab('settings')} aria-current={activeTab === 'settings' ? 'page' : undefined} className={`flex flex-col items-center gap-1 ${activeTab === 'settings' ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`}>
-          <Settings size={20} />
-          <span className="text-[10px] font-medium">설정</span>
-        </button>
+        {([
+          { tab: 'session' as const, Icon: Home, label: '세션' },
+          { tab: 'history' as const, Icon: BarChart2, label: '기록' },
+          { tab: 'settings' as const, Icon: Settings, label: '설정' },
+        ]).map(({ tab, Icon, label }) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            aria-current={activeTab === tab ? 'page' : undefined}
+            className={`flex flex-col items-center gap-0.5 transition-colors ${activeTab === tab ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}
+          >
+            <span className={`px-4 py-1 rounded-full transition-colors ${activeTab === tab ? 'bg-primary-50 dark:bg-primary-900/25' : ''}`}>
+              <Icon size={20} />
+            </span>
+            <span className="text-[10px] font-medium">{label}</span>
+          </button>
+        ))}
       </nav>
 
       {noticeOpen && (

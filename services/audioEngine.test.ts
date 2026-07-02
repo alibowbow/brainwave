@@ -98,7 +98,7 @@ describe('BinauralEngine multi-voice', () => {
   });
 
   it('constructs every nature-sound generator without error', () => {
-    const nature: BackgroundSoundType[] = ['rain', 'thunder', 'stream', 'wave', 'fire', 'forest', 'birds', 'night', 'chimes', 'bowl', 'drone', 'fan', 'white', 'pink'];
+    const nature: BackgroundSoundType[] = ['rain', 'thunder', 'stream', 'waterfall', 'wave', 'fire', 'forest', 'birds', 'cicadas', 'frogs', 'owl', 'night', 'chimes', 'bowl', 'drone', 'blizzard', 'seabirds', 'fan', 'white', 'pink'];
     e.start(cfg([]));
     expect(() => nature.forEach((s) => e.addSound(s, 0.5))).not.toThrow();
     expect(e.activeSoundTypes().length).toBe(nature.length);

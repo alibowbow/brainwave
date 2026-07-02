@@ -59,7 +59,11 @@ export const Player: React.FC<PlayerProps> = ({
   };
 
   return (
-    <div className="flex flex-col animate-slide-up pb-32">
+    <div className="relative isolate flex flex-col animate-slide-up pb-32">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-96 -z-10 overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-20 -left-16 w-72 h-72 rounded-full bg-primary-500/15 dark:bg-primary-500/10 blur-3xl animate-breathe" />
+        <div className="absolute -top-10 -right-20 w-80 h-80 rounded-full bg-purple-500/10 dark:bg-purple-500/10 blur-3xl animate-breathe" style={{ animationDelay: '3s' }} />
+      </div>
       <div className="flex justify-center mb-6 pt-2">
         <button
           onClick={onMinimize}

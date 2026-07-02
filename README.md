@@ -35,7 +35,7 @@ This contains everything you need to run your app locally.
 - The app is an installable PWA (web manifest + service worker via `vite-plugin-pwa`), so it can be added to the home screen and works offline after the first visit.
 - Run `npm run typecheck` to type-check without emitting. CI (`.github/workflows/ci.yml`) runs the type check and build on every push/PR.
 - Binaural beats rely on a **stereo difference between the left and right ears**, so headphones/earphones are recommended for the intended effect.
-- All background sounds are synthesized live in the browser (Web Audio API) — no audio files. The library includes rain, thunderstorm, stream, ocean waves, campfire, forest wind, birds, night crickets, wind chimes, singing bowl, deep drone, fan, and white/pink noise, mixed through a shared stereo reverb for depth.
+- All background sounds are synthesized live in the browser (Web Audio API) — no audio files. The library includes rain, thunderstorm, stream, waterfall, ocean waves, campfire, forest wind, birds, cicadas, frogs, owl, night crickets, wind chimes, singing bowl, deep drone, winter wind, seabirds, fan, and white/pink noise — layerable in any combination, mixed through a shared stereo reverb for depth.
 
 ## Deploy to GitHub Pages
 

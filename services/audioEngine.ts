@@ -301,14 +301,20 @@ export class BinauralEngine {
       case 'rain': this.startRain(dest, bucket); break;
       case 'thunder': this.startThunder(dest, bucket); break;
       case 'stream': this.startStream(dest, bucket); break;
+      case 'waterfall': this.startWaterfall(dest, bucket); break;
       case 'wave': this.startWave(dest, bucket); break;
       case 'fire': this.startFire(dest, bucket); break;
       case 'forest': this.startWind(dest, bucket); break;
       case 'birds': this.startBirds(dest, bucket); break;
+      case 'cicadas': this.startCicadas(dest, bucket); break;
+      case 'frogs': this.startFrogs(dest, bucket); break;
+      case 'owl': this.startOwl(dest, bucket); break;
       case 'night': this.startCrickets(dest, bucket); break;
       case 'chimes': this.startChimes(dest, bucket); break;
       case 'bowl': this.startBowl(dest, bucket); break;
       case 'drone': this.startDrone(dest, bucket); break;
+      case 'blizzard': this.startBlizzard(dest, bucket); break;
+      case 'seabirds': this.startSeabirds(dest, bucket); break;
       case 'fan': this.startFan(dest, bucket); break;
       case 'white': this.startWhiteNoise(dest, bucket); break;
       case 'pink': this.startPinkNoise(dest, bucket); break;
@@ -726,6 +732,243 @@ export class BinauralEngine {
     animate();
     const id = window.setInterval(animate, 8000);
     bucket.intervals.push(id);
+  }
+
+  // --- WATERFALL (constant broadband roar: mass + body + spray) ---
+  private startWaterfall(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer || !this.whiteNoiseBuffer) return;
+
+    const mass = this.noiseSource(this.brownNoiseBuffer)!;
+    const massLp = this.ctx.createBiquadFilter();
+    massLp.type = 'lowpass'; massLp.frequency.value = 220;
+    const massGain = this.ctx.createGain();
+    massGain.gain.value = 1.0;
+    mass.connect(massLp).connect(massGain).connect(dest);
+    mass.start();
+    this.register(bucket, mass);
+
+    const body = this.noiseSource(this.pinkNoiseBuffer)!;
+    const bodyBp = this.ctx.createBiquadFilter();
+    bodyBp.type = 'bandpass'; bodyBp.frequency.value = 750; bodyBp.Q.value = 0.5;
+    const bodyGain = this.ctx.createGain();
+    bodyGain.gain.value = 0.5;
+    body.connect(bodyBp).connect(bodyGain).connect(dest);
+    body.start();
+    this.register(bucket, body);
+
+    // Slow movement of the body band so the roar doesn't sound frozen.
+    const lfo = this.ctx.createOscillator();
+    lfo.frequency.value = 0.09;
+    const lfoGain = this.ctx.createGain();
+    lfoGain.gain.value = 140;
+    lfo.connect(lfoGain).connect(bodyBp.frequency);
+    lfo.start();
+    this.register(bucket, lfo);
+
+    const spray = this.noiseSource(this.whiteNoiseBuffer)!;
+    const sprayHp = this.ctx.createBiquadFilter();
+    sprayHp.type = 'highpass'; sprayHp.frequency.value = 1800;
+    const sprayGain = this.ctx.createGain();
+    sprayGain.gain.value = 0.05;
+    spray.connect(sprayHp).connect(sprayGain).connect(dest);
+    spray.start();
+    this.register(bucket, spray);
+  }
+
+  // --- CICADAS (two chorus voices, AM buzz with slow swells) ---
+  private startCicadas(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx) return;
+
+    const voice = (carrierHz: number, amHz: number, swellHz: number, pan: number) => {
+      const osc = this.ctx!.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.value = carrierHz;
+
+      const gate = this.ctx!.createGain();
+      gate.gain.value = 0.5;
+      const am = this.ctx!.createOscillator();
+      am.frequency.value = amHz;
+      const amDepth = this.ctx!.createGain();
+      amDepth.gain.value = 0.5;
+      am.connect(amDepth).connect(gate.gain);
+
+      const bp = this.ctx!.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = carrierHz; bp.Q.value = 1;
+
+      // Slow wax-and-wane so the chorus breathes instead of droning.
+      const level = this.ctx!.createGain();
+      level.gain.value = 0.045;
+      const swell = this.ctx!.createOscillator();
+      swell.frequency.value = swellHz;
+      const swellDepth = this.ctx!.createGain();
+      swellDepth.gain.value = 0.03;
+      swell.connect(swellDepth).connect(level.gain);
+
+      osc.connect(gate).connect(bp).connect(level).connect(this.makePan(pan, dest));
+      osc.start(); am.start(); swell.start();
+      [osc, am, swell].forEach((n) => this.register(bucket, n));
+    };
+
+    voice(4100, 108, 0.07, -0.5);
+    voice(4650, 127, 0.11, 0.5);
+  }
+
+  // --- FROGS (pulsed croaks scattered around a pond) ---
+  private startFrogs(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx) return;
+
+    const croak = (t: number, pan: number) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.value = 340 + Math.random() * 160;
+
+      const gate = this.ctx.createGain();
+      gate.gain.value = 0.5;
+      const am = this.ctx.createOscillator();
+      am.frequency.value = 26 + Math.random() * 14;
+      const amDepth = this.ctx.createGain();
+      amDepth.gain.value = 0.5;
+      am.connect(amDepth).connect(gate.gain);
+
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = 550 + Math.random() * 250; bp.Q.value = 2;
+
+      const env = this.ctx.createGain();
+      const dur = 0.22 + Math.random() * 0.22;
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.24, t + 0.03);
+      env.gain.setValueAtTime(0.24, t + dur - 0.05);
+      env.gain.linearRampToValueAtTime(0, t + dur);
+
+      osc.connect(gate).connect(bp).connect(env).connect(this.makePan(pan, dest));
+      osc.start(t); am.start(t);
+      osc.stop(t + dur + 0.05); am.stop(t + dur + 0.05);
+    };
+
+    const loop = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const pan = Math.random() * 1.6 - 0.8;
+      croak(t, pan);
+      if (Math.random() < 0.3) croak(t + 0.35, pan);
+      if (Math.random() < 0.25) croak(t + 0.6 + Math.random() * 0.4, -pan); // answer from the other side
+      const id = window.setTimeout(loop, 700 + Math.random() * 2800);
+      bucket.timeouts.push(id);
+    };
+    loop();
+  }
+
+  // --- OWL (soft distant hoots) ---
+  private startOwl(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx) return;
+
+    const hoot = (t: number, dur: number, pan: StereoPannerNode) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(345, t);
+      osc.frequency.exponentialRampToValueAtTime(295, t + dur);
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.32, t + 0.07);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(env).connect(pan);
+      osc.start(t); osc.stop(t + dur + 0.05);
+    };
+
+    const call = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const pan = this.makePan(Math.random() * 1.0 - 0.5, dest);
+      hoot(t, 0.4, pan);
+      if (Math.random() < 0.65) {
+        hoot(t + 0.55, 0.28, pan);
+        hoot(t + 0.9, 0.45, pan);
+      }
+      const id = window.setTimeout(call, 7000 + Math.random() * 11000);
+      bucket.timeouts.push(id);
+    };
+    call();
+  }
+
+  // --- WINTER WIND (harsh bed + resonant howl sweeps) ---
+  private startBlizzard(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
+
+    const bed = this.noiseSource(this.pinkNoiseBuffer)!;
+    const bedLp = this.ctx.createBiquadFilter();
+    bedLp.type = 'lowpass'; bedLp.frequency.value = 350;
+    const bedGain = this.ctx.createGain();
+    bedGain.gain.value = 2.2;
+    bed.connect(bedLp).connect(bedGain).connect(dest);
+    bed.start();
+    this.register(bucket, bed);
+
+    // The howl: a high-Q band whose center wanders, like wind through a gap.
+    const howlSrc = this.noiseSource(this.pinkNoiseBuffer)!;
+    const howlBp = this.ctx.createBiquadFilter();
+    howlBp.type = 'bandpass'; howlBp.frequency.value = 500; howlBp.Q.value = 9;
+    const howlGain = this.ctx.createGain();
+    howlGain.gain.value = 0.45;
+    howlSrc.connect(howlBp).connect(howlGain).connect(dest);
+    howlSrc.start();
+    this.register(bucket, howlSrc);
+
+    const sweep = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      howlBp.frequency.exponentialRampToValueAtTime(300 + Math.random() * 550, t + 2.5 + Math.random() * 3);
+      howlGain.gain.linearRampToValueAtTime(0.25 + Math.random() * 0.4, t + 2 + Math.random() * 2);
+    };
+    sweep();
+    const id = window.setInterval(sweep, 4200);
+    bucket.intervals.push(id);
+  }
+
+  // --- SEABIRDS (sparse gull cries; layer with waves for a shoreline) ---
+  private startSeabirds(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx) return;
+
+    const cry = (t: number, pan: StereoPannerNode) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      const dur = 0.4 + Math.random() * 0.3;
+      const start = 850 + Math.random() * 150;
+      osc.frequency.setValueAtTime(start, t);
+      osc.frequency.exponentialRampToValueAtTime(start * 1.5, t + 0.08);
+      osc.frequency.exponentialRampToValueAtTime(620, t + dur);
+
+      const vib = this.ctx.createOscillator();
+      vib.frequency.value = 9;
+      const vibDepth = this.ctx.createGain();
+      vibDepth.gain.value = 35;
+      vib.connect(vibDepth).connect(osc.frequency);
+
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = 1200; bp.Q.value = 1.2;
+
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.14, t + 0.04);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+      osc.connect(bp).connect(env).connect(pan);
+      osc.start(t); vib.start(t);
+      osc.stop(t + dur + 0.05); vib.stop(t + dur + 0.05);
+    };
+
+    const flock = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const pan = this.makePan(Math.random() * 1.6 - 0.8, dest);
+      const count = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < count; i++) cry(t + i * (0.3 + Math.random() * 0.2), pan);
+      const id = window.setTimeout(flock, 6000 + Math.random() * 10000);
+      bucket.timeouts.push(id);
+    };
+    flock();
   }
 
   // --- 9. WIND CHIMES (random pentatonic bell tones) ---

@@ -1,10 +1,11 @@
-﻿import React from 'react';
-import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders } from 'lucide-react';
+﻿import React, { useState } from 'react';
+import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders, Wind } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType, getBrainWaveLabel } from '../types';
 import { WAVE_ORDER, getSoundLabel, getWaveShortLabel } from '../audioOptions';
 import { SoundLayer, ToneMode } from '../services/audioEngine';
 import { Toggle } from './Toggle';
 import { SoundLayerPicker } from './SoundLayerPicker';
+import { BreathingGuide } from './BreathingGuide';
 
 interface PlayerProps {
   sessionName: string;
@@ -49,6 +50,8 @@ export const Player: React.FC<PlayerProps> = ({
   toneMode,
   onToneModeChange,
 }) => {
+  const [breathingOn, setBreathingOn] = useState(false);
+
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
@@ -73,6 +76,21 @@ export const Player: React.FC<PlayerProps> = ({
         <div className="relative z-10 text-5xl font-light tabular-nums text-slate-800 dark:text-white tracking-tight">
           {formatTime(timeLeft)}
         </div>
+        <BreathingGuide active={breathingOn && isPlaying} />
+      </div>
+
+      <div className="flex justify-center -mt-4 mb-4">
+        <button
+          onClick={() => setBreathingOn((v) => !v)}
+          aria-pressed={breathingOn}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+            breathingOn
+              ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300 ring-1 ring-primary-500/40'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+          }`}
+        >
+          <Wind size={13} /> 호흡 가이드
+        </button>
       </div>
 
       <div className="text-center mb-8">
@@ -129,7 +147,7 @@ export const Player: React.FC<PlayerProps> = ({
             </div>
             <Toggle checked={brainwaveEnabled} onChange={onToggleBrainwave} label="뇌파음 사용" />
           </div>
-          <div className={`grid grid-cols-4 gap-2 transition-opacity ${brainwaveEnabled ? '' : 'opacity-40 pointer-events-none'}`}>
+          <div className={`grid grid-cols-5 gap-1.5 transition-opacity ${brainwaveEnabled ? '' : 'opacity-40 pointer-events-none'}`}>
             {WAVE_ORDER.map((wave) => (
               <button
                 key={wave}

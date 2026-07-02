@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save } from 'lucide-react';
+import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save, RotateCcw, Flame, CloudMoon, Smile, LucideIcon } from 'lucide-react';
 import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
 import { BinauralEngine, SoundLayer, ToneMode } from './services/audioEngine';
 import { Player } from './components/Player';
 import { Toggle } from './components/Toggle';
 import { SoundLayerPicker } from './components/SoundLayerPicker';
+import { StatsDashboard } from './components/StatsDashboard';
 import { WAVE_ORDER } from './audioOptions';
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -23,6 +24,28 @@ interface UserPreset {
   durationMinutes: number;
   layers: SoundLayer[];
 }
+
+// Snapshot of the last-started session for one-tap resume.
+interface LastSession {
+  name: string;
+  brainWaveType: BrainWaveType;
+  toneMode: ToneMode;
+  brainwaveEnabled: boolean;
+  durationMinutes: number;
+  layers: SoundLayer[];
+  sleepMode: boolean;
+}
+
+// Per-preset icon + chip accent so the session list reads at a glance.
+const PRESET_VISUALS: Record<string, { Icon: LucideIcon; chip: string }> = {
+  focus: { Icon: Brain, chip: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300' },
+  relax: { Icon: Flame, chip: 'bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300' },
+  country_morning: { Icon: Sun, chip: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300' },
+  sleep_prep: { Icon: Moon, chip: 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300' },
+  power_nap: { Icon: CloudMoon, chip: 'bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-300' },
+  meditation: { Icon: Sparkles, chip: 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300' },
+};
+const DEFAULT_VISUAL = { Icon: Brain, chip: 'bg-slate-100 text-primary-600 dark:bg-slate-700 dark:text-primary-400' };
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'session' | 'history' | 'settings'>('session');
@@ -44,6 +67,8 @@ export default function App() {
   const [sleepMode, setSleepMode] = useState(false);
   const [saveOpen, setSaveOpen] = useState(false);
   const [presetNameDraft, setPresetNameDraft] = useState('');
+  const [moodBefore, setMoodBefore] = useState<number | null>(null);
+  const [lastSession, setLastSession] = useState<LastSession | null>(null);
 
   // Lazily create a single, stable audio engine (avoids re-allocating each render).
   const audioEngine = useRef<BinauralEngine | null>(null);
@@ -63,6 +88,9 @@ export default function App() {
 
     const savedPresets = localStorage.getItem('mc_brain_presets');
     if (savedPresets) setUserPresets(JSON.parse(savedPresets));
+
+    const savedLast = localStorage.getItem('mc_brain_last');
+    if (savedLast) setLastSession(JSON.parse(savedLast));
 
     const savedSettings = localStorage.getItem('mc_brain_settings');
     const merged: AppSettings = savedSettings
@@ -152,6 +180,7 @@ export default function App() {
     setCurrentBrainWave(preset.brainWaveType);
     setActiveLayers(preset.defaultBackgroundSound === 'none' ? [] : [{ type: preset.defaultBackgroundSound, volume: DEFAULT_LAYER_VOL }]);
     setTimeLeft(preset.defaultDurationMinutes * 60);
+    setMoodBefore(null);
 
     if (playbackStatus !== 'idle') stopSession();
     setViewMode('config');
@@ -174,6 +203,17 @@ export default function App() {
     beginRun(timeLeft);
     setPlaybackStatus('running');
     setViewMode('player');
+    const snapshot: LastSession = {
+      name: selectedPreset?.name ?? '커스텀 모드',
+      brainWaveType: currentBrainWave,
+      toneMode,
+      brainwaveEnabled,
+      durationMinutes: Math.max(1, Math.round(timeLeft / 60)),
+      layers: activeLayers,
+      sleepMode,
+    };
+    setLastSession(snapshot);
+    localStorage.setItem('mc_brain_last', JSON.stringify(snapshot));
     const freqs = WAVE_FREQS[currentBrainWave];
     engine.start({
       base: freqs.base,
@@ -279,7 +319,7 @@ export default function App() {
       modeName: selectedPreset.name,
       startedAt: new Date().toISOString(),
       durationMinutes: Math.max(1, Math.round(playedMsRef.current / 60000)),
-      moodBefore: 3,
+      moodBefore,
       moodAfter: mood,
       helpfulScore: mood,
     };
@@ -331,6 +371,28 @@ export default function App() {
     setBrainwaveEnabled(p.brainwaveEnabled);
     setActiveLayers(p.layers);
     setTimeLeft(p.durationMinutes * 60);
+    setMoodBefore(null);
+    setViewMode('config');
+  };
+
+  const resumeLastSession = () => {
+    if (!lastSession) return;
+    if (playbackStatus !== 'idle') stopSession();
+    setSelectedPreset({
+      id: 'last',
+      name: lastSession.name,
+      description: '최근 세션 구성 그대로',
+      defaultDurationMinutes: lastSession.durationMinutes,
+      brainWaveType: lastSession.brainWaveType,
+      defaultBackgroundSound: 'none',
+    });
+    setCurrentBrainWave(lastSession.brainWaveType);
+    setToneMode(lastSession.toneMode);
+    setBrainwaveEnabled(lastSession.brainwaveEnabled);
+    setActiveLayers(lastSession.layers);
+    setSleepMode(lastSession.sleepMode);
+    setTimeLeft(lastSession.durationMinutes * 60);
+    setMoodBefore(null);
     setViewMode('config');
   };
 
@@ -368,6 +430,24 @@ export default function App() {
         <h2 className="text-xl font-bold text-slate-900 dark:text-white">세션 선택</h2>
         <p className="text-slate-500 dark:text-slate-400 text-sm">원하는 모드를 선택해 시작하세요.</p>
       </div>
+
+      {lastSession && playbackStatus === 'idle' && (
+        <button
+          onClick={resumeLastSession}
+          className="md:col-span-2 flex items-center gap-3 bg-white dark:bg-slate-800 border border-primary-500/30 rounded-2xl p-4 text-left hover:border-primary-500 transition-all active:scale-[0.99]"
+        >
+          <div className="p-2.5 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 shrink-0">
+            <RotateCcw size={20} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wide">이어하기</p>
+            <p className="font-bold text-slate-900 dark:text-white truncate">{lastSession.name}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+              {lastSession.brainwaveEnabled ? getBrainWaveLabel(lastSession.brainWaveType).split(' ')[0] : '자연음 전용'} · {lastSession.durationMinutes}분 · 사운드 {lastSession.layers.length}개
+            </p>
+          </div>
+        </button>
+      )}
 
       <div
         onClick={handleCustomMode}
@@ -414,25 +494,28 @@ export default function App() {
         </div>
       ))}
 
-      {PRESETS.map((preset) => (
-        <div
-          key={preset.id}
-          onClick={() => handlePresetSelect(preset)}
-          className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-primary-500 cursor-pointer transition-all active:scale-[0.98] group"
-        >
-          <div className="flex justify-between items-start mb-3">
-            <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-primary-600 dark:text-primary-400 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 transition-colors">
-              <Brain size={24} />
+      {PRESETS.map((preset) => {
+        const { Icon, chip } = PRESET_VISUALS[preset.id] ?? DEFAULT_VISUAL;
+        return (
+          <div
+            key={preset.id}
+            onClick={() => handlePresetSelect(preset)}
+            className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-primary-500 cursor-pointer transition-all active:scale-[0.98] group"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <div className={`p-3 rounded-xl transition-colors ${chip}`}>
+                <Icon size={24} />
+              </div>
+              <span className="text-xs font-bold px-2 py-1 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">
+                {preset.defaultDurationMinutes}분
+              </span>
             </div>
-            <span className="text-xs font-bold px-2 py-1 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">
-              {preset.defaultDurationMinutes}분
-            </span>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">{preset.name}</h3>
+            <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold mb-1">{getBrainWaveLabel(preset.brainWaveType).split(' ')[0]}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-snug">{preset.description}</p>
           </div>
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">{preset.name}</h3>
-          <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold mb-1">{getBrainWaveLabel(preset.brainWaveType).split(' ')[0]}</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400 leading-snug">{preset.description}</p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 
@@ -456,6 +539,32 @@ export default function App() {
         </div>
 
         <div className="space-y-4 mb-8">
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2">
+                <Smile size={16} /> 시작 전 기분 <span className="text-[10px] text-slate-400 font-normal">(선택)</span>
+              </span>
+            </div>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setMoodBefore((m) => (m === n ? null : n))}
+                  aria-pressed={moodBefore === n}
+                  aria-label={`시작 전 기분 ${n}점`}
+                  className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
+                    moodBefore === n
+                      ? 'bg-primary-500 text-white shadow-md'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-slate-400 mt-2">종료 후 기분과 비교해 기록 탭에서 변화를 보여드려요.</p>
+          </div>
+
           <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-center mb-4">
               <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Activity size={16} /> 재생 시간</span>
@@ -582,27 +691,7 @@ export default function App() {
       <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
         <BarChart2 /> 세션 기록
       </h2>
-
-      {logs.length === 0 ? (
-        <div className="text-center text-slate-400 mt-20">
-          <p>아직 기록된 세션이 없습니다.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {logs.map((log) => (
-            <div key={log.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
-              <div>
-                <h4 className="font-bold text-slate-800 dark:text-slate-200">{log.modeName}</h4>
-                <span className="text-xs text-slate-500">{new Date(log.startedAt).toLocaleDateString()}</span>
-              </div>
-              <div className="text-right">
-                <div className="font-mono text-primary-600 dark:text-primary-400 font-bold">{log.durationMinutes}분</div>
-                <div className="text-xs text-slate-400">기분: {log.moodAfter}/5</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <StatsDashboard logs={logs} />
     </div>
   );
 
@@ -645,7 +734,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v1.7.0</p>
+        <p>MC Brain Care v2.0.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>

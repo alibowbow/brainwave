@@ -31,7 +31,7 @@ export interface SessionLog {
   modeName: string;
   startedAt: string;
   durationMinutes: number;
-  moodBefore: number;
+  moodBefore: number | null;
   moodAfter: number;
   helpfulScore: number;
   note?: string;

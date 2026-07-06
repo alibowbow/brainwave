@@ -1,11 +1,12 @@
 ﻿import React, { useState } from 'react';
-import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders, Wind } from 'lucide-react';
+import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders, Wind, Maximize2 } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType, getBrainWaveLabel } from '../types';
-import { WAVE_ORDER, getSoundLabel, getWaveShortLabel } from '../audioOptions';
+import { WAVE_ORDER, getSoundLabel, getWaveShortLabel, getWaveColor } from '../audioOptions';
 import { SoundLayer, ToneMode } from '../services/audioEngine';
 import { Toggle } from './Toggle';
 import { SoundLayerPicker } from './SoundLayerPicker';
 import { BreathingGuide } from './BreathingGuide';
+import { AuraVisualizer } from './AuraVisualizer';
 
 interface PlayerProps {
   sessionName: string;
@@ -27,6 +28,8 @@ interface PlayerProps {
   onToggleBrainwave: () => void;
   toneMode: ToneMode;
   onToneModeChange: (mode: ToneMode) => void;
+  getAnalyser: () => AnalyserNode | null;
+  onImmersive: () => void;
 }
 
 export const Player: React.FC<PlayerProps> = ({
@@ -49,8 +52,11 @@ export const Player: React.FC<PlayerProps> = ({
   onToggleBrainwave,
   toneMode,
   onToneModeChange,
+  getAnalyser,
+  onImmersive,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
+  const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#6366f1';
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -75,15 +81,14 @@ export const Player: React.FC<PlayerProps> = ({
       </div>
 
       <div className="relative w-64 h-64 mx-auto flex items-center justify-center mb-8 shrink-0">
-        <div className={`absolute w-full h-full rounded-full bg-gradient-to-tr from-primary-500/30 to-purple-500/30 blur-xl ${isPlaying ? 'animate-breathe' : 'opacity-20'}`}></div>
-        <div className={`absolute w-3/4 h-3/4 rounded-full bg-gradient-to-bl from-primary-400/40 to-blue-400/40 blur-lg ${isPlaying ? 'animate-breathe' : 'opacity-20'}`} style={{ animationDelay: '1s' }}></div>
-        <div className="relative z-10 text-5xl font-light tabular-nums text-slate-800 dark:text-white tracking-tight">
+        <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={auraColor} className="absolute inset-0 w-full h-full" />
+        <div className="relative z-10 text-5xl font-light tabular-nums text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
           {formatTime(timeLeft)}
         </div>
         <BreathingGuide active={breathingOn && isPlaying} />
       </div>
 
-      <div className="flex justify-center -mt-4 mb-4">
+      <div className="flex justify-center gap-2 -mt-4 mb-4">
         <button
           onClick={() => setBreathingOn((v) => !v)}
           aria-pressed={breathingOn}
@@ -94,6 +99,12 @@ export const Player: React.FC<PlayerProps> = ({
           }`}
         >
           <Wind size={13} /> 호흡 가이드
+        </button>
+        <button
+          onClick={onImmersive}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+        >
+          <Maximize2 size={13} /> 몰입 모드
         </button>
       </div>
 

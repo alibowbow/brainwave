@@ -54,6 +54,7 @@ export class BinauralEngine {
   // Mix graph
   private masterGain: GainNode | null = null;
   private limiter: DynamicsCompressorNode | null = null;
+  private analyser: AnalyserNode | null = null;   // tap for the live visualizer
   private binauralGain: GainNode | null = null;
   private bgBus: GainNode | null = null;        // shared bus for all nature layers (the "자연음" master)
   private reverb: ConvolverNode | null = null;
@@ -95,6 +96,12 @@ export class BinauralEngine {
     this.limiter.release.value = 0.25;
     this.masterGain.connect(this.limiter);
     this.limiter.connect(this.ctx.destination);
+
+    // Analyser tap for the live aura visualizer (sees the full pre-limiter mix).
+    this.analyser = this.ctx.createAnalyser();
+    this.analyser.fftSize = 512;
+    this.analyser.smoothingTimeConstant = 0.82;
+    this.masterGain.connect(this.analyser);
 
     // Brain-wave tone bus (gently faded in).
     this.binauralVol = config.binauralVol;
@@ -1137,6 +1144,11 @@ export class BinauralEngine {
     this.register(bucket, node);
   }
 
+  // Live frequency-analysis node for the visualizer (null while stopped).
+  getAnalyser(): AnalyserNode | null {
+    return this.analyser;
+  }
+
   // Re-activate the context after the browser suspends it (e.g. on tab/screen lock).
   resume() {
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
@@ -1181,13 +1193,14 @@ export class BinauralEngine {
     this.voices.clear();
     this.pendingCleanups.forEach((id) => clearTimeout(id));
     this.pendingCleanups = [];
-    [this.reverbWet, this.reverb, this.bgBus, this.binauralGain, this.limiter, this.masterGain].forEach((n) => {
+    [this.reverbWet, this.reverb, this.bgBus, this.binauralGain, this.analyser, this.limiter, this.masterGain].forEach((n) => {
       try { n?.disconnect(); } catch (e) { /* ignore */ }
     });
     this.reverbWet = null;
     this.reverb = null;
     this.bgBus = null;
     this.binauralGain = null;
+    this.analyser = null;
     this.limiter = null;
     this.masterGain = null;
   }

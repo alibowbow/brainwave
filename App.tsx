@@ -6,7 +6,8 @@ import { Player } from './components/Player';
 import { Toggle } from './components/Toggle';
 import { SoundLayerPicker } from './components/SoundLayerPicker';
 import { StatsDashboard } from './components/StatsDashboard';
-import { WAVE_ORDER } from './audioOptions';
+import { ImmersiveMode } from './components/ImmersiveMode';
+import { WAVE_ORDER, getWaveColor } from './audioOptions';
 
 const DEFAULT_SETTINGS: AppSettings = {
   darkMode: true,
@@ -69,6 +70,7 @@ export default function App() {
   const [presetNameDraft, setPresetNameDraft] = useState('');
   const [moodBefore, setMoodBefore] = useState<number | null>(null);
   const [lastSession, setLastSession] = useState<LastSession | null>(null);
+  const [immersive, setImmersive] = useState(false);
 
   // Lazily create a single, stable audio engine (avoids re-allocating each render).
   const audioEngine = useRef<BinauralEngine | null>(null);
@@ -258,6 +260,7 @@ export default function App() {
     accumulateRun();
     endTimeRef.current = null;
     setPlaybackStatus('idle');
+    setImmersive(false);
     setViewMode('list');
     engine.stop();
     setTimeLeft(0);
@@ -267,6 +270,7 @@ export default function App() {
     accumulateRun();
     endTimeRef.current = null;
     setPlaybackStatus('idle');
+    setImmersive(false);
     // Sleep mode: fade out gently and end silently (no chime/haptics).
     if (sleepMode) {
       engine.fadeOutStop(12);
@@ -741,7 +745,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v2.1.0</p>
+        <p>MC Brain Care v3.0.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
@@ -781,6 +785,8 @@ export default function App() {
               onToggleBrainwave={() => setBrainwaveEnabled((v) => !v)}
               toneMode={toneMode}
               onToneModeChange={handleToneModeChange}
+              getAnalyser={() => engine.getAnalyser()}
+              onImmersive={() => setImmersive(true)}
             />
           ) : renderFeedback()
         )}
@@ -834,6 +840,20 @@ export default function App() {
           </button>
         ))}
       </nav>
+
+      {immersive && viewMode === 'player' && playbackStatus !== 'idle' && (
+        <ImmersiveMode
+          timeLeft={timeLeft}
+          isPlaying={playbackStatus === 'running'}
+          sessionName={selectedPreset?.name || '세션'}
+          color={brainwaveEnabled ? getWaveColor(currentBrainWave) : '#6366f1'}
+          getAnalyser={() => engine.getAnalyser()}
+          onPlay={resumeSession}
+          onPause={pauseSession}
+          onStop={stopSession}
+          onExit={() => setImmersive(false)}
+        />
+      )}
 
       {noticeOpen && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-6" role="dialog" aria-modal="true" aria-labelledby="notice-title">

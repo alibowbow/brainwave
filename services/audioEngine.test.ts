@@ -23,6 +23,11 @@ class ChannelMergerNode extends GNode {}
 class DynamicsCompressorNode extends GNode {
   threshold = new Param(-24); knee = new Param(30); ratio = new Param(12); attack = new Param(0.003); release = new Param(0.25);
 }
+class AnalyserMock extends GNode {
+  fftSize = 2048; smoothingTimeConstant = 0.8; frequencyBinCount = 1024;
+  getByteFrequencyData() {}
+  getByteTimeDomainData() {}
+}
 class AudioBufferMock {
   _len: number;
   constructor(_ch: number, len: number) { this._len = len; }
@@ -39,6 +44,7 @@ class AudioContextMock {
   createConvolver() { return new ConvolverNode(); }
   createChannelMerger() { return new ChannelMergerNode(); }
   createDynamicsCompressor() { return new DynamicsCompressorNode(); }
+  createAnalyser() { return new AnalyserMock(); }
   createBuffer(ch: number, len: number) { return new AudioBufferMock(ch, len); }
 }
 
@@ -103,6 +109,14 @@ describe('BinauralEngine multi-voice', () => {
     expect(() => nature.forEach((s) => e.addSound(s, 0.5))).not.toThrow();
     expect(e.activeSoundTypes().length).toBe(nature.length);
     e.dispose();
+  });
+
+  it('exposes an analyser while running and releases it on stop', () => {
+    expect(e.getAnalyser()).toBeNull();
+    e.start(cfg([{ type: 'rain', volume: 0.8 }]));
+    expect(e.getAnalyser()).not.toBeNull();
+    e.stop();
+    expect(e.getAnalyser()).toBeNull();
   });
 
   it('runs an isochronic (gamma) session, chime and fade-out without throwing', () => {

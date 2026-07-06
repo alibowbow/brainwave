@@ -81,3 +81,14 @@ const WAVE_SHORT: Record<BrainWaveType, string> = {
 };
 
 export const getWaveShortLabel = (type: BrainWaveType) => WAVE_SHORT[type];
+
+// Energy-aura color per brain wave (drives the live visualizer).
+const WAVE_COLOR: Record<BrainWaveType, string> = {
+  alpha: '#6366f1', // indigo — focus/calm
+  beta: '#0ea5e9',  // sky — alert/active
+  gamma: '#f5a524',  // gold — the "awakened" state
+  theta: '#8b5cf6', // violet — relaxed/meditative
+  delta: '#3b82f6', // blue — deep sleep
+};
+
+export const getWaveColor = (type: BrainWaveType) => WAVE_COLOR[type];

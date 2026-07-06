@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save, RotateCcw, Flame, CloudMoon, Smile, LucideIcon } from 'lucide-react';
-import { PRESETS, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
+import { PRESETS, AMBIENCE_PRESETS, AmbiencePreset, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
 import { BinauralEngine, SoundLayer, ToneMode } from './services/audioEngine';
 import { Player } from './components/Player';
 import { Toggle } from './components/Toggle';
@@ -386,6 +386,25 @@ export default function App() {
     setViewMode('config');
   };
 
+  const loadAmbience = (a: AmbiencePreset) => {
+    if (playbackStatus !== 'idle') stopSession();
+    setSelectedPreset({
+      id: `amb:${a.id}`,
+      name: a.name,
+      description: a.description,
+      defaultDurationMinutes: a.durationMinutes,
+      brainWaveType: a.brainWaveType,
+      defaultBackgroundSound: 'none',
+    });
+    setCurrentBrainWave(a.brainWaveType);
+    setToneMode('binaural');
+    setBrainwaveEnabled(true);
+    setActiveLayers(a.layers.map((l) => ({ ...l })));
+    setTimeLeft(a.durationMinutes * 60);
+    setMoodBefore(null);
+    setViewMode('config');
+  };
+
   const resumeLastSession = () => {
     if (!lastSession) return;
     if (playbackStatus !== 'idle') stopSession();
@@ -527,6 +546,25 @@ export default function App() {
           </div>
         );
       })}
+
+      <div className="md:col-span-2 mt-2">
+        <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400">분위기 · 사운드 조합</h3>
+        <p className="text-xs text-slate-400">여러 소리와 뇌파가 한 번에 설정돼요.</p>
+      </div>
+      {AMBIENCE_PRESETS.map((a) => (
+        <div
+          key={a.id}
+          onClick={() => loadAmbience(a)}
+          className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-primary-500 cursor-pointer transition-all active:scale-[0.98]"
+        >
+          <div className="text-2xl mb-1.5 leading-none">{a.emoji}</div>
+          <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-0.5">{a.name}</h3>
+          <p className="text-[11px] text-primary-600 dark:text-primary-400 font-semibold mb-1">
+            {getBrainWaveLabel(a.brainWaveType).split(' ')[0]} · 사운드 {a.layers.length} · {a.durationMinutes}분
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{a.description}</p>
+        </div>
+      ))}
     </div>
   );
 

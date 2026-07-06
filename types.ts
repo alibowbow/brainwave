@@ -75,3 +75,40 @@ export const PRESETS: SessionPreset[] = [
   { id: 'power_nap', name: '파워 냅 (Nap)', description: '짧고 가볍게 피로를 푸는 낮잠', defaultDurationMinutes: 15, brainWaveType: 'theta', defaultBackgroundSound: 'forest' },
   { id: 'meditation', name: '마음 챙김 (Meditation)', description: '내면의 평화를 찾는 명상 시간', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'none' },
 ];
+
+// Curated multi-sound "ambience" combos — one tap sets several layers + a
+// matching brain wave, and the diorama composes into a coherent scene.
+export interface AmbiencePreset {
+  id: string;
+  name: string;
+  description: string;
+  emoji: string;
+  brainWaveType: BrainWaveType;
+  durationMinutes: number;
+  layers: { type: BackgroundSoundType; volume: number }[];
+}
+
+export const AMBIENCE_PRESETS: AmbiencePreset[] = [
+  { id: 'morning_forest', name: '아침 숲', description: '햇살 드는 숲, 시냇물과 새소리', emoji: '🌤️', brainWaveType: 'alpha', durationMinutes: 30,
+    layers: [{ type: 'birds', volume: 0.7 }, { type: 'forest', volume: 0.8 }, { type: 'stream', volume: 0.55 }] },
+  { id: 'rainy_forest', name: '비 오는 숲', description: '숲에 내리는 잔잔한 비', emoji: '🌧️', brainWaveType: 'theta', durationMinutes: 30,
+    layers: [{ type: 'rain', volume: 0.8 }, { type: 'forest', volume: 0.7 }, { type: 'birds', volume: 0.45 }] },
+  { id: 'night_pond', name: '여름밤 연못', description: '풀벌레·개구리·부엉이의 밤', emoji: '🌙', brainWaveType: 'delta', durationMinutes: 40,
+    layers: [{ type: 'night', volume: 0.7 }, { type: 'frogs', volume: 0.55 }, { type: 'owl', volume: 0.5 }, { type: 'stream', volume: 0.55 }] },
+  { id: 'ocean_shore', name: '파도 해변', description: '바다와 갈매기', emoji: '🌊', brainWaveType: 'alpha', durationMinutes: 25,
+    layers: [{ type: 'wave', volume: 0.8 }, { type: 'seabirds', volume: 0.5 }] },
+  { id: 'waterfall_valley', name: '폭포 계곡', description: '절벽 폭포와 시냇물', emoji: '🏞️', brainWaveType: 'alpha', durationMinutes: 30,
+    layers: [{ type: 'waterfall', volume: 0.8 }, { type: 'stream', volume: 0.6 }, { type: 'birds', volume: 0.45 }] },
+  { id: 'campfire_night', name: '모닥불 밤', description: '별밤의 모닥불과 풀벌레', emoji: '🔥', brainWaveType: 'theta', durationMinutes: 25,
+    layers: [{ type: 'fire', volume: 0.8 }, { type: 'night', volume: 0.55 }, { type: 'owl', volume: 0.45 }] },
+  { id: 'deep_night', name: '깊은 밤', description: '풀벌레와 낮은 드론의 심야', emoji: '🌌', brainWaveType: 'delta', durationMinutes: 45,
+    layers: [{ type: 'night', volume: 0.55 }, { type: 'owl', volume: 0.45 }, { type: 'drone', volume: 0.7 }] },
+  { id: 'snowy_night', name: '눈 내리는 밤', description: '포근한 겨울밤의 눈', emoji: '❄️', brainWaveType: 'delta', durationMinutes: 40,
+    layers: [{ type: 'blizzard', volume: 0.65 }, { type: 'drone', volume: 0.6 }] },
+  { id: 'summer_storm', name: '여름 뇌우', description: '천둥과 빗속의 몰입', emoji: '⛈️', brainWaveType: 'theta', durationMinutes: 30,
+    layers: [{ type: 'thunder', volume: 0.8 }, { type: 'forest', volume: 0.5 }] },
+  { id: 'cosmic', name: '우주 명상', description: '드론·싱잉볼·풍경의 명상', emoji: '🧘', brainWaveType: 'theta', durationMinutes: 20,
+    layers: [{ type: 'drone', volume: 0.7 }, { type: 'bowl', volume: 0.6 }, { type: 'chimes', volume: 0.5 }] },
+  { id: 'focus_cafe', name: '카페 집중', description: '비 오는 창가의 백색소음', emoji: '☕', brainWaveType: 'alpha', durationMinutes: 40,
+    layers: [{ type: 'pink', volume: 0.5 }, { type: 'rain', volume: 0.6 }] },
+];

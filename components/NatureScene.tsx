@@ -41,8 +41,13 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
   const clearSky = !rainy && !snowy;
   const n = chars.length;
 
+  // Sky reflects the real time of day.
+  const hour = new Date().getHours();
+  const phase = hour < 5 ? 'night' : hour < 8 ? 'dawn' : hour < 17 ? 'day' : hour < 20 ? 'sunset' : 'night';
+  const night = phase === 'night';
+
   return (
-    <div className="relative w-full h-[160px] rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm">
+    <div className="sc-scene relative w-full h-[160px] rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm" data-phase={phase}>
       <svg viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 w-full h-full">
         <defs>
           <linearGradient id="scSky" x1="0" y1="0" x2="0" y2="1">
@@ -88,14 +93,16 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
         {/* sky */}
         <rect x="0" y="0" width="400" height="160" fill="url(#scSky)" />
 
-        {/* stars (night only, via CSS) */}
-        <g className="sc-stars">
-          {STARS.map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.2 : 0.8} fill="#ffffff" opacity={0.9} />
-          ))}
-        </g>
+        {/* stars (clear night) */}
+        {night && clearSky && (
+          <g>
+            {STARS.map(([x, y], i) => (
+              <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.2 : 0.8} fill="#ffffff" opacity={0.9} />
+            ))}
+          </g>
+        )}
 
-        {/* sun / moon with soft bloom */}
+        {/* sun / moon with soft bloom (colour follows the phase) */}
         {clearSky && (
           <g>
             <circle cx="322" cy="40" r="64" fill="url(#scSun)" />
@@ -165,7 +172,7 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
                   width="100%"
                   height="100%"
                   className="overflow-visible"
-                  style={{ filter: 'drop-shadow(0 4px 3px rgba(15,25,45,0.25))' }}
+                  style={{ filter: 'url(#scPuffy) drop-shadow(0 4px 3px rgba(15,25,45,0.25))' }}
                   dangerouslySetInnerHTML={{ __html: CHARACTER_SVG[t]! }}
                 />
               </div>

@@ -7,6 +7,7 @@ import { Toggle } from './Toggle';
 import { SoundLayerPicker } from './SoundLayerPicker';
 import { BreathingGuide } from './BreathingGuide';
 import { AuraVisualizer } from './AuraVisualizer';
+import { NatureScene } from './NatureScene';
 
 interface PlayerProps {
   sessionName: string;
@@ -134,6 +135,10 @@ export const Player: React.FC<PlayerProps> = ({
         <button onClick={onStop} aria-label="세션 종료" className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500 hover:bg-red-200 dark:hover:bg-red-900/50 flex items-center justify-center transition-all">
           <Square size={20} fill="currentColor" />
         </button>
+      </div>
+
+      <div className="px-4 mb-8">
+        <NatureScene types={activeLayers.map((l) => l.type)} />
       </div>
 
       <div className="w-full px-4 space-y-6">

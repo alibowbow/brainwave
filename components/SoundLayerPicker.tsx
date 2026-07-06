@@ -2,6 +2,7 @@ import React from 'react';
 import { BackgroundSoundType } from '../types';
 import { SoundLayer } from '../services/audioEngine';
 import { SOUND_GROUPS, getSoundIcon, getSoundLabel } from '../audioOptions';
+import { NatureScene } from './NatureScene';
 
 interface Props {
   activeLayers: SoundLayer[];
@@ -17,6 +18,9 @@ export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVo
 
   return (
     <div>
+      <div className="mb-4">
+        <NatureScene types={activeLayers.map((l) => l.type)} />
+      </div>
       <div className="space-y-3">
         {SOUND_GROUPS.map((group) => (
           <div key={group.label}>

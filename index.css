@@ -39,6 +39,25 @@ h1, h2, h3, h4 {
   display: none;
 }
 
+/* Nature-scene character idle motion */
+@media (prefers-reduced-motion: no-preference) {
+  .scene-motion-float { animation: sceneFloat 4s ease-in-out infinite; }
+  .scene-motion-bob { animation: sceneBob 2.8s ease-in-out infinite; }
+  .scene-motion-sway { animation: sceneSway 4.5s ease-in-out infinite; transform-origin: bottom center; }
+}
+@keyframes sceneFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes sceneBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes sceneSway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
 /* Stagger for the mini-player equalizer bars */
 .animation-delay-100 {
   animation-delay: 0.15s;

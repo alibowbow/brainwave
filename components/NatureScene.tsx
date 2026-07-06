@@ -11,8 +11,9 @@ interface Props {
 const BAND_Y: Record<string, number> = { sky: 22, tree: 44, ground: 72, water: 84 };
 const BAND_SIZE: Record<string, number> = { sky: 44, tree: 56, ground: 56, water: 44 };
 
-// Sounds rendered as environment/scenery rather than as a placed character.
-const SCENERY = new Set<BackgroundSoundType>(['wave']);
+// Weather/environment sounds render as scenery (atmosphere), not placed
+// characters: wave -> sea, rain/thunder -> rainfall + lightning, blizzard -> snow.
+const SCENERY = new Set<BackgroundSoundType>(['wave', 'rain', 'thunder', 'blizzard']);
 const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'waterfall', 'wave'];
 
 // One repeating wave-crest layer for the ocean scenery (period 50 in a 200-wide
@@ -26,12 +27,18 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
   const chars = SOUND_ORDER.filter((t) => types.includes(t) && SCENE_META[t] && CHARACTER_SVG[t] && !SCENERY.has(t));
   const hasWater = types.some((t) => WATER_SOUNDS.includes(t));
   const hasWave = types.includes('wave');
+  const rainy = types.includes('rain') || types.includes('thunder');
+  const stormy = types.includes('thunder');
+  const snowy = types.includes('blizzard');
+  const hasScenery = hasWave || rainy || snowy;
   const n = chars.length;
 
   return (
     <div className="relative w-full h-[150px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-gradient-to-b from-sky-200 to-sky-50 dark:from-slate-800 dark:to-slate-900">
-      {/* sun (light) / moon (dark) */}
-      <div className="absolute top-3 right-5 w-8 h-8 rounded-full bg-amber-200/80 dark:bg-slate-200/25" />
+      {/* sun (light) / moon (dark) — hidden when the sky is overcast */}
+      {!rainy && !snowy && <div className="absolute top-3 right-5 w-8 h-8 rounded-full bg-amber-200/80 dark:bg-slate-200/25" />}
+      {/* storm dims the sky */}
+      {stormy && <div className="absolute inset-0 bg-slate-800/15 pointer-events-none" />}
       {/* rolling ground hill */}
       <div className="absolute -bottom-7 -inset-x-8 h-16 rounded-t-[100%] bg-[#9ad99a] dark:bg-[#37634a]" />
       {/* waterline, only when a water sound is present */}
@@ -48,7 +55,7 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
         </div>
       )}
 
-      {n === 0 && !hasWave ? (
+      {n === 0 && !hasScenery ? (
         <div className="absolute inset-0 flex items-center justify-center">
           <p className="text-xs text-slate-500/80 dark:text-slate-300/70">사운드를 고르면 친구들이 모여요 🌱</p>
         </div>
@@ -78,6 +85,11 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
           );
         })
       )}
+
+      {/* weather overlays sit in front of the characters */}
+      {rainy && <div className="scene-rain absolute inset-0 z-20 pointer-events-none" />}
+      {snowy && <div className="scene-snow absolute inset-0 z-20 pointer-events-none" />}
+      {stormy && <div className="scene-lightning absolute inset-0 z-20 bg-white pointer-events-none" style={{ opacity: 0 }} />}
     </div>
   );
 };

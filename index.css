@@ -57,6 +57,15 @@ h1, h2, h3, h4 {
   0%, 100% { transform: rotate(-4deg); }
   50% { transform: rotate(4deg); }
 }
+/* Ocean-wave scenery: two crest layers drift sideways (loop via 200%-wide svg) */
+@media (prefers-reduced-motion: no-preference) {
+  .scene-wave-drift { animation: sceneWaveDrift 7s linear infinite; }
+  .scene-wave-drift-slow { animation: sceneWaveDrift 11s linear infinite; }
+}
+@keyframes sceneWaveDrift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 
 /* Stagger for the mini-player equalizer bars */
 .animation-delay-100 {

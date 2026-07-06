@@ -11,12 +11,21 @@ interface Props {
 const BAND_Y: Record<string, number> = { sky: 22, tree: 44, ground: 72, water: 84 };
 const BAND_SIZE: Record<string, number> = { sky: 44, tree: 56, ground: 56, water: 44 };
 
+// Sounds rendered as environment/scenery rather than as a placed character.
+const SCENERY = new Set<BackgroundSoundType>(['wave']);
+const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'waterfall', 'wave'];
+
+// One repeating wave-crest layer for the ocean scenery (period 50 in a 200-wide
+// viewBox, so a -50% drift loops seamlessly).
+const WAVE_PATH = 'M0 10 Q12.5 4 25 10 T50 10 T75 10 T100 10 T125 10 T150 10 T175 10 T200 10 V24 H0 Z';
+
 // Composes the active sounds' cute characters into one layered diorama: sky up
 // top, trees mid, animals on the ground, water creatures at the waterline. As
 // sounds are toggled the little friends gather and drift.
 export const NatureScene: React.FC<Props> = ({ types }) => {
-  const chars = SOUND_ORDER.filter((t) => types.includes(t) && SCENE_META[t] && CHARACTER_SVG[t]);
-  const hasWater = chars.some((t) => SCENE_META[t]!.band === 'water');
+  const chars = SOUND_ORDER.filter((t) => types.includes(t) && SCENE_META[t] && CHARACTER_SVG[t] && !SCENERY.has(t));
+  const hasWater = types.some((t) => WATER_SOUNDS.includes(t));
+  const hasWave = types.includes('wave');
   const n = chars.length;
 
   return (
@@ -27,8 +36,19 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
       <div className="absolute -bottom-7 -inset-x-8 h-16 rounded-t-[100%] bg-[#9ad99a] dark:bg-[#37634a]" />
       {/* waterline, only when a water sound is present */}
       {hasWater && <div className="absolute bottom-0 inset-x-0 h-9 bg-[#8fcdf0]/90 dark:bg-[#2c5c7a]/90" />}
+      {/* ocean scenery: drifting wave crests along the waterline (파도 = 풍경) */}
+      {hasWave && (
+        <div className="absolute bottom-0 inset-x-0 h-9 overflow-hidden pointer-events-none">
+          <svg className="scene-wave-drift-slow absolute bottom-2 left-0 h-4 w-[200%]" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true">
+            <path d={WAVE_PATH} fill="#7fc4ec" opacity="0.6" />
+          </svg>
+          <svg className="scene-wave-drift absolute bottom-0 left-0 h-5 w-[200%]" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true">
+            <path d={WAVE_PATH} fill="#bfe3f7" opacity="0.85" />
+          </svg>
+        </div>
+      )}
 
-      {n === 0 ? (
+      {n === 0 && !hasWave ? (
         <div className="absolute inset-0 flex items-center justify-center">
           <p className="text-xs text-slate-500/80 dark:text-slate-300/70">사운드를 고르면 친구들이 모여요 🌱</p>
         </div>

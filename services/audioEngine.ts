@@ -824,33 +824,37 @@ export class BinauralEngine {
   private startFrogs(dest: AudioNode, bucket: Bucket) {
     if (!this.ctx) return;
 
-    const croak = (t: number, pan: number) => {
-      if (!this.ctx) return;
-      const osc = this.ctx.createOscillator();
-      osc.type = 'sawtooth';
-      osc.frequency.value = 340 + Math.random() * 160;
-
-      const gate = this.ctx.createGain();
-      gate.gain.value = 0.5;
-      const am = this.ctx.createOscillator();
-      am.frequency.value = 26 + Math.random() * 14;
-      const amDepth = this.ctx.createGain();
-      amDepth.gain.value = 0.5;
-      am.connect(amDepth).connect(gate.gain);
-
+    // A croak is a fast train of noise grains ("rrr-ribbit") through a resonant
+    // band — the summed gain bumps give the creaky pulse texture, far more
+    // frog-like than an amplitude-modulated tone (which read as a duck/kazoo).
+    const croak = (t0: number, pan: number) => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const out = this.makePan(pan, dest);
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
       const bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass'; bp.frequency.value = 550 + Math.random() * 250; bp.Q.value = 2;
+      bp.type = 'bandpass';
+      const centerF = 420 + Math.random() * 380;
+      bp.frequency.setValueAtTime(centerF, t0);
+      bp.Q.value = 6 + Math.random() * 4;
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t0);
+      src.connect(bp).connect(g).connect(out);
 
-      const env = this.ctx.createGain();
-      const dur = 0.22 + Math.random() * 0.22;
-      env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.24, t + 0.03);
-      env.gain.setValueAtTime(0.24, t + dur - 0.05);
-      env.gain.linearRampToValueAtTime(0, t + dur);
-
-      osc.connect(gate).connect(bp).connect(env).connect(this.makePan(pan, dest));
-      osc.start(t); am.start(t);
-      osc.stop(t + dur + 0.05); am.stop(t + dur + 0.05);
+      const grains = 7 + Math.floor(Math.random() * 8);
+      const rate = 0.017 + Math.random() * 0.008;
+      let t = t0;
+      for (let i = 0; i < grains; i++) {
+        const gd = rate * 0.72;
+        const taper = i > grains - 3 ? 0.55 : 1;
+        g.gain.setValueAtTime(0.02, t);
+        g.gain.linearRampToValueAtTime(0.5 * taper, t + gd * 0.35);
+        g.gain.exponentialRampToValueAtTime(0.02, t + gd);
+        t += rate;
+      }
+      bp.frequency.linearRampToValueAtTime(centerF * 1.35, t); // "ribbit" lift
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+      src.start(t0); src.stop(t + 0.08);
     };
 
     const loop = () => {
@@ -878,7 +882,7 @@ export class BinauralEngine {
       osc.frequency.exponentialRampToValueAtTime(295, t + dur);
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.32, t + 0.07);
+      env.gain.linearRampToValueAtTime(0.55, t + 0.07);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(env).connect(pan);
       osc.start(t); osc.stop(t + dur + 0.05);
@@ -958,7 +962,7 @@ export class BinauralEngine {
 
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.14, t + 0.04);
+      env.gain.linearRampToValueAtTime(0.3, t + 0.04);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
 
       osc.connect(bp).connect(env).connect(pan);

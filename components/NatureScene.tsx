@@ -11,7 +11,7 @@ interface Props {
 const BAND_Y: Record<string, number> = { sky: 22, tree: 45, ground: 72, water: 84 };
 const BAND_SIZE: Record<string, number> = { sky: 46, tree: 58, ground: 58, water: 46 };
 
-const SCENERY = new Set<BackgroundSoundType>(['wave', 'rain', 'thunder', 'blizzard']);
+const SCENERY = new Set<BackgroundSoundType>(['wave', 'rain', 'thunder', 'blizzard', 'waterfall']);
 const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'waterfall', 'wave'];
 const WAVE_PATH = 'M0 10 Q12.5 4 25 10 T50 10 T75 10 T100 10 T125 10 T150 10 T175 10 T200 10 V24 H0 Z';
 
@@ -34,10 +34,11 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
   const chars = SOUND_ORDER.filter((t) => types.includes(t) && SCENE_META[t] && CHARACTER_SVG[t] && !SCENERY.has(t));
   const hasWater = types.some((t) => WATER_SOUNDS.includes(t));
   const hasWave = types.includes('wave');
+  const hasWaterfall = types.includes('waterfall');
   const rainy = types.includes('rain') || types.includes('thunder');
   const stormy = types.includes('thunder');
   const snowy = types.includes('blizzard');
-  const hasScenery = hasWave || rainy || snowy;
+  const hasScenery = hasWave || hasWaterfall || rainy || snowy;
   const clearSky = !rainy && !snowy;
   const n = chars.length;
 
@@ -118,6 +119,16 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
         {/* front ground */}
         <path d="M0 126 Q110 106 230 122 T400 118 L400 160 L0 160 Z" fill="url(#scHillFront)" />
 
+        {/* waterfall cliff — a tall earthy rock outcrop (grass cap on top) that
+            rises from the terrain; the water ribbon falls down its face */}
+        {hasWaterfall && (
+          <>
+            <path d="M0 52 C 20 46 44 54 54 76 C 60 96 56 140 54 160 L0 160 Z" fill="#8a6f52" />
+            <path d="M30 68 C 44 64 52 80 54 98 C 56 122 52 150 51 160 L30 160 Z" fill="#000000" opacity="0.16" />
+            <path d="M0 52 C 20 46 44 54 54 76 L54 86 C 44 66 20 62 0 66 Z" fill="url(#scHillMid)" />
+          </>
+        )}
+
         {/* water body */}
         {hasWater && (
           <g>
@@ -131,6 +142,22 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
         {/* vignette for focus */}
         <rect x="0" y="0" width="400" height="160" fill="url(#scVign)" />
       </svg>
+
+      {/* waterfall scenery: a ribbon of water falling down the cliff into the pool */}
+      {hasWaterfall && (
+        <div className="absolute left-[4.5%] top-[30%] bottom-[15%] w-[22px] pointer-events-none opacity-95">
+          <div
+            className="sc-cascade absolute inset-0 rounded-b-[10px]"
+            style={{
+              clipPath: 'polygon(18% 0, 82% 0, 100% 100%, 0 100%)',
+              WebkitMaskImage: 'linear-gradient(180deg, transparent 0, #000 16%, #000 100%)',
+              maskImage: 'linear-gradient(180deg, transparent 0, #000 16%, #000 100%)',
+            }}
+          />
+          <div className="sc-mist absolute -bottom-2 -inset-x-3 h-5 rounded-[50%] bg-white/75 blur-[3px]" />
+          <div className="absolute -bottom-0.5 -inset-x-2 h-[10px] rounded-[50%] bg-[#dff1fb]/85 blur-[1px]" />
+        </div>
+      )}
 
       {/* ocean crest ripples on the waterline */}
       {hasWave && (

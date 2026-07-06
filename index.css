@@ -165,14 +165,14 @@ h1, h2, h3, h4 {
   filter: blur(0.9px);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .scene-rain { animation: sceneRain 0.75s linear infinite; }
-  .scene-rain-2 { animation: sceneRain2 1.2s linear infinite; }
+  .scene-rain { animation: sceneRain 0.8s linear infinite; }
+  .scene-rain-2 { animation: sceneRain2 1.3s linear infinite; }
   .scene-snow { animation: sceneSnow 3.4s linear infinite; }
   .scene-snow-2 { animation: sceneSnow2 5.5s linear infinite; }
   .scene-lightning { animation: sceneFlash 7s ease-out infinite; }
 }
-@keyframes sceneRain { from { background-position: 0 0; } to { background-position: -6px 34px; } }
-@keyframes sceneRain2 { from { background-position: 0 0; } to { background-position: -12px 56px; } }
+@keyframes sceneRain { from { background-position: 0 0; } to { background-position: 0 34px; } }
+@keyframes sceneRain2 { from { background-position: 0 0; } to { background-position: 0 56px; } }
 @keyframes sceneSnow { from { background-position: 0 0; } to { background-position: -8px 30px; } }
 @keyframes sceneSnow2 { from { background-position: 0 0; } to { background-position: -16px 46px; } }
 @keyframes sceneFlash {
@@ -182,6 +182,24 @@ h1, h2, h3, h4 {
   91% { opacity: 0.42; }
   92% { opacity: 0; }
 }
+
+/* Waterfall scenery: vertical water strands (static) with soft highlight bands
+   that scroll DOWNWARD (the falling cue), over a left-lit blue volume. Only the
+   first background layer animates; one period per cycle loops seamlessly. */
+.sc-cascade {
+  background-image:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0 2px, rgba(255, 255, 255, 0) 2px 13px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0 1px, rgba(255, 255, 255, 0) 1px 4.5px),
+    linear-gradient(90deg, #e6f3fc 0%, #aeddf4 45%, #83c4ec 100%);
+  background-size: 100% 13px, 100% 100%, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sc-cascade { animation: scCascade 0.45s linear infinite; }
+  .sc-mist { animation: scMist 3s ease-in-out infinite; }
+}
+@keyframes scCascade { from { background-position: 0 0, 0 0, 0 0; } to { background-position: 0 13px, 0 0, 0 0; } }
+@keyframes scMist { 0%, 100% { transform: scaleX(0.9); opacity: 0.7; } 50% { transform: scaleX(1.08); opacity: 0.95; } }
 
 /* Stagger for the mini-player equalizer bars */
 .animation-delay-100 {

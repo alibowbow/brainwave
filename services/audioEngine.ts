@@ -313,6 +313,10 @@ export class BinauralEngine {
       case 'fire': this.startFire(dest, bucket); break;
       case 'forest': this.startWind(dest, bucket); break;
       case 'birds': this.startBirds(dest, bucket); break;
+      case 'cuckoo': this.startCuckoo(dest, bucket); break;
+      case 'woodpecker': this.startWoodpecker(dest, bucket); break;
+      case 'ducks': this.startDucks(dest, bucket); break;
+      case 'cave': this.startCave(dest, bucket); break;
       case 'cicadas': this.startCicadas(dest, bucket); break;
       case 'frogs': this.startFrogs(dest, bucket); break;
       case 'owl': this.startOwl(dest, bucket); break;
@@ -614,6 +618,28 @@ export class BinauralEngine {
   private startCrickets(dest: AudioNode, bucket: Bucket) {
     if (!this.ctx) return;
 
+    // Faint continuous distant chorus on both sides, under the near chirps.
+    [[4300, 24, -0.6], [4600, 31, 0.6]].forEach(([freq, am, pan]) => {
+      const osc = this.ctx!.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      const gate = this.ctx!.createGain();
+      gate.gain.value = 0.5;
+      const amOsc = this.ctx!.createOscillator();
+      amOsc.frequency.value = am;
+      const amDepth = this.ctx!.createGain();
+      amDepth.gain.value = 0.5;
+      amOsc.connect(amDepth).connect(gate.gain);
+      const bp = this.ctx!.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 2;
+      const level = this.ctx!.createGain();
+      level.gain.value = 0.035;
+      osc.connect(gate).connect(bp).connect(level).connect(this.makePan(pan, dest));
+      osc.start(); amOsc.start();
+      this.register(bucket, osc);
+      this.register(bucket, amOsc);
+    });
+
     const playSound = (t: number, dur: number, type: 'short' | 'long') => {
       if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
@@ -694,6 +720,25 @@ export class BinauralEngine {
       bucket.timeouts.push(id);
     };
     loopCrackle();
+
+    // Occasional deep log pop for body.
+    const pop = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(110, t);
+      osc.frequency.exponentialRampToValueAtTime(55, t + 0.06);
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.5, t + 0.004);
+      env.gain.exponentialRampToValueAtTime(0.005, t + 0.08);
+      osc.connect(env).connect(this.makePan(Math.random() * 0.8 - 0.4, dest));
+      osc.start(t); osc.stop(t + 0.1);
+      const id = window.setTimeout(pop, 3000 + Math.random() * 6000);
+      bucket.timeouts.push(id);
+    };
+    pop();
   }
 
   // --- 7. WIND / FOREST ---
@@ -708,9 +753,24 @@ export class BinauralEngine {
     node.start();
     this.register(bucket, node);
 
+    // Leaf rustle: a high band that swells with the gusts, so it reads as
+    // trees in wind rather than plain filtered noise.
+    const rustle = this.noiseSource(this.pinkNoiseBuffer)!;
+    const rustleHp = this.ctx.createBiquadFilter();
+    rustleHp.type = 'highpass'; rustleHp.frequency.value = 1400;
+    const rustleLp = this.ctx.createBiquadFilter();
+    rustleLp.type = 'lowpass'; rustleLp.frequency.value = 5200;
+    const rustleGain = this.ctx.createGain();
+    rustleGain.gain.value = 0.1;
+    rustle.connect(rustleHp).connect(rustleLp).connect(rustleGain).connect(dest);
+    rustle.start();
+    this.register(bucket, rustle);
+
     const animate = () => {
       if (!this.ctx) return; const t = this.ctx.currentTime;
-      filter.frequency.exponentialRampToValueAtTime(200 + Math.random() * 200, t + 4 + Math.random() * 4);
+      const gust = 2 + Math.random() * 4;
+      filter.frequency.exponentialRampToValueAtTime(200 + Math.random() * 200, t + gust);
+      rustleGain.gain.setTargetAtTime(0.05 + Math.random() * 0.14, t, gust / 3);
     };
     animate();
     const id = window.setInterval(animate, 5000);
@@ -719,7 +779,7 @@ export class BinauralEngine {
 
   // --- 8. WAVE ---
   private startWave(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.pinkNoiseBuffer) return;
+    if (!this.ctx || !this.pinkNoiseBuffer || !this.whiteNoiseBuffer) return;
     const node = this.noiseSource(this.pinkNoiseBuffer)!;
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass'; filter.frequency.value = 500;
@@ -729,12 +789,24 @@ export class BinauralEngine {
     node.start();
     this.register(bucket, node);
 
+    // Foam hiss that crests with the swell, then washes out.
+    const foam = this.noiseSource(this.whiteNoiseBuffer)!;
+    const foamHp = this.ctx.createBiquadFilter();
+    foamHp.type = 'highpass'; foamHp.frequency.value = 2800;
+    const foamGain = this.ctx.createGain();
+    foamGain.gain.value = 0.03;
+    foam.connect(foamHp).connect(foamGain).connect(dest);
+    foam.start();
+    this.register(bucket, foam);
+
     const animate = () => {
       if (!this.ctx) return; const t = this.ctx.currentTime;
       filter.frequency.exponentialRampToValueAtTime(1200, t + 4);
       gain.gain.linearRampToValueAtTime(1.6, t + 4);
+      foamGain.gain.linearRampToValueAtTime(0.14, t + 4.6);
       filter.frequency.exponentialRampToValueAtTime(300, t + 8);
       gain.gain.linearRampToValueAtTime(0.5, t + 8);
+      foamGain.gain.linearRampToValueAtTime(0.03, t + 8);
     };
     animate();
     const id = window.setInterval(animate, 8000);
@@ -901,6 +973,170 @@ export class BinauralEngine {
       bucket.timeouts.push(id);
     };
     call();
+  }
+
+  // --- CUCKOO (iconic soft two-note call, sparse and distant) ---
+  private startCuckoo(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx) return;
+
+    const note = (t: number, freq: number, dur: number, pan: StereoPannerNode) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.96, t + dur);
+      const lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 1600;
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.32, t + 0.05);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(lp).connect(env).connect(pan);
+      osc.start(t); osc.stop(t + dur + 0.05);
+    };
+
+    const call = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const pan = this.makePan(Math.random() * 1.2 - 0.6, dest);
+      // "뻐-꾹": F#5 then D5
+      note(t, 740, 0.3, pan);
+      note(t + 0.45, 587, 0.38, pan);
+      if (Math.random() < 0.55) { note(t + 1.5, 740, 0.3, pan); note(t + 1.95, 587, 0.38, pan); }
+      const id = window.setTimeout(call, 8000 + Math.random() * 10000);
+      bucket.timeouts.push(id);
+    };
+    call();
+  }
+
+  // --- WOODPECKER (rapid knocking bursts on a hollow trunk) ---
+  private startWoodpecker(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx) return;
+
+    const knock = (t: number, pan: StereoPannerNode) => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = 1050 + Math.random() * 250; bp.Q.value = 2.5;
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.55, t + 0.002);
+      env.gain.exponentialRampToValueAtTime(0.01, t + 0.03);
+      src.connect(bp).connect(env).connect(pan);
+      src.start(t); src.stop(t + 0.05);
+
+      // Hollow-wood thump underneath each knock.
+      const thump = this.ctx.createOscillator();
+      thump.type = 'sine';
+      thump.frequency.setValueAtTime(190, t);
+      thump.frequency.exponentialRampToValueAtTime(120, t + 0.04);
+      const tEnv = this.ctx.createGain();
+      tEnv.gain.setValueAtTime(0, t);
+      tEnv.gain.linearRampToValueAtTime(0.35, t + 0.003);
+      tEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.05);
+      thump.connect(tEnv).connect(pan);
+      thump.start(t); thump.stop(t + 0.07);
+    };
+
+    const burst = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
+      const count = 8 + Math.floor(Math.random() * 7);
+      const rate = 0.05 + Math.random() * 0.015;
+      for (let i = 0; i < count; i++) knock(t + i * rate, pan);
+      const id = window.setTimeout(burst, 6000 + Math.random() * 9000);
+      bucket.timeouts.push(id);
+    };
+    burst();
+  }
+
+  // --- DUCKS (a little raft of quacks on the pond) ---
+  private startDucks(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx) return;
+
+    const quack = (t: number, base: number, peak: number, pan: StereoPannerNode) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(base, t);
+      osc.frequency.exponentialRampToValueAtTime(base * 0.82, t + 0.16);
+      const formant = this.ctx.createBiquadFilter();
+      formant.type = 'bandpass'; formant.frequency.value = 900; formant.Q.value = 1.6;
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(peak, t + 0.025);
+      env.gain.setValueAtTime(peak * 0.8, t + 0.1);
+      env.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+      osc.connect(formant).connect(env).connect(pan);
+      osc.start(t); osc.stop(t + 0.24);
+    };
+
+    const series = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const pan = this.makePan(Math.random() * 1.2 - 0.6, dest);
+      const n = 2 + Math.floor(Math.random() * 3);
+      const base = 265 + Math.random() * 60;
+      for (let i = 0; i < n; i++) {
+        quack(t + i * 0.3, base * (1 + Math.random() * 0.06 - 0.03), 0.3 * Math.pow(0.85, i), pan);
+      }
+      const id = window.setTimeout(series, 7000 + Math.random() * 9000);
+      bucket.timeouts.push(id);
+    };
+    series();
+  }
+
+  // --- CAVE (deep still air + echoing water drips) ---
+  private startCave(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer) return;
+
+    const air = this.noiseSource(this.brownNoiseBuffer)!;
+    const airLp = this.ctx.createBiquadFilter();
+    airLp.type = 'lowpass'; airLp.frequency.value = 140;
+    const airGain = this.ctx.createGain();
+    airGain.gain.value = 0.5;
+    air.connect(airLp).connect(airGain).connect(dest);
+    air.start();
+    this.register(bucket, air);
+
+    // The cave slowly "breathes".
+    const lfo = this.ctx.createOscillator();
+    lfo.frequency.value = 0.05;
+    const lfoGain = this.ctx.createGain();
+    lfoGain.gain.value = 0.15;
+    lfo.connect(lfoGain).connect(airGain.gain);
+    lfo.start();
+    this.register(bucket, lfo);
+
+    // Each drip rings once, then repeats quieter as manual echoes.
+    const ping = (t: number, freq: number, peak: number, pan: StereoPannerNode) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.92, t + 0.2);
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(peak, t + 0.004);
+      env.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      osc.connect(env).connect(pan);
+      osc.start(t); osc.stop(t + 0.34);
+    };
+
+    const drip = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const p = Math.random() * 1.2 - 0.6;
+      const f = 900 + Math.random() * 700;
+      ping(t, f, 0.4, this.makePan(p, dest));
+      ping(t + 0.22, f, 0.16, this.makePan(-p * 0.7, dest));
+      ping(t + 0.46, f, 0.06, this.makePan(p * 0.4, dest));
+      const id = window.setTimeout(drip, 1500 + Math.random() * 3500);
+      bucket.timeouts.push(id);
+    };
+    drip();
   }
 
   // --- WINTER WIND (harsh bed + resonant howl sweeps) ---

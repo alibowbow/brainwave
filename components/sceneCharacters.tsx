@@ -1,7 +1,7 @@
 import { BackgroundSoundType } from '../types';
 
 export type SceneBand = 'sky' | 'tree' | 'ground' | 'water';
-export type SceneMotion = 'float' | 'bob' | 'sway';
+export type SceneMotion = 'float' | 'bob' | 'sway' | 'swim' | 'flicker' | 'hop' | 'pendulum' | 'peck';
 
 export interface SceneCharacterMeta {
   band: SceneBand;
@@ -13,19 +13,23 @@ export const SCENE_META: Partial<Record<BackgroundSoundType, SceneCharacterMeta>
   rain: { band: 'sky', motion: 'float' },
   thunder: { band: 'sky', motion: 'float' },
   drone: { band: 'sky', motion: 'float' },
-  chimes: { band: 'sky', motion: 'sway' },
+  chimes: { band: 'sky', motion: 'pendulum' },
   seabirds: { band: 'sky', motion: 'float' },
   birds: { band: 'sky', motion: 'float' },
+  cave: { band: 'sky', motion: 'float' },
   forest: { band: 'tree', motion: 'sway' },
   owl: { band: 'tree', motion: 'bob' },
   cicadas: { band: 'tree', motion: 'bob' },
-  fire: { band: 'ground', motion: 'bob' },
-  frogs: { band: 'ground', motion: 'bob' },
+  cuckoo: { band: 'tree', motion: 'bob' },
+  woodpecker: { band: 'tree', motion: 'peck' },
+  fire: { band: 'ground', motion: 'flicker' },
+  frogs: { band: 'ground', motion: 'hop' },
   night: { band: 'ground', motion: 'bob' },
   bowl: { band: 'ground', motion: 'bob' },
   fan: { band: 'ground', motion: 'bob' },
   blizzard: { band: 'ground', motion: 'bob' },
-  stream: { band: 'water', motion: 'bob' },
+  stream: { band: 'water', motion: 'swim' },
+  ducks: { band: 'water', motion: 'bob' },
   waterfall: { band: 'water', motion: 'sway' },
   wave: { band: 'water', motion: 'sway' },
 };
@@ -33,6 +37,10 @@ export const SCENE_META: Partial<Record<BackgroundSoundType, SceneCharacterMeta>
 // Inner SVG markup (viewBox "0 0 100 100") per character, authored to a shared
 // cute/rounded style + palette. white/pink noise have no character (abstract).
 export const CHARACTER_SVG: Partial<Record<BackgroundSoundType, string>> = {
+  ducks: `<ellipse cx="50" cy="84" rx="26" ry="4.5" fill="#4fa3d9" opacity="0.25"/><path d="M64 60 Q78 54 76 44 Q66 48 61 56 Z" fill="#f6c14e"/><ellipse cx="50" cy="66" rx="24" ry="17" fill="#ffd166"/><ellipse cx="46" cy="72" rx="14" ry="9" fill="#ffe3a3"/><path d="M44 62 Q56 57 63 64 Q55 71 46 69 Z" fill="#f6c14e"/><circle cx="33" cy="45" r="14" fill="#ffd166"/><path d="M21 47 Q10 46 12 52 Q19 55 25 52 Z" fill="#f6a23c"/><circle cx="30" cy="42" r="3.5" fill="#33384a"/><circle cx="28.8" cy="40.8" r="1.2" fill="#ffffff"/><ellipse cx="38" cy="49" rx="3.6" ry="2.3" fill="#ff9aa2" opacity="0.55"/><path d="M20 80 Q32 84 44 80" stroke="#bfe3f7" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M56 82 Q66 85 74 81" stroke="#bfe3f7" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  cuckoo: `<ellipse cx="50" cy="92" rx="26" ry="5" fill="#33384a" opacity="0.10"/><rect x="16" y="84" width="68" height="6.5" rx="3.2" fill="#a97c4f"/><path d="M40 84 L40 78 M56 84 L56 78" stroke="#f6a23c" stroke-width="2.6" stroke-linecap="round"/><path d="M66 64 Q86 70 84 84 Q72 80 62 72 Z" fill="#4fa3d9"/><ellipse cx="47" cy="58" rx="24" ry="22" fill="#7fc4ec"/><ellipse cx="43" cy="66" rx="14" ry="11" fill="#bfe3f7"/><path d="M50 54 Q68 50 70 62 Q60 68 48 63 Z" fill="#4fa3d9"/><path d="M27 52 L15 50 L27 58 Z" fill="#f6a23c"/><circle cx="37" cy="48" r="3.7" fill="#33384a"/><circle cx="51" cy="48" r="3.7" fill="#33384a"/><circle cx="35.7" cy="46.7" r="1.3" fill="#ffffff"/><circle cx="49.7" cy="46.7" r="1.3" fill="#ffffff"/><ellipse cx="32" cy="57" rx="3.8" ry="2.4" fill="#ff9aa2" opacity="0.55"/><ellipse cx="56" cy="57" rx="3.8" ry="2.4" fill="#ff9aa2" opacity="0.55"/>`,
+  woodpecker: `<ellipse cx="52" cy="92" rx="26" ry="5" fill="#33384a" opacity="0.10"/><rect x="62" y="14" width="18" height="76" rx="8" fill="#a97c4f"/><path d="M66 26 Q71 28 76 26 M66 44 Q71 46 76 44 M66 62 Q71 64 76 62 M66 78 Q71 80 76 78" stroke="#7b5836" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M30 74 Q24 84 30 88 Q36 84 36 76 Z" fill="#5b6bb5"/><ellipse cx="38" cy="58" rx="20" ry="18" fill="#f4f8ff"/><path d="M34 42 C46 38 54 46 54 56 C54 64 50 70 44 73 C50 62 48 48 34 42 Z" fill="#5b6bb5"/><path d="M28 40 Q38 32 46 40 Q40 46 30 46 Z" fill="#ef6f5b"/><path d="M52 52 L66 55 L52 60 Z" fill="#f6a23c"/><circle cx="42" cy="52" r="3.6" fill="#33384a"/><circle cx="40.7" cy="50.7" r="1.3" fill="#ffffff"/><ellipse cx="34" cy="60" rx="3.6" ry="2.3" fill="#ff9aa2" opacity="0.55"/><path d="M40 74 L44 82 M34 75 L36 83" stroke="#f6a23c" stroke-width="2.4" stroke-linecap="round"/>`,
+  cave: `<path d="M28 50 Q8 42 6 58 Q13 56 16 62 Q22 58 25 64 Q28 60 32 58 Z" fill="#5b6bb5"/><path d="M72 50 Q92 42 94 58 Q87 56 84 62 Q78 58 75 64 Q72 60 68 58 Z" fill="#5b6bb5"/><ellipse cx="50" cy="58" rx="23" ry="21" fill="#8a7fd0"/><ellipse cx="50" cy="65" rx="13" ry="10" fill="#dbe7f5"/><path d="M36 42 L31 26 L46 36 Z" fill="#8a7fd0"/><path d="M64 42 L69 26 L54 36 Z" fill="#8a7fd0"/><path d="M37 39 L34 31 L42 36 Z" fill="#f7c6cf"/><path d="M63 39 L66 31 L58 36 Z" fill="#f7c6cf"/><circle cx="42" cy="54" r="3.8" fill="#33384a"/><circle cx="58" cy="54" r="3.8" fill="#33384a"/><circle cx="40.6" cy="52.6" r="1.3" fill="#ffffff"/><circle cx="56.6" cy="52.6" r="1.3" fill="#ffffff"/><ellipse cx="36" cy="61" rx="3.8" ry="2.4" fill="#ff9aa2" opacity="0.55"/><ellipse cx="64" cy="61" rx="3.8" ry="2.4" fill="#ff9aa2" opacity="0.55"/><path d="M45 63 Q50 67 55 63" stroke="#3a4a7a" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M46 64 L48 67 M54 64 L52 67" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>`,
   rain: `<path d="M28 62 Q20 62 18 54 Q10 54 10 46 Q10 38 20 38 Q22 28 34 30 Q40 22 52 26 Q62 20 70 30 Q84 30 84 44 Q90 46 88 54 Q86 62 76 62 Z" fill="#eef4fb"/><ellipse cx="50" cy="58" rx="30" ry="8" fill="#dbe7f5"/><path d="M34 66 Q31 71 34 74 Q37 71 34 66 Z" fill="#7fc4ec"/><path d="M50 68 Q47 73 50 76 Q53 73 50 68 Z" fill="#7fc4ec"/><path d="M66 66 Q63 71 66 74 Q69 71 66 66 Z" fill="#7fc4ec"/><circle cx="41" cy="48" r="3.6" fill="#33384a"/><circle cx="59" cy="48" r="3.6" fill="#33384a"/><circle cx="39.6" cy="46.6" r="1.3" fill="#ffffff"/><circle cx="57.6" cy="46.6" r="1.3" fill="#ffffff"/><ellipse cx="34" cy="54" rx="4" ry="2.5" fill="#ff9aa2" opacity="0.55"/><ellipse cx="66" cy="54" rx="4" ry="2.5" fill="#ff9aa2" opacity="0.55"/><path d="M44 54 Q50 60 56 54" stroke="#7fc4ec" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
   thunder: `<ellipse cx="30" cy="46" rx="14" ry="12" fill="#dbe7f5"/><ellipse cx="70" cy="46" rx="14" ry="12" fill="#dbe7f5"/><ellipse cx="50" cy="40" rx="18" ry="15" fill="#dbe7f5"/><path d="M22 44 C22 34 32 30 42 32 C46 26 58 26 62 34 C72 32 80 40 78 50 C82 56 78 64 68 63 L32 63 C22 64 18 54 22 44 Z" fill="#dbe7f5"/><ellipse cx="50" cy="46" rx="24" ry="12" fill="#eef4fb"/><path d="M52 58 L40 74 L48 74 L42 86 L60 68 L51 68 L58 58 Z" fill="#ffd166"/><path d="M36 46 Q42 49 48 46" stroke="#33384a" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M52 46 Q58 49 64 46" stroke="#33384a" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="35" cy="53" rx="4" ry="2.5" fill="#ff9aa2" opacity="0.55"/><ellipse cx="65" cy="53" rx="4" ry="2.5" fill="#ff9aa2" opacity="0.55"/>`,
   stream: `<ellipse cx="50" cy="92" rx="26" ry="5" fill="#33384a" opacity="0.10"/><path d="M74 60 L88 48 L86 66 L88 82 L74 70 Z" fill="#4fa3d9"/><ellipse cx="46" cy="62" rx="32" ry="24" fill="#7fc4ec"/><ellipse cx="44" cy="70" rx="20" ry="12" fill="#bfe3f7"/><path d="M40 40 Q50 30 58 42 Q49 46 40 40 Z" fill="#4fa3d9"/><path d="M30 78 Q40 90 52 80 Q41 82 30 78 Z" fill="#4fa3d9"/><circle cx="38" cy="56" r="9" fill="#ffffff"/><circle cx="38" cy="57" r="5" fill="#33384a"/><circle cx="35.8" cy="54.8" r="1.6" fill="#ffffff"/><ellipse cx="26" cy="66" rx="4" ry="2.5" fill="#ff9aa2" opacity="0.55"/><path d="M34 88 Q46 84 60 88" stroke="#bfe3f7" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,

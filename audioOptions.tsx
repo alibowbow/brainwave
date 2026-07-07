@@ -2,15 +2,17 @@ import React from 'react';
 import {
   CloudRain, CloudLightning, Droplets, Mountain, Waves, Flame, Wind, Bird, Bug, Turtle,
   Feather, CloudMoon, Bell, Disc3, Orbit, Snowflake, Sailboat, Fan, Activity, AudioLines, Volume1,
+  Sunrise, Hammer, Egg, Gem,
 } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType } from './types';
 
 // Sounds grouped by scene — drives the categorized picker UI.
 export const SOUND_GROUPS: { label: string; sounds: BackgroundSoundType[] }[] = [
   { label: '물 · 비', sounds: ['rain', 'thunder', 'stream', 'waterfall', 'wave'] },
-  { label: '숲 · 생물', sounds: ['forest', 'birds', 'cicadas', 'frogs', 'owl', 'night'] },
-  { label: '공간 · 명상', sounds: ['fire', 'chimes', 'bowl', 'drone'] },
-  { label: '바람 · 노이즈', sounds: ['blizzard', 'seabirds', 'fan', 'white', 'pink'] },
+  { label: '새', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl'] },
+  { label: '숲 · 생물', sounds: ['forest', 'cicadas', 'frogs', 'ducks', 'night'] },
+  { label: '공간 · 명상', sounds: ['fire', 'chimes', 'bowl', 'drone', 'cave'] },
+  { label: '바람 · 노이즈', sounds: ['blizzard', 'fan', 'white', 'pink'] },
 ];
 
 // Flat display order (selectable sounds; 'none' is handled by the picker itself).
@@ -29,6 +31,10 @@ export const getSoundIcon = (type: BackgroundSoundType) => {
     case 'fire': return <Flame size={20} />;
     case 'forest': return <Wind size={20} />;
     case 'birds': return <Bird size={20} />;
+    case 'cuckoo': return <Sunrise size={20} />;
+    case 'woodpecker': return <Hammer size={20} />;
+    case 'ducks': return <Egg size={20} />;
+    case 'cave': return <Gem size={20} />;
     case 'cicadas': return <Bug size={20} />;
     case 'frogs': return <Turtle size={20} />;
     case 'owl': return <Feather size={20} />;
@@ -56,6 +62,10 @@ export const getSoundLabel = (type: BackgroundSoundType) => {
     case 'fire': return '모닥불';
     case 'forest': return '숲바람';
     case 'birds': return '새소리';
+    case 'cuckoo': return '뻐꾸기';
+    case 'woodpecker': return '딱따구리';
+    case 'ducks': return '오리';
+    case 'cave': return '동굴';
     case 'cicadas': return '매미';
     case 'frogs': return '개구리';
     case 'owl': return '부엉이';

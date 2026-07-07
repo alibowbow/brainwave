@@ -27,6 +27,57 @@ const PARTICLES = [
   { left: '87%', top: '34%', size: 4, cls: 'sc-drift-a', delay: '2.3s' },
 ];
 
+const CLOUD_SVG = (
+  <svg viewBox="0 0 120 36" width="100%" height="100%">
+    <ellipse cx="38" cy="24" rx="30" ry="11" fill="currentColor" />
+    <ellipse cx="66" cy="18" rx="24" ry="13" fill="currentColor" />
+    <ellipse cx="92" cy="25" rx="24" ry="9" fill="currentColor" />
+  </svg>
+);
+
+const GRASS_SVG = (
+  <svg viewBox="0 0 20 20" width="100%" height="100%">
+    <path d="M10 19 Q8 10 4 5 M10 19 Q10 8 10 3 M10 19 Q12 10 16 6" stroke="var(--sc-hf-1)" strokeWidth="2" fill="none" strokeLinecap="round" />
+  </svg>
+);
+
+const FLOWER_SVG = (color: string) => (
+  <svg viewBox="0 0 20 24" width="100%" height="100%">
+    <path d="M10 23 Q10 16 10 11" stroke="var(--sc-hf-1)" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+    <circle cx="10" cy="8" r="2.2" fill="#ffe3a3" />
+    <circle cx="6.5" cy="7" r="2.6" fill={color} />
+    <circle cx="13.5" cy="7" r="2.6" fill={color} />
+    <circle cx="8" cy="11.5" r="2.6" fill={color} />
+    <circle cx="12" cy="11.5" r="2.6" fill={color} />
+    <circle cx="10" cy="4.5" r="2.6" fill={color} />
+  </svg>
+);
+
+const REED_SVG = (
+  <svg viewBox="0 0 22 40" width="100%" height="100%">
+    <path d="M7 40 Q6 22 6 12 M15 40 Q16 24 16 16" stroke="#5aa86a" strokeWidth="2" fill="none" strokeLinecap="round" />
+    <rect x="4" y="4" width="4.6" height="11" rx="2.3" fill="#a97c4f" />
+    <rect x="13.8" y="9" width="4.6" height="10" rx="2.3" fill="#7b5836" />
+  </svg>
+);
+
+const BUTTERFLY_SVG = (
+  <svg viewBox="0 0 20 16" width="100%" height="100%">
+    <ellipse cx="6" cy="7" rx="5" ry="4.2" fill="#ff9aa2" />
+    <ellipse cx="14" cy="7" rx="5" ry="4.2" fill="#ffd166" />
+    <ellipse cx="10" cy="8" rx="1.4" ry="4.6" fill="#33384a" />
+  </svg>
+);
+
+const FLORA = [
+  { left: '6%', top: '77%', size: 15, kind: 'grass', delay: '0s' },
+  { left: '19%', top: '72%', size: 13, kind: 'grass', delay: '1.2s' },
+  { left: '30%', top: '75%', size: 16, kind: 'flower-pink', delay: '0.5s' },
+  { left: '52%', top: '71%', size: 14, kind: 'grass', delay: '2s' },
+  { left: '68%', top: '74%', size: 16, kind: 'flower-yellow', delay: '1.6s' },
+  { left: '88%', top: '72%', size: 15, kind: 'grass', delay: '0.8s' },
+];
+
 // A layered, atmospheric diorama: gradient sky with sun/moon bloom and stars,
 // three hazy parallax hills, optional gradient water, floating particles and a
 // vignette — with the active sounds' characters and weather composited on top.
@@ -116,6 +167,17 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
         <path d="M0 108 Q130 86 250 104 T400 100 L400 160 L0 160 Z" fill="url(#scHillMid)" />
         {/* horizon haze */}
         <rect x="0" y="86" width="400" height="30" fill="url(#scHaze)" opacity="0.5" />
+        {/* distant tree silhouettes on the mid hill */}
+        <g opacity="0.5" filter="url(#scBlur)" style={{ fill: 'var(--sc-hf-1)' }}>
+          <circle cx="58" cy="94" r="9" />
+          <rect x="56" y="98" width="4" height="9" rx="2" />
+          <circle cx="76" cy="98" r="6.5" />
+          <rect x="74.5" y="101" width="3" height="7" rx="1.5" />
+          <circle cx="332" cy="92" r="8" />
+          <rect x="330" y="96" width="4" height="9" rx="2" />
+          <circle cx="352" cy="97" r="5.5" />
+          <rect x="350.6" y="100" width="2.8" height="7" rx="1.4" />
+        </g>
         {/* front ground */}
         <path d="M0 126 Q110 106 230 122 T400 118 L400 160 L0 160 Z" fill="url(#scHillFront)" />
 
@@ -171,6 +233,33 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
         </div>
       )}
 
+      {/* drifting clouds */}
+      <div className="sc-cloud sc-cloud-a" style={{ left: 0, top: '6%', width: 96, height: 30 }}>{CLOUD_SVG}</div>
+      <div className="sc-cloud sc-cloud-b" style={{ left: 0, top: '20%', width: 66, height: 22, opacity: 0.75 }}>{CLOUD_SVG}</div>
+
+      {/* grass tufts & wildflowers on the front hill */}
+      {FLORA.map((f, i) => (
+        <div key={i} className="sc-grass absolute pointer-events-none" style={{ left: f.left, top: f.top, width: f.size, height: f.size * 1.15, animationDelay: f.delay }}>
+          {f.kind === 'grass' ? GRASS_SVG : FLOWER_SVG(f.kind === 'flower-pink' ? '#ff9aa2' : '#ffd166')}
+        </div>
+      ))}
+
+      {/* reeds at the water's edge */}
+      {hasWater && (
+        <>
+          <div className="sc-grass absolute pointer-events-none" style={{ left: '3%', bottom: '4%', width: 20, height: 36 }}>{REED_SVG}</div>
+          <div className="sc-grass absolute pointer-events-none" style={{ right: '4%', bottom: '5%', width: 18, height: 32, animationDelay: '1.4s' }}>{REED_SVG}</div>
+        </>
+      )}
+
+      {/* daytime butterflies (fireflies take over at night via particles) */}
+      {!night && (
+        <>
+          <div className="sc-butterfly absolute pointer-events-none" style={{ left: '24%', top: '58%', width: 15, height: 12 }}>{BUTTERFLY_SVG}</div>
+          <div className="sc-butterfly absolute pointer-events-none" style={{ left: '70%', top: '52%', width: 12, height: 10, animationDelay: '-7s' }}>{BUTTERFLY_SVG}</div>
+        </>
+      )}
+
       {/* ambient particles */}
       {PARTICLES.map((p, i) => (
         <div key={i} className={`sc-particle ${p.cls}`} style={{ left: p.left, top: p.top, width: p.size, height: p.size, animationDelay: p.delay }} />
@@ -184,8 +273,9 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
       ) : (
         chars.map((t, i) => {
           const meta = SCENE_META[t]!;
-          const x = ((i + 0.5) / n) * 100;
-          const y = BAND_Y[meta.band];
+          // Deterministic jitter so placement feels organic, not mechanical.
+          const x = Math.min(93, Math.max(7, ((i + 0.5) / n) * 100 + (((i * 53) % 9) - 4)));
+          const y = BAND_Y[meta.band] + (((i * 31) % 7) - 3);
           const size = BAND_SIZE[meta.band];
           return (
             <div

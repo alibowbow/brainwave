@@ -9,10 +9,14 @@ export type BackgroundSoundType =
   | 'fire'
   | 'forest'
   | 'birds'
+  | 'cuckoo'
+  | 'woodpecker'
+  | 'ducks'
   | 'cicadas'
   | 'frogs'
   | 'owl'
   | 'night'
+  | 'cave'
   | 'chimes'
   | 'bowl'
   | 'drone'
@@ -111,4 +115,8 @@ export const AMBIENCE_PRESETS: AmbiencePreset[] = [
     layers: [{ type: 'drone', volume: 0.7 }, { type: 'bowl', volume: 0.6 }, { type: 'chimes', volume: 0.5 }] },
   { id: 'focus_cafe', name: '카페 집중', description: '비 오는 창가의 백색소음', emoji: '☕', brainWaveType: 'alpha', durationMinutes: 40,
     layers: [{ type: 'pink', volume: 0.5 }, { type: 'rain', volume: 0.6 }] },
+  { id: 'deep_forest', name: '깊은 숲', description: '뻐꾸기와 딱따구리의 오지 숲', emoji: '🌲', brainWaveType: 'alpha', durationMinutes: 35,
+    layers: [{ type: 'forest', volume: 0.7 }, { type: 'cuckoo', volume: 0.55 }, { type: 'woodpecker', volume: 0.5 }, { type: 'stream', volume: 0.4 }] },
+  { id: 'cave_meditation', name: '동굴 명상', description: '울리는 물방울과 고요한 공명', emoji: '🦇', brainWaveType: 'theta', durationMinutes: 25,
+    layers: [{ type: 'cave', volume: 0.75 }, { type: 'bowl', volume: 0.5 }, { type: 'drone', volume: 0.45 }] },
 ];

@@ -53,6 +53,7 @@ h1, h2, h3, h4 {
   --sc-hf-0: #8ace8f; --sc-hf-1: #6cbd78;
   --sc-w-0: #cfeafb; --sc-w-1: #7fc4ec; --sc-w-2: #4c9dd4;
   --sc-vign: rgba(18, 22, 40, 0.18);
+  --sc-cloud: rgba(255, 255, 255, 0.9);
 }
 .sc-scene[data-phase="dawn"] {
   --sc-sky-0: #8fb6e8; --sc-sky-1: #d6c3e6; --sc-sky-2: #ffd6ac;
@@ -63,6 +64,7 @@ h1, h2, h3, h4 {
   --sc-hf-0: #7ec488; --sc-hf-1: #64b571;
   --sc-w-0: #d3e6f4; --sc-w-1: #84c0e6; --sc-w-2: #5aa0cf;
   --sc-vign: rgba(40, 26, 46, 0.18);
+  --sc-cloud: rgba(255, 236, 219, 0.85);
 }
 .sc-scene[data-phase="sunset"] {
   --sc-sky-0: #5560a8; --sc-sky-1: #e28aa0; --sc-sky-2: #ffb066;
@@ -73,6 +75,7 @@ h1, h2, h3, h4 {
   --sc-hf-0: #5e9370; --sc-hf-1: #4b7d5e;
   --sc-w-0: #d9c2b8; --sc-w-1: #9a90b4; --sc-w-2: #5c6796;
   --sc-vign: rgba(30, 14, 34, 0.28);
+  --sc-cloud: rgba(255, 213, 183, 0.7);
 }
 .sc-scene[data-phase="night"] {
   --sc-sky-0: #0d1730; --sc-sky-1: #1a2b4e; --sc-sky-2: #33406b;
@@ -83,6 +86,7 @@ h1, h2, h3, h4 {
   --sc-hf-0: #37634a; --sc-hf-1: #2a5240;
   --sc-w-0: #35617f; --sc-w-1: #244c6b; --sc-w-2: #15304a;
   --sc-vign: rgba(0, 0, 0, 0.4);
+  --sc-cloud: rgba(205, 218, 245, 0.16);
 }
 
 .sc-sky-0 { stop-color: var(--sc-sky-0); }
@@ -121,7 +125,65 @@ h1, h2, h3, h4 {
   .scene-motion-float { animation: sceneFloat 4s ease-in-out infinite; }
   .scene-motion-bob { animation: sceneBob 2.8s ease-in-out infinite; }
   .scene-motion-sway { animation: sceneSway 4.5s ease-in-out infinite; transform-origin: bottom center; }
+  .scene-motion-swim { animation: sceneSwim 16s ease-in-out infinite; }
+  .scene-motion-flicker { animation: sceneFlicker 0.9s ease-in-out infinite; transform-origin: bottom center; }
+  .scene-motion-hop { animation: sceneHop 6.5s ease-in-out infinite; transform-origin: bottom center; }
+  .scene-motion-pendulum { animation: scenePendulum 4.2s ease-in-out infinite; transform-origin: top center; }
+  .scene-motion-peck { animation: scenePeck 4s linear infinite; transform-origin: 65% 55%; }
 }
+/* Fish patrols left-right, flipping at each turn (it is drawn facing left). */
+@keyframes sceneSwim {
+  0%, 100% { transform: translateX(12px) scaleX(1); }
+  46% { transform: translateX(-12px) scaleX(1); }
+  50% { transform: translateX(-12px) scaleX(-1); }
+  96% { transform: translateX(12px) scaleX(-1); }
+}
+@keyframes sceneFlicker {
+  0%, 100% { transform: scale(1, 1); }
+  30% { transform: scale(1.025, 0.975); }
+  55% { transform: scale(0.98, 1.02); }
+  80% { transform: scale(1.015, 0.99); }
+}
+/* Mostly still, then a quick double hop. */
+@keyframes sceneHop {
+  0%, 78%, 100% { transform: translateY(0) scale(1, 1); }
+  80% { transform: translateY(-1px) scale(1.06, 0.94); }
+  84% { transform: translateY(-10px) scale(0.97, 1.04); }
+  88% { transform: translateY(0) scale(1.04, 0.96); }
+  91% { transform: translateY(-6px) scale(0.99, 1.02); }
+  94% { transform: translateY(0) scale(1, 1); }
+}
+@keyframes scenePendulum {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+/* Idle, then a burst of quick pecks toward the trunk. */
+@keyframes scenePeck {
+  0%, 55%, 100% { transform: rotate(0); }
+  58% { transform: rotate(7deg); } 61% { transform: rotate(0); }
+  64% { transform: rotate(7deg); } 67% { transform: rotate(0); }
+  70% { transform: rotate(7deg); } 73% { transform: rotate(0); }
+  76% { transform: rotate(7deg); } 79% { transform: rotate(0); }
+}
+
+/* --- Scene decorations: clouds, grass, butterflies --- */
+.sc-cloud { position: absolute; pointer-events: none; color: var(--sc-cloud); }
+@media (prefers-reduced-motion: no-preference) {
+  .sc-cloud-a { animation: scCloudDrift 75s linear infinite; }
+  .sc-cloud-b { animation: scCloudDrift 115s linear infinite; animation-delay: -55s; }
+  .sc-grass { animation: scGrassSway 4s ease-in-out infinite; transform-origin: bottom center; }
+  .sc-butterfly { animation: scFlutter 16s ease-in-out infinite; }
+  .sc-butterfly > svg { animation: scWingFlap 0.4s ease-in-out infinite; }
+}
+@keyframes scCloudDrift { from { transform: translateX(-130px); } to { transform: translateX(560px); } }
+@keyframes scGrassSway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes scFlutter {
+  0%, 100% { transform: translate(0, 0); }
+  22% { transform: translate(26px, -16px); }
+  48% { transform: translate(-4px, -26px); }
+  74% { transform: translate(-24px, -10px); }
+}
+@keyframes scWingFlap { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.55); } }
 @keyframes sceneFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }

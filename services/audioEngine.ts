@@ -408,7 +408,7 @@ export class BinauralEngine {
     heavyFilter.type = 'lowpass';
     heavyFilter.frequency.value = 250;
     const heavyGain = this.ctx.createGain();
-    heavyGain.gain.value = 0.6;
+    heavyGain.gain.value = 0.85;
     heavyNode.connect(heavyFilter).connect(heavyGain).connect(dest);
     heavyNode.start();
     this.register(bucket, heavyNode);
@@ -418,7 +418,7 @@ export class BinauralEngine {
     hissFilter.type = 'lowpass';
     hissFilter.frequency.value = 700;
     const hissGain = this.ctx.createGain();
-    hissGain.gain.value = 0.4;
+    hissGain.gain.value = 0.58;
     hissNode.connect(hissFilter).connect(hissGain).connect(dest);
     hissNode.start();
     this.register(bucket, hissNode);
@@ -454,7 +454,7 @@ export class BinauralEngine {
       gain.gain.setValueAtTime(0, t);
       const attackTime = r < 0.005 ? 0.001 : 0.005;
       const decayTime = r < 0.005 ? 0.15 : 0.12;
-      gain.gain.linearRampToValueAtTime(0.8, t + attackTime);
+      gain.gain.linearRampToValueAtTime(0.95, t + attackTime);
       gain.gain.exponentialRampToValueAtTime(0.01, t + decayTime);
       src.start(t); src.stop(t + decayTime + 0.05);
     };
@@ -682,7 +682,7 @@ export class BinauralEngine {
     const rFilter = this.ctx.createBiquadFilter();
     rFilter.type = 'lowpass'; rFilter.frequency.value = 400;
     const rGain = this.ctx.createGain();
-    rGain.gain.value = 1.0;
+    rGain.gain.value = 1.35;
     rumble.connect(rFilter).connect(rGain).connect(dest);
     rumble.start();
     this.register(bucket, rumble);
@@ -691,7 +691,7 @@ export class BinauralEngine {
     const roarFilter = this.ctx.createBiquadFilter();
     roarFilter.type = 'lowpass'; roarFilter.frequency.value = 600;
     const roarGain = this.ctx.createGain();
-    roarGain.gain.value = 0.55;
+    roarGain.gain.value = 0.85;
     roar.connect(roarFilter).connect(roarGain).connect(dest);
     roar.start();
     this.register(bucket, roar);
@@ -731,7 +731,7 @@ export class BinauralEngine {
       osc.frequency.exponentialRampToValueAtTime(55, t + 0.06);
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.5, t + 0.004);
+      env.gain.linearRampToValueAtTime(0.62, t + 0.004);
       env.gain.exponentialRampToValueAtTime(0.005, t + 0.08);
       osc.connect(env).connect(this.makePan(Math.random() * 0.8 - 0.4, dest));
       osc.start(t); osc.stop(t + 0.1);
@@ -954,7 +954,7 @@ export class BinauralEngine {
       osc.frequency.exponentialRampToValueAtTime(295, t + dur);
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.55, t + 0.07);
+      env.gain.linearRampToValueAtTime(0.9, t + 0.07);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(env).connect(pan);
       osc.start(t); osc.stop(t + dur + 0.05);
@@ -989,7 +989,7 @@ export class BinauralEngine {
       lp.type = 'lowpass'; lp.frequency.value = 1600;
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.44, t + 0.05);
+      env.gain.linearRampToValueAtTime(0.72, t + 0.05);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(lp).connect(env).connect(pan);
       osc.start(t); osc.stop(t + dur + 0.05);
@@ -1018,10 +1018,10 @@ export class BinauralEngine {
       const src = this.ctx.createBufferSource();
       src.buffer = this.pinkNoiseBuffer;
       const bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass'; bp.frequency.value = 1050 + Math.random() * 250; bp.Q.value = 2.5;
+      bp.type = 'bandpass'; bp.frequency.value = 1050 + Math.random() * 250; bp.Q.value = 1.7;
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.55, t + 0.002);
+      env.gain.linearRampToValueAtTime(1.15, t + 0.002);
       env.gain.exponentialRampToValueAtTime(0.01, t + 0.03);
       src.connect(bp).connect(env).connect(pan);
       src.start(t); src.stop(t + 0.05);
@@ -1033,7 +1033,7 @@ export class BinauralEngine {
       thump.frequency.exponentialRampToValueAtTime(120, t + 0.04);
       const tEnv = this.ctx.createGain();
       tEnv.gain.setValueAtTime(0, t);
-      tEnv.gain.linearRampToValueAtTime(0.35, t + 0.003);
+      tEnv.gain.linearRampToValueAtTime(0.62, t + 0.003);
       tEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.05);
       thump.connect(tEnv).connect(pan);
       thump.start(t); thump.stop(t + 0.07);
@@ -1046,7 +1046,7 @@ export class BinauralEngine {
       const count = 8 + Math.floor(Math.random() * 7);
       const rate = 0.05 + Math.random() * 0.015;
       for (let i = 0; i < count; i++) knock(t + i * rate, pan);
-      const id = window.setTimeout(burst, 6000 + Math.random() * 9000);
+      const id = window.setTimeout(burst, 4500 + Math.random() * 7000);
       bucket.timeouts.push(id);
     };
     burst();

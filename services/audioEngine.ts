@@ -624,11 +624,11 @@ export class BinauralEngine {
       osc.type = 'triangle';
       osc.frequency.value = freq;
       const gate = this.ctx!.createGain();
-      gate.gain.value = 0.5;
+      gate.gain.value = 0.6;
       const amOsc = this.ctx!.createOscillator();
       amOsc.frequency.value = am;
       const amDepth = this.ctx!.createGain();
-      amDepth.gain.value = 0.5;
+      amDepth.gain.value = 0.35; // stay in 0.25..0.95 so the tremolo never hits zero (avoids buzzy edges)
       amOsc.connect(amDepth).connect(gate.gain);
       const bp = this.ctx!.createBiquadFilter();
       bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 2;
@@ -648,8 +648,13 @@ export class BinauralEngine {
       const lfo = this.ctx.createOscillator();
       lfo.frequency.value = type === 'long' ? 30 : 40;
       const modGain = this.ctx.createGain();
-      modGain.gain.value = 0.6;
-      lfo.connect(modGain.gain);
+      modGain.gain.value = 0.55;
+      // Scale the LFO so the tremolo depth stays positive (0.1..1.0). A raw
+      // ±1 LFO drove the gain negative, inverting phase each cycle — that
+      // abrupt zero-crossing buzz was the "noise" in the night chirps.
+      const lfoAmt = this.ctx.createGain();
+      lfoAmt.gain.value = 0.45;
+      lfo.connect(lfoAmt).connect(modGain.gain);
       const env = this.ctx.createGain();
       osc.connect(modGain).connect(env).connect(this.makePan(Math.random() * 1.6 - 0.8, dest));
       env.gain.setValueAtTime(0, t);
@@ -920,7 +925,7 @@ export class BinauralEngine {
         const gd = rate * 0.92;
         const taper = i > grains - 3 ? 0.55 : 1;
         g.gain.setValueAtTime(0.05, t);
-        g.gain.linearRampToValueAtTime(3.4 * taper, t + gd * 0.35);
+        g.gain.linearRampToValueAtTime(4.2 * taper, t + gd * 0.35);
         g.gain.exponentialRampToValueAtTime(0.05, t + gd);
         t += rate;
       }
@@ -934,9 +939,9 @@ export class BinauralEngine {
       const t = this.ctx.currentTime;
       const pan = Math.random() * 1.6 - 0.8;
       croak(t, pan);
-      if (Math.random() < 0.3) croak(t + 0.35, pan);
-      if (Math.random() < 0.25) croak(t + 0.6 + Math.random() * 0.4, -pan); // answer from the other side
-      const id = window.setTimeout(loop, 700 + Math.random() * 2800);
+      if (Math.random() < 0.6) croak(t + 0.33, pan);
+      if (Math.random() < 0.45) croak(t + 0.6 + Math.random() * 0.4, -pan); // answer from the other side
+      const id = window.setTimeout(loop, 500 + Math.random() * 1800);
       bucket.timeouts.push(id);
     };
     loop();
@@ -1021,10 +1026,10 @@ export class BinauralEngine {
       bp.type = 'bandpass'; bp.frequency.value = 1050 + Math.random() * 250; bp.Q.value = 1.7;
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(1.15, t + 0.002);
-      env.gain.exponentialRampToValueAtTime(0.01, t + 0.03);
+      env.gain.linearRampToValueAtTime(1.3, t + 0.002);
+      env.gain.exponentialRampToValueAtTime(0.01, t + 0.045);
       src.connect(bp).connect(env).connect(pan);
-      src.start(t); src.stop(t + 0.05);
+      src.start(t); src.stop(t + 0.065);
 
       // Hollow-wood thump underneath each knock.
       const thump = this.ctx.createOscillator();
@@ -1033,20 +1038,20 @@ export class BinauralEngine {
       thump.frequency.exponentialRampToValueAtTime(120, t + 0.04);
       const tEnv = this.ctx.createGain();
       tEnv.gain.setValueAtTime(0, t);
-      tEnv.gain.linearRampToValueAtTime(0.62, t + 0.003);
-      tEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.05);
+      tEnv.gain.linearRampToValueAtTime(0.95, t + 0.003);
+      tEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.07);
       thump.connect(tEnv).connect(pan);
-      thump.start(t); thump.stop(t + 0.07);
+      thump.start(t); thump.stop(t + 0.1);
     };
 
     const burst = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
       const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
-      const count = 8 + Math.floor(Math.random() * 7);
+      const count = 11 + Math.floor(Math.random() * 8);
       const rate = 0.05 + Math.random() * 0.015;
       for (let i = 0; i < count; i++) knock(t + i * rate, pan);
-      const id = window.setTimeout(burst, 2800 + Math.random() * 4200);
+      const id = window.setTimeout(burst, 1800 + Math.random() * 3200);
       bucket.timeouts.push(id);
     };
     burst();
@@ -1077,12 +1082,12 @@ export class BinauralEngine {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
       const pan = this.makePan(Math.random() * 1.2 - 0.6, dest);
-      const n = 2 + Math.floor(Math.random() * 3);
+      const n = 3 + Math.floor(Math.random() * 3);
       const base = 265 + Math.random() * 60;
       for (let i = 0; i < n; i++) {
-        quack(t + i * 0.3, base * (1 + Math.random() * 0.06 - 0.03), 1.1 * Math.pow(0.85, i), pan);
+        quack(t + i * 0.3, base * (1 + Math.random() * 0.06 - 0.03), 1.5 * Math.pow(0.85, i), pan);
       }
-      const id = window.setTimeout(series, 5000 + Math.random() * 7000);
+      const id = window.setTimeout(series, 3500 + Math.random() * 5000);
       bucket.timeouts.push(id);
     };
     series();

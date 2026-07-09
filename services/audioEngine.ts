@@ -585,7 +585,7 @@ export class BinauralEngine {
       osc.frequency.setValueAtTime(startFreq, t);
       osc.frequency.exponentialRampToValueAtTime(endFreq, t + dur);
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.42, t + 0.01);
+      gain.gain.linearRampToValueAtTime(1.0, t + 0.01);
       gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.start(t);
       osc.stop(t + dur + 0.05);
@@ -608,7 +608,7 @@ export class BinauralEngine {
         playSparrowChirp(t + 0.2, 0.1);
         playSparrowChirp(t + 0.4, 0.2);
       }
-      const id = window.setTimeout(playPattern, 1000 + Math.random() * 4000);
+      const id = window.setTimeout(playPattern, 800 + Math.random() * 2600);
       bucket.timeouts.push(id);
     };
     playPattern();
@@ -633,7 +633,7 @@ export class BinauralEngine {
       const bp = this.ctx!.createBiquadFilter();
       bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 2;
       const level = this.ctx!.createGain();
-      level.gain.value = 0.035;
+      level.gain.value = 0.06;
       osc.connect(gate).connect(bp).connect(level).connect(this.makePan(pan, dest));
       osc.start(); amOsc.start();
       this.register(bucket, osc);
@@ -653,8 +653,8 @@ export class BinauralEngine {
       const env = this.ctx.createGain();
       osc.connect(modGain).connect(env).connect(this.makePan(Math.random() * 1.6 - 0.8, dest));
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.4, t + 0.03);
-      env.gain.linearRampToValueAtTime(0.4, t + dur - 0.03);
+      env.gain.linearRampToValueAtTime(0.6, t + 0.03);
+      env.gain.linearRampToValueAtTime(0.6, t + dur - 0.03);
       env.gain.linearRampToValueAtTime(0, t + dur);
       osc.start(t); lfo.start(t);
       osc.stop(t + dur + 0.1); lfo.stop(t + dur + 0.1);
@@ -876,7 +876,7 @@ export class BinauralEngine {
 
       // Slow wax-and-wane so the chorus breathes instead of droning.
       const level = this.ctx!.createGain();
-      level.gain.value = 0.072;
+      level.gain.value = 0.3;
       const swell = this.ctx!.createOscillator();
       swell.frequency.value = swellHz;
       const swellDepth = this.ctx!.createGain();
@@ -908,7 +908,7 @@ export class BinauralEngine {
       bp.type = 'bandpass';
       const centerF = 420 + Math.random() * 380;
       bp.frequency.setValueAtTime(centerF, t0);
-      bp.Q.value = 6 + Math.random() * 4;
+      bp.Q.value = 1.4 + Math.random() * 1.1;
       const g = this.ctx.createGain();
       g.gain.setValueAtTime(0.0001, t0);
       src.connect(bp).connect(g).connect(out);
@@ -917,11 +917,11 @@ export class BinauralEngine {
       const rate = 0.017 + Math.random() * 0.008;
       let t = t0;
       for (let i = 0; i < grains; i++) {
-        const gd = rate * 0.72;
+        const gd = rate * 0.92;
         const taper = i > grains - 3 ? 0.55 : 1;
-        g.gain.setValueAtTime(0.02, t);
-        g.gain.linearRampToValueAtTime(0.5 * taper, t + gd * 0.35);
-        g.gain.exponentialRampToValueAtTime(0.02, t + gd);
+        g.gain.setValueAtTime(0.05, t);
+        g.gain.linearRampToValueAtTime(3.4 * taper, t + gd * 0.35);
+        g.gain.exponentialRampToValueAtTime(0.05, t + gd);
         t += rate;
       }
       bp.frequency.linearRampToValueAtTime(centerF * 1.35, t); // "ribbit" lift
@@ -954,7 +954,7 @@ export class BinauralEngine {
       osc.frequency.exponentialRampToValueAtTime(295, t + dur);
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.9, t + 0.07);
+      env.gain.linearRampToValueAtTime(1.15, t + 0.07);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(env).connect(pan);
       osc.start(t); osc.stop(t + dur + 0.05);
@@ -969,7 +969,7 @@ export class BinauralEngine {
         hoot(t + 0.55, 0.28, pan);
         hoot(t + 0.9, 0.45, pan);
       }
-      const id = window.setTimeout(call, 7000 + Math.random() * 11000);
+      const id = window.setTimeout(call, 5000 + Math.random() * 8000);
       bucket.timeouts.push(id);
     };
     call();
@@ -989,7 +989,7 @@ export class BinauralEngine {
       lp.type = 'lowpass'; lp.frequency.value = 1600;
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.72, t + 0.05);
+      env.gain.linearRampToValueAtTime(0.92, t + 0.05);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(lp).connect(env).connect(pan);
       osc.start(t); osc.stop(t + dur + 0.05);
@@ -1046,7 +1046,7 @@ export class BinauralEngine {
       const count = 8 + Math.floor(Math.random() * 7);
       const rate = 0.05 + Math.random() * 0.015;
       for (let i = 0; i < count; i++) knock(t + i * rate, pan);
-      const id = window.setTimeout(burst, 4500 + Math.random() * 7000);
+      const id = window.setTimeout(burst, 2800 + Math.random() * 4200);
       bucket.timeouts.push(id);
     };
     burst();
@@ -1080,9 +1080,9 @@ export class BinauralEngine {
       const n = 2 + Math.floor(Math.random() * 3);
       const base = 265 + Math.random() * 60;
       for (let i = 0; i < n; i++) {
-        quack(t + i * 0.3, base * (1 + Math.random() * 0.06 - 0.03), 0.42 * Math.pow(0.85, i), pan);
+        quack(t + i * 0.3, base * (1 + Math.random() * 0.06 - 0.03), 1.1 * Math.pow(0.85, i), pan);
       }
-      const id = window.setTimeout(series, 7000 + Math.random() * 9000);
+      const id = window.setTimeout(series, 5000 + Math.random() * 7000);
       bucket.timeouts.push(id);
     };
     series();
@@ -1198,7 +1198,7 @@ export class BinauralEngine {
 
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.4, t + 0.04);
+      env.gain.linearRampToValueAtTime(1.4, t + 0.04);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
 
       osc.connect(bp).connect(env).connect(pan);
@@ -1212,7 +1212,7 @@ export class BinauralEngine {
       const pan = this.makePan(Math.random() * 1.6 - 0.8, dest);
       const count = 1 + Math.floor(Math.random() * 3);
       for (let i = 0; i < count; i++) cry(t + i * (0.3 + Math.random() * 0.2), pan);
-      const id = window.setTimeout(flock, 6000 + Math.random() * 10000);
+      const id = window.setTimeout(flock, 4500 + Math.random() * 7500);
       bucket.timeouts.push(id);
     };
     flock();

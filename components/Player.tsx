@@ -1,10 +1,12 @@
 ﻿import React, { useState } from 'react';
-import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Sliders, Wind, Maximize2 } from 'lucide-react';
+import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Wind, Maximize2 } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType, getBrainWaveLabel } from '../types';
 import { WAVE_ORDER, getSoundLabel, getWaveShortLabel, getWaveColor } from '../audioOptions';
 import { SoundLayer, ToneMode } from '../services/audioEngine';
+import type { MixVolumes } from '../audioLevels';
 import { Toggle } from './Toggle';
 import { SoundLayerPicker } from './SoundLayerPicker';
+import { VolumeMixer } from './VolumeMixer';
 import { BreathingGuide } from './BreathingGuide';
 import { AuraVisualizer } from './AuraVisualizer';
 import { NatureScene } from './NatureScene';
@@ -23,8 +25,9 @@ interface PlayerProps {
   activeLayers: SoundLayer[];
   onToggleLayer: (type: BackgroundSoundType) => void;
   onLayerVolume: (type: BackgroundSoundType, vol: number) => void;
-  volumes: { master: number; binaural: number; bg: number };
-  onVolumeChange: (key: 'master' | 'binaural' | 'bg', val: number) => void;
+  onBalanceLayers: () => void;
+  volumes: MixVolumes;
+  onMixChange: (volumes: MixVolumes) => void;
   brainwaveEnabled: boolean;
   onToggleBrainwave: () => void;
   toneMode: ToneMode;
@@ -47,8 +50,9 @@ export const Player: React.FC<PlayerProps> = ({
   activeLayers,
   onToggleLayer,
   onLayerVolume,
+  onBalanceLayers,
   volumes,
-  onVolumeChange,
+  onMixChange,
   brainwaveEnabled,
   onToggleBrainwave,
   toneMode,
@@ -216,56 +220,11 @@ export const Player: React.FC<PlayerProps> = ({
           <div className="flex items-center gap-2 mb-3 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
             <Volume2 size={14} /> 배경음 (Layers)
           </div>
-          <SoundLayerPicker activeLayers={activeLayers} onToggle={onToggleLayer} onVolume={onLayerVolume} />
+          <SoundLayerPicker activeLayers={activeLayers} onToggle={onToggleLayer} onVolume={onLayerVolume} onBalance={onBalanceLayers} />
         </div>
 
         <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mb-8">
-          <div className="flex items-center gap-2 mb-4 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-            <Sliders size={14} /> 볼륨 믹서
-          </div>
-
-          <div className="space-y-4">
-            <div className={`flex items-center gap-4 transition-opacity ${brainwaveEnabled ? '' : 'opacity-40'}`}>
-              <span className="text-xs font-semibold w-16 text-slate-600 dark:text-slate-300">뇌파음</span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                aria-label="뇌파음 볼륨"
-                disabled={!brainwaveEnabled}
-                value={volumes.binaural}
-                onChange={(e) => onVolumeChange('binaural', Number(e.target.value))}
-                className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-semibold w-16 text-slate-600 dark:text-slate-300">자연음</span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                aria-label="자연음 볼륨"
-                value={volumes.bg}
-                onChange={(e) => onVolumeChange('bg', Number(e.target.value))}
-                className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
-              />
-            </div>
-            <div className="pt-3 mt-3 border-t border-dashed border-slate-200 dark:border-slate-700 flex items-center gap-4">
-              <span className="text-xs font-bold w-16 text-primary-600 dark:text-primary-400">전체 볼륨</span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                aria-label="전체 볼륨"
-                value={volumes.master}
-                onChange={(e) => onVolumeChange('master', Number(e.target.value))}
-                className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-600"
-              />
-            </div>
-          </div>
+          <VolumeMixer volumes={volumes} brainwaveEnabled={brainwaveEnabled} onChange={onMixChange} />
         </div>
       </div>
     </div>

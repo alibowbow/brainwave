@@ -11,7 +11,7 @@ interface Props {
 const BAND_Y: Record<string, number> = { sky: 22, tree: 45, ground: 72, water: 84 };
 const BAND_SIZE: Record<string, number> = { sky: 46, tree: 58, ground: 58, water: 46 };
 
-const SCENERY = new Set<BackgroundSoundType>(['wave', 'rain', 'thunder', 'blizzard', 'waterfall']);
+const SCENERY = new Set<BackgroundSoundType>(['wave', 'rain', 'thunder', 'blizzard', 'waterfall', 'fire']);
 const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'waterfall', 'wave'];
 const WAVE_PATH = 'M0 10 Q12.5 4 25 10 T50 10 T75 10 T100 10 T125 10 T150 10 T175 10 T200 10 V24 H0 Z';
 
@@ -78,6 +78,51 @@ const FLORA = [
   { left: '88%', top: '72%', size: 15, kind: 'grass', delay: '0.8s' },
 ];
 
+// Campfire flames: three stacked teardrop tongues (outer → core) that flicker
+// independently, giving the fire a live, layered glow for the "불멍" mood.
+const FLAME_OUTER = (
+  <svg viewBox="0 0 46 66" width="100%" height="100%" style={{ overflow: 'visible' }}>
+    <defs>
+      <linearGradient id="scFireOuter" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stopColor="#ffb63e" />
+        <stop offset="0.5" stopColor="#ff6f22" />
+        <stop offset="1" stopColor="#e5392a" />
+      </linearGradient>
+    </defs>
+    <path d="M23 3 C 14 21 8 31 10 45 C 12 58 17 65 23 65 C 29 65 34 58 36 45 C 38 31 32 21 23 3 Z" fill="url(#scFireOuter)" />
+  </svg>
+);
+const FLAME_MID = (
+  <svg viewBox="0 0 30 48" width="100%" height="100%">
+    <defs>
+      <linearGradient id="scFireMid" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stopColor="#ffe473" />
+        <stop offset="0.55" stopColor="#ffb02e" />
+        <stop offset="1" stopColor="#ff7a1e" />
+      </linearGradient>
+    </defs>
+    <path d="M15 2 C 9 14 5 22 7 33 C 9 42 12 46 15 46 C 18 46 21 42 23 33 C 25 22 21 14 15 2 Z" fill="url(#scFireMid)" />
+  </svg>
+);
+const FLAME_CORE = (
+  <svg viewBox="0 0 16 30" width="100%" height="100%">
+    <defs>
+      <linearGradient id="scFireCore" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stopColor="#fff7da" />
+        <stop offset="1" stopColor="#ffe085" />
+      </linearGradient>
+    </defs>
+    <path d="M8 2 C 5 9 3 14 4 19 C 5 25 6 28 8 28 C 10 28 11 25 12 19 C 13 14 11 9 8 2 Z" fill="url(#scFireCore)" />
+  </svg>
+);
+const FIRE_EMBERS = [
+  { left: '43%', size: 3, dx: '6px', delay: '0s', dur: '2.4s' },
+  { left: '55%', size: 2, dx: '-5px', delay: '0.8s', dur: '2.9s' },
+  { left: '49%', size: 2.5, dx: '3px', delay: '1.5s', dur: '2.2s' },
+  { left: '58%', size: 2, dx: '7px', delay: '2.1s', dur: '3.1s' },
+  { left: '45%', size: 3, dx: '-4px', delay: '2.7s', dur: '2.6s' },
+];
+
 // A layered, atmospheric diorama: gradient sky with sun/moon bloom and stars,
 // three hazy parallax hills, optional gradient water, floating particles and a
 // vignette — with the active sounds' characters and weather composited on top.
@@ -86,10 +131,11 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
   const hasWater = types.some((t) => WATER_SOUNDS.includes(t));
   const hasWave = types.includes('wave');
   const hasWaterfall = types.includes('waterfall');
+  const hasFire = types.includes('fire');
   const rainy = types.includes('rain') || types.includes('thunder');
   const stormy = types.includes('thunder');
   const snowy = types.includes('blizzard');
-  const hasScenery = hasWave || hasWaterfall || rainy || snowy;
+  const hasScenery = hasWave || hasWaterfall || hasFire || rainy || snowy;
   const clearSky = !rainy && !snowy;
   const n = chars.length;
 
@@ -230,6 +276,56 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
           <svg className="scene-wave-drift absolute bottom-0 left-0 h-5 w-[200%]" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true">
             <path d={WAVE_PATH} fill="#eaf6ff" opacity="0.85" />
           </svg>
+        </div>
+      )}
+
+      {/* campfire scenery: a cozy fire-gazing (불멍) fire — layered flickering
+          flames over a log pile, with a warm ground glow and rising embers */}
+      {hasFire && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-[6%] w-[132px] h-[112px] pointer-events-none z-[6]">
+          {/* warm ground glow */}
+          <div className="sc-fireglow absolute left-1/2 -translate-x-1/2 bottom-[4px] h-[74px] w-[132px] rounded-[50%]" />
+          {/* log pile, ember bed & hearth stones */}
+          <svg viewBox="0 0 132 112" className="absolute inset-0 h-full w-full">
+            <ellipse cx="66" cy="101" rx="42" ry="8" fill="#000000" opacity="0.14" />
+            <ellipse cx="66" cy="97" rx="26" ry="6" fill="#7a3410" />
+            <ellipse cx="66" cy="96.5" rx="19" ry="4" fill="#ff7a1c" />
+            <ellipse cx="66" cy="96" rx="11" ry="2.6" fill="#ffd15a" />
+            <ellipse cx="30" cy="100" rx="8" ry="5" fill="#8f8f99" />
+            <ellipse cx="30" cy="98.6" rx="8" ry="3.6" fill="#b0b0ba" />
+            <ellipse cx="102" cy="100" rx="8" ry="5" fill="#7e7e88" />
+            <ellipse cx="102" cy="98.6" rx="8" ry="3.6" fill="#9a9aa4" />
+            <ellipse cx="47" cy="104" rx="6.5" ry="4" fill="#84848d" />
+            <ellipse cx="85" cy="104" rx="6.5" ry="4" fill="#97979f" />
+            <g>
+              <rect x="30" y="88" width="72" height="11" rx="5.5" transform="rotate(-15 66 93)" fill="#7c4e2c" />
+              <rect x="30" y="88" width="72" height="11" rx="5.5" transform="rotate(15 66 93)" fill="#6b4426" />
+              <rect x="30" y="88" width="72" height="4" rx="2" transform="rotate(-15 66 93)" fill="#a9764a" opacity="0.7" />
+              <rect x="30" y="90" width="72" height="3.5" rx="1.8" transform="rotate(15 66 93)" fill="#89623c" opacity="0.6" />
+              <ellipse cx="34" cy="98" rx="5.2" ry="5" fill="#c69c6d" />
+              <ellipse cx="34" cy="98" rx="2.4" ry="2.3" fill="#a9764a" />
+              <ellipse cx="99" cy="98" rx="5.2" ry="5" fill="#b98a58" />
+              <ellipse cx="99" cy="98" rx="2.4" ry="2.3" fill="#9a6b3f" />
+            </g>
+          </svg>
+          {/* layered flickering flames */}
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[20px] h-[62px] w-[46px]">
+            <div className="sc-flame sc-flame-a absolute inset-0">{FLAME_OUTER}</div>
+          </div>
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[22px] h-[44px] w-[30px]">
+            <div className="sc-flame sc-flame-b absolute inset-0">{FLAME_MID}</div>
+          </div>
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[24px] h-[26px] w-[15px]">
+            <div className="sc-flame sc-flame-c absolute inset-0">{FLAME_CORE}</div>
+          </div>
+          {/* rising embers */}
+          {FIRE_EMBERS.map((e, i) => (
+            <span
+              key={i}
+              className="sc-ember absolute rounded-full"
+              style={{ left: e.left, bottom: '46px', width: e.size, height: e.size, animationDelay: e.delay, animationDuration: e.dur, '--sc-ex': e.dx } as React.CSSProperties}
+            />
+          ))}
         </div>
       )}
 

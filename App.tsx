@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save, RotateCcw, Flame, CloudMoon, Smile, LucideIcon } from 'lucide-react';
+import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save, RotateCcw, Flame, CloudMoon, LucideIcon } from 'lucide-react';
 import { PRESETS, AMBIENCE_PRESETS, AmbiencePreset, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
 import { BinauralEngine, SoundLayer, ToneMode } from './services/audioEngine';
 import { Player } from './components/Player';
@@ -68,7 +68,6 @@ export default function App() {
   const [sleepMode, setSleepMode] = useState(false);
   const [saveOpen, setSaveOpen] = useState(false);
   const [presetNameDraft, setPresetNameDraft] = useState('');
-  const [moodBefore, setMoodBefore] = useState<number | null>(null);
   const [lastSession, setLastSession] = useState<LastSession | null>(null);
   const [immersive, setImmersive] = useState(false);
 
@@ -189,7 +188,6 @@ export default function App() {
     setCurrentBrainWave(preset.brainWaveType);
     setActiveLayers(preset.defaultBackgroundSound === 'none' ? [] : [{ type: preset.defaultBackgroundSound, volume: DEFAULT_LAYER_VOL }]);
     setTimeLeft(preset.defaultDurationMinutes * 60);
-    setMoodBefore(null);
 
     if (playbackStatus !== 'idle') stopSession();
     setViewMode('config');
@@ -330,7 +328,7 @@ export default function App() {
       modeName: selectedPreset.name,
       startedAt: new Date().toISOString(),
       durationMinutes: Math.max(1, Math.round(playedMsRef.current / 60000)),
-      moodBefore,
+      moodBefore: null,
       moodAfter: mood,
       helpfulScore: mood,
     };
@@ -382,7 +380,6 @@ export default function App() {
     setBrainwaveEnabled(p.brainwaveEnabled);
     setActiveLayers(p.layers);
     setTimeLeft(p.durationMinutes * 60);
-    setMoodBefore(null);
     setViewMode('config');
   };
 
@@ -401,7 +398,6 @@ export default function App() {
     setBrainwaveEnabled(true);
     setActiveLayers(a.layers.map((l) => ({ ...l })));
     setTimeLeft(a.durationMinutes * 60);
-    setMoodBefore(null);
     setViewMode('config');
   };
 
@@ -422,7 +418,6 @@ export default function App() {
     setActiveLayers(lastSession.layers);
     setSleepMode(lastSession.sleepMode);
     setTimeLeft(lastSession.durationMinutes * 60);
-    setMoodBefore(null);
     setViewMode('config');
   };
 
@@ -587,33 +582,14 @@ export default function App() {
           <span>좌우 뇌파 효과를 위해 헤드폰·이어폰 착용을 권장해요</span>
         </div>
 
-        <div className="space-y-4 mb-8">
-          <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2">
-                <Smile size={16} /> 시작 전 기분 <span className="text-[10px] text-slate-400 font-normal">(선택)</span>
-              </span>
-            </div>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                  key={n}
-                  onClick={() => setMoodBefore((m) => (m === n ? null : n))}
-                  aria-pressed={moodBefore === n}
-                  aria-label={`시작 전 기분 ${n}점`}
-                  className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
-                    moodBefore === n
-                      ? 'bg-primary-500 text-white shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                  }`}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
-            <p className="text-[10px] text-slate-400 mt-2">종료 후 기분과 비교해 기록 탭에서 변화를 보여드려요.</p>
-          </div>
+        <button
+          onClick={startSession}
+          className="w-full mb-6 py-4 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-bold text-lg shadow-lg shadow-primary-500/30 active:scale-[0.99] transition-transform flex items-center justify-center gap-2"
+        >
+          <Play size={24} fill="currentColor" /> 세션 시작
+        </button>
 
+        <div className="space-y-4 mb-8">
           <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-center mb-4">
               <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Activity size={16} /> 재생 시간</span>
@@ -697,15 +673,8 @@ export default function App() {
         </div>
 
         <button
-          onClick={startSession}
-          className="w-full py-4 rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-bold text-lg shadow-lg shadow-primary-500/30 active:scale-[0.99] transition-transform flex items-center justify-center gap-2"
-        >
-          <Play size={24} fill="currentColor" /> 세션 시작
-        </button>
-
-        <button
           onClick={() => { setPresetNameDraft(selectedPreset?.name ?? ''); setSaveOpen(true); }}
-          className="w-full mt-3 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-semibold flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="w-full py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-semibold flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
         >
           <Save size={18} /> 현재 조합을 내 프리셋으로 저장
         </button>
@@ -783,7 +752,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v3.4.1</p>
+        <p>MC Brain Care v3.7.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>

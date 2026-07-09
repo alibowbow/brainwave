@@ -624,16 +624,16 @@ export class BinauralEngine {
       osc.type = 'triangle';
       osc.frequency.value = freq;
       const gate = this.ctx!.createGain();
-      gate.gain.value = 0.6;
+      gate.gain.value = 0.5;
       const amOsc = this.ctx!.createOscillator();
       amOsc.frequency.value = am;
       const amDepth = this.ctx!.createGain();
-      amDepth.gain.value = 0.35; // stay in 0.25..0.95 so the tremolo never hits zero (avoids buzzy edges)
+      amDepth.gain.value = 0.5;
       amOsc.connect(amDepth).connect(gate.gain);
       const bp = this.ctx!.createBiquadFilter();
       bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 2;
       const level = this.ctx!.createGain();
-      level.gain.value = 0.06;
+      level.gain.value = 0.035;
       osc.connect(gate).connect(bp).connect(level).connect(this.makePan(pan, dest));
       osc.start(); amOsc.start();
       this.register(bucket, osc);
@@ -648,18 +648,13 @@ export class BinauralEngine {
       const lfo = this.ctx.createOscillator();
       lfo.frequency.value = type === 'long' ? 30 : 40;
       const modGain = this.ctx.createGain();
-      modGain.gain.value = 0.55;
-      // Scale the LFO so the tremolo depth stays positive (0.1..1.0). A raw
-      // ±1 LFO drove the gain negative, inverting phase each cycle — that
-      // abrupt zero-crossing buzz was the "noise" in the night chirps.
-      const lfoAmt = this.ctx.createGain();
-      lfoAmt.gain.value = 0.45;
-      lfo.connect(lfoAmt).connect(modGain.gain);
+      modGain.gain.value = 0.6;
+      lfo.connect(modGain.gain);
       const env = this.ctx.createGain();
       osc.connect(modGain).connect(env).connect(this.makePan(Math.random() * 1.6 - 0.8, dest));
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.6, t + 0.03);
-      env.gain.linearRampToValueAtTime(0.6, t + dur - 0.03);
+      env.gain.linearRampToValueAtTime(0.4, t + 0.03);
+      env.gain.linearRampToValueAtTime(0.4, t + dur - 0.03);
       env.gain.linearRampToValueAtTime(0, t + dur);
       osc.start(t); lfo.start(t);
       osc.stop(t + dur + 0.1); lfo.stop(t + dur + 0.1);
@@ -957,12 +952,22 @@ export class BinauralEngine {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(345, t);
       osc.frequency.exponentialRampToValueAtTime(295, t + dur);
+      // A quieter octave partial gives the low hoot enough presence to carry
+      // over the bed — a bare ~300 Hz sine reads as too soft on its own.
+      const osc2 = this.ctx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(690, t);
+      osc2.frequency.exponentialRampToValueAtTime(590, t + dur);
+      const h2 = this.ctx.createGain();
+      h2.gain.value = 0.32;
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(1.15, t + 0.07);
+      env.gain.linearRampToValueAtTime(1.45, t + 0.07);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(env).connect(pan);
+      osc2.connect(h2).connect(env);
       osc.start(t); osc.stop(t + dur + 0.05);
+      osc2.start(t); osc2.stop(t + dur + 0.05);
     };
 
     const call = () => {
@@ -974,7 +979,7 @@ export class BinauralEngine {
         hoot(t + 0.55, 0.28, pan);
         hoot(t + 0.9, 0.45, pan);
       }
-      const id = window.setTimeout(call, 5000 + Math.random() * 8000);
+      const id = window.setTimeout(call, 4000 + Math.random() * 7000);
       bucket.timeouts.push(id);
     };
     call();

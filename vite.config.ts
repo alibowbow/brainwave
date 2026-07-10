@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
             ],
           },
           workbox: {
-            globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+            globPatterns: ['**/*.{js,css,html,svg,png,webp,ico,webmanifest}'],
             runtimeCaching: [
               {
                 // Cache the self-hosted Pretendard font on first load so it works

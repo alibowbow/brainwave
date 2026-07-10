@@ -2,19 +2,22 @@ import React from 'react';
 import { BackgroundSoundType } from '../types';
 import { SoundLayer } from '../services/audioEngine';
 import { SOUND_GROUPS, getSoundIcon, getSoundLabel } from '../audioOptions';
+import { MAX_LAYER_VOLUME } from '../audioLevels';
 import { NatureScene } from './NatureScene';
+import { VolumeSlider } from './VolumeSlider';
 
 interface Props {
   activeLayers: SoundLayer[];
   onToggle: (type: BackgroundSoundType) => void;
   onVolume: (type: BackgroundSoundType, vol: number) => void;
   hideScene?: boolean;  // the nature tab renders the diorama as its own hero
+  onBalance?: () => void;
 }
 
 // Multi-select background-sound picker, grouped by scene: tap a chip to layer a
 // sound in/out, and each active layer gets its own volume slider so users can
 // mix soundscapes.
-export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVolume, hideScene }) => {
+export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVolume, hideScene, onBalance }) => {
   const isActive = (t: BackgroundSoundType) => activeLayers.some((l) => l.type === t);
 
   return (
@@ -53,23 +56,27 @@ export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVo
       </div>
 
       {activeLayers.length > 0 ? (
-        <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-700 space-y-3">
+        <div className="mt-4 space-y-2 border-t border-dashed border-slate-200 pt-3 dark:border-slate-700">
+          <div className="flex items-center justify-between gap-2 pb-1">
+            <p className="text-[11px] font-semibold text-slate-400">개별 소리 음량</p>
+            {onBalance && (
+              <button
+                type="button"
+                onClick={onBalance}
+                className="min-h-9 rounded-lg px-2 text-[11px] font-bold text-primary-600 transition-colors hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20"
+              >
+                추천값 적용
+              </button>
+            )}
+          </div>
           {activeLayers.map((layer) => (
-            <div key={layer.type} className="flex items-center gap-3">
-              <span className="text-xs font-semibold w-16 shrink-0 text-slate-600 dark:text-slate-300 truncate">
-                {getSoundLabel(layer.type)}
-              </span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                aria-label={`${getSoundLabel(layer.type)} 볼륨`}
-                value={layer.volume}
-                onChange={(e) => onVolume(layer.type, Number(e.target.value))}
-                className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
-              />
-            </div>
+            <VolumeSlider
+              key={layer.type}
+              label={getSoundLabel(layer.type)}
+              value={layer.volume}
+              max={MAX_LAYER_VOLUME}
+              onChange={(value) => onVolume(layer.type, value)}
+            />
           ))}
         </div>
       ) : (

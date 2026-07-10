@@ -9,13 +9,14 @@ import { StatsDashboard } from './components/StatsDashboard';
 import { ImmersiveMode } from './components/ImmersiveMode';
 import { NatureMode } from './components/NatureMode';
 import { WAVE_ORDER, getWaveColor } from './audioOptions';
+import { DEFAULT_MIX_VOLUMES, defaultSoundLevel, normalizeMixVolumes } from './audioLevels';
+import type { MixVolumes } from './audioLevels';
+import { VolumeMixer } from './components/VolumeMixer';
 
 const DEFAULT_SETTINGS: AppSettings = {
   darkMode: true,
   showSoundNotice: true,
 };
-
-const DEFAULT_LAYER_VOL = 0.8;
 
 interface UserPreset {
   id: string;
@@ -25,6 +26,7 @@ interface UserPreset {
   brainwaveEnabled: boolean;
   durationMinutes: number;
   layers: SoundLayer[];
+  mix?: MixVolumes;
 }
 
 // Snapshot of the last-started session for one-tap resume.
@@ -36,6 +38,7 @@ interface LastSession {
   durationMinutes: number;
   layers: SoundLayer[];
   sleepMode: boolean;
+  mix?: MixVolumes;
 }
 
 // Per-preset icon + chip accent so the session list reads at a glance.
@@ -59,10 +62,17 @@ export default function App() {
   const [selectedPreset, setSelectedPreset] = useState<SessionPreset | null>(null);
 
   const [currentBrainWave, setCurrentBrainWave] = useState<BrainWaveType>('alpha');
-  const [activeLayers, setActiveLayers] = useState<SoundLayer[]>([{ type: 'rain', volume: DEFAULT_LAYER_VOL }]);
+  const [activeLayers, setActiveLayers] = useState<SoundLayer[]>([{ type: 'rain', volume: defaultSoundLevel('rain') }]);
   const [toneMode, setToneMode] = useState<ToneMode>('binaural');
   const [timeLeft, setTimeLeft] = useState(0);
-  const [volumes, setVolumes] = useState({ master: 0.5, binaural: 0.4, bg: 0.5 });
+  const [volumes, setVolumes] = useState<MixVolumes>(() => {
+    try {
+      const saved = localStorage.getItem('mc_brain_volumes_v2');
+      return saved ? normalizeMixVolumes(JSON.parse(saved)) : DEFAULT_MIX_VOLUMES;
+    } catch {
+      return DEFAULT_MIX_VOLUMES;
+    }
+  });
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [brainwaveEnabled, setBrainwaveEnabled] = useState(true);
   const [userPresets, setUserPresets] = useState<UserPreset[]>([]);
@@ -74,7 +84,7 @@ export default function App() {
 
   // 자연의 소리 mode: a brainwave-free ambient player with its own layers,
   // endless-by-default sleep timer and volume, persisted across visits.
-  const [natureLayers, setNatureLayers] = useState<SoundLayer[]>([{ type: 'rain', volume: DEFAULT_LAYER_VOL }]);
+  const [natureLayers, setNatureLayers] = useState<SoundLayer[]>([{ type: 'rain', volume: defaultSoundLevel('rain') }]);
   const [natureStatus, setNatureStatus] = useState<'idle' | 'running'>('idle');
   const [natureTimerMin, setNatureTimerMin] = useState<number | null>(null);
   const [natureTimeLeft, setNatureTimeLeft] = useState(0);
@@ -141,6 +151,10 @@ export default function App() {
     }
     localStorage.setItem('mc_brain_settings', JSON.stringify(settings));
   }, [settings]);
+
+  useEffect(() => {
+    localStorage.setItem('mc_brain_volumes_v2', JSON.stringify(volumes));
+  }, [volumes]);
 
   // Drive the countdown from wall-clock time rather than counting interval ticks.
   useEffect(() => {
@@ -209,12 +223,14 @@ export default function App() {
   };
 
   const handlePresetSelect = (preset: SessionPreset) => {
+    if (playbackStatus !== 'idle') stopSession();
     setSelectedPreset(preset);
     setCurrentBrainWave(preset.brainWaveType);
-    setActiveLayers(preset.defaultBackgroundSound === 'none' ? [] : [{ type: preset.defaultBackgroundSound, volume: DEFAULT_LAYER_VOL }]);
+    setActiveLayers(preset.defaultBackgroundSound === 'none' ? [] : [{
+      type: preset.defaultBackgroundSound,
+      volume: defaultSoundLevel(preset.defaultBackgroundSound),
+    }]);
     setTimeLeft(preset.defaultDurationMinutes * 60);
-
-    if (playbackStatus !== 'idle') stopSession();
     setViewMode('config');
   };
 
@@ -244,6 +260,7 @@ export default function App() {
       durationMinutes: Math.max(1, Math.round(timeLeft / 60)),
       layers: activeLayers,
       sleepMode,
+      mix: { ...volumes },
     };
     setLastSession(snapshot);
     localStorage.setItem('mc_brain_last', JSON.stringify(snapshot));
@@ -262,7 +279,7 @@ export default function App() {
   const pauseSession = () => {
     accumulateRun();
     setPlaybackStatus('paused');
-    engine.stop();
+    engine.fadeOutStop(0.08);
   };
 
   const resumeSession = () => {
@@ -287,7 +304,7 @@ export default function App() {
     setPlaybackStatus('idle');
     setImmersive(false);
     setViewMode('list');
-    engine.stop();
+    engine.fadeOutStop(0.08);
     setTimeLeft(0);
   };
 
@@ -369,8 +386,9 @@ export default function App() {
         }
         return next;
       }
-      if (natureStatus === 'running') engine.addSound(type, DEFAULT_LAYER_VOL);
-      return [...prev, { type, volume: DEFAULT_LAYER_VOL }];
+      const volume = defaultSoundLevel(type);
+      if (natureStatus === 'running') engine.addSound(type, volume);
+      return [...prev, { type, volume }];
     });
   };
 
@@ -418,14 +436,21 @@ export default function App() {
         if (playbackStatus === 'running') engine.removeSound(type);
         return prev.filter((l) => l.type !== type);
       }
-      if (playbackStatus === 'running') engine.addSound(type, DEFAULT_LAYER_VOL);
-      return [...prev, { type, volume: DEFAULT_LAYER_VOL }];
+      const volume = defaultSoundLevel(type);
+      if (playbackStatus === 'running') engine.addSound(type, volume);
+      return [...prev, { type, volume }];
     });
   };
 
   const setLayerVolume = (type: BackgroundSoundType, vol: number) => {
     setActiveLayers((prev) => prev.map((l) => (l.type === type ? { ...l, volume: vol } : l)));
     if (playbackStatus === 'running') engine.setSoundVolume(type, vol);
+  };
+
+  const balanceLayers = () => {
+    const next = activeLayers.map((layer) => ({ ...layer, volume: defaultSoundLevel(layer.type) }));
+    setActiveLayers(next);
+    if (playbackStatus === 'running') engine.setSounds(next);
   };
 
   const handleToneModeChange = (mode: ToneMode) => {
@@ -476,6 +501,7 @@ export default function App() {
       brainwaveEnabled,
       durationMinutes: Math.max(1, Math.round(timeLeft / 60)),
       layers: activeLayers,
+      mix: { ...volumes },
     };
     persistPresets([preset, ...userPresets]);
     setSaveOpen(false);
@@ -501,6 +527,7 @@ export default function App() {
     setToneMode(p.toneMode);
     setBrainwaveEnabled(p.brainwaveEnabled);
     setActiveLayers(p.layers);
+    setVolumes((prev) => normalizeMixVolumes({ ...prev, ...(p.mix ?? {}) }));
     setTimeLeft(p.durationMinutes * 60);
     setViewMode('config');
   };
@@ -538,6 +565,7 @@ export default function App() {
     setToneMode(lastSession.toneMode);
     setBrainwaveEnabled(lastSession.brainwaveEnabled);
     setActiveLayers(lastSession.layers);
+    setVolumes((prev) => normalizeMixVolumes({ ...prev, ...(lastSession.mix ?? {}) }));
     setSleepMode(lastSession.sleepMode);
     setTimeLeft(lastSession.durationMinutes * 60);
     setViewMode('config');
@@ -791,7 +819,15 @@ export default function App() {
             <div className="flex justify-between items-center mb-3">
               <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2"><Volume2 size={16} /> 배경음 (여러 개 가능)</span>
             </div>
-            <SoundLayerPicker activeLayers={activeLayers} onToggle={toggleLayer} onVolume={setLayerVolume} />
+            <SoundLayerPicker activeLayers={activeLayers} onToggle={toggleLayer} onVolume={setLayerVolume} onBalance={balanceLayers} />
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <VolumeMixer
+              volumes={volumes}
+              brainwaveEnabled={brainwaveEnabled}
+              onChange={(next) => setVolumes(normalizeMixVolumes(next))}
+            />
           </div>
 
           <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
@@ -917,8 +953,9 @@ export default function App() {
               activeLayers={activeLayers}
               onToggleLayer={toggleLayer}
               onLayerVolume={setLayerVolume}
+              onBalanceLayers={balanceLayers}
               volumes={volumes}
-              onVolumeChange={(k, v) => setVolumes((prev) => ({ ...prev, [k]: v }))}
+              onMixChange={(next) => setVolumes(normalizeMixVolumes(next))}
               brainwaveEnabled={brainwaveEnabled}
               onToggleBrainwave={() => setBrainwaveEnabled((v) => !v)}
               toneMode={toneMode}

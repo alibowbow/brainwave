@@ -37,7 +37,7 @@ This contains everything you need to run your app locally.
 - Binaural beats rely on a **stereo difference between the left and right ears**, so headphones/earphones are recommended for the intended effect.
 - Nature sounds compose into one layered living diorama: creatures and objects (birds, frogs, owl, cricket, fish, campfire, tree, wind chimes…) appear as cute characters, while weather and water (rain, thunderstorm, winter wind, ocean waves) render as scenery — rainfall, lightning flashes, drifting snow, a rolling sea — so any combination blends into a coherent scene.
 - All background sounds are synthesized live in the browser (Web Audio API) — no audio files. The library includes rain, thunderstorm, stream, waterfall, ocean waves, campfire, forest wind, birds, cicadas, frogs, owl, night crickets, wind chimes, singing bowl, deep drone, winter wind, seabirds, fan, and white/pink noise — layerable in any combination, mixed through a shared stereo reverb for depth.
-- The v3.8 mixer uses calibrated source trims, perceptual master/bus controls, automatic multi-layer headroom, loop-safe 8-second noise beds, and a DC-blocked safety limiter. Mixer settings persist locally and are included in saved/recent sessions.
+- The v3.9 nature-audio engine uses analyser-calibrated source trims, role-weighted multi-layer headroom, gentle mix compression plus a separate peak guard, loop-safe 8-second stereo noise beds, and a diffuse predelayed reverb tail. Water, weather and forest beds use independently moving frequency bands; animal calls blend pitched, formant and breath/noise components so they remain organic and audible on compact speakers. Mixer settings persist locally and are included in saved/recent sessions.
 
 ## Deploy to GitHub Pages
 

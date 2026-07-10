@@ -41,16 +41,59 @@ interface LastSession {
   mix?: MixVolumes;
 }
 
-// Per-preset icon + chip accent so the session list reads at a glance.
-const PRESET_VISUALS: Record<string, { Icon: LucideIcon; chip: string }> = {
-  focus: { Icon: Brain, chip: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300' },
-  relax: { Icon: Flame, chip: 'bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300' },
-  country_morning: { Icon: Sun, chip: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300' },
-  sleep_prep: { Icon: Moon, chip: 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300' },
-  power_nap: { Icon: CloudMoon, chip: 'bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-300' },
-  meditation: { Icon: Sparkles, chip: 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300' },
+interface PresetVisual {
+  Icon: LucideIcon;
+  chip: string;
+  artwork?: string;
+  fallback: string;
+}
+
+// Per-preset icon, artwork and fallback accent so each session reads at a glance.
+const PRESET_VISUALS: Record<string, PresetVisual> = {
+  focus: {
+    Icon: Brain,
+    chip: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300',
+    artwork: 'images/presets/focus.webp',
+    fallback: 'from-slate-950 via-blue-950 to-indigo-800',
+  },
+  relax: {
+    Icon: Flame,
+    chip: 'bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300',
+    artwork: 'images/presets/relax.webp',
+    fallback: 'from-indigo-950 via-purple-900 to-orange-700',
+  },
+  country_morning: {
+    Icon: Sun,
+    chip: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
+    artwork: 'images/presets/morning.webp',
+    fallback: 'from-sky-300 via-amber-100 to-emerald-300',
+  },
+  sleep_prep: {
+    Icon: Moon,
+    chip: 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300',
+    artwork: 'images/presets/sleep.webp',
+    fallback: 'from-slate-950 via-indigo-950 to-violet-800',
+  },
+  power_nap: {
+    Icon: CloudMoon,
+    chip: 'bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-300',
+    artwork: 'images/presets/nap.webp',
+    fallback: 'from-teal-700 via-emerald-300 to-amber-100',
+  },
+  meditation: {
+    Icon: Sparkles,
+    chip: 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300',
+    artwork: 'images/presets/meditation.webp',
+    fallback: 'from-indigo-950 via-violet-700 to-fuchsia-300',
+  },
 };
-const DEFAULT_VISUAL = { Icon: Brain, chip: 'bg-slate-100 text-primary-600 dark:bg-slate-700 dark:text-primary-400' };
+const DEFAULT_VISUAL: PresetVisual = {
+  Icon: Brain,
+  chip: 'bg-slate-100 text-primary-600 dark:bg-slate-700 dark:text-primary-400',
+  fallback: 'from-slate-800 via-indigo-800 to-violet-600',
+};
+
+const artworkUrl = (path: string) => new URL(path, document.baseURI).toString();
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'session' | 'nature' | 'history' | 'settings'>('session');
@@ -684,25 +727,42 @@ export default function App() {
       ))}
 
       {PRESETS.map((preset) => {
-        const { Icon, chip } = PRESET_VISUALS[preset.id] ?? DEFAULT_VISUAL;
+        const { Icon, chip, artwork, fallback } = PRESET_VISUALS[preset.id] ?? DEFAULT_VISUAL;
         return (
-          <div
+          <button
+            type="button"
             key={preset.id}
             onClick={() => handlePresetSelect(preset)}
-            className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-primary-500 cursor-pointer transition-all active:scale-[0.98] group"
+            className="overflow-hidden rounded-2xl bg-white text-left shadow-sm ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:ring-primary-500 hover:shadow-lg hover:shadow-primary-500/10 active:scale-[0.98] dark:bg-slate-800 dark:ring-slate-700 dark:hover:ring-primary-500 group"
           >
-            <div className="flex justify-between items-start mb-3">
-              <div className={`p-3 rounded-xl transition-colors ${chip}`}>
-                <Icon size={24} />
+            <div className={`relative aspect-[5/2] overflow-hidden bg-gradient-to-br ${fallback}`}>
+              {artwork && (
+                <img
+                  src={artworkUrl(artwork)}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  width="1000"
+                  height="400"
+                  onError={(event) => { event.currentTarget.hidden = true; }}
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transition-none"
+                />
+              )}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-slate-950/10" aria-hidden="true" />
+              <div className={`absolute bottom-3 left-3 rounded-xl p-2.5 shadow-sm backdrop-blur-sm ${chip}`} aria-hidden="true">
+                <Icon size={21} />
               </div>
-              <span className="text-xs font-bold px-2 py-1 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">
+              <span className="absolute right-3 top-3 rounded-full bg-slate-950/50 px-2.5 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-md">
                 {preset.defaultDurationMinutes}분
               </span>
             </div>
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">{preset.name}</h3>
-            <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold mb-1">{getBrainWaveLabel(preset.brainWaveType).split(' ')[0]}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-snug">{preset.description}</p>
-          </div>
+            <div className="p-5">
+              <h3 className="mb-1 text-lg font-bold text-slate-800 dark:text-slate-100">{preset.name}</h3>
+              <p className="mb-1 text-xs font-semibold text-primary-600 dark:text-primary-400">{getBrainWaveLabel(preset.brainWaveType).split(' ')[0]}</p>
+              <p className="text-sm leading-snug text-slate-500 dark:text-slate-400">{preset.description}</p>
+            </div>
+          </button>
         );
       })}
 
@@ -729,12 +789,29 @@ export default function App() {
 
   const renderConfig = () => {
     if (!selectedPreset) return null;
+    const visual = PRESET_VISUALS[selectedPreset.id];
 
     return (
       <div className="p-6 h-full flex flex-col animate-fade-in pb-24">
-        <button onClick={() => setViewMode('list')} aria-label="뒤로 가기" className="self-start mb-6 p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+        <button onClick={() => setViewMode('list')} aria-label="뒤로 가기" className={`self-start p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors ${visual?.artwork ? 'mb-3' : 'mb-6'}`}>
           <ArrowLeft size={24} />
         </button>
+
+        {visual?.artwork && (
+          <div className={`relative mb-6 aspect-[5/2] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br shadow-lg shadow-slate-900/10 ${visual.fallback}`}>
+            <img
+              src={artworkUrl(visual.artwork)}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              width="1000"
+              height="400"
+              onError={(event) => { event.currentTarget.hidden = true; }}
+              className="h-full w-full object-cover"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent" aria-hidden="true" />
+          </div>
+        )}
 
         <div className="text-center mb-4">
           <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{selectedPreset.name}</h2>

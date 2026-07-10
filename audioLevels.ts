@@ -54,7 +54,7 @@ const NATURE_SOURCE_TRIM: Partial<Record<BackgroundSoundType, number>> = {
   white: 2,
   pink: 1.7,
   // v3.8.0 sounds, trimmed from offline-render RMS measurements.
-  tent: 0.95,
+  tent: 1.2,
   window: 0.9,
   eaves: 1.0,
   dthunder: 0.8,
@@ -97,7 +97,7 @@ const DEFAULT_SOUND_LEVELS: Partial<Record<BackgroundSoundType, number>> = {
   fan: 0.6,
   white: 0.48,
   pink: 0.52,
-  tent: 0.72,
+  tent: 0.76,
   window: 0.72,
   eaves: 0.7,
   dthunder: 0.66,

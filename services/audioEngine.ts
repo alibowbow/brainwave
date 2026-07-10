@@ -1582,17 +1582,29 @@ export class BinauralEngine {
   private startTentRain(dest: AudioNode, bucket: Bucket) {
     if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
 
-    // Muffled exterior rain: the canvas eats every high, leaving only a dark
-    // low rumble — deliberately no hiss layer (that's what separates this
-    // from startRain's outdoor perspective).
+    // Muffled exterior rain: the canvas eats the highs, leaving a dark low
+    // rumble. Nearly all of this sound lives below 400 Hz, which phone
+    // speakers barely reproduce — so it runs hotter than the open-air rain
+    // beds and gets a soft canvas-surface patter for audible mids.
     const bed = this.noiseSource(this.brownNoiseBuffer)!;
     const bedLp = this.ctx.createBiquadFilter();
     bedLp.type = 'lowpass'; bedLp.frequency.value = 300;
     const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.8;
+    bedGain.gain.value = 1.15;
     bed.connect(bedLp).connect(bedGain).connect(dest);
     bed.start();
     this.register(bucket, bed);
+
+    // Soft surface patter: still clearly duller than startRain's 700 Hz hiss,
+    // but gives small speakers something to reproduce.
+    const patter = this.noiseSource(this.pinkNoiseBuffer)!;
+    const patterLp = this.ctx.createBiquadFilter();
+    patterLp.type = 'lowpass'; patterLp.frequency.value = 1100;
+    const patterGain = this.ctx.createGain();
+    patterGain.gain.value = 0.26;
+    patter.connect(patterLp).connect(patterGain).connect(dest);
+    patter.start();
+    this.register(bucket, patter);
 
     // A drop on stretched fabric: resonant low-mid noise burst (the membrane
     // ring) doubled by a round sine thump (drum-skin "보돋돋" body).
@@ -1609,7 +1621,7 @@ export class BinauralEngine {
       bp.Q.value = 5 + Math.random() * 3;
       const gain = this.ctx.createGain();
       const big = Math.random() < 0.06; // occasional fat drop off a fold or branch
-      const peak = (0.6 + Math.random() * 0.4) * (big ? 2 + Math.random() : 1);
+      const peak = (1.0 + Math.random() * 0.6) * (big ? 2 + Math.random() : 1);
       const decay = 0.05 + Math.random() * 0.04;
       gain.gain.setValueAtTime(0, t);
       gain.gain.linearRampToValueAtTime(peak, t + 0.001 + Math.random() * 0.001);
@@ -1623,7 +1635,7 @@ export class BinauralEngine {
       thump.frequency.exponentialRampToValueAtTime(90, t + 0.05);
       const tEnv = this.ctx.createGain();
       tEnv.gain.setValueAtTime(0, t);
-      tEnv.gain.linearRampToValueAtTime(big ? 0.8 : 0.5, t + 0.002);
+      tEnv.gain.linearRampToValueAtTime(big ? 1.15 : 0.75, t + 0.002);
       tEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.06);
       thump.connect(tEnv).connect(pan);
       thump.start(t); thump.stop(t + 0.09);

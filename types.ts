@@ -2,12 +2,21 @@
 export type BackgroundSoundType =
   | 'none'
   | 'rain'
+  | 'tent'
+  | 'window'
+  | 'eaves'
   | 'thunder'
+  | 'dthunder'
   | 'stream'
+  | 'valley'
   | 'waterfall'
   | 'wave'
+  | 'pebbles'
+  | 'deepsea'
+  | 'bubbles'
   | 'fire'
   | 'forest'
+  | 'bamboo'
   | 'birds'
   | 'cuckoo'
   | 'woodpecker'
@@ -15,14 +24,18 @@ export type BackgroundSoundType =
   | 'cicadas'
   | 'frogs'
   | 'owl'
+  | 'scops'
   | 'night'
   | 'cave'
   | 'chimes'
   | 'bowl'
+  | 'temple'
   | 'drone'
   | 'blizzard'
   | 'seabirds'
   | 'fan'
+  | 'heartbeat'
+  | 'brown'
   | 'white'
   | 'pink';
 
@@ -119,4 +132,28 @@ export const AMBIENCE_PRESETS: AmbiencePreset[] = [
     layers: [{ type: 'forest', volume: 0.7 }, { type: 'cuckoo', volume: 0.55 }, { type: 'woodpecker', volume: 0.5 }, { type: 'stream', volume: 0.4 }] },
   { id: 'cave_meditation', name: '동굴 명상', description: '울리는 물방울과 고요한 공명', emoji: '🦇', brainWaveType: 'theta', durationMinutes: 25,
     layers: [{ type: 'cave', volume: 0.75 }, { type: 'bowl', volume: 0.5 }, { type: 'drone', volume: 0.45 }] },
+];
+
+// Curated nature-only mixes for the 자연의 소리 tab — no brainwave, no duration;
+// one tap loads the layers (crossfading live if already playing).
+export interface NatureMix {
+  id: string;
+  name: string;
+  emoji: string;
+  layers: { type: BackgroundSoundType; volume: number }[];
+}
+
+export const NATURE_MIXES: NatureMix[] = [
+  { id: 'tent_rain', name: '텐트 속 빗소리', emoji: '⛺', layers: [{ type: 'tent', volume: 0.85 }, { type: 'dthunder', volume: 0.35 }] },
+  { id: 'window_rain', name: '비 오는 창가', emoji: '🪟', layers: [{ type: 'window', volume: 0.8 }, { type: 'eaves', volume: 0.4 }] },
+  { id: 'monsoon_eaves', name: '장마철 처마', emoji: '☔', layers: [{ type: 'eaves', volume: 0.8 }, { type: 'rain', volume: 0.4 }, { type: 'frogs', volume: 0.3 }] },
+  { id: 'deep_sea', name: '깊은 바다', emoji: '🐋', layers: [{ type: 'deepsea', volume: 0.8 }, { type: 'bubbles', volume: 0.45 }] },
+  { id: 'pebble_shore', name: '몽돌 해변', emoji: '🐚', layers: [{ type: 'pebbles', volume: 0.8 }, { type: 'wave', volume: 0.45 }, { type: 'seabirds', volume: 0.3 }] },
+  { id: 'bamboo_grove', name: '대나무숲', emoji: '🎋', layers: [{ type: 'bamboo', volume: 0.8 }, { type: 'birds', volume: 0.4 }, { type: 'stream', volume: 0.35 }] },
+  { id: 'temple_dawn', name: '산사의 아침', emoji: '🛕', layers: [{ type: 'temple', volume: 0.75 }, { type: 'forest', volume: 0.4 }, { type: 'birds', volume: 0.35 }] },
+  { id: 'summer_valley', name: '여름 계곡', emoji: '🏞️', layers: [{ type: 'valley', volume: 0.8 }, { type: 'cicadas', volume: 0.4 }, { type: 'birds', volume: 0.35 }] },
+  { id: 'scops_night', name: '소쩍새 밤', emoji: '🌙', layers: [{ type: 'scops', volume: 0.7 }, { type: 'night', volume: 0.6 }, { type: 'stream', volume: 0.3 }] },
+  { id: 'campfire', name: '모닥불 캠핑', emoji: '🔥', layers: [{ type: 'fire', volume: 0.8 }, { type: 'night', volume: 0.5 }, { type: 'owl', volume: 0.35 }] },
+  { id: 'womb', name: '포근한 심장', emoji: '💗', layers: [{ type: 'heartbeat', volume: 0.75 }, { type: 'brown', volume: 0.35 }] },
+  { id: 'winter_lodge', name: '겨울 산장', emoji: '❄️', layers: [{ type: 'blizzard', volume: 0.65 }, { type: 'fire', volume: 0.7 }] },
 ];

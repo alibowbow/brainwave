@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save, RotateCcw, Flame, CloudMoon, LucideIcon } from 'lucide-react';
-import { PRESETS, AMBIENCE_PRESETS, AmbiencePreset, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel } from './types';
+import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save, RotateCcw, Flame, CloudMoon, Leaf, LucideIcon } from 'lucide-react';
+import { PRESETS, AMBIENCE_PRESETS, AmbiencePreset, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel, NatureMix, NATURE_MIXES } from './types';
 import { BinauralEngine, SoundLayer, ToneMode } from './services/audioEngine';
 import { Player } from './components/Player';
 import { Toggle } from './components/Toggle';
 import { SoundLayerPicker } from './components/SoundLayerPicker';
 import { StatsDashboard } from './components/StatsDashboard';
 import { ImmersiveMode } from './components/ImmersiveMode';
+import { NatureMode } from './components/NatureMode';
 import { WAVE_ORDER, getWaveColor } from './audioOptions';
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -49,7 +50,7 @@ const PRESET_VISUALS: Record<string, { Icon: LucideIcon; chip: string }> = {
 const DEFAULT_VISUAL = { Icon: Brain, chip: 'bg-slate-100 text-primary-600 dark:bg-slate-700 dark:text-primary-400' };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'session' | 'history' | 'settings'>('session');
+  const [activeTab, setActiveTab] = useState<'session' | 'nature' | 'history' | 'settings'>('session');
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
   const [logs, setLogs] = useState<SessionLog[]>([]);
 
@@ -70,6 +71,17 @@ export default function App() {
   const [presetNameDraft, setPresetNameDraft] = useState('');
   const [lastSession, setLastSession] = useState<LastSession | null>(null);
   const [immersive, setImmersive] = useState(false);
+
+  // 자연의 소리 mode: a brainwave-free ambient player with its own layers,
+  // endless-by-default sleep timer and volume, persisted across visits.
+  const [natureLayers, setNatureLayers] = useState<SoundLayer[]>([{ type: 'rain', volume: DEFAULT_LAYER_VOL }]);
+  const [natureStatus, setNatureStatus] = useState<'idle' | 'running'>('idle');
+  const [natureTimerMin, setNatureTimerMin] = useState<number | null>(null);
+  const [natureTimeLeft, setNatureTimeLeft] = useState(0);
+  const [natureVol, setNatureVol] = useState(0.7);
+  const [natureMixId, setNatureMixId] = useState<string | null>(null);
+  const natureEndRef = useRef<number | null>(null);
+  const natureLoadedRef = useRef(false);
 
   // Lazily create a single, stable audio engine (avoids re-allocating each render).
   const audioEngine = useRef<BinauralEngine | null>(null);
@@ -99,6 +111,19 @@ export default function App() {
 
     const savedLast = localStorage.getItem('mc_brain_last');
     if (savedLast) setLastSession(JSON.parse(savedLast));
+
+    // Restore the nature-mode soundscape (never autoplays — one tap resumes it).
+    const savedNature = localStorage.getItem('mc_nature_state');
+    if (savedNature) {
+      try {
+        const n = JSON.parse(savedNature);
+        if (Array.isArray(n.layers) && n.layers.length > 0) setNatureLayers(n.layers);
+        if (n.timerMin === null || typeof n.timerMin === 'number') setNatureTimerMin(n.timerMin);
+        if (typeof n.volume === 'number') setNatureVol(n.volume);
+        setNatureMixId(typeof n.mixId === 'string' ? n.mixId : null);
+      } catch { /* corrupt state — keep defaults */ }
+    }
+    natureLoadedRef.current = true;
 
     const savedSettings = localStorage.getItem('mc_brain_settings');
     const merged: AppSettings = savedSettings
@@ -140,7 +165,7 @@ export default function App() {
   // Keep the screen awake during a session and resume audio when the tab
   // becomes visible again (mitigates background audio being suspended).
   useEffect(() => {
-    if (playbackStatus !== 'running') return;
+    if (playbackStatus !== 'running' && natureStatus !== 'running') return;
     let active = true;
 
     const requestWakeLock = async () => {
@@ -166,7 +191,7 @@ export default function App() {
       try { wakeLockRef.current?.release?.(); } catch { /* ignore */ }
       wakeLockRef.current = null;
     };
-  }, [playbackStatus]);
+  }, [playbackStatus, natureStatus]);
 
   // Release all audio resources when the app unmounts.
   useEffect(() => () => engine.dispose(), []);
@@ -206,6 +231,7 @@ export default function App() {
   };
 
   const startSession = () => {
+    if (natureStatus === 'running') stopNature();
     playedMsRef.current = 0;
     beginRun(timeLeft);
     setPlaybackStatus('running');
@@ -240,6 +266,7 @@ export default function App() {
   };
 
   const resumeSession = () => {
+    if (natureStatus === 'running') stopNature();
     beginRun(timeLeft);
     setPlaybackStatus('running');
     const freqs = WAVE_FREQS[currentBrainWave];
@@ -262,6 +289,101 @@ export default function App() {
     setViewMode('list');
     engine.stop();
     setTimeLeft(0);
+  };
+
+  // --- 자연의 소리 mode (single engine, so nature and sessions are mutually exclusive) ---
+  const startNature = () => {
+    if (natureLayers.length === 0) return;
+    if (playbackStatus !== 'idle') stopSession();
+    setNatureStatus('running');
+    if (natureTimerMin != null) {
+      natureEndRef.current = Date.now() + natureTimerMin * 60 * 1000;
+      setNatureTimeLeft(natureTimerMin * 60);
+    } else {
+      natureEndRef.current = null;
+    }
+    engine.start({
+      base: WAVE_FREQS.alpha.base,
+      beat: WAVE_FREQS.alpha.beat,
+      mode: 'binaural',
+      masterVol: natureVol,
+      binauralVol: 0,       // nature only — no brainwave tone
+      bgVol: 1,
+      sounds: natureLayers,
+    });
+  };
+
+  const stopNature = (fade = false) => {
+    setNatureStatus('idle');
+    natureEndRef.current = null;
+    if (fade) engine.fadeOutStop(12);
+    else engine.stop();
+  };
+
+  // Nature sleep-timer countdown (wall-clock based, like the session timer).
+  useEffect(() => {
+    if (natureStatus !== 'running' || natureTimerMin == null) return;
+    const tick = () => {
+      if (natureEndRef.current == null) return;
+      const remaining = Math.max(0, Math.round((natureEndRef.current - Date.now()) / 1000));
+      setNatureTimeLeft(remaining);
+      if (remaining <= 0) stopNature(true);
+    };
+    tick();
+    const id = window.setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [natureStatus, natureTimerMin]);
+
+  useEffect(() => {
+    if (natureStatus === 'running') engine.setVolumes(natureVol, 0, 1);
+  }, [natureVol, natureStatus]);
+
+  // Persist the nature soundscape so it survives visits (after initial load).
+  useEffect(() => {
+    if (!natureLoadedRef.current) return;
+    localStorage.setItem('mc_nature_state', JSON.stringify({
+      layers: natureLayers, timerMin: natureTimerMin, volume: natureVol, mixId: natureMixId,
+    }));
+  }, [natureLayers, natureTimerMin, natureVol, natureMixId]);
+
+  const handleNatureTimer = (min: number | null) => {
+    setNatureTimerMin(min);
+    if (natureStatus === 'running') {
+      if (min != null) {
+        natureEndRef.current = Date.now() + min * 60 * 1000;
+        setNatureTimeLeft(min * 60);
+      } else {
+        natureEndRef.current = null;
+      }
+    }
+  };
+
+  const toggleNatureLayer = (type: BackgroundSoundType) => {
+    setNatureMixId(null);
+    setNatureLayers((prev) => {
+      if (prev.some((l) => l.type === type)) {
+        const next = prev.filter((l) => l.type !== type);
+        if (natureStatus === 'running') {
+          engine.removeSound(type);
+          if (next.length === 0) stopNature();
+        }
+        return next;
+      }
+      if (natureStatus === 'running') engine.addSound(type, DEFAULT_LAYER_VOL);
+      return [...prev, { type, volume: DEFAULT_LAYER_VOL }];
+    });
+  };
+
+  const setNatureLayerVolume = (type: BackgroundSoundType, vol: number) => {
+    setNatureLayers((prev) => prev.map((l) => (l.type === type ? { ...l, volume: vol } : l)));
+    if (natureStatus === 'running') engine.setSoundVolume(type, vol);
+  };
+
+  const selectNatureMix = (mix: NatureMix) => {
+    const layers = mix.layers.map((l) => ({ ...l }));
+    setNatureLayers(layers);
+    setNatureMixId(mix.id);
+    if (natureStatus === 'running') engine.setSounds(layers);  // live crossfade
   };
 
   const handleSessionComplete = () => {
@@ -430,24 +552,33 @@ export default function App() {
   useEffect(() => {
     if (!('mediaSession' in navigator)) return;
     const ms = navigator.mediaSession;
+    const natureActive = natureStatus === 'running';
     try {
       ms.metadata = new MediaMetadata({
-        title: selectedPreset?.name ?? 'MC Brain Care',
-        artist: brainwaveEnabled ? getBrainWaveLabel(currentBrainWave).split(' ')[0] : '자연음',
+        title: natureActive
+          ? (NATURE_MIXES.find((m) => m.id === natureMixId)?.name ?? '자연의 소리')
+          : (selectedPreset?.name ?? 'MC Brain Care'),
+        artist: natureActive ? '자연의 소리' : brainwaveEnabled ? getBrainWaveLabel(currentBrainWave).split(' ')[0] : '자연음',
         album: 'MC Brain Care',
       });
     } catch { /* MediaMetadata unsupported */ }
-    ms.playbackState = playbackStatus === 'running' ? 'playing' : playbackStatus === 'paused' ? 'paused' : 'none';
+    ms.playbackState = natureActive || playbackStatus === 'running' ? 'playing' : playbackStatus === 'paused' ? 'paused' : 'none';
     const set = (action: MediaSessionAction, handler: MediaSessionActionHandler | null) => {
       try { ms.setActionHandler(action, handler); } catch { /* action unsupported */ }
     };
-    set('play', () => resumeSession());
-    set('pause', () => pauseSession());
-    set('stop', () => stopSession());
+    if (natureActive) {
+      set('play', () => {});
+      set('pause', () => stopNature());
+      set('stop', () => stopNature());
+    } else {
+      set('play', () => resumeSession());
+      set('pause', () => pauseSession());
+      set('stop', () => stopSession());
+    }
     return () => {
       set('play', null); set('pause', null); set('stop', null);
     };
-  }, [playbackStatus, selectedPreset, currentBrainWave, brainwaveEnabled]);
+  }, [playbackStatus, selectedPreset, currentBrainWave, brainwaveEnabled, natureStatus, natureMixId]);
 
   const renderSessionList = () => (
     <div className="grid grid-cols-1 gap-4 p-4 pb-24 md:grid-cols-2">
@@ -752,7 +883,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v3.7.4</p>
+        <p>MC Brain Care v3.8.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
@@ -797,6 +928,23 @@ export default function App() {
             />
           ) : renderFeedback()
         )}
+        {activeTab === 'nature' && (
+          <NatureMode
+            layers={natureLayers}
+            isPlaying={natureStatus === 'running'}
+            timerMin={natureTimerMin}
+            timeLeft={natureTimeLeft}
+            volume={natureVol}
+            activeMixId={natureMixId}
+            onPlay={startNature}
+            onStop={() => stopNature()}
+            onToggleLayer={toggleNatureLayer}
+            onLayerVolume={setNatureLayerVolume}
+            onSelectMix={selectNatureMix}
+            onTimerChange={handleNatureTimer}
+            onVolumeChange={setNatureVol}
+          />
+        )}
         {activeTab === 'history' && renderHistory()}
         {activeTab === 'settings' && renderSettings()}
       </main>
@@ -828,9 +976,36 @@ export default function App() {
         </div>
       )}
 
+      {natureStatus === 'running' && activeTab !== 'nature' && (
+        <div
+          onClick={() => setActiveTab('nature')}
+          className="absolute bottom-20 left-4 right-4 bg-white dark:bg-slate-800 border border-emerald-500/30 p-3 rounded-xl shadow-lg shadow-black/10 flex items-center justify-between cursor-pointer animate-slide-up z-20"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex items-end gap-1 h-4 ml-1">
+              <div className="w-1 bg-emerald-500 animate-equalizer h-3"></div>
+              <div className="w-1 bg-emerald-500 animate-equalizer h-full animation-delay-100"></div>
+              <div className="w-1 bg-emerald-500 animate-equalizer h-2 animation-delay-200"></div>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-none">
+                {NATURE_MIXES.find((m) => m.id === natureMixId)?.name ?? '자연의 소리'}
+              </h4>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+                {natureTimerMin != null ? `${Math.floor(natureTimeLeft / 60)}:${String(natureTimeLeft % 60).padStart(2, '0')}` : '∞'}
+              </span>
+            </div>
+          </div>
+          <button onClick={(e) => { e.stopPropagation(); stopNature(); }} aria-label="자연의 소리 정지" className="p-2 text-slate-700 dark:text-slate-200">
+            <Pause size={20} />
+          </button>
+        </div>
+      )}
+
       <nav className="h-16 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-around items-center shrink-0 z-30">
         {([
           { tab: 'session' as const, Icon: Home, label: '세션' },
+          { tab: 'nature' as const, Icon: Leaf, label: '자연' },
           { tab: 'history' as const, Icon: BarChart2, label: '기록' },
           { tab: 'settings' as const, Icon: Settings, label: '설정' },
         ]).map(({ tab, Icon, label }) => (

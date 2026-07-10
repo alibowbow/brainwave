@@ -306,8 +306,21 @@ export class BinauralEngine {
   private playBackgroundSound(type: BackgroundSoundType, dest: AudioNode, bucket: Bucket) {
     switch (type) {
       case 'rain': this.startRain(dest, bucket); break;
+      case 'tent': this.startTentRain(dest, bucket); break;
+      case 'window': this.startWindowRain(dest, bucket); break;
+      case 'eaves': this.startEavesDrips(dest, bucket); break;
       case 'thunder': this.startThunder(dest, bucket); break;
+      case 'dthunder': this.startDistantThunder(dest, bucket); break;
       case 'stream': this.startStream(dest, bucket); break;
+      case 'valley': this.startValley(dest, bucket); break;
+      case 'pebbles': this.startPebbleBeach(dest, bucket); break;
+      case 'deepsea': this.startDeepSea(dest, bucket); break;
+      case 'bubbles': this.startBubbles(dest, bucket); break;
+      case 'bamboo': this.startBamboo(dest, bucket); break;
+      case 'temple': this.startTempleBell(dest, bucket); break;
+      case 'scops': this.startScopsOwl(dest, bucket); break;
+      case 'heartbeat': this.startHeartbeat(dest, bucket); break;
+      case 'brown': this.startBrownNoise(dest, bucket); break;
       case 'waterfall': this.startWaterfall(dest, bucket); break;
       case 'wave': this.startWave(dest, bucket); break;
       case 'fire': this.startFire(dest, bucket); break;
@@ -1400,6 +1413,1176 @@ export class BinauralEngine {
   }
 
   // Re-activate the context after the browser suspends it (e.g. on tab/screen lock).
+  // --- TENT RAIN (텐트 빗소리: muffled canvas bed + fabric membrane drops) ---
+  private startTentRain(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
+
+    // Muffled exterior rain: the canvas eats every high, leaving only a dark
+    // low rumble — deliberately no hiss layer (that's what separates this
+    // from startRain's outdoor perspective).
+    const bed = this.noiseSource(this.brownNoiseBuffer)!;
+    const bedLp = this.ctx.createBiquadFilter();
+    bedLp.type = 'lowpass'; bedLp.frequency.value = 300;
+    const bedGain = this.ctx.createGain();
+    bedGain.gain.value = 0.8;
+    bed.connect(bedLp).connect(bedGain).connect(dest);
+    bed.start();
+    this.register(bucket, bed);
+
+    // A drop on stretched fabric: resonant low-mid noise burst (the membrane
+    // ring) doubled by a round sine thump (drum-skin "보돋돋" body).
+    const makeDrop = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const pan = this.makePan(Math.random() * 1.6 - 0.8, dest);
+
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 160 + Math.random() * 160;
+      bp.Q.value = 5 + Math.random() * 3;
+      const gain = this.ctx.createGain();
+      const big = Math.random() < 0.06; // occasional fat drop off a fold or branch
+      const peak = (0.6 + Math.random() * 0.4) * (big ? 2 + Math.random() : 1);
+      const decay = 0.05 + Math.random() * 0.04;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(peak, t + 0.001 + Math.random() * 0.001);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + decay);
+      src.connect(bp).connect(gain).connect(pan);
+      src.start(t); src.stop(t + decay + 0.03);
+
+      const thump = this.ctx.createOscillator();
+      thump.type = 'sine';
+      thump.frequency.setValueAtTime(140, t);
+      thump.frequency.exponentialRampToValueAtTime(90, t + 0.05);
+      const tEnv = this.ctx.createGain();
+      tEnv.gain.setValueAtTime(0, t);
+      tEnv.gain.linearRampToValueAtTime(big ? 0.8 : 0.5, t + 0.002);
+      tEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.06);
+      thump.connect(tEnv).connect(pan);
+      thump.start(t); thump.stop(t + 0.09);
+    };
+
+    // ~8-15 drops/sec: 80 ms ticks with probability gates, plus a chance of a
+    // near-simultaneous second hit so the patter clusters instead of clicking
+    // like a metronome.
+    const id = window.setInterval(() => {
+      if (Math.random() > 0.25) makeDrop();
+      if (Math.random() > 0.65) setTimeout(makeDrop, 15 + Math.random() * 40);
+    }, 80);
+    bucket.intervals.push(id);
+
+    // Every 20-50 s a gust flutters the fly sheet and briefly lets a little
+    // more of the outside rain spectrum through the canvas.
+    const gust = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 500 + Math.random() * 400;
+      bp.Q.value = 1;
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.35, t + 0.4);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+      src.connect(bp).connect(g).connect(this.makePan(Math.random() * 0.8 - 0.4, dest));
+      src.start(t); src.stop(t + 0.85);
+
+      bedLp.frequency.setTargetAtTime(400, t, 0.15);
+      bedLp.frequency.setTargetAtTime(300, t + 0.6, 0.5);
+
+      const gid = window.setTimeout(gust, 20000 + Math.random() * 30000);
+      bucket.timeouts.push(gid);
+    };
+    const gid = window.setTimeout(gust, 8000 + Math.random() * 15000);
+    bucket.timeouts.push(gid);
+  }
+
+  // --- WINDOW RAIN (창가 빗소리: rain on the glass, cozy indoor) ---
+  private startWindowRain(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
+
+    // Muffled indoor bed: the storm heard through walls and glass.
+    const mass = this.noiseSource(this.brownNoiseBuffer)!;
+    const massLp = this.ctx.createBiquadFilter();
+    massLp.type = 'lowpass'; massLp.frequency.value = 400;
+    const massGain = this.ctx.createGain();
+    massGain.gain.value = 0.9;
+    mass.connect(massLp).connect(massGain).connect(dest);
+    mass.start();
+    this.register(bucket, mass);
+
+    const wash = this.noiseSource(this.pinkNoiseBuffer)!;
+    const washLp = this.ctx.createBiquadFilter();
+    washLp.type = 'lowpass'; washLp.frequency.value = 900;
+    const washGain = this.ctx.createGain();
+    washGain.gain.value = 0.35;
+    wash.connect(washLp).connect(washGain).connect(dest);
+    wash.start();
+    this.register(bucket, wash);
+
+    // Slow gust surges: the muffled bed brightens and dims as rain sheets hit.
+    const lfo = this.ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.07;
+    const lfoGain = this.ctx.createGain();
+    lfoGain.gain.value = 80;
+    lfo.connect(lfoGain).connect(massLp.frequency);
+    lfo.start();
+    this.register(bucket, lfo);
+
+    // A drop tapping the pane: bright resonant click + a tiny sine ring at the
+    // same frequency so it reads as glass rather than generic rain patter.
+    const tap = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      // The window is one localized object — keep the taps panned narrow.
+      const pan = this.makePan(Math.random() * 0.8 - 0.4, dest);
+      const f = 2200 + Math.random() * 2300;
+
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = f;
+      bp.Q.value = 6 + Math.random() * 4;
+      const env = this.ctx.createGain();
+      const decay = 0.03 + Math.random() * 0.03;
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.9, t + 0.001);
+      env.gain.exponentialRampToValueAtTime(0.01, t + decay);
+      src.connect(bp).connect(env).connect(pan);
+      src.start(t); src.stop(t + decay + 0.02);
+
+      const tick = this.ctx.createOscillator();
+      tick.type = 'sine';
+      tick.frequency.value = f;
+      const tickEnv = this.ctx.createGain();
+      tickEnv.gain.setValueAtTime(0, t);
+      tickEnv.gain.linearRampToValueAtTime(0.15, t + 0.001);
+      tickEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
+      tick.connect(tickEnv).connect(pan);
+      tick.start(t); tick.stop(t + 0.05);
+    };
+
+    // Run-off drip: water collected on the glass streaks down — a longer,
+    // lower "zip" whose resonance falls back to rest.
+    const drip = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      const f = 750 + Math.random() * 550;
+      bp.frequency.setValueAtTime(f * 1.6, t);
+      bp.frequency.exponentialRampToValueAtTime(f, t + 0.15);
+      bp.Q.value = 5 + Math.random() * 3;
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.85, t + 0.005);
+      env.gain.exponentialRampToValueAtTime(0.005, t + 0.16);
+      src.connect(bp).connect(env).connect(this.makePan(Math.random() * 0.8 - 0.4, dest));
+      src.start(t); src.stop(t + 0.2);
+    };
+
+    const loop = () => {
+      if (!this.ctx) return;
+      if (Math.random() < 0.5) tap();
+      if (Math.random() < 0.05) drip();
+      const id = window.setTimeout(loop, 70 + Math.random() * 40);
+      bucket.timeouts.push(id);
+    };
+    loop();
+  }
+
+  // --- EAVES DRIPS (장마철 처마 낙숫물: roof-rain bed + rhythmic drips off the eaves) ---
+  private startEavesDrips(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
+
+    // Rain-on-the-roof bed: dull low mass + a nearer, soft hiss.
+    const roof = this.noiseSource(this.brownNoiseBuffer)!;
+    const roofLp = this.ctx.createBiquadFilter();
+    roofLp.type = 'lowpass'; roofLp.frequency.value = 300;
+    const roofGain = this.ctx.createGain();
+    roofGain.gain.value = 0.68;
+    roof.connect(roofLp).connect(roofGain).connect(dest);
+    roof.start();
+    this.register(bucket, roof);
+
+    const hiss = this.noiseSource(this.pinkNoiseBuffer)!;
+    const hissLp = this.ctx.createBiquadFilter();
+    hissLp.type = 'lowpass'; hissLp.frequency.value = 1200;
+    const hissGain = this.ctx.createGain();
+    hissGain.gain.value = 0.38;
+    hiss.connect(hissLp).connect(hissGain).connect(dest);
+    hiss.start();
+    this.register(bucket, hiss);
+
+    // One falling drop: bright "tick" sweep + resonant "plop" body,
+    // occasionally landing in a puddle ("sploosh").
+    const drop = (line: StereoPannerNode) => {
+      if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+
+      // (a) The tick: fast downward sine sweep, the "똑".
+      const tick = this.ctx.createOscillator();
+      tick.type = 'sine';
+      tick.frequency.setValueAtTime(1400, t);
+      tick.frequency.exponentialRampToValueAtTime(500, t + 0.03);
+      const tickEnv = this.ctx.createGain();
+      tickEnv.gain.setValueAtTime(0, t);
+      tickEnv.gain.linearRampToValueAtTime(0.7, t + 0.002);
+      tickEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+      tick.connect(tickEnv).connect(line);
+      tick.start(t); tick.stop(t + 0.11);
+
+      // (b) The plop body: resonant noise thunk underneath the tick.
+      const plop = this.ctx.createBufferSource();
+      plop.buffer = this.brownNoiseBuffer;
+      const plopBp = this.ctx.createBiquadFilter();
+      plopBp.type = 'bandpass';
+      plopBp.frequency.value = 400 + Math.random() * 300;
+      plopBp.Q.value = 4;
+      const plopEnv = this.ctx.createGain();
+      plopEnv.gain.setValueAtTime(0, t);
+      plopEnv.gain.linearRampToValueAtTime(0.85, t + 0.004);
+      plopEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      plop.connect(plopBp).connect(plopEnv).connect(line);
+      plop.start(t); plop.stop(t + 0.12);
+
+      // 10% of drops land in the puddle below the eave.
+      if (Math.random() < 0.1) {
+        const spl = this.ctx.createBufferSource();
+        spl.buffer = this.pinkNoiseBuffer;
+        const splBp = this.ctx.createBiquadFilter();
+        splBp.type = 'bandpass'; splBp.frequency.value = 900; splBp.Q.value = 2;
+        const splEnv = this.ctx.createGain();
+        splEnv.gain.setValueAtTime(0, t);
+        splEnv.gain.linearRampToValueAtTime(0.4, t + 0.008);
+        splEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+        spl.connect(splBp).connect(splEnv).connect(line);
+        spl.start(t); spl.stop(t + 0.19);
+      }
+    };
+
+    // Four fixed drip lines along the eave. Each keeps its own near-steady
+    // pulse: the base interval is drawn once per line, then only ±15% jitter
+    // per drop — that rhythmic regularity is what sells "낙숫물".
+    [-0.7, -0.3, 0.2, 0.6].forEach((pan) => {
+      const line = this.makePan(pan, dest);
+      this.register(bucket, line);
+      const baseMs = 350 + Math.random() * 550;
+      const pulse = () => {
+        drop(line);
+        const id = window.setTimeout(pulse, baseMs * (0.85 + Math.random() * 0.3));
+        bucket.timeouts.push(id);
+      };
+      // Stagger each line's first drop so the four rhythms interleave.
+      const startId = window.setTimeout(pulse, Math.random() * baseMs);
+      bucket.timeouts.push(startId);
+    });
+  }
+
+  // --- DISTANT THUNDER (dry far-off rolls, no rain — layer your own storm) ---
+  private startDistantThunder(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
+
+    // Faint pre-storm air bed so the space never goes fully silent between rolls.
+    const air = this.noiseSource(this.brownNoiseBuffer)!;
+    const airLp = this.ctx.createBiquadFilter();
+    airLp.type = 'lowpass'; airLp.frequency.value = 100;
+    const airGain = this.ctx.createGain();
+    airGain.gain.value = 0.35;
+    air.connect(airLp).connect(airGain).connect(dest);
+    air.start();
+    this.register(bucket, air);
+
+    // One roll: a long brown one-shot swept down through a lowpass, shaped by
+    // several decaying gain crests so it ROLLS across the sky instead of
+    // whooshing once. `amp` scales the whole envelope (0.5 for the far echo).
+    const rumble = (t0: number, amp: number, panVal: number) => {
+      if (!this.ctx || !this.brownNoiseBuffer) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.brownNoiseBuffer;
+      const lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      const g = this.ctx.createGain();
+      src.connect(lp).connect(g).connect(this.makePan(panVal, dest));
+
+      const dur = 5 + Math.random() * 4;
+      lp.frequency.setValueAtTime(500, t0);
+      lp.frequency.exponentialRampToValueAtTime(70, t0 + dur);
+
+      g.gain.setValueAtTime(0.0001, t0);
+      const crests = 4 + Math.floor(Math.random() * 3);
+      let tc = t0 + 0.3;
+      for (let k = 0; k < crests && tc < t0 + dur - 0.6; k++) {
+        const peak = Math.max(0.02, 3.0 * Math.pow(0.75, k) * (0.7 + Math.random() * 0.6) * amp);
+        g.gain.exponentialRampToValueAtTime(peak, tc);
+        const step = 0.8 + Math.random() * 0.7;
+        // Sink back between crests (never to zero — the roll keeps breathing).
+        g.gain.exponentialRampToValueAtTime(0.35 * amp, Math.min(tc + step * 0.6, t0 + dur - 0.3));
+        tc += step;
+      }
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      src.start(t0); src.stop(t0 + dur + 0.1);
+      this.register(bucket, src, true);
+    };
+
+    const strike = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const side = Math.random() < 0.5 ? -1 : 1;
+      const panVal = side * (0.35 + Math.random() * 0.25);
+      rumble(t, 1, panVal);
+
+      // ~30%: a muffled near-crack right at the front of the roll.
+      if (Math.random() < 0.3) {
+        const crack = this.ctx.createBufferSource();
+        crack.buffer = this.pinkNoiseBuffer;
+        const bp = this.ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = 900 + Math.random() * 500;
+        bp.Q.value = 0.7;
+        const cg = this.ctx.createGain();
+        cg.gain.setValueAtTime(0, t);
+        cg.gain.linearRampToValueAtTime(0.5, t + 0.012);
+        cg.gain.exponentialRampToValueAtTime(0.005, t + 0.3);
+        crack.connect(bp).connect(cg).connect(this.makePan(panVal, dest));
+        crack.start(t); crack.stop(t + 0.4);
+        this.register(bucket, crack, true);
+      }
+
+      // ~50%: the roll answers from the opposite side, quieter and later.
+      if (Math.random() < 0.5) {
+        rumble(t + 1.2 + Math.random() * 0.8, 0.5, -panVal);
+      }
+
+      const id = window.setTimeout(strike, 9000 + Math.random() * 11000);
+      bucket.timeouts.push(id);
+    };
+    // First roll right away, so toggling the layer answers immediately.
+    strike();
+  }
+
+  // --- HEARTBEAT (calm resting heartbeat, womb-comfort) ---
+  private startHeartbeat(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer) return;
+
+    // Everything runs through one warm lowpass so the beat sits "inside the
+    // chest" rather than in the room. Deliberately centered — no pan scatter.
+    const layerGain = this.ctx.createGain();
+    layerGain.gain.value = 1;
+    const lp = this.ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 220;
+    layerGain.connect(lp).connect(dest);
+
+    // Slow breathing swell around the pulse. Depth 0.12 on a base of 1 keeps
+    // the gain strictly positive (0.88..1.12) — never let it cross 0.
+    const breath = this.ctx.createOscillator();
+    breath.type = 'sine';
+    breath.frequency.value = 0.2;
+    const breathDepth = this.ctx.createGain();
+    breathDepth.gain.value = 0.12;
+    breath.connect(breathDepth).connect(layerGain.gain);
+    breath.start();
+    this.register(bucket, breath);
+
+    // One thump = a descending sine "knock" plus a soft brown-noise body thud
+    // (lowpassed to 150 Hz) so the beat has flesh, not just tone.
+    const thump = (t: number, startHz: number, endHz: number, peak: number, decay: number) => {
+      if (!this.ctx || !this.brownNoiseBuffer) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(startHz, t);
+      osc.frequency.exponentialRampToValueAtTime(endHz, t + 0.12);
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(peak, t + 0.008);
+      env.gain.exponentialRampToValueAtTime(0.001, t + decay);
+      osc.connect(env).connect(layerGain);
+      osc.start(t); osc.stop(t + decay + 0.05);
+
+      const thud = this.ctx.createBufferSource();
+      thud.buffer = this.brownNoiseBuffer;
+      const thudLp = this.ctx.createBiquadFilter();
+      thudLp.type = 'lowpass';
+      thudLp.frequency.value = 150;
+      const thudEnv = this.ctx.createGain();
+      thudEnv.gain.setValueAtTime(0, t);
+      thudEnv.gain.linearRampToValueAtTime(0.5, t + 0.006);
+      thudEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      thud.connect(thudLp).connect(thudEnv).connect(layerGain);
+      thud.start(t); thud.stop(t + 0.1);
+    };
+
+    // Resting pace: the base period random-walks within 950–1050 ms
+    // (57–63 BPM), a self-rescheduling setTimeout chain — never setInterval,
+    // whose rigidity would kill the organic feel.
+    let period = 990 + Math.random() * 20;
+    const beat = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      thump(t, 60, 38, 1.3, 0.22);         // LUB
+      thump(t + 0.28, 52, 33, 0.95, 0.18); // dub
+      period = Math.min(1050, Math.max(950, period + (Math.random() * 2 - 1) * period * 0.012));
+      const id = window.setTimeout(beat, period);
+      bucket.timeouts.push(id);
+    };
+    beat();
+  }
+
+  // --- 15. BROWN NOISE ---
+  private startBrownNoise(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer) return;
+    const node = this.noiseSource(this.brownNoiseBuffer)!;
+    // Gentle lowpass rounds off what little top end the brown spectrum keeps,
+    // so it masks smoothly with zero hiss (good for ADHD focus / sleep).
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = 800;
+    const gain = this.ctx.createGain();
+    gain.gain.value = 0.4;
+    node.connect(filter).connect(gain).connect(dest);
+    node.start();
+    this.register(bucket, node);
+  }
+
+  // --- BAMBOO (대나무숲: grove wind + papery leaf shimmer + hollow culm knocks) ---
+  private startBamboo(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
+
+    // Wind bed pushing through the grove, gusting like startWind but a touch darker.
+    const bed = this.noiseSource(this.pinkNoiseBuffer)!;
+    const bedLp = this.ctx.createBiquadFilter();
+    bedLp.type = 'lowpass'; bedLp.frequency.value = 320; bedLp.Q.value = 0;
+    const bedGain = this.ctx.createGain();
+    bedGain.gain.value = 1.6;
+    bed.connect(bedLp).connect(bedGain).connect(dest);
+    bed.start();
+    this.register(bucket, bed);
+
+    // Papery leaf band — brighter than broadleaf rustle, so it reads as dry
+    // bamboo leaves hissing against each other. Swells with the gusts.
+    const leaves = this.noiseSource(this.pinkNoiseBuffer)!;
+    const leafHp = this.ctx.createBiquadFilter();
+    leafHp.type = 'highpass'; leafHp.frequency.value = 2000;
+    const leafLp = this.ctx.createBiquadFilter();
+    leafLp.type = 'lowpass'; leafLp.frequency.value = 6500;
+    const leafGain = this.ctx.createGain();
+    leafGain.gain.value = 0.06;
+    leaves.connect(leafHp).connect(leafLp).connect(leafGain).connect(dest);
+    leaves.start();
+    this.register(bucket, leaves);
+
+    const animate = () => {
+      if (!this.ctx) return; const t = this.ctx.currentTime;
+      const gust = 2 + Math.random() * 4;
+      bedLp.frequency.exponentialRampToValueAtTime(200 + Math.random() * 250, t + gust);
+      leafGain.gain.setTargetAtTime(0.05 + Math.random() * 0.15, t, gust / 3);
+    };
+    animate();
+    const id = window.setInterval(animate, 5000);
+    bucket.intervals.push(id);
+
+    // One culm knock: a bright resonant "tok" (high-Q noise burst) plus a
+    // hollow-tube sine drop underneath so it sounds like thick hollow wood.
+    const knock = (t: number, amp: number, freq: number, pan: StereoPannerNode) => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 8 + Math.random() * 2;
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(1.2 * amp, t + 0.0015);
+      env.gain.exponentialRampToValueAtTime(0.01, t + 0.03);
+      src.connect(bp).connect(env).connect(pan);
+      src.start(t); src.stop(t + 0.05);
+
+      const tube = this.ctx.createOscillator();
+      tube.type = 'sine';
+      tube.frequency.setValueAtTime(320, t);
+      tube.frequency.exponentialRampToValueAtTime(180, t + 0.05);
+      const tEnv = this.ctx.createGain();
+      tEnv.gain.setValueAtTime(0, t);
+      tEnv.gain.linearRampToValueAtTime(0.7 * amp, t + 0.003);
+      tEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.09);
+      tube.connect(tEnv).connect(pan);
+      tube.start(t); tube.stop(t + 0.12);
+    };
+
+    // Culms clack in little clusters as a gust knocks them together; most hits
+    // get a quieter rebound as the stalk swings back.
+    const cluster = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const count = 1 + Math.floor(Math.random() * 4);
+      let at = t;
+      for (let i = 0; i < count; i++) {
+        const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
+        const freq = 1900 + Math.random() * 600;
+        knock(at, 1, freq, pan);
+        if (Math.random() < 0.7) knock(at + 0.06 + Math.random() * 0.06, 0.5, freq, pan);
+        at += 0.16 + Math.random() * 0.34;
+      }
+      const id = window.setTimeout(cluster, 2500 + Math.random() * 4500);
+      bucket.timeouts.push(id);
+    };
+    cluster();
+  }
+
+  // --- TEMPLE BELL (산사의 종: deep beomjong strikes + moktak taps + mountain breeze) ---
+  private startTempleBell(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
+
+    // Mountain breeze bed: soft filtered pink noise whose color drifts slowly.
+    const breeze = this.noiseSource(this.pinkNoiseBuffer)!;
+    const breezeLp = this.ctx.createBiquadFilter();
+    breezeLp.type = 'lowpass'; breezeLp.frequency.value = 500;
+    const breezeGain = this.ctx.createGain();
+    breezeGain.gain.value = 0.45;
+    breeze.connect(breezeLp).connect(breezeGain).connect(dest);
+    breeze.start();
+    this.register(bucket, breeze);
+
+    const breezeLfo = this.ctx.createOscillator();
+    breezeLfo.frequency.value = 0.06;
+    const breezeLfoGain = this.ctx.createGain();
+    breezeLfoGain.gain.value = 150; // 500 ± 150 Hz — cutoff stays strictly positive
+    breezeLfo.connect(breezeLfoGain).connect(breezeLp.frequency);
+    breezeLfo.start();
+    this.register(bucket, breezeLfo);
+
+    // The beomjong (범종): inharmonic partials, each a slightly detuned sine
+    // pair so the long tail beats slowly (맥놀이), under a noise strike transient.
+    const roots = [82.4, 98, 110];
+    const partials = [1, 2.0, 2.67, 3.01, 4.72, 5.43];
+
+    const strike = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const root = roots[Math.floor(Math.random() * roots.length)];
+      const pan = this.makePan(Math.random() * 0.5 - 0.25, dest);
+
+      // Bonsho warble on the fundamental: slow AM around unity gain
+      // (0.75–1.25 — multiplicative, so it can never cross zero).
+      const warble = this.ctx.createGain();
+      warble.gain.value = 1;
+      warble.connect(pan);
+      const warbleLfo = this.ctx.createOscillator();
+      warbleLfo.frequency.value = 0.8 + Math.random() * 0.4;
+      const warbleDepth = this.ctx.createGain();
+      warbleDepth.gain.value = 0.25;
+      warbleLfo.connect(warbleDepth).connect(warble.gain);
+
+      let maxDur = 0;
+      partials.forEach((ratio, i) => {
+        const dur = Math.max(4, 14 - i * 2);
+        maxDur = Math.max(maxDur, dur);
+        const amp = 1 / (i + 1.2);
+        [-1, 1].forEach((sign) => {
+          const osc = this.ctx!.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.value = root * ratio * (1 + sign * 0.002);
+          const gain = this.ctx!.createGain();
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(amp * 0.5, t + 0.015 + i * 0.008);
+          gain.gain.exponentialRampToValueAtTime(0.0005, t + dur);
+          osc.connect(gain).connect(i === 0 ? warble : pan);
+          osc.start(t); osc.stop(t + dur + 0.1);
+          this.register(bucket, osc, true);
+        });
+      });
+      warbleLfo.start(t); warbleLfo.stop(t + maxDur + 0.1);
+      this.register(bucket, warbleLfo, true);
+
+      // Strike transient: the wooden beam hitting the bronze.
+      const burst = this.ctx.createBufferSource();
+      burst.buffer = this.pinkNoiseBuffer;
+      const burstBp = this.ctx.createBiquadFilter();
+      burstBp.type = 'bandpass'; burstBp.frequency.value = 700; burstBp.Q.value = 1;
+      const burstGain = this.ctx.createGain();
+      burstGain.gain.setValueAtTime(0, t);
+      burstGain.gain.linearRampToValueAtTime(0.7, t + 0.005);
+      burstGain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+      burst.connect(burstBp).connect(burstGain).connect(pan);
+      burst.start(t); burst.stop(t + 0.15);
+
+      const id = window.setTimeout(strike, 20000 + Math.random() * 20000);
+      bucket.timeouts.push(id);
+    };
+    strike();
+
+    // Moktak (목탁): distant, quiet wooden taps between the bell strikes —
+    // a woody sine thunk plus a tight resonant click for the "tok" attack.
+    const tap = (t: number, pan: StereoPannerNode) => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(620, t);
+      osc.frequency.exponentialRampToValueAtTime(540, t + 0.02);
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(0.55, t + 0.003);
+      env.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+      osc.connect(env).connect(pan);
+      osc.start(t); osc.stop(t + 0.07);
+
+      const click = this.ctx.createBufferSource();
+      click.buffer = this.pinkNoiseBuffer;
+      const clickBp = this.ctx.createBiquadFilter();
+      clickBp.type = 'bandpass'; clickBp.frequency.value = 1800; clickBp.Q.value = 5;
+      const clickGain = this.ctx.createGain();
+      clickGain.gain.setValueAtTime(0, t);
+      clickGain.gain.linearRampToValueAtTime(0.5, t + 0.002);
+      clickGain.gain.exponentialRampToValueAtTime(0.01, t + 0.03);
+      click.connect(clickBp).connect(clickGain).connect(pan);
+      click.start(t); click.stop(t + 0.05);
+    };
+
+    const moktak = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const pan = this.makePan(0.3, dest);
+      const count = 3 + Math.floor(Math.random() * 4);
+      const spacing = 0.26 + Math.random() * 0.04;
+      for (let i = 0; i < count; i++) tap(t + i * spacing, pan);
+      const id = window.setTimeout(moktak, 8000 + Math.random() * 7000);
+      bucket.timeouts.push(id);
+    };
+    const moktakId = window.setTimeout(moktak, 5000 + Math.random() * 5000);
+    bucket.timeouts.push(moktakId);
+  }
+
+  // --- VALLEY (여름 계곡 물멍: thick stream churn + rock gurgles + splashes) ---
+  private startValley(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
+
+    // Three churn layers on coprime LFO rates (0.10 / 0.23 / 0.31 Hz) so the
+    // combined swell pattern effectively never repeats — a big valley stream,
+    // much thicker than the small stream bed, with real low-end water mass.
+    const churn = (
+      buffer: AudioBuffer,
+      freq: number,
+      q: number,
+      base: number,
+      lfoHz: number,
+      depth: number,
+      pan: number,
+    ) => {
+      const n = this.noiseSource(buffer)!;
+      const bp = this.ctx!.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = q;
+      const g = this.ctx!.createGain();
+      g.gain.value = base;
+      n.connect(bp).connect(g).connect(this.makePan(pan, dest));
+      n.start();
+      this.register(bucket, n);
+
+      const lfo = this.ctx!.createOscillator();
+      lfo.frequency.value = lfoHz;
+      const lfoDepth = this.ctx!.createGain();
+      lfoDepth.gain.value = depth; // depth < base — the gain never crosses zero
+      lfo.connect(lfoDepth).connect(g.gain);
+      lfo.start();
+      this.register(bucket, lfo);
+    };
+
+    churn(this.brownNoiseBuffer, 180, 0.7, 1.35, 0.10, 0.2, -0.2); // low water mass
+    churn(this.pinkNoiseBuffer, 700, 0.8, 0.75, 0.23, 0.16, 0);    // mid churn body
+    churn(this.pinkNoiseBuffer, 2400, 0.7, 0.45, 0.31, 0.1, 0.2);  // bright surface wash
+
+    // Gurgle blobs: water swirling between rocks — a high-Q band whose center
+    // wobbles at 4-7 Hz while the gain opens (0.2 s), holds 0.5-1.5 s, closes.
+    const gurgle = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 500 + Math.random() * 400;
+      bp.Q.value = 8;
+      const wob = this.ctx.createOscillator();
+      wob.frequency.value = 4 + Math.random() * 3;
+      const wobDepth = this.ctx.createGain();
+      wobDepth.gain.value = 200;
+      wob.connect(wobDepth).connect(bp.frequency);
+      const g = this.ctx.createGain();
+      const hold = 0.5 + Math.random();
+      const peak = 2.0 + Math.random() * 0.8; // Q 8 band eats energy: needs a hot envelope
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(peak, t + 0.2);
+      g.gain.setValueAtTime(peak, t + 0.2 + hold);
+      g.gain.linearRampToValueAtTime(0.0001, t + 0.4 + hold);
+      src.connect(bp).connect(g).connect(this.makePan(Math.random() * 1.4 - 0.7, dest));
+      src.start(t); src.stop(t + 0.4 + hold + 0.05);
+      wob.start(t); wob.stop(t + 0.4 + hold + 0.05);
+
+      const id = window.setTimeout(gurgle, 2000 + Math.random() * 3000);
+      bucket.timeouts.push(id);
+    };
+    gurgle();
+
+    // Occasional splash off a rock: a bright pink burst with a fast decay.
+    const splash = () => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      const hp = this.ctx.createBiquadFilter();
+      hp.type = 'highpass'; hp.frequency.value = 1200;
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.35, t + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+      src.connect(hp).connect(g).connect(this.makePan(Math.random() * 1.2 - 0.6, dest));
+      src.start(t); src.stop(t + 0.25);
+
+      const id = window.setTimeout(splash, 8000 + Math.random() * 12000);
+      bucket.timeouts.push(id);
+    };
+    const splashId = window.setTimeout(splash, 3000 + Math.random() * 5000);
+    bucket.timeouts.push(splashId);
+  }
+
+  // --- PEBBLE BEACH (몽돌해변: surf swells + '차르르르' pebble roll on the retreat) ---
+  private startPebbleBeach(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
+
+    // Continuous surf bed: brown (mass) + pink (wash) summed into one lowpass
+    // whose cutoff and level breathe with each wave cycle. Rests at a quiet lull.
+    const surfLp = this.ctx.createBiquadFilter();
+    surfLp.type = 'lowpass'; surfLp.frequency.value = 200;
+    const surfGain = this.ctx.createGain();
+    surfGain.gain.value = 0.25;
+    surfLp.connect(surfGain).connect(dest);
+
+    const mass = this.noiseSource(this.brownNoiseBuffer)!;
+    const massMix = this.ctx.createGain();
+    massMix.gain.value = 1.1;
+    mass.connect(massMix).connect(surfLp);
+    mass.start();
+    this.register(bucket, mass);
+
+    const washBed = this.noiseSource(this.pinkNoiseBuffer)!;
+    const washMix = this.ctx.createGain();
+    washMix.gain.value = 0.55;
+    washBed.connect(washMix).connect(surfLp);
+    washBed.start();
+    this.register(bucket, washBed);
+
+    // Undertow hiss: a thin high band that only appears while the water drains.
+    const undertow = this.noiseSource(this.pinkNoiseBuffer)!;
+    const undertowHp = this.ctx.createBiquadFilter();
+    undertowHp.type = 'highpass'; undertowHp.frequency.value = 4000;
+    const undertowGain = this.ctx.createGain();
+    undertowGain.gain.value = 0.0001;
+    undertow.connect(undertowHp).connect(undertowGain).connect(dest);
+    undertow.start();
+    this.register(bucket, undertow);
+
+    // Makeup bus for the pebble ticks: 4–8 ms bursts through Q 5–9 bandpass
+    // filters lose most of their energy, so the modest per-tick peaks below
+    // are lifted here to sit right against the receding surf.
+    const tickBus = this.ctx.createGain();
+    tickBus.gain.value = 3.2;
+    tickBus.connect(dest);
+
+    // One pebble micro-tick: a few ms of pink noise through a resonant band.
+    const tick = (peak: number) => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const t = this.ctx.currentTime;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.pinkNoiseBuffer;
+      src.playbackRate.value = 0.85 + Math.random() * 0.3;
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 900 + Math.random() * 1900;
+      bp.Q.value = 5 + Math.random() * 4;
+      const g = this.ctx.createGain();
+      const dur = 0.004 + Math.random() * 0.004;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(peak, t + dur * 0.3);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      src.connect(bp).connect(g).connect(this.makePan(Math.random() * 1.8 - 0.9, tickBus));
+      // Random buffer offset so the ~4 ms slices never repeat the same transient.
+      src.start(t, Math.random() * 3);
+      src.stop(t + dur + 0.02);
+    };
+
+    // '차르르르': a dense micro-loop of ticks while the wave pulls back. The
+    // population envelope rises fast then dies with the recede, and the gaps
+    // widen toward the end — the pebbles settling as the water lets go.
+    const pebbleWash = () => {
+      if (!this.ctx) return;
+      const washDur = 2.5 + Math.random() * 1.5;
+      const t0 = this.ctx.currentTime;
+      const microLoop = () => {
+        if (!this.ctx) return;
+        const phase = (this.ctx.currentTime - t0) / washDur;
+        if (phase >= 1) return;
+        const env = Math.min(1, phase / 0.15) * Math.pow(1 - phase, 1.4);
+        tick((0.15 + Math.random() * 0.35) * Math.max(0.06, env));
+        if (env > 0.45 && Math.random() < 0.6) tick((0.15 + Math.random() * 0.35) * env);
+        const id = window.setTimeout(microLoop, (12 + Math.random() * 18) * (1 + phase * 2.2));
+        bucket.timeouts.push(id);
+      };
+      microLoop();
+    };
+
+    // A bigger stone knocking over: short sine body + noise crack on top.
+    const clack = (t: number) => {
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const pan = this.makePan(Math.random() * 1.8 - 0.9, dest);
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      const f = 600 + Math.random() * 500;
+      osc.frequency.setValueAtTime(f, t);
+      osc.frequency.exponentialRampToValueAtTime(f * 0.72, t + 0.03);
+      const body = this.ctx.createGain();
+      body.gain.setValueAtTime(0, t);
+      body.gain.linearRampToValueAtTime(0.6, t + 0.002);
+      body.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+      osc.connect(body).connect(pan);
+      osc.start(t); osc.stop(t + 0.06);
+
+      const knock = this.ctx.createBufferSource();
+      knock.buffer = this.pinkNoiseBuffer;
+      const kBp = this.ctx.createBiquadFilter();
+      kBp.type = 'bandpass'; kBp.frequency.value = f * 2.1; kBp.Q.value = 3;
+      const kEnv = this.ctx.createGain();
+      kEnv.gain.setValueAtTime(0, t);
+      kEnv.gain.linearRampToValueAtTime(0.9, t + 0.002);
+      kEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+      knock.connect(kBp).connect(kEnv).connect(pan);
+      knock.start(t, Math.random() * 3); knock.stop(t + 0.06);
+    };
+
+    // Wave cycle: swell in (~2.5 s), crest, recede (~3.5 s) with the pebble
+    // wash + undertow hiss riding the retreat. Period 8–14 s, irregular, and
+    // always longer than swell+recede so every cycle starts from the lull.
+    const cycle = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const swellSec = 2.2 + Math.random() * 0.7;
+      const recedeSec = 3.1 + Math.random() * 0.8;
+      const crest = 0.68 + Math.random() * 0.14;
+
+      surfLp.frequency.setValueAtTime(200, t);
+      surfLp.frequency.exponentialRampToValueAtTime(900, t + swellSec);
+      surfLp.frequency.exponentialRampToValueAtTime(200, t + swellSec + recedeSec);
+      surfGain.gain.setValueAtTime(0.25, t);
+      surfGain.gain.linearRampToValueAtTime(crest, t + swellSec);
+      surfGain.gain.linearRampToValueAtTime(0.25, t + swellSec + recedeSec);
+
+      undertowGain.gain.setValueAtTime(0.0001, t + swellSec);
+      undertowGain.gain.linearRampToValueAtTime(0.11 + Math.random() * 0.04, t + swellSec + 0.5);
+      undertowGain.gain.exponentialRampToValueAtTime(0.0001, t + swellSec + recedeSec);
+
+      const washId = window.setTimeout(pebbleWash, Math.round(swellSec * 1000));
+      bucket.timeouts.push(washId);
+
+      const clacks = 2 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < clacks; i++) {
+        clack(t + swellSec + 0.15 + Math.random() * (recedeSec - 0.7));
+      }
+
+      const id = window.setTimeout(cycle, 8000 + Math.random() * 6000);
+      bucket.timeouts.push(id);
+    };
+    cycle();
+  }
+
+  // --- BUBBLES (underwater deep-water bed + Minnaert-resonance bubble chirps) ---
+  private startBubbles(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer) return;
+
+    // Muffled deep-water bed that slowly swells, like hearing through water.
+    const bed = this.noiseSource(this.brownNoiseBuffer)!;
+    const bedLp = this.ctx.createBiquadFilter();
+    bedLp.type = 'lowpass'; bedLp.frequency.value = 300;
+    const bedGain = this.ctx.createGain();
+    bedGain.gain.value = 0.5;
+    bed.connect(bedLp).connect(bedGain).connect(dest);
+    bed.start();
+    this.register(bucket, bed);
+
+    const lfo = this.ctx.createOscillator();
+    lfo.frequency.value = 0.07;
+    const lfoGain = this.ctx.createGain();
+    lfoGain.gain.value = 0.15; // 0.5 ± 0.15 keeps the bed gain strictly positive
+    lfo.connect(lfoGain).connect(bedGain.gain);
+    lfo.start();
+    this.register(bucket, lfo);
+
+    // One bubble: a sine at its Minnaert resonance chirping UP as it rises and
+    // expands — the upward glide is exactly what a real bubble sounds like.
+    const bubble = (t: number, f0: number) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      const dur = 0.04 + Math.random() * 0.06;
+      osc.frequency.setValueAtTime(f0, t);
+      osc.frequency.exponentialRampToValueAtTime(f0 * (1.12 + Math.random() * 0.25), t + dur);
+      const env = this.ctx.createGain();
+      // Big (low) bubbles are louder than tiny (high) ones.
+      const peak = Math.max(0.6, Math.min(1.8, 1200 / f0));
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(peak, t + 0.003);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(env).connect(this.makePan(Math.random() * 1.6 - 0.8, dest));
+      osc.start(t); osc.stop(t + dur + 0.05);
+    };
+
+    const loop = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      // Log-distributed 400–1800 Hz so bubble sizes spread naturally.
+      let f0 = 400 * Math.pow(4.5, Math.random());
+      if (Math.random() < 0.3) {
+        // Gurgle: a burst of bubbles breaking loose, each smaller (higher) than the last.
+        const count = 4 + Math.floor(Math.random() * 6);
+        let bt = t;
+        for (let i = 0; i < count; i++) {
+          bubble(bt, f0);
+          f0 *= 1.1;
+          bt += 0.04 + Math.random() * 0.05;
+        }
+      } else {
+        bubble(t, f0);
+      }
+      const id = window.setTimeout(loop, 80 + Math.random() * 270);
+      bucket.timeouts.push(id);
+    };
+    loop();
+  }
+
+  // --- DEEP SEA (abyssal bed + distant whale calls) ---
+  private startDeepSea(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer) return;
+
+    // Abyssal water mass: a dark brown-noise bed whose color and level drift
+    // very slowly, like currents shifting in the deep.
+    const bed = this.noiseSource(this.brownNoiseBuffer)!;
+    const bedLp = this.ctx.createBiquadFilter();
+    bedLp.type = 'lowpass'; bedLp.frequency.value = 180;
+    const bedGain = this.ctx.createGain();
+    bedGain.gain.value = 1.0;
+    bed.connect(bedLp).connect(bedGain).connect(dest);
+    bed.start();
+    this.register(bucket, bed);
+
+    const fLfo = this.ctx.createOscillator();
+    fLfo.frequency.value = 0.05;
+    const fDepth = this.ctx.createGain();
+    fDepth.gain.value = 40;
+    fLfo.connect(fDepth).connect(bedLp.frequency);
+    fLfo.start();
+    this.register(bucket, fLfo);
+
+    const aLfo = this.ctx.createOscillator();
+    aLfo.frequency.value = 0.03;
+    const aDepth = this.ctx.createGain();
+    aDepth.gain.value = 0.2; // 1.0 ± 0.2 — stays strictly positive
+    aLfo.connect(aDepth).connect(bedGain.gain);
+    aLfo.start();
+    this.register(bucket, aLfo);
+
+    // Faint pressure hum with a slow amplitude wobble.
+    const hum = this.ctx.createOscillator();
+    hum.type = 'sine';
+    hum.frequency.value = 55;
+    const humGain = this.ctx.createGain();
+    humGain.gain.value = 0.04;
+    hum.connect(humGain).connect(dest);
+    hum.start();
+    this.register(bucket, hum);
+
+    const humLfo = this.ctx.createOscillator();
+    humLfo.frequency.value = 0.06;
+    const humDepth = this.ctx.createGain();
+    humDepth.gain.value = 0.015; // 0.04 ± 0.015 — stays strictly positive
+    humLfo.connect(humDepth).connect(humGain.gain);
+    humLfo.start();
+    this.register(bucket, humLfo);
+
+    // One whale call: a slow rise-and-fall moan with vibrato and a quiet
+    // octave partial, trailing its own decaying echo into the dark.
+    const sing = (f: number, panPos: number, amp: number) => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const dur = 1.5 + Math.random() * 1.5;
+      const pan = this.makePan(panPos, dest);
+
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, t);
+      osc.frequency.exponentialRampToValueAtTime(f * 1.8, t + dur * 0.6);
+      osc.frequency.exponentialRampToValueAtTime(f * 0.9, t + dur);
+
+      const osc2 = this.ctx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(f * 2, t);
+      osc2.frequency.exponentialRampToValueAtTime(f * 2 * 1.8, t + dur * 0.6);
+      osc2.frequency.exponentialRampToValueAtTime(f * 2 * 0.9, t + dur);
+      const partial = this.ctx.createGain();
+      partial.gain.value = 0.3;
+
+      const vib = this.ctx.createOscillator();
+      vib.frequency.value = 4 + Math.random() * 2;
+      const vibDepth = this.ctx.createGain();
+      vibDepth.gain.value = 6 + Math.random() * 6;
+      vib.connect(vibDepth);
+      vibDepth.connect(osc.frequency);
+      vibDepth.connect(osc2.frequency);
+
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(amp, t + 0.3);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+      const lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 800;
+
+      osc.connect(env);
+      osc2.connect(partial).connect(env);
+      env.connect(lp).connect(pan);
+
+      // Per-call echo: the feedback gain repeats the call every 0.45 s at
+      // 35%, decaying to silence once the envelope closes. The nodes are
+      // created per call and get GC'd after the oscillators stop — the
+      // +1.5 s stop slack leaves room for the echo tail to ring out.
+      const delay = this.ctx.createDelay(1);
+      delay.delayTime.value = 0.45;
+      const fb = this.ctx.createGain();
+      fb.gain.value = 0.35;
+      lp.connect(delay);
+      delay.connect(fb);
+      fb.connect(delay);
+      fb.connect(pan);
+
+      const stopAt = t + dur + 1.5;
+      osc.start(t); osc2.start(t); vib.start(t);
+      osc.stop(stopAt); osc2.stop(stopAt); vib.stop(stopAt);
+      this.register(bucket, osc, true);
+      this.register(bucket, osc2, true);
+      this.register(bucket, vib, true);
+    };
+
+    const call = () => {
+      if (!this.ctx) return;
+      const f = 180 + Math.random() * 120;
+      const panPos = (Math.random() < 0.5 ? -1 : 1) * (0.2 + Math.random() * 0.3);
+      sing(f, panPos, 0.9);
+      // Sometimes another whale answers from the other side, softer, pitched ±20%.
+      if (Math.random() < 0.6) {
+        const answerId = window.setTimeout(() => {
+          sing(f * (0.8 + Math.random() * 0.4), -panPos, 0.45);
+        }, 4000 + Math.random() * 2000);
+        bucket.timeouts.push(answerId);
+      }
+      const id = window.setTimeout(call, 12000 + Math.random() * 13000);
+      bucket.timeouts.push(id);
+    };
+    // A whale greets right away — instant feedback that the layer is on.
+    call();
+  }
+
+  // --- SCOPS OWL (소쩍새: sharp '소-쩍' whistled call over a faint night bed;
+  // nothing like the low mellow hoots of startOwl) ---
+  private startScopsOwl(dest: AudioNode, bucket: Bucket) {
+    if (!this.ctx || !this.brownNoiseBuffer) return;
+
+    // Minimal night-air bed so the bird sits in a space instead of dry silence.
+    const bed = this.noiseSource(this.brownNoiseBuffer)!;
+    const bedLp = this.ctx.createBiquadFilter();
+    bedLp.type = 'lowpass'; bedLp.frequency.value = 200;
+    const bedGain = this.ctx.createGain();
+    bedGain.gain.value = 0.25;
+    bed.connect(bedLp).connect(bedGain).connect(dest);
+    bed.start();
+    this.register(bucket, bed);
+
+    // Each bird calls from a fixed perch: shared "distance" lowpass -> panner.
+    const mainOut = this.ctx.createBiquadFilter();
+    mainOut.type = 'lowpass'; mainOut.frequency.value = 2000;
+    mainOut.connect(this.makePan(0.5, dest));
+    const answerOut = this.ctx.createBiquadFilter();
+    answerOut.type = 'lowpass'; answerOut.frequency.value = 2000;
+    answerOut.connect(this.makePan(-0.7, dest));
+
+    // One whistled syllable: vibrato'd sine through a resonant band, with a
+    // touch of 30 Hz tremolo for organic roughness (1 ± 0.2, never crosses 0).
+    const note = (t: number, freq: number, dur: number, peak: number, out: AudioNode) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const vib = this.ctx.createOscillator();
+      vib.frequency.value = 5;
+      const vibDepth = this.ctx.createGain();
+      vibDepth.gain.value = 15;
+      vib.connect(vibDepth).connect(osc.frequency);
+
+      const bp = this.ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 3;
+
+      const env = this.ctx.createGain();
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(peak, t + 0.015);
+      env.gain.setValueAtTime(peak, t + dur - 0.06);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+      const trem = this.ctx.createGain();
+      trem.gain.value = 1;
+      const am = this.ctx.createOscillator();
+      am.frequency.value = 30;
+      const amDepth = this.ctx.createGain();
+      amDepth.gain.value = 0.2;
+      am.connect(amDepth).connect(trem.gain);
+
+      osc.connect(bp).connect(env).connect(trem).connect(out);
+      osc.start(t); vib.start(t); am.start(t);
+      osc.stop(t + dur + 0.05); vib.stop(t + dur + 0.05); am.stop(t + dur + 0.05);
+    };
+
+    // "소-쩍(-다)": 780 Hz then 700 Hz after a 140 ms gap, sometimes a third
+    // falling 660 Hz syllable. `pitch`/`gainMul` let the answering bird reuse it.
+    const call = (t: number, pitch: number, gainMul: number, out: AudioNode, third: boolean) => {
+      note(t, 780 * pitch, 0.12, 1.1 * gainMul, out);
+      note(t + 0.26, 700 * pitch, 0.1, 1.0 * gainMul, out);
+      if (third) note(t + 0.5, 660 * pitch, 0.1, 0.9 * gainMul, out);
+    };
+
+    // Calling bouts of 15–30 s (a call every 2.5–4 s), then 20–60 s of night.
+    const startBout = () => {
+      const boutMs = 15000 + Math.random() * 15000;
+      const answering = Math.random() < 0.3; // a rival answers from the far side
+      let elapsed = 0;
+      const callLoop = () => {
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+        const third = Math.random() < 0.4;
+        call(t, 1, 1, mainOut, third);
+        if (answering) call(t + 0.8, 0.92, 0.5, answerOut, third);
+        const next = 2500 + Math.random() * 1500;
+        elapsed += next;
+        const id = elapsed < boutMs
+          ? window.setTimeout(callLoop, next)
+          : window.setTimeout(startBout, 20000 + Math.random() * 40000);
+        bucket.timeouts.push(id);
+      };
+      callLoop();
+    };
+    startBout();
+  }
+
   resume() {
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
   }

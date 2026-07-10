@@ -18,6 +18,7 @@ class BiquadFilterNode extends GNode { type = 'lowpass'; frequency = new Param(3
 class OscillatorNode extends GNode { type = 'sine'; frequency = new Param(440); detune = new Param(0); onended: any = null; start() {} stop() {} }
 class AudioBufferSourceNode extends GNode { buffer: any = null; loop = false; playbackRate = new Param(1); onended: any = null; start() {} stop() {} }
 class StereoPannerNode extends GNode { pan = new Param(0); }
+class DelayNodeMock extends GNode { delayTime = new Param(0); }
 class ConvolverNode extends GNode { buffer: any = null; }
 class ChannelMergerNode extends GNode {}
 class DynamicsCompressorNode extends GNode {
@@ -41,6 +42,7 @@ class AudioContextMock {
   createOscillator() { return new OscillatorNode(); }
   createBufferSource() { return new AudioBufferSourceNode(); }
   createStereoPanner() { return new StereoPannerNode(); }
+  createDelay() { return new DelayNodeMock(); }
   createConvolver() { return new ConvolverNode(); }
   createChannelMerger() { return new ChannelMergerNode(); }
   createDynamicsCompressor() { return new DynamicsCompressorNode(); }
@@ -104,7 +106,7 @@ describe('BinauralEngine multi-voice', () => {
   });
 
   it('constructs every nature-sound generator without error', () => {
-    const nature: BackgroundSoundType[] = ['rain', 'thunder', 'stream', 'waterfall', 'wave', 'fire', 'forest', 'birds', 'cuckoo', 'woodpecker', 'ducks', 'cave', 'cicadas', 'frogs', 'owl', 'night', 'chimes', 'bowl', 'drone', 'blizzard', 'seabirds', 'fan', 'white', 'pink'];
+    const nature: BackgroundSoundType[] = ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder', 'stream', 'valley', 'waterfall', 'wave', 'pebbles', 'deepsea', 'bubbles', 'fire', 'forest', 'bamboo', 'birds', 'cuckoo', 'woodpecker', 'ducks', 'cave', 'cicadas', 'frogs', 'owl', 'scops', 'night', 'chimes', 'bowl', 'temple', 'drone', 'blizzard', 'seabirds', 'fan', 'heartbeat', 'brown', 'white', 'pink'];
     e.start(cfg([]));
     expect(() => nature.forEach((s) => e.addSound(s, 0.5))).not.toThrow();
     expect(e.activeSoundTypes().length).toBe(nature.length);

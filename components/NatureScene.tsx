@@ -5,14 +5,18 @@ import { SCENE_META, CHARACTER_SVG } from './sceneCharacters';
 
 interface Props {
   types: BackgroundSoundType[];
+  tall?: boolean;  // hero variant for the nature tab
 }
 
 // Vertical center per band (% of scene height) and character size (px).
 const BAND_Y: Record<string, number> = { sky: 22, tree: 45, ground: 72, water: 84 };
 const BAND_SIZE: Record<string, number> = { sky: 46, tree: 58, ground: 58, water: 46 };
 
-const SCENERY = new Set<BackgroundSoundType>(['wave', 'rain', 'thunder', 'blizzard', 'waterfall', 'fire']);
-const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'waterfall', 'wave'];
+const SCENERY = new Set<BackgroundSoundType>([
+  'wave', 'rain', 'thunder', 'blizzard', 'waterfall', 'fire',
+  'tent', 'window', 'eaves', 'dthunder', 'bamboo', 'temple', 'valley', 'pebbles', 'bubbles',
+]);
+const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'valley', 'waterfall', 'wave', 'pebbles', 'deepsea', 'bubbles'];
 const WAVE_PATH = 'M0 10 Q12.5 4 25 10 T50 10 T75 10 T100 10 T125 10 T150 10 T175 10 T200 10 V24 H0 Z';
 
 const STARS = [
@@ -123,19 +127,57 @@ const FIRE_EMBERS = [
   { left: '45%', size: 3, dx: '-4px', delay: '2.7s', dur: '2.6s' },
 ];
 
+// Bamboo grove: segmented culms with leaf sprays, swaying gently from the base.
+const BAMBOO_SVG = (
+  <svg viewBox="0 0 64 150" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
+    {[
+      { x: 10, w: 6, tone: '#5aa86a', seg: '#3f8f57' },
+      { x: 29, w: 7, tone: '#6db97c', seg: '#4a9c60' },
+      { x: 49, w: 5.5, tone: '#54a065', seg: '#3a8551' },
+    ].map((c, i) => (
+      <g key={i}>
+        <rect x={c.x} y={-6} width={c.w} height={160} rx={c.w / 2} fill={c.tone} />
+        {[16, 44, 72, 100, 128].map((y) => (
+          <rect key={y} x={c.x - 0.8} y={y + i * 7} width={c.w + 1.6} height={2.4} rx={1.2} fill={c.seg} />
+        ))}
+      </g>
+    ))}
+    <path d="M16 30 Q28 22 38 27 Q28 32 16 30 Z" fill="#7ec87e" />
+    <path d="M36 58 Q48 50 58 55 Q48 60 36 58 Z" fill="#6db97c" />
+    <path d="M6 84 Q-4 76 -14 81 Q-4 86 6 84 Z" fill="#7ec87e" transform="translate(20 0)" />
+    <path d="M52 18 Q62 10 72 15 Q62 20 52 18 Z" fill="#8fd39a" transform="translate(-12 0)" />
+  </svg>
+);
+
+// Rising underwater bubbles (deep-sea / bubble sounds).
+const SCENE_BUBBLES = [
+  { left: '12%', size: 7, delay: '0s', dur: '4.2s' },
+  { left: '30%', size: 5, delay: '1.3s', dur: '5.1s' },
+  { left: '52%', size: 8, delay: '2.4s', dur: '4.6s' },
+  { left: '68%', size: 4, delay: '0.7s', dur: '5.6s' },
+  { left: '84%', size: 6, delay: '1.9s', dur: '4.4s' },
+];
+
 // A layered, atmospheric diorama: gradient sky with sun/moon bloom and stars,
 // three hazy parallax hills, optional gradient water, floating particles and a
 // vignette — with the active sounds' characters and weather composited on top.
-export const NatureScene: React.FC<Props> = ({ types }) => {
+export const NatureScene: React.FC<Props> = ({ types, tall }) => {
   const chars = SOUND_ORDER.filter((t) => types.includes(t) && SCENE_META[t] && CHARACTER_SVG[t] && !SCENERY.has(t));
   const hasWater = types.some((t) => WATER_SOUNDS.includes(t));
   const hasWave = types.includes('wave');
   const hasWaterfall = types.includes('waterfall');
   const hasFire = types.includes('fire');
-  const rainy = types.includes('rain') || types.includes('thunder');
-  const stormy = types.includes('thunder');
+  const hasTent = types.includes('tent');
+  const hasCabin = types.includes('window');
+  const hasBamboo = types.includes('bamboo');
+  const hasTemple = types.includes('temple');
+  const hasValley = types.includes('valley');
+  const hasPebbles = types.includes('pebbles');
+  const hasBubbles = types.includes('bubbles') || types.includes('deepsea');
+  const rainy = types.includes('rain') || types.includes('thunder') || types.includes('tent') || types.includes('window') || types.includes('eaves');
+  const stormy = types.includes('thunder') || types.includes('dthunder');
   const snowy = types.includes('blizzard');
-  const hasScenery = hasWave || hasWaterfall || hasFire || rainy || snowy;
+  const hasScenery = hasWave || hasWaterfall || hasFire || hasTent || hasCabin || hasBamboo || hasTemple || hasValley || hasPebbles || hasBubbles || rainy || stormy || snowy;
   const clearSky = !rainy && !snowy;
   const n = chars.length;
 
@@ -145,7 +187,7 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
   const night = phase === 'night';
 
   return (
-    <div className="sc-scene relative w-full h-[160px] rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm" data-phase={phase}>
+    <div className={`sc-scene relative w-full ${tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`} data-phase={phase}>
       <svg viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 w-full h-full">
         <defs>
           <linearGradient id="scSky" x1="0" y1="0" x2="0" y2="1">
@@ -245,6 +287,81 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
           </g>
         )}
 
+        {/* valley boulders in the stream */}
+        {hasValley && (
+          <g>
+            <ellipse cx="120" cy="134" rx="14" ry="8" fill="#8f8f99" />
+            <ellipse cx="118" cy="131" rx="11" ry="6" fill="#b0b0ba" />
+            <ellipse cx="262" cy="138" rx="10" ry="6" fill="#84848d" />
+            <ellipse cx="261" cy="136" rx="8" ry="4.5" fill="#a3a3ad" />
+            <path d="M102 138 Q120 142 138 138" stroke="#eaf6ff" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.7" />
+            <path d="M248 142 Q262 145 276 142" stroke="#eaf6ff" strokeWidth="1.8" fill="none" strokeLinecap="round" opacity="0.6" />
+          </g>
+        )}
+
+        {/* pebble shore strip */}
+        {hasPebbles && (
+          <g>
+            {[
+              [14, 130, 5, '#9aa3ad'], [34, 134, 4, '#b4bcc6'], [55, 129, 4.5, '#7f8894'], [78, 133, 5, '#a8b0ba'],
+              [104, 130, 4, '#8b95a1'], [130, 134, 4.5, '#b4bcc6'], [158, 129, 4, '#9aa3ad'], [186, 133, 5, '#7f8894'],
+              [214, 130, 4, '#aab2bc'], [244, 134, 4.5, '#8b95a1'], [274, 129, 4, '#b4bcc6'], [304, 133, 5, '#9aa3ad'],
+              [334, 130, 4, '#7f8894'], [364, 134, 4.5, '#a8b0ba'], [388, 130, 4, '#9aa3ad'],
+            ].map(([x, y, r, c], i) => (
+              <g key={i}>
+                <ellipse cx={x as number} cy={y as number} rx={r as number} ry={(r as number) * 0.72} fill={c as string} />
+                <ellipse cx={(x as number) - (r as number) * 0.25} cy={(y as number) - (r as number) * 0.3} rx={(r as number) * 0.5} ry={(r as number) * 0.3} fill="#ffffff" opacity="0.25" />
+              </g>
+            ))}
+          </g>
+        )}
+
+        {/* camping tent on the shore (kept inside the hero crop: x ≈ 67–333) */}
+        {hasTent && (
+          <g>
+            <ellipse cx="296" cy="133" rx="36" ry="5" fill="#000000" opacity="0.12" />
+            <path d="M296 88 L264 132 L328 132 Z" fill="#ff9d76" />
+            <path d="M296 88 L282 132 L310 132 Z" fill="#e8825e" />
+            <path d="M296 96 L288 132 L304 132 Z" fill="#5a4636" />
+            <path d="M296 96 L291 132 L301 132 Z" fill="#ffd98a" opacity="0.85" />
+            <path d="M296 88 L264 132 M296 88 L328 132" stroke="#c96a48" strokeWidth="2" fill="none" strokeLinecap="round" />
+            <line x1="296" y1="88" x2="296" y2="80" stroke="#8a6f52" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="296" cy="79" r="2.2" fill="#ffd166" />
+          </g>
+        )}
+
+        {/* cozy cabin with a warm window */}
+        {hasCabin && (
+          <g>
+            <ellipse cx="110" cy="131" rx="38" ry="5" fill="#000000" opacity="0.12" />
+            <rect x="86" y="100" width="48" height="30" rx="2" fill="#8a6f52" />
+            <path d="M86 108 h48 M86 116 h48 M86 124 h48" stroke="#7b5836" strokeWidth="1.4" opacity="0.6" />
+            <rect x="126" y="84" width="7" height="14" rx="1" fill="#7b5836" />
+            <path d="M78 102 L110 80 L142 102 Z" fill="#6b4426" />
+            <path d="M78 102 L110 80 L142 102" stroke="#5a3a22" strokeWidth="2" fill="none" strokeLinecap="round" />
+            <rect x="100" y="108" width="17" height="14" rx="2" fill="#ffd98a" className="sc-warmwindow" />
+            <path d="M108.5 108 v14 M100 115 h17" stroke="#7b5836" strokeWidth="1.6" />
+            <rect x="121" y="112" width="9" height="18" rx="1.5" fill="#5a4636" />
+            <circle cx="128.5" cy="121" r="1.1" fill="#ffd166" />
+          </g>
+        )}
+
+        {/* temple bell pavilion on the hill */}
+        {hasTemple && (
+          <g>
+            <rect x="156" y="100" width="38" height="4" rx="2" fill="#9c8a74" />
+            <rect x="161" y="86" width="4" height="15" fill="#7b5836" />
+            <rect x="185" y="86" width="4" height="15" fill="#7b5836" />
+            <path d="M150 88 C160 74 190 74 200 88 C190 82 160 82 150 88 Z" fill="#44506b" />
+            <path d="M150 88 Q175 76 200 88" stroke="#333d54" strokeWidth="2" fill="none" strokeLinecap="round" />
+            <circle cx="175" cy="76" r="2" fill="#333d54" />
+            <line x1="175" y1="84" x2="175" y2="88" stroke="#6b5a44" strokeWidth="1.6" />
+            <path d="M170 88 C170 85 180 85 180 88 L181 95 Q175 98.5 169 95 Z" fill="#b08d4f" />
+            <path d="M170 92 h10" stroke="#8f6f3a" strokeWidth="1.2" opacity="0.7" />
+            <circle cx="175" cy="97.5" r="1.3" fill="#8f6f3a" />
+          </g>
+        )}
+
         {/* storm dims the sky */}
         {stormy && <rect x="0" y="0" width="400" height="160" fill="rgba(26,34,58,0.22)" />}
         {/* vignette for focus */}
@@ -328,6 +445,22 @@ export const NatureScene: React.FC<Props> = ({ types }) => {
           ))}
         </div>
       )}
+
+      {/* bamboo grove swaying at the right edge */}
+      {hasBamboo && (
+        <div className="sc-bamboo absolute pointer-events-none" style={{ right: '1%', bottom: '8%', width: 58, height: '78%' }}>
+          {BAMBOO_SVG}
+        </div>
+      )}
+
+      {/* rising bubbles over the water */}
+      {hasBubbles && SCENE_BUBBLES.map((b, i) => (
+        <span
+          key={i}
+          className="sc-bubblef absolute rounded-full pointer-events-none"
+          style={{ left: b.left, bottom: '4%', width: b.size, height: b.size, animationDelay: b.delay, animationDuration: b.dur }}
+        />
+      ))}
 
       {/* drifting clouds */}
       <div className="sc-cloud sc-cloud-a" style={{ left: 0, top: '6%', width: 96, height: 30 }}>{CLOUD_SVG}</div>

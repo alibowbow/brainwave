@@ -2,17 +2,19 @@ import React from 'react';
 import {
   CloudRain, CloudLightning, Droplets, Mountain, Waves, Flame, Wind, Bird, Bug, Turtle,
   Feather, CloudMoon, Bell, Disc3, Orbit, Snowflake, Sailboat, Fan, Activity, AudioLines, Volume1,
-  Sunrise, Hammer, Egg, Gem,
+  Sunrise, Hammer, Egg, Gem, Tent, Blinds, Droplet, Zap, HeartPulse, AudioWaveform, Sprout,
+  Landmark, MountainSnow, Shell, Fish, Grape, MoonStar,
 } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType } from './types';
 
 // Sounds grouped by scene — drives the categorized picker UI.
 export const SOUND_GROUPS: { label: string; sounds: BackgroundSoundType[] }[] = [
-  { label: '물 · 비', sounds: ['rain', 'thunder', 'stream', 'waterfall', 'wave'] },
-  { label: '새', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl'] },
-  { label: '숲 · 생물', sounds: ['forest', 'cicadas', 'frogs', 'ducks', 'night'] },
-  { label: '공간 · 명상', sounds: ['fire', 'chimes', 'bowl', 'drone', 'cave'] },
-  { label: '바람 · 노이즈', sounds: ['blizzard', 'fan', 'white', 'pink'] },
+  { label: '비 · 천둥', sounds: ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder'] },
+  { label: '물 · 바다', sounds: ['stream', 'valley', 'waterfall', 'wave', 'pebbles', 'deepsea', 'bubbles'] },
+  { label: '새', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl', 'scops'] },
+  { label: '숲 · 생물', sounds: ['forest', 'bamboo', 'cicadas', 'frogs', 'ducks', 'night'] },
+  { label: '공간 · 명상', sounds: ['fire', 'temple', 'chimes', 'bowl', 'drone', 'cave'] },
+  { label: '리듬 · 노이즈', sounds: ['heartbeat', 'blizzard', 'fan', 'brown', 'white', 'pink'] },
 ];
 
 // Flat display order (selectable sounds; 'none' is handled by the picker itself).
@@ -24,11 +26,24 @@ export const WAVE_ORDER: BrainWaveType[] = ['alpha', 'beta', 'gamma', 'theta', '
 export const getSoundIcon = (type: BackgroundSoundType) => {
   switch (type) {
     case 'rain': return <CloudRain size={20} />;
+    case 'tent': return <Tent size={20} />;
+    case 'window': return <Blinds size={20} />;
+    case 'eaves': return <Droplet size={20} />;
     case 'thunder': return <CloudLightning size={20} />;
+    case 'dthunder': return <Zap size={20} />;
     case 'stream': return <Droplets size={20} />;
+    case 'valley': return <MountainSnow size={20} />;
     case 'waterfall': return <Mountain size={20} />;
     case 'wave': return <Waves size={20} />;
+    case 'pebbles': return <Shell size={20} />;
+    case 'deepsea': return <Fish size={20} />;
+    case 'bubbles': return <Grape size={20} />;
     case 'fire': return <Flame size={20} />;
+    case 'bamboo': return <Sprout size={20} />;
+    case 'temple': return <Landmark size={20} />;
+    case 'scops': return <MoonStar size={20} />;
+    case 'heartbeat': return <HeartPulse size={20} />;
+    case 'brown': return <AudioWaveform size={20} />;
     case 'forest': return <Wind size={20} />;
     case 'birds': return <Bird size={20} />;
     case 'cuckoo': return <Sunrise size={20} />;
@@ -55,11 +70,24 @@ export const getSoundLabel = (type: BackgroundSoundType) => {
   switch (type) {
     case 'none': return '없음';
     case 'rain': return '빗소리';
+    case 'tent': return '텐트 비';
+    case 'window': return '창가 비';
+    case 'eaves': return '처마 물방울';
     case 'thunder': return '뇌우';
+    case 'dthunder': return '먼 천둥';
     case 'stream': return '시냇물';
+    case 'valley': return '계곡';
     case 'waterfall': return '폭포';
     case 'wave': return '파도';
+    case 'pebbles': return '몽돌 해변';
+    case 'deepsea': return '깊은 바다';
+    case 'bubbles': return '물속 기포';
     case 'fire': return '모닥불';
+    case 'bamboo': return '대나무숲';
+    case 'temple': return '산사의 종';
+    case 'scops': return '소쩍새';
+    case 'heartbeat': return '심장 박동';
+    case 'brown': return '브라운';
     case 'forest': return '숲바람';
     case 'birds': return '새소리';
     case 'cuckoo': return '뻐꾸기';

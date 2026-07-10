@@ -306,6 +306,42 @@ h1, h2, h3, h4 {
   100% { transform: translate(var(--sc-ex, 6px), -52px) scale(0.3); opacity: 0; }
 }
 
+/* Bamboo grove: slow sway anchored at the base */
+.sc-bamboo { transform-origin: bottom center; }
+@media (prefers-reduced-motion: no-preference) {
+  .sc-bamboo { animation: scBambooSway 6.5s ease-in-out infinite; }
+}
+@keyframes scBambooSway {
+  0%, 100% { transform: rotate(-1.6deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* Underwater bubbles: wobble upward and pop near the surface */
+.sc-bubblef {
+  background: rgba(234, 246, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sc-bubblef { animation-name: scBubbleRise; animation-timing-function: linear; animation-iteration-count: infinite; }
+}
+@keyframes scBubbleRise {
+  0% { transform: translate(0, 0) scale(0.7); opacity: 0; }
+  12% { opacity: 0.9; }
+  55% { transform: translate(5px, -46px) scale(1); opacity: 0.85; }
+  85% { transform: translate(-3px, -78px) scale(1.08); opacity: 0.6; }
+  100% { transform: translate(2px, -96px) scale(1.15); opacity: 0; }
+}
+
+/* Cabin window: warm light breathing softly */
+@media (prefers-reduced-motion: no-preference) {
+  .sc-warmwindow { animation: scWarmWindow 3.4s ease-in-out infinite; }
+}
+@keyframes scWarmWindow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.78; }
+}
+
 /* Stagger for the mini-player equalizer bars */
 .animation-delay-100 {
   animation-delay: 0.15s;

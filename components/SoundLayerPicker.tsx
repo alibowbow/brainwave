@@ -8,19 +8,22 @@ interface Props {
   activeLayers: SoundLayer[];
   onToggle: (type: BackgroundSoundType) => void;
   onVolume: (type: BackgroundSoundType, vol: number) => void;
+  hideScene?: boolean;  // the nature tab renders the diorama as its own hero
 }
 
 // Multi-select background-sound picker, grouped by scene: tap a chip to layer a
 // sound in/out, and each active layer gets its own volume slider so users can
 // mix soundscapes.
-export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVolume }) => {
+export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVolume, hideScene }) => {
   const isActive = (t: BackgroundSoundType) => activeLayers.some((l) => l.type === t);
 
   return (
     <div>
-      <div className="mb-4">
-        <NatureScene types={activeLayers.map((l) => l.type)} />
-      </div>
+      {!hideScene && (
+        <div className="mb-4">
+          <NatureScene types={activeLayers.map((l) => l.type)} />
+        </div>
+      )}
       <div className="space-y-3">
         {SOUND_GROUPS.map((group) => (
           <div key={group.label}>

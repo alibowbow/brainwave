@@ -1,5 +1,5 @@
 import { BackgroundSoundType } from '../types';
-import { TONE_MODE_TRIM, clampLayerVolume, clampUnit, countAudibleLayers, layerGain, levelToGain, natureBusGain } from '../audioLevels';
+import { TONE_MODE_TRIM, clampLayerVolume, clampUnit, layerGain, levelToGain, natureBusGain, natureMixLoad } from '../audioLevels';
 
 // Length of the looping noise buffers. Longer buffers make the loop point far
 // less audible than a short 1-2s loop.
@@ -133,6 +133,7 @@ export class BinauralEngine {
   // Mix graph
   private masterGain: GainNode | null = null;
   private dcBlocker: BiquadFilterNode | null = null;
+  private mixCompressor: DynamicsCompressorNode | null = null;
   private limiter: DynamicsCompressorNode | null = null;
   private safetyClipper: WaveShaperNode | null = null;
   private outputGain: GainNode | null = null;
@@ -180,11 +181,19 @@ export class BinauralEngine {
     this.dcBlocker.frequency.value = 24;
     this.dcBlocker.Q.value = 0.7;
 
-    // Soft-knee safety limiter: catches stacked creature calls without making
-    // the continuous rain/wind beds audibly breathe.
+    // A slow, low-ratio glue stage brings quiet texture forward without the
+    // audible pumping caused by asking the safety limiter to do the mixing.
+    this.mixCompressor = this.ctx.createDynamicsCompressor();
+    this.mixCompressor.threshold.value = -17;
+    this.mixCompressor.knee.value = 12;
+    this.mixCompressor.ratio.value = 2;
+    this.mixCompressor.attack.value = 0.028;
+    this.mixCompressor.release.value = 0.26;
+
+    // Fast peak guard for stacked creature calls and close raindrops.
     this.limiter = this.ctx.createDynamicsCompressor();
-    this.limiter.threshold.value = -4;
-    this.limiter.knee.value = 2;
+    this.limiter.threshold.value = -2;
+    this.limiter.knee.value = 1;
     this.limiter.ratio.value = 20;
     this.limiter.attack.value = 0.002;
     this.limiter.release.value = 0.12;
@@ -192,9 +201,10 @@ export class BinauralEngine {
     this.safetyClipper.curve = createSoftClipCurve();
     this.safetyClipper.oversample = '4x';
     this.outputGain = this.ctx.createGain();
-    this.outputGain.gain.value = 0.9;
+    this.outputGain.gain.value = 1.08;
     this.masterGain.connect(this.dcBlocker);
-    this.dcBlocker.connect(this.limiter);
+    this.dcBlocker.connect(this.mixCompressor);
+    this.mixCompressor.connect(this.limiter);
     this.limiter.connect(this.safetyClipper);
     this.safetyClipper.connect(this.outputGain);
     this.outputGain.connect(this.ctx.destination);
@@ -223,10 +233,8 @@ export class BinauralEngine {
     // Nature-sound bus + shared reverb send for depth.
     this.natureVol = clampUnit(config.bgVol);
     this.bgBus = this.ctx.createGain();
-    const initialLayerCount = countAudibleLayers(
-      config.sounds.filter((sound) => sound.type !== 'none').map((sound) => sound.volume),
-    );
-    this.bgBus.gain.value = natureBusGain(this.natureVol, initialLayerCount);
+    const initialMixLoad = natureMixLoad(config.sounds.filter((sound) => sound.type !== 'none'));
+    this.bgBus.gain.value = natureBusGain(this.natureVol, initialMixLoad);
     this.bgBus.connect(this.masterGain);
     this.reverb = this.ctx.createConvolver();
     this.reverb.buffer = this.impulseBuffer;
@@ -239,10 +247,10 @@ export class BinauralEngine {
     // so anything above ~2.2 kHz stays dry.
     this.reverbLp = this.ctx.createBiquadFilter();
     this.reverbLp.type = 'lowpass';
-    this.reverbLp.frequency.value = 2200;
+    this.reverbLp.frequency.value = 2600;
     this.reverbLp.Q.value = 0.7;
     this.reverbWet = this.ctx.createGain();
-    this.reverbWet.gain.value = 0.12;
+    this.reverbWet.gain.value = 0.105;
     this.bgBus.connect(this.reverb);
     this.reverb.connect(this.reverbFilter).connect(this.reverbLp).connect(this.reverbWet).connect(this.masterGain);
 
@@ -351,9 +359,11 @@ export class BinauralEngine {
 
   private updateNatureBusGain(timeConstant = 0.2) {
     if (!this.ctx || !this.bgBus) return;
-    const audibleLayers = countAudibleLayers([...this.voices.values()].map((voice) => voice.volume));
+    const mixLoad = natureMixLoad(
+      [...this.voices.entries()].map(([type, voice]) => ({ type, volume: voice.volume })),
+    );
     this.bgBus.gain.setTargetAtTime(
-      natureBusGain(this.natureVol, audibleLayers),
+      natureBusGain(this.natureVol, mixLoad),
       this.ctx.currentTime,
       timeConstant,
     );
@@ -579,17 +589,36 @@ export class BinauralEngine {
     return buffer;
   }
 
-  // Exponentially decaying stereo noise = a simple, smooth reverb impulse.
+  // Short predelay, scattered early reflections and a decorrelated diffuse
+  // tail. A raw full-level noise impulse starts with a click-like wall and can
+  // make drips or bird calls sound metallic; this envelope leaves the direct
+  // sound intact and opens into a softer outdoor/room halo.
   createImpulseResponse() {
     if (!this.ctx) return null;
-    const length = Math.floor(this.ctx.sampleRate * 1.8);
+    const length = Math.floor(this.ctx.sampleRate * 2.05);
     const buffer = this.ctx.createBuffer(2, length, this.ctx.sampleRate);
+    const preDelay = Math.floor(this.ctx.sampleRate * 0.012);
+    const attack = Math.floor(this.ctx.sampleRate * 0.018);
+    const earlyTimes = [0.024, 0.041, 0.067, 0.096];
     for (let ch = 0; ch < 2; ch++) {
       const data = buffer.getChannelData(ch);
-      for (let i = 0; i < length; i++) {
-        const t = i / length;
-        const decay = Math.pow(1 - t, 3.2 + ch * 0.35);
-        data[i] = (Math.random() * 2 - 1) * decay;
+      let diffuse = 0;
+      for (let i = preDelay; i < length; i++) {
+        const phase = (i - preDelay) / (length - preDelay);
+        const fadeIn = Math.min(1, (i - preDelay) / attack);
+        const decay = Math.pow(1 - phase, 3.5 + ch * 0.25);
+        const white = Math.random() * 2 - 1;
+        diffuse = diffuse * 0.32 + white * 0.68;
+        data[i] = diffuse * decay * fadeIn * 0.72;
+      }
+      earlyTimes.forEach((seconds, index) => {
+        const sample = Math.min(length - 1, Math.floor(seconds * this.ctx!.sampleRate) + ch * (index % 2 ? 13 : -7));
+        data[sample] += (index % 2 ? -1 : 1) * (0.44 / (index + 1));
+      });
+      // A tiny channel-specific tilt keeps the wet field from collapsing to
+      // mono while avoiding exaggerated ping-pong reflections.
+      if (ch === 1) {
+        for (let i = preDelay + 1; i < length; i++) data[i] = data[i] * 0.94 + data[i - 1] * 0.06;
       }
     }
     return buffer;
@@ -715,29 +744,56 @@ export class BinauralEngine {
 
   // --- 3. STREAM (flowing water bed + bubbling drips) ---
   private startStream(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.pinkNoiseBuffer) return;
+    if (!this.ctx || !this.pinkNoiseBuffer || !this.brownNoiseBuffer) return;
+
+    // Three decorrelated bands keep the water full on small speakers: a dark
+    // channel bed, the audible tumbling body and a much quieter surface fizz.
+    const channel = this.noiseSource(this.brownNoiseBuffer)!;
+    const channelLp = this.ctx.createBiquadFilter();
+    channelLp.type = 'lowpass'; channelLp.frequency.value = 430;
+    const channelGain = this.ctx.createGain();
+    channelGain.gain.value = 0.34;
+    channel.connect(channelLp).connect(channelGain).connect(dest);
+    channel.start();
+    this.register(bucket, channel);
 
     const bed = this.noiseSource(this.pinkNoiseBuffer)!;
     const bp = this.ctx.createBiquadFilter();
-    bp.type = 'bandpass';
-    bp.frequency.value = 1100;
-    bp.Q.value = 0.6;
-    const hp = this.ctx.createBiquadFilter();
-    hp.type = 'highpass';
-    hp.frequency.value = 400;
+    bp.type = 'bandpass'; bp.frequency.value = 920; bp.Q.value = 0.45;
     const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.44;
-    bed.connect(bp).connect(hp).connect(bedGain).connect(dest);
+    bedGain.gain.value = 0.84;
+    bed.connect(bp).connect(bedGain).connect(dest);
     bed.start();
     this.register(bucket, bed);
 
-    const lfo = this.ctx.createOscillator();
-    lfo.frequency.value = 0.15;
-    const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 350;
-    lfo.connect(lfoGain).connect(bp.frequency);
-    lfo.start();
-    this.register(bucket, lfo);
+    const sparkle = this.noiseSource(this.pinkNoiseBuffer)!;
+    const sparkleHp = this.ctx.createBiquadFilter();
+    sparkleHp.type = 'highpass'; sparkleHp.frequency.value = 1700;
+    const sparkleLp = this.ctx.createBiquadFilter();
+    sparkleLp.type = 'lowpass'; sparkleLp.frequency.value = 6200;
+    const sparkleGain = this.ctx.createGain();
+    sparkleGain.gain.value = 0.15;
+    sparkle.connect(sparkleHp).connect(sparkleLp).connect(sparkleGain).connect(dest);
+    sparkle.start();
+    this.register(bucket, sparkle);
+
+    // Different, incommensurate drifts prevent the broadband bed from feeling
+    // like one filter being swept back and forth.
+    const colorLfo = this.ctx.createOscillator();
+    colorLfo.frequency.value = 0.11 + Math.random() * 0.04;
+    const colorDepth = this.ctx.createGain();
+    colorDepth.gain.value = 250;
+    colorLfo.connect(colorDepth).connect(bp.frequency);
+    colorLfo.start();
+    this.register(bucket, colorLfo);
+
+    const flowLfo = this.ctx.createOscillator();
+    flowLfo.frequency.value = 0.07 + Math.random() * 0.03;
+    const flowDepth = this.ctx.createGain();
+    flowDepth.gain.value = 0.12;
+    flowLfo.connect(flowDepth).connect(bedGain.gain);
+    flowLfo.start();
+    this.register(bucket, flowLfo);
 
     // Water drips are short resonant noise bursts with a slight upward pitch
     // bend ("plip"), deliberately noise-based and low/mid-pitched so they read
@@ -749,42 +805,81 @@ export class BinauralEngine {
       src.buffer = this.pinkNoiseBuffer;
       const bpf = this.ctx.createBiquadFilter();
       bpf.type = 'bandpass';
-      const f = 250 + Math.random() * 450;
+      const f = 280 + Math.random() * 620;
       bpf.frequency.setValueAtTime(f, t);
       bpf.frequency.exponentialRampToValueAtTime(f * 1.6, t + 0.05);
       bpf.Q.value = 3 + Math.random() * 3;
       const gain = this.ctx.createGain();
-      const dur = 0.05 + Math.random() * 0.08;
+      const dur = 0.055 + Math.random() * 0.09;
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.13 + Math.random() * 0.06, t + 0.004);
+      gain.gain.linearRampToValueAtTime(0.24 + Math.random() * 0.12, t + 0.004);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       src.connect(bpf).connect(gain).connect(this.makePan(Math.random() * 1.4 - 0.7, dest));
       this.startNoiseBurst(src, t, dur + 0.02);
 
-      this.schedule(bucket, drip, 120 + Math.random() * 380);
+      this.schedule(bucket, drip, 90 + Math.random() * 320);
     };
     drip();
   }
 
   // --- 4. BIRDS ---
   private startBirds(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
 
     const playSparrowChirp = (t: number, dur: number = 0.1) => {
-      if (!this.ctx) return;
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
+      const pan = this.makePan(Math.random() * 1.6 - 0.8, dest);
       const osc = this.ctx.createOscillator();
+      const harmonic = this.ctx.createOscillator();
+      const harmonicGain = this.ctx.createGain();
+      harmonicGain.gain.value = 0.16 + Math.random() * 0.08;
+      const voiceFilter = this.ctx.createBiquadFilter();
+      voiceFilter.type = 'lowpass'; voiceFilter.frequency.value = 4800;
+      const pulse = this.ctx.createGain();
+      pulse.gain.value = 0.72;
+      const flutter = this.ctx.createOscillator();
+      flutter.frequency.value = 23 + Math.random() * 17;
+      const flutterDepth = this.ctx.createGain();
+      flutterDepth.gain.value = 0.2;
+      flutter.connect(flutterDepth).connect(pulse.gain);
       const gain = this.ctx.createGain();
-      osc.connect(gain).connect(this.makePan(Math.random() * 1.6 - 0.8, dest));
+      osc.connect(pulse).connect(voiceFilter).connect(gain).connect(pan);
+      harmonic.connect(harmonicGain).connect(pulse);
       osc.type = 'sine';
-      const startFreq = 3500 + Math.random() * 1000;
-      const endFreq = startFreq * 0.5;
+      harmonic.type = 'triangle';
+      const startFreq = 1250 + Math.random() * 950;
+      const crestFreq = startFreq * (1.25 + Math.random() * 0.35);
+      const endFreq = startFreq * (0.82 + Math.random() * 0.28);
       osc.frequency.setValueAtTime(startFreq, t);
+      osc.frequency.exponentialRampToValueAtTime(crestFreq, t + dur * 0.35);
       osc.frequency.exponentialRampToValueAtTime(endFreq, t + dur);
+      harmonic.frequency.setValueAtTime(startFreq * 2.01, t);
+      harmonic.frequency.exponentialRampToValueAtTime(crestFreq * 2.01, t + dur * 0.35);
+      harmonic.frequency.exponentialRampToValueAtTime(endFreq * 2.01, t + dur);
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(1.0, t + 0.01);
+      gain.gain.linearRampToValueAtTime(1.1, t + Math.min(0.018, dur * 0.18));
       gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      osc.start(t);
+      osc.start(t); harmonic.start(t); flutter.start(t);
       osc.stop(t + dur + 0.05);
+      harmonic.stop(t + dur + 0.05);
+      flutter.stop(t + dur + 0.05);
+      this.register(bucket, osc, true);
+      this.register(bucket, harmonic, true);
+      this.register(bucket, flutter, true);
+
+      // A very short filtered breath softens the pure oscillator edge and
+      // makes each syllable feel physically voiced.
+      const air = this.ctx.createBufferSource();
+      air.buffer = this.pinkNoiseBuffer;
+      const airBp = this.ctx.createBiquadFilter();
+      airBp.type = 'bandpass'; airBp.frequency.value = 1750 + Math.random() * 1050; airBp.Q.value = 1.1;
+      const airEnv = this.ctx.createGain();
+      airEnv.gain.setValueAtTime(0, t);
+      airEnv.gain.linearRampToValueAtTime(0.18, t + 0.006);
+      airEnv.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.75);
+      air.connect(airBp).connect(airEnv).connect(pan);
+      this.startNoiseBurst(air, t, dur + 0.02);
+      this.register(bucket, air, true);
     };
 
     const playPattern = () => {
@@ -930,25 +1025,25 @@ export class BinauralEngine {
 
   // --- 7. WIND / FOREST ---
   private startWind(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.pinkNoiseBuffer) return;
+    if (!this.ctx || !this.pinkNoiseBuffer || !this.whiteNoiseBuffer) return;
     const node = this.noiseSource(this.pinkNoiseBuffer)!;
     const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass'; filter.frequency.value = 380; filter.Q.value = 0;
+    filter.type = 'lowpass'; filter.frequency.value = 420; filter.Q.value = 0;
     const windGain = this.ctx.createGain();
-    windGain.gain.value = 2.6;
+    windGain.gain.value = 2.2;
     node.connect(filter).connect(windGain).connect(dest);
     node.start();
     this.register(bucket, node);
 
     // Leaf rustle: a high band that swells with the gusts, so it reads as
     // trees in wind rather than plain filtered noise.
-    const rustle = this.noiseSource(this.pinkNoiseBuffer)!;
+    const rustle = this.noiseSource(this.whiteNoiseBuffer)!;
     const rustleHp = this.ctx.createBiquadFilter();
-    rustleHp.type = 'highpass'; rustleHp.frequency.value = 1400;
+    rustleHp.type = 'highpass'; rustleHp.frequency.value = 950;
     const rustleLp = this.ctx.createBiquadFilter();
     rustleLp.type = 'lowpass'; rustleLp.frequency.value = 5200;
     const rustleGain = this.ctx.createGain();
-    rustleGain.gain.value = 0.1;
+    rustleGain.gain.value = 0.18;
     rustle.connect(rustleHp).connect(rustleLp).connect(rustleGain).connect(dest);
     rustle.start();
     this.register(bucket, rustle);
@@ -957,7 +1052,7 @@ export class BinauralEngine {
       if (!this.ctx) return; const t = this.ctx.currentTime;
       const gust = 2 + Math.random() * 4;
       filter.frequency.exponentialRampToValueAtTime(200 + Math.random() * 200, t + gust);
-      rustleGain.gain.setTargetAtTime(0.05 + Math.random() * 0.14, t, gust / 3);
+      rustleGain.gain.setTargetAtTime(0.13 + Math.random() * 0.13, t, gust / 3);
     };
     animate();
     const id = window.setInterval(animate, 5000);
@@ -966,12 +1061,24 @@ export class BinauralEngine {
 
   // --- 8. WAVE ---
   private startWave(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.pinkNoiseBuffer || !this.whiteNoiseBuffer) return;
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer || !this.whiteNoiseBuffer) return;
+
+    // Low undertow stays present between crests, avoiding the conspicuous
+    // volume hole of a single oscillator-like eight-second swell.
+    const undertow = this.noiseSource(this.brownNoiseBuffer)!;
+    const undertowLp = this.ctx.createBiquadFilter();
+    undertowLp.type = 'lowpass'; undertowLp.frequency.value = 280;
+    const undertowGain = this.ctx.createGain();
+    undertowGain.gain.value = 0.38;
+    undertow.connect(undertowLp).connect(undertowGain).connect(dest);
+    undertow.start();
+    this.register(bucket, undertow);
+
     const node = this.noiseSource(this.pinkNoiseBuffer)!;
     const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass'; filter.frequency.value = 500;
+    filter.type = 'lowpass'; filter.frequency.value = 430;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.62;
+    gain.gain.value = 0.48;
     node.connect(filter).connect(gain).connect(dest);
     node.start();
     this.register(bucket, node);
@@ -979,25 +1086,37 @@ export class BinauralEngine {
     // Foam hiss that crests with the swell, then washes out.
     const foam = this.noiseSource(this.whiteNoiseBuffer)!;
     const foamHp = this.ctx.createBiquadFilter();
-    foamHp.type = 'highpass'; foamHp.frequency.value = 2800;
+    foamHp.type = 'highpass'; foamHp.frequency.value = 1800;
+    const foamLp = this.ctx.createBiquadFilter();
+    foamLp.type = 'lowpass'; foamLp.frequency.value = 8500;
     const foamGain = this.ctx.createGain();
-    foamGain.gain.value = 0.03;
-    foam.connect(foamHp).connect(foamGain).connect(dest);
+    foamGain.gain.value = 0.022;
+    foam.connect(foamHp).connect(foamLp).connect(foamGain).connect(dest);
     foam.start();
     this.register(bucket, foam);
 
     const animate = () => {
-      if (!this.ctx) return; const t = this.ctx.currentTime;
-      filter.frequency.exponentialRampToValueAtTime(1200, t + 4);
-      gain.gain.linearRampToValueAtTime(1.6, t + 4);
-      foamGain.gain.linearRampToValueAtTime(0.14, t + 4.6);
-      filter.frequency.exponentialRampToValueAtTime(300, t + 8);
-      gain.gain.linearRampToValueAtTime(0.62, t + 8);
-      foamGain.gain.linearRampToValueAtTime(0.03, t + 8);
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const duration = 7.2 + Math.random() * 4.2;
+      const crest = duration * (0.48 + Math.random() * 0.12);
+      const power = 1.25 + Math.random() * 0.35;
+      const rest = 0.4 + Math.random() * 0.2;
+      gain.gain.setValueAtTime(rest, t);
+      filter.frequency.setValueAtTime(380 + Math.random() * 100, t);
+      foamGain.gain.setValueAtTime(0.018 + Math.random() * 0.012, t);
+      undertowGain.gain.setValueAtTime(0.38, t);
+      gain.gain.linearRampToValueAtTime(power, t + crest);
+      filter.frequency.exponentialRampToValueAtTime(900 + Math.random() * 380, t + crest);
+      undertowGain.gain.linearRampToValueAtTime(0.58, t + crest * 0.82);
+      foamGain.gain.linearRampToValueAtTime(0.1 + Math.random() * 0.045, t + crest + 0.28);
+      gain.gain.exponentialRampToValueAtTime(rest, t + duration);
+      filter.frequency.exponentialRampToValueAtTime(330 + Math.random() * 90, t + duration);
+      undertowGain.gain.linearRampToValueAtTime(0.34, t + duration);
+      foamGain.gain.exponentialRampToValueAtTime(0.02, t + duration);
+      this.schedule(bucket, animate, duration * 1000);
     };
     animate();
-    const id = window.setInterval(animate, 8000);
-    bucket.intervals.push(id);
   }
 
   // --- WATERFALL (constant broadband roar: mass + body + spray) ---
@@ -1031,6 +1150,22 @@ export class BinauralEngine {
     lfo.start();
     this.register(bucket, lfo);
 
+    const massLfo = this.ctx.createOscillator();
+    massLfo.frequency.value = 0.047;
+    const massDepth = this.ctx.createGain();
+    massDepth.gain.value = 0.12;
+    massLfo.connect(massDepth).connect(massGain.gain);
+    massLfo.start();
+    this.register(bucket, massLfo);
+
+    const bodyLfo = this.ctx.createOscillator();
+    bodyLfo.frequency.value = 0.073;
+    const bodyDepth = this.ctx.createGain();
+    bodyDepth.gain.value = 0.075;
+    bodyLfo.connect(bodyDepth).connect(bodyGain.gain);
+    bodyLfo.start();
+    this.register(bucket, bodyLfo);
+
     const spray = this.noiseSource(this.whiteNoiseBuffer)!;
     const sprayHp = this.ctx.createBiquadFilter();
     sprayHp.type = 'highpass'; sprayHp.frequency.value = 1800;
@@ -1039,49 +1174,82 @@ export class BinauralEngine {
     spray.connect(sprayHp).connect(sprayGain).connect(dest);
     spray.start();
     this.register(bucket, spray);
+
+    const sprayLfo = this.ctx.createOscillator();
+    sprayLfo.frequency.value = 0.121;
+    const sprayDepth = this.ctx.createGain();
+    sprayDepth.gain.value = 0.012;
+    sprayLfo.connect(sprayDepth).connect(sprayGain.gain);
+    sprayLfo.start();
+    this.register(bucket, sprayLfo);
   }
 
-  // --- CICADAS (two chorus voices, AM buzz with slow swells) ---
+  // --- CICADAS (broad, breathing chorus rather than electronic carriers) ---
   private startCicadas(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
 
-    const voice = (carrierHz: number, amHz: number, swellHz: number, pan: number) => {
-      const osc = this.ctx!.createOscillator();
-      osc.type = 'triangle';
-      osc.frequency.value = carrierHz;
+    const voice = (centerHz: number, amHz: number, swellHz: number, pan: number, amount = 1) => {
+      const noise = this.noiseSource(this.pinkNoiseBuffer)!;
+      const bp = this.ctx!.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = centerHz; bp.Q.value = 1.15;
 
       const gate = this.ctx!.createGain();
-      gate.gain.value = 0.5;
+      gate.gain.value = 0.66;
       const am = this.ctx!.createOscillator();
-      am.frequency.value = amHz;
+      am.frequency.value = amHz + Math.random() * 7;
       const amDepth = this.ctx!.createGain();
-      amDepth.gain.value = 0.5;
+      // Always positive (0.42..0.90): the old zero-crossing gate produced an
+      // electrical phase-flip buzz instead of a cloud of insects.
+      amDepth.gain.value = 0.24;
       am.connect(amDepth).connect(gate.gain);
 
-      const bp = this.ctx!.createBiquadFilter();
-      bp.type = 'bandpass'; bp.frequency.value = carrierHz; bp.Q.value = 1;
-
-      // Slow wax-and-wane so the chorus breathes instead of droning.
       const level = this.ctx!.createGain();
-      level.gain.value = 0.3;
+      level.gain.value = 1.65 * amount;
       const swell = this.ctx!.createOscillator();
       swell.frequency.value = swellHz;
       const swellDepth = this.ctx!.createGain();
-      swellDepth.gain.value = 0.03;
+      swellDepth.gain.value = 0.2 * amount;
       swell.connect(swellDepth).connect(level.gain);
 
-      osc.connect(gate).connect(bp).connect(level).connect(this.makePan(pan, dest));
-      osc.start(); am.start(); swell.start();
-      [osc, am, swell].forEach((n) => this.register(bucket, n));
+      const color = this.ctx!.createOscillator();
+      color.frequency.value = 0.04 + Math.random() * 0.04;
+      const colorDepth = this.ctx!.createGain();
+      colorDepth.gain.value = 150 + Math.random() * 90;
+      color.connect(colorDepth).connect(bp.frequency);
+
+      // A trace of pitched wing resonance supplies definition, while the
+      // filtered-noise body carries most of the energy.
+      const resonance = this.ctx!.createOscillator();
+      resonance.type = 'triangle'; resonance.frequency.value = centerHz * (0.92 + Math.random() * 0.1);
+      const resonanceGain = this.ctx!.createGain();
+      resonanceGain.gain.value = 0.035 * amount;
+
+      const out = this.makePan(pan, dest);
+      noise.connect(bp).connect(gate).connect(level).connect(out);
+      resonance.connect(resonanceGain).connect(gate);
+      noise.start(); am.start(); swell.start(); color.start(); resonance.start();
+      [noise, am, swell, color, resonance].forEach((n) => this.register(bucket, n));
     };
 
-    voice(4100, 108, 0.07, -0.5);
-    voice(4650, 127, 0.11, 0.5);
+    voice(3150, 92, 0.053, -0.62, 0.9);
+    voice(3920, 117, 0.071, 0.1, 1);
+    voice(4780, 139, 0.043, 0.68, 0.72);
   }
 
   // --- FROGS (pulsed croaks scattered around a pond) ---
   private startFrogs(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.pinkNoiseBuffer || !this.brownNoiseBuffer) return;
+
+    // Quiet pond body keeps the scene alive between calls without turning it
+    // into another insect drone.
+    const pond = this.noiseSource(this.brownNoiseBuffer)!;
+    const pondLp = this.ctx.createBiquadFilter();
+    pondLp.type = 'lowpass'; pondLp.frequency.value = 320;
+    const pondGain = this.ctx.createGain();
+    pondGain.gain.value = 0.18;
+    pond.connect(pondLp).connect(pondGain).connect(dest);
+    pond.start();
+    this.register(bucket, pond);
 
     // A croak is a fast train of noise grains ("rrr-ribbit") through a resonant
     // band — the summed gain bumps give the creaky pulse texture, far more
@@ -1100,20 +1268,38 @@ export class BinauralEngine {
       g.gain.setValueAtTime(0.0001, t0);
       src.connect(bp).connect(g).connect(out);
 
-      const grains = 7 + Math.floor(Math.random() * 8);
-      const rate = 0.017 + Math.random() * 0.008;
+      const body = this.ctx.createOscillator();
+      body.type = Math.random() < 0.5 ? 'triangle' : 'sine';
+      const bodyF = 135 + Math.random() * 90;
+      body.frequency.setValueAtTime(bodyF, t0);
+      const bodyEnv = this.ctx.createGain();
+      bodyEnv.gain.setValueAtTime(0.0001, t0);
+      const throat = this.ctx.createBiquadFilter();
+      throat.type = 'lowpass'; throat.frequency.value = 520;
+      body.connect(bodyEnv).connect(throat).connect(out);
+
+      const grains = 8 + Math.floor(Math.random() * 9);
+      const rate = 0.019 + Math.random() * 0.01;
       let t = t0;
       for (let i = 0; i < grains; i++) {
         const gd = rate * 0.92;
         const taper = i > grains - 3 ? 0.55 : 1;
         g.gain.setValueAtTime(0.05, t);
-        g.gain.linearRampToValueAtTime(4.2 * taper, t + gd * 0.35);
+        g.gain.linearRampToValueAtTime(5.4 * taper, t + gd * 0.35);
         g.gain.exponentialRampToValueAtTime(0.05, t + gd);
+        bodyEnv.gain.setValueAtTime(0.003, t);
+        bodyEnv.gain.linearRampToValueAtTime(0.46 * taper, t + gd * 0.3);
+        bodyEnv.gain.exponentialRampToValueAtTime(0.003, t + gd);
         t += rate;
       }
       bp.frequency.linearRampToValueAtTime(centerF * 1.35, t); // "ribbit" lift
+      body.frequency.exponentialRampToValueAtTime(bodyF * 0.78, t);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+      bodyEnv.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
       this.startNoiseBurst(src, t0, t + 0.08 - t0);
+      body.start(t0); body.stop(t + 0.08);
+      this.register(bucket, src, true);
+      this.register(bucket, body, true);
     };
 
     const loop = () => {
@@ -1123,48 +1309,76 @@ export class BinauralEngine {
       croak(t, pan);
       if (Math.random() < 0.6) croak(t + 0.33, pan);
       if (Math.random() < 0.45) croak(t + 0.6 + Math.random() * 0.4, -pan); // answer from the other side
-      this.schedule(bucket, loop, 500 + Math.random() * 1800);
+      this.schedule(bucket, loop, 650 + Math.random() * 1550);
     };
     loop();
   }
 
   // --- OWL (soft distant hoots) ---
   private startOwl(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
 
     const hoot = (t: number, dur: number, pan: StereoPannerNode) => {
-      if (!this.ctx) return;
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
       const osc = this.ctx.createOscillator();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(345, t);
-      osc.frequency.exponentialRampToValueAtTime(295, t + dur);
+      const start = 315 + Math.random() * 45;
+      osc.frequency.setValueAtTime(start, t);
+      osc.frequency.exponentialRampToValueAtTime(start * 1.06, t + dur * 0.28);
+      osc.frequency.exponentialRampToValueAtTime(start * 0.84, t + dur);
       // A quieter octave partial gives the low hoot enough presence to carry
       // over the bed — a bare ~300 Hz sine reads as too soft on its own.
       const osc2 = this.ctx.createOscillator();
       osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(690, t);
-      osc2.frequency.exponentialRampToValueAtTime(590, t + dur);
+      osc2.frequency.setValueAtTime(start * 2, t);
+      osc2.frequency.exponentialRampToValueAtTime(start * 2.12, t + dur * 0.28);
+      osc2.frequency.exponentialRampToValueAtTime(start * 1.68, t + dur);
       const h2 = this.ctx.createGain();
-      h2.gain.value = 0.32;
+      h2.gain.value = 0.28;
+      const vibrato = this.ctx.createOscillator();
+      vibrato.frequency.value = 4.2 + Math.random() * 1.3;
+      const vibratoDepth = this.ctx.createGain();
+      vibratoDepth.gain.value = 3.5;
+      vibrato.connect(vibratoDepth);
+      vibratoDepth.connect(osc.frequency);
+      vibratoDepth.connect(osc2.frequency);
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(1.45, t + 0.07);
+      env.gain.linearRampToValueAtTime(1.55, t + Math.min(0.085, dur * 0.22));
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(env).connect(pan);
       osc2.connect(h2).connect(env);
-      osc.start(t); osc.stop(t + dur + 0.05);
+      osc.start(t); vibrato.start(t); osc.stop(t + dur + 0.05);
       osc2.start(t); osc2.stop(t + dur + 0.05);
+      vibrato.stop(t + dur + 0.05);
+      this.register(bucket, osc, true);
+      this.register(bucket, osc2, true);
+      this.register(bucket, vibrato, true);
+
+      // Breath/formant noise supplies the soft consonant at the front of a
+      // real hoot, so the call is not perceived as two clean sine waves.
+      const breath = this.ctx.createBufferSource();
+      breath.buffer = this.pinkNoiseBuffer;
+      const formant = this.ctx.createBiquadFilter();
+      formant.type = 'bandpass'; formant.frequency.value = 620 + Math.random() * 240; formant.Q.value = 1.15;
+      const breathEnv = this.ctx.createGain();
+      breathEnv.gain.setValueAtTime(0, t);
+      breathEnv.gain.linearRampToValueAtTime(0.52, t + 0.035);
+      breathEnv.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.82);
+      breath.connect(formant).connect(breathEnv).connect(pan);
+      this.startNoiseBurst(breath, t, dur + 0.02);
+      this.register(bucket, breath, true);
     };
 
     const call = () => {
       if (!this.ctx) return;
-      const t = this.ctx.currentTime;
+      // Schedule just ahead of currentTime so graph construction never masks
+      // the attack, and always answer once for immediate audible feedback.
+      const t = this.ctx.currentTime + 0.06;
       const pan = this.makePan(Math.random() * 1.0 - 0.5, dest);
-      hoot(t, 0.4, pan);
-      if (Math.random() < 0.65) {
-        hoot(t + 0.55, 0.28, pan);
-        hoot(t + 0.9, 0.45, pan);
-      }
+      hoot(t, 0.46, pan);
+      hoot(t + 0.58, 0.3, pan);
+      if (Math.random() < 0.65) hoot(t + 0.96, 0.44, pan);
       this.schedule(bucket, call, 4000 + Math.random() * 7000);
     };
     call();
@@ -1247,23 +1461,42 @@ export class BinauralEngine {
 
   // --- DUCKS (a little raft of quacks on the pond) ---
   private startDucks(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
 
     const quack = (t: number, base: number, peak: number, pan: StereoPannerNode) => {
-      if (!this.ctx) return;
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
       const osc = this.ctx.createOscillator();
-      osc.type = 'sawtooth';
+      osc.type = 'triangle';
       osc.frequency.setValueAtTime(base, t);
-      osc.frequency.exponentialRampToValueAtTime(base * 0.82, t + 0.16);
+      osc.frequency.exponentialRampToValueAtTime(base * 1.08, t + 0.045);
+      osc.frequency.exponentialRampToValueAtTime(base * 0.76, t + 0.2);
       const formant = this.ctx.createBiquadFilter();
-      formant.type = 'bandpass'; formant.frequency.value = 900; formant.Q.value = 1.6;
+      formant.type = 'bandpass'; formant.frequency.value = 720 + Math.random() * 100; formant.Q.value = 1.15;
+      const upperFormant = this.ctx.createBiquadFilter();
+      upperFormant.type = 'bandpass'; upperFormant.frequency.value = 1280 + Math.random() * 180; upperFormant.Q.value = 1.25;
+      const upperGain = this.ctx.createGain();
+      upperGain.gain.value = 0.34;
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(peak, t + 0.025);
+      env.gain.linearRampToValueAtTime(peak, t + 0.02);
       env.gain.setValueAtTime(peak * 0.8, t + 0.1);
-      env.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+      env.gain.exponentialRampToValueAtTime(0.001, t + 0.23);
       osc.connect(formant).connect(env).connect(pan);
+      osc.connect(upperFormant).connect(upperGain).connect(env);
       osc.start(t); osc.stop(t + 0.24);
+      this.register(bucket, osc, true);
+
+      const rasp = this.ctx.createBufferSource();
+      rasp.buffer = this.pinkNoiseBuffer;
+      const raspBp = this.ctx.createBiquadFilter();
+      raspBp.type = 'bandpass'; raspBp.frequency.value = 1050; raspBp.Q.value = 0.8;
+      const raspEnv = this.ctx.createGain();
+      raspEnv.gain.setValueAtTime(0, t);
+      raspEnv.gain.linearRampToValueAtTime(0.65 * peak, t + 0.012);
+      raspEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+      rasp.connect(raspBp).connect(raspEnv).connect(pan);
+      this.startNoiseBurst(rasp, t, 0.18);
+      this.register(bucket, rasp, true);
     };
 
     const series = () => {
@@ -1282,16 +1515,27 @@ export class BinauralEngine {
 
   // --- CAVE (deep still air + echoing water drips) ---
   private startCave(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.brownNoiseBuffer) return;
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
 
     const air = this.noiseSource(this.brownNoiseBuffer)!;
     const airLp = this.ctx.createBiquadFilter();
     airLp.type = 'lowpass'; airLp.frequency.value = 140;
     const airGain = this.ctx.createGain();
-    airGain.gain.value = 0.72;
+    airGain.gain.value = 0.62;
     air.connect(airLp).connect(airGain).connect(dest);
     air.start();
     this.register(bucket, air);
+
+    // Broad low-mid room tone makes the cavern translate on phone speakers;
+    // the sub bed alone spent almost all of its energy below 180 Hz.
+    const room = this.noiseSource(this.pinkNoiseBuffer)!;
+    const roomBp = this.ctx.createBiquadFilter();
+    roomBp.type = 'bandpass'; roomBp.frequency.value = 390; roomBp.Q.value = 0.55;
+    const roomGain = this.ctx.createGain();
+    roomGain.gain.value = 0.55;
+    room.connect(roomBp).connect(roomGain).connect(dest);
+    room.start();
+    this.register(bucket, room);
 
     // The cave slowly "breathes".
     const lfo = this.ctx.createOscillator();
@@ -1301,6 +1545,14 @@ export class BinauralEngine {
     lfo.connect(lfoGain).connect(airGain.gain);
     lfo.start();
     this.register(bucket, lfo);
+
+    const roomLfo = this.ctx.createOscillator();
+    roomLfo.frequency.value = 0.037;
+    const roomDepth = this.ctx.createGain();
+    roomDepth.gain.value = 0.07;
+    roomLfo.connect(roomDepth).connect(roomGain.gain);
+    roomLfo.start();
+    this.register(bucket, roomLfo);
 
     // Each drip rings once, then repeats quieter as manual echoes.
     const ping = (t: number, freq: number, peak: number, pan: StereoPannerNode) => {
@@ -1366,35 +1618,62 @@ export class BinauralEngine {
 
   // --- SEABIRDS (sparse gull cries; layer with waves for a shoreline) ---
   private startSeabirds(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
 
     const cry = (t: number, pan: StereoPannerNode) => {
-      if (!this.ctx) return;
+      if (!this.ctx || !this.pinkNoiseBuffer) return;
       const osc = this.ctx.createOscillator();
-      osc.type = 'sawtooth';
+      const harmonic = this.ctx.createOscillator();
+      osc.type = 'triangle';
+      harmonic.type = 'sine';
       const dur = 0.4 + Math.random() * 0.3;
-      const start = 850 + Math.random() * 150;
+      const start = 720 + Math.random() * 220;
       osc.frequency.setValueAtTime(start, t);
-      osc.frequency.exponentialRampToValueAtTime(start * 1.5, t + 0.08);
-      osc.frequency.exponentialRampToValueAtTime(620, t + dur);
+      osc.frequency.exponentialRampToValueAtTime(start * 1.55, t + dur * 0.24);
+      osc.frequency.exponentialRampToValueAtTime(start * 0.72, t + dur);
+      harmonic.frequency.setValueAtTime(start * 2.02, t);
+      harmonic.frequency.exponentialRampToValueAtTime(start * 3.13, t + dur * 0.24);
+      harmonic.frequency.exponentialRampToValueAtTime(start * 1.45, t + dur);
 
       const vib = this.ctx.createOscillator();
-      vib.frequency.value = 9;
+      vib.frequency.value = 8 + Math.random() * 2;
       const vibDepth = this.ctx.createGain();
-      vibDepth.gain.value = 35;
-      vib.connect(vibDepth).connect(osc.frequency);
+      vibDepth.gain.value = 24;
+      vib.connect(vibDepth);
+      vibDepth.connect(osc.frequency);
+      vibDepth.connect(harmonic.frequency);
 
-      const bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass'; bp.frequency.value = 1200; bp.Q.value = 1.2;
+      const lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 3800;
+      const harmonicGain = this.ctx.createGain();
+      harmonicGain.gain.value = 0.22;
 
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(1.4, t + 0.04);
+      env.gain.linearRampToValueAtTime(1.1, t + 0.045);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
 
-      osc.connect(bp).connect(env).connect(pan);
-      osc.start(t); vib.start(t);
-      osc.stop(t + dur + 0.05); vib.stop(t + dur + 0.05);
+      osc.connect(lp).connect(env).connect(pan);
+      harmonic.connect(harmonicGain).connect(lp);
+      osc.start(t); harmonic.start(t); vib.start(t);
+      osc.stop(t + dur + 0.05); harmonic.stop(t + dur + 0.05); vib.stop(t + dur + 0.05);
+      this.register(bucket, osc, true);
+      this.register(bucket, harmonic, true);
+      this.register(bucket, vib, true);
+
+      // A nasal, breathy rasp makes the glide read as a gull rather than a
+      // generic synthesizer sweep.
+      const rasp = this.ctx.createBufferSource();
+      rasp.buffer = this.pinkNoiseBuffer;
+      const raspBp = this.ctx.createBiquadFilter();
+      raspBp.type = 'bandpass'; raspBp.frequency.value = 1350 + Math.random() * 450; raspBp.Q.value = 0.8;
+      const raspEnv = this.ctx.createGain();
+      raspEnv.gain.setValueAtTime(0, t);
+      raspEnv.gain.linearRampToValueAtTime(0.58, t + 0.025);
+      raspEnv.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.85);
+      rasp.connect(raspBp).connect(raspEnv).connect(pan);
+      this.startNoiseBurst(rasp, t, dur + 0.02);
+      this.register(bucket, rasp, true);
     };
 
     const flock = () => {
@@ -1410,14 +1689,14 @@ export class BinauralEngine {
 
   // --- 9. WIND CHIMES (random pentatonic bell tones) ---
   private startChimes(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.pinkNoiseBuffer) return;
     const notes = [523.25, 587.33, 659.25, 783.99, 880.0]; // C5 D5 E5 G5 A5
 
     const ding = (t: number) => {
       if (!this.ctx) return;
       const freq = notes[Math.floor(Math.random() * notes.length)];
       const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
-      [[1, 0.44, 2.6], [2.76, 0.17, 0.9]].forEach(([ratio, amp, dur]) => {
+      [[1, 0.46, 3.1], [2.01, 0.07, 1.7], [2.76, 0.18, 1.05], [5.4, 0.04, 0.42]].forEach(([ratio, amp, dur]) => {
         const osc = this.ctx!.createOscillator();
         osc.type = 'sine';
         osc.frequency.value = freq * ratio;
@@ -1429,6 +1708,19 @@ export class BinauralEngine {
         osc.start(t); osc.stop(t + dur + 0.05);
         this.register(bucket, osc, true);
       });
+
+      // Tiny broadband impact gives the resonant partials a physical strike.
+      const strike = this.ctx.createBufferSource();
+      strike.buffer = this.pinkNoiseBuffer;
+      const strikeHp = this.ctx.createBiquadFilter();
+      strikeHp.type = 'highpass'; strikeHp.frequency.value = 2200;
+      const strikeEnv = this.ctx.createGain();
+      strikeEnv.gain.setValueAtTime(0, t);
+      strikeEnv.gain.linearRampToValueAtTime(0.22, t + 0.002);
+      strikeEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+      strike.connect(strikeHp).connect(strikeEnv).connect(pan);
+      this.startNoiseBurst(strike, t, 0.055);
+      this.register(bucket, strike, true);
     };
 
     const gust = () => {
@@ -1555,7 +1847,7 @@ export class BinauralEngine {
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass'; filter.frequency.value = 9000;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.09;
+    gain.gain.value = 0.18;
     node.connect(filter).connect(gain).connect(dest);
     node.start();
     this.register(bucket, node);
@@ -1566,7 +1858,7 @@ export class BinauralEngine {
     if (!this.ctx || !this.pinkNoiseBuffer) return;
     const node = this.noiseSource(this.pinkNoiseBuffer)!;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.25;
+    gain.gain.value = 0.32;
     node.connect(gain).connect(dest);
     node.start();
     this.register(bucket, node);
@@ -1946,7 +2238,7 @@ export class BinauralEngine {
 
   // --- HEARTBEAT (calm resting heartbeat, womb-comfort) ---
   private startHeartbeat(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.brownNoiseBuffer) return;
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
 
     // Everything runs through one warm lowpass so the beat sits "inside the
     // chest" rather than in the room. Deliberately centered — no pan scatter.
@@ -1954,7 +2246,7 @@ export class BinauralEngine {
     layerGain.gain.value = 1;
     const lp = this.ctx.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.value = 220;
+    lp.frequency.value = 360;
     layerGain.connect(lp).connect(dest);
 
     // Slow breathing swell around the pulse. Depth 0.12 on a base of 1 keeps
@@ -1971,7 +2263,7 @@ export class BinauralEngine {
     // One thump = a descending sine "knock" plus a soft brown-noise body thud
     // (lowpassed to 150 Hz) so the beat has flesh, not just tone.
     const thump = (t: number, startHz: number, endHz: number, peak: number, decay: number) => {
-      if (!this.ctx || !this.brownNoiseBuffer) return;
+      if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
       const osc = this.ctx.createOscillator();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(startHz, t);
@@ -1994,6 +2286,33 @@ export class BinauralEngine {
       thudEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
       thud.connect(thudLp).connect(thudEnv).connect(layerGain);
       thud.start(t); thud.stop(t + 0.1);
+
+      // A restrained low-mid chest contact keeps the pulse audible on phone
+      // speakers without increasing the already-strong sub peak.
+      const contact = this.ctx.createBufferSource();
+      contact.buffer = this.pinkNoiseBuffer;
+      const contactBp = this.ctx.createBiquadFilter();
+      contactBp.type = 'bandpass'; contactBp.frequency.value = 245; contactBp.Q.value = 0.8;
+      const contactEnv = this.ctx.createGain();
+      contactEnv.gain.setValueAtTime(0, t);
+      contactEnv.gain.linearRampToValueAtTime(0.95, t + 0.004);
+      contactEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.065);
+      contact.connect(contactBp).connect(contactEnv).connect(layerGain);
+      this.startNoiseBurst(contact, t, 0.075);
+      this.register(bucket, contact, true);
+
+      const presence = this.ctx.createOscillator();
+      presence.type = 'triangle';
+      const presenceHz = startHz * 3.8;
+      presence.frequency.setValueAtTime(presenceHz, t);
+      presence.frequency.exponentialRampToValueAtTime(presenceHz * 0.72, t + 0.11);
+      const presenceEnv = this.ctx.createGain();
+      presenceEnv.gain.setValueAtTime(0, t);
+      presenceEnv.gain.linearRampToValueAtTime(0.42, t + 0.006);
+      presenceEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+      presence.connect(presenceEnv).connect(layerGain);
+      presence.start(t); presence.stop(t + 0.15);
+      this.register(bucket, presence, true);
     };
 
     // Resting pace: the base period random-walks within 950–1050 ms
@@ -2003,8 +2322,8 @@ export class BinauralEngine {
     const beat = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
-      thump(t, 60, 38, 1.3, 0.22);         // LUB
-      thump(t + 0.28, 52, 33, 0.95, 0.18); // dub
+      thump(t, 60, 38, 1.02, 0.22);         // LUB
+      thump(t + 0.28, 52, 33, 0.74, 0.18);  // dub
       period = Math.min(1050, Math.max(950, period + (Math.random() * 2 - 1) * period * 0.012));
       const id = window.setTimeout(beat, period);
       bucket.timeouts.push(id);
@@ -2021,7 +2340,7 @@ export class BinauralEngine {
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass'; filter.frequency.value = 800;
     const gain = this.ctx.createGain();
-    gain.gain.value = 0.4;
+    gain.gain.value = 0.48;
     node.connect(filter).connect(gain).connect(dest);
     node.start();
     this.register(bucket, node);
@@ -2029,27 +2348,27 @@ export class BinauralEngine {
 
   // --- BAMBOO (대나무숲: grove wind + papery leaf shimmer + hollow culm knocks) ---
   private startBamboo(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.pinkNoiseBuffer) return;
+    if (!this.ctx || !this.pinkNoiseBuffer || !this.whiteNoiseBuffer) return;
 
     // Wind bed pushing through the grove, gusting like startWind but a touch darker.
     const bed = this.noiseSource(this.pinkNoiseBuffer)!;
     const bedLp = this.ctx.createBiquadFilter();
-    bedLp.type = 'lowpass'; bedLp.frequency.value = 320; bedLp.Q.value = 0;
+    bedLp.type = 'lowpass'; bedLp.frequency.value = 360; bedLp.Q.value = 0;
     const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 1.6;
+    bedGain.gain.value = 1.35;
     bed.connect(bedLp).connect(bedGain).connect(dest);
     bed.start();
     this.register(bucket, bed);
 
     // Papery leaf band — brighter than broadleaf rustle, so it reads as dry
     // bamboo leaves hissing against each other. Swells with the gusts.
-    const leaves = this.noiseSource(this.pinkNoiseBuffer)!;
+    const leaves = this.noiseSource(this.whiteNoiseBuffer)!;
     const leafHp = this.ctx.createBiquadFilter();
-    leafHp.type = 'highpass'; leafHp.frequency.value = 2000;
+    leafHp.type = 'highpass'; leafHp.frequency.value = 1250;
     const leafLp = this.ctx.createBiquadFilter();
     leafLp.type = 'lowpass'; leafLp.frequency.value = 6500;
     const leafGain = this.ctx.createGain();
-    leafGain.gain.value = 0.06;
+    leafGain.gain.value = 0.14;
     leaves.connect(leafHp).connect(leafLp).connect(leafGain).connect(dest);
     leaves.start();
     this.register(bucket, leaves);
@@ -2058,7 +2377,7 @@ export class BinauralEngine {
       if (!this.ctx) return; const t = this.ctx.currentTime;
       const gust = 2 + Math.random() * 4;
       bedLp.frequency.exponentialRampToValueAtTime(200 + Math.random() * 250, t + gust);
-      leafGain.gain.setTargetAtTime(0.05 + Math.random() * 0.15, t, gust / 3);
+      leafGain.gain.setTargetAtTime(0.1 + Math.random() * 0.11, t, gust / 3);
     };
     animate();
     const id = window.setInterval(animate, 5000);
@@ -2383,7 +2702,7 @@ export class BinauralEngine {
   }
 
   private startDeepSea(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.brownNoiseBuffer) return;
+    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
 
     // Abyssal water mass: a dark brown-noise bed whose color and level drift
     // very slowly, like currents shifting in the deep.
@@ -2391,10 +2710,21 @@ export class BinauralEngine {
     const bedLp = this.ctx.createBiquadFilter();
     bedLp.type = 'lowpass'; bedLp.frequency.value = 180;
     const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 1.0;
+    bedGain.gain.value = 0.92;
     bed.connect(bedLp).connect(bedGain).connect(dest);
     bed.start();
     this.register(bucket, bed);
+
+    // A low-mid current preserves the abyssal color while giving compact
+    // speakers an audible sense of water pressure and movement.
+    const current = this.noiseSource(this.pinkNoiseBuffer)!;
+    const currentBp = this.ctx.createBiquadFilter();
+    currentBp.type = 'bandpass'; currentBp.frequency.value = 410; currentBp.Q.value = 0.58;
+    const currentGain = this.ctx.createGain();
+    currentGain.gain.value = 0.24;
+    current.connect(currentBp).connect(currentGain).connect(dest);
+    current.start();
+    this.register(bucket, current);
 
     const fLfo = this.ctx.createOscillator();
     fLfo.frequency.value = 0.05;
@@ -2411,6 +2741,14 @@ export class BinauralEngine {
     aLfo.connect(aDepth).connect(bedGain.gain);
     aLfo.start();
     this.register(bucket, aLfo);
+
+    const currentLfo = this.ctx.createOscillator();
+    currentLfo.frequency.value = 0.041;
+    const currentDepth = this.ctx.createGain();
+    currentDepth.gain.value = 0.055;
+    currentLfo.connect(currentDepth).connect(currentGain.gain);
+    currentLfo.start();
+    this.register(bucket, currentLfo);
 
     // Faint pressure hum with a slow amplitude wobble.
     const hum = this.ctx.createOscillator();
@@ -2655,6 +2993,7 @@ export class BinauralEngine {
       this.outputGain,
       this.safetyClipper,
       this.limiter,
+      this.mixCompressor,
       this.dcBlocker,
       this.masterGain,
     ].forEach((n) => {
@@ -2670,6 +3009,7 @@ export class BinauralEngine {
     this.outputGain = null;
     this.safetyClipper = null;
     this.limiter = null;
+    this.mixCompressor = null;
     this.dcBlocker = null;
     this.masterGain = null;
   }

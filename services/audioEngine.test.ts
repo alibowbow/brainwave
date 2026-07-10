@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BinauralEngine, CRICKET_AM, StartConfig, ToneMode, createSoftClipCurve, finalizeNoiseChannel } from './audioEngine';
 import { BackgroundSoundType } from '../types';
-import { DEFAULT_MIX_VOLUMES, MAX_LAYER_VOLUME, TONE_MODE_TRIM, clampLayerVolume, countAudibleLayers, layerGain, levelToGain, natureBusGain, natureMixCompensation, normalizeMixVolumes } from '../audioLevels';
+import { DEFAULT_MIX_VOLUMES, MAX_LAYER_VOLUME, TONE_MODE_TRIM, clampLayerVolume, layerGain, levelToGain, natureBusGain, natureMixCompensation, natureMixLoad, normalizeMixVolumes } from '../audioLevels';
 
 // --- Minimal Web Audio mock (no real audio rendering) ---
 class Param {
@@ -17,6 +17,7 @@ class GNode { connect(d: any) { return d; } disconnect() {} }
 class GainNode extends GNode { gain = new Param(1); }
 class BiquadFilterNode extends GNode { type = 'lowpass'; frequency = new Param(350); Q = new Param(1); }
 const oscillatorNodes: OscillatorNode[] = [];
+const compressorNodes: DynamicsCompressorNode[] = [];
 const timeoutCallbacks = new Map<number, () => void>();
 let nextTimerId = 0;
 
@@ -56,7 +57,7 @@ class AudioContextMock {
   createDelay() { return new DelayNodeMock(); }
   createConvolver() { return new ConvolverNode(); }
   createChannelMerger() { return new ChannelMergerNode(); }
-  createDynamicsCompressor() { return new DynamicsCompressorNode(); }
+  createDynamicsCompressor() { const node = new DynamicsCompressorNode(); compressorNodes.push(node); return node; }
   createWaveShaper() { return new WaveShaperNode(); }
   createAnalyser() { return new AnalyserMock(); }
   createBuffer(ch: number, len: number) { return new AudioBufferMock(ch, len); }
@@ -85,6 +86,7 @@ describe('BinauralEngine multi-voice', () => {
   let e: BinauralEngine;
   beforeEach(() => {
     oscillatorNodes.length = 0;
+    compressorNodes.length = 0;
     timeoutCallbacks.clear();
     e = new BinauralEngine();
   });
@@ -159,6 +161,15 @@ describe('BinauralEngine multi-voice', () => {
     expect(e.getAnalyser()).toBeNull();
   });
 
+  it('separates gentle mix glue from the fast peak guard', () => {
+    e.start(cfg([{ type: 'rain', volume: 0.8 }]));
+    expect(compressorNodes).toHaveLength(2);
+    expect(compressorNodes[0].ratio.value).toBe(2);
+    expect(compressorNodes[0].release.value).toBeGreaterThan(compressorNodes[1].release.value);
+    expect(compressorNodes[1].threshold.value).toBe(-2);
+    e.stop();
+  });
+
   it('runs an isochronic (gamma) session, chime and fade-out without throwing', () => {
     expect(() => {
       e.start(cfg([{ type: 'drone', volume: 0.7 }], 'isochronic'));
@@ -203,9 +214,23 @@ describe('audio quality invariants', () => {
     expect(levelToGain(1)).toBe(1);
     expect(levelToGain(0.5)).toBeLessThan(0.5);
     expect(natureMixCompensation(1)).toBe(1);
-    expect(countAudibleLayers([0.8, 0, 0.4, Number.NaN])).toBe(2);
     expect(natureMixCompensation(4)).toBeLessThan(natureMixCompensation(2));
     expect(natureBusGain(0.8, 4)).toBeLessThan(natureBusGain(0.8, 1));
+  });
+
+  it('reserves more headroom for continuous beds than sparse animal calls', () => {
+    const rainAndOwl = natureMixLoad([
+      { type: 'rain', volume: 0.7 },
+      { type: 'owl', volume: 0.7 },
+    ]);
+    const rainAndWaterfall = natureMixLoad([
+      { type: 'rain', volume: 0.7 },
+      { type: 'waterfall', volume: 0.7 },
+    ]);
+    expect(rainAndOwl).toBeCloseTo(1.3);
+    expect(rainAndWaterfall).toBe(2);
+    expect(natureMixLoad([{ type: 'owl', volume: 0 }])).toBe(1);
+    expect(natureBusGain(0.8, rainAndOwl)).toBeGreaterThan(natureBusGain(0.8, rainAndWaterfall));
   });
 
   it('clamps individual layer boost to the safe mixer range', () => {

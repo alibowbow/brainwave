@@ -36,35 +36,67 @@ export const MIX_PROFILES: { id: string; label: string; description: string; vol
 export const MAX_LAYER_VOLUME = 1.2;
 
 // Source calibration is separate from the user's fader. Continuous procedural
-// generators differ widely in raw RMS, so these conservative trims bring the
-// beds closer together without undoing the recently hand-tuned creature calls.
+// generators and short animal calls have very different crest factors, so these
+// trims are calibrated from real Web Audio analyser measurements rather than
+// from oscillator gain values alone.
 const NATURE_SOURCE_TRIM: Partial<Record<BackgroundSoundType, number>> = {
   rain: 0.9,
   thunder: 0.75,
   stream: 1.8,
   waterfall: 0.95,
-  wave: 0.8,
+  wave: 0.9,
   fire: 0.65,
   forest: 0.55,
-  cave: 0.9,
-  night: 0.9,
+  birds: 0.82,
+  cuckoo: 1.15,
+  woodpecker: 1,
+  ducks: 1.2,
+  cicadas: 1.25,
+  frogs: 0.9,
+  owl: 0.5,
+  cave: 1.05,
+  night: 1.45,
+  chimes: 1.5,
+  bowl: 1.15,
   drone: 0.65,
   blizzard: 0.65,
+  seabirds: 0.72,
   fan: 1.1,
-  white: 2,
-  pink: 1.7,
+  white: 2.4,
+  pink: 2,
   // v3.8.0 sounds, trimmed from offline-render RMS measurements.
-  tent: 1.2,
+  tent: 1,
   window: 0.9,
-  eaves: 1.0,
+  eaves: 1.1,
   dthunder: 0.8,
-  pebbles: 1.1,
+  pebbles: 1.2,
   deepsea: 0.8,
-  bamboo: 0.75,
+  bamboo: 0.9,
   temple: 1.0,
-  scops: 1.0,
-  heartbeat: 1.0,
-  brown: 1.0,
+  scops: 1.25,
+  heartbeat: 1.05,
+  brown: 1.2,
+};
+
+// A sparse owl or chime must not duck a steady rain bed as much as another
+// continuous noise bed would. The weights represent average acoustic load, not
+// the raw number of enabled layers.
+const NATURE_MIX_WEIGHT: Partial<Record<BackgroundSoundType, number>> = {
+  birds: 0.34,
+  cuckoo: 0.3,
+  woodpecker: 0.32,
+  ducks: 0.38,
+  frogs: 0.42,
+  owl: 0.3,
+  scops: 0.42,
+  chimes: 0.35,
+  bowl: 0.45,
+  seabirds: 0.34,
+  heartbeat: 0.55,
+  night: 0.6,
+  cicadas: 0.7,
+  dthunder: 0.75,
+  temple: 0.7,
 };
 
 export const TONE_MODE_TRIM = {
@@ -75,39 +107,39 @@ export const TONE_MODE_TRIM = {
 const DEFAULT_SOUND_LEVELS: Partial<Record<BackgroundSoundType, number>> = {
   rain: 0.72,
   thunder: 0.72,
-  stream: 0.62,
+  stream: 0.68,
   waterfall: 0.68,
-  wave: 0.72,
+  wave: 0.75,
   fire: 0.68,
   forest: 0.65,
-  birds: 0.65,
-  cuckoo: 0.62,
-  woodpecker: 0.58,
-  ducks: 0.58,
-  cicadas: 0.58,
-  frogs: 0.62,
-  owl: 0.62,
-  night: 0.62,
-  cave: 0.68,
-  chimes: 0.58,
-  bowl: 0.6,
+  birds: 0.68,
+  cuckoo: 0.66,
+  woodpecker: 0.62,
+  ducks: 0.66,
+  cicadas: 0.64,
+  frogs: 0.7,
+  owl: 0.68,
+  night: 0.66,
+  cave: 0.7,
+  chimes: 0.68,
+  bowl: 0.64,
   drone: 0.62,
   blizzard: 0.64,
-  seabirds: 0.58,
+  seabirds: 0.68,
   fan: 0.6,
-  white: 0.48,
-  pink: 0.52,
+  white: 0.56,
+  pink: 0.58,
   tent: 0.76,
   window: 0.72,
   eaves: 0.7,
   dthunder: 0.66,
   pebbles: 0.7,
   deepsea: 0.68,
-  bamboo: 0.65,
+  bamboo: 0.68,
   temple: 0.66,
   scops: 0.62,
-  heartbeat: 0.7,
-  brown: 0.5,
+  heartbeat: 0.72,
+  brown: 0.58,
 };
 
 export const clampUnit = (value: number) => Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
@@ -117,21 +149,28 @@ export const clampLayerVolume = (value: number) =>
 
 // UI sliders represent perceived level. A gentle power curve gives the lower
 // half enough resolution while still reaching unity gain at 100%.
-export const levelToGain = (level: number) => Math.pow(clampUnit(level), 1.6);
+export const levelToGain = (level: number) => Math.pow(clampUnit(level), 1.45);
 
 // Adding layers should enrich a scene, not multiply its loudness. This mild
-// equal-power compensation keeps two-to-five layer presets out of the limiter
-// while preserving the relative positions of the individual faders.
-export const natureMixCompensation = (layerCount: number) => {
-  const count = Math.max(1, Math.floor(Number.isFinite(layerCount) ? layerCount : 1));
-  return 1 / Math.sqrt(1 + (count - 1) * 0.35);
+// equal-power compensation uses role-weighted load to keep presets out of the
+// limiter while preserving the relative positions of individual faders.
+export const natureMixCompensation = (mixLoad: number) => {
+  const load = Math.max(1, Number.isFinite(mixLoad) ? mixLoad : 1);
+  return 1 / Math.sqrt(1 + (load - 1) * 0.3);
 };
 
-export const countAudibleLayers = (levels: readonly number[]) =>
-  levels.reduce((count, level) => count + (Number.isFinite(level) && level > 0.001 ? 1 : 0), 0);
+export const natureMixLoad = (layers: readonly { type: BackgroundSoundType; volume: number }[]) =>
+  Math.max(
+    1,
+    layers.reduce(
+      (load, layer) =>
+        load + (Number.isFinite(layer.volume) && layer.volume > 0.001 ? (NATURE_MIX_WEIGHT[layer.type] ?? 1) : 0),
+      0,
+    ),
+  );
 
-export const natureBusGain = (level: number, layerCount: number) =>
-  levelToGain(level) * 0.6 * natureMixCompensation(layerCount);
+export const natureBusGain = (level: number, mixLoad: number) =>
+  levelToGain(level) * 0.72 * natureMixCompensation(mixLoad);
 
 export const layerGain = (type: BackgroundSoundType, level: number) =>
   Math.min(2.5, clampLayerVolume(level) * (NATURE_SOURCE_TRIM[type] ?? 1));

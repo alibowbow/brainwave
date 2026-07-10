@@ -14,9 +14,9 @@ const BAND_SIZE: Record<string, number> = { sky: 46, tree: 58, ground: 58, water
 
 const SCENERY = new Set<BackgroundSoundType>([
   'wave', 'rain', 'thunder', 'blizzard', 'waterfall', 'fire',
-  'tent', 'window', 'eaves', 'dthunder', 'bamboo', 'temple', 'valley', 'pebbles', 'bubbles',
+  'tent', 'window', 'eaves', 'dthunder', 'bamboo', 'temple', 'pebbles',
 ]);
-const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'valley', 'waterfall', 'wave', 'pebbles', 'deepsea', 'bubbles'];
+const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea'];
 const WAVE_PATH = 'M0 10 Q12.5 4 25 10 T50 10 T75 10 T100 10 T125 10 T150 10 T175 10 T200 10 V24 H0 Z';
 
 const STARS = [
@@ -171,13 +171,12 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
   const hasCabin = types.includes('window');
   const hasBamboo = types.includes('bamboo');
   const hasTemple = types.includes('temple');
-  const hasValley = types.includes('valley');
   const hasPebbles = types.includes('pebbles');
-  const hasBubbles = types.includes('bubbles') || types.includes('deepsea');
+  const hasBubbles = types.includes('deepsea');
   const rainy = types.includes('rain') || types.includes('thunder') || types.includes('tent') || types.includes('window') || types.includes('eaves');
   const stormy = types.includes('thunder') || types.includes('dthunder');
   const snowy = types.includes('blizzard');
-  const hasScenery = hasWave || hasWaterfall || hasFire || hasTent || hasCabin || hasBamboo || hasTemple || hasValley || hasPebbles || hasBubbles || rainy || stormy || snowy;
+  const hasScenery = hasWave || hasWaterfall || hasFire || hasTent || hasCabin || hasBamboo || hasTemple || hasPebbles || hasBubbles || rainy || stormy || snowy;
   const clearSky = !rainy && !snowy;
   const n = chars.length;
 
@@ -284,18 +283,6 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
           <g>
             <path d="M0 128 Q100 122 200 128 T400 126 L400 160 L0 160 Z" fill="url(#scWater)" />
             <ellipse cx="200" cy="130" rx="150" ry="4" className="sc-water-0" opacity="0.5" />
-          </g>
-        )}
-
-        {/* valley boulders in the stream */}
-        {hasValley && (
-          <g>
-            <ellipse cx="120" cy="134" rx="14" ry="8" fill="#8f8f99" />
-            <ellipse cx="118" cy="131" rx="11" ry="6" fill="#b0b0ba" />
-            <ellipse cx="262" cy="138" rx="10" ry="6" fill="#84848d" />
-            <ellipse cx="261" cy="136" rx="8" ry="4.5" fill="#a3a3ad" />
-            <path d="M102 138 Q120 142 138 138" stroke="#eaf6ff" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.7" />
-            <path d="M248 142 Q262 145 276 142" stroke="#eaf6ff" strokeWidth="1.8" fill="none" strokeLinecap="round" opacity="0.6" />
           </g>
         )}
 

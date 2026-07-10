@@ -8,7 +8,7 @@ import { SoundLayerPicker } from './components/SoundLayerPicker';
 import { StatsDashboard } from './components/StatsDashboard';
 import { ImmersiveMode } from './components/ImmersiveMode';
 import { NatureMode } from './components/NatureMode';
-import { WAVE_ORDER, getWaveColor } from './audioOptions';
+import { WAVE_ORDER, SOUND_ORDER, getWaveColor } from './audioOptions';
 import { DEFAULT_MIX_VOLUMES, defaultSoundLevel, normalizeMixVolumes } from './audioLevels';
 import type { MixVolumes } from './audioLevels';
 import { VolumeMixer } from './components/VolumeMixer';
@@ -127,7 +127,12 @@ export default function App() {
     if (savedNature) {
       try {
         const n = JSON.parse(savedNature);
-        if (Array.isArray(n.layers) && n.layers.length > 0) setNatureLayers(n.layers);
+        if (Array.isArray(n.layers)) {
+          // Drop layer types that no longer exist (e.g. removed sounds).
+          const known = new Set<string>(SOUND_ORDER);
+          const layers = n.layers.filter((l: SoundLayer) => l && known.has(l.type));
+          if (layers.length > 0) setNatureLayers(layers);
+        }
         if (n.timerMin === null || typeof n.timerMin === 'number') setNatureTimerMin(n.timerMin);
         if (typeof n.volume === 'number') setNatureVol(n.volume);
         setNatureMixId(typeof n.mixId === 'string' ? n.mixId : null);
@@ -919,7 +924,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v3.8.0</p>
+        <p>MC Brain Care v3.8.1</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>

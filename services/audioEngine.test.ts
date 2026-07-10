@@ -144,7 +144,7 @@ describe('BinauralEngine multi-voice', () => {
   });
 
   it('constructs every nature-sound generator without error', () => {
-    const nature: BackgroundSoundType[] = ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder', 'stream', 'valley', 'waterfall', 'wave', 'pebbles', 'deepsea', 'bubbles', 'fire', 'forest', 'bamboo', 'birds', 'cuckoo', 'woodpecker', 'ducks', 'cave', 'cicadas', 'frogs', 'owl', 'scops', 'night', 'chimes', 'bowl', 'temple', 'drone', 'blizzard', 'seabirds', 'fan', 'heartbeat', 'brown', 'white', 'pink'];
+    const nature: BackgroundSoundType[] = ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder', 'stream', 'waterfall', 'wave', 'pebbles', 'deepsea', 'fire', 'forest', 'bamboo', 'birds', 'cuckoo', 'woodpecker', 'ducks', 'cave', 'cicadas', 'frogs', 'owl', 'scops', 'night', 'chimes', 'bowl', 'temple', 'drone', 'blizzard', 'seabirds', 'fan', 'heartbeat', 'brown', 'white', 'pink'];
     e.start(cfg([]));
     expect(() => nature.forEach((s) => e.addSound(s, 0.5))).not.toThrow();
     expect(e.activeSoundTypes().length).toBe(nature.length);
@@ -171,9 +171,7 @@ describe('BinauralEngine multi-voice', () => {
 
 describe('audio quality invariants', () => {
   it('keeps cricket amplitude modulation above zero', () => {
-    expect(CRICKET_AM.bedBase - CRICKET_AM.bedDepth).toBeGreaterThan(0);
     expect(CRICKET_AM.chirpBase - CRICKET_AM.chirpDepth).toBeGreaterThan(0);
-    expect(CRICKET_AM.bedBase + CRICKET_AM.bedDepth).toBeLessThanOrEqual(1);
     expect(CRICKET_AM.chirpBase + CRICKET_AM.chirpDepth).toBeLessThanOrEqual(1);
   });
 

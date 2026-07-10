@@ -7,8 +7,6 @@ const NOISE_SECONDS = 8;
 const MODE_SWITCH_MS = 70;
 
 export const CRICKET_AM = {
-  bedBase: 0.52,
-  bedDepth: 0.34,
   chirpBase: 0.55,
   chirpDepth: 0.35,
 } as const;
@@ -143,6 +141,7 @@ export class BinauralEngine {
   private bgBus: GainNode | null = null;        // shared bus for all nature layers (the "자연음" master)
   private reverb: ConvolverNode | null = null;
   private reverbFilter: BiquadFilterNode | null = null;
+  private reverbLp: BiquadFilterNode | null = null;
   private reverbWet: GainNode | null = null;
 
   // Active nature-sound layers, keyed by type.
@@ -235,10 +234,17 @@ export class BinauralEngine {
     this.reverbFilter.type = 'highpass';
     this.reverbFilter.frequency.value = 150;
     this.reverbFilter.Q.value = 0.7;
+    // Band-limit the wet tail on both ends: bright discrete events (cricket
+    // chirps, drips, taps) ringing through the convolver read as an "echo",
+    // so anything above ~2.2 kHz stays dry.
+    this.reverbLp = this.ctx.createBiquadFilter();
+    this.reverbLp.type = 'lowpass';
+    this.reverbLp.frequency.value = 2200;
+    this.reverbLp.Q.value = 0.7;
     this.reverbWet = this.ctx.createGain();
     this.reverbWet.gain.value = 0.12;
     this.bgBus.connect(this.reverb);
-    this.reverb.connect(this.reverbFilter).connect(this.reverbWet).connect(this.masterGain);
+    this.reverb.connect(this.reverbFilter).connect(this.reverbLp).connect(this.reverbWet).connect(this.masterGain);
 
     this.voices = new Map();
     config.sounds.forEach((s) => this.addSound(s.type, s.volume, 0.8, false));
@@ -488,10 +494,8 @@ export class BinauralEngine {
       case 'thunder': this.startThunder(dest, bucket); break;
       case 'dthunder': this.startDistantThunder(dest, bucket); break;
       case 'stream': this.startStream(dest, bucket); break;
-      case 'valley': this.startValley(dest, bucket); break;
       case 'pebbles': this.startPebbleBeach(dest, bucket); break;
       case 'deepsea': this.startDeepSea(dest, bucket); break;
-      case 'bubbles': this.startBubbles(dest, bucket); break;
       case 'bamboo': this.startBamboo(dest, bucket); break;
       case 'temple': this.startTempleBell(dest, bucket); break;
       case 'scops': this.startScopsOwl(dest, bucket); break;
@@ -807,29 +811,18 @@ export class BinauralEngine {
 
   // --- 5. CRICKETS ---
   private startCrickets(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx) return;
+    if (!this.ctx || !this.brownNoiseBuffer) return;
 
-    // Faint continuous distant chorus on both sides, under the near chirps.
-    [[4300, 24, -0.6], [4600, 31, 0.6]].forEach(([freq, am, pan]) => {
-      const osc = this.ctx!.createOscillator();
-      osc.type = 'triangle';
-      osc.frequency.value = freq;
-      const gate = this.ctx!.createGain();
-      gate.gain.value = CRICKET_AM.bedBase;
-      const amOsc = this.ctx!.createOscillator();
-      amOsc.frequency.value = am;
-      const amDepth = this.ctx!.createGain();
-      amDepth.gain.value = CRICKET_AM.bedDepth;
-      amOsc.connect(amDepth).connect(gate.gain);
-      const bp = this.ctx!.createBiquadFilter();
-      bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 2;
-      const level = this.ctx!.createGain();
-      level.gain.value = 0.035;
-      osc.connect(gate).connect(bp).connect(level).connect(this.makePan(pan, dest));
-      osc.start(); amOsc.start();
-      this.register(bucket, osc);
-      this.register(bucket, amOsc);
-    });
+    // Just a whisper of dark night air under the chirps. The old continuous
+    // 4.3/4.6 kHz AM "chorus" drone read as electrical noise — removed.
+    const air = this.noiseSource(this.brownNoiseBuffer)!;
+    const airLp = this.ctx.createBiquadFilter();
+    airLp.type = 'lowpass'; airLp.frequency.value = 180;
+    const airGain = this.ctx.createGain();
+    airGain.gain.value = 0.12;
+    air.connect(airLp).connect(airGain).connect(dest);
+    air.start();
+    this.register(bucket, air);
 
     const playSound = (t: number, dur: number, type: 'short' | 'long') => {
       if (!this.ctx) return;
@@ -1706,42 +1699,36 @@ export class BinauralEngine {
     lfo.start();
     this.register(bucket, lfo);
 
-    // A drop tapping the pane: bright resonant click + a tiny sine ring at the
-    // same frequency so it reads as glass rather than generic rain patter.
+    // A drop hitting the pane: a soft, low-resonance noise "tp". No tonal
+    // ring and no high Q — resonant pings read as a synthesizer, not rain.
+    // Most taps are quiet; the occasional fat drop lands harder.
     const tap = () => {
       if (!this.ctx || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
       // The window is one localized object — keep the taps panned narrow.
       const pan = this.makePan(Math.random() * 0.8 - 0.4, dest);
-      const f = 2200 + Math.random() * 2300;
+      const f = 1200 + Math.random() * 1400;
 
       const src = this.ctx.createBufferSource();
       src.buffer = this.pinkNoiseBuffer;
       const bp = this.ctx.createBiquadFilter();
       bp.type = 'bandpass';
       bp.frequency.value = f;
-      bp.Q.value = 6 + Math.random() * 4;
+      bp.Q.value = 1.2 + Math.random();
       const env = this.ctx.createGain();
-      const decay = 0.03 + Math.random() * 0.03;
+      const soft = Math.pow(Math.random(), 2); // mostly-soft distribution
+      const peak = 0.25 + soft * 0.65;
+      const decay = 0.02 + Math.random() * 0.025;
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.9, t + 0.001);
+      env.gain.linearRampToValueAtTime(peak, t + 0.0015);
       env.gain.exponentialRampToValueAtTime(0.01, t + decay);
       src.connect(bp).connect(env).connect(pan);
-      src.start(t); src.stop(t + decay + 0.02);
-
-      const tick = this.ctx.createOscillator();
-      tick.type = 'sine';
-      tick.frequency.value = f;
-      const tickEnv = this.ctx.createGain();
-      tickEnv.gain.setValueAtTime(0, t);
-      tickEnv.gain.linearRampToValueAtTime(0.15, t + 0.001);
-      tickEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
-      tick.connect(tickEnv).connect(pan);
-      tick.start(t); tick.stop(t + 0.05);
+      // Random buffer offset so each tap has a fresh transient.
+      src.start(t, Math.random() * 3); src.stop(t + decay + 0.02);
     };
 
-    // Run-off drip: water collected on the glass streaks down — a longer,
-    // lower "zip" whose resonance falls back to rest.
+    // Run-off trickle: water streaking down the glass — a quiet, unpitched
+    // wash that fades in and out, no resonant "zip".
     const drip = () => {
       if (!this.ctx || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
@@ -1749,23 +1736,22 @@ export class BinauralEngine {
       src.buffer = this.pinkNoiseBuffer;
       const bp = this.ctx.createBiquadFilter();
       bp.type = 'bandpass';
-      const f = 750 + Math.random() * 550;
-      bp.frequency.setValueAtTime(f * 1.6, t);
-      bp.frequency.exponentialRampToValueAtTime(f, t + 0.15);
-      bp.Q.value = 5 + Math.random() * 3;
+      bp.frequency.setValueAtTime(1100 + Math.random() * 500, t);
+      bp.frequency.exponentialRampToValueAtTime(700, t + 0.22);
+      bp.Q.value = 2;
       const env = this.ctx.createGain();
       env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.85, t + 0.005);
-      env.gain.exponentialRampToValueAtTime(0.005, t + 0.16);
+      env.gain.linearRampToValueAtTime(0.4, t + 0.04);
+      env.gain.exponentialRampToValueAtTime(0.005, t + 0.25);
       src.connect(bp).connect(env).connect(this.makePan(Math.random() * 0.8 - 0.4, dest));
-      src.start(t); src.stop(t + 0.2);
+      src.start(t, Math.random() * 3); src.stop(t + 0.3);
     };
 
     const loop = () => {
       if (!this.ctx) return;
-      if (Math.random() < 0.5) tap();
-      if (Math.random() < 0.05) drip();
-      const id = window.setTimeout(loop, 70 + Math.random() * 40);
+      if (Math.random() < 0.45) tap();
+      if (Math.random() < 0.04) drip();
+      const id = window.setTimeout(loop, 75 + Math.random() * 45);
       bucket.timeouts.push(id);
     };
     loop();
@@ -1794,50 +1780,55 @@ export class BinauralEngine {
     hiss.start();
     this.register(bucket, hiss);
 
-    // One falling drop: bright "tick" sweep + resonant "plop" body,
-    // occasionally landing in a puddle ("sploosh").
+    // One falling drop, all noise-based — a tonal sine sweep here read as a
+    // cartoon "삐욱". (a) a very short bright splash transient (the surface
+    // break) into (b) a soft round low body (the water swallowing the drop).
     const drop = (line: StereoPannerNode) => {
       if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      const size = 0.7 + Math.random() * 0.5; // per-drop weight
 
-      // (a) The tick: fast downward sine sweep, the "똑".
-      const tick = this.ctx.createOscillator();
-      tick.type = 'sine';
-      tick.frequency.setValueAtTime(1400, t);
-      tick.frequency.exponentialRampToValueAtTime(500, t + 0.03);
+      // (a) Splash transient: 10-20 ms of mid-bright noise, gentle Q.
+      const tick = this.ctx.createBufferSource();
+      tick.buffer = this.pinkNoiseBuffer;
+      const tickBp = this.ctx.createBiquadFilter();
+      tickBp.type = 'bandpass';
+      tickBp.frequency.value = 1600 + Math.random() * 900;
+      tickBp.Q.value = 1.5;
       const tickEnv = this.ctx.createGain();
       tickEnv.gain.setValueAtTime(0, t);
-      tickEnv.gain.linearRampToValueAtTime(0.7, t + 0.002);
-      tickEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-      tick.connect(tickEnv).connect(line);
-      tick.start(t); tick.stop(t + 0.11);
+      tickEnv.gain.linearRampToValueAtTime(0.5 * size, t + 0.002);
+      tickEnv.gain.exponentialRampToValueAtTime(0.005, t + 0.012 + Math.random() * 0.01);
+      tick.connect(tickBp).connect(tickEnv).connect(line);
+      tick.start(t, Math.random() * 3); tick.stop(t + 0.05);
 
-      // (b) The plop body: resonant noise thunk underneath the tick.
+      // (b) The round body right behind it: the "동" of water into water.
       const plop = this.ctx.createBufferSource();
       plop.buffer = this.brownNoiseBuffer;
       const plopBp = this.ctx.createBiquadFilter();
       plopBp.type = 'bandpass';
-      plopBp.frequency.value = 400 + Math.random() * 300;
-      plopBp.Q.value = 4;
+      plopBp.frequency.setValueAtTime(520 + Math.random() * 220, t);
+      plopBp.frequency.exponentialRampToValueAtTime(300, t + 0.07);
+      plopBp.Q.value = 2.5;
       const plopEnv = this.ctx.createGain();
-      plopEnv.gain.setValueAtTime(0, t);
-      plopEnv.gain.linearRampToValueAtTime(0.85, t + 0.004);
-      plopEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      plopEnv.gain.setValueAtTime(0, t + 0.006);
+      plopEnv.gain.linearRampToValueAtTime(0.9 * size, t + 0.014);
+      plopEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
       plop.connect(plopBp).connect(plopEnv).connect(line);
-      plop.start(t); plop.stop(t + 0.12);
+      plop.start(t, Math.random() * 3); plop.stop(t + 0.14);
 
-      // 10% of drops land in the puddle below the eave.
+      // 10% of drops splatter a little wider in the puddle.
       if (Math.random() < 0.1) {
         const spl = this.ctx.createBufferSource();
         spl.buffer = this.pinkNoiseBuffer;
         const splBp = this.ctx.createBiquadFilter();
-        splBp.type = 'bandpass'; splBp.frequency.value = 900; splBp.Q.value = 2;
+        splBp.type = 'bandpass'; splBp.frequency.value = 900; splBp.Q.value = 1.2;
         const splEnv = this.ctx.createGain();
-        splEnv.gain.setValueAtTime(0, t);
-        splEnv.gain.linearRampToValueAtTime(0.4, t + 0.008);
-        splEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+        splEnv.gain.setValueAtTime(0, t + 0.01);
+        splEnv.gain.linearRampToValueAtTime(0.35, t + 0.03);
+        splEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
         spl.connect(splBp).connect(splEnv).connect(line);
-        spl.start(t); spl.stop(t + 0.19);
+        spl.start(t, Math.random() * 3); spl.stop(t + 0.2);
       }
     };
 
@@ -2231,98 +2222,6 @@ export class BinauralEngine {
     bucket.timeouts.push(moktakId);
   }
 
-  // --- VALLEY (여름 계곡 물멍: thick stream churn + rock gurgles + splashes) ---
-  private startValley(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
-
-    // Three churn layers on coprime LFO rates (0.10 / 0.23 / 0.31 Hz) so the
-    // combined swell pattern effectively never repeats — a big valley stream,
-    // much thicker than the small stream bed, with real low-end water mass.
-    const churn = (
-      buffer: AudioBuffer,
-      freq: number,
-      q: number,
-      base: number,
-      lfoHz: number,
-      depth: number,
-      pan: number,
-    ) => {
-      const n = this.noiseSource(buffer)!;
-      const bp = this.ctx!.createBiquadFilter();
-      bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = q;
-      const g = this.ctx!.createGain();
-      g.gain.value = base;
-      n.connect(bp).connect(g).connect(this.makePan(pan, dest));
-      n.start();
-      this.register(bucket, n);
-
-      const lfo = this.ctx!.createOscillator();
-      lfo.frequency.value = lfoHz;
-      const lfoDepth = this.ctx!.createGain();
-      lfoDepth.gain.value = depth; // depth < base — the gain never crosses zero
-      lfo.connect(lfoDepth).connect(g.gain);
-      lfo.start();
-      this.register(bucket, lfo);
-    };
-
-    churn(this.brownNoiseBuffer, 180, 0.7, 1.35, 0.10, 0.2, -0.2); // low water mass
-    churn(this.pinkNoiseBuffer, 700, 0.8, 0.75, 0.23, 0.16, 0);    // mid churn body
-    churn(this.pinkNoiseBuffer, 2400, 0.7, 0.45, 0.31, 0.1, 0.2);  // bright surface wash
-
-    // Gurgle blobs: water swirling between rocks — a high-Q band whose center
-    // wobbles at 4-7 Hz while the gain opens (0.2 s), holds 0.5-1.5 s, closes.
-    const gurgle = () => {
-      if (!this.ctx || !this.pinkNoiseBuffer) return;
-      const t = this.ctx.currentTime;
-      const src = this.ctx.createBufferSource();
-      src.buffer = this.pinkNoiseBuffer;
-      const bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass';
-      bp.frequency.value = 500 + Math.random() * 400;
-      bp.Q.value = 8;
-      const wob = this.ctx.createOscillator();
-      wob.frequency.value = 4 + Math.random() * 3;
-      const wobDepth = this.ctx.createGain();
-      wobDepth.gain.value = 200;
-      wob.connect(wobDepth).connect(bp.frequency);
-      const g = this.ctx.createGain();
-      const hold = 0.5 + Math.random();
-      const peak = 2.0 + Math.random() * 0.8; // Q 8 band eats energy: needs a hot envelope
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(peak, t + 0.2);
-      g.gain.setValueAtTime(peak, t + 0.2 + hold);
-      g.gain.linearRampToValueAtTime(0.0001, t + 0.4 + hold);
-      src.connect(bp).connect(g).connect(this.makePan(Math.random() * 1.4 - 0.7, dest));
-      src.start(t); src.stop(t + 0.4 + hold + 0.05);
-      wob.start(t); wob.stop(t + 0.4 + hold + 0.05);
-
-      const id = window.setTimeout(gurgle, 2000 + Math.random() * 3000);
-      bucket.timeouts.push(id);
-    };
-    gurgle();
-
-    // Occasional splash off a rock: a bright pink burst with a fast decay.
-    const splash = () => {
-      if (!this.ctx || !this.pinkNoiseBuffer) return;
-      const t = this.ctx.currentTime;
-      const src = this.ctx.createBufferSource();
-      src.buffer = this.pinkNoiseBuffer;
-      const hp = this.ctx.createBiquadFilter();
-      hp.type = 'highpass'; hp.frequency.value = 1200;
-      const g = this.ctx.createGain();
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(0.35, t + 0.008);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
-      src.connect(hp).connect(g).connect(this.makePan(Math.random() * 1.2 - 0.6, dest));
-      src.start(t); src.stop(t + 0.25);
-
-      const id = window.setTimeout(splash, 8000 + Math.random() * 12000);
-      bucket.timeouts.push(id);
-    };
-    const splashId = window.setTimeout(splash, 3000 + Math.random() * 5000);
-    bucket.timeouts.push(splashId);
-  }
-
   // --- PEBBLE BEACH (몽돌해변: surf swells + '차르르르' pebble roll on the retreat) ---
   private startPebbleBeach(dest: AudioNode, bucket: Bucket) {
     if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
@@ -2471,71 +2370,6 @@ export class BinauralEngine {
     cycle();
   }
 
-  // --- BUBBLES (underwater deep-water bed + Minnaert-resonance bubble chirps) ---
-  private startBubbles(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.brownNoiseBuffer) return;
-
-    // Muffled deep-water bed that slowly swells, like hearing through water.
-    const bed = this.noiseSource(this.brownNoiseBuffer)!;
-    const bedLp = this.ctx.createBiquadFilter();
-    bedLp.type = 'lowpass'; bedLp.frequency.value = 300;
-    const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.5;
-    bed.connect(bedLp).connect(bedGain).connect(dest);
-    bed.start();
-    this.register(bucket, bed);
-
-    const lfo = this.ctx.createOscillator();
-    lfo.frequency.value = 0.07;
-    const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 0.15; // 0.5 ± 0.15 keeps the bed gain strictly positive
-    lfo.connect(lfoGain).connect(bedGain.gain);
-    lfo.start();
-    this.register(bucket, lfo);
-
-    // One bubble: a sine at its Minnaert resonance chirping UP as it rises and
-    // expands — the upward glide is exactly what a real bubble sounds like.
-    const bubble = (t: number, f0: number) => {
-      if (!this.ctx) return;
-      const osc = this.ctx.createOscillator();
-      osc.type = 'sine';
-      const dur = 0.04 + Math.random() * 0.06;
-      osc.frequency.setValueAtTime(f0, t);
-      osc.frequency.exponentialRampToValueAtTime(f0 * (1.12 + Math.random() * 0.25), t + dur);
-      const env = this.ctx.createGain();
-      // Big (low) bubbles are louder than tiny (high) ones.
-      const peak = Math.max(0.6, Math.min(1.8, 1200 / f0));
-      env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(peak, t + 0.003);
-      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      osc.connect(env).connect(this.makePan(Math.random() * 1.6 - 0.8, dest));
-      osc.start(t); osc.stop(t + dur + 0.05);
-    };
-
-    const loop = () => {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      // Log-distributed 400–1800 Hz so bubble sizes spread naturally.
-      let f0 = 400 * Math.pow(4.5, Math.random());
-      if (Math.random() < 0.3) {
-        // Gurgle: a burst of bubbles breaking loose, each smaller (higher) than the last.
-        const count = 4 + Math.floor(Math.random() * 6);
-        let bt = t;
-        for (let i = 0; i < count; i++) {
-          bubble(bt, f0);
-          f0 *= 1.1;
-          bt += 0.04 + Math.random() * 0.05;
-        }
-      } else {
-        bubble(t, f0);
-      }
-      const id = window.setTimeout(loop, 80 + Math.random() * 270);
-      bucket.timeouts.push(id);
-    };
-    loop();
-  }
-
-  // --- DEEP SEA (abyssal bed + distant whale calls) ---
   private startDeepSea(dest: AudioNode, bucket: Bucket) {
     if (!this.ctx || !this.brownNoiseBuffer) return;
 
@@ -2800,6 +2634,7 @@ export class BinauralEngine {
     this.pendingCleanups = [];
     [
       this.reverbWet,
+      this.reverbLp,
       this.reverbFilter,
       this.reverb,
       this.bgBus,
@@ -2814,6 +2649,7 @@ export class BinauralEngine {
       try { n?.disconnect(); } catch (e) { /* ignore */ }
     });
     this.reverbWet = null;
+    this.reverbLp = null;
     this.reverbFilter = null;
     this.reverb = null;
     this.bgBus = null;

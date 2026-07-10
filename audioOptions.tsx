@@ -3,14 +3,14 @@ import {
   CloudRain, CloudLightning, Droplets, Mountain, Waves, Flame, Wind, Bird, Bug, Turtle,
   Feather, CloudMoon, Bell, Disc3, Orbit, Snowflake, Sailboat, Fan, Activity, AudioLines, Volume1,
   Sunrise, Hammer, Egg, Gem, Tent, Blinds, Droplet, Zap, HeartPulse, AudioWaveform, Sprout,
-  Landmark, MountainSnow, Shell, Fish, Grape, MoonStar,
+  Landmark, Shell, Fish, MoonStar,
 } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType } from './types';
 
 // Sounds grouped by scene — drives the categorized picker UI.
 export const SOUND_GROUPS: { label: string; sounds: BackgroundSoundType[] }[] = [
   { label: '비 · 천둥', sounds: ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder'] },
-  { label: '물 · 바다', sounds: ['stream', 'valley', 'waterfall', 'wave', 'pebbles', 'deepsea', 'bubbles'] },
+  { label: '물 · 바다', sounds: ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea'] },
   { label: '새', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl', 'scops'] },
   { label: '숲 · 생물', sounds: ['forest', 'bamboo', 'cicadas', 'frogs', 'ducks', 'night'] },
   { label: '공간 · 명상', sounds: ['fire', 'temple', 'chimes', 'bowl', 'drone', 'cave'] },
@@ -32,12 +32,10 @@ export const getSoundIcon = (type: BackgroundSoundType) => {
     case 'thunder': return <CloudLightning size={20} />;
     case 'dthunder': return <Zap size={20} />;
     case 'stream': return <Droplets size={20} />;
-    case 'valley': return <MountainSnow size={20} />;
     case 'waterfall': return <Mountain size={20} />;
     case 'wave': return <Waves size={20} />;
     case 'pebbles': return <Shell size={20} />;
     case 'deepsea': return <Fish size={20} />;
-    case 'bubbles': return <Grape size={20} />;
     case 'fire': return <Flame size={20} />;
     case 'bamboo': return <Sprout size={20} />;
     case 'temple': return <Landmark size={20} />;
@@ -76,12 +74,10 @@ export const getSoundLabel = (type: BackgroundSoundType) => {
     case 'thunder': return '뇌우';
     case 'dthunder': return '먼 천둥';
     case 'stream': return '시냇물';
-    case 'valley': return '계곡';
     case 'waterfall': return '폭포';
     case 'wave': return '파도';
     case 'pebbles': return '몽돌 해변';
     case 'deepsea': return '깊은 바다';
-    case 'bubbles': return '물속 기포';
     case 'fire': return '모닥불';
     case 'bamboo': return '대나무숲';
     case 'temple': return '산사의 종';

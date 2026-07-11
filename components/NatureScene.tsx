@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BackgroundSoundType } from '../types';
 import { SCENE_META, CHARACTER_SVG } from './sceneCharacters';
 
@@ -9,11 +9,34 @@ interface Props {
 
 type SceneTheme = 'valley' | 'night-pond' | 'coast' | 'deep-sea' | 'cave' | 'winter' | 'warm';
 
+type AtlasName = 'idle' | 'action';
+
+interface MotionAtlas {
+  path: string;
+  columns: number;
+  rows: number;
+}
+
+interface MotionClip {
+  atlas: AtlasName;
+  frames: readonly number[];
+  frameDurations: readonly number[];
+}
+
 interface GeneratedCharacter {
-  motionPath: string;
+  id: string;
+  atlases: Record<AtlasName, MotionAtlas>;
+  microClips: readonly MotionClip[];
+  actionClips: readonly MotionClip[];
+  restRange: readonly [number, number];
+  actionProbability: number;
   className: string;
   alt: string;
-  frameDuration: string;
+}
+
+interface MotionPose {
+  atlas: AtlasName;
+  frame: number;
 }
 
 const assetUrl = (path: string) => new URL(path, document.baseURI).toString();
@@ -25,28 +48,84 @@ const BACKGROUND_PATH: Partial<Record<SceneTheme, string>> = {
 
 const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharacter>> = {
   birds: {
-    motionPath: 'images/nature/motion/songbird-motion.webp',
+    id: 'songbird',
+    atlases: {
+      idle: { path: 'images/nature/motion/songbird-behavior-a-v2.webp', columns: 5, rows: 5 },
+      action: { path: 'images/nature/motion/songbird-behavior-b-v2.webp', columns: 5, rows: 5 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 2, 3, 4, 0], frameDurations: [140, 80, 95, 90, 140, 180] },
+      { atlas: 'idle', frames: [5, 6, 7, 8, 9, 0], frameDurations: [170, 140, 230, 160, 170, 210] },
+      { atlas: 'idle', frames: [10, 11, 12, 13, 14, 0], frameDurations: [170, 140, 270, 170, 180, 220] },
+      { atlas: 'idle', frames: [15, 16, 17, 18, 19, 0], frameDurations: [210, 170, 250, 190, 180, 220] },
+      { atlas: 'idle', frames: [20, 21, 22, 23, 24, 0], frameDurations: [160, 100, 90, 120, 170, 240] },
+      { atlas: 'action', frames: [5, 6, 7, 8, 9, 0], frameDurations: [220, 190, 230, 200, 220, 260] },
+      { atlas: 'action', frames: [20, 21, 22, 23, 24, 0], frameDurations: [220, 190, 220, 190, 230, 260] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 1, 2, 3, 4, 5, 0], frameDurations: [170, 140, 190, 130, 180, 150, 180, 210, 240] },
+      { atlas: 'action', frames: [10, 11, 12, 13, 13, 12, 11, 14, 0], frameDurations: [150, 110, 100, 170, 130, 100, 120, 160, 230] },
+      { atlas: 'action', frames: [15, 16, 17, 18, 19, 18, 17, 20, 0], frameDurations: [150, 120, 110, 170, 180, 120, 130, 180, 260] },
+    ],
+    restRange: [3800, 9000],
+    actionProbability: 0.16,
     className: 'sc-v2-bird',
     alt: '나뭇가지에 앉은 작은 새',
-    frameDuration: '1.8s',
   },
   owl: {
-    motionPath: 'images/nature/motion/scops-owl-motion.webp',
+    id: 'owl',
+    atlases: {
+      idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
+      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
+      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    ],
+    restRange: [5200, 12000],
+    actionProbability: 0.18,
     className: 'sc-v2-owl',
     alt: '나뭇가지에 앉은 부엉이',
-    frameDuration: '2.7s',
   },
   scops: {
-    motionPath: 'images/nature/motion/scops-owl-motion.webp',
+    id: 'scops',
+    atlases: {
+      idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
+      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
+      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    ],
+    restRange: [5200, 12000],
+    actionProbability: 0.18,
     className: 'sc-v2-scops',
     alt: '밤의 소쩍새',
-    frameDuration: '2.7s',
   },
   frogs: {
-    motionPath: 'images/nature/motion/pond-frog-motion.webp',
+    id: 'frog',
+    atlases: {
+      idle: { path: 'images/nature/motion/pond-frog-idle-atlas.webp', columns: 2, rows: 2 },
+      action: { path: 'images/nature/motion/pond-frog-call-atlas.webp', columns: 4, rows: 1 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 0], frameDurations: [300, 520, 260] },
+      { atlas: 'idle', frames: [0, 2, 0], frameDurations: [260, 180, 260] },
+      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [240, 500, 320, 240] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [220, 220, 340, 280, 220, 260, 180] },
+    ],
+    restRange: [4200, 9500],
+    actionProbability: 0.24,
     className: 'sc-v2-frog',
     alt: '이끼 낀 돌 위의 개구리',
-    frameDuration: '2.4s',
   },
 };
 
@@ -84,6 +163,131 @@ const legacyCharacters = (types: BackgroundSoundType[]) =>
     SCENE_META[type] &&
     CHARACTER_SVG[type]
   ));
+
+const IDLE_POSE: MotionPose = { atlas: 'idle', frame: 0 };
+
+const randomBetween = (min: number, max: number) =>
+  Math.round(min + Math.random() * (max - min));
+
+const atlasFrameStyle = (atlas: MotionAtlas, frame: number): React.CSSProperties => {
+  const frameCount = atlas.columns * atlas.rows;
+  const safeFrame = Math.max(0, Math.min(frame, frameCount - 1));
+  const column = safeFrame % atlas.columns;
+  const row = Math.floor(safeFrame / atlas.columns);
+  const x = atlas.columns === 1 ? 0 : (column / (atlas.columns - 1)) * 100;
+  const y = atlas.rows === 1 ? 0 : (row / (atlas.rows - 1)) * 100;
+
+  return {
+    backgroundImage: `url("${assetUrl(atlas.path)}")`,
+    backgroundSize: `${atlas.columns * 100}% ${atlas.rows * 100}%`,
+    backgroundPosition: `${x}% ${y}%`,
+  };
+};
+
+interface NaturalFaunaProps {
+  character: GeneratedCharacter;
+  index: number;
+}
+
+/**
+ * NPC-style fauna motion: long, irregular rests are punctuated by short blink,
+ * listening, breathing or call clips. Both atlases stay mounted so switching a
+ * frame is an instant cell lookup rather than a sliding image transition.
+ */
+const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
+  const [pose, setPose] = useState<MotionPose>(IDLE_POSE);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncPreference = () => setReduceMotion(media.matches);
+    syncPreference();
+    media.addEventListener('change', syncPreference);
+    return () => media.removeEventListener('change', syncPreference);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer: number | undefined;
+
+    const clearTimer = () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+      timer = undefined;
+    };
+
+    const scheduleRest = (initial = false) => {
+      if (cancelled) return;
+      setPose(IDLE_POSE);
+      const delay = randomBetween(character.restRange[0], character.restRange[1]) + (initial ? index * 650 : 0);
+      timer = window.setTimeout(startAction, delay);
+    };
+
+    const playClip = (clip: MotionClip, step: number) => {
+      if (cancelled || document.hidden) return;
+      if (step >= clip.frames.length) {
+        scheduleRest();
+        return;
+      }
+
+      setPose({ atlas: clip.atlas, frame: clip.frames[step] });
+      timer = window.setTimeout(
+        () => playClip(clip, step + 1),
+        clip.frameDurations[step] ?? 220,
+      );
+    };
+
+    function startAction() {
+      if (cancelled || document.hidden) return;
+      const useAction = Math.random() < character.actionProbability;
+      const microClip = character.microClips[Math.floor(Math.random() * character.microClips.length)];
+      const actionClip = character.actionClips[Math.floor(Math.random() * character.actionClips.length)];
+      playClip(useAction ? actionClip : microClip, 0);
+    }
+
+    const handleVisibility = () => {
+      clearTimer();
+      setPose(IDLE_POSE);
+      if (!document.hidden && !reduceMotion) scheduleRest(true);
+    };
+
+    setPose(IDLE_POSE);
+    if (!reduceMotion && !document.hidden) scheduleRest(true);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      cancelled = true;
+      clearTimer();
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [character, index, reduceMotion]);
+
+  return (
+    <div
+      className={`sc-v2-character absolute ${character.className}`}
+      role="img"
+      aria-label={character.alt}
+      data-fauna={character.id}
+      data-motion={pose.atlas}
+      data-motion-frame={pose.frame}
+    >
+      {(['idle', 'action'] as const).map((atlasName) => {
+        const atlas = character.atlases[atlasName];
+        const active = pose.atlas === atlasName;
+        return (
+          <div
+            key={atlasName}
+            className="sc-v2-atlas-layer absolute inset-0"
+            style={{
+              ...atlasFrameStyle(atlas, active ? pose.frame : 0),
+              opacity: active ? 1 : 0,
+            }}
+            aria-hidden="true"
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 /**
  * Layered nature diorama. Generated plates carry the expensive visual detail;
@@ -144,20 +348,7 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
 
       {generated.map((type, index) => {
         const character = GENERATED_CHARACTERS[type]!;
-        return (
-          <div key={`${type}-${index}`} className={`sc-v2-character absolute ${character.className}`}>
-            <div
-              className="sc-v2-sprite absolute inset-0"
-              role="img"
-              aria-label={character.alt}
-              style={{
-                backgroundImage: `url("${assetUrl(character.motionPath)}")`,
-                '--sc-v2-frame-duration': character.frameDuration,
-                animationDelay: `${index * -0.45}s`,
-              } as React.CSSProperties}
-            />
-          </div>
-        );
+        return <NaturalFauna key={`${type}-${index}`} character={character} index={index} />;
       })}
 
       {legacy.map((type, index) => {

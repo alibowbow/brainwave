@@ -457,7 +457,7 @@ input[type='range']:disabled::-moz-range-thumb {
   background: linear-gradient(180deg, rgba(10, 31, 64, 0.04), rgba(5, 20, 46, 0.25));
 }
 .sc-v2-character {
-  z-index: 12;
+  z-index: 15;
   transform-origin: 50% 90%;
   filter: drop-shadow(0 5px 5px rgba(6, 18, 27, 0.24));
   pointer-events: none;
@@ -467,9 +467,9 @@ input[type='range']:disabled::-moz-range-thumb {
   transition: none;
 }
 .sc-v2-bird { left: 17%; top: 10%; width: 72px; height: 72px; }
-.sc-v2-owl { right: 13%; top: 13%; width: 96px; height: 96px; }
-.sc-v2-scops { right: 14%; top: 15%; width: 90px; height: 90px; }
-.sc-v2-frog { left: 43%; bottom: 9%; width: 105px; height: 105px; }
+.sc-v2-owl { right: 13%; top: 15%; width: 74px; height: 74px; }
+.sc-v2-scops { right: 14%; top: 16%; width: 72px; height: 72px; }
+.sc-v2-frog { left: 23%; bottom: 2%; width: 82px; height: 82px; }
 .sc-v2-legacy {
   z-index: 10;
   width: 48px;

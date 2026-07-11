@@ -462,12 +462,8 @@ input[type='range']:disabled::-moz-range-thumb {
   filter: drop-shadow(0 5px 5px rgba(6, 18, 27, 0.24));
   pointer-events: none;
 }
-.sc-v2-sprite {
-  background-position: 0 50%;
-  background-repeat: no-repeat;
-  background-size: 400% 100%;
-  will-change: background-position;
-}
+.sc-v2-frame { opacity: 0; }
+.sc-v2-frame-0 { opacity: 1; }
 .sc-v2-bird { left: 17%; top: 10%; width: 72px; height: 72px; }
 .sc-v2-owl { right: 13%; top: 13%; width: 96px; height: 96px; }
 .sc-v2-scops { right: 14%; top: 15%; width: 90px; height: 90px; }
@@ -574,7 +570,17 @@ input[type='range']:disabled::-moz-range-thumb {
   .sc-v2-bird { animation: scV2BirdFloat 4.8s ease-in-out infinite; }
   .sc-v2-owl, .sc-v2-scops { animation: scV2OwlBreathe 5.4s ease-in-out infinite; }
   .sc-v2-frog { animation: scV2FrogIdle 5.8s ease-in-out infinite; }
-  .sc-v2-sprite { animation: scV2SpriteFrame var(--sc-v2-frame-duration, 2.2s) steps(4, end) infinite; }
+  .sc-v2-frame {
+    animation-duration: var(--sc-v2-frame-duration, 2.2s);
+    animation-timing-function: steps(1, end);
+    animation-iteration-count: infinite;
+    animation-delay: var(--sc-v2-frame-delay, 0s);
+    will-change: opacity;
+  }
+  .sc-v2-frame-0 { animation-name: scV2Frame0; }
+  .sc-v2-frame-1 { animation-name: scV2Frame1; }
+  .sc-v2-frame-2 { animation-name: scV2Frame2; }
+  .sc-v2-frame-3 { animation-name: scV2Frame3; }
   .sc-v2-water-glint { animation: scV2WaterGlint 8s linear infinite; }
   .sc-v2-waterfall-mist { animation: scV2Mist 4.5s ease-in-out infinite; }
   .sc-v2-caustics { animation: scV2Caustics 11s linear infinite; }
@@ -591,7 +597,10 @@ input[type='range']:disabled::-moz-range-thumb {
   .sc-v2-legacy.hop { animation: scV2LegacyHop 6s ease-in-out infinite; transform-origin: bottom center; }
 }
 @keyframes scV2PlateDrift { from { transform: scale(1.012) translate3d(-0.3%, 0, 0); } to { transform: scale(1.025) translate3d(0.3%, -0.2%, 0); } }
-@keyframes scV2SpriteFrame { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@keyframes scV2Frame0 { 0%, 24.999% { opacity: 1; } 25%, 100% { opacity: 0; } }
+@keyframes scV2Frame1 { 0%, 24.999% { opacity: 0; } 25%, 49.999% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes scV2Frame2 { 0%, 49.999% { opacity: 0; } 50%, 74.999% { opacity: 1; } 75%, 100% { opacity: 0; } }
+@keyframes scV2Frame3 { 0%, 74.999% { opacity: 0; } 75%, 100% { opacity: 1; } }
 @keyframes scV2BirdFloat { 0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); } 50% { transform: translate3d(7px, -5px, 0) rotate(1deg); } }
 @keyframes scV2OwlBreathe { 0%, 100% { transform: translateY(0) rotate(-0.6deg); } 50% { transform: translateY(-3px) rotate(0.6deg); } }
 @keyframes scV2FrogIdle { 0%, 76%, 100% { transform: translateY(0) scale(1); } 83% { transform: translateY(-4px) scale(1.02, .98); } 88% { transform: translateY(0) scale(.98, 1.02); } }
@@ -609,6 +618,3 @@ input[type='range']:disabled::-moz-range-thumb {
 @keyframes scV2LegacyBob { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, calc(-50% - 2px)); } }
 @keyframes scV2LegacySway { 0%, 100% { transform: translate(-50%, -50%) rotate(-2deg); } 50% { transform: translate(-50%, -50%) rotate(2deg); } }
 @keyframes scV2LegacyHop { 0%, 78%, 100% { transform: translate(-50%, -50%); } 84% { transform: translate(-50%, calc(-50% - 7px)); } 90% { transform: translate(-50%, -50%); } }
-@media (prefers-reduced-motion: reduce) {
-  .sc-v2-sprite { animation: none; }
-}

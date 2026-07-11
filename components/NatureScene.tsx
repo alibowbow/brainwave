@@ -10,7 +10,7 @@ interface Props {
 type SceneTheme = 'valley' | 'night-pond' | 'coast' | 'deep-sea' | 'cave' | 'winter' | 'warm';
 
 interface GeneratedCharacter {
-  motionPath: string;
+  frames: readonly string[];
   className: string;
   alt: string;
   frameDuration: string;
@@ -25,25 +25,45 @@ const BACKGROUND_PATH: Partial<Record<SceneTheme, string>> = {
 
 const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharacter>> = {
   birds: {
-    motionPath: 'images/nature/motion/songbird-motion.webp',
+    frames: [
+      'images/nature/motion/songbird/01.webp',
+      'images/nature/motion/songbird/02.webp',
+      'images/nature/motion/songbird/03.webp',
+      'images/nature/motion/songbird/04.webp',
+    ],
     className: 'sc-v2-bird',
     alt: '나뭇가지에 앉은 작은 새',
     frameDuration: '1.8s',
   },
   owl: {
-    motionPath: 'images/nature/motion/scops-owl-motion.webp',
+    frames: [
+      'images/nature/motion/scops-owl/01.webp',
+      'images/nature/motion/scops-owl/02.webp',
+      'images/nature/motion/scops-owl/03.webp',
+      'images/nature/motion/scops-owl/04.webp',
+    ],
     className: 'sc-v2-owl',
     alt: '나뭇가지에 앉은 부엉이',
     frameDuration: '2.7s',
   },
   scops: {
-    motionPath: 'images/nature/motion/scops-owl-motion.webp',
+    frames: [
+      'images/nature/motion/scops-owl/01.webp',
+      'images/nature/motion/scops-owl/02.webp',
+      'images/nature/motion/scops-owl/03.webp',
+      'images/nature/motion/scops-owl/04.webp',
+    ],
     className: 'sc-v2-scops',
     alt: '밤의 소쩍새',
     frameDuration: '2.7s',
   },
   frogs: {
-    motionPath: 'images/nature/motion/pond-frog-motion.webp',
+    frames: [
+      'images/nature/motion/pond-frog/01.webp',
+      'images/nature/motion/pond-frog/02.webp',
+      'images/nature/motion/pond-frog/03.webp',
+      'images/nature/motion/pond-frog/04.webp',
+    ],
     className: 'sc-v2-frog',
     alt: '이끼 낀 돌 위의 개구리',
     frameDuration: '2.4s',
@@ -145,17 +165,27 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
       {generated.map((type, index) => {
         const character = GENERATED_CHARACTERS[type]!;
         return (
-          <div key={`${type}-${index}`} className={`sc-v2-character absolute ${character.className}`}>
-            <div
-              className="sc-v2-sprite absolute inset-0"
-              role="img"
-              aria-label={character.alt}
-              style={{
-                backgroundImage: `url("${assetUrl(character.motionPath)}")`,
-                '--sc-v2-frame-duration': character.frameDuration,
-                animationDelay: `${index * -0.45}s`,
-              } as React.CSSProperties}
-            />
+          <div
+            key={`${type}-${index}`}
+            className={`sc-v2-character absolute ${character.className}`}
+            role="img"
+            aria-label={character.alt}
+            style={{
+              '--sc-v2-frame-duration': character.frameDuration,
+              '--sc-v2-frame-delay': `${index * -0.45}s`,
+            } as React.CSSProperties}
+          >
+            {character.frames.map((framePath, frameIndex) => (
+              <img
+                key={framePath}
+                src={assetUrl(framePath)}
+                alt=""
+                aria-hidden="true"
+                draggable="false"
+                decoding="async"
+                className={`sc-v2-frame sc-v2-frame-${frameIndex} absolute inset-0 h-full w-full object-contain`}
+              />
+            ))}
           </div>
         );
       })}

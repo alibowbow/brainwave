@@ -45,9 +45,9 @@ export default defineConfig(({ mode }) => {
             runtimeCaching: [
               {
                 urlPattern: /\/images\/nature\/.*\.(?:webp|png)$/i,
-                handler: 'CacheFirst',
+                handler: 'StaleWhileRevalidate',
                 options: {
-                  cacheName: 'nature-assets-v1',
+                  cacheName: 'nature-assets-v2',
                   expiration: { maxEntries: 48, maxAgeSeconds: 60 * 60 * 24 * 180 },
                   cacheableResponse: { statuses: [0, 200] },
                 },

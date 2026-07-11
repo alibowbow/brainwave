@@ -9,7 +9,7 @@ interface Props {
 
 type SceneTheme = 'valley' | 'night-pond' | 'coast' | 'deep-sea' | 'cave' | 'winter' | 'warm';
 
-type AtlasName = 'idle' | 'call';
+type AtlasName = 'idle' | 'action';
 
 interface MotionAtlas {
   path: string;
@@ -27,9 +27,9 @@ interface GeneratedCharacter {
   id: string;
   atlases: Record<AtlasName, MotionAtlas>;
   microClips: readonly MotionClip[];
-  callClip: MotionClip;
+  actionClips: readonly MotionClip[];
   restRange: readonly [number, number];
-  callProbability: number;
+  actionProbability: number;
   className: string;
   alt: string;
 }
@@ -50,16 +50,25 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
   birds: {
     id: 'songbird',
     atlases: {
-      idle: { path: 'images/nature/motion/songbird-idle-atlas.webp', columns: 2, rows: 2 },
-      call: { path: 'images/nature/motion/songbird-call-atlas.webp', columns: 4, rows: 1 },
+      idle: { path: 'images/nature/motion/songbird-behavior-a-v2.webp', columns: 5, rows: 5 },
+      action: { path: 'images/nature/motion/songbird-behavior-b-v2.webp', columns: 5, rows: 5 },
     },
     microClips: [
-      { atlas: 'idle', frames: [0, 1, 0], frameDurations: [180, 140, 180] },
-      { atlas: 'idle', frames: [0, 2, 2, 3, 0], frameDurations: [180, 420, 280, 220, 160] },
+      { atlas: 'idle', frames: [0, 1, 2, 3, 4, 0], frameDurations: [140, 80, 95, 90, 140, 180] },
+      { atlas: 'idle', frames: [5, 6, 7, 8, 9, 0], frameDurations: [170, 140, 230, 160, 170, 210] },
+      { atlas: 'idle', frames: [10, 11, 12, 13, 14, 0], frameDurations: [170, 140, 270, 170, 180, 220] },
+      { atlas: 'idle', frames: [15, 16, 17, 18, 19, 0], frameDurations: [210, 170, 250, 190, 180, 220] },
+      { atlas: 'idle', frames: [20, 21, 22, 23, 24, 0], frameDurations: [160, 100, 90, 120, 170, 240] },
+      { atlas: 'action', frames: [5, 6, 7, 8, 9, 0], frameDurations: [220, 190, 230, 200, 220, 260] },
+      { atlas: 'action', frames: [20, 21, 22, 23, 24, 0], frameDurations: [220, 190, 220, 190, 230, 260] },
     ],
-    callClip: { atlas: 'call', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [180, 140, 240, 170, 140, 220, 150] },
-    restRange: [3200, 7600],
-    callProbability: 0.22,
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 1, 2, 3, 4, 5, 0], frameDurations: [170, 140, 190, 130, 180, 150, 180, 210, 240] },
+      { atlas: 'action', frames: [10, 11, 12, 13, 13, 12, 11, 14, 0], frameDurations: [150, 110, 100, 170, 130, 100, 120, 160, 230] },
+      { atlas: 'action', frames: [15, 16, 17, 18, 19, 18, 17, 20, 0], frameDurations: [150, 120, 110, 170, 180, 120, 130, 180, 260] },
+    ],
+    restRange: [3800, 9000],
+    actionProbability: 0.16,
     className: 'sc-v2-bird',
     alt: '나뭇가지에 앉은 작은 새',
   },
@@ -67,15 +76,17 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
     id: 'owl',
     atlases: {
       idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
-      call: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
     },
     microClips: [
       { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
       { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
     ],
-    callClip: { atlas: 'call', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    ],
     restRange: [5200, 12000],
-    callProbability: 0.18,
+    actionProbability: 0.18,
     className: 'sc-v2-owl',
     alt: '나뭇가지에 앉은 부엉이',
   },
@@ -83,15 +94,17 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
     id: 'scops',
     atlases: {
       idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
-      call: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
     },
     microClips: [
       { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
       { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
     ],
-    callClip: { atlas: 'call', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    ],
     restRange: [5200, 12000],
-    callProbability: 0.18,
+    actionProbability: 0.18,
     className: 'sc-v2-scops',
     alt: '밤의 소쩍새',
   },
@@ -99,16 +112,18 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
     id: 'frog',
     atlases: {
       idle: { path: 'images/nature/motion/pond-frog-idle-atlas.webp', columns: 2, rows: 2 },
-      call: { path: 'images/nature/motion/pond-frog-call-atlas.webp', columns: 4, rows: 1 },
+      action: { path: 'images/nature/motion/pond-frog-call-atlas.webp', columns: 4, rows: 1 },
     },
     microClips: [
       { atlas: 'idle', frames: [0, 1, 0], frameDurations: [300, 520, 260] },
       { atlas: 'idle', frames: [0, 2, 0], frameDurations: [260, 180, 260] },
       { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [240, 500, 320, 240] },
     ],
-    callClip: { atlas: 'call', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [220, 220, 340, 280, 220, 260, 180] },
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [220, 220, 340, 280, 220, 260, 180] },
+    ],
     restRange: [4200, 9500],
-    callProbability: 0.24,
+    actionProbability: 0.24,
     className: 'sc-v2-frog',
     alt: '이끼 낀 돌 위의 개구리',
   },
@@ -223,9 +238,10 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
 
     function startAction() {
       if (cancelled || document.hidden) return;
-      const useCall = Math.random() < character.callProbability;
+      const useAction = Math.random() < character.actionProbability;
       const microClip = character.microClips[Math.floor(Math.random() * character.microClips.length)];
-      playClip(useCall ? character.callClip : microClip, 0);
+      const actionClip = character.actionClips[Math.floor(Math.random() * character.actionClips.length)];
+      playClip(useAction ? actionClip : microClip, 0);
     }
 
     const handleVisibility = () => {
@@ -254,7 +270,7 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
       data-motion={pose.atlas}
       data-motion-frame={pose.frame}
     >
-      {(['idle', 'call'] as const).map((atlasName) => {
+      {(['idle', 'action'] as const).map((atlasName) => {
         const atlas = character.atlases[atlasName];
         const active = pose.atlas === atlasName;
         return (

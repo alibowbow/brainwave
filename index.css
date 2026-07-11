@@ -569,6 +569,9 @@ input[type='range']:disabled::-moz-range-thumb {
 }
 @media (prefers-reduced-motion: no-preference) {
   .sc-v2-plate { animation: scV2PlateDrift 24s ease-in-out infinite alternate; }
+  .sc-v2-bird { animation: scV2BirdDrift 22s ease-in-out infinite; }
+  .sc-v2-owl, .sc-v2-scops { animation: scV2PerchDrift 28s ease-in-out infinite; }
+  .sc-v2-frog { animation: scV2FrogDrift 24s ease-in-out infinite; }
   .sc-v2-water-glint { animation: scV2WaterGlint 8s linear infinite; }
   .sc-v2-waterfall-mist { animation: scV2Mist 4.5s ease-in-out infinite; }
   .sc-v2-caustics { animation: scV2Caustics 11s linear infinite; }
@@ -585,6 +588,22 @@ input[type='range']:disabled::-moz-range-thumb {
   .sc-v2-legacy.hop { animation: scV2LegacyHop 6s ease-in-out infinite; transform-origin: bottom center; }
 }
 @keyframes scV2PlateDrift { from { transform: scale(1.012) translate3d(-0.3%, 0, 0); } to { transform: scale(1.025) translate3d(0.3%, -0.2%, 0); } }
+@keyframes scV2BirdDrift {
+  0%, 14%, 100% { transform: translate3d(0, 0, 0) rotate(-0.2deg); }
+  30%, 43% { transform: translate3d(4px, -2px, 0) rotate(0.25deg); }
+  62%, 74% { transform: translate3d(-2px, -1px, 0) rotate(-0.3deg); }
+  88% { transform: translate3d(2px, 1px, 0) rotate(0.12deg); }
+}
+@keyframes scV2PerchDrift {
+  0%, 18%, 100% { transform: translate3d(0, 0, 0) rotate(-0.12deg); }
+  38%, 52% { transform: translate3d(2px, -2px, 0) rotate(0.18deg); }
+  72%, 84% { transform: translate3d(-1px, -1px, 0) rotate(-0.16deg); }
+}
+@keyframes scV2FrogDrift {
+  0%, 20%, 100% { transform: translate3d(0, 0, 0); }
+  40%, 54% { transform: translate3d(2px, -1px, 0); }
+  74%, 88% { transform: translate3d(-1px, 0, 0); }
+}
 @keyframes scV2WaterGlint { from { transform: translateX(-14%); opacity: .28; } to { transform: translateX(14%); opacity: .58; } }
 @keyframes scV2Mist { 0%, 100% { transform: scaleX(.85); opacity: .45; } 50% { transform: scaleX(1.12); opacity: .8; } }
 @keyframes scV2Caustics { from { transform: translateX(-4%); } to { transform: translateX(5%); } }

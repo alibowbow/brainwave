@@ -38,7 +38,20 @@ export default defineConfig(({ mode }) => {
           },
           workbox: {
             globPatterns: ['**/*.{js,css,html,svg,png,webp,ico,webmanifest}'],
+            // Nature plates and cutouts are loaded per scene. Keeping them out
+            // of the initial precache prevents the first visit from downloading
+            // the entire illustration library.
+            globIgnores: ['**/images/nature/**'],
             runtimeCaching: [
+              {
+                urlPattern: /\/images\/nature\/.*\.(?:webp|png)$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'nature-assets-v1',
+                  expiration: { maxEntries: 48, maxAgeSeconds: 60 * 60 * 24 * 180 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
               {
                 // Cache the self-hosted Pretendard font on first load so it works
                 // offline, without bloating the precache with a ~2MB file.

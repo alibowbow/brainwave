@@ -343,6 +343,10 @@ h1, h2, h3, h4 {
 }
 
 /* --- Living-soundscape treatments --- */
+/* Decorative plates/overlays must never swallow taps meant for the fauna. */
+.sc-scene-v2 [aria-hidden="true"] { pointer-events: none; }
+.sc-scene-v2 button.sc-v2-character,
+.sc-scene-v2 button.sc-v2-legacy { z-index: 10; }
 /* Depth: far objects sit hazier and lighter so they read as distant, not
    stickers pasted on the backdrop. */
 .sc-depth-far { opacity: 0.9; filter: saturate(0.82) contrast(0.94) blur(0.3px); }

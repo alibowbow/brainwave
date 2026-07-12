@@ -1,17 +1,27 @@
 import { BackgroundSoundType } from '../types';
 import { TONE_MODE_TRIM, clampLayerVolume, clampUnit, layerGain, levelToGain, natureBusGain, natureMixLoad } from '../audioLevels';
+import {
+  NATURE_SAMPLE_ASSETS,
+  NATURE_SAMPLE_BINDINGS,
+  natureSampleUrls,
+  sampleLayerGain,
+  type NatureSampleId,
+} from '../audioSamples';
+import { DecodedSampleCache, type SampleBufferCache, type SampleLease } from './sampleAudio';
 
 // Length of the looping noise buffers. Longer buffers make the loop point far
 // less audible than a short 1-2s loop.
 const NOISE_SECONDS = 8;
 const MODE_SWITCH_MS = 70;
+export const SOFT_CLIP_CEILING = 0.98;
+export const FINAL_OUTPUT_GAIN = 0.72;
 
 export const CRICKET_AM = {
   chirpBase: 0.55,
   chirpDepth: 0.35,
 } as const;
 
-export const createSoftClipCurve = (samples = 4096, ceiling = 0.98) => {
+export const createSoftClipCurve = (samples = 4096, ceiling = SOFT_CLIP_CEILING) => {
   const length = Math.max(32, Math.floor(samples));
   const safeCeiling = Math.max(0.85, Math.min(0.99, ceiling));
   const knee = 0.8;
@@ -105,12 +115,20 @@ interface Bucket {
   nodes: AudioNode[];
   intervals: number[];
   timeouts: number[];
+  cleanups: (() => void)[];
+  disposed: boolean;
 }
 
 interface Voice {
   gain: GainNode;
+  sampleGain: GainNode;
   bucket: Bucket;
   volume: number;
+  proceduralMix: number;
+  /** True only while a decoded sample is actively contributing to this voice. */
+  sampleActive: boolean;
+  sampleEventPlaying: boolean;
+  activeSampleId: NatureSampleId | null;
 }
 
 export class BinauralEngine {
@@ -147,11 +165,17 @@ export class BinauralEngine {
 
   // Active nature-sound layers, keyed by type.
   private voices: Map<BackgroundSoundType, Voice> = new Map();
+  private retiringVoices: Set<Voice> = new Set();
   private pendingCleanups: number[] = [];
   private modeSwitchGeneration = 0;
+  private readonly sampleCache: SampleBufferCache;
 
   private binauralVol = 0.5;
   private natureVol = 0.5;
+
+  constructor(sampleCache: SampleBufferCache = new DecodedSampleCache()) {
+    this.sampleCache = sampleCache;
+  }
 
   init() {
     if (!this.ctx) {
@@ -201,7 +225,9 @@ export class BinauralEngine {
     this.safetyClipper.curve = createSoftClipCurve();
     this.safetyClipper.oversample = '4x';
     this.outputGain = this.ctx.createGain();
-    this.outputGain.gain.value = 1.08;
+    // Keep the post-clip output at or below -3 dBFS. The compressor above is
+    // a musical peak guard, not a true-peak brick-wall limiter.
+    this.outputGain.gain.value = FINAL_OUTPUT_GAIN;
     this.masterGain.connect(this.dcBlocker);
     this.dcBlocker.connect(this.mixCompressor);
     this.mixCompressor.connect(this.limiter);
@@ -379,10 +405,24 @@ export class BinauralEngine {
     const gain = this.ctx.createGain();
     gain.gain.value = 0;
     gain.connect(this.bgBus);
-    const bucket: Bucket = { nodes: [], intervals: [], timeouts: [] };
+    const sampleGain = this.ctx.createGain();
+    sampleGain.gain.value = 0;
+    sampleGain.connect(this.bgBus);
+    const bucket: Bucket = { nodes: [], intervals: [], timeouts: [], cleanups: [], disposed: false };
     this.playBackgroundSound(type, gain, bucket);
-    this.voices.set(type, { gain, bucket, volume: safeVolume });
+    const voice: Voice = {
+      gain,
+      sampleGain,
+      bucket,
+      volume: safeVolume,
+      proceduralMix: 1,
+      sampleActive: false,
+      sampleEventPlaying: false,
+      activeSampleId: null,
+    };
+    this.voices.set(type, voice);
     gain.gain.setTargetAtTime(layerGain(type, safeVolume), this.ctx.currentTime, fadeSec / 3);
+    this.startHybridSample(type, voice);
     if (updateBus) this.updateNatureBusGain(fadeSec / 3);
   }
 
@@ -390,9 +430,14 @@ export class BinauralEngine {
     const voice = this.voices.get(type);
     if (!voice || !this.ctx) return;
     this.voices.delete(type);
+    this.retiringVoices.add(voice);
     voice.gain.gain.setTargetAtTime(0, this.ctx.currentTime, fadeSec / 3);
+    voice.sampleGain.gain.setTargetAtTime(0, this.ctx.currentTime, fadeSec / 3);
     this.updateNatureBusGain(fadeSec / 3);
-    this.schedulePendingCleanup(() => this.disposeVoice(voice), Math.ceil(fadeSec * 1000) + 400);
+    this.schedulePendingCleanup(() => {
+      this.retiringVoices.delete(voice);
+      this.disposeVoice(voice);
+    }, Math.ceil(fadeSec * 1000) + 400);
   }
 
   setSoundVolume(type: BackgroundSoundType, volume: number) {
@@ -401,7 +446,18 @@ export class BinauralEngine {
     const safeVolume = clampLayerVolume(volume);
     const wasAudible = voice.volume > 0.001;
     voice.volume = safeVolume;
-    voice.gain.gain.setTargetAtTime(layerGain(type, safeVolume), this.ctx.currentTime, 0.08);
+    voice.gain.gain.setTargetAtTime(
+      layerGain(type, safeVolume) * voice.proceduralMix,
+      this.ctx.currentTime,
+      0.08,
+    );
+    if (voice.activeSampleId) {
+      voice.sampleGain.gain.setTargetAtTime(
+        sampleLayerGain(type, voice.activeSampleId, safeVolume),
+        this.ctx.currentTime,
+        0.08,
+      );
+    }
     if (wasAudible !== (safeVolume > 0.001)) this.updateNatureBusGain(0.08);
   }
 
@@ -421,13 +477,168 @@ export class BinauralEngine {
     return [...this.voices.keys()];
   }
 
+  activeSampleTypes(): BackgroundSoundType[] {
+    return [...this.voices.entries()].filter(([, voice]) => voice.sampleActive).map(([type]) => type);
+  }
+
+  private isCurrentVoice(type: BackgroundSoundType, voice: Voice) {
+    return !voice.bucket.disposed && this.voices.get(type) === voice;
+  }
+
+  private async acquireNatureSample(assetId: NatureSampleId): Promise<SampleLease> {
+    if (!this.ctx) throw new Error('AudioContext is not available');
+    const asset = NATURE_SAMPLE_ASSETS[assetId];
+    const candidates = natureSampleUrls(assetId);
+    let lastError: unknown = new Error(`No supported source for ${assetId}`);
+    for (const candidate of candidates) {
+      try {
+        return await this.sampleCache.acquire(
+          this.ctx,
+          candidate.url,
+          asset.playback === 'loop' ? asset.crossfadeSeconds : 0,
+          asset.decodedBytesEstimate,
+        );
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  }
+
+  private holdLease(bucket: Bucket, lease: SampleLease) {
+    let released = false;
+    const release = () => {
+      if (released) return;
+      released = true;
+      lease.release();
+    };
+    bucket.cleanups.push(release);
+    return () => {
+      release();
+      const index = bucket.cleanups.indexOf(release);
+      if (index >= 0) bucket.cleanups.splice(index, 1);
+    };
+  }
+
+  private startHybridSample(type: BackgroundSoundType, voice: Voice) {
+    const binding = NATURE_SAMPLE_BINDINGS[type];
+    if (!binding?.assetIds.length) return;
+    const firstAsset = NATURE_SAMPLE_ASSETS[binding.assetIds[0]];
+    if (firstAsset.playback === 'event') {
+      this.schedule(voice.bucket, () => this.playSampleEvent(type, voice), 1800 + Math.random() * 2200);
+      return;
+    }
+    void this.startLoopSample(type, voice, binding.assetIds[0]);
+  }
+
+  private async startLoopSample(type: BackgroundSoundType, voice: Voice, assetId: NatureSampleId) {
+    try {
+      const lease = await this.acquireNatureSample(assetId);
+      if (!this.ctx || !this.isCurrentVoice(type, voice)) {
+        lease.release();
+        return;
+      }
+      this.holdLease(voice.bucket, lease);
+      const source = this.ctx.createBufferSource();
+      source.buffer = lease.buffer;
+      source.loop = true;
+      source.loopStart = 0;
+      source.loopEnd = lease.buffer.duration;
+      source.connect(voice.sampleGain);
+      source.start(0, Math.random() * Math.max(0.001, lease.buffer.duration));
+      this.register(voice.bucket, source);
+
+      const binding = NATURE_SAMPLE_BINDINGS[type]!;
+      voice.sampleActive = true;
+      voice.activeSampleId = assetId;
+      voice.proceduralMix = binding.proceduralMix;
+      const now = this.ctx.currentTime;
+      voice.sampleGain.gain.setTargetAtTime(sampleLayerGain(type, assetId, voice.volume), now, 0.7);
+      voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume) * voice.proceduralMix, now, 0.7);
+    } catch (error) {
+      // Procedural audio was already running at 100%; network/decode/budget
+      // failures are therefore silent and fully functional offline fallbacks.
+    }
+  }
+
+  private scheduleNextSampleEvent(type: BackgroundSoundType, voice: Voice) {
+    const gap = NATURE_SAMPLE_BINDINGS[type]?.eventGapMs;
+    if (!gap || !this.isCurrentVoice(type, voice)) return;
+    this.schedule(voice.bucket, () => this.playSampleEvent(type, voice), gap[0] + Math.random() * (gap[1] - gap[0]));
+  }
+
+  private async playSampleEvent(type: BackgroundSoundType, voice: Voice) {
+    const binding = NATURE_SAMPLE_BINDINGS[type];
+    if (!binding || voice.sampleEventPlaying || !this.isCurrentVoice(type, voice)) return;
+    voice.sampleEventPlaying = true;
+    const assetId = binding.assetIds[Math.floor(Math.random() * binding.assetIds.length)];
+    try {
+      const lease = await this.acquireNatureSample(assetId);
+      if (!this.ctx || !this.isCurrentVoice(type, voice)) {
+        lease.release();
+        voice.sampleEventPlaying = false;
+        return;
+      }
+      const release = this.holdLease(voice.bucket, lease);
+      const source = this.ctx.createBufferSource();
+      const envelope = this.ctx.createGain();
+      source.buffer = lease.buffer;
+      source.loop = false;
+      source.connect(envelope).connect(voice.sampleGain);
+      voice.bucket.nodes.push(source, envelope);
+
+      const now = this.ctx.currentTime;
+      const duration = Math.max(0.5, lease.buffer.duration);
+      envelope.gain.setValueAtTime(0, now);
+      envelope.gain.linearRampToValueAtTime(1, now + Math.min(0.28, duration * 0.08));
+      envelope.gain.setValueAtTime(1, now + Math.max(0.3, duration - 1));
+      envelope.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      voice.sampleActive = true;
+      voice.activeSampleId = assetId;
+      voice.proceduralMix = binding.proceduralMix;
+      voice.sampleGain.gain.setTargetAtTime(sampleLayerGain(type, assetId, voice.volume), now, 0.18);
+      voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume) * voice.proceduralMix, now, 0.55);
+
+      source.onended = () => {
+        release();
+        [source, envelope].forEach((node) => {
+          const index = voice.bucket.nodes.indexOf(node);
+          if (index >= 0) voice.bucket.nodes.splice(index, 1);
+          try { node.disconnect(); } catch (e) { /* ignore */ }
+        });
+        voice.sampleEventPlaying = false;
+        voice.sampleActive = false;
+        voice.activeSampleId = null;
+        voice.proceduralMix = 1;
+        if (this.ctx && this.isCurrentVoice(type, voice)) {
+          voice.sampleGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.35);
+          voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume), this.ctx.currentTime, 0.65);
+          this.scheduleNextSampleEvent(type, voice);
+        }
+      };
+      source.start();
+    } catch (error) {
+      voice.sampleEventPlaying = false;
+      voice.sampleActive = false;
+      this.scheduleNextSampleEvent(type, voice);
+    }
+  }
+
   private disposeVoice(voice: Voice) {
+    if (voice.bucket.disposed) return;
+    voice.bucket.disposed = true;
+    voice.sampleActive = false;
     voice.bucket.nodes.forEach((n) => {
       try { (n as OscillatorNode).stop?.(); n.disconnect(); } catch (e) { /* ignore */ }
     });
     voice.bucket.intervals.forEach((id) => clearInterval(id));
     voice.bucket.timeouts.forEach((id) => clearTimeout(id));
+    voice.bucket.cleanups.splice(0).forEach((cleanup) => {
+      try { cleanup(); } catch (e) { /* ignore */ }
+    });
     try { voice.gain.disconnect(); } catch (e) { /* ignore */ }
+    try { voice.sampleGain.disconnect(); } catch (e) { /* ignore */ }
   }
 
   // Keep a reference so the node can be stopped later. `temporary` nodes
@@ -2980,6 +3191,8 @@ export class BinauralEngine {
     this.teardownTone();
     this.voices.forEach((v) => this.disposeVoice(v));
     this.voices.clear();
+    this.retiringVoices.forEach((v) => this.disposeVoice(v));
+    this.retiringVoices.clear();
     this.pendingCleanups.forEach((id) => clearTimeout(id));
     this.pendingCleanups = [];
     [
@@ -3017,6 +3230,7 @@ export class BinauralEngine {
   // Fully release audio resources (called when the app unmounts).
   dispose() {
     this.stop();
+    this.sampleCache.clear();
     if (this.ctx) { try { this.ctx.close(); } catch (e) {} this.ctx = null; }
     this.pinkNoiseBuffer = null;
     this.brownNoiseBuffer = null;

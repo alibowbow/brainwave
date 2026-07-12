@@ -1002,7 +1002,7 @@ export default function App() {
 
       <div className="mt-8 text-center text-xs text-slate-400">
         <p>MC Brain Care v3.9.0</p>
-        <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
+        <p className="mt-2">CC0 자연 현장 녹음과 기기에서 생성한 사운드를 함께 사용합니다.</p>
       </div>
     </div>
   );

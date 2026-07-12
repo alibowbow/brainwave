@@ -1,16 +1,28 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { BinauralEngine, CRICKET_AM, StartConfig, ToneMode, createSoftClipCurve, finalizeNoiseChannel } from './audioEngine';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  BinauralEngine,
+  CRICKET_AM,
+  FINAL_OUTPUT_GAIN,
+  SOFT_CLIP_CEILING,
+  StartConfig,
+  ToneMode,
+  createSoftClipCurve,
+  finalizeNoiseChannel,
+} from './audioEngine';
 import { BackgroundSoundType } from '../types';
 import { DEFAULT_MIX_VOLUMES, MAX_LAYER_VOLUME, TONE_MODE_TRIM, clampLayerVolume, layerGain, levelToGain, natureBusGain, natureMixCompensation, natureMixLoad, normalizeMixVolumes } from '../audioLevels';
+import { NATURE_SAMPLE_BINDINGS, sampleLayerGain } from '../audioSamples';
+import type { SampleBufferCache, SampleLease } from './sampleAudio';
 
 // --- Minimal Web Audio mock (no real audio rendering) ---
 class Param {
   value: number;
+  targets: number[] = [];
   constructor(v = 0) { this.value = v; }
-  setValueAtTime() { return this; }
-  linearRampToValueAtTime() { return this; }
-  exponentialRampToValueAtTime() { return this; }
-  setTargetAtTime() { return this; }
+  setValueAtTime(value: number) { this.value = value; return this; }
+  linearRampToValueAtTime(value: number) { this.value = value; return this; }
+  exponentialRampToValueAtTime(value: number) { this.value = value; return this; }
+  setTargetAtTime(value: number) { this.value = value; this.targets.push(value); return this; }
   cancelScheduledValues() { return this; }
 }
 class GNode { connect(d: any) { return d; } disconnect() {} }
@@ -18,6 +30,7 @@ class GainNode extends GNode { gain = new Param(1); }
 class BiquadFilterNode extends GNode { type = 'lowpass'; frequency = new Param(350); Q = new Param(1); }
 const oscillatorNodes: OscillatorNode[] = [];
 const compressorNodes: DynamicsCompressorNode[] = [];
+const bufferSourceNodes: AudioBufferSourceNode[] = [];
 const timeoutCallbacks = new Map<number, () => void>();
 let nextTimerId = 0;
 
@@ -26,7 +39,18 @@ class OscillatorNode extends GNode {
   start() {}
   stop() { this.stopped = true; }
 }
-class AudioBufferSourceNode extends GNode { buffer: any = null; loop = false; playbackRate = new Param(1); onended: any = null; start() {} stop() {} }
+class AudioBufferSourceNode extends GNode {
+  buffer: any = null;
+  loop = false;
+  loopStart = 0;
+  loopEnd = 0;
+  playbackRate = new Param(1);
+  onended: any = null;
+  started = false;
+  startArgs: number[] = [];
+  start(...args: number[]) { this.started = true; this.startArgs = args; }
+  stop() {}
+}
 class StereoPannerNode extends GNode { pan = new Param(0); }
 class DelayNodeMock extends GNode { delayTime = new Param(0); }
 class ConvolverNode extends GNode { buffer: any = null; }
@@ -43,7 +67,15 @@ class AnalyserMock extends GNode {
 class AudioBufferMock {
   _len: number;
   duration: number;
-  constructor(_ch: number, len: number) { this._len = len; this.duration = len / 48000; }
+  numberOfChannels: number;
+  length: number;
+  sampleRate = 48000;
+  constructor(ch: number, len: number) {
+    this.numberOfChannels = ch;
+    this.length = len;
+    this._len = len;
+    this.duration = len / this.sampleRate;
+  }
   getChannelData() { return new Float32Array(this._len); }
 }
 class AudioContextMock {
@@ -52,7 +84,7 @@ class AudioContextMock {
   createGain() { return new GainNode(); }
   createBiquadFilter() { return new BiquadFilterNode(); }
   createOscillator() { const node = new OscillatorNode(); oscillatorNodes.push(node); return node; }
-  createBufferSource() { return new AudioBufferSourceNode(); }
+  createBufferSource() { const node = new AudioBufferSourceNode(); bufferSourceNodes.push(node); return node; }
   createStereoPanner() { return new StereoPannerNode(); }
   createDelay() { return new DelayNodeMock(); }
   createConvolver() { return new ConvolverNode(); }
@@ -82,12 +114,25 @@ const cfg = (sounds: { type: BackgroundSoundType; volume: number }[], mode: Tone
   base: 200, beat: 10, mode, masterVol: 0.5, binauralVol: 0.4, bgVol: 0.5, sounds,
 });
 
+const flushMicrotasks = async () => {
+  await Promise.resolve();
+  await Promise.resolve();
+  await Promise.resolve();
+};
+
+const sampleCache = (acquire: SampleBufferCache['acquire']): SampleBufferCache => ({
+  acquire: vi.fn(acquire),
+  clear: vi.fn(),
+});
+
 describe('BinauralEngine multi-voice', () => {
   let e: BinauralEngine;
   beforeEach(() => {
     oscillatorNodes.length = 0;
     compressorNodes.length = 0;
+    bufferSourceNodes.length = 0;
     timeoutCallbacks.clear();
+    delete g.document;
     e = new BinauralEngine();
   });
 
@@ -178,6 +223,110 @@ describe('BinauralEngine multi-voice', () => {
       e.dispose();
     }).not.toThrow();
   });
+
+  it('falls through a failed Vorbis decode to MP3 and crossfades the procedural bed', async () => {
+    g.document = { createElement: () => ({ canPlayType: () => 'probably' }) };
+    const buffer = new AudioBufferMock(1, 96_000) as unknown as AudioBuffer;
+    const release = vi.fn();
+    const cache = sampleCache(async (_context, url) => {
+      if (url.endsWith('.ogg')) throw new Error('Vorbis decode failed');
+      return { buffer, release };
+    });
+    e = new BinauralEngine(cache);
+    e.start(cfg([{ type: 'rain', volume: 0.8 }]));
+    await flushMicrotasks();
+
+    expect(cache.acquire).toHaveBeenCalledTimes(2);
+    expect(cache.acquire).toHaveBeenNthCalledWith(
+      1,
+      expect.anything(),
+      '/audio/nature/rain-rural-cc0-v1.ogg',
+      expect.any(Number),
+      expect.any(Number),
+    );
+    expect(cache.acquire).toHaveBeenNthCalledWith(
+      2,
+      expect.anything(),
+      '/audio/nature/rain-rural-cc0-v1.mp3',
+      expect.any(Number),
+      expect.any(Number),
+    );
+    expect(e.activeSampleTypes()).toEqual(['rain']);
+    const voice = (e as any).voices.get('rain');
+    expect(voice.proceduralMix).toBe(NATURE_SAMPLE_BINDINGS.rain!.proceduralMix);
+    expect(voice.gain.gain.value).toBeCloseTo(
+      layerGain('rain', 0.8) * NATURE_SAMPLE_BINDINGS.rain!.proceduralMix,
+    );
+    expect(voice.sampleGain.gain.value).toBeCloseTo(sampleLayerGain('rain', 'rainRural', 0.8));
+    expect(bufferSourceNodes.some((source) => source.buffer === buffer && source.started)).toBe(true);
+    e.dispose();
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the procedural fallback at 100% when every sample candidate fails', async () => {
+    g.document = { createElement: () => ({ canPlayType: () => 'probably' }) };
+    const cache = sampleCache(async () => { throw new Error('offline'); });
+    e = new BinauralEngine(cache);
+    e.start(cfg([{ type: 'rain', volume: 0.7 }]));
+    await flushMicrotasks();
+
+    const voice = (e as any).voices.get('rain');
+    expect(cache.acquire).toHaveBeenCalledTimes(2);
+    expect(e.activeSampleTypes()).toEqual([]);
+    expect(voice.proceduralMix).toBe(1);
+    expect(voice.gain.gain.value).toBeCloseTo(layerGain('rain', 0.7));
+    expect(voice.sampleGain.gain.value).toBe(0);
+    e.dispose();
+  });
+
+  it('does not revive a removed voice when its lazy sample resolves later', async () => {
+    const buffer = new AudioBufferMock(1, 96_000) as unknown as AudioBuffer;
+    const release = vi.fn();
+    let resolveLease!: (lease: SampleLease) => void;
+    const pending = new Promise<SampleLease>((resolve) => { resolveLease = resolve; });
+    const cache = sampleCache(async () => pending);
+    e = new BinauralEngine(cache);
+    e.start(cfg([{ type: 'rain', volume: 0.8 }]));
+    e.removeSound('rain', 0);
+    resolveLease({ buffer, release });
+    await flushMicrotasks();
+
+    expect(e.activeSoundTypes()).toEqual([]);
+    expect(e.activeSampleTypes()).toEqual([]);
+    expect(bufferSourceNodes.some((source) => source.buffer === buffer && source.started)).toBe(false);
+    expect(release).toHaveBeenCalledTimes(1);
+    e.dispose();
+    expect((cache.clear as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports an event sample active only while the one-shot is playing', async () => {
+    const buffer = new AudioBufferMock(1, 96_000) as unknown as AudioBuffer;
+    const release = vi.fn();
+    const cache = sampleCache(async () => ({ buffer, release }));
+    e = new BinauralEngine(cache);
+    e.start(cfg([{ type: 'thunder', volume: 0.7 }]));
+    const voice = (e as any).voices.get('thunder');
+    await (e as any).playSampleEvent('thunder', voice);
+
+    expect(e.activeSampleTypes()).toEqual(['thunder']);
+    const eventSource = bufferSourceNodes.find((source) => source.buffer === buffer)!;
+    const scheduledBeforeEnd = timeoutCallbacks.size;
+    eventSource.onended();
+    expect(e.activeSampleTypes()).toEqual([]);
+    expect(voice.sampleActive).toBe(false);
+    expect(voice.sampleEventPlaying).toBe(false);
+    expect(voice.proceduralMix).toBe(1);
+    expect(release).toHaveBeenCalledTimes(1);
+    expect(timeoutCallbacks.size).toBeGreaterThan(scheduledBeforeEnd);
+    e.dispose();
+  });
+
+  it('clears the decoded sample cache on full engine disposal', () => {
+    const cache = sampleCache(async () => { throw new Error('unused'); });
+    e = new BinauralEngine(cache);
+    e.dispose();
+    expect(cache.clear as ReturnType<typeof vi.fn>).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('audio quality invariants', () => {
@@ -207,6 +356,11 @@ describe('audio quality invariants', () => {
     expect(peak).toBeLessThan(0.981);
     expect(curve[0]).toBeCloseTo(-curve[curve.length - 1], 6);
     expect(curve[Math.floor(curve.length * 0.75)]).toBeCloseTo(0.5, 2);
+  });
+
+  it('keeps the final post-clip ceiling at or below -3 dBFS', () => {
+    const finalPeak = SOFT_CLIP_CEILING * FINAL_OUTPUT_GAIN;
+    expect(20 * Math.log10(finalPeak)).toBeLessThanOrEqual(-3);
   });
 
   it('uses a perceptual bus curve and compensates stacked layers', () => {

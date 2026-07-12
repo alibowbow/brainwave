@@ -1,10 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BackgroundSoundType } from '../types';
+import {
+  ENVIRONMENT_ATLAS_COLUMNS,
+  ENVIRONMENT_ATLAS_ROWS,
+  ENVIRONMENT_OBJECTS,
+  EnvironmentObjectSpec,
+} from './environmentObjects';
 import { SCENE_META, CHARACTER_SVG } from './sceneCharacters';
+import { getSoundLabel } from '../audioOptions';
+import { SPATIAL, SCENERY_HOTSPOTS } from '../sceneLayout';
 
 interface Props {
   types: BackgroundSoundType[];
   tall?: boolean;
+  fill?: boolean;  // stretch to the parent's height (composer layout)
+  /** Enables tap-to-select on fauna and scenery. */
+  interactive?: boolean;
+  selectedType?: BackgroundSoundType | null;
+  onSelectType?: (type: BackgroundSoundType) => void;
+  /** Engine hookup: fires when a sound makes a salient noise, so the matching
+      object reacts in sync (frog croak → call clip, thunder → flash). */
+  subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
 type SceneTheme = 'valley' | 'night-pond' | 'coast' | 'deep-sea' | 'cave' | 'winter' | 'warm';
@@ -240,7 +256,11 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
 
 const GENERATED_TYPES = new Set<BackgroundSoundType>(Object.keys(GENERATED_CHARACTERS) as BackgroundSoundType[]);
 const HIDDEN_LEGACY_TYPES = new Set<BackgroundSoundType>([
-  'waterfall', 'wave', 'forest',
+  'rain', 'thunder', 'dthunder', 'blizzard',
+  'stream', 'waterfall', 'wave', 'pebbles',
+  'fire', 'forest', 'bamboo', 'temple',
+  'tent', 'window', 'eaves', 'chimes', 'bowl',
+  'fan', 'drone', 'heartbeat', 'brown', 'white', 'pink',
 ]);
 
 const FIREFLIES = [
@@ -312,16 +332,25 @@ const atlasFrameStyle = (atlas: MotionAtlas, frame: number): React.CSSProperties
 interface NaturalFaunaProps {
   character: GeneratedCharacter;
   index: number;
+  /** Increment to force an action clip right now (sound-event sync). */
+  actionSignal?: number;
+  interactive?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 /**
  * NPC-style fauna motion: long, irregular rests are punctuated by short blink,
  * listening, breathing or call clips. Both atlases stay mounted so switching a
  * frame is an instant cell lookup rather than a sliding image transition.
+ * When the audio engine reports this creature actually calling, `actionSignal`
+ * interrupts the rest and plays the call clip in sync with the sound.
  */
-const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
+const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index, actionSignal, interactive, selected, onSelect }) => {
   const [pose, setPose] = useState<MotionPose>(IDLE_POSE);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const playClipRef = useRef<(clip: MotionClip, step: number) => void>(() => {});
+  const clearTimerRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -339,6 +368,7 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
       if (timer !== undefined) window.clearTimeout(timer);
       timer = undefined;
     };
+    clearTimerRef.current = clearTimer;
 
     const scheduleRest = (initial = false) => {
       if (cancelled) return;
@@ -360,6 +390,7 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
         clip.frameDurations[step] ?? 220,
       );
     };
+    playClipRef.current = playClip;
 
     function startAction() {
       if (cancelled || document.hidden) return;
@@ -386,11 +417,23 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
     };
   }, [character, index, reduceMotion]);
 
+  // Sound-event sync: the engine says this creature is calling right now.
+  useEffect(() => {
+    if (!actionSignal || reduceMotion || document.hidden) return;
+    clearTimerRef.current();
+    const clip = character.actionClips[actionSignal % character.actionClips.length];
+    playClipRef.current(clip, 0);
+  }, [actionSignal, character, reduceMotion]);
+
+  const Wrapper: 'button' | 'div' = interactive ? 'button' : 'div';
   return (
-    <div
-      className={`sc-v2-character absolute ${character.className}`}
-      role="img"
-      aria-label={character.alt}
+    <Wrapper
+      type={interactive ? 'button' : undefined}
+      onClick={interactive ? onSelect : undefined}
+      className={`sc-v2-character absolute ${character.className} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
+      style={interactive ? { background: 'transparent', border: 'none', padding: 0 } : undefined}
+      role={interactive ? undefined : 'img'}
+      aria-label={interactive ? `${character.alt} — 사운드 선택` : character.alt}
       data-fauna={character.id}
       data-motion={pose.atlas}
       data-motion-frame={pose.frame}
@@ -410,17 +453,114 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index }) => {
           />
         );
       })}
-    </div>
+    </Wrapper>
+  );
+};
+
+interface GeneratedEnvironmentObjectProps {
+  spec: EnvironmentObjectSpec;
+  className: string;
+  index?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * One generated row per environment object, five motion cells per row.
+ * Continuous phenomena use uneven frame holds; discrete objects rest for
+ * several seconds between clips so the whole scene never moves in lockstep.
+ */
+const GeneratedEnvironmentObject: React.FC<GeneratedEnvironmentObjectProps> = ({
+  spec,
+  className,
+  index = 0,
+  style,
+}) => {
+  const [frame, setFrame] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncPreference = () => setReduceMotion(media.matches);
+    syncPreference();
+    media.addEventListener('change', syncPreference);
+    return () => media.removeEventListener('change', syncPreference);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer: number | undefined;
+
+    const clearTimer = () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+      timer = undefined;
+    };
+
+    const schedule = (initial = false) => {
+      if (cancelled || reduceMotion || document.hidden) return;
+      setFrame(0);
+      const rest = spec.restRange
+        ? randomBetween(spec.restRange[0], spec.restRange[1])
+        : 0;
+      timer = window.setTimeout(
+        () => play(0),
+        rest + (initial ? index * 170 : 0),
+      );
+    };
+
+    const play = (step: number) => {
+      if (cancelled || reduceMotion || document.hidden) return;
+      if (step >= spec.frames.length) {
+        schedule();
+        return;
+      }
+      setFrame(spec.frames[step] ?? 0);
+      timer = window.setTimeout(
+        () => play(step + 1),
+        spec.frameDurations[step] ?? 500,
+      );
+    };
+
+    const handleVisibility = () => {
+      clearTimer();
+      setFrame(0);
+      if (!document.hidden && !reduceMotion) schedule(true);
+    };
+
+    setFrame(0);
+    if (!reduceMotion && !document.hidden) schedule(true);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      cancelled = true;
+      clearTimer();
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [index, reduceMotion, spec]);
+
+  const atlas: MotionAtlas = {
+    path: spec.atlasPath,
+    columns: ENVIRONMENT_ATLAS_COLUMNS,
+    rows: ENVIRONMENT_ATLAS_ROWS,
+  };
+  const atlasFrame = spec.row * ENVIRONMENT_ATLAS_COLUMNS + frame;
+
+  return (
+    <div
+      className={`sc-v3-object absolute ${className}`}
+      style={{ ...style, ...atlasFrameStyle(atlas, atlasFrame) }}
+      data-object={spec.id}
+      data-object-frame={frame}
+      aria-hidden="true"
+    />
   );
 };
 
 /**
- * Layered nature diorama. Generated plates carry the expensive visual detail;
- * CSS supplies only low-cost motion (water shimmer, mist, fireflies and gentle
- * parallax), while the old SVG characters remain as a safe fallback for sounds
- * that have not received a generated cutout yet.
+ * Layered nature diorama. Generated plates, fauna atlases and environment
+ * atlases carry the visual detail; CSS supplies only positioning and slow
+ * whole-object travel. Old SVG characters remain solely as a safe fallback for
+ * sound types that do not have a generated asset.
  */
-export const NatureScene: React.FC<Props> = ({ types, tall }) => {
+export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, selectedType, onSelectType, subscribeEvents }) => {
   const theme = resolveTheme(types);
   const backgroundPath = BACKGROUND_PATH[theme];
   const rainy = hasAny(types, ['rain', 'thunder', 'tent', 'window', 'eaves']);
@@ -448,9 +588,44 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
   const legacy = legacyCharacters(types);
   const empty = types.length === 0;
 
+  // Sound-event sync: bump a per-type counter for fauna call clips / legacy
+  // pulses, and flash the sky exactly when a thunder roll fires.
+  const [eventTicks, setEventTicks] = useState<Partial<Record<BackgroundSoundType, number>>>({});
+  const [pulses, setPulses] = useState<Partial<Record<BackgroundSoundType, number>>>({});
+  const [flashTick, setFlashTick] = useState(0);
+  const pulseTimers = useRef<number[]>([]);
+  useEffect(() => {
+    if (!subscribeEvents) return;
+    const unsub = subscribeEvents((type) => {
+      if (type === 'thunder' || type === 'dthunder') {
+        setFlashTick((k) => k + 1);
+        return;
+      }
+      if (GENERATED_TYPES.has(type)) {
+        setEventTicks((prev) => ({ ...prev, [type]: (prev[type] ?? 0) + 1 }));
+        return;
+      }
+      setPulses((prev) => ({ ...prev, [type]: (prev[type] ?? 0) + 1 }));
+      const id = window.setTimeout(() => {
+        setPulses((prev) => {
+          if (!(type in prev)) return prev;
+          const next = { ...prev };
+          delete next[type];
+          return next;
+        });
+      }, 850);
+      pulseTimers.current.push(id);
+    });
+    return () => {
+      unsub();
+      pulseTimers.current.forEach((id) => clearTimeout(id));
+      pulseTimers.current = [];
+    };
+  }, [subscribeEvents]);
+
   return (
     <div
-      className={`sc-scene-v2 relative w-full ${tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`}
+      className={`sc-scene-v2 relative w-full ${fill ? 'h-full rounded-2xl' : tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`}
       data-theme={theme}
       data-sounds={types.join(',')}
     >
@@ -462,10 +637,19 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
       <div className="sc-v2-plate-tint absolute inset-0" aria-hidden="true" />
 
       {hasClouds && (
-        <div className={`sc-v2-cloud-field absolute inset-0 ${stormy ? 'is-stormy' : ''}`} aria-hidden="true">
-          <span className="sc-v2-cloud sc-v2-cloud-a" />
-          <span className="sc-v2-cloud sc-v2-cloud-b" />
-          <span className="sc-v2-cloud sc-v2-cloud-c" />
+        <div className="sc-v3-cloud-field absolute inset-0" aria-hidden="true">
+          {stormy ? (
+            <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.storm} className="sc-v3-storm-cloud" />
+          ) : (
+            ['a', 'b', 'c'].map((suffix, index) => (
+              <GeneratedEnvironmentObject
+                key={suffix}
+                spec={ENVIRONMENT_OBJECTS.cloud}
+                className={`sc-v3-cloud sc-v3-cloud-${suffix}`}
+                index={index}
+              />
+            ))
+          )}
         </div>
       )}
 
@@ -473,81 +657,118 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
       {theme === 'cave' && <div className="sc-v2-cave-depth absolute inset-0" aria-hidden="true" />}
       {theme === 'warm' && <div className="sc-v2-warm-field absolute inset-0" aria-hidden="true" />}
 
-      {hasWater && (
-        <div className="sc-v2-water absolute inset-x-0 bottom-0 h-[38%]" aria-hidden="true">
-          <div className="sc-v2-water-glint absolute inset-0" />
-        </div>
-      )}
-      {types.includes('wave') && <div className="sc-v2-wave-crests absolute inset-x-0 bottom-0 h-[38%]" aria-hidden="true" />}
-      {types.includes('stream') && <div className="sc-v2-stream-lines absolute inset-x-0 bottom-0 h-[34%]" aria-hidden="true" />}
+      {hasWater && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.water} className="sc-v3-water" />}
+      {types.includes('wave') && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.wave} className="sc-v3-wave" />}
+      {types.includes('stream') && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['stream-flow']} className="sc-v3-stream" />}
       {hasWaterfall && (
-        <div className="sc-v2-waterfall-column absolute left-[42%] top-[20%] h-[68%] w-[18%]" aria-hidden="true">
-          <span className="sc-v2-waterfall-mist absolute -bottom-2 left-1/2 h-8 w-24 -translate-x-1/2" />
-        </div>
+        <>
+          <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.waterfall} className="sc-v3-waterfall" />
+          <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['waterfall-mist']} className="sc-v3-waterfall-mist" />
+        </>
       )}
-      {hasFire && (
-        <div className="sc-v2-fire absolute bottom-[3%] left-1/2 h-20 w-24 -translate-x-1/2" aria-hidden="true">
-          <span className="sc-v2-fire-glow absolute inset-0" />
-          <span className="sc-v2-flame sc-v2-flame-a" />
-          <span className="sc-v2-flame sc-v2-flame-b" />
-          <span className="sc-v2-flame sc-v2-flame-c" />
-          <span className="sc-v2-log sc-v2-log-a" />
-          <span className="sc-v2-log sc-v2-log-b" />
-        </div>
-      )}
-      {hasHeartbeat && (
-        <div className="sc-v2-heartbeat absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2" aria-hidden="true" />
-      )}
+      {hasFire && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.fire} className="sc-v3-fire" />}
+      {hasHeartbeat && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.heartbeat} className="sc-v3-heartbeat" />}
 
       {theme === 'night-pond' && FIREFLIES.map((firefly, index) => (
-        <span
+        <GeneratedEnvironmentObject
           key={index}
-          className="sc-v2-firefly absolute rounded-full"
-          style={{ left: firefly.left, top: firefly.top, width: firefly.size, height: firefly.size, animationDelay: firefly.delay }}
-          aria-hidden="true"
+          spec={ENVIRONMENT_OBJECTS.firefly}
+          className="sc-v3-firefly"
+          index={index}
+          style={{ left: firefly.left, top: firefly.top, width: 18 + firefly.size * 2, height: 18 + firefly.size * 2, animationDelay: firefly.delay }}
         />
       ))}
 
       {hasLeaves && LEAVES.map((leaf, index) => (
-        <span key={`leaf-${index}`} className="sc-v2-leaf absolute" style={{ left: leaf.left, animationDelay: leaf.delay, animationDuration: leaf.duration }} aria-hidden="true" />
+        <GeneratedEnvironmentObject
+          key={`leaf-${index}`}
+          spec={ENVIRONMENT_OBJECTS.leaf}
+          className="sc-v3-leaf"
+          index={index}
+          style={{ left: leaf.left, animationDelay: leaf.delay, animationDuration: leaf.duration }}
+        />
       ))}
 
       {hasBubbles && BUBBLES.map((bubble, index) => (
-        <span key={`bubble-${index}`} className="sc-v2-bubble absolute rounded-full" style={{ left: bubble.left, width: bubble.size, height: bubble.size, animationDelay: bubble.delay }} aria-hidden="true" />
+        <GeneratedEnvironmentObject
+          key={`bubble-${index}`}
+          spec={ENVIRONMENT_OBJECTS.bubble}
+          className="sc-v3-bubble"
+          index={index}
+          style={{ left: bubble.left, width: 22 + bubble.size * 2, height: 22 + bubble.size * 2, animationDelay: bubble.delay }}
+        />
       ))}
 
-      {hasBamboo && <div className="sc-v2-bamboo absolute inset-y-0 left-0 w-[34%]" aria-hidden="true"><span /><span /><span /><span /></div>}
-      {hasTemple && <div className="sc-v2-temple absolute bottom-[2%] left-[8%] h-[58%] w-[38%]" aria-hidden="true"><span className="sc-v2-temple-roof" /><span className="sc-v2-temple-body" /><span className="sc-v2-temple-bell" /></div>}
-      {hasTent && <div className="sc-v2-tent absolute bottom-[4%] left-[8%] h-[46%] w-[36%]" aria-hidden="true"><span /></div>}
-      {hasWindow && <div className="sc-v2-window absolute inset-[8%]" aria-hidden="true"><span /><span /></div>}
-      {hasEaves && <div className="sc-v2-eaves absolute inset-x-0 top-0 h-[28%]" aria-hidden="true"><span /></div>}
-      {hasPebbles && <div className="sc-v2-pebbles absolute inset-x-0 bottom-0 h-[28%]" aria-hidden="true" />}
-      {hasChimes && <div className="sc-v2-chimes absolute right-[12%] top-[8%] h-[58%] w-16" aria-hidden="true"><i /><i /><i /><i /><span /></div>}
-      {hasBowl && <div className="sc-v2-bowl absolute bottom-[7%] left-[16%] h-16 w-24" aria-hidden="true"><span /><i /><i /></div>}
-      {hasFan && <div className="sc-v2-fan absolute bottom-[4%] right-[10%] h-24 w-24" aria-hidden="true"><span className="sc-v2-fan-blades"><i /><i /><i /></span><span className="sc-v2-fan-stand" /></div>}
-      {hasDrone && <div className="sc-v2-drone-orb absolute left-[46%] top-[28%] h-14 w-14 rounded-full" aria-hidden="true"><span /><i /></div>}
-      {hasNoise && <div className="sc-v2-noise absolute inset-0" aria-hidden="true" />}
+      {hasBamboo && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.bamboo} className="sc-v3-bamboo" />}
+      {hasTemple && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.temple} className="sc-v3-temple" />}
+      {hasTent && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.tent} className="sc-v3-tent" />}
+      {hasWindow && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['rain-window']} className="sc-v3-window" />}
+      {hasEaves && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.eaves} className="sc-v3-eaves" />}
+      {hasPebbles && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.pebbles} className="sc-v3-pebbles" />}
+      {hasChimes && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.chimes} className="sc-v3-chimes" />}
+      {hasBowl && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['singing-bowl']} className="sc-v3-bowl" />}
+      {hasFan && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.fan} className="sc-v3-fan" />}
+      {hasDrone && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.drone} className="sc-v3-drone" />}
+      {hasNoise && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.noise} className="sc-v3-noise" />}
 
       {generated.map((type, index) => {
         const character = GENERATED_CHARACTERS[type]!;
-        return <NaturalFauna key={`${type}-${index}`} character={character} index={index} />;
+        return (
+          <NaturalFauna
+            key={`${type}-${index}`}
+            character={character}
+            index={index}
+            actionSignal={eventTicks[type]}
+            interactive={interactive}
+            selected={selectedType === type}
+            onSelect={() => onSelectType?.(type)}
+          />
+        );
       })}
 
       {legacy.map((type, index) => {
         const meta = SCENE_META[type]!;
-        const left = `${16 + ((index * 29) % 70)}%`;
+        // Anchored per type (shared spatial layout) so adding/removing sounds
+        // never reshuffles the rest of the scene — and pan matches position.
+        const left = `${Math.min(90, Math.max(8, (SPATIAL[type]?.x ?? 0.5) * 100))}%`;
         const top = meta.band === 'sky' ? '28%' : meta.band === 'tree' ? '49%' : meta.band === 'ground' ? '72%' : '82%';
+        const selected = selectedType === type;
+        const Wrapper: 'button' | 'div' = interactive ? 'button' : 'div';
         return (
-          <div key={type} className={`sc-v2-legacy absolute ${meta.motion}`} style={{ left, top, animationDelay: `${index * 0.4}s` }}>
+          <Wrapper
+            key={type}
+            type={interactive ? 'button' : undefined}
+            aria-label={interactive ? `${getSoundLabel(type)} 사운드 선택` : undefined}
+            onClick={interactive ? () => onSelectType?.(type) : undefined}
+            className={`sc-v2-legacy absolute ${meta.motion} ${pulses[type] ? 'sc-hit' : ''} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
+            style={{ left, top, animationDelay: `${index * 0.4}s`, ...(interactive ? { background: 'transparent', border: 'none', padding: 0 } : {}) }}
+          >
             <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true" dangerouslySetInnerHTML={{ __html: CHARACTER_SVG[type]! }} />
-          </div>
+          </Wrapper>
         );
       })}
 
-      {rainy && <div className="sc-v2-rain sc-v2-rain-near absolute inset-0" aria-hidden="true" />}
-      {rainy && <div className="sc-v2-rain sc-v2-rain-far absolute inset-0" aria-hidden="true" />}
-      {snowy && <div className="sc-v2-snow absolute inset-0" aria-hidden="true" />}
-      {stormy && <div className="sc-v2-lightning absolute inset-0" aria-hidden="true" />}
+      {/* tappable hotspots for scenery-style sounds (fire glow, water, sky...) */}
+      {interactive && types.filter((t) => SCENERY_HOTSPOTS[t] && !GENERATED_TYPES.has(t) && !legacy.includes(t)).map((t) => {
+        const hot = SCENERY_HOTSPOTS[t]!;
+        const selected = selectedType === t;
+        return (
+          <button
+            key={`hot-${t}`}
+            type="button"
+            aria-label={`${getSoundLabel(t)} 사운드 선택`}
+            onClick={() => onSelectType?.(t)}
+            className={`absolute z-10 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400 ${selected ? 'sc-hot-selected' : ''}`}
+            style={{ left: `${hot.x}%`, top: `${hot.y}%`, width: `${hot.w}%`, height: `${hot.h}%`, background: 'transparent', border: 'none', padding: 0 }}
+          />
+        );
+      })}
+
+      {rainy && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.rain} className="sc-v3-rain sc-v3-rain-near" />}
+      {rainy && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.rain} className="sc-v3-rain sc-v3-rain-far" index={1} />}
+      {snowy && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.snow} className="sc-v3-snow" />}
+      {/* event-synced lightning: flashes exactly when a thunder roll fires */}
+      {flashTick > 0 && <div key={flashTick} className="sc-flash-now absolute inset-0 z-10 bg-white pointer-events-none" style={{ opacity: 0 }} aria-hidden="true" />}
       {theme === 'night-pond' && <div className="sc-v2-night-haze absolute inset-0" aria-hidden="true" />}
 
       {empty && (

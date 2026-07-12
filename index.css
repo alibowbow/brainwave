@@ -342,6 +342,54 @@ h1, h2, h3, h4 {
   50% { opacity: 0.78; }
 }
 
+/* --- Living-soundscape treatments --- */
+/* Decorative plates/overlays must never swallow taps meant for the fauna. */
+.sc-scene-v2 [aria-hidden="true"] { pointer-events: none; }
+.sc-scene-v2 button.sc-v2-character,
+.sc-scene-v2 button.sc-v2-legacy { z-index: 10; }
+/* Depth: far objects sit hazier and lighter so they read as distant, not
+   stickers pasted on the backdrop. */
+.sc-depth-far { opacity: 0.9; filter: saturate(0.82) contrast(0.94) blur(0.3px); }
+.sc-depth-near { filter: saturate(1.04); }
+/* Color temperature follows the sky phase so characters belong to the light. */
+.sc-scene[data-phase="night"] .sc-char { filter: brightness(0.8) saturate(0.78) hue-rotate(-6deg); }
+.sc-scene[data-phase="sunset"] .sc-char { filter: brightness(0.96) sepia(0.14) saturate(1.05); }
+.sc-scene[data-phase="dawn"] .sc-char { filter: brightness(0.97) sepia(0.08); }
+/* Soft glimmer under water-band characters — a cheap reflection cue. */
+.sc-mirror {
+  position: absolute;
+  left: 50%;
+  bottom: -9%;
+  width: 78%;
+  height: 16%;
+  transform: translateX(-50%) scaleY(0.6);
+  border-radius: 9999px;
+  background: radial-gradient(50% 60% at 50% 40%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+/* Tap-selection highlight (scene ↔ mixer stay in sync) */
+.sc-selected { filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.9)); }
+.sc-hot-selected { box-shadow: inset 0 0 0 2px rgba(52, 211, 153, 0.9), inset 0 0 18px rgba(52, 211, 153, 0.28); }
+/* Sound-synced reactions */
+@media (prefers-reduced-motion: no-preference) {
+  .sc-hit { animation: scHit 0.7s cubic-bezier(0.36, 1.6, 0.4, 1) !important; }
+  .sc-flash-now { animation: scFlashNow 0.9s ease-out 1; }
+}
+@keyframes scHit {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.16) translateY(-4%); }
+  60% { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+@keyframes scFlashNow {
+  0% { opacity: 0; }
+  8% { opacity: 0.55; }
+  16% { opacity: 0.1; }
+  26% { opacity: 0.38; }
+  60% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
 /* Stagger for the mini-player equalizer bars */
 .animation-delay-100 {
   animation-delay: 0.15s;
@@ -692,6 +740,54 @@ input[type='range']:disabled::-moz-range-thumb {
   z-index: 30;
   background: radial-gradient(ellipse at center, transparent 48%, rgba(4, 17, 28, 0.28) 100%);
 }
+
+/* Generated 5×5 environment atlases --------------------------------------
+   Five shared sheets cover every previously procedural scenery object. The
+   React scheduler changes cells instantly; CSS only positions the transparent
+   cutouts and supplies slow whole-object travel where it improves depth. */
+.sc-v3-object {
+  background-repeat: no-repeat;
+  pointer-events: none;
+  transition: none;
+  will-change: background-position;
+}
+.sc-v3-cloud-field { z-index: 5; overflow: hidden; pointer-events: none; }
+.sc-v3-cloud { width: 126px; height: 82px; opacity: .72; filter: drop-shadow(0 7px 8px rgba(31,63,82,.16)); }
+.sc-v3-cloud-a { left: -8%; top: -4%; scale: .76; }
+.sc-v3-cloud-b { left: 34%; top: -7%; scale: .92; }
+.sc-v3-cloud-c { left: 76%; top: 4%; scale: .62; opacity: .5; }
+.sc-v3-storm-cloud { left: 50%; top: -7%; width: 170px; height: 116px; translate: -50% 0; filter: drop-shadow(0 9px 12px rgba(12,23,42,.34)); }
+
+.sc-v3-water { z-index: 4; left: -12%; right: -12%; bottom: -18%; height: 74%; opacity: .58; mix-blend-mode: screen; }
+.sc-v3-wave { z-index: 6; left: -9%; right: -9%; bottom: -16%; height: 78%; opacity: .72; }
+.sc-v3-stream { z-index: 6; left: -10%; right: -10%; bottom: -18%; height: 72%; opacity: .64; mix-blend-mode: screen; }
+.sc-v3-waterfall { z-index: 7; left: 39%; top: 15%; width: 26%; height: 76%; opacity: .84; filter: drop-shadow(0 4px 6px rgba(197,240,248,.2)); }
+.sc-v3-waterfall-mist { z-index: 8; left: 35%; bottom: -8%; width: 34%; height: 46%; opacity: .7; }
+
+.sc-v3-fire { z-index: 12; left: 50%; bottom: -4%; width: 102px; height: 102px; translate: -50% 0; filter: drop-shadow(0 0 12px rgba(255,131,48,.5)); }
+.sc-v3-heartbeat { z-index: 9; left: 50%; top: 50%; width: 104px; height: 104px; translate: -50% -50%; mix-blend-mode: screen; }
+.sc-v3-firefly { z-index: 13; opacity: 0; filter: drop-shadow(0 0 5px rgba(255,193,91,.82)); }
+.sc-v3-leaf { z-index: 9; top: -34px; width: 38px; height: 38px; opacity: .78; }
+.sc-v3-bubble { z-index: 9; bottom: -34px; opacity: 0; }
+.sc-v3-bamboo { z-index: 8; left: -4%; bottom: -5%; width: 170px; height: 190px; opacity: .8; transform-origin: 50% 100%; }
+
+.sc-v3-temple { z-index: 9; left: 7%; bottom: -2%; width: 142px; height: 132px; filter: drop-shadow(0 5px 6px rgba(18,25,27,.28)); }
+.sc-v3-tent { z-index: 9; left: 7%; bottom: -3%; width: 132px; height: 116px; clip-path: polygon(50% 8%, 98% 100%, 2% 100%); filter: drop-shadow(0 5px 6px rgba(16,31,28,.28)); }
+.sc-v3-window { z-index: 9; inset: 3%; clip-path: inset(16% 7% 0 7%); filter: drop-shadow(0 4px 6px rgba(13,24,30,.3)); }
+.sc-v3-eaves { z-index: 11; left: -3%; top: -4%; width: 54%; height: 80%; clip-path: polygon(0 18%, 58% 12%, 100% 35%, 100% 76%, 62% 80%, 0 64%); }
+.sc-v3-pebbles { z-index: 8; left: 4%; bottom: -10%; width: 54%; height: 54%; clip-path: ellipse(48% 39% at 50% 56%); opacity: .9; }
+
+.sc-v3-chimes { z-index: 12; right: 9%; top: -2%; width: 82px; height: 122px; transform-origin: 50% 8%; }
+.sc-v3-bowl { z-index: 12; left: 12%; bottom: -4%; width: 112px; height: 100px; filter: drop-shadow(0 5px 6px rgba(38,25,19,.28)); }
+.sc-v3-fan { z-index: 12; right: 7%; bottom: -3%; width: 112px; height: 118px; filter: drop-shadow(0 5px 6px rgba(18,35,43,.25)); }
+.sc-v3-drone { z-index: 11; left: 45%; top: 20%; width: 82px; height: 82px; filter: drop-shadow(0 0 12px rgba(113,100,188,.52)); }
+.sc-v3-noise { z-index: 6; inset: 0; opacity: .18; mix-blend-mode: soft-light; }
+
+.sc-v3-rain { z-index: 20; inset: -4%; pointer-events: none; }
+.sc-v3-rain-near { opacity: .62; }
+.sc-v3-rain-far { opacity: .3; filter: blur(.7px); scale: 1.12; }
+.sc-v3-snow { z-index: 20; inset: -4%; opacity: .76; }
+
 @media (prefers-reduced-motion: no-preference) {
   .sc-v2-plate { animation: scV2PlateDrift 24s ease-in-out infinite alternate; }
   .sc-v2-bird { animation: scV2BirdDrift 22s ease-in-out infinite; }
@@ -735,11 +831,22 @@ input[type='range']:disabled::-moz-range-thumb {
   .sc-v2-rain-far { animation: scV2RainFar 1.35s linear infinite; }
   .sc-v2-snow { animation: scV2Snow 6s linear infinite; }
   .sc-v2-lightning { animation: scV2Lightning 8s ease-out infinite; }
+  .sc-v3-cloud-a { animation: scV3CloudDrift 42s linear infinite; }
+  .sc-v3-cloud-b { animation: scV3CloudDrift 56s linear -21s infinite; }
+  .sc-v3-cloud-c { animation: scV3CloudDrift 48s linear -34s infinite; }
+  .sc-v3-firefly { animation: scV2Firefly 4.8s ease-in-out infinite; }
+  .sc-v3-leaf { animation-name: scV2LeafFall; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+  .sc-v3-bubble { animation: scV2BubbleRise 7s ease-in infinite; }
+  .sc-v3-bamboo { animation: scV3BambooDrift 7.5s ease-in-out infinite alternate; }
+  .sc-v3-chimes { animation: scV2Chimes 6.5s ease-in-out infinite; }
+  .sc-v3-drone { animation: scV2DroneOrb 8s ease-in-out infinite; }
   .sc-v2-legacy.float { animation: scV2LegacyFloat 5s ease-in-out infinite; }
   .sc-v2-legacy.bob { animation: scV2LegacyBob 3s ease-in-out infinite; }
   .sc-v2-legacy.sway { animation: scV2LegacySway 5.5s ease-in-out infinite; transform-origin: bottom center; }
   .sc-v2-legacy.hop { animation: scV2LegacyHop 6s ease-in-out infinite; transform-origin: bottom center; }
 }
+@keyframes scV3CloudDrift { from { translate: -150px 0; } to { translate: calc(100vw + 150px) 0; } }
+@keyframes scV3BambooDrift { from { transform: rotate(-.7deg); } to { transform: rotate(1deg); } }
 @keyframes scV2PlateDrift { from { transform: scale(1.012) translate3d(-0.3%, 0, 0); } to { transform: scale(1.025) translate3d(0.3%, -0.2%, 0); } }
 @keyframes scV2BirdDrift {
   0%, 14%, 100% { transform: translate3d(0, 0, 0) rotate(-0.2deg); }

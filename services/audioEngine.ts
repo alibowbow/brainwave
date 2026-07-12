@@ -1,17 +1,28 @@
 import { BackgroundSoundType } from '../types';
 import { TONE_MODE_TRIM, clampLayerVolume, clampUnit, layerGain, levelToGain, natureBusGain, natureMixLoad } from '../audioLevels';
+import {
+  NATURE_SAMPLE_ASSETS,
+  NATURE_SAMPLE_BINDINGS,
+  natureSampleUrls,
+  sampleLayerGain,
+  type NatureSampleId,
+} from '../audioSamples';
+import { DecodedSampleCache, type SampleBufferCache, type SampleLease } from './sampleAudio';
+import { DEPTH_MIX, SPATIAL, spatialPan } from '../sceneLayout';
 
 // Length of the looping noise buffers. Longer buffers make the loop point far
 // less audible than a short 1-2s loop.
 const NOISE_SECONDS = 8;
 const MODE_SWITCH_MS = 70;
+export const SOFT_CLIP_CEILING = 0.98;
+export const FINAL_OUTPUT_GAIN = 0.72;
 
 export const CRICKET_AM = {
   chirpBase: 0.55,
   chirpDepth: 0.35,
 } as const;
 
-export const createSoftClipCurve = (samples = 4096, ceiling = 0.98) => {
+export const createSoftClipCurve = (samples = 4096, ceiling = SOFT_CLIP_CEILING) => {
   const length = Math.max(32, Math.floor(samples));
   const safeCeiling = Math.max(0.85, Math.min(0.99, ceiling));
   const knee = 0.8;
@@ -105,12 +116,22 @@ interface Bucket {
   nodes: AudioNode[];
   intervals: number[];
   timeouts: number[];
+  cleanups: (() => void)[];
+  disposed: boolean;
 }
 
 interface Voice {
   gain: GainNode;
+  sampleGain: GainNode;
   bucket: Bucket;
   volume: number;
+  proceduralMix: number;
+  /** True only while a decoded sample is actively contributing to this voice. */
+  sampleActive: boolean;
+  sampleEventPlaying: boolean;
+  activeSampleId: NatureSampleId | null;
+  /** Shared spatial tail (pan/distance) fed by both procedural and sample paths. */
+  spatialNodes: AudioNode[];
 }
 
 export class BinauralEngine {
@@ -141,17 +162,37 @@ export class BinauralEngine {
   private binauralGain: GainNode | null = null;
   private bgBus: GainNode | null = null;        // shared bus for all nature layers (the "자연음" master)
   private reverb: ConvolverNode | null = null;
+  private reverbSend: GainNode | null = null;   // per-voice distance sends sum here
   private reverbFilter: BiquadFilterNode | null = null;
   private reverbLp: BiquadFilterNode | null = null;
   private reverbWet: GainNode | null = null;
 
+  // Scene-sync events: generators announce salient moments (a chirp, a bell
+  // strike, a thunder roll) so the diorama can animate the matching object.
+  private eventListeners = new Set<(type: BackgroundSoundType) => void>();
+
+  onSoundEvent(cb: (type: BackgroundSoundType) => void): () => void {
+    this.eventListeners.add(cb);
+    return () => this.eventListeners.delete(cb);
+  }
+
+  private emitEvent(type: BackgroundSoundType) {
+    this.eventListeners.forEach((cb) => { try { cb(type); } catch { /* listener error is not our problem */ } });
+  }
+
   // Active nature-sound layers, keyed by type.
   private voices: Map<BackgroundSoundType, Voice> = new Map();
+  private retiringVoices: Set<Voice> = new Set();
   private pendingCleanups: number[] = [];
   private modeSwitchGeneration = 0;
+  private readonly sampleCache: SampleBufferCache;
 
   private binauralVol = 0.5;
   private natureVol = 0.5;
+
+  constructor(sampleCache: SampleBufferCache = new DecodedSampleCache()) {
+    this.sampleCache = sampleCache;
+  }
 
   init() {
     if (!this.ctx) {
@@ -201,7 +242,9 @@ export class BinauralEngine {
     this.safetyClipper.curve = createSoftClipCurve();
     this.safetyClipper.oversample = '4x';
     this.outputGain = this.ctx.createGain();
-    this.outputGain.gain.value = 1.08;
+    // Keep the post-clip output at or below -3 dBFS. The compressor above is
+    // a musical peak guard, not a true-peak brick-wall limiter.
+    this.outputGain.gain.value = FINAL_OUTPUT_GAIN;
     this.masterGain.connect(this.dcBlocker);
     this.dcBlocker.connect(this.mixCompressor);
     this.mixCompressor.connect(this.limiter);
@@ -250,8 +293,13 @@ export class BinauralEngine {
     this.reverbLp.frequency.value = 2600;
     this.reverbLp.Q.value = 0.7;
     this.reverbWet = this.ctx.createGain();
-    this.reverbWet.gain.value = 0.105;
-    this.bgBus.connect(this.reverb);
+    this.reverbWet.gain.value = 0.5;
+    // Distance-based sends: each voice feeds the room according to its scene
+    // depth (a far temple bell is much wetter than the campfire at your feet),
+    // scaled by the same nature-bus gain so the wet field tracks the mix.
+    this.reverbSend = this.ctx.createGain();
+    this.reverbSend.gain.value = this.bgBus.gain.value;
+    this.reverbSend.connect(this.reverb);
     this.reverb.connect(this.reverbFilter).connect(this.reverbLp).connect(this.reverbWet).connect(this.masterGain);
 
     this.voices = new Map();
@@ -362,11 +410,10 @@ export class BinauralEngine {
     const mixLoad = natureMixLoad(
       [...this.voices.entries()].map(([type, voice]) => ({ type, volume: voice.volume })),
     );
-    this.bgBus.gain.setTargetAtTime(
-      natureBusGain(this.natureVol, mixLoad),
-      this.ctx.currentTime,
-      timeConstant,
-    );
+    const bus = natureBusGain(this.natureVol, mixLoad);
+    this.bgBus.gain.setTargetAtTime(bus, this.ctx.currentTime, timeConstant);
+    // The wet field scales with the dry bus so distance stays proportional.
+    this.reverbSend?.gain.setTargetAtTime(bus, this.ctx.currentTime, timeConstant);
   }
 
   // --- Nature-sound layering ---
@@ -378,11 +425,64 @@ export class BinauralEngine {
     const safeVolume = clampLayerVolume(volume);
     const gain = this.ctx.createGain();
     gain.gain.value = 0;
-    gain.connect(this.bgBus);
-    const bucket: Bucket = { nodes: [], intervals: [], timeouts: [] };
+    const sampleGain = this.ctx.createGain();
+    sampleGain.gain.value = 0;
+
+    // Spatial tail matching the diorama: the object's on-screen x becomes the
+    // stereo position, and its depth sets dry level, reverb send and (for far
+    // sources) an air-loss lowpass — near is present and dry, far is soft and
+    // roomy. Both the procedural and sample paths share the same tail.
+    const spec = SPATIAL[type];
+    const mix = DEPTH_MIX[spec?.depth ?? 'mid'];
+    const spatialNodes: AudioNode[] = [];
+    const spatialIn = this.ctx.createGain();
+    spatialIn.gain.value = 1;
+    spatialNodes.push(spatialIn);
+    let head: AudioNode = spatialIn;
+    if (mix.lowpass != null) {
+      const air = this.ctx.createBiquadFilter();
+      air.type = 'lowpass';
+      air.frequency.value = mix.lowpass;
+      air.Q.value = 0.5;
+      head.connect(air);
+      head = air;
+      spatialNodes.push(air);
+    }
+    const panner = this.ctx.createStereoPanner();
+    panner.pan.value = spatialPan(type);
+    head.connect(panner);
+    spatialNodes.push(panner);
+    const dry = this.ctx.createGain();
+    dry.gain.value = mix.trim;
+    panner.connect(dry);
+    dry.connect(this.bgBus);
+    spatialNodes.push(dry);
+    if (this.reverbSend) {
+      const send = this.ctx.createGain();
+      send.gain.value = mix.send;
+      panner.connect(send);
+      send.connect(this.reverbSend);
+      spatialNodes.push(send);
+    }
+    gain.connect(spatialIn);
+    sampleGain.connect(spatialIn);
+
+    const bucket: Bucket = { nodes: [], intervals: [], timeouts: [], cleanups: [], disposed: false };
     this.playBackgroundSound(type, gain, bucket);
-    this.voices.set(type, { gain, bucket, volume: safeVolume });
+    const voice: Voice = {
+      gain,
+      sampleGain,
+      bucket,
+      volume: safeVolume,
+      proceduralMix: 1,
+      sampleActive: false,
+      sampleEventPlaying: false,
+      activeSampleId: null,
+      spatialNodes,
+    };
+    this.voices.set(type, voice);
     gain.gain.setTargetAtTime(layerGain(type, safeVolume), this.ctx.currentTime, fadeSec / 3);
+    this.startHybridSample(type, voice);
     if (updateBus) this.updateNatureBusGain(fadeSec / 3);
   }
 
@@ -390,9 +490,14 @@ export class BinauralEngine {
     const voice = this.voices.get(type);
     if (!voice || !this.ctx) return;
     this.voices.delete(type);
+    this.retiringVoices.add(voice);
     voice.gain.gain.setTargetAtTime(0, this.ctx.currentTime, fadeSec / 3);
+    voice.sampleGain.gain.setTargetAtTime(0, this.ctx.currentTime, fadeSec / 3);
     this.updateNatureBusGain(fadeSec / 3);
-    this.schedulePendingCleanup(() => this.disposeVoice(voice), Math.ceil(fadeSec * 1000) + 400);
+    this.schedulePendingCleanup(() => {
+      this.retiringVoices.delete(voice);
+      this.disposeVoice(voice);
+    }, Math.ceil(fadeSec * 1000) + 400);
   }
 
   setSoundVolume(type: BackgroundSoundType, volume: number) {
@@ -401,7 +506,18 @@ export class BinauralEngine {
     const safeVolume = clampLayerVolume(volume);
     const wasAudible = voice.volume > 0.001;
     voice.volume = safeVolume;
-    voice.gain.gain.setTargetAtTime(layerGain(type, safeVolume), this.ctx.currentTime, 0.08);
+    voice.gain.gain.setTargetAtTime(
+      layerGain(type, safeVolume) * voice.proceduralMix,
+      this.ctx.currentTime,
+      0.08,
+    );
+    if (voice.activeSampleId) {
+      voice.sampleGain.gain.setTargetAtTime(
+        sampleLayerGain(type, voice.activeSampleId, safeVolume),
+        this.ctx.currentTime,
+        0.08,
+      );
+    }
     if (wasAudible !== (safeVolume > 0.001)) this.updateNatureBusGain(0.08);
   }
 
@@ -421,13 +537,171 @@ export class BinauralEngine {
     return [...this.voices.keys()];
   }
 
+  activeSampleTypes(): BackgroundSoundType[] {
+    return [...this.voices.entries()].filter(([, voice]) => voice.sampleActive).map(([type]) => type);
+  }
+
+  private isCurrentVoice(type: BackgroundSoundType, voice: Voice) {
+    return !voice.bucket.disposed && this.voices.get(type) === voice;
+  }
+
+  private async acquireNatureSample(assetId: NatureSampleId): Promise<SampleLease> {
+    if (!this.ctx) throw new Error('AudioContext is not available');
+    const asset = NATURE_SAMPLE_ASSETS[assetId];
+    const candidates = natureSampleUrls(assetId);
+    let lastError: unknown = new Error(`No supported source for ${assetId}`);
+    for (const candidate of candidates) {
+      try {
+        return await this.sampleCache.acquire(
+          this.ctx,
+          candidate.url,
+          asset.playback === 'loop' ? asset.crossfadeSeconds : 0,
+          asset.decodedBytesEstimate,
+        );
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  }
+
+  private holdLease(bucket: Bucket, lease: SampleLease) {
+    let released = false;
+    const release = () => {
+      if (released) return;
+      released = true;
+      lease.release();
+    };
+    bucket.cleanups.push(release);
+    return () => {
+      release();
+      const index = bucket.cleanups.indexOf(release);
+      if (index >= 0) bucket.cleanups.splice(index, 1);
+    };
+  }
+
+  private startHybridSample(type: BackgroundSoundType, voice: Voice) {
+    const binding = NATURE_SAMPLE_BINDINGS[type];
+    if (!binding?.assetIds.length) return;
+    const firstAsset = NATURE_SAMPLE_ASSETS[binding.assetIds[0]];
+    if (firstAsset.playback === 'event') {
+      this.schedule(voice.bucket, () => this.playSampleEvent(type, voice), 1800 + Math.random() * 2200);
+      return;
+    }
+    void this.startLoopSample(type, voice, binding.assetIds[0]);
+  }
+
+  private async startLoopSample(type: BackgroundSoundType, voice: Voice, assetId: NatureSampleId) {
+    try {
+      const lease = await this.acquireNatureSample(assetId);
+      if (!this.ctx || !this.isCurrentVoice(type, voice)) {
+        lease.release();
+        return;
+      }
+      this.holdLease(voice.bucket, lease);
+      const source = this.ctx.createBufferSource();
+      source.buffer = lease.buffer;
+      source.loop = true;
+      source.loopStart = 0;
+      source.loopEnd = lease.buffer.duration;
+      source.connect(voice.sampleGain);
+      source.start(0, Math.random() * Math.max(0.001, lease.buffer.duration));
+      this.register(voice.bucket, source);
+
+      const binding = NATURE_SAMPLE_BINDINGS[type]!;
+      voice.sampleActive = true;
+      voice.activeSampleId = assetId;
+      voice.proceduralMix = binding.proceduralMix;
+      const now = this.ctx.currentTime;
+      voice.sampleGain.gain.setTargetAtTime(sampleLayerGain(type, assetId, voice.volume), now, 0.7);
+      voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume) * voice.proceduralMix, now, 0.7);
+    } catch (error) {
+      // Procedural audio was already running at 100%; network/decode/budget
+      // failures are therefore silent and fully functional offline fallbacks.
+    }
+  }
+
+  private scheduleNextSampleEvent(type: BackgroundSoundType, voice: Voice) {
+    const gap = NATURE_SAMPLE_BINDINGS[type]?.eventGapMs;
+    if (!gap || !this.isCurrentVoice(type, voice)) return;
+    this.schedule(voice.bucket, () => this.playSampleEvent(type, voice), gap[0] + Math.random() * (gap[1] - gap[0]));
+  }
+
+  private async playSampleEvent(type: BackgroundSoundType, voice: Voice) {
+    const binding = NATURE_SAMPLE_BINDINGS[type];
+    if (!binding || voice.sampleEventPlaying || !this.isCurrentVoice(type, voice)) return;
+    voice.sampleEventPlaying = true;
+    const assetId = binding.assetIds[Math.floor(Math.random() * binding.assetIds.length)];
+    try {
+      const lease = await this.acquireNatureSample(assetId);
+      if (!this.ctx || !this.isCurrentVoice(type, voice)) {
+        lease.release();
+        voice.sampleEventPlaying = false;
+        return;
+      }
+      const release = this.holdLease(voice.bucket, lease);
+      const source = this.ctx.createBufferSource();
+      const envelope = this.ctx.createGain();
+      source.buffer = lease.buffer;
+      source.loop = false;
+      source.connect(envelope).connect(voice.sampleGain);
+      voice.bucket.nodes.push(source, envelope);
+
+      const now = this.ctx.currentTime;
+      const duration = Math.max(0.5, lease.buffer.duration);
+      envelope.gain.setValueAtTime(0, now);
+      envelope.gain.linearRampToValueAtTime(1, now + Math.min(0.28, duration * 0.08));
+      envelope.gain.setValueAtTime(1, now + Math.max(0.3, duration - 1));
+      envelope.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      voice.sampleActive = true;
+      voice.activeSampleId = assetId;
+      voice.proceduralMix = binding.proceduralMix;
+      voice.sampleGain.gain.setTargetAtTime(sampleLayerGain(type, assetId, voice.volume), now, 0.18);
+      voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume) * voice.proceduralMix, now, 0.55);
+
+      source.onended = () => {
+        release();
+        [source, envelope].forEach((node) => {
+          const index = voice.bucket.nodes.indexOf(node);
+          if (index >= 0) voice.bucket.nodes.splice(index, 1);
+          try { node.disconnect(); } catch (e) { /* ignore */ }
+        });
+        voice.sampleEventPlaying = false;
+        voice.sampleActive = false;
+        voice.activeSampleId = null;
+        voice.proceduralMix = 1;
+        if (this.ctx && this.isCurrentVoice(type, voice)) {
+          voice.sampleGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.35);
+          voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume), this.ctx.currentTime, 0.65);
+          this.scheduleNextSampleEvent(type, voice);
+        }
+      };
+      source.start();
+    } catch (error) {
+      voice.sampleEventPlaying = false;
+      voice.sampleActive = false;
+      this.scheduleNextSampleEvent(type, voice);
+    }
+  }
+
   private disposeVoice(voice: Voice) {
+    if (voice.bucket.disposed) return;
+    voice.bucket.disposed = true;
+    voice.sampleActive = false;
     voice.bucket.nodes.forEach((n) => {
       try { (n as OscillatorNode).stop?.(); n.disconnect(); } catch (e) { /* ignore */ }
     });
     voice.bucket.intervals.forEach((id) => clearInterval(id));
     voice.bucket.timeouts.forEach((id) => clearTimeout(id));
+    voice.bucket.cleanups.splice(0).forEach((cleanup) => {
+      try { cleanup(); } catch (e) { /* ignore */ }
+    });
     try { voice.gain.disconnect(); } catch (e) { /* ignore */ }
+    try { voice.sampleGain.disconnect(); } catch (e) { /* ignore */ }
+    voice.spatialNodes.forEach((n) => {
+      try { n.disconnect(); } catch (e) { /* ignore */ }
+    });
   }
 
   // Keep a reference so the node can be stopped later. `temporary` nodes
@@ -701,6 +975,7 @@ export class BinauralEngine {
     const boom = () => {
       if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('thunder');
       const pan = this.makePan(Math.random() * 0.8 - 0.4, dest);
 
       // Bright initial crack (the lightning) so the storm reads as more than rain.
@@ -746,22 +1021,23 @@ export class BinauralEngine {
   private startStream(dest: AudioNode, bucket: Bucket) {
     if (!this.ctx || !this.pinkNoiseBuffer || !this.brownNoiseBuffer) return;
 
-    // Three decorrelated bands keep the water full on small speakers: a dark
-    // channel bed, the audible tumbling body and a much quieter surface fizz.
+    // A brook, not a waterfall: barely any dark channel mass, a light and
+    // slightly higher tumbling body, and the surface fizz — the "졸졸"
+    // character comes from the drips below, not from broadband roar.
     const channel = this.noiseSource(this.brownNoiseBuffer)!;
     const channelLp = this.ctx.createBiquadFilter();
-    channelLp.type = 'lowpass'; channelLp.frequency.value = 430;
+    channelLp.type = 'lowpass'; channelLp.frequency.value = 300;
     const channelGain = this.ctx.createGain();
-    channelGain.gain.value = 0.34;
+    channelGain.gain.value = 0.16;
     channel.connect(channelLp).connect(channelGain).connect(dest);
     channel.start();
     this.register(bucket, channel);
 
     const bed = this.noiseSource(this.pinkNoiseBuffer)!;
     const bp = this.ctx.createBiquadFilter();
-    bp.type = 'bandpass'; bp.frequency.value = 920; bp.Q.value = 0.45;
+    bp.type = 'bandpass'; bp.frequency.value = 1150; bp.Q.value = 0.5;
     const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.84;
+    bedGain.gain.value = 0.6;
     bed.connect(bp).connect(bedGain).connect(dest);
     bed.start();
     this.register(bucket, bed);
@@ -812,12 +1088,13 @@ export class BinauralEngine {
       const gain = this.ctx.createGain();
       const dur = 0.055 + Math.random() * 0.09;
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.24 + Math.random() * 0.12, t + 0.004);
+      gain.gain.linearRampToValueAtTime(0.34 + Math.random() * 0.16, t + 0.004);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       src.connect(bpf).connect(gain).connect(this.makePan(Math.random() * 1.4 - 0.7, dest));
       this.startNoiseBurst(src, t, dur + 0.02);
 
-      this.schedule(bucket, drip, 90 + Math.random() * 320);
+      // Denser plip pattern — this is where the "졸졸" lives.
+      this.schedule(bucket, drip, 70 + Math.random() * 240);
     };
     drip();
   }
@@ -885,6 +1162,7 @@ export class BinauralEngine {
     const playPattern = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('birds');
       const p = Math.random();
       if (p < 0.2) playSparrowChirp(t);
       else if (p < 0.4) { playSparrowChirp(t); playSparrowChirp(t + 0.12); }
@@ -1008,6 +1286,7 @@ export class BinauralEngine {
     const pop = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('fire');
       const osc = this.ctx.createOscillator();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(110, t);
@@ -1305,6 +1584,7 @@ export class BinauralEngine {
     const loop = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('frogs');
       const pan = Math.random() * 1.6 - 0.8;
       croak(t, pan);
       if (Math.random() < 0.6) croak(t + 0.33, pan);
@@ -1375,6 +1655,7 @@ export class BinauralEngine {
       // Schedule just ahead of currentTime so graph construction never masks
       // the attack, and always answer once for immediate audible feedback.
       const t = this.ctx.currentTime + 0.06;
+      this.emitEvent('owl');
       const pan = this.makePan(Math.random() * 1.0 - 0.5, dest);
       hoot(t, 0.46, pan);
       hoot(t + 0.58, 0.3, pan);
@@ -1407,6 +1688,7 @@ export class BinauralEngine {
     const call = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('cuckoo');
       const pan = this.makePan(Math.random() * 1.2 - 0.6, dest);
       // "뻐-꾹": F#5 then D5
       note(t, 740, 0.3, pan);
@@ -1450,6 +1732,7 @@ export class BinauralEngine {
     const burst = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('woodpecker');
       const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
       const count = 11 + Math.floor(Math.random() * 8);
       const rate = 0.05 + Math.random() * 0.015;
@@ -1502,6 +1785,7 @@ export class BinauralEngine {
     const series = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('ducks');
       const pan = this.makePan(Math.random() * 1.2 - 0.6, dest);
       const n = 3 + Math.floor(Math.random() * 3);
       const base = 265 + Math.random() * 60;
@@ -1679,6 +1963,7 @@ export class BinauralEngine {
     const flock = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('seabirds');
       const pan = this.makePan(Math.random() * 1.6 - 0.8, dest);
       const count = 1 + Math.floor(Math.random() * 3);
       for (let i = 0; i < count; i++) cry(t + i * (0.3 + Math.random() * 0.2), pan);
@@ -1694,6 +1979,7 @@ export class BinauralEngine {
 
     const ding = (t: number) => {
       if (!this.ctx) return;
+      this.emitEvent('chimes');
       const freq = notes[Math.floor(Math.random() * notes.length)];
       const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
       [[1, 0.46, 3.1], [2.01, 0.07, 1.7], [2.76, 0.18, 1.05], [5.4, 0.04, 0.42]].forEach(([ratio, amp, dur]) => {
@@ -1742,6 +2028,7 @@ export class BinauralEngine {
     const strike = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('bowl');
       const root = roots[Math.floor(Math.random() * roots.length)];
       const pan = this.makePan(Math.random() * 0.5 - 0.25, dest);
       partials.forEach((ratio, i) => {
@@ -2203,6 +2490,7 @@ export class BinauralEngine {
     const strike = () => {
       if (!this.ctx || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('dthunder');
       const side = Math.random() < 0.5 ? -1 : 1;
       const panVal = side * (0.35 + Math.random() * 0.25);
       rumble(t, 1, panVal);
@@ -2460,6 +2748,7 @@ export class BinauralEngine {
     const strike = () => {
       if (!this.ctx || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('temple');
       const root = roots[Math.floor(Math.random() * roots.length)];
       const pan = this.makePan(Math.random() * 0.5 - 0.25, dest);
 
@@ -2833,6 +3122,7 @@ export class BinauralEngine {
 
     const call = () => {
       if (!this.ctx) return;
+      this.emitEvent('deepsea');
       const f = 180 + Math.random() * 120;
       const panPos = (Math.random() < 0.5 ? -1 : 1) * (0.2 + Math.random() * 0.3);
       sing(f, panPos, 0.9);
@@ -2924,6 +3214,7 @@ export class BinauralEngine {
       const callLoop = () => {
         if (!this.ctx) return;
         const t = this.ctx.currentTime;
+      this.emitEvent('scops');
         const third = Math.random() < 0.4;
         call(t, 1, 1, mainOut, third);
         if (answering) call(t + 0.8, 0.92, 0.5, answerOut, third);
@@ -2980,6 +3271,8 @@ export class BinauralEngine {
     this.teardownTone();
     this.voices.forEach((v) => this.disposeVoice(v));
     this.voices.clear();
+    this.retiringVoices.forEach((v) => this.disposeVoice(v));
+    this.retiringVoices.clear();
     this.pendingCleanups.forEach((id) => clearTimeout(id));
     this.pendingCleanups = [];
     [
@@ -2987,6 +3280,7 @@ export class BinauralEngine {
       this.reverbLp,
       this.reverbFilter,
       this.reverb,
+      this.reverbSend,
       this.bgBus,
       this.binauralGain,
       this.analyser,
@@ -3003,6 +3297,7 @@ export class BinauralEngine {
     this.reverbLp = null;
     this.reverbFilter = null;
     this.reverb = null;
+    this.reverbSend = null;
     this.bgBus = null;
     this.binauralGain = null;
     this.analyser = null;
@@ -3017,6 +3312,7 @@ export class BinauralEngine {
   // Fully release audio resources (called when the app unmounts).
   dispose() {
     this.stop();
+    this.sampleCache.clear();
     if (this.ctx) { try { this.ctx.close(); } catch (e) {} this.ctx = null; }
     this.pinkNoiseBuffer = null;
     this.brownNoiseBuffer = null;

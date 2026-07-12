@@ -7,14 +7,15 @@ import {
 } from 'lucide-react';
 import { BackgroundSoundType, BrainWaveType } from './types';
 
-// Sounds grouped by scene — drives the categorized picker UI.
+// Sounds grouped into the six soundscape categories — drives the picker UI
+// and the recommendation logic.
 export const SOUND_GROUPS: { label: string; sounds: BackgroundSoundType[] }[] = [
-  { label: '비 · 천둥', sounds: ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder'] },
-  { label: '물 · 바다', sounds: ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea'] },
-  { label: '새', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl', 'scops'] },
-  { label: '숲 · 생물', sounds: ['forest', 'bamboo', 'cicadas', 'frogs', 'ducks', 'night'] },
-  { label: '공간 · 명상', sounds: ['fire', 'temple', 'chimes', 'bowl', 'drone', 'cave'] },
-  { label: '리듬 · 노이즈', sounds: ['heartbeat', 'blizzard', 'fan', 'brown', 'white', 'pink'] },
+  { label: '환경음', sounds: ['forest', 'bamboo', 'night', 'cave'] },
+  { label: '날씨', sounds: ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder', 'blizzard'] },
+  { label: '물', sounds: ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea'] },
+  { label: '동물', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl', 'scops', 'cicadas', 'frogs', 'ducks'] },
+  { label: '오브젝트', sounds: ['fire', 'temple', 'chimes', 'bowl', 'fan'] },
+  { label: '추상음', sounds: ['drone', 'heartbeat', 'brown', 'white', 'pink'] },
 ];
 
 // Flat display order (selectable sounds; 'none' is handled by the picker itself).

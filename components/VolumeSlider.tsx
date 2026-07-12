@@ -9,6 +9,8 @@ interface Props {
   step?: number;
   disabled?: boolean;
   emphasized?: boolean;
+  /** Accessible name when no visible label is rendered (label=""). */
+  ariaLabel?: string;
 }
 
 export const VolumeSlider: React.FC<Props> = ({
@@ -20,6 +22,7 @@ export const VolumeSlider: React.FC<Props> = ({
   step = 0.01,
   disabled = false,
   emphasized = false,
+  ariaLabel,
 }) => {
   const id = useId();
   const safeValue = Math.max(min, Math.min(max, value));
@@ -28,12 +31,14 @@ export const VolumeSlider: React.FC<Props> = ({
 
   return (
     <div className={`flex min-h-11 items-center gap-3 ${disabled ? 'opacity-40' : ''}`}>
-      <label
-        htmlFor={id}
-        className={`w-20 shrink-0 text-xs ${emphasized ? 'font-bold text-primary-600 dark:text-primary-400' : 'font-semibold text-slate-600 dark:text-slate-300'}`}
-      >
-        {label}
-      </label>
+      {label !== '' && (
+        <label
+          htmlFor={id}
+          className={`w-20 shrink-0 text-xs ${emphasized ? 'font-bold text-primary-600 dark:text-primary-400' : 'font-semibold text-slate-600 dark:text-slate-300'}`}
+        >
+          {label}
+        </label>
+      )}
       <input
         id={id}
         type="range"
@@ -42,6 +47,7 @@ export const VolumeSlider: React.FC<Props> = ({
         step={step}
         value={safeValue}
         disabled={disabled}
+        aria-label={label === '' ? ariaLabel : undefined}
         aria-valuetext={`${percentage}%`}
         onChange={(event) => onChange(Number(event.target.value))}
         className="volume-range min-w-0 flex-1 cursor-pointer disabled:cursor-not-allowed"

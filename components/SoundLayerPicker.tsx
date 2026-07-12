@@ -11,13 +11,14 @@ interface Props {
   onToggle: (type: BackgroundSoundType) => void;
   onVolume: (type: BackgroundSoundType, vol: number) => void;
   hideScene?: boolean;  // the nature tab renders the diorama as its own hero
+  hideLevels?: boolean; // catalog-only view (the composer owns the faders)
   onBalance?: () => void;
 }
 
 // Multi-select background-sound picker, grouped by scene: tap a chip to layer a
 // sound in/out, and each active layer gets its own volume slider so users can
 // mix soundscapes.
-export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVolume, hideScene, onBalance }) => {
+export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVolume, hideScene, hideLevels, onBalance }) => {
   const isActive = (t: BackgroundSoundType) => activeLayers.some((l) => l.type === t);
 
   return (
@@ -55,7 +56,7 @@ export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVo
         ))}
       </div>
 
-      {activeLayers.length > 0 ? (
+      {!hideLevels && activeLayers.length > 0 ? (
         <div className="mt-4 space-y-2 border-t border-dashed border-slate-200 pt-3 dark:border-slate-700">
           <div className="flex items-center justify-between gap-2 pb-1">
             <p className="text-[11px] font-semibold text-slate-400">개별 소리 음량</p>

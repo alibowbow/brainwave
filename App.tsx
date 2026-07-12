@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Settings, Brain, BarChart2, Sparkles, Home, Play, Pause, X, Moon, Sun, ArrowLeft, Sliders, Activity, Volume2, Headphones, Save, RotateCcw, Flame, CloudMoon, Leaf, LucideIcon } from 'lucide-react';
 import { PRESETS, AMBIENCE_PRESETS, AmbiencePreset, SessionPreset, SessionLog, AppSettings, BackgroundSoundType, BrainWaveType, WAVE_FREQS, getBrainWaveLabel, NatureMix, NATURE_MIXES } from './types';
 import { BinauralEngine, SoundLayer, ToneMode } from './services/audioEngine';
@@ -374,7 +374,7 @@ export default function App() {
       masterVol: natureVol,
       binauralVol: 0,       // nature only — no brainwave tone
       bgVol: 1,
-      sounds: natureLayers,
+      sounds: natureLayers.map((l) => ({ type: l.type, volume: l.muted ? 0 : l.volume })),
     });
   };
 
@@ -441,9 +441,25 @@ export default function App() {
   };
 
   const setNatureLayerVolume = (type: BackgroundSoundType, vol: number) => {
-    setNatureLayers((prev) => prev.map((l) => (l.type === type ? { ...l, volume: vol } : l)));
+    // Moving a fader always unmutes — the natural expectation.
+    setNatureLayers((prev) => prev.map((l) => (l.type === type ? { ...l, volume: vol, muted: false } : l)));
     if (natureStatus === 'running') engine.setSoundVolume(type, vol);
   };
+
+  const toggleNatureMute = (type: BackgroundSoundType) => {
+    setNatureLayers((prev) => prev.map((l) => {
+      if (l.type !== type) return l;
+      const muted = !l.muted;
+      if (natureStatus === 'running') engine.setSoundVolume(type, muted ? 0 : l.volume);
+      return { ...l, muted };
+    }));
+  };
+
+  // Stable subscription handle so the scene can react to engine sound events.
+  const subscribeNatureEvents = useCallback(
+    (cb: (type: BackgroundSoundType) => void) => engine.onSoundEvent(cb),
+    [],
+  );
 
   const selectNatureMix = (mix: NatureMix) => {
     const layers = mix.layers.map((l) => ({ ...l }));
@@ -1001,14 +1017,14 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v3.8.2</p>
+        <p>MC Brain Care v3.9.0</p>
         <p className="mt-2">모든 오디오는 기기에서 실시간으로 생성됩니다.</p>
       </div>
     </div>
   );
 
   return (
-    <div className="max-w-[430px] mx-auto h-[100dvh] bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden shadow-2xl ring-1 ring-slate-900/5">
+    <div className={`${activeTab === 'nature' ? 'max-w-[430px] lg:max-w-[1200px]' : 'max-w-[430px]'} mx-auto h-[100dvh] bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden shadow-2xl ring-1 ring-slate-900/5`}>
       <header className="shrink-0 h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-center sticky top-0 z-40">
         <div className="flex items-center gap-2">
           <Brain className="text-primary-500" size={22} />
@@ -1059,9 +1075,11 @@ export default function App() {
             onStop={() => stopNature()}
             onToggleLayer={toggleNatureLayer}
             onLayerVolume={setNatureLayerVolume}
+            onToggleMute={toggleNatureMute}
             onSelectMix={selectNatureMix}
             onTimerChange={handleNatureTimer}
             onVolumeChange={setNatureVol}
+            subscribeEvents={subscribeNatureEvents}
           />
         )}
         {activeTab === 'history' && renderHistory()}
@@ -1121,7 +1139,8 @@ export default function App() {
         </div>
       )}
 
-      <nav className="h-16 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-around items-center shrink-0 z-30">
+      <nav className="h-16 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shrink-0 z-30 flex justify-center">
+        <div className="w-full max-w-md flex justify-around items-center">
         {([
           { tab: 'session' as const, Icon: Home, label: '세션' },
           { tab: 'nature' as const, Icon: Leaf, label: '자연' },
@@ -1140,6 +1159,7 @@ export default function App() {
             <span className="text-[10px] font-medium">{label}</span>
           </button>
         ))}
+        </div>
       </nav>
 
       {immersive && viewMode === 'player' && playbackStatus !== 'idle' && (

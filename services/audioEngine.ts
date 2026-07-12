@@ -1,5 +1,6 @@
 import { BackgroundSoundType } from '../types';
 import { TONE_MODE_TRIM, clampLayerVolume, clampUnit, countAudibleLayers, layerGain, levelToGain, natureBusGain } from '../audioLevels';
+import { DEPTH_MIX, SPATIAL, spatialPan } from '../sceneLayout';
 
 // Length of the looping noise buffers. Longer buffers make the loop point far
 // less audible than a short 1-2s loop.
@@ -88,6 +89,8 @@ export type ToneMode = 'binaural' | 'isochronic';
 export interface SoundLayer {
   type: BackgroundSoundType;
   volume: number;
+  /** UI-level mute: the engine just receives an effective volume of 0. */
+  muted?: boolean;
 }
 
 export interface StartConfig {
@@ -111,6 +114,8 @@ interface Voice {
   gain: GainNode;
   bucket: Bucket;
   volume: number;
+  /** Spatial tail: fader → [air lowpass] → panner → dry/send. Torn down with the voice. */
+  spatialNodes: AudioNode[];
 }
 
 export class BinauralEngine {
@@ -140,9 +145,23 @@ export class BinauralEngine {
   private binauralGain: GainNode | null = null;
   private bgBus: GainNode | null = null;        // shared bus for all nature layers (the "자연음" master)
   private reverb: ConvolverNode | null = null;
+  private reverbSend: GainNode | null = null;   // per-voice distance sends sum here
   private reverbFilter: BiquadFilterNode | null = null;
   private reverbLp: BiquadFilterNode | null = null;
   private reverbWet: GainNode | null = null;
+
+  // Scene-sync events: generators announce salient moments (a chirp, a bell
+  // strike, a thunder roll) so the diorama can animate the matching object.
+  private eventListeners = new Set<(type: BackgroundSoundType) => void>();
+
+  onSoundEvent(cb: (type: BackgroundSoundType) => void): () => void {
+    this.eventListeners.add(cb);
+    return () => this.eventListeners.delete(cb);
+  }
+
+  private emitEvent(type: BackgroundSoundType) {
+    this.eventListeners.forEach((cb) => { try { cb(type); } catch { /* listener error is not our problem */ } });
+  }
 
   // Active nature-sound layers, keyed by type.
   private voices: Map<BackgroundSoundType, Voice> = new Map();
@@ -242,8 +261,13 @@ export class BinauralEngine {
     this.reverbLp.frequency.value = 2200;
     this.reverbLp.Q.value = 0.7;
     this.reverbWet = this.ctx.createGain();
-    this.reverbWet.gain.value = 0.12;
-    this.bgBus.connect(this.reverb);
+    this.reverbWet.gain.value = 0.55;
+    // Distance-based sends: each voice feeds the room according to its scene
+    // depth (a far temple bell is much wetter than the campfire at your feet),
+    // scaled by the same nature-bus gain so the wet field tracks the mix.
+    this.reverbSend = this.ctx.createGain();
+    this.reverbSend.gain.value = this.bgBus.gain.value;
+    this.reverbSend.connect(this.reverb);
     this.reverb.connect(this.reverbFilter).connect(this.reverbLp).connect(this.reverbWet).connect(this.masterGain);
 
     this.voices = new Map();
@@ -352,11 +376,10 @@ export class BinauralEngine {
   private updateNatureBusGain(timeConstant = 0.2) {
     if (!this.ctx || !this.bgBus) return;
     const audibleLayers = countAudibleLayers([...this.voices.values()].map((voice) => voice.volume));
-    this.bgBus.gain.setTargetAtTime(
-      natureBusGain(this.natureVol, audibleLayers),
-      this.ctx.currentTime,
-      timeConstant,
-    );
+    const bus = natureBusGain(this.natureVol, audibleLayers);
+    this.bgBus.gain.setTargetAtTime(bus, this.ctx.currentTime, timeConstant);
+    // The wet field scales with the dry bus so distance stays proportional.
+    this.reverbSend?.gain.setTargetAtTime(bus, this.ctx.currentTime, timeConstant);
   }
 
   // --- Nature-sound layering ---
@@ -368,10 +391,44 @@ export class BinauralEngine {
     const safeVolume = clampLayerVolume(volume);
     const gain = this.ctx.createGain();
     gain.gain.value = 0;
-    gain.connect(this.bgBus);
+
+    // Spatial tail matching the diorama: the object's on-screen x becomes the
+    // stereo position, and its depth sets dry level, reverb send and (for far
+    // sources) an air-loss lowpass — near is present and dry, far is soft and
+    // roomy. Wide sources (weather, noise beds) stay centered.
+    const spec = SPATIAL[type];
+    const mix = DEPTH_MIX[spec?.depth ?? 'mid'];
+    const spatialNodes: AudioNode[] = [];
+    let head: AudioNode = gain;
+    if (mix.lowpass != null) {
+      const air = this.ctx.createBiquadFilter();
+      air.type = 'lowpass';
+      air.frequency.value = mix.lowpass;
+      air.Q.value = 0.5;
+      head.connect(air);
+      head = air;
+      spatialNodes.push(air);
+    }
+    const panner = this.ctx.createStereoPanner();
+    panner.pan.value = spatialPan(type);
+    head.connect(panner);
+    spatialNodes.push(panner);
+    const dry = this.ctx.createGain();
+    dry.gain.value = mix.trim;
+    panner.connect(dry);
+    dry.connect(this.bgBus);
+    spatialNodes.push(dry);
+    if (this.reverbSend) {
+      const send = this.ctx.createGain();
+      send.gain.value = mix.send;
+      panner.connect(send);
+      send.connect(this.reverbSend);
+      spatialNodes.push(send);
+    }
+
     const bucket: Bucket = { nodes: [], intervals: [], timeouts: [] };
     this.playBackgroundSound(type, gain, bucket);
-    this.voices.set(type, { gain, bucket, volume: safeVolume });
+    this.voices.set(type, { gain, bucket, volume: safeVolume, spatialNodes });
     gain.gain.setTargetAtTime(layerGain(type, safeVolume), this.ctx.currentTime, fadeSec / 3);
     if (updateBus) this.updateNatureBusGain(fadeSec / 3);
   }
@@ -417,6 +474,9 @@ export class BinauralEngine {
     });
     voice.bucket.intervals.forEach((id) => clearInterval(id));
     voice.bucket.timeouts.forEach((id) => clearTimeout(id));
+    voice.spatialNodes.forEach((n) => {
+      try { n.disconnect(); } catch (e) { /* ignore */ }
+    });
     try { voice.gain.disconnect(); } catch (e) { /* ignore */ }
   }
 
@@ -672,6 +732,7 @@ export class BinauralEngine {
     const boom = () => {
       if (!this.ctx || !this.brownNoiseBuffer || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('thunder');
       const pan = this.makePan(Math.random() * 0.8 - 0.4, dest);
 
       // Bright initial crack (the lightning) so the storm reads as more than rain.
@@ -790,6 +851,7 @@ export class BinauralEngine {
     const playPattern = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('birds');
       const p = Math.random();
       if (p < 0.2) playSparrowChirp(t);
       else if (p < 0.4) { playSparrowChirp(t); playSparrowChirp(t + 0.12); }
@@ -913,6 +975,7 @@ export class BinauralEngine {
     const pop = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('fire');
       const osc = this.ctx.createOscillator();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(110, t);
@@ -1119,6 +1182,7 @@ export class BinauralEngine {
     const loop = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('frogs');
       const pan = Math.random() * 1.6 - 0.8;
       croak(t, pan);
       if (Math.random() < 0.6) croak(t + 0.33, pan);
@@ -1159,6 +1223,7 @@ export class BinauralEngine {
     const call = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('owl');
       const pan = this.makePan(Math.random() * 1.0 - 0.5, dest);
       hoot(t, 0.4, pan);
       if (Math.random() < 0.65) {
@@ -1193,6 +1258,7 @@ export class BinauralEngine {
     const call = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('cuckoo');
       const pan = this.makePan(Math.random() * 1.2 - 0.6, dest);
       // "뻐-꾹": F#5 then D5
       note(t, 740, 0.3, pan);
@@ -1236,6 +1302,7 @@ export class BinauralEngine {
     const burst = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('woodpecker');
       const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
       const count = 11 + Math.floor(Math.random() * 8);
       const rate = 0.05 + Math.random() * 0.015;
@@ -1269,6 +1336,7 @@ export class BinauralEngine {
     const series = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('ducks');
       const pan = this.makePan(Math.random() * 1.2 - 0.6, dest);
       const n = 3 + Math.floor(Math.random() * 3);
       const base = 265 + Math.random() * 60;
@@ -1400,6 +1468,7 @@ export class BinauralEngine {
     const flock = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('seabirds');
       const pan = this.makePan(Math.random() * 1.6 - 0.8, dest);
       const count = 1 + Math.floor(Math.random() * 3);
       for (let i = 0; i < count; i++) cry(t + i * (0.3 + Math.random() * 0.2), pan);
@@ -1415,6 +1484,7 @@ export class BinauralEngine {
 
     const ding = (t: number) => {
       if (!this.ctx) return;
+      this.emitEvent('chimes');
       const freq = notes[Math.floor(Math.random() * notes.length)];
       const pan = this.makePan(Math.random() * 1.4 - 0.7, dest);
       [[1, 0.44, 2.6], [2.76, 0.17, 0.9]].forEach(([ratio, amp, dur]) => {
@@ -1450,6 +1520,7 @@ export class BinauralEngine {
     const strike = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('bowl');
       const root = roots[Math.floor(Math.random() * roots.length)];
       const pan = this.makePan(Math.random() * 0.5 - 0.25, dest);
       partials.forEach((ratio, i) => {
@@ -1911,6 +1982,7 @@ export class BinauralEngine {
     const strike = () => {
       if (!this.ctx || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('dthunder');
       const side = Math.random() < 0.5 ? -1 : 1;
       const panVal = side * (0.35 + Math.random() * 0.25);
       rumble(t, 1, panVal);
@@ -2141,6 +2213,7 @@ export class BinauralEngine {
     const strike = () => {
       if (!this.ctx || !this.pinkNoiseBuffer) return;
       const t = this.ctx.currentTime;
+      this.emitEvent('temple');
       const root = roots[Math.floor(Math.random() * roots.length)];
       const pan = this.makePan(Math.random() * 0.5 - 0.25, dest);
 
@@ -2495,6 +2568,7 @@ export class BinauralEngine {
 
     const call = () => {
       if (!this.ctx) return;
+      this.emitEvent('deepsea');
       const f = 180 + Math.random() * 120;
       const panPos = (Math.random() < 0.5 ? -1 : 1) * (0.2 + Math.random() * 0.3);
       sing(f, panPos, 0.9);
@@ -2586,6 +2660,7 @@ export class BinauralEngine {
       const callLoop = () => {
         if (!this.ctx) return;
         const t = this.ctx.currentTime;
+        this.emitEvent('scops');
         const third = Math.random() < 0.4;
         call(t, 1, 1, mainOut, third);
         if (answering) call(t + 0.8, 0.92, 0.5, answerOut, third);
@@ -2649,6 +2724,7 @@ export class BinauralEngine {
       this.reverbLp,
       this.reverbFilter,
       this.reverb,
+      this.reverbSend,
       this.bgBus,
       this.binauralGain,
       this.analyser,
@@ -2664,6 +2740,7 @@ export class BinauralEngine {
     this.reverbLp = null;
     this.reverbFilter = null;
     this.reverb = null;
+    this.reverbSend = null;
     this.bgBus = null;
     this.binauralGain = null;
     this.analyser = null;

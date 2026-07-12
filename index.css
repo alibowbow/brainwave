@@ -342,6 +342,50 @@ h1, h2, h3, h4 {
   50% { opacity: 0.78; }
 }
 
+/* --- Living-soundscape treatments --- */
+/* Depth: far objects sit hazier and lighter so they read as distant, not
+   stickers pasted on the backdrop. */
+.sc-depth-far { opacity: 0.9; filter: saturate(0.82) contrast(0.94) blur(0.3px); }
+.sc-depth-near { filter: saturate(1.04); }
+/* Color temperature follows the sky phase so characters belong to the light. */
+.sc-scene[data-phase="night"] .sc-char { filter: brightness(0.8) saturate(0.78) hue-rotate(-6deg); }
+.sc-scene[data-phase="sunset"] .sc-char { filter: brightness(0.96) sepia(0.14) saturate(1.05); }
+.sc-scene[data-phase="dawn"] .sc-char { filter: brightness(0.97) sepia(0.08); }
+/* Soft glimmer under water-band characters — a cheap reflection cue. */
+.sc-mirror {
+  position: absolute;
+  left: 50%;
+  bottom: -9%;
+  width: 78%;
+  height: 16%;
+  transform: translateX(-50%) scaleY(0.6);
+  border-radius: 9999px;
+  background: radial-gradient(50% 60% at 50% 40%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+/* Tap-selection highlight (scene ↔ mixer stay in sync) */
+.sc-selected { filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.9)); }
+.sc-hot-selected { box-shadow: inset 0 0 0 2px rgba(52, 211, 153, 0.9), inset 0 0 18px rgba(52, 211, 153, 0.28); }
+/* Sound-synced reactions */
+@media (prefers-reduced-motion: no-preference) {
+  .sc-hit { animation: scHit 0.7s cubic-bezier(0.36, 1.6, 0.4, 1) !important; }
+  .sc-flash-now { animation: scFlashNow 0.9s ease-out 1; }
+}
+@keyframes scHit {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.16) translateY(-4%); }
+  60% { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+@keyframes scFlashNow {
+  0% { opacity: 0; }
+  8% { opacity: 0.55; }
+  16% { opacity: 0.1; }
+  26% { opacity: 0.38; }
+  60% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
 /* Stagger for the mini-player equalizer bars */
 .animation-delay-100 {
   animation-delay: 0.15s;

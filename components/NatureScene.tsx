@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BackgroundSoundType } from '../types';
-import { SOUND_ORDER } from '../audioOptions';
+import { SOUND_ORDER, getSoundLabel } from '../audioOptions';
 import { SCENE_META, CHARACTER_SVG } from './sceneCharacters';
+import { SPATIAL, SCENERY_HOTSPOTS } from '../sceneLayout';
 
 interface Props {
   types: BackgroundSoundType[];
   tall?: boolean;  // hero variant for the nature tab
+  fill?: boolean;  // stretch to the parent's height (composer layout)
+  /** Enables tap-to-select on characters and scenery. */
+  interactive?: boolean;
+  selectedType?: BackgroundSoundType | null;
+  onSelectType?: (type: BackgroundSoundType) => void;
+  /** Engine hookup: fires when a sound makes a salient noise, so the matching
+      object can react in sync (bird chirps → bird hops, thunder → flash). */
+  subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
 // Vertical center per band (% of scene height) and character size (px).
@@ -161,8 +170,38 @@ const SCENE_BUBBLES = [
 // A layered, atmospheric diorama: gradient sky with sun/moon bloom and stars,
 // three hazy parallax hills, optional gradient water, floating particles and a
 // vignette — with the active sounds' characters and weather composited on top.
-export const NatureScene: React.FC<Props> = ({ types, tall }) => {
+export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, selectedType, onSelectType, subscribeEvents }) => {
   const chars = SOUND_ORDER.filter((t) => types.includes(t) && SCENE_META[t] && CHARACTER_SVG[t] && !SCENERY.has(t));
+
+  // Sound-synced reactions: a short pulse on the matching object per event,
+  // and an immediate lightning flash on thunder strikes.
+  const [pulses, setPulses] = useState<Partial<Record<BackgroundSoundType, number>>>({});
+  const [flashTick, setFlashTick] = useState(0);
+  const pulseTimers = useRef<number[]>([]);
+  useEffect(() => {
+    if (!subscribeEvents) return;
+    const unsub = subscribeEvents((type) => {
+      if (type === 'thunder' || type === 'dthunder') {
+        setFlashTick((k) => k + 1);
+        return;
+      }
+      setPulses((prev) => ({ ...prev, [type]: (prev[type] ?? 0) + 1 }));
+      const id = window.setTimeout(() => {
+        setPulses((prev) => {
+          if (!(type in prev)) return prev;
+          const next = { ...prev };
+          delete next[type];
+          return next;
+        });
+      }, 850);
+      pulseTimers.current.push(id);
+    });
+    return () => {
+      unsub();
+      pulseTimers.current.forEach((id) => clearTimeout(id));
+      pulseTimers.current = [];
+    };
+  }, [subscribeEvents]);
   const hasWater = types.some((t) => WATER_SOUNDS.includes(t));
   const hasWave = types.includes('wave');
   const hasWaterfall = types.includes('waterfall');
@@ -186,7 +225,7 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
   const night = phase === 'night';
 
   return (
-    <div className={`sc-scene relative w-full ${tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`} data-phase={phase}>
+    <div className={`sc-scene relative w-full ${fill ? 'h-full rounded-2xl' : tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`} data-phase={phase}>
       <svg viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 w-full h-full">
         <defs>
           <linearGradient id="scSky" x1="0" y1="0" x2="0" y2="1">
@@ -481,7 +520,8 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
         <div key={i} className={`sc-particle ${p.cls}`} style={{ left: p.left, top: p.top, width: p.size, height: p.size, animationDelay: p.delay }} />
       ))}
 
-      {/* characters */}
+      {/* characters — anchored per type (from the shared spatial layout), so
+          adding or removing sounds never reshuffles the rest of the scene */}
       {n === 0 && !hasScenery ? (
         <div className="absolute inset-0 flex items-center justify-center">
           <p className="text-xs text-slate-500/80 dark:text-slate-300/70">사운드를 고르면 친구들이 모여요 🌱</p>
@@ -489,17 +529,28 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
       ) : (
         chars.map((t, i) => {
           const meta = SCENE_META[t]!;
-          // Deterministic jitter so placement feels organic, not mechanical.
-          const x = Math.min(93, Math.max(7, ((i + 0.5) / n) * 100 + (((i * 53) % 9) - 4)));
-          const y = BAND_Y[meta.band] + (((i * 31) % 7) - 3);
-          const size = BAND_SIZE[meta.band];
+          const spec = SPATIAL[t];
+          const x = Math.min(93, Math.max(7, (spec?.x ?? 0.5) * 100));
+          // Deterministic per-type jitter so anchors feel organic, not gridded.
+          const seed = t.charCodeAt(0) * 7 + t.length * 13;
+          const y = BAND_Y[meta.band] + ((seed % 7) - 3);
+          const depth = spec?.depth ?? 'mid';
+          const size = BAND_SIZE[meta.band] * (depth === 'far' ? 0.82 : depth === 'near' ? 1.06 : 1);
+          const selected = selectedType === t;
+          const Wrapper: 'button' | 'div' = interactive ? 'button' : 'div';
           return (
-            <div
+            <Wrapper
               key={t}
-              className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
-              style={{ left: `${x}%`, top: `${y}%`, width: size, height: size }}
+              type={interactive ? 'button' : undefined}
+              aria-label={interactive ? `${getSoundLabel(t)} 사운드 선택` : undefined}
+              onClick={interactive ? () => onSelectType?.(t) : undefined}
+              className={`sc-char sc-depth-${depth} absolute -translate-x-1/2 -translate-y-1/2 z-10 ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
+              style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, background: 'transparent', border: 'none', padding: 0 }}
             >
-              <div className={`w-full h-full scene-motion-${meta.motion}`} style={{ animationDelay: `${(i % 5) * 0.35}s` }}>
+              <div
+                className={`w-full h-full scene-motion-${meta.motion} ${pulses[t] ? 'sc-hit' : ''}`}
+                style={{ animationDelay: pulses[t] ? undefined : `${(seed % 5) * 0.35}s` }}
+              >
                 <svg
                   viewBox="0 0 100 100"
                   width="100%"
@@ -509,10 +560,27 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
                   dangerouslySetInnerHTML={{ __html: CHARACTER_SVG[t]! }}
                 />
               </div>
-            </div>
+              {meta.band === 'water' && <span className="sc-mirror" aria-hidden="true" />}
+            </Wrapper>
           );
         })
       )}
+
+      {/* tappable hotspots for scenery sounds (campfire, tent, bamboo...) */}
+      {interactive && SOUND_ORDER.filter((t) => types.includes(t) && SCENERY_HOTSPOTS[t]).map((t) => {
+        const hot = SCENERY_HOTSPOTS[t]!;
+        const selected = selectedType === t;
+        return (
+          <button
+            key={`hot-${t}`}
+            type="button"
+            aria-label={`${getSoundLabel(t)} 사운드 선택`}
+            onClick={() => onSelectType?.(t)}
+            className={`absolute z-10 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400 ${selected ? 'sc-hot-selected' : ''}`}
+            style={{ left: `${hot.x}%`, top: `${hot.y}%`, width: `${hot.w}%`, height: `${hot.h}%`, background: 'transparent', border: 'none', padding: 0 }}
+          />
+        );
+      })}
 
       {/* weather overlays (parallax back + front layers) sit in front */}
       {rainy && <div className="scene-rain-2 absolute inset-0 z-20 pointer-events-none" />}
@@ -520,6 +588,8 @@ export const NatureScene: React.FC<Props> = ({ types, tall }) => {
       {snowy && <div className="scene-snow-2 absolute inset-0 z-20 pointer-events-none" />}
       {snowy && <div className="scene-snow absolute inset-0 z-20 pointer-events-none" />}
       {stormy && <div className="scene-lightning absolute inset-0 z-20 bg-white pointer-events-none" style={{ opacity: 0 }} />}
+      {/* event-synced lightning: flashes exactly when a thunder roll fires */}
+      {flashTick > 0 && <div key={flashTick} className="sc-flash-now absolute inset-0 z-20 bg-white pointer-events-none" style={{ opacity: 0 }} />}
     </div>
   );
 };

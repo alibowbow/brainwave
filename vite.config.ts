@@ -37,8 +37,32 @@ export default defineConfig(({ mode }) => {
             ],
           },
           workbox: {
+            // Audio is deliberately absent: nature recordings are fetched only
+            // when their layer is selected, then retained by the runtime cache.
             globPatterns: ['**/*.{js,css,html,svg,png,webp,ico,webmanifest}'],
+            // Nature plates and cutouts are loaded per scene. Keeping them out
+            // of the initial precache prevents the first visit from downloading
+            // the entire illustration library.
+            globIgnores: ['**/images/nature/**'],
             runtimeCaching: [
+              {
+                urlPattern: /\/audio\/nature\/.*\.(?:ogg|mp3)$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'nature-audio-v1',
+                  expiration: { maxEntries: 32, maxAgeSeconds: 60 * 60 * 24 * 180 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
+              {
+                urlPattern: /\/images\/nature\/.*\.(?:webp|png)$/i,
+                handler: 'StaleWhileRevalidate',
+                options: {
+                  cacheName: 'nature-assets-v2',
+                  expiration: { maxEntries: 48, maxAgeSeconds: 60 * 60 * 24 * 180 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
               {
                 // Cache the self-hosted Pretendard font on first load so it works
                 // offline, without bloating the precache with a ~2MB file.

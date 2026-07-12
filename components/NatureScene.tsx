@@ -1,180 +1,350 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BackgroundSoundType } from '../types';
-import { SOUND_ORDER, getSoundLabel } from '../audioOptions';
 import { SCENE_META, CHARACTER_SVG } from './sceneCharacters';
+import { getSoundLabel } from '../audioOptions';
 import { SPATIAL, SCENERY_HOTSPOTS } from '../sceneLayout';
 
 interface Props {
   types: BackgroundSoundType[];
-  tall?: boolean;  // hero variant for the nature tab
+  tall?: boolean;
   fill?: boolean;  // stretch to the parent's height (composer layout)
-  /** Enables tap-to-select on characters and scenery. */
+  /** Enables tap-to-select on fauna and scenery. */
   interactive?: boolean;
   selectedType?: BackgroundSoundType | null;
   onSelectType?: (type: BackgroundSoundType) => void;
   /** Engine hookup: fires when a sound makes a salient noise, so the matching
-      object can react in sync (bird chirps → bird hops, thunder → flash). */
+      object reacts in sync (frog croak → call clip, thunder → flash). */
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
-// Vertical center per band (% of scene height) and character size (px).
-const BAND_Y: Record<string, number> = { sky: 22, tree: 45, ground: 72, water: 84 };
-const BAND_SIZE: Record<string, number> = { sky: 46, tree: 58, ground: 58, water: 46 };
+type SceneTheme = 'valley' | 'night-pond' | 'coast' | 'deep-sea' | 'cave' | 'winter' | 'warm';
 
-const SCENERY = new Set<BackgroundSoundType>([
-  'wave', 'rain', 'thunder', 'blizzard', 'waterfall', 'fire',
-  'tent', 'window', 'eaves', 'dthunder', 'bamboo', 'temple', 'pebbles',
+type AtlasName = 'idle' | 'action';
+
+interface MotionAtlas {
+  path: string;
+  columns: number;
+  rows: number;
+}
+
+interface MotionClip {
+  atlas: AtlasName;
+  frames: readonly number[];
+  frameDurations: readonly number[];
+}
+
+interface GeneratedCharacter {
+  id: string;
+  atlases: Record<AtlasName, MotionAtlas>;
+  microClips: readonly MotionClip[];
+  actionClips: readonly MotionClip[];
+  restRange: readonly [number, number];
+  actionProbability: number;
+  className: string;
+  alt: string;
+}
+
+interface MotionPose {
+  atlas: AtlasName;
+  frame: number;
+}
+
+const assetUrl = (path: string) => new URL(path, document.baseURI).toString();
+
+const BACKGROUND_PATH: Partial<Record<SceneTheme, string>> = {
+  valley: 'images/nature/backgrounds/summer-valley.webp',
+  'night-pond': 'images/nature/backgrounds/scops-night.webp',
+};
+
+const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharacter>> = {
+  birds: {
+    id: 'songbird',
+    atlases: {
+      idle: { path: 'images/nature/motion/songbird-behavior-a-v2.webp', columns: 5, rows: 5 },
+      action: { path: 'images/nature/motion/songbird-behavior-b-v2.webp', columns: 5, rows: 5 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 2, 3, 4, 0], frameDurations: [140, 80, 95, 90, 140, 180] },
+      { atlas: 'idle', frames: [5, 6, 7, 8, 9, 0], frameDurations: [170, 140, 230, 160, 170, 210] },
+      { atlas: 'idle', frames: [10, 11, 12, 13, 14, 0], frameDurations: [170, 140, 270, 170, 180, 220] },
+      { atlas: 'idle', frames: [15, 16, 17, 18, 19, 0], frameDurations: [210, 170, 250, 190, 180, 220] },
+      { atlas: 'idle', frames: [20, 21, 22, 23, 24, 0], frameDurations: [160, 100, 90, 120, 170, 240] },
+      { atlas: 'action', frames: [5, 6, 7, 8, 9, 0], frameDurations: [220, 190, 230, 200, 220, 260] },
+      { atlas: 'action', frames: [20, 21, 22, 23, 24, 0], frameDurations: [220, 190, 220, 190, 230, 260] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 1, 2, 3, 4, 5, 0], frameDurations: [170, 140, 190, 130, 180, 150, 180, 210, 240] },
+      { atlas: 'action', frames: [10, 11, 12, 13, 13, 12, 11, 14, 0], frameDurations: [150, 110, 100, 170, 130, 100, 120, 160, 230] },
+      { atlas: 'action', frames: [15, 16, 17, 18, 19, 18, 17, 20, 0], frameDurations: [150, 120, 110, 170, 180, 120, 130, 180, 260] },
+    ],
+    restRange: [3800, 9000],
+    actionProbability: 0.16,
+    className: 'sc-v2-bird',
+    alt: '나뭇가지에 앉은 작은 새',
+  },
+  owl: {
+    id: 'owl',
+    atlases: {
+      idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
+      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
+      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    ],
+    restRange: [5200, 12000],
+    actionProbability: 0.18,
+    className: 'sc-v2-owl',
+    alt: '나뭇가지에 앉은 부엉이',
+  },
+  scops: {
+    id: 'scops',
+    atlases: {
+      idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
+      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
+      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+    ],
+    restRange: [5200, 12000],
+    actionProbability: 0.18,
+    className: 'sc-v2-scops',
+    alt: '밤의 소쩍새',
+  },
+  frogs: {
+    id: 'frog',
+    atlases: {
+      idle: { path: 'images/nature/motion/pond-frog-idle-atlas.webp', columns: 2, rows: 2 },
+      action: { path: 'images/nature/motion/pond-frog-call-atlas.webp', columns: 4, rows: 1 },
+    },
+    microClips: [
+      { atlas: 'idle', frames: [0, 1, 0], frameDurations: [300, 520, 260] },
+      { atlas: 'idle', frames: [0, 2, 0], frameDurations: [260, 180, 260] },
+      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [240, 500, 320, 240] },
+    ],
+    actionClips: [
+      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [220, 220, 340, 280, 220, 260, 180] },
+    ],
+    restRange: [4200, 9500],
+    actionProbability: 0.24,
+    className: 'sc-v2-frog',
+    alt: '이끼 낀 돌 위의 개구리',
+  },
+};
+
+const GENERATED_TYPES = new Set<BackgroundSoundType>(Object.keys(GENERATED_CHARACTERS) as BackgroundSoundType[]);
+const HIDDEN_LEGACY_TYPES = new Set<BackgroundSoundType>([
+  'cicadas', 'night', 'cave', 'deepsea', 'stream', 'waterfall', 'wave', 'forest',
 ]);
-const WATER_SOUNDS: BackgroundSoundType[] = ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea'];
-const WAVE_PATH = 'M0 10 Q12.5 4 25 10 T50 10 T75 10 T100 10 T125 10 T150 10 T175 10 T200 10 V24 H0 Z';
 
-const STARS = [
-  [40, 26], [78, 18], [120, 34], [165, 22], [210, 30], [255, 16],
-  [300, 28], [58, 48], [150, 52], [235, 50], [330, 44], [355, 24],
-];
-const PARTICLES = [
-  { left: '14%', top: '30%', size: 6, cls: 'sc-drift-a', delay: '0s' },
-  { left: '33%', top: '56%', size: 4, cls: 'sc-drift-b', delay: '1.6s' },
-  { left: '55%', top: '26%', size: 5, cls: 'sc-drift-a', delay: '3s' },
-  { left: '72%', top: '48%', size: 6, cls: 'sc-drift-b', delay: '0.9s' },
-  { left: '87%', top: '34%', size: 4, cls: 'sc-drift-a', delay: '2.3s' },
+const FIREFLIES = [
+  { left: '17%', top: '49%', delay: '0s', size: 3 },
+  { left: '31%', top: '60%', delay: '-1.6s', size: 2 },
+  { left: '56%', top: '48%', delay: '-3.1s', size: 3 },
+  { left: '74%', top: '56%', delay: '-0.8s', size: 2 },
+  { left: '87%', top: '42%', delay: '-2.4s', size: 2 },
+  { left: '42%', top: '38%', delay: '-4.2s', size: 2 },
 ];
 
-const CLOUD_SVG = (
-  <svg viewBox="0 0 120 36" width="100%" height="100%">
-    <ellipse cx="38" cy="24" rx="30" ry="11" fill="currentColor" />
-    <ellipse cx="66" cy="18" rx="24" ry="13" fill="currentColor" />
-    <ellipse cx="92" cy="25" rx="24" ry="9" fill="currentColor" />
-  </svg>
-);
+const resolveTheme = (types: BackgroundSoundType[]): SceneTheme => {
+  if (types.includes('heartbeat')) return 'warm';
+  if (types.includes('deepsea')) return 'deep-sea';
+  if (types.includes('cave')) return 'cave';
+  if (types.includes('blizzard')) return 'winter';
+  if (types.includes('wave') || types.includes('pebbles') || types.includes('seabirds')) return 'coast';
+  if (types.includes('night') || types.includes('owl') || types.includes('scops')) return 'night-pond';
+  return 'valley';
+};
 
-const GRASS_SVG = (
-  <svg viewBox="0 0 20 20" width="100%" height="100%">
-    <path d="M10 19 Q8 10 4 5 M10 19 Q10 8 10 3 M10 19 Q12 10 16 6" stroke="var(--sc-hf-1)" strokeWidth="2" fill="none" strokeLinecap="round" />
-  </svg>
-);
+const hasAny = (types: BackgroundSoundType[], values: BackgroundSoundType[]) =>
+  values.some((type) => types.includes(type));
 
-const FLOWER_SVG = (color: string) => (
-  <svg viewBox="0 0 20 24" width="100%" height="100%">
-    <path d="M10 23 Q10 16 10 11" stroke="var(--sc-hf-1)" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-    <circle cx="10" cy="8" r="2.2" fill="#ffe3a3" />
-    <circle cx="6.5" cy="7" r="2.6" fill={color} />
-    <circle cx="13.5" cy="7" r="2.6" fill={color} />
-    <circle cx="8" cy="11.5" r="2.6" fill={color} />
-    <circle cx="12" cy="11.5" r="2.6" fill={color} />
-    <circle cx="10" cy="4.5" r="2.6" fill={color} />
-  </svg>
-);
+const legacyCharacters = (types: BackgroundSoundType[]) =>
+  types.filter((type) => (
+    !GENERATED_TYPES.has(type) &&
+    !HIDDEN_LEGACY_TYPES.has(type) &&
+    SCENE_META[type] &&
+    CHARACTER_SVG[type]
+  ));
 
-const REED_SVG = (
-  <svg viewBox="0 0 22 40" width="100%" height="100%">
-    <path d="M7 40 Q6 22 6 12 M15 40 Q16 24 16 16" stroke="#5aa86a" strokeWidth="2" fill="none" strokeLinecap="round" />
-    <rect x="4" y="4" width="4.6" height="11" rx="2.3" fill="#a97c4f" />
-    <rect x="13.8" y="9" width="4.6" height="10" rx="2.3" fill="#7b5836" />
-  </svg>
-);
+const IDLE_POSE: MotionPose = { atlas: 'idle', frame: 0 };
 
-const BUTTERFLY_SVG = (
-  <svg viewBox="0 0 20 16" width="100%" height="100%">
-    <ellipse cx="6" cy="7" rx="5" ry="4.2" fill="#ff9aa2" />
-    <ellipse cx="14" cy="7" rx="5" ry="4.2" fill="#ffd166" />
-    <ellipse cx="10" cy="8" rx="1.4" ry="4.6" fill="#33384a" />
-  </svg>
-);
+const randomBetween = (min: number, max: number) =>
+  Math.round(min + Math.random() * (max - min));
 
-const FLORA = [
-  { left: '6%', top: '77%', size: 15, kind: 'grass', delay: '0s' },
-  { left: '19%', top: '72%', size: 13, kind: 'grass', delay: '1.2s' },
-  { left: '30%', top: '75%', size: 16, kind: 'flower-pink', delay: '0.5s' },
-  { left: '52%', top: '71%', size: 14, kind: 'grass', delay: '2s' },
-  { left: '68%', top: '74%', size: 16, kind: 'flower-yellow', delay: '1.6s' },
-  { left: '88%', top: '72%', size: 15, kind: 'grass', delay: '0.8s' },
-];
+const atlasFrameStyle = (atlas: MotionAtlas, frame: number): React.CSSProperties => {
+  const frameCount = atlas.columns * atlas.rows;
+  const safeFrame = Math.max(0, Math.min(frame, frameCount - 1));
+  const column = safeFrame % atlas.columns;
+  const row = Math.floor(safeFrame / atlas.columns);
+  const x = atlas.columns === 1 ? 0 : (column / (atlas.columns - 1)) * 100;
+  const y = atlas.rows === 1 ? 0 : (row / (atlas.rows - 1)) * 100;
 
-// Campfire flames: three stacked teardrop tongues (outer → core) that flicker
-// independently, giving the fire a live, layered glow for the "불멍" mood.
-const FLAME_OUTER = (
-  <svg viewBox="0 0 46 66" width="100%" height="100%" style={{ overflow: 'visible' }}>
-    <defs>
-      <linearGradient id="scFireOuter" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0" stopColor="#ffb63e" />
-        <stop offset="0.5" stopColor="#ff6f22" />
-        <stop offset="1" stopColor="#e5392a" />
-      </linearGradient>
-    </defs>
-    <path d="M23 3 C 14 21 8 31 10 45 C 12 58 17 65 23 65 C 29 65 34 58 36 45 C 38 31 32 21 23 3 Z" fill="url(#scFireOuter)" />
-  </svg>
-);
-const FLAME_MID = (
-  <svg viewBox="0 0 30 48" width="100%" height="100%">
-    <defs>
-      <linearGradient id="scFireMid" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0" stopColor="#ffe473" />
-        <stop offset="0.55" stopColor="#ffb02e" />
-        <stop offset="1" stopColor="#ff7a1e" />
-      </linearGradient>
-    </defs>
-    <path d="M15 2 C 9 14 5 22 7 33 C 9 42 12 46 15 46 C 18 46 21 42 23 33 C 25 22 21 14 15 2 Z" fill="url(#scFireMid)" />
-  </svg>
-);
-const FLAME_CORE = (
-  <svg viewBox="0 0 16 30" width="100%" height="100%">
-    <defs>
-      <linearGradient id="scFireCore" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0" stopColor="#fff7da" />
-        <stop offset="1" stopColor="#ffe085" />
-      </linearGradient>
-    </defs>
-    <path d="M8 2 C 5 9 3 14 4 19 C 5 25 6 28 8 28 C 10 28 11 25 12 19 C 13 14 11 9 8 2 Z" fill="url(#scFireCore)" />
-  </svg>
-);
-const FIRE_EMBERS = [
-  { left: '43%', size: 3, dx: '6px', delay: '0s', dur: '2.4s' },
-  { left: '55%', size: 2, dx: '-5px', delay: '0.8s', dur: '2.9s' },
-  { left: '49%', size: 2.5, dx: '3px', delay: '1.5s', dur: '2.2s' },
-  { left: '58%', size: 2, dx: '7px', delay: '2.1s', dur: '3.1s' },
-  { left: '45%', size: 3, dx: '-4px', delay: '2.7s', dur: '2.6s' },
-];
+  return {
+    backgroundImage: `url("${assetUrl(atlas.path)}")`,
+    backgroundSize: `${atlas.columns * 100}% ${atlas.rows * 100}%`,
+    backgroundPosition: `${x}% ${y}%`,
+  };
+};
 
-// Bamboo grove: segmented culms with leaf sprays, swaying gently from the base.
-const BAMBOO_SVG = (
-  <svg viewBox="0 0 64 150" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
-    {[
-      { x: 10, w: 6, tone: '#5aa86a', seg: '#3f8f57' },
-      { x: 29, w: 7, tone: '#6db97c', seg: '#4a9c60' },
-      { x: 49, w: 5.5, tone: '#54a065', seg: '#3a8551' },
-    ].map((c, i) => (
-      <g key={i}>
-        <rect x={c.x} y={-6} width={c.w} height={160} rx={c.w / 2} fill={c.tone} />
-        {[16, 44, 72, 100, 128].map((y) => (
-          <rect key={y} x={c.x - 0.8} y={y + i * 7} width={c.w + 1.6} height={2.4} rx={1.2} fill={c.seg} />
-        ))}
-      </g>
-    ))}
-    <path d="M16 30 Q28 22 38 27 Q28 32 16 30 Z" fill="#7ec87e" />
-    <path d="M36 58 Q48 50 58 55 Q48 60 36 58 Z" fill="#6db97c" />
-    <path d="M6 84 Q-4 76 -14 81 Q-4 86 6 84 Z" fill="#7ec87e" transform="translate(20 0)" />
-    <path d="M52 18 Q62 10 72 15 Q62 20 52 18 Z" fill="#8fd39a" transform="translate(-12 0)" />
-  </svg>
-);
+interface NaturalFaunaProps {
+  character: GeneratedCharacter;
+  index: number;
+  /** Increment to force an action clip right now (sound-event sync). */
+  actionSignal?: number;
+  interactive?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
+}
 
-// Rising underwater bubbles (deep-sea / bubble sounds).
-const SCENE_BUBBLES = [
-  { left: '12%', size: 7, delay: '0s', dur: '4.2s' },
-  { left: '30%', size: 5, delay: '1.3s', dur: '5.1s' },
-  { left: '52%', size: 8, delay: '2.4s', dur: '4.6s' },
-  { left: '68%', size: 4, delay: '0.7s', dur: '5.6s' },
-  { left: '84%', size: 6, delay: '1.9s', dur: '4.4s' },
-];
+/**
+ * NPC-style fauna motion: long, irregular rests are punctuated by short blink,
+ * listening, breathing or call clips. Both atlases stay mounted so switching a
+ * frame is an instant cell lookup rather than a sliding image transition.
+ * When the audio engine reports this creature actually calling, `actionSignal`
+ * interrupts the rest and plays the call clip in sync with the sound.
+ */
+const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index, actionSignal, interactive, selected, onSelect }) => {
+  const [pose, setPose] = useState<MotionPose>(IDLE_POSE);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const playClipRef = useRef<(clip: MotionClip, step: number) => void>(() => {});
+  const clearTimerRef = useRef<() => void>(() => {});
 
-// A layered, atmospheric diorama: gradient sky with sun/moon bloom and stars,
-// three hazy parallax hills, optional gradient water, floating particles and a
-// vignette — with the active sounds' characters and weather composited on top.
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncPreference = () => setReduceMotion(media.matches);
+    syncPreference();
+    media.addEventListener('change', syncPreference);
+    return () => media.removeEventListener('change', syncPreference);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer: number | undefined;
+
+    const clearTimer = () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+      timer = undefined;
+    };
+    clearTimerRef.current = clearTimer;
+
+    const scheduleRest = (initial = false) => {
+      if (cancelled) return;
+      setPose(IDLE_POSE);
+      const delay = randomBetween(character.restRange[0], character.restRange[1]) + (initial ? index * 650 : 0);
+      timer = window.setTimeout(startAction, delay);
+    };
+
+    const playClip = (clip: MotionClip, step: number) => {
+      if (cancelled || document.hidden) return;
+      if (step >= clip.frames.length) {
+        scheduleRest();
+        return;
+      }
+
+      setPose({ atlas: clip.atlas, frame: clip.frames[step] });
+      timer = window.setTimeout(
+        () => playClip(clip, step + 1),
+        clip.frameDurations[step] ?? 220,
+      );
+    };
+    playClipRef.current = playClip;
+
+    function startAction() {
+      if (cancelled || document.hidden) return;
+      const useAction = Math.random() < character.actionProbability;
+      const microClip = character.microClips[Math.floor(Math.random() * character.microClips.length)];
+      const actionClip = character.actionClips[Math.floor(Math.random() * character.actionClips.length)];
+      playClip(useAction ? actionClip : microClip, 0);
+    }
+
+    const handleVisibility = () => {
+      clearTimer();
+      setPose(IDLE_POSE);
+      if (!document.hidden && !reduceMotion) scheduleRest(true);
+    };
+
+    setPose(IDLE_POSE);
+    if (!reduceMotion && !document.hidden) scheduleRest(true);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      cancelled = true;
+      clearTimer();
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [character, index, reduceMotion]);
+
+  // Sound-event sync: the engine says this creature is calling right now.
+  useEffect(() => {
+    if (!actionSignal || reduceMotion || document.hidden) return;
+    clearTimerRef.current();
+    const clip = character.actionClips[actionSignal % character.actionClips.length];
+    playClipRef.current(clip, 0);
+  }, [actionSignal, character, reduceMotion]);
+
+  const Wrapper: 'button' | 'div' = interactive ? 'button' : 'div';
+  return (
+    <Wrapper
+      type={interactive ? 'button' : undefined}
+      onClick={interactive ? onSelect : undefined}
+      className={`sc-v2-character absolute ${character.className} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
+      style={interactive ? { background: 'transparent', border: 'none', padding: 0 } : undefined}
+      role={interactive ? undefined : 'img'}
+      aria-label={interactive ? `${character.alt} — 사운드 선택` : character.alt}
+      data-fauna={character.id}
+      data-motion={pose.atlas}
+      data-motion-frame={pose.frame}
+    >
+      {(['idle', 'action'] as const).map((atlasName) => {
+        const atlas = character.atlases[atlasName];
+        const active = pose.atlas === atlasName;
+        return (
+          <div
+            key={atlasName}
+            className="sc-v2-atlas-layer absolute inset-0"
+            style={{
+              ...atlasFrameStyle(atlas, active ? pose.frame : 0),
+              opacity: active ? 1 : 0,
+            }}
+            aria-hidden="true"
+          />
+        );
+      })}
+    </Wrapper>
+  );
+};
+
+/**
+ * Layered nature diorama. Generated plates carry the expensive visual detail;
+ * CSS supplies only low-cost motion (water shimmer, mist, fireflies and gentle
+ * parallax), while the old SVG characters remain as a safe fallback for sounds
+ * that have not received a generated cutout yet.
+ */
 export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, selectedType, onSelectType, subscribeEvents }) => {
-  const chars = SOUND_ORDER.filter((t) => types.includes(t) && SCENE_META[t] && CHARACTER_SVG[t] && !SCENERY.has(t));
+  const theme = resolveTheme(types);
+  const backgroundPath = BACKGROUND_PATH[theme];
+  const rainy = hasAny(types, ['rain', 'thunder', 'tent', 'window', 'eaves']);
+  const stormy = hasAny(types, ['thunder', 'dthunder']);
+  const snowy = types.includes('blizzard');
+  const hasWater = hasAny(types, ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea']);
+  const hasWaterfall = types.includes('waterfall');
+  const hasFire = types.includes('fire');
+  const hasHeartbeat = types.includes('heartbeat');
+  const generated = types.filter((type) => GENERATED_CHARACTERS[type]);
+  const legacy = legacyCharacters(types);
+  const empty = types.length === 0;
 
-  // Sound-synced reactions: a short pulse on the matching object per event,
-  // and an immediate lightning flash on thunder strikes.
+  // Sound-event sync: bump a per-type counter for fauna call clips / legacy
+  // pulses, and flash the sky exactly when a thunder roll fires.
+  const [eventTicks, setEventTicks] = useState<Partial<Record<BackgroundSoundType, number>>>({});
   const [pulses, setPulses] = useState<Partial<Record<BackgroundSoundType, number>>>({});
   const [flashTick, setFlashTick] = useState(0);
   const pulseTimers = useRef<number[]>([]);
@@ -183,6 +353,10 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
     const unsub = subscribeEvents((type) => {
       if (type === 'thunder' || type === 'dthunder') {
         setFlashTick((k) => k + 1);
+        return;
+      }
+      if (GENERATED_TYPES.has(type)) {
+        setEventTicks((prev) => ({ ...prev, [type]: (prev[type] ?? 0) + 1 }));
         return;
       }
       setPulses((prev) => ({ ...prev, [type]: (prev[type] ?? 0) + 1 }));
@@ -202,372 +376,83 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
       pulseTimers.current = [];
     };
   }, [subscribeEvents]);
-  const hasWater = types.some((t) => WATER_SOUNDS.includes(t));
-  const hasWave = types.includes('wave');
-  const hasWaterfall = types.includes('waterfall');
-  const hasFire = types.includes('fire');
-  const hasTent = types.includes('tent');
-  const hasCabin = types.includes('window');
-  const hasBamboo = types.includes('bamboo');
-  const hasTemple = types.includes('temple');
-  const hasPebbles = types.includes('pebbles');
-  const hasBubbles = types.includes('deepsea');
-  const rainy = types.includes('rain') || types.includes('thunder') || types.includes('tent') || types.includes('window') || types.includes('eaves');
-  const stormy = types.includes('thunder') || types.includes('dthunder');
-  const snowy = types.includes('blizzard');
-  const hasScenery = hasWave || hasWaterfall || hasFire || hasTent || hasCabin || hasBamboo || hasTemple || hasPebbles || hasBubbles || rainy || stormy || snowy;
-  const clearSky = !rainy && !snowy;
-  const n = chars.length;
-
-  // Sky reflects the real time of day.
-  const hour = new Date().getHours();
-  const phase = hour < 5 ? 'night' : hour < 8 ? 'dawn' : hour < 17 ? 'day' : hour < 20 ? 'sunset' : 'night';
-  const night = phase === 'night';
 
   return (
-    <div className={`sc-scene relative w-full ${fill ? 'h-full rounded-2xl' : tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`} data-phase={phase}>
-      <svg viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 w-full h-full">
-        <defs>
-          <linearGradient id="scSky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className="sc-sky-0" />
-            <stop offset="0.55" className="sc-sky-1" />
-            <stop offset="1" className="sc-sky-2" />
-          </linearGradient>
-          <radialGradient id="scSun" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0" className="sc-sun-0" />
-            <stop offset="0.45" className="sc-sun-1" />
-            <stop offset="1" className="sc-sun-2" />
-          </radialGradient>
-          <linearGradient id="scHaze" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className="sc-haze-0" />
-            <stop offset="1" className="sc-haze-1" />
-          </linearGradient>
-          <linearGradient id="scHillBack" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className="sc-hillback-0" />
-            <stop offset="1" className="sc-hillback-1" />
-          </linearGradient>
-          <linearGradient id="scHillMid" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className="sc-hillmid-0" />
-            <stop offset="1" className="sc-hillmid-1" />
-          </linearGradient>
-          <linearGradient id="scHillFront" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className="sc-hillfront-0" />
-            <stop offset="1" className="sc-hillfront-1" />
-          </linearGradient>
-          <linearGradient id="scWater" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className="sc-water-0" />
-            <stop offset="0.4" className="sc-water-1" />
-            <stop offset="1" className="sc-water-2" />
-          </linearGradient>
-          <radialGradient id="scVign" cx="0.5" cy="0.42" r="0.75">
-            <stop offset="0.55" className="sc-vign-0" />
-            <stop offset="1" className="sc-vign-1" />
-          </radialGradient>
-          <filter id="scBlur" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="2" />
-          </filter>
-        </defs>
+    <div
+      className={`sc-scene-v2 relative w-full ${fill ? 'h-full rounded-2xl' : tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`}
+      data-theme={theme}
+      data-sounds={types.join(',')}
+    >
+      <div
+        className="sc-v2-plate absolute inset-0"
+        style={backgroundPath ? { backgroundImage: `url("${assetUrl(backgroundPath)}")` } : undefined}
+        aria-hidden="true"
+      />
+      <div className="sc-v2-plate-tint absolute inset-0" aria-hidden="true" />
 
-        {/* sky */}
-        <rect x="0" y="0" width="400" height="160" fill="url(#scSky)" />
+      {theme === 'deep-sea' && <div className="sc-v2-caustics absolute inset-0" aria-hidden="true" />}
+      {theme === 'cave' && <div className="sc-v2-cave-depth absolute inset-0" aria-hidden="true" />}
+      {theme === 'warm' && <div className="sc-v2-warm-field absolute inset-0" aria-hidden="true" />}
 
-        {/* stars (clear night) */}
-        {night && clearSky && (
-          <g>
-            {STARS.map(([x, y], i) => (
-              <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.2 : 0.8} fill="#ffffff" opacity={0.9} />
-            ))}
-          </g>
-        )}
-
-        {/* sun / moon with soft bloom (colour follows the phase) */}
-        {clearSky && (
-          <g>
-            <circle cx="322" cy="40" r="64" fill="url(#scSun)" />
-            <circle cx="322" cy="40" r="14" className="sc-sun-core" />
-          </g>
-        )}
-
-        {/* parallax hills (far = hazier) */}
-        <path d="M0 92 Q100 72 200 86 T400 82 L400 160 L0 160 Z" fill="url(#scHillBack)" filter="url(#scBlur)" opacity="0.9" />
-        <path d="M0 108 Q130 86 250 104 T400 100 L400 160 L0 160 Z" fill="url(#scHillMid)" />
-        {/* horizon haze */}
-        <rect x="0" y="86" width="400" height="30" fill="url(#scHaze)" opacity="0.5" />
-        {/* distant tree silhouettes on the mid hill */}
-        <g opacity="0.5" filter="url(#scBlur)" style={{ fill: 'var(--sc-hf-1)' }}>
-          <circle cx="58" cy="94" r="9" />
-          <rect x="56" y="98" width="4" height="9" rx="2" />
-          <circle cx="76" cy="98" r="6.5" />
-          <rect x="74.5" y="101" width="3" height="7" rx="1.5" />
-          <circle cx="332" cy="92" r="8" />
-          <rect x="330" y="96" width="4" height="9" rx="2" />
-          <circle cx="352" cy="97" r="5.5" />
-          <rect x="350.6" y="100" width="2.8" height="7" rx="1.4" />
-        </g>
-        {/* front ground */}
-        <path d="M0 126 Q110 106 230 122 T400 118 L400 160 L0 160 Z" fill="url(#scHillFront)" />
-
-        {/* waterfall cliff — a tall earthy rock outcrop (grass cap on top) that
-            rises from the terrain; the water ribbon falls down its face */}
-        {hasWaterfall && (
-          <>
-            <path d="M0 52 C 20 46 44 54 54 76 C 60 96 56 140 54 160 L0 160 Z" fill="#8a6f52" />
-            <path d="M30 68 C 44 64 52 80 54 98 C 56 122 52 150 51 160 L30 160 Z" fill="#000000" opacity="0.16" />
-            <path d="M0 52 C 20 46 44 54 54 76 L54 86 C 44 66 20 62 0 66 Z" fill="url(#scHillMid)" />
-          </>
-        )}
-
-        {/* water body */}
-        {hasWater && (
-          <g>
-            <path d="M0 128 Q100 122 200 128 T400 126 L400 160 L0 160 Z" fill="url(#scWater)" />
-            <ellipse cx="200" cy="130" rx="150" ry="4" className="sc-water-0" opacity="0.5" />
-          </g>
-        )}
-
-        {/* pebble shore strip */}
-        {hasPebbles && (
-          <g>
-            {[
-              [14, 130, 5, '#9aa3ad'], [34, 134, 4, '#b4bcc6'], [55, 129, 4.5, '#7f8894'], [78, 133, 5, '#a8b0ba'],
-              [104, 130, 4, '#8b95a1'], [130, 134, 4.5, '#b4bcc6'], [158, 129, 4, '#9aa3ad'], [186, 133, 5, '#7f8894'],
-              [214, 130, 4, '#aab2bc'], [244, 134, 4.5, '#8b95a1'], [274, 129, 4, '#b4bcc6'], [304, 133, 5, '#9aa3ad'],
-              [334, 130, 4, '#7f8894'], [364, 134, 4.5, '#a8b0ba'], [388, 130, 4, '#9aa3ad'],
-            ].map(([x, y, r, c], i) => (
-              <g key={i}>
-                <ellipse cx={x as number} cy={y as number} rx={r as number} ry={(r as number) * 0.72} fill={c as string} />
-                <ellipse cx={(x as number) - (r as number) * 0.25} cy={(y as number) - (r as number) * 0.3} rx={(r as number) * 0.5} ry={(r as number) * 0.3} fill="#ffffff" opacity="0.25" />
-              </g>
-            ))}
-          </g>
-        )}
-
-        {/* camping tent on the shore (kept inside the hero crop: x ≈ 67–333) */}
-        {hasTent && (
-          <g>
-            <ellipse cx="296" cy="133" rx="36" ry="5" fill="#000000" opacity="0.12" />
-            <path d="M296 88 L264 132 L328 132 Z" fill="#ff9d76" />
-            <path d="M296 88 L282 132 L310 132 Z" fill="#e8825e" />
-            <path d="M296 96 L288 132 L304 132 Z" fill="#5a4636" />
-            <path d="M296 96 L291 132 L301 132 Z" fill="#ffd98a" opacity="0.85" />
-            <path d="M296 88 L264 132 M296 88 L328 132" stroke="#c96a48" strokeWidth="2" fill="none" strokeLinecap="round" />
-            <line x1="296" y1="88" x2="296" y2="80" stroke="#8a6f52" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="296" cy="79" r="2.2" fill="#ffd166" />
-          </g>
-        )}
-
-        {/* cozy cabin with a warm window */}
-        {hasCabin && (
-          <g>
-            <ellipse cx="110" cy="131" rx="38" ry="5" fill="#000000" opacity="0.12" />
-            <rect x="86" y="100" width="48" height="30" rx="2" fill="#8a6f52" />
-            <path d="M86 108 h48 M86 116 h48 M86 124 h48" stroke="#7b5836" strokeWidth="1.4" opacity="0.6" />
-            <rect x="126" y="84" width="7" height="14" rx="1" fill="#7b5836" />
-            <path d="M78 102 L110 80 L142 102 Z" fill="#6b4426" />
-            <path d="M78 102 L110 80 L142 102" stroke="#5a3a22" strokeWidth="2" fill="none" strokeLinecap="round" />
-            <rect x="100" y="108" width="17" height="14" rx="2" fill="#ffd98a" className="sc-warmwindow" />
-            <path d="M108.5 108 v14 M100 115 h17" stroke="#7b5836" strokeWidth="1.6" />
-            <rect x="121" y="112" width="9" height="18" rx="1.5" fill="#5a4636" />
-            <circle cx="128.5" cy="121" r="1.1" fill="#ffd166" />
-          </g>
-        )}
-
-        {/* temple bell pavilion on the hill */}
-        {hasTemple && (
-          <g>
-            <rect x="156" y="100" width="38" height="4" rx="2" fill="#9c8a74" />
-            <rect x="161" y="86" width="4" height="15" fill="#7b5836" />
-            <rect x="185" y="86" width="4" height="15" fill="#7b5836" />
-            <path d="M150 88 C160 74 190 74 200 88 C190 82 160 82 150 88 Z" fill="#44506b" />
-            <path d="M150 88 Q175 76 200 88" stroke="#333d54" strokeWidth="2" fill="none" strokeLinecap="round" />
-            <circle cx="175" cy="76" r="2" fill="#333d54" />
-            <line x1="175" y1="84" x2="175" y2="88" stroke="#6b5a44" strokeWidth="1.6" />
-            <path d="M170 88 C170 85 180 85 180 88 L181 95 Q175 98.5 169 95 Z" fill="#b08d4f" />
-            <path d="M170 92 h10" stroke="#8f6f3a" strokeWidth="1.2" opacity="0.7" />
-            <circle cx="175" cy="97.5" r="1.3" fill="#8f6f3a" />
-          </g>
-        )}
-
-        {/* storm dims the sky */}
-        {stormy && <rect x="0" y="0" width="400" height="160" fill="rgba(26,34,58,0.22)" />}
-        {/* vignette for focus */}
-        <rect x="0" y="0" width="400" height="160" fill="url(#scVign)" />
-      </svg>
-
-      {/* waterfall scenery: a ribbon of water falling down the cliff into the pool */}
-      {hasWaterfall && (
-        <div className="absolute left-[4.5%] top-[30%] bottom-[15%] w-[22px] pointer-events-none opacity-95">
-          <div
-            className="sc-cascade absolute inset-0 rounded-b-[10px]"
-            style={{
-              clipPath: 'polygon(18% 0, 82% 0, 100% 100%, 0 100%)',
-              WebkitMaskImage: 'linear-gradient(180deg, transparent 0, #000 16%, #000 100%)',
-              maskImage: 'linear-gradient(180deg, transparent 0, #000 16%, #000 100%)',
-            }}
-          />
-          <div className="sc-mist absolute -bottom-2 -inset-x-3 h-5 rounded-[50%] bg-white/75 blur-[3px]" />
-          <div className="absolute -bottom-0.5 -inset-x-2 h-[10px] rounded-[50%] bg-[#dff1fb]/85 blur-[1px]" />
+      {hasWater && (
+        <div className="sc-v2-water absolute inset-x-0 bottom-0 h-[38%]" aria-hidden="true">
+          <div className="sc-v2-water-glint absolute inset-0" />
         </div>
       )}
-
-      {/* ocean crest ripples on the waterline */}
-      {hasWave && (
-        <div className="absolute bottom-0 inset-x-0 h-11 overflow-hidden pointer-events-none">
-          <svg className="scene-wave-drift-slow absolute bottom-3 left-0 h-4 w-[200%]" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true">
-            <path d={WAVE_PATH} fill="#bfe3f7" opacity="0.5" />
-          </svg>
-          <svg className="scene-wave-drift absolute bottom-0 left-0 h-5 w-[200%]" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true">
-            <path d={WAVE_PATH} fill="#eaf6ff" opacity="0.85" />
-          </svg>
-        </div>
+      {hasWaterfall && <div className="sc-v2-waterfall-mist absolute left-[43%] top-[46%] h-8 w-24" aria-hidden="true" />}
+      {hasFire && <div className="sc-v2-fire-glow absolute bottom-[8%] left-1/2 h-24 w-40 -translate-x-1/2" aria-hidden="true" />}
+      {hasHeartbeat && (
+        <div className="sc-v2-heartbeat absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2" aria-hidden="true" />
       )}
 
-      {/* campfire scenery: a cozy fire-gazing (불멍) fire — layered flickering
-          flames over a log pile, with a warm ground glow and rising embers */}
-      {hasFire && (
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-[6%] w-[132px] h-[112px] pointer-events-none z-[6]">
-          {/* warm ground glow */}
-          <div className="sc-fireglow absolute left-1/2 -translate-x-1/2 bottom-[4px] h-[74px] w-[132px] rounded-[50%]" />
-          {/* log pile, ember bed & hearth stones */}
-          <svg viewBox="0 0 132 112" className="absolute inset-0 h-full w-full">
-            <ellipse cx="66" cy="101" rx="42" ry="8" fill="#000000" opacity="0.14" />
-            <ellipse cx="66" cy="97" rx="26" ry="6" fill="#7a3410" />
-            <ellipse cx="66" cy="96.5" rx="19" ry="4" fill="#ff7a1c" />
-            <ellipse cx="66" cy="96" rx="11" ry="2.6" fill="#ffd15a" />
-            <ellipse cx="30" cy="100" rx="8" ry="5" fill="#8f8f99" />
-            <ellipse cx="30" cy="98.6" rx="8" ry="3.6" fill="#b0b0ba" />
-            <ellipse cx="102" cy="100" rx="8" ry="5" fill="#7e7e88" />
-            <ellipse cx="102" cy="98.6" rx="8" ry="3.6" fill="#9a9aa4" />
-            <ellipse cx="47" cy="104" rx="6.5" ry="4" fill="#84848d" />
-            <ellipse cx="85" cy="104" rx="6.5" ry="4" fill="#97979f" />
-            <g>
-              <rect x="30" y="88" width="72" height="11" rx="5.5" transform="rotate(-15 66 93)" fill="#7c4e2c" />
-              <rect x="30" y="88" width="72" height="11" rx="5.5" transform="rotate(15 66 93)" fill="#6b4426" />
-              <rect x="30" y="88" width="72" height="4" rx="2" transform="rotate(-15 66 93)" fill="#a9764a" opacity="0.7" />
-              <rect x="30" y="90" width="72" height="3.5" rx="1.8" transform="rotate(15 66 93)" fill="#89623c" opacity="0.6" />
-              <ellipse cx="34" cy="98" rx="5.2" ry="5" fill="#c69c6d" />
-              <ellipse cx="34" cy="98" rx="2.4" ry="2.3" fill="#a9764a" />
-              <ellipse cx="99" cy="98" rx="5.2" ry="5" fill="#b98a58" />
-              <ellipse cx="99" cy="98" rx="2.4" ry="2.3" fill="#9a6b3f" />
-            </g>
-          </svg>
-          {/* layered flickering flames */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[20px] h-[62px] w-[46px]">
-            <div className="sc-flame sc-flame-a absolute inset-0">{FLAME_OUTER}</div>
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[22px] h-[44px] w-[30px]">
-            <div className="sc-flame sc-flame-b absolute inset-0">{FLAME_MID}</div>
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[24px] h-[26px] w-[15px]">
-            <div className="sc-flame sc-flame-c absolute inset-0">{FLAME_CORE}</div>
-          </div>
-          {/* rising embers */}
-          {FIRE_EMBERS.map((e, i) => (
-            <span
-              key={i}
-              className="sc-ember absolute rounded-full"
-              style={{ left: e.left, bottom: '46px', width: e.size, height: e.size, animationDelay: e.delay, animationDuration: e.dur, '--sc-ex': e.dx } as React.CSSProperties}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* bamboo grove swaying at the right edge */}
-      {hasBamboo && (
-        <div className="sc-bamboo absolute pointer-events-none" style={{ right: '1%', bottom: '8%', width: 58, height: '78%' }}>
-          {BAMBOO_SVG}
-        </div>
-      )}
-
-      {/* rising bubbles over the water */}
-      {hasBubbles && SCENE_BUBBLES.map((b, i) => (
+      {theme === 'night-pond' && FIREFLIES.map((firefly, index) => (
         <span
-          key={i}
-          className="sc-bubblef absolute rounded-full pointer-events-none"
-          style={{ left: b.left, bottom: '4%', width: b.size, height: b.size, animationDelay: b.delay, animationDuration: b.dur }}
+          key={index}
+          className="sc-v2-firefly absolute rounded-full"
+          style={{ left: firefly.left, top: firefly.top, width: firefly.size, height: firefly.size, animationDelay: firefly.delay }}
+          aria-hidden="true"
         />
       ))}
 
-      {/* drifting clouds */}
-      <div className="sc-cloud sc-cloud-a" style={{ left: 0, top: '6%', width: 96, height: 30 }}>{CLOUD_SVG}</div>
-      <div className="sc-cloud sc-cloud-b" style={{ left: 0, top: '20%', width: 66, height: 22, opacity: 0.75 }}>{CLOUD_SVG}</div>
+      {generated.map((type, index) => {
+        const character = GENERATED_CHARACTERS[type]!;
+        return (
+          <NaturalFauna
+            key={`${type}-${index}`}
+            character={character}
+            index={index}
+            actionSignal={eventTicks[type]}
+            interactive={interactive}
+            selected={selectedType === type}
+            onSelect={() => onSelectType?.(type)}
+          />
+        );
+      })}
 
-      {/* grass tufts & wildflowers on the front hill */}
-      {FLORA.map((f, i) => (
-        <div key={i} className="sc-grass absolute pointer-events-none" style={{ left: f.left, top: f.top, width: f.size, height: f.size * 1.15, animationDelay: f.delay }}>
-          {f.kind === 'grass' ? GRASS_SVG : FLOWER_SVG(f.kind === 'flower-pink' ? '#ff9aa2' : '#ffd166')}
-        </div>
-      ))}
+      {legacy.map((type, index) => {
+        const meta = SCENE_META[type]!;
+        // Anchored per type (shared spatial layout) so adding/removing sounds
+        // never reshuffles the rest of the scene — and pan matches position.
+        const left = `${Math.min(90, Math.max(8, (SPATIAL[type]?.x ?? 0.5) * 100))}%`;
+        const top = meta.band === 'sky' ? '28%' : meta.band === 'tree' ? '49%' : meta.band === 'ground' ? '72%' : '82%';
+        const selected = selectedType === type;
+        const Wrapper: 'button' | 'div' = interactive ? 'button' : 'div';
+        return (
+          <Wrapper
+            key={type}
+            type={interactive ? 'button' : undefined}
+            aria-label={interactive ? `${getSoundLabel(type)} 사운드 선택` : undefined}
+            onClick={interactive ? () => onSelectType?.(type) : undefined}
+            className={`sc-v2-legacy absolute ${meta.motion} ${pulses[type] ? 'sc-hit' : ''} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
+            style={{ left, top, animationDelay: `${index * 0.4}s`, ...(interactive ? { background: 'transparent', border: 'none', padding: 0 } : {}) }}
+          >
+            <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true" dangerouslySetInnerHTML={{ __html: CHARACTER_SVG[type]! }} />
+          </Wrapper>
+        );
+      })}
 
-      {/* reeds at the water's edge */}
-      {hasWater && (
-        <>
-          <div className="sc-grass absolute pointer-events-none" style={{ left: '3%', bottom: '4%', width: 20, height: 36 }}>{REED_SVG}</div>
-          <div className="sc-grass absolute pointer-events-none" style={{ right: '4%', bottom: '5%', width: 18, height: 32, animationDelay: '1.4s' }}>{REED_SVG}</div>
-        </>
-      )}
-
-      {/* daytime butterflies (fireflies take over at night via particles) */}
-      {!night && (
-        <>
-          <div className="sc-butterfly absolute pointer-events-none" style={{ left: '24%', top: '58%', width: 15, height: 12 }}>{BUTTERFLY_SVG}</div>
-          <div className="sc-butterfly absolute pointer-events-none" style={{ left: '70%', top: '52%', width: 12, height: 10, animationDelay: '-7s' }}>{BUTTERFLY_SVG}</div>
-        </>
-      )}
-
-      {/* ambient particles */}
-      {PARTICLES.map((p, i) => (
-        <div key={i} className={`sc-particle ${p.cls}`} style={{ left: p.left, top: p.top, width: p.size, height: p.size, animationDelay: p.delay }} />
-      ))}
-
-      {/* characters — anchored per type (from the shared spatial layout), so
-          adding or removing sounds never reshuffles the rest of the scene */}
-      {n === 0 && !hasScenery ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-xs text-slate-500/80 dark:text-slate-300/70">사운드를 고르면 친구들이 모여요 🌱</p>
-        </div>
-      ) : (
-        chars.map((t, i) => {
-          const meta = SCENE_META[t]!;
-          const spec = SPATIAL[t];
-          const x = Math.min(93, Math.max(7, (spec?.x ?? 0.5) * 100));
-          // Deterministic per-type jitter so anchors feel organic, not gridded.
-          const seed = t.charCodeAt(0) * 7 + t.length * 13;
-          const y = BAND_Y[meta.band] + ((seed % 7) - 3);
-          const depth = spec?.depth ?? 'mid';
-          const size = BAND_SIZE[meta.band] * (depth === 'far' ? 0.82 : depth === 'near' ? 1.06 : 1);
-          const selected = selectedType === t;
-          const Wrapper: 'button' | 'div' = interactive ? 'button' : 'div';
-          return (
-            <Wrapper
-              key={t}
-              type={interactive ? 'button' : undefined}
-              aria-label={interactive ? `${getSoundLabel(t)} 사운드 선택` : undefined}
-              onClick={interactive ? () => onSelectType?.(t) : undefined}
-              className={`sc-char sc-depth-${depth} absolute -translate-x-1/2 -translate-y-1/2 z-10 ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
-              style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, background: 'transparent', border: 'none', padding: 0 }}
-            >
-              <div
-                className={`w-full h-full scene-motion-${meta.motion} ${pulses[t] ? 'sc-hit' : ''}`}
-                style={{ animationDelay: pulses[t] ? undefined : `${(seed % 5) * 0.35}s` }}
-              >
-                <svg
-                  viewBox="0 0 100 100"
-                  width="100%"
-                  height="100%"
-                  className="overflow-visible"
-                  style={{ filter: 'url(#scPuffy) drop-shadow(0 4px 3px rgba(15,25,45,0.25))' }}
-                  dangerouslySetInnerHTML={{ __html: CHARACTER_SVG[t]! }}
-                />
-              </div>
-              {meta.band === 'water' && <span className="sc-mirror" aria-hidden="true" />}
-            </Wrapper>
-          );
-        })
-      )}
-
-      {/* tappable hotspots for scenery sounds (campfire, tent, bamboo...) */}
-      {interactive && SOUND_ORDER.filter((t) => types.includes(t) && SCENERY_HOTSPOTS[t]).map((t) => {
+      {/* tappable hotspots for scenery-style sounds (fire glow, water, sky...) */}
+      {interactive && types.filter((t) => SCENERY_HOTSPOTS[t] && !GENERATED_TYPES.has(t) && !legacy.includes(t)).map((t) => {
         const hot = SCENERY_HOTSPOTS[t]!;
         const selected = selectedType === t;
         return (
@@ -582,14 +467,21 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
         );
       })}
 
-      {/* weather overlays (parallax back + front layers) sit in front */}
-      {rainy && <div className="scene-rain-2 absolute inset-0 z-20 pointer-events-none" />}
-      {rainy && <div className="scene-rain absolute inset-0 z-20 pointer-events-none" />}
-      {snowy && <div className="scene-snow-2 absolute inset-0 z-20 pointer-events-none" />}
-      {snowy && <div className="scene-snow absolute inset-0 z-20 pointer-events-none" />}
-      {stormy && <div className="scene-lightning absolute inset-0 z-20 bg-white pointer-events-none" style={{ opacity: 0 }} />}
+      {rainy && <div className="sc-v2-rain sc-v2-rain-near absolute inset-0" aria-hidden="true" />}
+      {rainy && <div className="sc-v2-rain sc-v2-rain-far absolute inset-0" aria-hidden="true" />}
+      {snowy && <div className="sc-v2-snow absolute inset-0" aria-hidden="true" />}
+      {stormy && <div className="sc-v2-lightning absolute inset-0" aria-hidden="true" />}
       {/* event-synced lightning: flashes exactly when a thunder roll fires */}
-      {flashTick > 0 && <div key={flashTick} className="sc-flash-now absolute inset-0 z-20 bg-white pointer-events-none" style={{ opacity: 0 }} />}
+      {flashTick > 0 && <div key={flashTick} className="sc-flash-now absolute inset-0 z-10 bg-white pointer-events-none" style={{ opacity: 0 }} aria-hidden="true" />}
+      {theme === 'night-pond' && <div className="sc-v2-night-haze absolute inset-0" aria-hidden="true" />}
+
+      {empty && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
+          <p className="rounded-full bg-black/15 px-3 py-1.5 text-xs font-medium text-white/85 backdrop-blur-sm">사운드를 고르면 풍경이 깨어나요</p>
+        </div>
+      )}
+
+      <div className="sc-v2-vignette pointer-events-none absolute inset-0" aria-hidden="true" />
     </div>
   );
 };

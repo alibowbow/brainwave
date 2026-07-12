@@ -42,7 +42,7 @@ export const MAX_LAYER_VOLUME = 1.2;
 const NATURE_SOURCE_TRIM: Partial<Record<BackgroundSoundType, number>> = {
   rain: 0.9,
   thunder: 0.75,
-  stream: 1.8,
+  stream: 1.35,
   waterfall: 0.95,
   wave: 0.9,
   fire: 0.65,

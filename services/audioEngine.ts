@@ -1021,22 +1021,23 @@ export class BinauralEngine {
   private startStream(dest: AudioNode, bucket: Bucket) {
     if (!this.ctx || !this.pinkNoiseBuffer || !this.brownNoiseBuffer) return;
 
-    // Three decorrelated bands keep the water full on small speakers: a dark
-    // channel bed, the audible tumbling body and a much quieter surface fizz.
+    // A brook, not a waterfall: barely any dark channel mass, a light and
+    // slightly higher tumbling body, and the surface fizz — the "졸졸"
+    // character comes from the drips below, not from broadband roar.
     const channel = this.noiseSource(this.brownNoiseBuffer)!;
     const channelLp = this.ctx.createBiquadFilter();
-    channelLp.type = 'lowpass'; channelLp.frequency.value = 430;
+    channelLp.type = 'lowpass'; channelLp.frequency.value = 300;
     const channelGain = this.ctx.createGain();
-    channelGain.gain.value = 0.34;
+    channelGain.gain.value = 0.16;
     channel.connect(channelLp).connect(channelGain).connect(dest);
     channel.start();
     this.register(bucket, channel);
 
     const bed = this.noiseSource(this.pinkNoiseBuffer)!;
     const bp = this.ctx.createBiquadFilter();
-    bp.type = 'bandpass'; bp.frequency.value = 920; bp.Q.value = 0.45;
+    bp.type = 'bandpass'; bp.frequency.value = 1150; bp.Q.value = 0.5;
     const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.84;
+    bedGain.gain.value = 0.6;
     bed.connect(bp).connect(bedGain).connect(dest);
     bed.start();
     this.register(bucket, bed);
@@ -1087,12 +1088,13 @@ export class BinauralEngine {
       const gain = this.ctx.createGain();
       const dur = 0.055 + Math.random() * 0.09;
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.24 + Math.random() * 0.12, t + 0.004);
+      gain.gain.linearRampToValueAtTime(0.34 + Math.random() * 0.16, t + 0.004);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       src.connect(bpf).connect(gain).connect(this.makePan(Math.random() * 1.4 - 0.7, dest));
       this.startNoiseBurst(src, t, dur + 0.02);
 
-      this.schedule(bucket, drip, 90 + Math.random() * 320);
+      // Denser plip pattern — this is where the "졸졸" lives.
+      this.schedule(bucket, drip, 70 + Math.random() * 240);
     };
     drip();
   }

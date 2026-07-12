@@ -52,7 +52,7 @@ The Ambie WAV derivatives were gain-adjusted and encoded for the app. The Nox_So
 | Asset | Processing performed for this app | Runtime seam |
 | --- | --- | --- |
 | `rainRural` | `ffmpeg -i rain.wav -af volume=4dB -ar 48000 -ac 1`, then Vorbis q4 and MP3 96k | 1.25 s equal-power crossfade |
-| `creekBrook` | `ffmpeg -i creek.wav -af volume=5.8dB -ar 48000 -ac 2`, then Vorbis q4 and MP3 96k | 1.10 s equal-power crossfade |
+| `creekBrook` | `ffmpeg -i creek.wav -af volume=5.8dB -ar 48000 -ac 2`, then Vorbis q4 and MP3 96k; v3 brook voicing: 330 Hz highpass, -3.3 dB, soft-limit, lamejs MP3 112k | 1.10 s equal-power crossfade |
 | `fireplaceHearth` | `ffmpeg -i fireplace.wav -af volume=3dB -ar 48000 -ac 2`, then Vorbis q4 and MP3 96k | 0.90 s equal-power crossfade |
 | `oceanRibeira` | None; versioned byte-for-byte copy of the Freesound HQ preview | 0.30 s equal-power crossfade |
 | `forestBirdsAlishan` | None; versioned byte-for-byte copy of the Freesound HQ preview | 1.20 s equal-power crossfade |
@@ -72,7 +72,7 @@ The final column is deliberately conservative for the encoded-source gain stage:
 | Asset | Encoded integrated loudness | Maximum encoded true peak | `sampleTrim` | Post-trim loudness at level 1.0 | Conservative peak at level 1.2 |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | `rainRural` | -21.5 LUFS | -5 dBTP | 1.00 | -21.5 LUFS | -3.4 dBTP |
-| `creekBrook` | -21.2 LUFS | -5 dBTP | 1.00 | -21.2 LUFS | -3.4 dBTP |
+| `creekBrook` | -24.8 LUFS | -5.9 dBTP | 1.00 | -24.8 LUFS | -4.3 dBTP |
 | `fireplaceHearth` | -32.2 LUFS | -5 dBTP | 1.00 | -32.2 LUFS | -3.4 dBTP |
 | `oceanRibeira` | -20.9 LUFS | -5.7 dBTP | 1.00 | -20.9 LUFS | -4.1 dBTP |
 | `forestBirdsAlishan` | -25.8 LUFS | -5 dBTP | 1.00 | -25.8 LUFS | -3.4 dBTP |
@@ -92,7 +92,7 @@ The 23 lazy-loaded files total **8,746,684 bytes** (below the 10 MiB checked-in 
 | File | Bytes | SHA-256 |
 | --- | ---: | --- |
 | `arctic-wind-cc0-v2.mp3` | 191,634 | `5f44a7ea070ac301ba04bff481741fd4831cc271d1db92d9e082f5df033e82ab` |
-| `creek-brook-cc0-v2.mp3` | 351,451 | `96ffdaca13147db424ee9ab2ea3113d00f547e725e493b32162ae12ad470367f` |
+| `creek-brook-cc0-v3.mp3` | 352,183 | `292d85cdf026ac4f02a248006facbf94a21b609f805a3ea92c9ef9309b3c0978` |
 | `crickets-night-cc0-v2.mp3` | 194,400 | `1f380ddf267c76577b6bfeaccb49a52d22f74a181662ed143c847999abcaf6e7` |
 | `fireplace-hearth-cc0-v2.mp3` | 246,491 | `3caeeb5bb4ef1fa317f18dbf3b77809e27b11e39c9be218ebda0ada376475086` |
 | `forest-birds-alishan-cc0-v2.mp3` | 560,640 | `165fc140e0c2d636a5542ec92dc7b5552c4f1ab08964136419c36ffd48d11029` |

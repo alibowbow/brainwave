@@ -1017,7 +1017,7 @@ export default function App() {
       </div>
 
       <div className="mt-8 text-center text-xs text-slate-400">
-        <p>MC Brain Care v3.9.1</p>
+        <p>MC Brain Care v3.9.2</p>
         <p className="mt-2">CC0 자연 현장 녹음과 기기에서 생성한 사운드를 함께 사용합니다.</p>
       </div>
     </div>

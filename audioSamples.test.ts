@@ -61,11 +61,12 @@ describe('nature sample manifest', () => {
   });
 
   it('keeps quiet field recordings as texture without collapsing the procedural body', () => {
+    // Pinned against the v2 remastered files (loudness baked in, trim = 1).
     const textureFloors = {
-      fire: { assetId: 'fireplaceHearth', minimumProceduralMix: 0.6, expectedLufs: -38.2 },
-      forest: { assetId: 'forestField', minimumProceduralMix: 0.65, expectedLufs: -38.9 },
-      bamboo: { assetId: 'mountainWind', minimumProceduralMix: 0.5, expectedLufs: -30.8 },
-      birds: { assetId: 'forestBirdsAlishan', minimumProceduralMix: 0.6, expectedLufs: -30.7 },
+      fire: { assetId: 'fireplaceHearth', minimumProceduralMix: 0.6, expectedLufs: -32.2 },
+      forest: { assetId: 'forestField', minimumProceduralMix: 0.65, expectedLufs: -36.8 },
+      bamboo: { assetId: 'mountainWind', minimumProceduralMix: 0.5, expectedLufs: -27 },
+      birds: { assetId: 'forestBirdsAlishan', minimumProceduralMix: 0.6, expectedLufs: -25.8 },
     } as const;
 
     for (const [type, expectation] of Object.entries(textureFloors)) {
@@ -89,15 +90,15 @@ describe('nature sample URLs', () => {
     expect(normalizeBasePath(input)).toBe(expected);
   });
 
-  it('prefers Vorbis when supported and keeps MP3 as a decode fallback', () => {
+  it('serves the universal MP3 to every browser', () => {
     const urls = natureSampleUrls('rainRural', '/brainwave/', () => true);
-    expect(urls.map((source) => source.codec)).toEqual(['Vorbis', 'MP3']);
-    expect(urls[0].url).toBe('/brainwave/audio/nature/rain-rural-cc0-v1.ogg');
+    expect(urls.map((source) => source.codec)).toEqual(['MP3']);
+    expect(urls[0].url).toBe('/brainwave/audio/nature/rain-rural-cc0-v2.mp3');
   });
 
-  it('selects universal MP3 on a browser without Vorbis support', () => {
-    const urls = natureSampleUrls('rainRural', '/', (mime) => mime === 'audio/mpeg');
+  it('falls back to MP3 sources when the mime probe rejects everything', () => {
+    const urls = natureSampleUrls('rainRural', '/', () => false);
     expect(urls.map((source) => source.codec)).toEqual(['MP3']);
-    expect(urls[0].url).toBe('/audio/nature/rain-rural-cc0-v1.mp3');
+    expect(urls[0].url).toBe('/audio/nature/rain-rural-cc0-v2.mp3');
   });
 });

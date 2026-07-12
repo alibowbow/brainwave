@@ -224,30 +224,20 @@ describe('BinauralEngine multi-voice', () => {
     }).not.toThrow();
   });
 
-  it('falls through a failed Vorbis decode to MP3 and crossfades the procedural bed', async () => {
+  it('decodes the universal MP3 and crossfades the procedural bed', async () => {
     g.document = { createElement: () => ({ canPlayType: () => 'probably' }) };
     const buffer = new AudioBufferMock(1, 96_000) as unknown as AudioBuffer;
     const release = vi.fn();
-    const cache = sampleCache(async (_context, url) => {
-      if (url.endsWith('.ogg')) throw new Error('Vorbis decode failed');
-      return { buffer, release };
-    });
+    const cache = sampleCache(async () => ({ buffer, release }));
     e = new BinauralEngine(cache);
     e.start(cfg([{ type: 'rain', volume: 0.8 }]));
     await flushMicrotasks();
 
-    expect(cache.acquire).toHaveBeenCalledTimes(2);
+    expect(cache.acquire).toHaveBeenCalledTimes(1);
     expect(cache.acquire).toHaveBeenNthCalledWith(
       1,
       expect.anything(),
-      '/audio/nature/rain-rural-cc0-v1.ogg',
-      expect.any(Number),
-      expect.any(Number),
-    );
-    expect(cache.acquire).toHaveBeenNthCalledWith(
-      2,
-      expect.anything(),
-      '/audio/nature/rain-rural-cc0-v1.mp3',
+      '/audio/nature/rain-rural-cc0-v2.mp3',
       expect.any(Number),
       expect.any(Number),
     );
@@ -271,7 +261,7 @@ describe('BinauralEngine multi-voice', () => {
     await flushMicrotasks();
 
     const voice = (e as any).voices.get('rain');
-    expect(cache.acquire).toHaveBeenCalledTimes(2);
+    expect(cache.acquire).toHaveBeenCalledTimes(1);
     expect(e.activeSampleTypes()).toEqual([]);
     expect(voice.proceduralMix).toBe(1);
     expect(voice.gain.gain.value).toBeCloseTo(layerGain('rain', 0.7));

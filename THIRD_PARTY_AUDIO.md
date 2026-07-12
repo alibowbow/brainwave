@@ -34,6 +34,19 @@ Retrieval date for all distributed sources: **2026-07-12**.
 
 ## App encodes and processing
 
+
+### v2 loudness remaster (2026-07-12)
+
+The v1 encodes preserved each source's original loudness, which left most
+recordings 10–30 dB quieter than the procedural beds they blend with — the
+samples were effectively inaudible or collapsed layer loudness on arrival.
+Every shipped file was re-mastered with `scripts/remaster-samples.mjs`:
+Chromium `decodeAudioData` → per-file makeup gain (see each asset's
+`processingCommand`) → tanh soft-knee peak limiter (knee −9 dBFS, ceiling
+−5 dBFS, ≤ 0.04 % of samples touched) → lamejs MP3 (96–128 kbps). One
+universal MP3 now ships per asset (`*-cc0-v2.mp3`), runtime `sampleTrim`
+is 1, and the −3 dBTP @ max-fader budget holds by construction.
+
 The Ambie WAV derivatives were gain-adjusted and encoded for the app. The Nox_Sound and BayTsai MP3 previews were copied without modification. DynamicSurroundings OGG files were copied byte-for-byte as the preferred source and transcoded only to create an MP3 fallback. Runtime loop crossfades happen after decoding in Web Audio and do not change any file below. Thunder is played as an irregular event bank and receives no loop transform.
 
 | Asset | Processing performed for this app | Runtime seam |
@@ -52,25 +65,25 @@ The Ambie WAV derivatives were gain-adjusted and encoded for the app. The Nox_So
 
 ### Loudness, peak, and runtime trim
 
-Measurements below were reproduced with FFmpeg 6.1.1 using `ebur128=peak=true` and are rounded to 0.1 dB. A range represents the OGG and MP3 encodes; the maximum true peak is the louder encoded variant. `sampleTrim` is a linear per-recording gain, separate from the procedural-source trim.
+Measurements below are for the v2 remastered encodes, computed by `scripts/remaster-samples.mjs` at encode time (sample-peak dBFS as the true-peak proxy; integrated loudness approximated from full-file RMS) and rounded to 0.1 dB. `sampleTrim` is a linear per-recording gain, separate from the procedural-source trim.
 
 The final column is deliberately conservative for the encoded-source gain stage: `maximum encoded true peak + 20 log10(sampleTrim × 1.2)`, where 1.2 is the maximum accepted UI layer level and the binding scale is assumed to be 1.0. It is measured before the downstream mix compressor/peak guard/final output gain. Every encoded source remains at or below -3 dBTP under that worst-case assumption. Actual crickets, mountain-wind, arctic-wind, pebbles, seabirds, and distant-thunder bindings use additional scales below 1.0. A runtime equal-power loop seam can theoretically add up to 3.01 dB when head and tail are perfectly correlated; that transient is handled by the shared peak guard and the post-clip output ceiling of -3.03 dBFS. Thunder events do not receive this transform.
 
 | Asset | Encoded integrated loudness | Maximum encoded true peak | `sampleTrim` | Post-trim loudness at level 1.0 | Conservative peak at level 1.2 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| `rainRural` | -29.1 LUFS | -3.1 dBTP | 0.82 | -30.8 LUFS | -3.2 dBTP |
-| `creekBrook` | -25.8 to -25.7 LUFS | -3.1 dBTP | 0.82 | -27.5 to -27.4 LUFS | -3.2 dBTP |
-| `fireplaceHearth` | -35.4 to -34.9 LUFS | -1.8 dBTP | 0.70 | -38.5 to -38.0 LUFS | -3.3 dBTP |
-| `oceanRibeira` | -20.8 LUFS | -7.7 dBTP | 0.70 | -23.9 LUFS | -9.2 dBTP |
-| `forestBirdsAlishan` | -30.7 LUFS | -6.3 dBTP | 1.00 | -30.7 LUFS | -4.7 dBTP |
-| `waterfallCaldeiroes` | -13.3 LUFS | -2.8 dBTP | 0.29 | -24.1 LUFS | -12.0 dBTP |
-| `forestField` | -51.2 to -50.7 LUFS | -34.0 dBTP | 4.00 | -39.2 to -38.7 LUFS | -20.4 dBTP |
-| `nightCrickets` | -45.4 to -45.0 LUFS | -31.3 dBTP | 3.00 | -35.9 to -35.5 LUFS | -20.2 dBTP |
-| `mountainWind` | -36.6 to -36.2 LUFS | -17.8 dBTP | 2.50 | -28.6 to -28.2 LUFS | -8.3 dBTP |
-| `arcticWind` | -30.9 to -30.5 LUFS | -8.3 dBTP | 1.20 | -29.3 to -28.9 LUFS | -5.1 dBTP |
-| `thunderNear` | -23.6 to -23.2 LUFS | 0.0 dBTP | 0.55 | -28.8 to -28.4 LUFS | -3.6 dBTP |
-| `thunderDistant` | -20.6 to -20.2 LUFS | +0.1 dBTP | 0.45 | -27.5 to -27.1 LUFS | -5.3 dBTP |
-| `thunderStorm` | -19.0 to -18.6 LUFS | -1.0 dBTP | 0.35 | -28.1 to -27.7 LUFS | -8.5 dBTP |
+| `rainRural` | -21.5 LUFS | -5 dBTP | 1.00 | -21.5 LUFS | -3.4 dBTP |
+| `creekBrook` | -21.2 LUFS | -5 dBTP | 1.00 | -21.2 LUFS | -3.4 dBTP |
+| `fireplaceHearth` | -32.2 LUFS | -5 dBTP | 1.00 | -32.2 LUFS | -3.4 dBTP |
+| `oceanRibeira` | -20.9 LUFS | -5.7 dBTP | 1.00 | -20.9 LUFS | -4.1 dBTP |
+| `forestBirdsAlishan` | -25.8 LUFS | -5 dBTP | 1.00 | -25.8 LUFS | -3.4 dBTP |
+| `waterfallCaldeiroes` | -21.3 LUFS | -5.6 dBTP | 1.00 | -21.3 LUFS | -4.0 dBTP |
+| `forestField` | -36.8 LUFS | -16 dBTP | 1.00 | -36.8 LUFS | -14.4 dBTP |
+| `nightCrickets` | -30.9 LUFS | -13.5 dBTP | 1.00 | -30.9 LUFS | -11.9 dBTP |
+| `mountainWind` | -24.5 LUFS | -6.9 dBTP | 1.00 | -24.5 LUFS | -5.3 dBTP |
+| `arcticWind` | -21.7 LUFS | -7.4 dBTP | 1.00 | -21.7 LUFS | -5.8 dBTP |
+| `thunderNear` | -29.8 LUFS | -5.6 dBTP | 1.00 | -29.8 LUFS | -4.0 dBTP |
+| `thunderDistant` | -26.8 LUFS | -5.7 dBTP | 1.00 | -26.8 LUFS | -4.1 dBTP |
+| `thunderStorm` | -22.5 LUFS | -5.7 dBTP | 1.00 | -22.5 LUFS | -4.1 dBTP |
 
 ## Shipped-file integrity
 
@@ -78,29 +91,19 @@ The 23 lazy-loaded files total **8,746,684 bytes** (below the 10 MiB checked-in 
 
 | File | Bytes | SHA-256 |
 | --- | ---: | --- |
-| `arctic-wind-cc0-v1.mp3` | 164,616 | `d016ee4568fa6c689b8bd07a7ab348dcfd30e23a72722bf25b89eb99aa0e7649` |
-| `arctic-wind-cc0-v1.ogg` | 240,911 | `b98a132d5d393388fee6ac4c011bb2fce47cb7425be29e5f3942d6382f04115d` |
-| `creek-brook-cc0-v1.mp3` | 301,581 | `79e42cae93ec5888e3b6efb46660d0b2946a6a80c92a4483b73655b03a8bdf9e` |
-| `creek-brook-cc0-v1.ogg` | 397,726 | `286dfc9da22474d9058d54c576d5bd62d199067c535aa8a96dba16591548b94f` |
-| `crickets-night-cc0-v1.mp3` | 162,265 | `c1f3a29036fe783d8cab5887c03dba1b9702e5672ea18ad1eefe80062210a9c6` |
-| `crickets-night-cc0-v1.ogg` | 170,194 | `a87638cc0e9ce04f986e78702597b3bcf5f726ba043a88a7e90b6cc0cd95eac1` |
-| `fireplace-hearth-cc0-v1.mp3` | 211,812 | `87efb2848992eb218f69fe28b96364d74a0ae826464d7e08c87c09b91a81f94a` |
-| `fireplace-hearth-cc0-v1.ogg` | 305,765 | `f778e08f1bd0637ed8cfc29df926fe69fb53c275092a49889486c67617a318a2` |
-| `forest-birds-alishan-cc0-v1.mp3` | 917,760 | `c0ba967a41eab862b8fe88b316a9702f8c62d400e635545acd51de4cf6c99802` |
-| `forest-field-cc0-v1.mp3` | 461,890 | `392b4175887a1ffad1dc80061f69ccc399815a6b8726d7c3fb58327b862c33c9` |
-| `forest-field-cc0-v1.ogg` | 520,793 | `0159139e1a6591f5d82ce36b1c6d0edbfd1b3071edf93d9627e0ad900edd0f94` |
-| `mountain-wind-cc0-v1.mp3` | 437,085 | `af53c5423461bb25b40d1bc004e2d3a48aabb7f921a3989f25e0659cc5085edd` |
-| `mountain-wind-cc0-v1.ogg` | 505,295 | `87011fbc6581571ff5e7b00e4dad6b08c2d76c8d3303a5f6e60168c1653550d9` |
-| `ocean-ribeira-cc0-v1.mp3` | 1,342,848 | `53baa509447a5207ef394ee771ffd85fa383cd1f4b22ce1b2e93de5bedb1b647` |
-| `rain-rural-cc0-v1.mp3` | 724,077 | `6e5cebe23d0c71be566dfd5e36610d0fa81491c8546baa289cf3ed71579aa0c3` |
-| `rain-rural-cc0-v1.ogg` | 677,763 | `d1c9c7aa123dbc7161caa7fbb67e0ccbbe49b9bcb6fe39897a70149291eff675` |
-| `thunder-distant-cc0-v1.mp3` | 127,485 | `5ec81fd64a34e8c29eac8146ea3231d77907825cc004753caa48c5e460117396` |
-| `thunder-distant-cc0-v1.ogg` | 119,370 | `a133f8112737b7cbd3390b8d943795317cd9aa8cab5a90708b453d4018b4a73e` |
-| `thunder-near-cc0-v1.mp3` | 158,870 | `ff0106bb7793775ab1b239dddaed9cbcbb008c5df0a1e4ee84b029dcf94e260d` |
-| `thunder-near-cc0-v1.ogg` | 148,437 | `42178c1cfeaf26b5f8b2d41cc8601dbe11b765847d1024416a4ae3093eb418e3` |
-| `thunder-storm-cc0-v1.mp3` | 104,205 | `52a7f9e028a293ba7fe3c84ff2fbcb9c0fd53b6469ef6fdbbf7ec629044f2da2` |
-| `thunder-storm-cc0-v1.ogg` | 76,232 | `287a3cf433949354d1767070085d56146f3358b5f924e473c42500b5ab85fced` |
-| `waterfall-caldeiroes-cc0-v1.mp3` | 469,704 | `27214225e23c7bf2090e212ef24a37317fba7ffe56db858ff175bb4d74fdbbee` |
+| `arctic-wind-cc0-v2.mp3` | 191,634 | `5f44a7ea070ac301ba04bff481741fd4831cc271d1db92d9e082f5df033e82ab` |
+| `creek-brook-cc0-v2.mp3` | 351,451 | `96ffdaca13147db424ee9ab2ea3113d00f547e725e493b32162ae12ad470367f` |
+| `crickets-night-cc0-v2.mp3` | 194,400 | `1f380ddf267c76577b6bfeaccb49a52d22f74a181662ed143c847999abcaf6e7` |
+| `fireplace-hearth-cc0-v2.mp3` | 246,491 | `3caeeb5bb4ef1fa317f18dbf3b77809e27b11e39c9be218ebda0ada376475086` |
+| `forest-birds-alishan-cc0-v2.mp3` | 560,640 | `165fc140e0c2d636a5542ec92dc7b5552c4f1ab08964136419c36ffd48d11029` |
+| `forest-field-cc0-v2.mp3` | 554,112 | `f6b4edafc65c71633168fdee202c0a764d99366e9fd1df97379f0bc310f1cfa6` |
+| `mountain-wind-cc0-v2.mp3` | 524,160 | `3597008fdc94aadddc75fb4e2b8cf8dc36ff796dc3b487a65cb2ebdb14cc0505` |
+| `ocean-ribeira-cc0-v2.mp3` | 960,768 | `85edc622c0758d48cc59d118dd06123a69519f6a63d2efb68945b72364745a4c` |
+| `rain-rural-cc0-v2.mp3` | 723,744 | `44bf2d32f0af8d5092115b3bec21b47cc20af898b8293ec4888938f74657ae22` |
+| `thunder-distant-cc0-v2.mp3` | 178,416 | `fffdab0cc338ef90dcef915871fa95a9380eeb05c953f012d999b4ebbe83e398` |
+| `thunder-near-cc0-v2.mp3` | 222,096 | `aa70528270e291b89efd85d9d1102cfa91216bd14faaa7312db0e6c5aa56dafc` |
+| `thunder-storm-cc0-v2.mp3` | 145,488 | `b3c802a51391affbed5e8ecdaf5ca0f382205a51919aa87879f7c559bd0bcd5e` |
+| `waterfall-caldeiroes-cc0-v2.mp3` | 280,503 | `685584b0df0f59da41fec8c14b04e3c639f0bad12cdb7a1ce5d5ee922907c30c` |
 
 ## Runtime bindings
 
@@ -109,7 +112,7 @@ The 23 lazy-loaded files total **8,746,684 bytes** (below the 10 MiB checked-in 
 - Stream uses `creekBrook`; waterfall uses `waterfallCaldeiroes`.
 - Ocean waves use `oceanRibeira`; pebbles and seabirds reuse it only as a lower-level shore bed while their procedural detail remains prominent.
 - Fire and forest use their matching recordings.
-- Bamboo uses a reduced `mountainWind` bed. Night and cicadas use reduced `nightCrickets` beds. Blizzard uses a reduced `arcticWind` texture.
+- Bamboo uses a reduced `mountainWind` bed. Night uses a reduced `nightCrickets` bed; cicadas are deliberately unbound (a cricket recording under the cicada buzz read as the wrong species) and stay fully procedural. Blizzard uses a reduced `arcticWind` texture.
 - Birds use `forestBirdsAlishan` at full sample scale while retaining a prominent procedural component for local call detail. Frogs, owl, chimes, singing bowl, drone, fan, and white/pink noise remain procedural. Every hybrid binding also retains a procedural component and failure fallback.
 
 The authoritative machine-readable manifest is [`audioSamples.ts`](./audioSamples.ts). It pins source repositories and commits, processing notes, hashes, codec order, decoded-memory estimates, trims, crossfade durations, and binding scales.

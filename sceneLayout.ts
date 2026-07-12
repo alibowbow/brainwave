@@ -41,14 +41,16 @@ export const SPATIAL: Partial<Record<BackgroundSoundType, SpatialSpec>> = {
   seabirds: { x: 0.66, depth: 'far' },
   owl: { x: 0.78, depth: 'mid' },
   scops: { x: 0.6, depth: 'far' },
-  cicadas: { x: 0.9, depth: 'mid' },
+  // A cicada chorus surrounds you — point-panning it to one side reads wrong.
+  cicadas: { x: 0.9, depth: 'mid', wide: true },
   frogs: { x: 0.2, depth: 'near' },
   ducks: { x: 0.62, depth: 'near' },
 
   // 환경음
   forest: { x: 0.5, depth: 'mid', wide: true },
   bamboo: { x: 0.93, depth: 'near' },
-  night: { x: 0.84, depth: 'near' },
+  // Night insects chirp from everywhere, not from one bush.
+  night: { x: 0.84, depth: 'near', wide: true },
   cave: { x: 0.5, depth: 'far', wide: true },
 
   // 오브젝트

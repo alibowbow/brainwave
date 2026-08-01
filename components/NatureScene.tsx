@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BackgroundSoundType } from '../types';
+import {
+  ENVIRONMENT_ATLAS_COLUMNS,
+  ENVIRONMENT_ATLAS_ROWS,
+  ENVIRONMENT_OBJECTS,
+  EnvironmentObjectSpec,
+} from './environmentObjects';
 import { SCENE_META, CHARACTER_SVG } from './sceneCharacters';
 import { getSoundLabel } from '../audioOptions';
 import { SPATIAL, SCENERY_HOTSPOTS } from '../sceneLayout';
@@ -49,6 +55,59 @@ interface MotionPose {
   frame: number;
 }
 
+interface NpcCharacterOptions {
+  id: string;
+  asset: string;
+  className: string;
+  alt: string;
+  restRange: readonly [number, number];
+  actionProbability: number;
+  tempo?: number;
+}
+
+const makeFiveByFiveNpc = ({
+  id,
+  asset,
+  className,
+  alt,
+  restRange,
+  actionProbability,
+  tempo = 1,
+}: NpcCharacterOptions): GeneratedCharacter => {
+  const durations = (values: readonly number[]) => values.map((value) => Math.round(value * tempo));
+  const clip = (atlas: AtlasName, start: number, values: readonly number[]): MotionClip => ({
+    atlas,
+    frames: [start, start + 1, start + 2, start + 3, start + 4, 0],
+    frameDurations: durations(values),
+  });
+
+  return {
+    id,
+    atlases: {
+      idle: { path: `images/nature/motion/${asset}-behavior-a-v4.webp`, columns: 5, rows: 5 },
+      action: { path: `images/nature/motion/${asset}-behavior-b-v4.webp`, columns: 5, rows: 5 },
+    },
+    microClips: [
+      clip('idle', 0, [230, 210, 250, 230, 260, 320]),
+      clip('idle', 5, [230, 170, 220, 190, 250, 330]),
+      clip('idle', 10, [250, 230, 290, 240, 270, 350]),
+      clip('idle', 15, [260, 240, 310, 250, 280, 360]),
+      clip('idle', 20, [250, 220, 290, 240, 270, 350]),
+    ],
+    actionClips: [
+      clip('action', 0, [230, 210, 260, 230, 280, 360]),
+      clip('action', 5, [220, 190, 280, 240, 250, 380]),
+      clip('action', 10, [240, 220, 280, 230, 270, 370]),
+      clip('action', 15, [250, 230, 300, 240, 280, 390]),
+      clip('action', 20, [240, 220, 290, 240, 280, 380]),
+    ],
+    restRange,
+    actionProbability,
+    className,
+    alt,
+  };
+};
+
 const assetUrl = (path: string) => new URL(path, document.baseURI).toString();
 
 const BACKGROUND_PATH: Partial<Record<SceneTheme, string>> = {
@@ -85,63 +144,123 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
   owl: {
     id: 'owl',
     atlases: {
-      idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
-      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+      idle: { path: 'images/nature/motion/scops-owl-behavior-a-v3.webp', columns: 5, rows: 5 },
+      action: { path: 'images/nature/motion/scops-owl-behavior-b-v3.webp', columns: 5, rows: 5 },
     },
     microClips: [
-      { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
-      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
+      { atlas: 'idle', frames: [0, 1, 2, 3, 4, 0], frameDurations: [240, 220, 260, 240, 260, 300] },
+      { atlas: 'idle', frames: [5, 6, 7, 8, 9, 0], frameDurations: [230, 170, 220, 190, 250, 320] },
+      { atlas: 'idle', frames: [10, 11, 12, 13, 14, 0], frameDurations: [260, 240, 310, 250, 270, 340] },
+      { atlas: 'idle', frames: [15, 16, 17, 18, 19, 0], frameDurations: [280, 250, 330, 250, 280, 360] },
+      { atlas: 'idle', frames: [20, 21, 22, 23, 24, 0], frameDurations: [260, 230, 300, 240, 280, 350] },
+      { atlas: 'action', frames: [20, 21, 22, 23, 24, 0], frameDurations: [250, 220, 260, 240, 270, 360] },
     ],
     actionClips: [
-      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+      { atlas: 'action', frames: [0, 1, 2, 3, 4, 0], frameDurations: [260, 240, 280, 260, 300, 380] },
+      { atlas: 'action', frames: [5, 6, 7, 8, 9, 0], frameDurations: [230, 200, 300, 260, 240, 400] },
+      { atlas: 'action', frames: [10, 11, 12, 13, 14, 0], frameDurations: [260, 240, 290, 250, 280, 390] },
+      { atlas: 'action', frames: [15, 16, 17, 18, 19, 0], frameDurations: [270, 250, 300, 260, 280, 400] },
     ],
     restRange: [5200, 12000],
-    actionProbability: 0.18,
+    actionProbability: 0.14,
     className: 'sc-v2-owl',
     alt: '나뭇가지에 앉은 부엉이',
   },
   scops: {
     id: 'scops',
     atlases: {
-      idle: { path: 'images/nature/motion/scops-owl-idle-atlas.webp', columns: 2, rows: 2 },
-      action: { path: 'images/nature/motion/scops-owl-call-atlas.webp', columns: 4, rows: 1 },
+      idle: { path: 'images/nature/motion/scops-owl-behavior-a-v3.webp', columns: 5, rows: 5 },
+      action: { path: 'images/nature/motion/scops-owl-behavior-b-v3.webp', columns: 5, rows: 5 },
     },
     microClips: [
-      { atlas: 'idle', frames: [0, 1, 2, 1, 0], frameDurations: [260, 320, 220, 280, 220] },
-      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [320, 620, 420, 240] },
+      { atlas: 'idle', frames: [0, 1, 2, 3, 4, 0], frameDurations: [250, 230, 270, 250, 270, 320] },
+      { atlas: 'idle', frames: [5, 6, 7, 8, 9, 0], frameDurations: [240, 180, 230, 200, 260, 340] },
+      { atlas: 'idle', frames: [10, 11, 12, 13, 14, 0], frameDurations: [270, 250, 320, 260, 280, 360] },
+      { atlas: 'idle', frames: [15, 16, 17, 18, 19, 0], frameDurations: [290, 260, 340, 260, 290, 380] },
+      { atlas: 'idle', frames: [20, 21, 22, 23, 24, 0], frameDurations: [270, 240, 310, 250, 290, 370] },
+      { atlas: 'action', frames: [20, 21, 22, 23, 24, 0], frameDurations: [260, 230, 270, 250, 280, 380] },
     ],
     actionClips: [
-      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [320, 300, 420, 320, 280, 360, 240] },
+      { atlas: 'action', frames: [0, 1, 2, 3, 4, 0], frameDurations: [270, 250, 290, 270, 310, 400] },
+      { atlas: 'action', frames: [5, 6, 7, 8, 9, 0], frameDurations: [240, 210, 310, 270, 250, 420] },
+      { atlas: 'action', frames: [10, 11, 12, 13, 14, 0], frameDurations: [270, 250, 300, 260, 290, 410] },
+      { atlas: 'action', frames: [15, 16, 17, 18, 19, 0], frameDurations: [280, 260, 310, 270, 290, 420] },
     ],
     restRange: [5200, 12000],
-    actionProbability: 0.18,
+    actionProbability: 0.14,
     className: 'sc-v2-scops',
     alt: '밤의 소쩍새',
   },
   frogs: {
     id: 'frog',
     atlases: {
-      idle: { path: 'images/nature/motion/pond-frog-idle-atlas.webp', columns: 2, rows: 2 },
-      action: { path: 'images/nature/motion/pond-frog-call-atlas.webp', columns: 4, rows: 1 },
+      idle: { path: 'images/nature/motion/pond-frog-behavior-a-v3.webp', columns: 5, rows: 5 },
+      action: { path: 'images/nature/motion/pond-frog-behavior-b-v3.webp', columns: 5, rows: 5 },
     },
     microClips: [
-      { atlas: 'idle', frames: [0, 1, 0], frameDurations: [300, 520, 260] },
-      { atlas: 'idle', frames: [0, 2, 0], frameDurations: [260, 180, 260] },
-      { atlas: 'idle', frames: [0, 3, 3, 0], frameDurations: [240, 500, 320, 240] },
+      { atlas: 'idle', frames: [0, 1, 2, 3, 4, 0], frameDurations: [260, 240, 300, 260, 280, 340] },
+      { atlas: 'idle', frames: [5, 6, 7, 8, 9, 0], frameDurations: [250, 190, 230, 210, 270, 350] },
+      { atlas: 'idle', frames: [10, 11, 12, 13, 14, 0], frameDurations: [270, 250, 310, 260, 280, 360] },
+      { atlas: 'idle', frames: [15, 16, 17, 18, 19, 0], frameDurations: [280, 250, 320, 260, 290, 370] },
+      { atlas: 'idle', frames: [20, 21, 22, 23, 24, 0], frameDurations: [270, 240, 300, 250, 280, 360] },
+      { atlas: 'action', frames: [15, 16, 17, 18, 19, 0], frameDurations: [260, 230, 290, 240, 270, 370] },
     ],
     actionClips: [
-      { atlas: 'action', frames: [0, 1, 2, 2, 1, 3, 0], frameDurations: [220, 220, 340, 280, 220, 260, 180] },
+      { atlas: 'action', frames: [0, 1, 2, 3, 4, 0], frameDurations: [250, 230, 280, 250, 290, 370] },
+      { atlas: 'action', frames: [5, 6, 7, 8, 9, 0], frameDurations: [230, 210, 320, 280, 250, 400] },
+      { atlas: 'action', frames: [10, 11, 12, 13, 14, 0], frameDurations: [260, 240, 300, 250, 280, 380] },
+      { atlas: 'action', frames: [20, 21, 22, 23, 24, 0], frameDurations: [250, 230, 300, 250, 280, 390] },
     ],
     restRange: [4200, 9500],
-    actionProbability: 0.24,
+    actionProbability: 0.17,
     className: 'sc-v2-frog',
     alt: '이끼 낀 돌 위의 개구리',
   },
+  seabirds: makeFiveByFiveNpc({
+    id: 'seabird', asset: 'seabird', className: 'sc-v2-seabird', alt: '해변 위를 활강하는 바닷새',
+    restRange: [2600, 6800], actionProbability: 0.28, tempo: 0.82,
+  }),
+  cuckoo: makeFiveByFiveNpc({
+    id: 'cuckoo', asset: 'cuckoo', className: 'sc-v2-cuckoo', alt: '숲의 가지에 앉은 뻐꾸기',
+    restRange: [4800, 11000], actionProbability: 0.16, tempo: 1.05,
+  }),
+  woodpecker: makeFiveByFiveNpc({
+    id: 'woodpecker', asset: 'woodpecker', className: 'sc-v2-woodpecker', alt: '나무줄기에 붙은 딱따구리',
+    restRange: [4200, 9600], actionProbability: 0.2, tempo: 0.9,
+  }),
+  ducks: makeFiveByFiveNpc({
+    id: 'duck', asset: 'duck', className: 'sc-v2-duck', alt: '물 위를 천천히 떠다니는 오리',
+    restRange: [3800, 9000], actionProbability: 0.18,
+  }),
+  cave: makeFiveByFiveNpc({
+    id: 'bat', asset: 'bat', className: 'sc-v2-bat', alt: '동굴 안을 천천히 비행하는 박쥐',
+    restRange: [2800, 7200], actionProbability: 0.24, tempo: 0.8,
+  }),
+  cicadas: makeFiveByFiveNpc({
+    id: 'cicada', asset: 'cicada', className: 'sc-v2-cicada', alt: '나뭇가지에 붙어 우는 매미',
+    restRange: [3600, 8200], actionProbability: 0.22, tempo: 0.72,
+  }),
+  night: makeFiveByFiveNpc({
+    id: 'cricket', asset: 'cricket', className: 'sc-v2-cricket', alt: '풀숲에서 우는 귀뚜라미',
+    restRange: [3300, 7600], actionProbability: 0.23, tempo: 0.78,
+  }),
+  stream: makeFiveByFiveNpc({
+    id: 'stream-fish', asset: 'stream-fish', className: 'sc-v2-stream-fish', alt: '계곡물을 유영하는 작은 물고기',
+    restRange: [2600, 6600], actionProbability: 0.2, tempo: 0.82,
+  }),
+  deepsea: makeFiveByFiveNpc({
+    id: 'deepsea-fish', asset: 'deepsea-fish', className: 'sc-v2-deepsea-fish', alt: '빛을 내며 유영하는 심해어',
+    restRange: [3200, 7800], actionProbability: 0.18, tempo: 1.08,
+  }),
 };
 
 const GENERATED_TYPES = new Set<BackgroundSoundType>(Object.keys(GENERATED_CHARACTERS) as BackgroundSoundType[]);
 const HIDDEN_LEGACY_TYPES = new Set<BackgroundSoundType>([
-  'cicadas', 'night', 'cave', 'deepsea', 'stream', 'waterfall', 'wave', 'forest',
+  'rain', 'thunder', 'dthunder', 'blizzard',
+  'stream', 'waterfall', 'wave', 'pebbles',
+  'fire', 'forest', 'bamboo', 'temple',
+  'tent', 'window', 'eaves', 'chimes', 'bowl',
+  'fan', 'drone', 'heartbeat', 'brown', 'white', 'pink',
 ]);
 
 const FIREFLIES = [
@@ -151,6 +270,22 @@ const FIREFLIES = [
   { left: '74%', top: '56%', delay: '-0.8s', size: 2 },
   { left: '87%', top: '42%', delay: '-2.4s', size: 2 },
   { left: '42%', top: '38%', delay: '-4.2s', size: 2 },
+];
+
+const LEAVES = [
+  { left: '8%', delay: '-1.2s', duration: '8.4s' },
+  { left: '27%', delay: '-5.6s', duration: '10.2s' },
+  { left: '49%', delay: '-3.1s', duration: '9.1s' },
+  { left: '71%', delay: '-7.4s', duration: '11.3s' },
+  { left: '91%', delay: '-2.7s', duration: '8.8s' },
+];
+
+const BUBBLES = [
+  { left: '16%', delay: '-1.4s', size: 4 },
+  { left: '33%', delay: '-4.8s', size: 3 },
+  { left: '58%', delay: '-2.6s', size: 5 },
+  { left: '79%', delay: '-6.1s', size: 3 },
+  { left: '91%', delay: '-3.7s', size: 4 },
 ];
 
 const resolveTheme = (types: BackgroundSoundType[]): SceneTheme => {
@@ -322,11 +457,108 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index, actionSig
   );
 };
 
+interface GeneratedEnvironmentObjectProps {
+  spec: EnvironmentObjectSpec;
+  className: string;
+  index?: number;
+  style?: React.CSSProperties;
+}
+
 /**
- * Layered nature diorama. Generated plates carry the expensive visual detail;
- * CSS supplies only low-cost motion (water shimmer, mist, fireflies and gentle
- * parallax), while the old SVG characters remain as a safe fallback for sounds
- * that have not received a generated cutout yet.
+ * One generated row per environment object, five motion cells per row.
+ * Continuous phenomena use uneven frame holds; discrete objects rest for
+ * several seconds between clips so the whole scene never moves in lockstep.
+ */
+const GeneratedEnvironmentObject: React.FC<GeneratedEnvironmentObjectProps> = ({
+  spec,
+  className,
+  index = 0,
+  style,
+}) => {
+  const [frame, setFrame] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncPreference = () => setReduceMotion(media.matches);
+    syncPreference();
+    media.addEventListener('change', syncPreference);
+    return () => media.removeEventListener('change', syncPreference);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer: number | undefined;
+
+    const clearTimer = () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+      timer = undefined;
+    };
+
+    const schedule = (initial = false) => {
+      if (cancelled || reduceMotion || document.hidden) return;
+      setFrame(0);
+      const rest = spec.restRange
+        ? randomBetween(spec.restRange[0], spec.restRange[1])
+        : 0;
+      timer = window.setTimeout(
+        () => play(0),
+        rest + (initial ? index * 170 : 0),
+      );
+    };
+
+    const play = (step: number) => {
+      if (cancelled || reduceMotion || document.hidden) return;
+      if (step >= spec.frames.length) {
+        schedule();
+        return;
+      }
+      setFrame(spec.frames[step] ?? 0);
+      timer = window.setTimeout(
+        () => play(step + 1),
+        spec.frameDurations[step] ?? 500,
+      );
+    };
+
+    const handleVisibility = () => {
+      clearTimer();
+      setFrame(0);
+      if (!document.hidden && !reduceMotion) schedule(true);
+    };
+
+    setFrame(0);
+    if (!reduceMotion && !document.hidden) schedule(true);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      cancelled = true;
+      clearTimer();
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [index, reduceMotion, spec]);
+
+  const atlas: MotionAtlas = {
+    path: spec.atlasPath,
+    columns: ENVIRONMENT_ATLAS_COLUMNS,
+    rows: ENVIRONMENT_ATLAS_ROWS,
+  };
+  const atlasFrame = spec.row * ENVIRONMENT_ATLAS_COLUMNS + frame;
+
+  return (
+    <div
+      className={`sc-v3-object absolute ${className}`}
+      style={{ ...style, ...atlasFrameStyle(atlas, atlasFrame) }}
+      data-object={spec.id}
+      data-object-frame={frame}
+      aria-hidden="true"
+    />
+  );
+};
+
+/**
+ * Layered nature diorama. Generated plates, fauna atlases and environment
+ * atlases carry the visual detail; CSS supplies only positioning and slow
+ * whole-object travel. Old SVG characters remain solely as a safe fallback for
+ * sound types that do not have a generated asset.
  */
 export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, selectedType, onSelectType, subscribeEvents }) => {
   const theme = resolveTheme(types);
@@ -338,6 +570,20 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
   const hasWaterfall = types.includes('waterfall');
   const hasFire = types.includes('fire');
   const hasHeartbeat = types.includes('heartbeat');
+  const hasClouds = hasAny(types, ['rain', 'thunder', 'dthunder', 'tent', 'window', 'eaves']);
+  const hasLeaves = hasAny(types, ['forest', 'bamboo']);
+  const hasBamboo = types.includes('bamboo');
+  const hasTemple = types.includes('temple');
+  const hasTent = types.includes('tent');
+  const hasWindow = types.includes('window');
+  const hasEaves = types.includes('eaves');
+  const hasPebbles = types.includes('pebbles');
+  const hasChimes = types.includes('chimes');
+  const hasBowl = types.includes('bowl');
+  const hasFan = types.includes('fan');
+  const hasDrone = types.includes('drone');
+  const hasNoise = hasAny(types, ['brown', 'white', 'pink']);
+  const hasBubbles = hasAny(types, ['deepsea', 'stream']);
   const generated = types.filter((type) => GENERATED_CHARACTERS[type]);
   const legacy = legacyCharacters(types);
   const empty = types.length === 0;
@@ -390,29 +636,80 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
       />
       <div className="sc-v2-plate-tint absolute inset-0" aria-hidden="true" />
 
+      {hasClouds && (
+        <div className="sc-v3-cloud-field absolute inset-0" aria-hidden="true">
+          {stormy ? (
+            <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.storm} className="sc-v3-storm-cloud" />
+          ) : (
+            ['a', 'b', 'c'].map((suffix, index) => (
+              <GeneratedEnvironmentObject
+                key={suffix}
+                spec={ENVIRONMENT_OBJECTS.cloud}
+                className={`sc-v3-cloud sc-v3-cloud-${suffix}`}
+                index={index}
+              />
+            ))
+          )}
+        </div>
+      )}
+
       {theme === 'deep-sea' && <div className="sc-v2-caustics absolute inset-0" aria-hidden="true" />}
       {theme === 'cave' && <div className="sc-v2-cave-depth absolute inset-0" aria-hidden="true" />}
       {theme === 'warm' && <div className="sc-v2-warm-field absolute inset-0" aria-hidden="true" />}
 
-      {hasWater && (
-        <div className="sc-v2-water absolute inset-x-0 bottom-0 h-[38%]" aria-hidden="true">
-          <div className="sc-v2-water-glint absolute inset-0" />
-        </div>
+      {hasWater && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.water} className="sc-v3-water" />}
+      {types.includes('wave') && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.wave} className="sc-v3-wave" />}
+      {types.includes('stream') && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['stream-flow']} className="sc-v3-stream" />}
+      {hasWaterfall && (
+        <>
+          <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.waterfall} className="sc-v3-waterfall" />
+          <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['waterfall-mist']} className="sc-v3-waterfall-mist" />
+        </>
       )}
-      {hasWaterfall && <div className="sc-v2-waterfall-mist absolute left-[43%] top-[46%] h-8 w-24" aria-hidden="true" />}
-      {hasFire && <div className="sc-v2-fire-glow absolute bottom-[8%] left-1/2 h-24 w-40 -translate-x-1/2" aria-hidden="true" />}
-      {hasHeartbeat && (
-        <div className="sc-v2-heartbeat absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2" aria-hidden="true" />
-      )}
+      {hasFire && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.fire} className="sc-v3-fire" />}
+      {hasHeartbeat && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.heartbeat} className="sc-v3-heartbeat" />}
 
       {theme === 'night-pond' && FIREFLIES.map((firefly, index) => (
-        <span
+        <GeneratedEnvironmentObject
           key={index}
-          className="sc-v2-firefly absolute rounded-full"
-          style={{ left: firefly.left, top: firefly.top, width: firefly.size, height: firefly.size, animationDelay: firefly.delay }}
-          aria-hidden="true"
+          spec={ENVIRONMENT_OBJECTS.firefly}
+          className="sc-v3-firefly"
+          index={index}
+          style={{ left: firefly.left, top: firefly.top, width: 18 + firefly.size * 2, height: 18 + firefly.size * 2, animationDelay: firefly.delay }}
         />
       ))}
+
+      {hasLeaves && LEAVES.map((leaf, index) => (
+        <GeneratedEnvironmentObject
+          key={`leaf-${index}`}
+          spec={ENVIRONMENT_OBJECTS.leaf}
+          className="sc-v3-leaf"
+          index={index}
+          style={{ left: leaf.left, animationDelay: leaf.delay, animationDuration: leaf.duration }}
+        />
+      ))}
+
+      {hasBubbles && BUBBLES.map((bubble, index) => (
+        <GeneratedEnvironmentObject
+          key={`bubble-${index}`}
+          spec={ENVIRONMENT_OBJECTS.bubble}
+          className="sc-v3-bubble"
+          index={index}
+          style={{ left: bubble.left, width: 22 + bubble.size * 2, height: 22 + bubble.size * 2, animationDelay: bubble.delay }}
+        />
+      ))}
+
+      {hasBamboo && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.bamboo} className="sc-v3-bamboo" />}
+      {hasTemple && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.temple} className="sc-v3-temple" />}
+      {hasTent && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.tent} className="sc-v3-tent" />}
+      {hasWindow && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['rain-window']} className="sc-v3-window" />}
+      {hasEaves && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.eaves} className="sc-v3-eaves" />}
+      {hasPebbles && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.pebbles} className="sc-v3-pebbles" />}
+      {hasChimes && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.chimes} className="sc-v3-chimes" />}
+      {hasBowl && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['singing-bowl']} className="sc-v3-bowl" />}
+      {hasFan && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.fan} className="sc-v3-fan" />}
+      {hasDrone && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.drone} className="sc-v3-drone" />}
+      {hasNoise && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.noise} className="sc-v3-noise" />}
 
       {generated.map((type, index) => {
         const character = GENERATED_CHARACTERS[type]!;
@@ -467,10 +764,9 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
         );
       })}
 
-      {rainy && <div className="sc-v2-rain sc-v2-rain-near absolute inset-0" aria-hidden="true" />}
-      {rainy && <div className="sc-v2-rain sc-v2-rain-far absolute inset-0" aria-hidden="true" />}
-      {snowy && <div className="sc-v2-snow absolute inset-0" aria-hidden="true" />}
-      {stormy && <div className="sc-v2-lightning absolute inset-0" aria-hidden="true" />}
+      {rainy && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.rain} className="sc-v3-rain sc-v3-rain-near" />}
+      {rainy && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.rain} className="sc-v3-rain sc-v3-rain-far" index={1} />}
+      {snowy && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.snow} className="sc-v3-snow" />}
       {/* event-synced lightning: flashes exactly when a thunder roll fires */}
       {flashTick > 0 && <div key={flashTick} className="sc-flash-now absolute inset-0 z-10 bg-white pointer-events-none" style={{ opacity: 0 }} aria-hidden="true" />}
       {theme === 'night-pond' && <div className="sc-v2-night-haze absolute inset-0" aria-hidden="true" />}

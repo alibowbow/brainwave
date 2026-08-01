@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => {
                 urlPattern: /\/images\/nature\/.*\.(?:webp|png)$/i,
                 handler: 'StaleWhileRevalidate',
                 options: {
-                  cacheName: 'nature-assets-v2',
+                  cacheName: 'nature-assets-v3',
                   expiration: { maxEntries: 48, maxAgeSeconds: 60 * 60 * 24 * 180 },
                   cacheableResponse: { statuses: [0, 200] },
                 },

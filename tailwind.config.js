@@ -6,6 +6,8 @@ export default {
     extend: {
       fontFamily: {
         sans: [
+          'Pretendard Variable',
+          'Pretendard',
           'ui-sans-serif',
           'system-ui',
           '-apple-system',

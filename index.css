@@ -4,7 +4,7 @@
 
 /* --- Global styles that aren't expressible as utility classes --- */
 
-/* Typography refinement for the native Korean system-font stack. */
+/* Typography refinement for the Pretendard typeface. */
 body {
   letter-spacing: -0.01em;
   text-rendering: optimizeLegibility;

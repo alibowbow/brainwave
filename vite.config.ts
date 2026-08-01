@@ -63,6 +63,16 @@ export default defineConfig(({ mode }) => {
                   cacheableResponse: { statuses: [0, 200] },
                 },
               },
+              {
+                // Keep the self-hosted Pretendard face available after its first load.
+                urlPattern: /\.woff2$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'fonts',
+                  expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 365 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
             ],
           },
         }),

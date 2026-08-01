@@ -47,7 +47,7 @@ export const ComposerSheet: React.FC<Props> = ({
   return (
     <section
       aria-label="사운드 컴포저"
-      className={`bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 rounded-t-2xl shadow-[0_-8px_24px_rgba(15,23,42,0.12)] flex flex-col min-h-0 ${
+      className={`flex min-h-0 flex-col rounded-t-[28px] border-t border-slate-200 bg-white shadow-[0_-12px_36px_rgba(15,23,42,0.14)] dark:border-white/8 dark:bg-[#111621] ${
         expanded ? 'h-full' : 'h-auto'
       }`}
     >

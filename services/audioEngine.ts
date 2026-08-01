@@ -99,6 +99,8 @@ export type ToneMode = 'binaural' | 'isochronic';
 export interface SoundLayer {
   type: BackgroundSoundType;
   volume: number;
+  /** UI-level mute state. The engine receives a zero gain while muted. */
+  muted?: boolean;
 }
 
 export interface StartConfig {

@@ -55,12 +55,15 @@ export interface SessionLog {
   moodBefore: number | null;
   moodAfter: number;
   helpfulScore: number;
+  intention?: string;
   note?: string;
 }
 
 export interface AppSettings {
   darkMode: boolean;
   showSoundNotice: boolean;
+  dailyGoalMinutes: number;
+  reduceMotion: boolean;
 }
 
 export const WAVE_FREQS = {
@@ -83,12 +86,12 @@ export const getBrainWaveLabel = (type: BrainWaveType) => {
 };
 
 export const PRESETS: SessionPreset[] = [
-  { id: 'focus', name: '깊은 집중 (Focus)', description: '학습 및 업무 효율을 높여주는 집중 모드', defaultDurationMinutes: 40, brainWaveType: 'alpha', defaultBackgroundSound: 'rain' },
-  { id: 'relax', name: '불멍 힐링 (Relax)', description: '따뜻한 장작불 소리와 함께하는 휴식', defaultDurationMinutes: 20, brainWaveType: 'theta', defaultBackgroundSound: 'fire' },
-  { id: 'country_morning', name: '상쾌한 아침 (Morning)', description: '새소리와 함께 활기찬 하루 시작', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'birds' },
-  { id: 'sleep_prep', name: '수면 준비 (Sleep)', description: '깊은 잠을 유도하는 델타파 세션', defaultDurationMinutes: 30, brainWaveType: 'delta', defaultBackgroundSound: 'night' },
-  { id: 'power_nap', name: '파워 냅 (Nap)', description: '짧고 가볍게 피로를 푸는 낮잠', defaultDurationMinutes: 15, brainWaveType: 'theta', defaultBackgroundSound: 'forest' },
-  { id: 'meditation', name: '마음 챙김 (Meditation)', description: '내면의 평화를 찾는 명상 시간', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'none' },
+  { id: 'focus', name: '깊은 집중 (Focus)', description: '알파 리듬과 빗소리로 주의를 한곳에 모으는 시간', defaultDurationMinutes: 40, brainWaveType: 'alpha', defaultBackgroundSound: 'rain' },
+  { id: 'relax', name: '불멍 힐링 (Relax)', description: '따뜻한 장작불 소리와 함께 하루의 속도를 낮추는 휴식', defaultDurationMinutes: 20, brainWaveType: 'theta', defaultBackgroundSound: 'fire' },
+  { id: 'country_morning', name: '상쾌한 아침 (Morning)', description: '새소리와 함께 가볍게 하루를 여는 아침 루틴', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'birds' },
+  { id: 'sleep_prep', name: '수면 준비 (Sleep)', description: '잠들기 전 빛과 소리의 자극을 천천히 낮추는 루틴', defaultDurationMinutes: 30, brainWaveType: 'delta', defaultBackgroundSound: 'night' },
+  { id: 'power_nap', name: '파워 냅 (Nap)', description: '짧게 눈을 감고 호흡을 고르는 낮잠 루틴', defaultDurationMinutes: 15, brainWaveType: 'theta', defaultBackgroundSound: 'forest' },
+  { id: 'meditation', name: '마음 챙김 (Meditation)', description: '호흡과 현재의 감각에 조용히 머무는 명상 시간', defaultDurationMinutes: 25, brainWaveType: 'alpha', defaultBackgroundSound: 'none' },
 ];
 
 // Curated multi-sound "ambience" combos — one tap sets several layers + a

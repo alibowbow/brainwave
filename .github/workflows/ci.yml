@@ -30,3 +30,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Check bundle budget
+        run: npm run check:bundle

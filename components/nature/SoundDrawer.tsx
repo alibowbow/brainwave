@@ -28,27 +28,27 @@ export const SoundDrawer: React.FC<Props> = ({ open, layers, onToggle, onClose }
   if (!open) return null;
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col justify-end" role="dialog" aria-modal="true" aria-label="전체 사운드 목록">
+    <div className="fixed inset-0 z-[90] flex flex-col justify-end" role="dialog" aria-modal="true" aria-label="전체 사운드 목록">
       <button
         type="button"
         aria-label="닫기"
         onClick={onClose}
-        className="absolute inset-0 bg-black/45 backdrop-blur-[2px] cursor-default"
+        className="absolute inset-0 cursor-default bg-black/60 backdrop-blur-sm"
       />
-      <div className="relative bg-white dark:bg-slate-800 rounded-t-2xl shadow-2xl max-h-[78%] flex flex-col animate-slide-up">
-        <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-slate-100 dark:border-slate-700">
-          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">전체 사운드</h3>
+      <div className="relative flex max-h-[86dvh] flex-col rounded-t-[28px] bg-white shadow-2xl animate-slide-up lg:mx-auto lg:mb-5 lg:w-[min(1120px,calc(100%-40px))] lg:rounded-[28px] dark:bg-[#111621]">
+        <div className="flex items-center justify-between border-b border-slate-100 px-5 pb-3 pt-4 sm:px-6 dark:border-white/8">
+          <div><p className="text-[9px] font-black tracking-[0.15em] text-emerald-500">SOUND LIBRARY</p><h3 className="mt-1 text-base font-black text-slate-900 dark:text-white">전체 사운드</h3></div>
           <button
             ref={closeRef}
             type="button"
             onClick={onClose}
             aria-label="사운드 목록 닫기"
-            className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            className="grid h-10 w-10 place-items-center rounded-full bg-slate-100 text-slate-400 transition-colors hover:text-slate-900 dark:bg-white/5 dark:hover:text-white"
           >
             <X size={18} />
           </button>
         </div>
-        <div className="overflow-y-auto scrollbar-hide px-4 py-3">
+        <div className="overflow-y-auto px-5 py-5 scrollbar-hide sm:px-6">
           <SoundLayerPicker
             activeLayers={layers}
             onToggle={onToggle}

@@ -21,7 +21,7 @@ const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${
 export const ImmersiveMode: React.FC<Props> = ({
   timeLeft, isPlaying, sessionName, color, getAnalyser, onPlay, onPause, onStop, onExit,
 }) => (
-  <div className="absolute inset-0 z-50 bg-slate-950 text-white flex flex-col items-center justify-center overflow-hidden animate-fade-in">
+  <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col items-center justify-center overflow-hidden animate-fade-in">
     <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={color} className="absolute inset-0 w-full h-full" />
 
     <button

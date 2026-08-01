@@ -1,8 +1,23 @@
-﻿import React, { useState } from 'react';
-import { Play, Pause, Square, ChevronDown, Clock, Activity, Volume2, Wind, Maximize2 } from 'lucide-react';
-import { BackgroundSoundType, BrainWaveType, getBrainWaveLabel } from '../types';
+import React, { useState } from 'react';
+import {
+  Activity,
+  ArrowDown,
+  Clock3,
+  Expand,
+  Headphones,
+  Layers3,
+  Maximize2,
+  Pause,
+  Play,
+  Plus,
+  SlidersHorizontal,
+  Square,
+  Volume2,
+  Wind,
+} from 'lucide-react';
+import { type BackgroundSoundType, type BrainWaveType, getBrainWaveLabel } from '../types';
 import { WAVE_ORDER, getSoundLabel, getWaveShortLabel, getWaveColor } from '../audioOptions';
-import { SoundLayer, ToneMode } from '../services/audioEngine';
+import type { SoundLayer, ToneMode } from '../services/audioEngine';
 import type { MixVolumes } from '../audioLevels';
 import { Toggle } from './Toggle';
 import { SoundLayerPicker } from './SoundLayerPicker';
@@ -13,7 +28,9 @@ import { NatureScene } from './NatureScene';
 
 interface PlayerProps {
   sessionName: string;
+  intention?: string;
   timeLeft: number;
+  totalSeconds?: number;
   isPlaying: boolean;
   onPlay: () => void;
   onPause: () => void;
@@ -36,9 +53,17 @@ interface PlayerProps {
   onImmersive: () => void;
 }
 
+const formatTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainder = Math.floor(seconds % 60);
+  return `${minutes.toString().padStart(2, '0')}:${remainder.toString().padStart(2, '0')}`;
+};
+
 export const Player: React.FC<PlayerProps> = ({
   sessionName,
+  intention,
   timeLeft,
+  totalSeconds = timeLeft,
   isPlaying,
   onPlay,
   onPause,
@@ -61,172 +86,145 @@ export const Player: React.FC<PlayerProps> = ({
   onImmersive,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
-  const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#6366f1';
-
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60);
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
+  const [panel, setPanel] = useState<'controls' | 'sounds'>('controls');
+  const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#7886ff';
+  const minutesLeft = Math.max(1, Math.ceil(timeLeft / 60));
+  const progress = totalSeconds > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / totalSeconds)) : 0;
 
   return (
-    <div className="relative isolate flex flex-col animate-slide-up pb-32">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-96 -z-10 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-20 -left-16 w-72 h-72 rounded-full bg-primary-500/15 dark:bg-primary-500/10 blur-3xl animate-breathe" />
-        <div className="absolute -top-10 -right-20 w-80 h-80 rounded-full bg-purple-500/10 dark:bg-purple-500/10 blur-3xl animate-breathe" style={{ animationDelay: '3s' }} />
-      </div>
-      <div className="flex justify-center mb-6 pt-2">
-        <button
-          onClick={onMinimize}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-sm font-medium"
-        >
-          <ChevronDown size={18} />
-          <span>축소하기</span>
-        </button>
+    <div className="relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute -left-40 -top-48 h-[540px] w-[540px] rounded-full bg-indigo-600/14 blur-[110px]" />
+        <div className="absolute -right-48 top-1/3 h-[520px] w-[520px] rounded-full bg-violet-600/10 blur-[120px]" />
       </div>
 
-      <div className="relative w-64 h-64 mx-auto flex items-center justify-center mb-8 shrink-0">
-        <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={auraColor} className="absolute inset-0 w-full h-full" />
-        <div className="relative z-10 text-5xl font-light tabular-nums text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
-          {formatTime(timeLeft)}
+      <header className="relative z-20 flex h-[68px] items-center justify-between border-b border-white/7 px-4 sm:px-6 lg:h-[78px] lg:px-8">
+        <button type="button" onClick={onMinimize} className="flex items-center gap-2 rounded-full py-2 pr-3 text-xs font-black text-white/58 transition-colors hover:text-white">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-white/7"><ArrowDown size={16} /></span>
+          축소
+        </button>
+        <div className="min-w-0 px-3 text-center">
+          <p className="text-[9px] font-black tracking-[0.17em] text-[#8d99ff]">NOW PLAYING</p>
+          <h1 className="mt-0.5 max-w-[40vw] truncate text-sm font-black tracking-[-0.02em] sm:max-w-md">{sessionName}</h1>
         </div>
-        <BreathingGuide active={breathingOn && isPlaying} />
-      </div>
-
-      <div className="flex justify-center gap-2 -mt-4 mb-4">
-        <button
-          onClick={() => setBreathingOn((v) => !v)}
-          aria-pressed={breathingOn}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
-            breathingOn
-              ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300 ring-1 ring-primary-500/40'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-          }`}
-        >
-          <Wind size={13} /> 호흡 가이드
+        <button type="button" onClick={onImmersive} className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
+          <Maximize2 size={15} /><span className="hidden sm:inline">전체 화면</span>
         </button>
-        <button
-          onClick={onImmersive}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-        >
-          <Maximize2 size={13} /> 몰입 모드
-        </button>
-      </div>
+      </header>
 
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{sessionName}</h2>
-        <div className="text-slate-500 dark:text-slate-400 text-sm flex items-center justify-center gap-2 flex-wrap px-4">
-          {brainwaveEnabled && (
-            <>
-              <Activity size={14} /> {getBrainWaveLabel(currentBrainWave).split(' ')[0]}
-              <span>·</span>
-            </>
-          )}
-          <Volume2 size={14} /> {activeLayers.length ? activeLayers.map((l) => getSoundLabel(l.type)).join(', ') : '자연음 없음'}
-        </div>
-      </div>
-
-      <div className="flex justify-center items-center gap-6 mb-10">
-        {!isPlaying ? (
-          <button onClick={onPlay} aria-label="재생" className="w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-500 text-white flex items-center justify-center shadow-lg shadow-primary-500/30 transition-all hover:scale-105 active:scale-95">
-            <Play size={32} fill="currentColor" className="ml-1" />
-          </button>
-        ) : (
-          <button onClick={onPause} aria-label="일시정지" className="w-16 h-16 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95">
-            <Pause size={32} fill="currentColor" />
-          </button>
-        )}
-        <button onClick={onStop} aria-label="세션 종료" className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500 hover:bg-red-200 dark:hover:bg-red-900/50 flex items-center justify-center transition-all">
-          <Square size={20} fill="currentColor" />
-        </button>
-      </div>
-
-      <div className="px-4 mb-8">
-        <NatureScene types={activeLayers.map((l) => l.type)} />
-      </div>
-
-      <div className="w-full px-4 space-y-6">
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="flex items-center gap-2 mb-3 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-            <Clock size={14} /> 재생 시간 (분)
+      <main className="relative z-10 mx-auto grid w-full max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7">
+        <section className="relative min-h-[540px] overflow-hidden rounded-[30px] border border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]">
+          <div className="absolute inset-0 opacity-90">
+            <NatureScene types={activeLayers.map((layer) => layer.type)} fill />
           </div>
-          <div className="flex items-center gap-4">
-            <input
-              type="range"
-              min="1"
-              max="120"
-              aria-label="재생 시간 (분)"
-              value={Math.ceil(timeLeft / 60)}
-              onChange={(e) => onTimeChange(Number(e.target.value))}
-              className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
-            />
-            <span className="w-16 text-right font-mono font-bold text-primary-600 dark:text-primary-400">{Math.ceil(timeLeft / 60)}분</span>
-          </div>
-        </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#050914]/36 via-[#050914]/38 to-[#050914]/90" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(3,6,14,0.32)_72%,rgba(3,6,14,0.72)_100%)]" />
 
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-              <Activity size={14} /> 뇌파음 (Brainwave)
-            </div>
-            <Toggle checked={brainwaveEnabled} onChange={onToggleBrainwave} label="뇌파음 사용" />
-          </div>
-          <div className={`grid grid-cols-5 gap-1.5 transition-opacity ${brainwaveEnabled ? '' : 'opacity-40 pointer-events-none'}`}>
-            {WAVE_ORDER.map((wave) => (
-              <button
-                key={wave}
-                onClick={() => onWaveChange(wave)}
-                disabled={!brainwaveEnabled}
-                aria-pressed={currentBrainWave === wave}
-                className={`py-2 px-1 rounded-lg text-sm font-medium transition-all ${
-                  currentBrainWave === wave
-                    ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20'
-                    : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                }`}
-              >
-                {getWaveShortLabel(wave)}
-              </button>
-            ))}
-          </div>
-          {brainwaveEnabled && (
-            <div className="mt-3">
-              <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
-                {(['binaural', 'isochronic'] as ToneMode[]).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => onToneModeChange(m)}
-                    aria-pressed={toneMode === m}
-                    className={`flex-1 py-1.5 rounded-md text-xs font-bold transition-all ${
-                      toneMode === m
-                        ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-primary-400 shadow-sm'
-                        : 'text-slate-500 dark:text-slate-400'
-                    }`}
-                  >
-                    {m === 'binaural' ? '바이노럴' : '아이소크로닉'}
-                  </button>
-                ))}
+          <div className="relative flex min-h-[540px] flex-col items-center justify-between p-5 sm:min-h-[650px] sm:p-8 lg:min-h-[calc(100dvh-134px)]">
+            <div className="flex w-full items-center justify-between">
+              <div className="flex items-center gap-2 rounded-full bg-black/22 px-3 py-2 text-[10px] font-black text-white/70 backdrop-blur-md">
+                <Headphones size={13} className="text-[#9ca6ff]" />
+                {brainwaveEnabled ? getBrainWaveLabel(currentBrainWave).split(' ')[0] : '자연음 전용'}
               </div>
-              <p className="text-[10px] text-slate-400 mt-1.5">
-                {toneMode === 'isochronic' ? '아이소크로닉: 스피커로도 효과를 느낄 수 있어요.' : '바이노럴: 헤드폰·이어폰을 착용하세요.'}
-              </p>
+              <div className="flex items-center gap-2 rounded-full bg-black/22 px-3 py-2 text-[10px] font-black text-white/70 backdrop-blur-md">
+                <Layers3 size={13} className="text-emerald-300" /> {activeLayers.length}개 레이어
+              </div>
             </div>
-          )}
-          {!brainwaveEnabled && (
-            <p className="text-[11px] text-slate-400 mt-2">자연음만 재생 중이에요.</p>
-          )}
-        </div>
 
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <div className="flex items-center gap-2 mb-3 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-            <Volume2 size={14} /> 배경음 (Layers)
+            <div className="my-auto flex flex-col items-center">
+              <div className="relative grid h-[250px] w-[250px] place-items-center sm:h-[310px] sm:w-[310px]">
+                <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={auraColor} className="absolute inset-0 h-full w-full" />
+                <div className="absolute inset-[18%] rounded-full border border-white/10 bg-black/18 shadow-[inset_0_0_45px_rgba(255,255,255,0.025)] backdrop-blur-md" />
+              <div className="relative z-10 text-center">
+                  <div className="text-[49px] font-extralight tabular-nums tracking-[-0.065em] drop-shadow-lg sm:text-[62px]">{formatTime(timeLeft)}</div>
+                  <p className="mt-2 text-[10px] font-black tracking-[0.16em] text-white/45">REMAINING</p>
+                  {intention ? <p className="mx-auto mt-3 max-w-[220px] truncate text-[11px] font-bold text-white/58">“{intention}”</p> : null}
+                </div>
+                <BreathingGuide active={breathingOn && isPlaying} />
+              </div>
+
+              <div className="mt-1 flex items-center gap-3">
+                <button type="button" onClick={() => onTimeChange(Math.min(120, minutesLeft + 5))} className="flex min-h-10 items-center gap-1.5 rounded-full bg-white/8 px-3 text-[11px] font-black text-white/64 backdrop-blur-md transition-colors hover:bg-white/13 hover:text-white"><Plus size={13} /> 5분</button>
+                <button type="button" onClick={isPlaying ? onPause : onPlay} aria-label={isPlaying ? '일시정지' : '재생'} className="grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-slate-950 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition-transform hover:scale-105 active:scale-95">
+                  {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
+                </button>
+                <button type="button" onClick={onStop} aria-label="세션 종료" className="grid h-10 w-10 place-items-center rounded-full bg-red-500/14 text-red-300 backdrop-blur-md transition-colors hover:bg-red-500/22"><Square size={14} fill="currentColor" /></button>
+              </div>
+
+              <button type="button" onClick={() => setBreathingOn((value) => !value)} aria-pressed={breathingOn} className={`mt-4 flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[10px] font-black backdrop-blur-md transition-all ${breathingOn ? 'bg-[#7180ef] text-white' : 'bg-black/22 text-white/55 hover:text-white'}`}><Wind size={13} /> 호흡 가이드</button>
+            </div>
+
+            <div className="w-full">
+              <div className="mb-4 h-1 overflow-hidden rounded-full bg-white/10" aria-label={`세션 ${Math.round(progress * 100)}% 진행`}><div className="h-full rounded-full bg-gradient-to-r from-[#7c89ff] to-[#b496ff] transition-[width] duration-500" style={{ width: `${progress * 100}%` }} /></div>
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                {activeLayers.length ? activeLayers.map((layer) => (
+                  <span key={layer.type} className="shrink-0 rounded-full border border-white/10 bg-black/22 px-3 py-1.5 text-[10px] font-black text-white/62 backdrop-blur-md">{getSoundLabel(layer.type)}</span>
+                )) : <span className="text-[10px] font-bold text-white/45">환경음 없이 뇌파음만 재생 중</span>}
+              </div>
+            </div>
           </div>
-          <SoundLayerPicker activeLayers={activeLayers} onToggle={onToggleLayer} onVolume={onLayerVolume} onBalance={onBalanceLayers} />
-        </div>
+        </section>
 
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mb-8">
-          <VolumeMixer volumes={volumes} brainwaveEnabled={brainwaveEnabled} onChange={onMixChange} />
-        </div>
-      </div>
+        <aside className="rounded-[28px] border border-white/8 bg-[#101522] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] lg:max-h-[calc(100dvh-134px)] lg:overflow-hidden">
+          <div className="grid grid-cols-2 gap-1 rounded-[18px] bg-white/[0.035] p-1">
+            <button type="button" onClick={() => setPanel('controls')} aria-pressed={panel === 'controls'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'controls' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><Activity size={14} /> 세션</button>
+            <button type="button" onClick={() => setPanel('sounds')} aria-pressed={panel === 'sounds'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'sounds' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><SlidersHorizontal size={14} /> 믹서</button>
+          </div>
+
+          <div className="mt-3 space-y-3 lg:max-h-[calc(100dvh-210px)] lg:overflow-y-auto lg:pr-1 scrollbar-hide">
+            {panel === 'controls' ? (
+              <>
+                <section className="rounded-[20px] bg-white/[0.035] p-4">
+                  <div className="flex items-center justify-between">
+                    <div><p className="text-[9px] font-black tracking-[0.14em] text-white/30">TIME</p><h2 className="mt-1 text-sm font-black">재생 시간</h2></div>
+                    <strong className="text-lg font-black tabular-nums text-[#98a3ff]">{minutesLeft}분</strong>
+                  </div>
+                  <input type="range" min="1" max="120" value={minutesLeft} onChange={(event) => onTimeChange(Number(event.target.value))} aria-label="남은 재생 시간" className="mt-4 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-[#7c8aff]" />
+                  <div className="mt-3 grid grid-cols-4 gap-1.5">
+                    {[10, 25, 40, 60].map((minutes) => <button key={minutes} type="button" onClick={() => onTimeChange(minutes)} className={`min-h-9 rounded-xl text-[10px] font-black ${minutesLeft === minutes ? 'bg-[#7180ef] text-white' : 'bg-white/[0.045] text-white/45 hover:text-white'}`}>{minutes}</button>)}
+                  </div>
+                </section>
+
+                <section className="rounded-[20px] bg-white/[0.035] p-4">
+                  <div className="flex items-center justify-between">
+                    <div><p className="text-[9px] font-black tracking-[0.14em] text-[#8f9cff]">BRAINWAVE</p><h2 className="mt-1 text-sm font-black">뇌파 레이어</h2></div>
+                    <Toggle checked={brainwaveEnabled} onChange={onToggleBrainwave} label="뇌파음 사용" />
+                  </div>
+                  <div className={`mt-4 grid grid-cols-5 gap-1 transition-opacity ${brainwaveEnabled ? '' : 'pointer-events-none opacity-30'}`}>
+                    {WAVE_ORDER.map((wave) => <button key={wave} type="button" disabled={!brainwaveEnabled} onClick={() => onWaveChange(wave)} aria-pressed={currentBrainWave === wave} className={`min-h-10 rounded-xl text-[10px] font-black ${currentBrainWave === wave ? 'bg-[#7180ef] text-white' : 'bg-white/[0.045] text-white/45 hover:text-white'}`}>{getWaveShortLabel(wave)}</button>)}
+                  </div>
+                  {brainwaveEnabled ? <div className="mt-3 grid grid-cols-2 gap-1 rounded-xl bg-black/15 p-1">{(['binaural', 'isochronic'] as ToneMode[]).map((mode) => <button key={mode} type="button" onClick={() => onToneModeChange(mode)} aria-pressed={toneMode === mode} className={`min-h-9 rounded-lg text-[10px] font-black ${toneMode === mode ? 'bg-white/10 text-white' : 'text-white/35'}`}>{mode === 'binaural' ? '바이노럴' : '아이소크로닉'}</button>)}</div> : null}
+                </section>
+
+                <section className="rounded-[20px] bg-white/[0.035] p-4">
+                  <p className="text-[9px] font-black tracking-[0.14em] text-emerald-300/70">ACTIVE SOUNDS</p>
+                  <div className="mt-3 space-y-2">
+                    {activeLayers.length ? activeLayers.map((layer) => (
+                      <div key={layer.type} className="flex items-center gap-2 rounded-xl bg-black/14 px-3 py-2.5">
+                        <Volume2 size={13} className="text-emerald-300" />
+                        <span className="min-w-0 flex-1 truncate text-[11px] font-black text-white/70">{getSoundLabel(layer.type)}</span>
+                        <span className="text-[9px] font-bold tabular-nums text-white/30">{Math.round(layer.volume * 100)}%</span>
+                      </div>
+                    )) : <p className="text-[10px] text-white/35">활성 환경음이 없습니다.</p>}
+                  </div>
+                  <button type="button" onClick={() => setPanel('sounds')} className="mt-3 flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/8 text-[10px] font-black text-white/50 hover:text-white"><Expand size={13} /> 사운드 편집</button>
+                </section>
+              </>
+            ) : (
+              <>
+                <section className="rounded-[20px] bg-white/[0.035] p-4">
+                  <p className="mb-4 text-[9px] font-black tracking-[0.14em] text-[#8f9cff]">MASTER MIX</p>
+                  <VolumeMixer volumes={volumes} brainwaveEnabled={brainwaveEnabled} onChange={onMixChange} />
+                </section>
+                <section className="rounded-[20px] bg-white/[0.035] p-4 player-sound-picker">
+                  <p className="mb-4 text-[9px] font-black tracking-[0.14em] text-emerald-300/70">SOUND LAYERS</p>
+                  <SoundLayerPicker activeLayers={activeLayers} onToggle={onToggleLayer} onVolume={onLayerVolume} onBalance={onBalanceLayers} hideScene compact />
+                </section>
+              </>
+            )}
+          </div>
+        </aside>
+      </main>
     </div>
   );
 };

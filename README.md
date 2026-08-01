@@ -1,47 +1,48 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Brainwave · Ritual Studio
 
-# Run and deploy your app
+집중, 회복, 수면을 위한 로컬 퍼스트 오디오 스튜디오입니다. 바이노럴/아이소크로닉 리듬, 실제 CC0 현장 녹음, 절차형 Web Audio를 하나의 반응형 PWA에서 조합합니다.
 
-This contains everything you need to run your app locally.
+## 제품 경험
 
-## Run Locally
+- 시간대에 맞춰 루틴을 제안하는 오늘 대시보드
+- 검색·카테고리·즐겨찾기·사용자 저장 루틴을 갖춘 라이브러리
+- 시간, 뇌파, 재생 방식, 환경음, 볼륨, 수면 페이드를 한 화면에서 조정하는 세션 스튜디오
+- 진행률, 호흡 가이드, 실시간 믹서를 갖춘 방해 없는 집중 콘솔
+- 장면 오브젝트를 직접 눌러 35개 자연음 레이어를 조합하는 리빙 사운드스케이프
+- 하루 목표, 연속 기록, 7/30일 추이, 컨디션 변화를 보여주는 리포트
+- 계정 없이 동작하는 로컬 저장, JSON 백업/복원, 설치형 PWA, 오프라인 오디오 캐시
+- 다크 모드, 키보드 포커스, 터치 타깃, 움직임 줄이기 지원
 
-**Prerequisites:**  Node.js
+## 오디오 아키텍처
 
+`services/audioEngine.ts`의 단일 엔진이 뇌파 리듬, 절차형 사운드, 지연 로드한 현장 녹음을 믹싱합니다. 자연음은 디코딩 버퍼를 제한된 캐시에 보관하며, 샘플 로딩에 실패하면 절차음이 즉시 폴백을 담당합니다. 천둥 같은 이벤트 음원은 불규칙 원샷으로, 연속 베드는 루프 경계 크로스페이드로 재생합니다.
 
-1. Install dependencies:
-   `npm install`
-2. Run the app:
-   `npm run dev`
+오디오 원본, 라이선스, 가공 명령, 측정값과 SHA-256은 [THIRD_PARTY_AUDIO.md](./THIRD_PARTY_AUDIO.md)에 기록되어 있습니다.
 
-## Deploy to Vercel
+## 로컬 실행
 
-1. Push the repository to GitHub.
-2. In Vercel, choose **Add New Project** and import this repository.
-3. Use the project root as the **Root Directory**.
-4. Vercel can auto-detect Vite, and this repository also includes `vercel.json` with:
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-5. Leave `VITE_BASE_URL` unset for Vercel so the app uses the default `/`.
-6. Deploy.
+Node.js 20 이상을 권장합니다.
 
-## Notes
+```bash
+npm install
+npm run dev
+```
 
-- This app is a static Vite app. No required runtime environment variables are used by the checked-in code.
-- `VITE_BASE_URL` is only needed when deploying under a subpath such as GitHub Pages (`/brainwave/`).
-- Styling is compiled with Tailwind CSS via PostCSS (`tailwind.config.js` / `postcss.config.js`) — no runtime CDN.
-- The app is an installable PWA (web manifest + service worker via `vite-plugin-pwa`), so it can be added to the home screen and works offline after the first visit.
-- Run `npm run typecheck` to type-check without emitting. CI (`.github/workflows/ci.yml`) runs the type check and build on every push/PR.
-- Binaural beats rely on a **stereo difference between the left and right ears**, so headphones/earphones are recommended for the intended effect.
-- Nature sounds compose into one layered living diorama. Generated painterly plates provide the high-detail summer valley and moonlit pond, while twelve fauna species use paired 5×5 idle/action atlases with irregular NPC-style rests. Five additional shared 5×5 environment atlases contain 125 generated motion cells for clouds, storms, rain, snow, water, waves, streams, waterfall and mist, fire, fireflies, leaves, bubbles, bamboo, temple, tent, rain window, eaves, pebbles, wind chimes, singing bowl, fan, drone, heartbeat and noise particles. Atlas cells switch at fixed anchors; CSS is limited to placement and slow whole-object travel, avoiding sprite sliding and constant dancing. The renderer retains vector fallbacks only for sound types without generated art, and versioned runtime caches refresh scene assets without bloating the install precache.
-- Nature audio is a hybrid of real CC0 field recordings and live Web Audio synthesis. Rain, thunder, stream, waterfall, ocean, fire, forest, birds, cricket, and wind textures lazy-load local OGG/MP3 assets only when used; procedural sound starts immediately, supplies fine detail, and remains the fallback if a file is unavailable. Frogs, owl, chimes, singing bowl, drone, fan, and white/pink noise remain procedural. The sounds are layerable in any combination and mixed through a shared stereo reverb. Full recording provenance, licenses, processing commands, measurements, and SHA-256 hashes are in [`THIRD_PARTY_AUDIO.md`](./THIRD_PARTY_AUDIO.md).
-- Nature recordings are excluded from the install precache to keep the initial PWA lightweight. A successfully requested recording is stored in a versioned runtime cache for later/offline playback, with codec capability detection preferring Vorbis and falling back to MP3. Decoded buffers use a bounded cache rather than keeping every recording in memory. The mixer retains analyser-calibrated trims, role-weighted multi-layer headroom, gentle mix compression, a separate peak guard, loop-safe procedural beds, and a diffuse predelayed reverb tail. Mixer settings persist locally and are included in saved/recent sessions.
+품질 검증:
 
-## Deploy to GitHub Pages
+```bash
+npm run typecheck
+npm test
+npm run build
+npm run check:bundle
+```
 
-1. Commit and push your changes to the `main` branch.
-2. Ensure the repo name matches the `VITE_BASE_URL` used for GitHub Pages (default set to `/brainwave/` in the workflow). If your repository name is different, update `VITE_BASE_URL` in `.github/workflows/deploy-gh-pages.yml` and optionally set it in a `.env` file for local builds.
-3. GitHub Actions will automatically build the app with `npm run build` and publish the `dist` folder to GitHub Pages.
-4. After the workflow completes, your site will be available at `https://<username>.github.io/<repo>/`.
+## 배포
+
+Vercel은 저장소 루트를 Vite 프로젝트로 가져오면 됩니다. `vercel.json`에 빌드 명령과 `dist` 출력 경로가 정의되어 있으며 런타임 환경 변수는 필요하지 않습니다.
+
+GitHub Pages는 `.github/workflows/deploy-gh-pages.yml`이 `main`을 빌드합니다. 저장소 하위 경로로 배포할 때만 `VITE_BASE_URL=/brainwave/`를 사용합니다.
+
+## 안전 안내
+
+바이노럴 리듬은 좌우 채널 차이를 사용하므로 헤드폰에서 가장 의도에 가깝게 들립니다. 편안한 낮은 볼륨으로 시작하고 운전이나 위험한 작업 중에는 사용하지 마세요. 이 앱은 의료기기가 아니며 진단이나 치료를 대신하지 않습니다.

@@ -19,14 +19,14 @@ export default defineConfig(({ mode }) => {
           registerType: 'autoUpdate',
           includeAssets: ['icon.svg', 'apple-touch-icon.png', 'favicon-32x32.png'],
           manifest: {
-            name: 'MC Brain Care',
-            short_name: 'Brain Care',
-            description: '바이노럴 비트와 자연음으로 집중·이완·수면을 돕는 뇌파 케어 앱',
+            name: 'Brainwave · Ritual Studio',
+            short_name: 'Brainwave',
+            description: '집중·이완·수면을 위한 로컬 퍼스트 뇌파 리듬 및 자연음 스튜디오',
             lang: 'ko',
-            theme_color: '#6366f1',
-            background_color: '#0f172a',
+            theme_color: '#080b13',
+            background_color: '#080b13',
             display: 'standalone',
-            orientation: 'portrait',
+            orientation: 'any',
             scope: base,
             start_url: base,
             icons: [
@@ -64,8 +64,7 @@ export default defineConfig(({ mode }) => {
                 },
               },
               {
-                // Cache the self-hosted Pretendard font on first load so it works
-                // offline, without bloating the precache with a ~2MB file.
+                // Keep the self-hosted Pretendard face available after its first load.
                 urlPattern: /\.woff2$/i,
                 handler: 'CacheFirst',
                 options: {

@@ -644,7 +644,7 @@ export default function App() {
     document.documentElement.classList.toggle('dark', settings.darkMode);
     document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);
     document.documentElement.style.colorScheme = settings.darkMode ? 'dark' : 'light';
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', settings.darkMode ? '#080b13' : '#f3f5f8');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', settings.darkMode ? '#0f172a' : '#f8fafc');
     localStorage.setItem('mc_brain_settings', JSON.stringify(settings));
   }, [settings]);
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   BarChart3,
+  Brain,
   Compass,
   Headphones,
   Home,
@@ -40,15 +41,11 @@ const PAGE_META: Record<AppView, { eyebrow: string; title: string }> = {
 };
 
 const Brand = () => (
-  <div className="flex items-center gap-3">
-    <span className="brand-mark" aria-hidden="true">
-      <span />
-      <span />
-      <span />
-    </span>
-    <div className="leading-none">
-      <strong className="block text-[15px] font-black tracking-[0.2em] text-slate-950 dark:text-white">BRAINWAVE</strong>
-      <span className="mt-1 block text-[9px] font-semibold tracking-[0.18em] text-slate-400">SOUND · FOCUS · REST</span>
+  <div className="flex items-center gap-2.5">
+    <span className="brand-mark" aria-hidden="true"><Brain size={21} /></span>
+    <div className="leading-tight">
+      <strong className="block text-lg font-bold text-slate-900 dark:text-white">Brainwave</strong>
+      <span className="block text-[11px] text-slate-400">집중 · 휴식 · 수면</span>
     </div>
   </div>
 );
@@ -68,12 +65,12 @@ export const AppShell: React.FC<Props> = ({
   const meta = pageMeta ?? PAGE_META[activeView];
 
   if (focusMode) {
-    return <div className="min-h-[100dvh] bg-[#070a12] text-white">{children}</div>;
+    return <div className="app-shell classic-ui min-h-[100dvh] bg-slate-900 text-white">{children}</div>;
   }
 
   return (
-    <div className="app-shell min-h-[100dvh] bg-[#f3f5f8] text-slate-950 dark:bg-[#080b13] dark:text-white">
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[252px] lg:flex-col lg:border-r lg:border-slate-200/80 lg:bg-white/90 lg:px-5 lg:py-6 lg:backdrop-blur-xl dark:lg:border-white/8 dark:lg:bg-[#0d111c]/92">
+    <div className="app-shell classic-ui min-h-[100dvh] bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[252px] lg:flex-col lg:border-r lg:border-slate-200 lg:bg-white lg:px-5 lg:py-6 dark:lg:border-slate-700 dark:lg:bg-slate-800">
         <button type="button" onClick={() => onNavigate('home')} className="rounded-2xl px-2 py-1 text-left">
           <Brand />
         </button>
@@ -89,26 +86,26 @@ export const AppShell: React.FC<Props> = ({
                 aria-current={active ? 'page' : undefined}
                 className={`group flex min-h-12 w-full items-center gap-3 rounded-2xl px-3.5 text-sm font-bold transition-all ${
                   active
-                    ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/15 dark:bg-white dark:text-slate-950'
+                    ? 'bg-primary-600 text-white shadow-sm'
                     : 'text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/6 dark:hover:text-white'
                 }`}
               >
                 <Icon size={19} strokeWidth={active ? 2.3 : 1.8} />
                 {label}
-                {active ? <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#8b9cff] dark:bg-[#596bff]" /> : null}
+                {active ? <span className="ml-auto h-1.5 w-1.5 rounded-full bg-white/80" /> : null}
               </button>
             );
           })}
         </nav>
 
         <div className="mt-auto space-y-3">
-          <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-4 dark:border-white/8 dark:bg-white/[0.035]">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/50">
             <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
               <span>오늘의 리듬</span>
               <span className="tabular-nums text-slate-950 dark:text-white">{dailyMinutes}/{dailyGoalMinutes}분</span>
             </div>
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
-              <div className="h-full rounded-full bg-gradient-to-r from-[#6c7cff] to-[#b590ff] transition-[width] duration-500" style={{ width: `${progress}%` }} />
+              <div className="h-full rounded-full bg-primary-500 transition-[width] duration-500" style={{ width: `${progress}%` }} />
             </div>
             <p className="mt-2 text-[10px] leading-relaxed text-slate-400">
               {progress >= 100 ? '오늘 목표를 채웠어요. 충분히 잘했습니다.' : `${Math.max(0, dailyGoalMinutes - dailyMinutes)}분이면 오늘 목표를 채워요.`}
@@ -120,7 +117,7 @@ export const AppShell: React.FC<Props> = ({
             onClick={() => onNavigate('settings')}
             className={`flex min-h-11 w-full items-center gap-3 rounded-2xl px-3.5 text-sm font-bold transition-colors ${
               activeView === 'settings'
-                ? 'bg-slate-100 text-slate-950 dark:bg-white/8 dark:text-white'
+                ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
                 : 'text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/6 dark:hover:text-white'
             }`}
           >
@@ -130,11 +127,11 @@ export const AppShell: React.FC<Props> = ({
       </aside>
 
       <div className="lg:pl-[252px]">
-        <header className="sticky top-0 z-30 flex h-[68px] items-center justify-between border-b border-slate-200/70 bg-[#f3f5f8]/88 px-4 backdrop-blur-xl sm:px-6 lg:h-[88px] lg:px-9 dark:border-white/7 dark:bg-[#080b13]/88">
+        <header className="sticky top-0 z-30 flex h-[68px] items-center justify-between border-b border-slate-200 bg-slate-50/90 px-4 backdrop-blur-md sm:px-6 lg:h-[88px] lg:px-9 dark:border-slate-800 dark:bg-slate-900/90">
           <div className="lg:hidden"><Brand /></div>
           <div className="hidden lg:block">
-            <p className="text-[10px] font-black tracking-[0.2em] text-[#6978ea] dark:text-[#8f9cff]">{meta.eyebrow}</p>
-            <h1 className="mt-1 text-[22px] font-extrabold tracking-[-0.035em] text-slate-950 dark:text-white">{meta.title}</h1>
+            <p className="text-xs font-semibold text-primary-600 dark:text-primary-400">{meta.eyebrow}</p>
+            <h1 className="mt-1 text-[22px] font-bold text-slate-900 dark:text-white">{meta.title}</h1>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -154,7 +151,7 @@ export const AppShell: React.FC<Props> = ({
               <Settings size={17} />
             </button>
             <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-[11px] font-bold text-slate-600 shadow-sm sm:flex dark:border-white/8 dark:bg-white/5 dark:text-slate-300">
-              <Headphones size={14} className="text-[#7282ff]" /> 로컬 오디오 엔진
+              <Headphones size={14} className="text-primary-500" /> 로컬 오디오 엔진
             </div>
           </div>
         </header>
@@ -164,7 +161,7 @@ export const AppShell: React.FC<Props> = ({
         </main>
       </div>
 
-      <nav className="fixed inset-x-3 bottom-[calc(10px+env(safe-area-inset-bottom))] z-40 grid h-[66px] grid-cols-4 rounded-[24px] border border-slate-200/90 bg-white/92 p-1.5 shadow-[0_16px_44px_rgba(15,23,42,0.18)] backdrop-blur-xl lg:hidden dark:border-white/10 dark:bg-[#141925]/94" aria-label="주요 메뉴">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid h-[calc(68px+env(safe-area-inset-bottom))] grid-cols-4 border-t border-slate-200 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden dark:border-slate-700 dark:bg-slate-800/95" aria-label="주요 메뉴">
         {NAV_ITEMS.map(({ id, label, Icon }) => {
           const active = activeView === id;
           return (
@@ -173,9 +170,9 @@ export const AppShell: React.FC<Props> = ({
               type="button"
               onClick={() => onNavigate(id)}
               aria-current={active ? 'page' : undefined}
-              className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-[18px] text-[10px] font-bold transition-all ${
+              className={`my-1.5 flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-semibold transition-colors ${
                 active
-                  ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950'
+                  ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300'
                   : 'text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200'
               }`}
             >

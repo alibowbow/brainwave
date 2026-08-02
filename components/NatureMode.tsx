@@ -156,10 +156,10 @@ export const NatureMode: React.FC<Props> = ({
       <button
         type="button"
         onClick={enterSceneOnly}
-        className="absolute right-4 top-4 z-40 flex min-h-11 items-center gap-2 rounded-xl border border-white/20 bg-black/35 px-3.5 text-xs font-bold text-white shadow-lg backdrop-blur-md transition-colors hover:bg-black/50"
+        className="absolute right-4 top-4 z-40 flex min-h-11 items-center gap-2 rounded-xl border border-white/70 bg-white/90 px-4 text-xs font-bold text-slate-950 shadow-lg backdrop-blur-md transition-colors hover:bg-white"
         aria-label="자연 애니메이션만 전체 화면으로 보기"
       >
-        <Maximize2 size={15} /> 장면만 보기
+        <Maximize2 size={15} /> 자연 화면만 보기
       </button>
       <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
         <span className="rounded-full border border-white/12 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/95 shadow-lg backdrop-blur-md">

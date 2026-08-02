@@ -625,7 +625,7 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
 
   return (
     <div
-      className={`sc-scene-v2 relative w-full ${fill ? 'h-full rounded-2xl' : tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`}
+      className={`sc-scene-v2 ${fill ? 'absolute inset-0 rounded-2xl' : `relative w-full ${tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'}`} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`}
       data-theme={theme}
       data-sounds={types.join(',')}
     >

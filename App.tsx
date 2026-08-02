@@ -655,6 +655,7 @@ export default function App() {
   }, [natureLayers, natureTimerMin, natureVol, natureMixId]);
 
   useEffect(() => {
+    document.querySelector<HTMLElement>('[data-app-scroll]')?.scrollTo({ top: 0, behavior: 'auto' });
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [activeView, viewMode]);
 

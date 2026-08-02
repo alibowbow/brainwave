@@ -121,8 +121,18 @@ export const RoutineLibrary: React.FC<Props> = ({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="루틴, 효과, 소리 검색"
-              className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-950 shadow-sm outline-none transition focus:border-[#7b88f5] focus:ring-4 focus:ring-[#7180ff]/10 dark:border-white/8 dark:bg-[#111621] dark:text-white dark:placeholder:text-slate-500"
+              className="routine-search-input h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-sm font-semibold text-slate-950 shadow-sm outline-none transition focus:border-[#7b88f5] focus:ring-4 focus:ring-[#7180ff]/10 dark:border-white/8 dark:bg-[#111621] dark:text-white dark:placeholder:text-slate-500"
             />
+            {query ? (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                aria-label="검색어 지우기"
+                className="absolute right-0.5 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-white/6 dark:hover:text-white"
+              >
+                <X size={16} />
+              </button>
+            ) : null}
           </label>
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide" role="group" aria-label="카테고리 필터">
             {(['all', 'focus', 'calm', 'sleep', 'restore'] as const).map((id) => (
@@ -170,7 +180,7 @@ export const RoutineLibrary: React.FC<Props> = ({
                             <h4 className="truncate text-lg font-bold text-slate-950 dark:text-white">{visual.text}</h4>
                             <p className="mt-1 line-clamp-2 min-h-9 text-xs leading-relaxed text-slate-400">{preset.description}</p>
                           </button>
-                          <button type="button" onClick={() => onToggleFavorite(favoriteKey)} aria-label={favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'} aria-pressed={favorite} className={`grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors ${favorite ? 'bg-rose-50 text-rose-500 dark:bg-rose-500/12' : 'bg-slate-50 text-slate-300 hover:text-rose-500 dark:bg-white/4 dark:text-slate-600'}`}><Heart size={16} fill={favorite ? 'currentColor' : 'none'} /></button>
+                          <button type="button" onClick={() => onToggleFavorite(favoriteKey)} aria-label={favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'} aria-pressed={favorite} className={`grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors ${favorite ? 'bg-rose-50 text-rose-500 dark:bg-rose-500/12' : 'bg-slate-50 text-slate-300 hover:text-rose-500 dark:bg-white/4 dark:text-slate-600'}`}><Heart size={16} fill={favorite ? 'currentColor' : 'none'} /></button>
                         </div>
                         <div className="mt-4 flex gap-2">
                           <button type="button" onClick={() => onQuickStartPreset(preset)} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-slate-950 text-xs font-bold text-white transition-transform active:scale-[0.98] dark:bg-white dark:text-slate-950"><Play size={14} fill="currentColor" /> 바로 시작</button>
@@ -201,7 +211,7 @@ export const RoutineLibrary: React.FC<Props> = ({
                       <div className="relative flex min-h-[170px] flex-col">
                         <div className="flex items-start justify-between">
                           <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/13 text-2xl backdrop-blur-md" aria-hidden="true">{preset.emoji}</span>
-                          <button type="button" onClick={() => onToggleFavorite(favoriteKey)} aria-label={favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'} aria-pressed={favorite} className="grid h-9 w-9 place-items-center rounded-full bg-black/14 text-white/70 backdrop-blur-md transition-colors hover:text-white"><Heart size={16} fill={favorite ? 'currentColor' : 'none'} /></button>
+                          <button type="button" onClick={() => onToggleFavorite(favoriteKey)} aria-label={favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'} aria-pressed={favorite} className="grid h-11 w-11 place-items-center rounded-full bg-black/14 text-white/70 backdrop-blur-md transition-colors hover:text-white"><Heart size={16} fill={favorite ? 'currentColor' : 'none'} /></button>
                         </div>
                         <button type="button" onClick={() => onOpenAmbience(preset)} className="mt-auto text-left">
                           <h4 className="text-lg font-bold">{preset.name}</h4>
@@ -209,7 +219,7 @@ export const RoutineLibrary: React.FC<Props> = ({
                         </button>
                         <div className="mt-4 flex items-center justify-between gap-3">
                           <span className="flex items-center gap-2 text-[10px] font-bold text-white/60"><Layers3 size={13} /> {preset.layers.length}개 <Clock3 size={13} /> {preset.durationMinutes}분</span>
-                          <button type="button" onClick={() => onQuickStartAmbience(preset)} className="grid h-10 w-10 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform active:scale-95" aria-label={`${preset.name} 바로 시작`}><Play size={15} fill="currentColor" className="ml-0.5" /></button>
+                          <button type="button" onClick={() => onQuickStartAmbience(preset)} className="grid h-11 w-11 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform active:scale-95" aria-label={`${preset.name} 바로 시작`}><Play size={15} fill="currentColor" className="ml-0.5" /></button>
                         </div>
                       </div>
                     </article>

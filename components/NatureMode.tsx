@@ -141,7 +141,7 @@ export const NatureMode: React.FC<Props> = ({
   };
 
   const stage = (
-    <div className="relative h-[52dvh] min-h-[390px] flex-1 overflow-hidden rounded-[28px] border border-slate-200/70 bg-[#111621] shadow-[0_28px_70px_rgba(13,25,30,0.18)] sm:h-[58dvh] lg:h-full lg:min-h-0 dark:border-white/8">
+    <div className="relative h-[clamp(360px,calc(100dvh-305px-env(safe-area-inset-bottom)),800px)] shrink-0 overflow-hidden rounded-[28px] border border-slate-200/70 bg-[#111621] shadow-[0_28px_70px_rgba(13,25,30,0.18)] lg:h-full lg:min-h-0 dark:border-white/8">
       <NatureScene
         types={visibleTypes}
         fill

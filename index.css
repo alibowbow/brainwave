@@ -9,6 +9,10 @@ body {
   letter-spacing: -0.01em;
   text-rendering: optimizeLegibility;
 }
+
+.routine-search-input::-webkit-search-cancel-button {
+  display: none;
+}
 h1, h2, h3, h4 {
   letter-spacing: -0.02em;
 }

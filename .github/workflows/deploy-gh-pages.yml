@@ -6,16 +6,35 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  actions: write
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "pages-${{ github.event_name }}-${{ github.ref }}"
   cancel-in-progress: true
 
 jobs:
+  sync-deploy-branch:
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync the Pages-approved branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_DEPLOY_BRANCH: codex/publish-react-app-with-link
+        run: |
+          git push origin "HEAD:refs/heads/${PAGES_DEPLOY_BRANCH}"
+          gh workflow run deploy-gh-pages.yml --ref "${PAGES_DEPLOY_BRANCH}"
+
   build:
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'codex/publish-react-app-with-link'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

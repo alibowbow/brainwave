@@ -57,7 +57,7 @@ export const ComposerSheet: React.FC<Props> = ({
         onClick={onToggleExpanded}
         aria-expanded={expanded}
         aria-label={expanded ? '컴포저 접기' : '컴포저 펼치기'}
-        className="w-full pt-2 pb-1 flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        className="flex min-h-11 w-full flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
       >
         <span className="w-9 h-1 rounded-full bg-slate-300 dark:bg-slate-600" />
         {expanded ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
@@ -105,7 +105,7 @@ export const ComposerSheet: React.FC<Props> = ({
                   type="button"
                   onClick={() => { onSelectType(l.type); if (!expanded) onToggleExpanded(); }}
                   aria-label={`${getSoundLabel(l.type)} 조절`}
-                  className={`shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold border transition-colors ${
+                  className={`flex min-h-9 shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold transition-colors ${
                     l.muted
                       ? 'border-slate-200 dark:border-slate-600 text-slate-400 opacity-60'
                       : selectedType === l.type
@@ -121,7 +121,7 @@ export const ComposerSheet: React.FC<Props> = ({
           )}
         </div>
       ) : (
-        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-4">
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-[calc(88px+env(safe-area-inset-bottom))] scrollbar-hide">
           <TransportControls
             isPlaying={isPlaying}
             canPlay={layers.length > 0}
@@ -164,7 +164,7 @@ export const ComposerSheet: React.FC<Props> = ({
           <button
             type="button"
             onClick={onOpenDrawer}
-            className="w-full py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-xs font-bold flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             <LibraryBig size={15} /> 전체 사운드 보기
           </button>

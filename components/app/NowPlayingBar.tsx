@@ -26,17 +26,17 @@ export const NowPlayingBar: React.FC<Props> = ({ tone, title, subtitle, isPlayin
       >
         <span className="playing-bars" data-running={isPlaying ? 'true' : 'false'} aria-hidden="true"><i /><i /><i /></span>
       </button>
-      <button type="button" onClick={onOpen} className="min-w-0 flex-1 text-left">
+      <button type="button" onClick={onOpen} className="min-h-11 min-w-0 flex-1 text-left">
         <p className="truncate text-sm font-extrabold tracking-[-0.02em]">{title}</p>
         <p className={`mt-0.5 truncate text-[11px] font-semibold ${nature ? 'text-emerald-300' : 'text-indigo-300'}`}>{subtitle}</p>
       </button>
-      <button type="button" onClick={onOpen} aria-label="펼치기" className="grid h-9 w-9 place-items-center rounded-full text-white/55 hover:bg-white/8 hover:text-white">
+      <button type="button" onClick={onOpen} aria-label="펼치기" className="grid h-11 w-11 place-items-center rounded-full text-white/55 hover:bg-white/8 hover:text-white">
         <ChevronUp size={17} />
       </button>
-      <button type="button" onClick={onToggle} aria-label={isPlaying ? '일시정지' : '재생'} className="grid h-10 w-10 place-items-center rounded-full bg-white text-slate-950 transition-transform active:scale-95">
+      <button type="button" onClick={onToggle} aria-label={isPlaying ? '일시정지' : '재생'} className="grid h-11 w-11 place-items-center rounded-full bg-white text-slate-950 transition-transform active:scale-95">
         {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-0.5" />}
       </button>
-      <button type="button" onClick={onStop} aria-label="종료" className="grid h-9 w-9 place-items-center rounded-full text-white/50 hover:bg-red-500/12 hover:text-red-300">
+      <button type="button" onClick={onStop} aria-label="종료" className="grid h-11 w-11 place-items-center rounded-full text-white/50 hover:bg-red-500/12 hover:text-red-300">
         <Square size={15} fill="currentColor" />
       </button>
     </section>

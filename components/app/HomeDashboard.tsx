@@ -84,7 +84,7 @@ export const HomeDashboard: React.FC<Props> = ({
             지금 상태에 맞는 소리로 하루의 리듬을 정돈해 보세요.
           </p>
         </div>
-        <button type="button" onClick={onOpenLibrary} className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-extrabold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex dark:border-white/8 dark:bg-white/5 dark:text-slate-200">
+        <button type="button" onClick={onOpenLibrary} className="hidden min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-extrabold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex dark:border-white/8 dark:bg-white/5 dark:text-slate-200">
           전체 루틴 <ArrowRight size={15} />
         </button>
       </div>
@@ -198,7 +198,7 @@ export const HomeDashboard: React.FC<Props> = ({
             <p className="text-[10px] font-bold tracking-[0.16em] text-[#7180f0]">QUICK START</p>
             <h3 id="quick-title" className="mt-1 text-xl font-bold text-slate-950 dark:text-white">지금 필요한 리듬</h3>
           </div>
-          <button type="button" onClick={onOpenLibrary} className="flex items-center gap-1 text-xs font-extrabold text-slate-400 transition-colors hover:text-slate-950 dark:hover:text-white">모두 보기 <ArrowRight size={14} /></button>
+          <button type="button" onClick={onOpenLibrary} className="-mr-2 flex min-h-11 items-center gap-1 rounded-xl px-2 text-xs font-extrabold text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-white/5 dark:hover:text-white">모두 보기 <ArrowRight size={14} /></button>
         </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {quickPresets.map((preset, index) => {
@@ -230,7 +230,7 @@ export const HomeDashboard: React.FC<Props> = ({
             <p className="text-[10px] font-bold tracking-[0.16em] text-emerald-500">SOUNDSCAPES</p>
             <h3 id="soundscape-title" className="mt-1 text-xl font-bold text-slate-950 dark:text-white">소리로 공간 바꾸기</h3>
           </div>
-          <button type="button" onClick={onOpenNature} className="flex items-center gap-1 text-xs font-extrabold text-slate-400 transition-colors hover:text-emerald-600 dark:hover:text-emerald-300"><Leaf size={13} /> 자연 스튜디오</button>
+          <button type="button" onClick={onOpenNature} className="-mr-2 flex min-h-11 items-center gap-1 rounded-xl px-2 text-xs font-extrabold text-slate-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-500/8 dark:hover:text-emerald-300"><Leaf size={13} /> 자연 스튜디오</button>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {FEATURED_AMBIENCES.map((preset) => {

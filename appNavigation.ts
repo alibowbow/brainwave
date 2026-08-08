@@ -16,7 +16,7 @@ export interface AppHistoryEntry extends AppLocation {
 export const APP_HISTORY_KEY = '__brainwaveNavigation';
 export const NATURE_SCENE_HISTORY_KEY = '__brainwaveNatureScene';
 
-const APP_VIEWS = new Set<AppView>(['home', 'library', 'nature', 'insights', 'settings']);
+const APP_VIEWS = new Set<AppView>(['home', 'library', 'nature', 'guide', 'insights', 'settings']);
 const VIEW_MODES = new Set<AppViewMode>(['list', 'config', 'player', 'feedback']);
 
 const stateObject = (state: unknown): Record<string, unknown> => (
@@ -59,4 +59,3 @@ export const withNatureSceneHistory = (state: unknown) => ({
 export const hasNatureSceneHistory = (state: unknown) => (
   stateObject(state)[NATURE_SCENE_HISTORY_KEY] === true
 );
-

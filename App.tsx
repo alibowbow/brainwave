@@ -26,6 +26,14 @@ import {
 import { AppShell, type AppView } from './components/app/AppShell';
 import { HomeDashboard } from './components/app/HomeDashboard';
 import { NowPlayingBar } from './components/app/NowPlayingBar';
+import {
+  readAppHistoryEntry,
+  sameLocation,
+  withAppHistoryEntry,
+  type AppHistoryEntry,
+  type AppLocation,
+  type AppViewMode,
+} from './appNavigation';
 
 const NatureMode = lazy(() => import('./components/NatureMode').then((module) => ({ default: module.NatureMode })));
 const StatsDashboard = lazy(() => import('./components/StatsDashboard').then((module) => ({ default: module.StatsDashboard })));
@@ -81,7 +89,7 @@ export default function App() {
   });
 
   const [playbackStatus, setPlaybackStatus] = useState<'idle' | 'running' | 'paused'>('idle');
-  const [viewMode, setViewMode] = useState<'list' | 'config' | 'player' | 'feedback'>('list');
+  const [viewMode, setViewMode] = useState<AppViewMode>('list');
   const [selectedPreset, setSelectedPreset] = useState<SessionPreset | null>(null);
   const [currentBrainWave, setCurrentBrainWave] = useState<BrainWaveType>('alpha');
   const [activeLayers, setActiveLayers] = useState<SoundLayer[]>([{ type: 'rain', volume: defaultSoundLevel('rain') }]);
@@ -105,6 +113,9 @@ export default function App() {
   const [visualMode, setVisualMode] = useState<VisualMode>(DEFAULT_VISUAL_MODE);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const sessionBackgroundVariant = selectedPreset?.id === 'relax' || selectedPreset?.id === 'amb:campfire_night'
+    ? 'campfire' as const
+    : undefined;
 
   const [natureLayers, setNatureLayers] = useState<SoundLayer[]>(() => {
     try {
@@ -145,6 +156,38 @@ export default function App() {
   const natureEndRef = useRef<number | null>(null);
   const wakeLockRef = useRef<any>(null);
   const pendingStartRef = useRef<(() => void) | null>(null);
+  const navigationRef = useRef<AppHistoryEntry>({
+    activeView: 'home',
+    viewMode: 'list',
+    immersive: false,
+    index: readAppHistoryEntry(window.history.state)?.index ?? 0,
+    version: 1,
+  });
+
+  const navigate = useCallback((location: AppLocation, behavior: 'push' | 'replace' = 'push') => {
+    const current = navigationRef.current;
+    if (behavior === 'push' && sameLocation(current, location)) return;
+    const entry: AppHistoryEntry = {
+      ...location,
+      index: behavior === 'push' ? current.index + 1 : current.index,
+      version: 1,
+    };
+    navigationRef.current = entry;
+    const state = withAppHistoryEntry(window.history.state, entry);
+    if (behavior === 'push') window.history.pushState(state, '', window.location.href);
+    else window.history.replaceState(state, '', window.location.href);
+    setActiveView(entry.activeView);
+    setViewMode(entry.viewMode);
+    setImmersive(entry.immersive);
+  }, []);
+
+  const navigateBack = useCallback((fallback: AppLocation) => {
+    if (navigationRef.current.index > 0) {
+      window.history.back();
+      return;
+    }
+    navigate(fallback, 'replace');
+  }, [navigate]);
 
   const beginRun = (seconds: number) => {
     endTimeRef.current = Date.now() + seconds * 1000;
@@ -177,8 +220,7 @@ export default function App() {
     beginRun(seconds);
     setVisualMode(DEFAULT_VISUAL_MODE);
     setPlaybackStatus('running');
-    setViewMode('player');
-    setActiveView('home');
+    navigate({ activeView: 'home', viewMode: 'player', immersive: false });
     persistLastSession(snapshot);
   };
 
@@ -385,7 +427,7 @@ export default function App() {
     const seconds = preset.defaultDurationMinutes * 60;
     setTimeLeft(seconds);
     setSessionTotalSeconds(seconds);
-    setViewMode('config');
+    navigate({ activeView, viewMode: 'config', immersive: false });
   };
 
   const loadAmbience = (preset: AmbiencePreset) => {
@@ -408,7 +450,7 @@ export default function App() {
     const seconds = preset.durationMinutes * 60;
     setTimeLeft(seconds);
     setSessionTotalSeconds(seconds);
-    setViewMode('config');
+    navigate({ activeView, viewMode: 'config', immersive: false });
   };
 
   const loadUserPreset = (preset: UserPreset) => {
@@ -432,7 +474,7 @@ export default function App() {
     const seconds = preset.durationMinutes * 60;
     setTimeLeft(seconds);
     setSessionTotalSeconds(seconds);
-    setViewMode('config');
+    navigate({ activeView, viewMode: 'config', immersive: false });
   };
 
   const resumeLastSession = () => {
@@ -635,8 +677,7 @@ export default function App() {
 
   const handleNavigate = (view: AppView) => {
     if (viewMode === 'feedback') saveSessionLog(moodBefore ?? 3);
-    setViewMode('list');
-    setActiveView(view);
+    navigate({ activeView: view, viewMode: 'list', immersive: false });
   };
 
   const dailyMinutes = useMemo(() => {
@@ -662,6 +703,39 @@ export default function App() {
     document.querySelector<HTMLElement>('[data-app-scroll]')?.scrollTo({ top: 0, behavior: 'auto' });
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [activeView, viewMode]);
+
+  useEffect(() => {
+    const initial: AppHistoryEntry = {
+      activeView,
+      viewMode,
+      immersive,
+      index: readAppHistoryEntry(window.history.state)?.index ?? navigationRef.current.index,
+      version: 1,
+    };
+    navigationRef.current = initial;
+    window.history.replaceState(withAppHistoryEntry(window.history.state, initial), '', window.location.href);
+
+    const onPopState = (event: PopStateEvent) => {
+      const entry = readAppHistoryEntry(event.state);
+      if (!entry) return;
+      navigationRef.current = entry;
+      setActiveView(entry.activeView);
+      setViewMode(entry.viewMode);
+      setImmersive(entry.immersive);
+    };
+
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  useEffect(() => {
+    const location = { activeView, viewMode, immersive };
+    const current = navigationRef.current;
+    if (sameLocation(current, location)) return;
+    const entry: AppHistoryEntry = { ...location, index: current.index, version: 1 };
+    navigationRef.current = entry;
+    window.history.replaceState(withAppHistoryEntry(window.history.state, entry), '', window.location.href);
+  }, [activeView, immersive, viewMode]);
 
   useEffect(() => {
     if (!noticeOpen && !saveOpen) return;
@@ -789,7 +863,7 @@ export default function App() {
         title={selectedPreset?.name ?? '세션'}
         subtitle={`${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')} · ${playbackStatus === 'running' ? '재생 중' : '일시정지'}`}
         isPlaying={playbackStatus === 'running'}
-        onOpen={() => { setActiveView('home'); setViewMode('player'); }}
+        onOpen={() => navigate({ activeView: 'home', viewMode: 'player', immersive: false })}
         onToggle={playbackStatus === 'running' ? pauseSession : resumeSession}
         onStop={() => stopSession({ reflect: true, goHome: true })}
       />
@@ -801,7 +875,7 @@ export default function App() {
           title={NATURE_MIXES.find((mix) => mix.id === natureMixId)?.name ?? '자연의 소리'}
           subtitle={natureTimerMin == null ? '∞ 계속 재생' : `${Math.floor(natureTimeLeft / 60)}:${String(natureTimeLeft % 60).padStart(2, '0')}`}
           isPlaying
-          onOpen={() => { setViewMode('list'); setActiveView('nature'); }}
+          onOpen={() => navigate({ activeView: 'nature', viewMode: 'list', immersive: false })}
           onToggle={() => stopNature()}
           onStop={() => stopNature()}
         />
@@ -833,8 +907,8 @@ export default function App() {
             onQuickStartPreset={quickStartPreset}
             onConfigurePreset={configurePreset}
             onQuickStartAmbience={quickStartAmbience}
-            onOpenLibrary={() => setActiveView('library')}
-            onOpenNature={() => setActiveView('nature')}
+            onOpenLibrary={() => handleNavigate('library')}
+            onOpenNature={() => handleNavigate('nature')}
           />
         )}
 
@@ -881,7 +955,7 @@ export default function App() {
               sleepMode={sleepMode}
               moodBefore={moodBefore}
               intention={intention}
-              onBack={() => setViewMode('list')}
+              onBack={() => navigateBack({ activeView, viewMode: 'list', immersive: false })}
               onStart={startSession}
               onDurationChange={handleTimeChange}
               onWaveChange={setCurrentBrainWave}
@@ -910,7 +984,7 @@ export default function App() {
               onPlay={resumeSession}
               onPause={pauseSession}
               onStop={() => stopSession({ reflect: true, goHome: true })}
-              onMinimize={() => { setViewMode('list'); setActiveView('home'); }}
+              onMinimize={() => navigateBack({ activeView: 'home', viewMode: 'list', immersive: false })}
               onTimeChange={handleTimeChange}
               currentBrainWave={currentBrainWave}
               onWaveChange={handleLiveWaveChange}
@@ -927,7 +1001,8 @@ export default function App() {
               visualMode={visualMode}
               onVisualModeChange={setVisualMode}
               getAnalyser={() => engine.getAnalyser()}
-              onImmersive={() => setImmersive(true)}
+              onImmersive={() => navigate({ activeView: 'home', viewMode: 'player', immersive: true })}
+              backgroundVariant={sessionBackgroundVariant}
             />
           </Suspense>
         )}
@@ -937,8 +1012,8 @@ export default function App() {
             <SessionReflection
               moodBefore={moodBefore}
               durationMinutes={Math.max(1, Math.round(playedMsRef.current / 60000))}
-              onSave={(mood, note) => { saveSessionLog(mood, note); setViewMode('list'); setActiveView('insights'); }}
-              onSkip={() => { saveSessionLog(moodBefore ?? 3); setViewMode('list'); setActiveView('home'); }}
+              onSave={(mood, note) => { saveSessionLog(mood, note); navigate({ activeView: 'insights', viewMode: 'list', immersive: false }, 'replace'); }}
+              onSkip={() => { saveSessionLog(moodBefore ?? 3); navigate({ activeView: 'home', viewMode: 'list', immersive: false }, 'replace'); }}
             />
           </Suspense>
         )}
@@ -968,7 +1043,7 @@ export default function App() {
         )}
 
         {viewMode === 'list' && activeView === 'insights' && (
-          <Suspense fallback={<LoadingPanel />}><StatsDashboard logs={logs} dailyGoalMinutes={settings.dailyGoalMinutes} onStartSession={() => setActiveView('library')} /></Suspense>
+          <Suspense fallback={<LoadingPanel />}><StatsDashboard logs={logs} dailyGoalMinutes={settings.dailyGoalMinutes} onStartSession={() => handleNavigate('library')} /></Suspense>
         )}
 
         {viewMode === 'list' && activeView === 'settings' && (
@@ -1011,7 +1086,8 @@ export default function App() {
             onPlay={resumeSession}
             onPause={pauseSession}
             onStop={() => stopSession({ reflect: true, goHome: true })}
-            onExit={() => setImmersive(false)}
+            onExit={() => navigateBack({ activeView: 'home', viewMode: 'player', immersive: false })}
+            backgroundVariant={sessionBackgroundVariant}
           />
         </Suspense>
       )}

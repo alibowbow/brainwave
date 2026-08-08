@@ -10,8 +10,13 @@ import { SCENE_META, CHARACTER_SVG } from './sceneCharacters';
 import { getSoundLabel } from '../audioOptions';
 import { SPATIAL, SCENERY_HOTSPOTS } from '../sceneLayout';
 
+export type NatureBackgroundVariant = 'campfire';
+
 interface Props {
   types: BackgroundSoundType[];
+  /** Selects a photographed plate for a known scene. Kept explicit so a
+      generic fire layer (for example, the winter lodge) does not switch it. */
+  backgroundVariant?: NatureBackgroundVariant;
   tall?: boolean;
   fill?: boolean;  // stretch to the parent's height (composer layout)
   /** Enables tap-to-select on fauna and scenery. */
@@ -113,6 +118,104 @@ const assetUrl = (path: string) => new URL(path, document.baseURI).toString();
 const BACKGROUND_PATH: Partial<Record<SceneTheme, string>> = {
   valley: 'images/nature/backgrounds/summer-valley.webp',
   'night-pond': 'images/nature/backgrounds/scops-night.webp',
+};
+
+const CAMPFIRE_POSTER_PATH = 'images/nature/backgrounds/campfire-loop-poster-v1.webp';
+const CAMPFIRE_VIDEO_PATH = 'video/nature/campfire-loop-v1.mp4';
+
+interface NetworkInformationLike extends EventTarget {
+  saveData?: boolean;
+  effectiveType?: string;
+}
+
+const CampfireBackgroundVideo: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoAllowed, setVideoAllowed] = useState(false);
+  const [videoSource, setVideoSource] = useState<string | null>(null);
+
+  useEffect(() => {
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const connection = (navigator as Navigator & { connection?: NetworkInformationLike }).connection;
+    const update = () => {
+      const slowConnection = connection?.effectiveType === 'slow-2g' || connection?.effectiveType === '2g';
+      const appReducesMotion = document.documentElement.classList.contains('reduce-motion');
+      setVideoAllowed(!motionQuery.matches && !appReducesMotion && !connection?.saveData && !slowConnection);
+    };
+    const classObserver = new MutationObserver(update);
+    classObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    motionQuery.addEventListener('change', update);
+    connection?.addEventListener('change', update);
+    // Let App apply its persisted reduce-motion class before deciding whether
+    // the browser may request the MP4.
+    const initialCheck = window.requestAnimationFrame(update);
+    return () => {
+      window.cancelAnimationFrame(initialCheck);
+      classObserver.disconnect();
+      motionQuery.removeEventListener('change', update);
+      connection?.removeEventListener('change', update);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!videoAllowed) {
+      setVideoSource(null);
+      return;
+    }
+    let cancelled = false;
+    let objectUrl: string | null = null;
+    const load = async () => {
+      try {
+        // A normal full-file request lets Workbox cache one complete response.
+        // Subsequent media range requests can then be sliced from that cache.
+        const response = await fetch(assetUrl(CAMPFIRE_VIDEO_PATH), { cache: 'force-cache' });
+        if (!response.ok) return;
+        const blob = await response.blob();
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        setVideoSource(objectUrl);
+      } catch {
+        // The plate already displays the matching poster as a safe fallback.
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [videoAllowed]);
+
+  useEffect(() => {
+    if (!videoAllowed || !videoSource) return;
+    const syncPlayback = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      if (document.hidden) video.pause();
+      else void video.play().catch(() => undefined);
+    };
+    document.addEventListener('visibilitychange', syncPlayback);
+    syncPlayback();
+    return () => document.removeEventListener('visibilitychange', syncPlayback);
+  }, [videoAllowed, videoSource]);
+
+  if (!videoAllowed || !videoSource) return null;
+
+  return (
+    <video
+      ref={videoRef}
+      className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+      src={videoSource}
+      poster={assetUrl(CAMPFIRE_POSTER_PATH)}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      disablePictureInPicture
+      disableRemotePlayback
+      aria-hidden="true"
+      tabIndex={-1}
+    />
+  );
 };
 
 const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharacter>> = {
@@ -560,9 +663,10 @@ const GeneratedEnvironmentObject: React.FC<GeneratedEnvironmentObjectProps> = ({
  * whole-object travel. Old SVG characters remain solely as a safe fallback for
  * sound types that do not have a generated asset.
  */
-export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, selectedType, onSelectType, subscribeEvents }) => {
+export const NatureScene: React.FC<Props> = ({ types, backgroundVariant, tall, fill, interactive, selectedType, onSelectType, subscribeEvents }) => {
   const theme = resolveTheme(types);
-  const backgroundPath = BACKGROUND_PATH[theme];
+  const usesCampfireBackground = backgroundVariant === 'campfire' && types.includes('fire');
+  const backgroundPath = usesCampfireBackground ? CAMPFIRE_POSTER_PATH : BACKGROUND_PATH[theme];
   const rainy = hasAny(types, ['rain', 'thunder', 'tent', 'window', 'eaves']);
   const stormy = hasAny(types, ['thunder', 'dthunder']);
   const snowy = types.includes('blizzard');
@@ -584,8 +688,11 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
   const hasDrone = types.includes('drone');
   const hasNoise = hasAny(types, ['brown', 'white', 'pink']);
   const hasBubbles = hasAny(types, ['deepsea', 'stream']);
-  const generated = types.filter((type) => GENERATED_CHARACTERS[type]);
-  const legacy = legacyCharacters(types);
+  // Photographic plates already contain their own fauna and props. Keeping the
+  // illustrated atlas characters on top makes the scene feel composited rather
+  // than immersive, so only transparent sound hotspots remain interactive.
+  const generated = usesCampfireBackground ? [] : types.filter((type) => GENERATED_CHARACTERS[type]);
+  const legacy = usesCampfireBackground ? [] : legacyCharacters(types);
   const empty = types.length === 0;
 
   // Sound-event sync: bump a per-type counter for fauna call clips / legacy
@@ -628,12 +735,14 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
       className={`sc-scene-v2 ${fill ? 'absolute inset-0 rounded-2xl' : `relative w-full ${tall ? 'h-[240px] rounded-3xl' : 'h-[160px] rounded-2xl'}`} overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-sm`}
       data-theme={theme}
       data-sounds={types.join(',')}
+      data-background-variant={usesCampfireBackground ? 'campfire' : undefined}
     >
       <div
         className="sc-v2-plate absolute inset-0"
         style={backgroundPath ? { backgroundImage: `url("${assetUrl(backgroundPath)}")` } : undefined}
         aria-hidden="true"
       />
+      {usesCampfireBackground && <CampfireBackgroundVideo />}
       <div className="sc-v2-plate-tint absolute inset-0" aria-hidden="true" />
 
       {hasClouds && (
@@ -666,7 +775,7 @@ export const NatureScene: React.FC<Props> = ({ types, tall, fill, interactive, s
           <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS['waterfall-mist']} className="sc-v3-waterfall-mist" />
         </>
       )}
-      {hasFire && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.fire} className="sc-v3-fire" />}
+      {hasFire && !usesCampfireBackground && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.fire} className="sc-v3-fire" />}
       {hasHeartbeat && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.heartbeat} className="sc-v3-heartbeat" />}
 
       {theme === 'night-pond' && FIREFLIES.map((firefly, index) => (

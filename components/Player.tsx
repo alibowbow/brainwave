@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Activity,
   ArrowDown,
@@ -14,6 +14,7 @@ import {
   Square,
   Volume2,
   Wind,
+  X,
 } from 'lucide-react';
 import { type BackgroundSoundType, type BrainWaveType, type VisualMode, getBrainWaveLabel } from '../types';
 import { WAVE_ORDER, getSoundLabel, getWaveShortLabel, getWaveColor } from '../audioOptions';
@@ -24,7 +25,7 @@ import { SoundLayerPicker } from './SoundLayerPicker';
 import { VolumeMixer } from './VolumeMixer';
 import { BreathingGuide } from './BreathingGuide';
 import { AuraVisualizer } from './AuraVisualizer';
-import { NatureScene } from './NatureScene';
+import { NatureScene, type NatureBackgroundVariant } from './NatureScene';
 import { VisualModeSwitch } from './VisualModeSwitch';
 
 interface PlayerProps {
@@ -54,6 +55,7 @@ interface PlayerProps {
   onVisualModeChange: (mode: VisualMode) => void;
   getAnalyser: () => AnalyserNode | null;
   onImmersive: () => void;
+  backgroundVariant?: NatureBackgroundVariant;
 }
 
 const formatTime = (seconds: number) => {
@@ -89,12 +91,54 @@ export const Player: React.FC<PlayerProps> = ({
   onVisualModeChange,
   getAnalyser,
   onImmersive,
+  backgroundVariant,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
   const [panel, setPanel] = useState<'controls' | 'sounds'>('controls');
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [sceneChromeVisible, setSceneChromeVisible] = useState(true);
+  const sceneChromeTimerRef = useRef<number | null>(null);
+  const detailsRef = useRef<HTMLElement>(null);
   const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#7886ff';
   const minutesLeft = Math.max(1, Math.ceil(timeLeft / 60));
   const progress = totalSeconds > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / totalSeconds)) : 0;
+
+  const revealSceneChrome = useCallback(() => {
+    setSceneChromeVisible(true);
+    if (sceneChromeTimerRef.current != null) window.clearTimeout(sceneChromeTimerRef.current);
+    sceneChromeTimerRef.current = window.setTimeout(() => setSceneChromeVisible(false), 3600);
+  }, []);
+
+  const holdSceneChrome = useCallback(() => {
+    setSceneChromeVisible(true);
+    if (sceneChromeTimerRef.current != null) window.clearTimeout(sceneChromeTimerRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (visualMode === 'nature') {
+      revealSceneChrome();
+      document.addEventListener('keydown', revealSceneChrome);
+    } else {
+      setSceneChromeVisible(true);
+      if (sceneChromeTimerRef.current != null) window.clearTimeout(sceneChromeTimerRef.current);
+    }
+    return () => {
+      document.removeEventListener('keydown', revealSceneChrome);
+      if (sceneChromeTimerRef.current != null) window.clearTimeout(sceneChromeTimerRef.current);
+    };
+  }, [revealSceneChrome, visualMode]);
+
+  const handleVisualModeChange = (mode: VisualMode) => {
+    if (mode === 'graphics') setDetailsOpen(false);
+    onVisualModeChange(mode);
+  };
+
+  const openDetails = () => {
+    setDetailsOpen(true);
+    if (!window.matchMedia('(min-width: 1024px)').matches) {
+      window.setTimeout(() => detailsRef.current?.scrollIntoView({ block: 'start' }), 0);
+    }
+  };
 
   return (
     <div className="relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white">
@@ -117,14 +161,56 @@ export const Player: React.FC<PlayerProps> = ({
         </button>
       </header>
 
-      <main className="relative z-10 mx-auto grid w-full max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7">
-        <section className="relative min-h-[540px] overflow-hidden rounded-[30px] border border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]">
+      <main className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>
+        <section
+          onPointerMove={visualMode === 'nature' ? revealSceneChrome : undefined}
+          onPointerDown={visualMode === 'nature' ? revealSceneChrome : undefined}
+          className={`relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] ${visualMode === 'nature' ? 'min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]' : 'min-h-[540px] rounded-[30px] border sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]'}`}
+        >
           <div className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
-            <NatureScene types={activeLayers.map((layer) => layer.type)} fill />
+            <NatureScene types={activeLayers.map((layer) => layer.type)} backgroundVariant={backgroundVariant} fill />
           </div>
           <div className={`absolute inset-0 transition-colors duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/82' : 'bg-gradient-to-b from-[#050914]/42 via-[#050914]/46 to-[#050914]/92'}`} />
           {visualMode === 'graphics' ? <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(3,6,14,0.32)_72%,rgba(3,6,14,0.72)_100%)]" /> : null}
 
+          {visualMode === 'nature' ? (
+            <div
+              onFocusCapture={holdSceneChrome}
+              onBlurCapture={revealSceneChrome}
+              className={`absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${sceneChromeVisible ? 'visible opacity-100' : 'invisible pointer-events-none opacity-0'}`}
+            >
+              <VisualModeSwitch
+                value={visualMode}
+                onChange={handleVisualModeChange}
+                className="absolute left-1/2 top-[max(12px,env(safe-area-inset-top))] -translate-x-1/2"
+                compact
+                quiet
+              />
+
+              <div className="absolute bottom-[max(18px,calc(env(safe-area-inset-bottom)+18px))] left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/16 bg-black/58 p-1.5 pl-4 text-white shadow-[0_16px_45px_rgba(0,0,0,0.34)] backdrop-blur-md">
+                <div className="mr-1 min-w-[62px] text-center">
+                  <p className="text-[8px] font-bold tracking-[0.14em] text-white/58">남은 시간</p>
+                  <p className="mt-0.5 text-base font-semibold tabular-nums tracking-tight" aria-label={`남은 시간 ${Math.floor(timeLeft / 60)}분 ${timeLeft % 60}초`}>{formatTime(timeLeft)}</p>
+                </div>
+                <button type="button" onClick={isPlaying ? onPause : onPlay} aria-label={isPlaying ? '일시정지' : '재생'} className="grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95">
+                  {isPlaying ? <Pause size={21} fill="currentColor" /> : <Play size={21} fill="currentColor" className="ml-0.5" />}
+                </button>
+                <button type="button" onClick={onStop} aria-label="세션 종료" className="grid h-11 w-11 place-items-center rounded-full text-red-200 transition-colors hover:bg-red-500/18"><Square size={15} fill="currentColor" /></button>
+                <button type="button" onClick={openDetails} aria-label="세션 세부 조절 열기" className="grid h-11 w-11 place-items-center rounded-full text-white/78 transition-colors hover:bg-white/12 hover:text-white"><SlidersHorizontal size={18} /></button>
+              </div>
+
+              <div
+                className="absolute inset-x-0 bottom-0 h-0.5 bg-white/10"
+                role="progressbar"
+                aria-label="세션 진행률"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(progress * 100)}
+              >
+                <div className="h-full bg-gradient-to-r from-emerald-300 to-lime-200 transition-[width] duration-500" style={{ width: `${progress * 100}%` }} />
+              </div>
+            </div>
+          ) : (
           <div className="relative flex min-h-[540px] flex-col items-center justify-between p-5 sm:min-h-[650px] sm:p-8 lg:min-h-[calc(100dvh-134px)]">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2 rounded-full bg-black/22 px-3 py-2 text-[10px] font-black text-white/70 backdrop-blur-md">
@@ -138,21 +224,18 @@ export const Player: React.FC<PlayerProps> = ({
 
             <VisualModeSwitch
               value={visualMode}
-              onChange={onVisualModeChange}
+              onChange={handleVisualModeChange}
               className="absolute left-1/2 top-[74px] z-20 -translate-x-1/2 sm:top-6"
+              compact
             />
 
             <div className="my-auto flex flex-col items-center pt-16 sm:pt-0">
               <div className="relative grid h-[250px] w-[250px] place-items-center sm:h-[310px] sm:w-[310px]">
-                {visualMode === 'graphics' ? (
-                  <>
-                    <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={auraColor} className="absolute inset-0 h-full w-full" />
-                    <div className="absolute inset-[18%] rounded-full border border-white/10 bg-black/18 shadow-[inset_0_0_45px_rgba(255,255,255,0.025)] backdrop-blur-md" />
-                  </>
-                ) : null}
-                <div className={`relative z-10 text-center ${visualMode === 'nature' ? 'rounded-3xl border border-white/12 bg-[#06100c]/42 px-6 py-4 shadow-[0_16px_48px_rgba(0,0,0,0.24)] backdrop-blur-sm' : ''}`}>
+                <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={auraColor} className="absolute inset-0 h-full w-full" />
+                <div className="absolute inset-[18%] rounded-full border border-white/10 bg-black/18 shadow-[inset_0_0_45px_rgba(255,255,255,0.025)] backdrop-blur-md" />
+                <div className="relative z-10 text-center">
                   <div className="text-[49px] font-extralight tabular-nums tracking-[-0.065em] drop-shadow-lg sm:text-[62px]">{formatTime(timeLeft)}</div>
-                  <p className={`mt-2 text-[10px] font-black tracking-[0.16em] ${visualMode === 'nature' ? 'text-white/70' : 'text-white/45'}`}>REMAINING</p>
+                  <p className="mt-2 text-[10px] font-black tracking-[0.16em] text-white/45">REMAINING</p>
                   {intention ? <p className="mx-auto mt-3 max-w-[220px] truncate text-[11px] font-bold text-white/58">“{intention}”</p> : null}
                 </div>
                 <BreathingGuide active={breathingOn && isPlaying} />
@@ -170,7 +253,7 @@ export const Player: React.FC<PlayerProps> = ({
             </div>
 
             <div className="w-full">
-              <div className="mb-4 h-1 overflow-hidden rounded-full bg-white/10" aria-label={`세션 ${Math.round(progress * 100)}% 진행`}><div className={`h-full rounded-full transition-[width] duration-500 ${visualMode === 'nature' ? 'bg-gradient-to-r from-emerald-300 to-lime-200' : 'bg-gradient-to-r from-[#7c89ff] to-[#b496ff]'}`} style={{ width: `${progress * 100}%` }} /></div>
+              <div className="mb-4 h-1 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="세션 진행률" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}><div className="h-full rounded-full bg-gradient-to-r from-[#7c89ff] to-[#b496ff] transition-[width] duration-500" style={{ width: `${progress * 100}%` }} /></div>
               <div className="flex gap-2 overflow-x-auto scrollbar-hide">
                 {activeLayers.length ? activeLayers.map((layer) => (
                   <span key={layer.type} className="shrink-0 rounded-full border border-white/10 bg-black/22 px-3 py-1.5 text-[10px] font-black text-white/62 backdrop-blur-md">{getSoundLabel(layer.type)}</span>
@@ -178,9 +261,16 @@ export const Player: React.FC<PlayerProps> = ({
               </div>
             </div>
           </div>
+          )}
         </section>
 
-        <aside className="rounded-[28px] border border-white/8 bg-[#101522] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] lg:max-h-[calc(100dvh-134px)] lg:overflow-hidden">
+        {(visualMode === 'graphics' || detailsOpen) ? <aside ref={detailsRef} className="rounded-[28px] border border-white/8 bg-[#101522] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] lg:max-h-[calc(100dvh-134px)] lg:overflow-hidden">
+          {visualMode === 'nature' ? (
+            <div className="mb-3 flex min-h-11 items-center justify-between px-2">
+              <div><p className="text-[9px] font-black tracking-[0.14em] text-emerald-300/70">SESSION</p><h2 className="mt-0.5 text-sm font-black">세션 조절</h2></div>
+              <button type="button" onClick={() => setDetailsOpen(false)} aria-label="세션 조절 닫기" className="grid h-11 w-11 place-items-center rounded-full bg-white/6 text-white/58 transition-colors hover:bg-white/10 hover:text-white"><X size={17} /></button>
+            </div>
+          ) : null}
           <div className="grid grid-cols-2 gap-1 rounded-[18px] bg-white/[0.035] p-1">
             <button type="button" onClick={() => setPanel('controls')} aria-pressed={panel === 'controls'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'controls' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><Activity size={14} /> 세션</button>
             <button type="button" onClick={() => setPanel('sounds')} aria-pressed={panel === 'sounds'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'sounds' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><SlidersHorizontal size={14} /> 믹서</button>
@@ -238,7 +328,7 @@ export const Player: React.FC<PlayerProps> = ({
               </>
             )}
           </div>
-        </aside>
+        </aside> : null}
       </main>
     </div>
   );

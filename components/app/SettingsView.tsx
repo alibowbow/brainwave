@@ -116,7 +116,7 @@ export const SettingsView: React.FC<Props> = ({
         <div className="mt-5 flex items-center justify-between rounded-[20px] bg-slate-50 p-4 dark:bg-white/[0.035]">
           <div className="flex items-center gap-3">
             <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-amber-500 shadow-sm dark:bg-white/6"><Headphones size={18} /></span>
-            <div><strong className="block text-sm font-black text-slate-800 dark:text-slate-100">헤드폰 안내</strong><span className="mt-0.5 block text-[10px] text-slate-400">첫 바이노럴 재생 전에만 표시</span></div>
+            <div><strong className="block text-sm font-black text-slate-800 dark:text-slate-100">헤드폰 안내</strong><span className="mt-0.5 block text-[10px] text-slate-400">세부 조정 화면에서 바이노럴 재생을 시작할 때 표시</span></div>
           </div>
           <Toggle checked={showSoundNotice} onChange={onToggleSoundNotice} label="헤드폰 안내" />
         </div>

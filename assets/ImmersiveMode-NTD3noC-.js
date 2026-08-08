@@ -1,4 +1,4 @@
-import{c as N,r as n,j as e,a as C,P as z,i as S}from"./index-ysrQX4Sa.js";import{A as V,V as E}from"./VisualModeSwitch-DVYmrOyG.js";import{N as R}from"./NatureScene-zOpE6EUI.js";import"./check-YvVQJkUE.js";/**
+import{c as N,r as n,j as e,a as C,P as z,i as S}from"./index-BuSYh98O.js";import{A as V,V as E}from"./VisualModeSwitch-gADhM5qU.js";import{N as R}from"./NatureScene-x1igauP0.js";import"./check-JFXPnSAD.js";/**
  * @license lucide-react v0.555.0 - ISC
  *
  * This source code is licensed under the ISC license.

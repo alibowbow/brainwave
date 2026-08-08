@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Leaf, LibraryBig } from 'lucide-react';
+import { Eye, LibraryBig, SlidersHorizontal } from 'lucide-react';
 import { BackgroundSoundType, NatureMix, NATURE_MIXES } from '../types';
 import { SoundLayer } from '../services/audioEngine';
 import { NatureScene } from './NatureScene';
@@ -7,7 +7,7 @@ import { ComposerSheet } from './nature/ComposerSheet';
 import { SoundDrawer } from './nature/SoundDrawer';
 import { TransportControls, ActiveSoundList, RecommendChips, MixRail } from './nature/controls';
 import { getRecommendations } from './nature/recommend';
-import { VisualModeSwitch } from './VisualModeSwitch';
+import { hasNatureSceneHistory, withNatureSceneHistory } from '../appNavigation';
 
 interface Props {
   layers: SoundLayer[];
@@ -55,6 +55,8 @@ export const NatureMode: React.FC<Props> = ({
   const [viewerControlsVisible, setViewerControlsVisible] = useState(true);
   const viewerRootRef = useRef<HTMLDivElement>(null);
   const viewerControlsTimerRef = useRef<number | null>(null);
+  const sceneOnlyRef = useRef(sceneOnly);
+  const sceneHistoryActiveRef = useRef(false);
 
   const activeMix = NATURE_MIXES.find((m) => m.id === activeMixId) ?? null;
   const mixName = activeMix ? `${activeMix.emoji} ${activeMix.name}` : layers.length > 0 ? '커스텀 조합' : '자연의 소리';
@@ -77,6 +79,7 @@ export const NatureMode: React.FC<Props> = ({
   }, []);
 
   const enterSceneOnly = () => {
+    sceneOnlyRef.current = true;
     setSceneOnly(true);
     revealViewerControls();
 
@@ -93,7 +96,12 @@ export const NatureMode: React.FC<Props> = ({
   };
 
   const exitSceneOnly = useCallback(() => {
+    sceneOnlyRef.current = false;
     setSceneOnly(false);
+    if (sceneHistoryActiveRef.current && hasNatureSceneHistory(window.history.state)) {
+      sceneHistoryActiveRef.current = false;
+      window.history.back();
+    }
     const fullscreenDocument = document as FullscreenDocument;
     if (!fullscreenElement()) return;
     try {
@@ -105,17 +113,43 @@ export const NatureMode: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
+    const onPopState = (event: PopStateEvent) => {
+      const sceneEntry = hasNatureSceneHistory(event.state);
+      if (sceneEntry && !sceneOnlyRef.current) {
+        sceneHistoryActiveRef.current = true;
+        sceneOnlyRef.current = true;
+        setSceneOnly(true);
+        revealViewerControls();
+        return;
+      }
+      if (!sceneEntry && sceneOnlyRef.current && sceneHistoryActiveRef.current) {
+        sceneHistoryActiveRef.current = false;
+        sceneOnlyRef.current = false;
+        setSceneOnly(false);
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [revealViewerControls]);
+
+  useEffect(() => {
     if (!sceneOnly) return;
+    sceneOnlyRef.current = true;
+    if (!hasNatureSceneHistory(window.history.state)) {
+      window.history.pushState(withNatureSceneHistory(window.history.state), '', window.location.href);
+    }
+    sceneHistoryActiveRef.current = true;
     revealViewerControls();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && !fullscreenElement()) exitSceneOnly();
+      else revealViewerControls();
     };
     const onFullscreenChange = () => {
       const fullscreenDocument = document as FullscreenDocument;
       const fullscreenSupported = document.fullscreenEnabled || fullscreenDocument.webkitFullscreenEnabled;
-      if (!fullscreenElement() && fullscreenSupported) setSceneOnly(false);
+      if (!fullscreenElement() && fullscreenSupported && sceneOnlyRef.current) exitSceneOnly();
     };
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('fullscreenchange', onFullscreenChange);
@@ -148,9 +182,10 @@ export const NatureMode: React.FC<Props> = ({
   };
 
   const stage = (
-    <div className="relative h-[clamp(360px,calc(100dvh-305px-env(safe-area-inset-bottom)),800px)] shrink-0 overflow-hidden rounded-[28px] border border-slate-200/70 bg-[#111621] shadow-[0_28px_70px_rgba(13,25,30,0.18)] lg:h-full lg:min-h-0 dark:border-white/8">
+    <div className="relative h-[clamp(400px,calc(100dvh-220px-env(safe-area-inset-bottom)),860px)] shrink-0 overflow-hidden rounded-[24px] border border-slate-200/70 bg-[#111621] shadow-[0_24px_64px_rgba(13,25,30,0.16)] lg:h-full lg:min-h-0 dark:border-white/8">
       <NatureScene
         types={visibleTypes}
+        backgroundVariant={activeMixId === 'campfire' ? 'campfire' : undefined}
         fill
         interactive
         selectedType={selectedValid}
@@ -160,18 +195,16 @@ export const NatureMode: React.FC<Props> = ({
       <div className="pointer-events-none absolute left-4 top-4 hidden rounded-full border border-white/12 bg-black/22 px-3 py-1.5 text-[10px] font-bold tracking-[0.12em] text-white/76 backdrop-blur-md sm:block">
         장면 속 오브젝트를 눌러 믹스
       </div>
-      <VisualModeSwitch
-        value="graphics"
-        onChange={(mode) => { if (mode === 'nature') enterSceneOnly(); }}
-        className="absolute left-1/2 top-4 z-40 -translate-x-1/2"
-      />
-      <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
-        <span className="rounded-full border border-white/12 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/95 shadow-lg backdrop-blur-md">
-          <Leaf size={11} className="inline -mt-0.5 mr-1" />
-          {mixName}{layers.length > 0 ? ` · 사운드 ${layers.length}개` : ''}
-        </span>
+      <button
+        type="button"
+        onClick={enterSceneOnly}
+        className="absolute right-3 top-3 z-40 flex min-h-11 items-center gap-2 rounded-full border border-white/16 bg-black/55 px-4 text-xs font-bold text-white shadow-lg backdrop-blur-md transition-colors hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      >
+        <Eye size={15} aria-hidden="true" /> 장면만 보기
+      </button>
+      <div className="pointer-events-none absolute bottom-3 right-3 flex items-end justify-end">
         {isPlaying && timerMin != null && (
-          <span className="rounded-full border border-white/12 bg-black/30 px-3 py-1.5 font-mono text-[11px] font-bold text-white/95 backdrop-blur-md">
+          <span className="rounded-full border border-white/14 bg-black/55 px-3 py-1.5 font-mono text-[11px] font-bold text-white backdrop-blur-md">
             ⏱ {fmt(timeLeft)}
           </span>
         )}
@@ -183,6 +216,9 @@ export const NatureMode: React.FC<Props> = ({
     <div
       ref={viewerRootRef}
       className={sceneOnly ? 'nature-viewer-root fixed inset-0 z-[200] h-[100dvh] overflow-hidden bg-slate-950' : 'relative'}
+      role={sceneOnly ? 'dialog' : undefined}
+      aria-modal={sceneOnly ? true : undefined}
+      aria-label={sceneOnly ? '자연 장면만 보기' : undefined}
     >
       {sceneOnly ? (
         <div
@@ -192,20 +228,28 @@ export const NatureMode: React.FC<Props> = ({
         >
           <NatureScene
             types={visibleTypes}
+            backgroundVariant={activeMixId === 'campfire' ? 'campfire' : undefined}
             fill
             subscribeEvents={subscribeEvents}
           />
           <div
             onFocusCapture={holdViewerControls}
             onBlurCapture={revealViewerControls}
-            className={`absolute left-1/2 top-[max(16px,env(safe-area-inset-top))] z-50 -translate-x-1/2 transition-[opacity,transform] duration-300 ${viewerControlsVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 pointer-events-none opacity-0'}`}
+            className={`absolute right-[max(12px,env(safe-area-inset-right))] top-[max(12px,env(safe-area-inset-top))] z-50 transition-[opacity,transform] duration-300 ${viewerControlsVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 invisible pointer-events-none opacity-0'}`}
           >
-            <VisualModeSwitch
-              value="nature"
-              onChange={(mode) => { if (mode === 'graphics') exitSceneOnly(); }}
-              quiet
-            />
+            <button
+              type="button"
+              onClick={exitSceneOnly}
+              className="flex min-h-11 items-center gap-2 rounded-full border border-white/16 bg-black/58 px-4 text-xs font-bold text-white shadow-[0_12px_32px_rgba(0,0,0,0.3)] backdrop-blur-md transition-colors hover:bg-black/72 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <SlidersHorizontal size={15} aria-hidden="true" /> 소리 조절
+            </button>
           </div>
+          {isPlaying ? (
+            <div className={`pointer-events-none absolute bottom-[max(14px,env(safe-area-inset-bottom))] left-[max(14px,env(safe-area-inset-left))] z-40 rounded-full border border-white/14 bg-black/52 px-3 py-2 text-[11px] font-bold text-white/92 backdrop-blur-md transition-opacity duration-300 ${viewerControlsVisible ? 'opacity-100' : 'opacity-0'}`}>
+              {timerMin == null ? '재생 중 · ∞' : `재생 중 · ${fmt(timeLeft)}`}
+            </div>
+          ) : null}
         </div>
       ) : (
         <div className="relative flex min-h-[calc(100dvh-68px)] flex-col gap-3 p-3 pb-0 sm:p-4 sm:pb-0 lg:grid lg:min-h-[calc(100dvh-88px)] lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-4 lg:p-4">
@@ -213,7 +257,7 @@ export const NatureMode: React.FC<Props> = ({
           {stage}
 
           {/* mobile: bottom composer sheet */}
-          <div className="-mx-3 flex min-h-0 shrink-0 flex-col sm:-mx-4 lg:hidden" style={{ height: sheetExpanded ? '62dvh' : 'auto' }}>
+          <div className="-mx-3 flex min-h-0 shrink-0 flex-col sm:-mx-4 lg:hidden" style={{ height: sheetExpanded ? 'min(46dvh, 420px)' : 'auto' }}>
             <ComposerSheet
               layers={layers}
               isPlaying={isPlaying}

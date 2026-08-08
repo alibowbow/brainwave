@@ -46,6 +46,17 @@ export default defineConfig(({ mode }) => {
             globIgnores: ['**/images/nature/**'],
             runtimeCaching: [
               {
+                // Large scene loops are downloaded only after that scene opens.
+                urlPattern: /\/video\/nature\/campfire-loop-v\d+\.mp4$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'nature-video-v1',
+                  rangeRequests: true,
+                  expiration: { maxEntries: 1, maxAgeSeconds: 60 * 60 * 24 * 180 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
+              {
                 urlPattern: /\/audio\/nature\/.*\.(?:ogg|mp3)$/i,
                 handler: 'CacheFirst',
                 options: {

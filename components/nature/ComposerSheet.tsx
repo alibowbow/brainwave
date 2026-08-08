@@ -2,7 +2,6 @@ import React from 'react';
 import { Play, Pause, ChevronUp, ChevronDown, LibraryBig } from 'lucide-react';
 import { BackgroundSoundType, NatureMix } from '../../types';
 import { SoundLayer } from '../../services/audioEngine';
-import { getSoundIcon, getSoundLabel } from '../../audioOptions';
 import { TransportControls, ActiveSoundList, RecommendChips, MixRail } from './controls';
 
 interface Props {
@@ -51,20 +50,8 @@ export const ComposerSheet: React.FC<Props> = ({
         expanded ? 'h-full' : 'h-auto'
       }`}
     >
-      {/* grab handle */}
-      <button
-        type="button"
-        onClick={onToggleExpanded}
-        aria-expanded={expanded}
-        aria-label={expanded ? '컴포저 접기' : '컴포저 펼치기'}
-        className="flex min-h-11 w-full flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-      >
-        <span className="w-9 h-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-        {expanded ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
-      </button>
-
       {!expanded ? (
-        <div className="px-3 pb-3">
+        <div className="px-3 py-2.5">
           {/* collapsed bar: transport + status + master volume */}
           <div className="flex items-center gap-3">
             <button
@@ -85,43 +72,30 @@ export const ComposerSheet: React.FC<Props> = ({
                 {timerText} · 사운드 {layers.length}개
               </p>
             </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              aria-label="전체 볼륨"
-              value={volume}
-              onChange={(e) => onVolumeChange(Number(e.target.value))}
-              className="w-20 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 shrink-0"
-            />
+            <button
+              type="button"
+              onClick={onToggleExpanded}
+              aria-expanded={expanded}
+              aria-label="소리 조절 펼치기"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+            >
+              <ChevronUp size={18} />
+            </button>
           </div>
-          {/* active sounds at a glance — tap one to select & expand */}
-          {layers.length > 0 && (
-            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mt-2 -mx-1 px-1">
-              {layers.map((l) => (
-                <button
-                  key={l.type}
-                  type="button"
-                  onClick={() => { onSelectType(l.type); if (!expanded) onToggleExpanded(); }}
-                  aria-label={`${getSoundLabel(l.type)} 조절`}
-                  className={`flex min-h-9 shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold transition-colors ${
-                    l.muted
-                      ? 'border-slate-200 dark:border-slate-600 text-slate-400 opacity-60'
-                      : selectedType === l.type
-                        ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/25 text-emerald-700 dark:text-emerald-300'
-                        : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300'
-                  }`}
-                >
-                  {getSoundIcon(l.type)}
-                  {getSoundLabel(l.type)}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       ) : (
-        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-[calc(88px+env(safe-area-inset-bottom))] scrollbar-hide">
+        <>
+          <button
+            type="button"
+            onClick={onToggleExpanded}
+            aria-expanded={expanded}
+            aria-label="소리 조절 접기"
+            className="flex min-h-11 w-full items-center justify-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+          >
+            <span className="h-1 w-9 rounded-full bg-slate-300 dark:bg-slate-600" />
+            <ChevronDown size={16} />
+          </button>
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-[calc(88px+env(safe-area-inset-bottom))] scrollbar-hide">
           <TransportControls
             isPlaying={isPlaying}
             canPlay={layers.length > 0}
@@ -168,7 +142,8 @@ export const ComposerSheet: React.FC<Props> = ({
           >
             <LibraryBig size={15} /> 전체 사운드 보기
           </button>
-        </div>
+          </div>
+        </>
       )}
     </section>
   );

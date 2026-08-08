@@ -48,5 +48,19 @@ describe('generated environment atlas manifest', () => {
       expect(header.subarray(8, 12).toString()).toBe('WEBP');
     });
   });
-});
 
+  it('ships a compact, streamable campfire background and poster', () => {
+    const videoPath = resolve('public/video/nature/campfire-loop-v1.mp4');
+    const posterPath = resolve('public/images/nature/backgrounds/campfire-loop-poster-v1.webp');
+
+    expect(existsSync(videoPath)).toBe(true);
+    expect(statSync(videoPath).size).toBeLessThan(2_000_000);
+    expect(readFileSync(videoPath).subarray(4, 8).toString()).toBe('ftyp');
+
+    expect(existsSync(posterPath)).toBe(true);
+    expect(statSync(posterPath).size).toBeLessThan(150_000);
+    const posterHeader = readFileSync(posterPath).subarray(0, 12);
+    expect(posterHeader.subarray(0, 4).toString()).toBe('RIFF');
+    expect(posterHeader.subarray(8, 12).toString()).toBe('WEBP');
+  });
+});

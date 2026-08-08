@@ -22,6 +22,7 @@ import { DEFAULT_MIX_VOLUMES, MAX_LAYER_VOLUME, MIX_PROFILES, type MixVolumes } 
 import { SOUND_GROUPS, WAVE_ORDER, getSoundIcon, getSoundLabel, getWaveShortLabel } from '../../audioOptions';
 import { Toggle } from '../Toggle';
 import { VolumeSlider } from '../VolumeSlider';
+import { BrainwaveGuide } from './BrainwaveGuide';
 
 interface Props {
   preset: SessionPreset;
@@ -104,29 +105,29 @@ export const SessionSetup: React.FC<Props> = ({
   return (
     <div className="mx-auto w-full max-w-[1680px] px-3 py-4 pb-16 sm:px-6 sm:py-6 sm:pb-16 lg:px-8 lg:py-7">
       <header className="flex items-center gap-3 border-b border-slate-200 pb-4 dark:border-white/10">
-        <button type="button" onClick={onBack} aria-label="사운드 홈으로 돌아가기" className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white/42 text-slate-500 transition-colors hover:bg-white hover:text-primary-900 dark:border-white/10 dark:bg-white/[0.045] dark:text-slate-400 dark:hover:bg-white/9 dark:hover:text-white">
+        <button type="button" onClick={onBack} aria-label="사운드 홈으로 돌아가기" className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white/70 text-slate-500 transition-colors hover:bg-white hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.045] dark:text-slate-400 dark:hover:bg-white/9 dark:hover:text-white">
           <ArrowLeft size={18} />
         </button>
         <div className="min-w-0 flex-1">
           <p className="text-[9px] font-black tracking-[0.17em] text-slate-500 dark:text-primary-400">SOUND WORKSPACE</p>
-          <h1 className="mt-0.5 truncate text-xl font-semibold tracking-[-0.035em] text-primary-900 sm:text-2xl dark:text-amber-100">{sessionName}</h1>
+          <h1 className="mt-0.5 truncate text-xl font-semibold tracking-[-0.035em] text-slate-950 sm:text-2xl dark:text-white">{sessionName}</h1>
         </div>
         <span className="hidden max-w-[420px] truncate text-[11px] text-slate-500 lg:block dark:text-slate-500">{preset.description}</span>
-        <button type="button" onClick={onSave} className="flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-primary-400/30 bg-slate-100 px-3.5 text-xs font-bold text-primary-700 transition-colors hover:bg-primary-100 dark:border-primary-400/30 dark:bg-primary-900 dark:text-primary-300 dark:hover:bg-primary-900">
+        <button type="button" onClick={onSave} className="flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-3.5 text-xs font-bold text-primary-700 transition-colors hover:bg-primary-100 dark:border-primary-400/30 dark:bg-primary-500/15 dark:text-primary-300 dark:hover:bg-primary-500/25">
           <Save size={15} /> <span className="hidden sm:inline">저장하기</span>
         </button>
       </header>
 
-      <section className="mt-4 grid overflow-hidden rounded-2xl border border-slate-200 bg-white/38 dark:border-white/10 dark:bg-white/[0.025] lg:grid-cols-[0.72fr_1.3fr_0.9fr]" aria-label="세션 기본 설정">
+      <section className="mt-4 grid overflow-hidden rounded-2xl border border-slate-200 bg-white/70 dark:border-white/10 dark:bg-slate-900/60 lg:grid-cols-[0.72fr_1.3fr_0.9fr]" aria-label="세션 기본 설정">
         <div className="border-b border-slate-200 p-4 dark:border-white/8 lg:border-b-0 lg:border-r">
           <div className="flex items-center justify-between gap-3">
             <span className="flex items-center gap-2 text-[10px] font-black tracking-[0.11em] text-slate-500"><Clock3 size={14} className="text-amber-500" /> 지속 시간</span>
-            <strong className="text-lg font-semibold tabular-nums text-slate-900 dark:text-amber-100">{durationMinutes}<span className="ml-0.5 text-[10px]">분</span></strong>
+              <strong className="text-lg font-semibold tabular-nums text-slate-900 dark:text-white">{durationMinutes}<span className="ml-0.5 text-[10px]">분</span></strong>
           </div>
           <input type="range" min="5" max="120" step="5" value={durationMinutes} onChange={(event) => onDurationChange(Number(event.target.value))} aria-label="세션 시간" className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-100 accent-primary-500 dark:bg-white/10" />
           <div className="mt-2 flex gap-1 overflow-x-auto pb-0.5 scrollbar-hide">
             {DURATION_OPTIONS.map((minutes) => (
-              <button key={minutes} type="button" onClick={() => onDurationChange(minutes)} aria-pressed={durationMinutes === minutes} className={`min-h-11 min-w-11 shrink-0 rounded-lg px-2 text-[10px] font-bold transition-colors ${durationMinutes === minutes ? 'bg-primary-900 text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-900 dark:bg-white/[0.045] dark:text-slate-500 dark:hover:text-white'}`}>{minutes}</button>
+              <button key={minutes} type="button" onClick={() => onDurationChange(minutes)} aria-pressed={durationMinutes === minutes} className={`min-h-11 min-w-11 shrink-0 rounded-lg px-2 text-[10px] font-bold transition-colors ${durationMinutes === minutes ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-900 dark:bg-white/[0.045] dark:text-slate-400 dark:hover:text-white'}`}>{minutes}</button>
             ))}
           </div>
         </div>
@@ -138,7 +139,7 @@ export const SessionSetup: React.FC<Props> = ({
           </div>
           <div className={`mt-2 grid grid-cols-5 gap-1 transition-opacity ${brainwaveEnabled ? '' : 'pointer-events-none opacity-35'}`}>
             {WAVE_ORDER.map((wave) => (
-              <button key={wave} type="button" disabled={!brainwaveEnabled} onClick={() => onWaveChange(wave)} aria-pressed={brainWave === wave} className={`min-h-11 rounded-lg px-1 text-[10px] font-bold transition-colors ${brainWave === wave ? 'bg-primary-900 text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-900 dark:bg-white/[0.045] dark:text-slate-500 dark:hover:text-white'}`}>{getWaveShortLabel(wave)}</button>
+              <button key={wave} type="button" disabled={!brainwaveEnabled} onClick={() => onWaveChange(wave)} aria-pressed={brainWave === wave} className={`min-h-11 rounded-lg px-1 text-[10px] font-bold transition-colors ${brainWave === wave ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-900 dark:bg-white/[0.045] dark:text-slate-400 dark:hover:text-white'}`}>{getWaveShortLabel(wave)}</button>
             ))}
           </div>
         </div>
@@ -147,23 +148,25 @@ export const SessionSetup: React.FC<Props> = ({
           <span className="flex items-center gap-2 text-[10px] font-black tracking-[0.11em] text-slate-500"><SlidersHorizontal size={14} className="text-amber-500" /> 재생 방식</span>
           <div className="mt-3 grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 dark:bg-white/[0.045]">
             {(['binaural', 'isochronic'] as ToneMode[]).map((mode) => (
-              <button key={mode} type="button" disabled={!brainwaveEnabled} onClick={() => onToneModeChange(mode)} aria-pressed={toneMode === mode} className={`min-h-11 rounded-lg text-[10px] font-bold transition-colors ${toneMode === mode ? 'bg-slate-950 text-amber-100 shadow-sm dark:bg-slate-100 dark:text-primary-900' : 'text-slate-500 dark:text-slate-500'}`}>{mode === 'binaural' ? '바이노럴 · 헤드폰' : '아이소크로닉 · 스피커'}</button>
+              <button key={mode} type="button" disabled={!brainwaveEnabled} onClick={() => onToneModeChange(mode)} aria-pressed={toneMode === mode} className={`min-h-11 rounded-lg text-[10px] font-bold transition-colors ${toneMode === mode ? 'bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950' : 'text-slate-500 dark:text-slate-400'}`}>{mode === 'binaural' ? '바이노럴 · 헤드폰' : '아이소크로닉 · 스피커'}</button>
             ))}
           </div>
         </div>
       </section>
 
+      <BrainwaveGuide wave={brainWave} enabled={brainwaveEnabled} onWaveChange={onWaveChange} />
+
       <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-white/32 p-1 lg:hidden dark:border-white/10 dark:bg-white/[0.025]" role="tablist" aria-label="모바일 편집 화면">
-        <button type="button" role="tab" aria-selected={mobilePane === 'library'} onClick={() => setMobilePane('library')} className={`min-h-11 rounded-lg text-xs font-bold ${mobilePane === 'library' ? 'bg-primary-900 text-white' : 'text-slate-500 dark:text-slate-500'}`}>사운드 선택</button>
-        <button type="button" role="tab" aria-selected={mobilePane === 'mix'} onClick={() => setMobilePane('mix')} className={`flex min-h-11 items-center justify-center gap-2 rounded-lg text-xs font-bold ${mobilePane === 'mix' ? 'bg-primary-900 text-white' : 'text-slate-500 dark:text-slate-500'}`}>현재 믹스 <span className="rounded-full bg-black/10 px-1.5 py-0.5 text-[9px]">{layers.length + (brainwaveEnabled ? 1 : 0)}</span></button>
+        <button type="button" role="tab" aria-selected={mobilePane === 'library'} onClick={() => setMobilePane('library')} className={`min-h-11 rounded-lg text-xs font-bold ${mobilePane === 'library' ? 'bg-primary-600 text-white' : 'text-slate-500 dark:text-slate-400'}`}>사운드 선택</button>
+        <button type="button" role="tab" aria-selected={mobilePane === 'mix'} onClick={() => setMobilePane('mix')} className={`flex min-h-11 items-center justify-center gap-2 rounded-lg text-xs font-bold ${mobilePane === 'mix' ? 'bg-primary-600 text-white' : 'text-slate-500 dark:text-slate-400'}`}>현재 믹스 <span className="rounded-full bg-black/10 px-1.5 py-0.5 text-[9px]">{layers.length + (brainwaveEnabled ? 1 : 0)}</span></button>
       </div>
 
       <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(410px,1.05fr)]">
-        <section className={`${mobilePane === 'library' ? 'block' : 'hidden'} min-w-0 rounded-2xl border border-slate-200 bg-white/42 p-4 sm:p-5 lg:block dark:border-white/10 dark:bg-white/[0.03]`} aria-labelledby="sound-library-title">
+        <section className={`${mobilePane === 'library' ? 'block' : 'hidden'} min-w-0 rounded-2xl border border-slate-200 bg-white/70 p-4 sm:p-5 lg:block dark:border-white/10 dark:bg-slate-900/55`} aria-labelledby="sound-library-title">
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="text-[9px] font-black tracking-[0.16em] text-slate-500 dark:text-primary-400">SOUND LIBRARY</p>
-              <h2 id="sound-library-title" className="mt-1 text-lg font-semibold text-slate-900 dark:text-amber-100">사운드 라이브러리</h2>
+              <h2 id="sound-library-title" className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">사운드 라이브러리</h2>
             </div>
             <span className="text-[10px] font-bold text-slate-500">{layers.length}개 선택</span>
           </div>
@@ -171,13 +174,13 @@ export const SessionSetup: React.FC<Props> = ({
           <label className="relative mt-4 block">
             <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
             <span className="sr-only">환경음 검색</span>
-            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="빗소리, 새소리, 노이즈 검색" className="routine-search-input h-11 w-full rounded-xl border border-slate-200 bg-amber-50 pl-10 pr-11 text-xs font-semibold text-slate-900 outline-none transition-all focus:border-primary-400/30 focus:ring-4 focus:ring-primary-500/10 dark:border-white/9 dark:bg-white/[0.045] dark:text-amber-100 dark:placeholder:text-slate-500" />
+            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="빗소리, 새소리, 노이즈 검색" className="routine-search-input h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-11 text-xs font-semibold text-slate-900 outline-none transition-all focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10 dark:border-white/9 dark:bg-white/[0.045] dark:text-white dark:placeholder:text-slate-500" />
             {query ? <button type="button" onClick={() => setQuery('')} aria-label="검색어 지우기" className="absolute right-0 top-0 grid h-11 w-11 place-items-center text-slate-400"><X size={15} /></button> : null}
           </label>
 
-          <div className="mt-3 flex gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-amber-50 p-1 scrollbar-hide dark:border-white/8 dark:bg-white/[0.025]" role="group" aria-label="사운드 분류">
+          <div className="mt-3 flex gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-1 scrollbar-hide dark:border-white/8 dark:bg-white/[0.025]" role="group" aria-label="사운드 분류">
             {['전체', ...SOUND_GROUPS.map((item) => item.label)].map((label) => (
-              <button key={label} type="button" onClick={() => setGroup(label)} aria-pressed={group === label} className={`min-h-11 shrink-0 rounded-lg px-3 text-[10px] font-bold transition-colors ${group === label ? 'bg-primary-900 text-white' : 'text-slate-500 hover:bg-white/65 hover:text-slate-900 dark:text-slate-500 dark:hover:bg-white/7 dark:hover:text-white'}`}>{label}</button>
+              <button key={label} type="button" onClick={() => setGroup(label)} aria-pressed={group === label} className={`min-h-11 shrink-0 rounded-lg px-3 text-[10px] font-bold transition-colors ${group === label ? 'bg-primary-600 text-white' : 'text-slate-500 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/7 dark:hover:text-white'}`}>{label}</button>
             ))}
           </div>
 
@@ -192,10 +195,10 @@ export const SessionSetup: React.FC<Props> = ({
                     onClick={() => onToggleLayer(sound)}
                     aria-pressed={active}
                     className={`relative flex min-h-[78px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-center transition-all active:scale-[0.98] ${active
-                      ? 'border-primary-400/30 bg-primary-100 text-primary-700 shadow-sm dark:border-primary-400/30 dark:bg-primary-900 dark:text-primary-300'
-                      : 'border-slate-200 bg-amber-50 text-slate-500 hover:border-primary-400/30 hover:bg-slate-100 hover:text-primary-900 dark:border-white/7 dark:bg-white/[0.035] dark:text-slate-500 dark:hover:border-white/13 dark:hover:bg-white/7 dark:hover:text-amber-100'}`}
+                      ? 'border-primary-300 bg-primary-50 text-primary-700 shadow-sm dark:border-primary-400/40 dark:bg-primary-500/15 dark:text-primary-300'
+                      : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-primary-300 hover:bg-white hover:text-slate-950 dark:border-white/7 dark:bg-white/[0.035] dark:text-slate-400 dark:hover:border-primary-400/30 dark:hover:bg-white/7 dark:hover:text-white'}`}
                   >
-                    {active ? <span className="absolute right-1.5 top-1.5 grid h-4 w-4 place-items-center rounded-full bg-primary-900 text-white"><Check size={10} strokeWidth={3} /></span> : null}
+                    {active ? <span className="absolute right-1.5 top-1.5 grid h-4 w-4 place-items-center rounded-full bg-primary-600 text-white"><Check size={10} strokeWidth={3} /></span> : null}
                     <span className="[&>svg]:h-[19px] [&>svg]:w-[19px]">{getSoundIcon(sound)}</span>
                     <span className="max-w-full truncate text-[10px] font-bold">{getSoundLabel(sound)}</span>
                     <span className="text-[8px] font-semibold opacity-55">{soundGroup}</span>
@@ -210,7 +213,7 @@ export const SessionSetup: React.FC<Props> = ({
           )}
         </section>
 
-        <section className={`${mobilePane === 'mix' ? 'block' : 'hidden'} dark min-w-0 rounded-2xl border border-slate-200 bg-slate-950 p-4 text-amber-100 shadow-lg sm:p-5 lg:block dark:border-white/10 dark:bg-primary-900`} aria-labelledby="current-mix-title">
+        <section className={`${mobilePane === 'mix' ? 'block' : 'hidden'} dark min-w-0 rounded-2xl border border-slate-800 bg-slate-950 p-4 text-white shadow-lg sm:p-5 lg:block dark:border-white/10 dark:bg-slate-950`} aria-labelledby="current-mix-title">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-[9px] font-black tracking-[0.16em] text-slate-400">LIVE MIX</p>
@@ -224,9 +227,9 @@ export const SessionSetup: React.FC<Props> = ({
 
           <div className="mt-4 space-y-2.5" aria-live="polite">
             {brainwaveEnabled ? (
-              <article className="rounded-xl border border-primary-400/30 bg-primary-700/50 p-3">
+              <article className="rounded-xl border border-primary-400/30 bg-primary-500/15 p-3">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary-900 text-primary-100"><Headphones size={18} /></span>
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/8 text-primary-300"><Headphones size={18} /></span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <strong className="truncate text-xs font-bold">뇌파음 · {getWaveShortLabel(brainWave)}</strong>
@@ -242,7 +245,7 @@ export const SessionSetup: React.FC<Props> = ({
             {layers.map((layer) => (
               <article key={layer.type} className="rounded-xl border border-white/9 bg-white/[0.035] p-3 transition-colors hover:border-primary-400/30">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary-900 text-primary-300 [&>svg]:h-[18px] [&>svg]:w-[18px]">{getSoundIcon(layer.type)}</span>
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/8 text-primary-300 [&>svg]:h-[18px] [&>svg]:w-[18px]">{getSoundIcon(layer.type)}</span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <strong className="truncate text-xs font-bold">{getSoundLabel(layer.type)}</strong>
@@ -303,7 +306,7 @@ export const SessionSetup: React.FC<Props> = ({
                   <div className="mt-2 grid grid-cols-5 gap-1.5">
                     {MOOD_LABELS.map((labelText, index) => {
                       const score = index + 1;
-                      return <button key={labelText} type="button" onClick={() => onMoodBeforeChange(moodBefore === score ? null : score)} aria-pressed={moodBefore === score} aria-label={labelText} className={`min-h-11 rounded-lg text-[10px] font-bold transition-colors ${moodBefore === score ? 'bg-primary-700 text-white' : 'bg-white/[0.045] text-slate-500 hover:text-white'}`}>{score}</button>;
+                      return <button key={labelText} type="button" onClick={() => onMoodBeforeChange(moodBefore === score ? null : score)} aria-pressed={moodBefore === score} aria-label={labelText} className={`min-h-11 rounded-lg text-[10px] font-bold transition-colors ${moodBefore === score ? 'bg-primary-600 text-white' : 'bg-white/[0.045] text-slate-500 hover:text-white'}`}>{score}</button>;
                     })}
                   </div>
                 </div>
@@ -313,7 +316,7 @@ export const SessionSetup: React.FC<Props> = ({
 
           {brainwaveEnabled && toneMode === 'binaural' ? <p className="mt-3 flex items-start gap-2 text-[9px] leading-relaxed text-slate-500"><Headphones size={12} className="mt-0.5 shrink-0 text-slate-400" /> 좌우 주파수 차이를 위해 스테레오 이어폰이나 헤드폰을 사용하세요.</p> : null}
 
-          <button type="button" onClick={onStart} disabled={!canStart} className="mt-4 flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary-700 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-primary-700 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40">
+          <button type="button" onClick={onStart} disabled={!canStart} className="mt-4 flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary-600 text-sm font-bold text-white shadow-lg shadow-primary-900/25 transition-all hover:-translate-y-0.5 hover:bg-primary-700 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40">
             <Play size={18} fill="currentColor" /> {durationMinutes}분 세션 시작
           </button>
         </section>
@@ -321,9 +324,9 @@ export const SessionSetup: React.FC<Props> = ({
 
       <div className="fixed inset-x-3 bottom-[calc(72px+env(safe-area-inset-bottom))] z-30 lg:hidden">
         {mobilePane === 'library' ? (
-          <button type="button" onClick={() => setMobilePane('mix')} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-slate-950/95 text-xs font-bold text-amber-100 shadow-xl backdrop-blur-md"><Layers3 size={15} /> 현재 믹스 {layers.length + (brainwaveEnabled ? 1 : 0)}개 보기</button>
+          <button type="button" onClick={() => setMobilePane('mix')} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-slate-950/95 text-xs font-bold text-white shadow-xl backdrop-blur-md"><Layers3 size={15} /> 현재 믹스 {layers.length + (brainwaveEnabled ? 1 : 0)}개 보기</button>
         ) : (
-          <button type="button" onClick={onStart} disabled={!canStart} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-700 text-xs font-bold text-white shadow-xl disabled:opacity-40"><Play size={15} fill="currentColor" /> {durationMinutes}분 시작</button>
+          <button type="button" onClick={onStart} disabled={!canStart} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-600 text-xs font-bold text-white shadow-xl disabled:opacity-40"><Play size={15} fill="currentColor" /> {durationMinutes}분 시작</button>
         )}
       </div>
     </div>

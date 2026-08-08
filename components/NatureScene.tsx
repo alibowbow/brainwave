@@ -120,8 +120,8 @@ const BACKGROUND_PATH: Partial<Record<SceneTheme, string>> = {
   'night-pond': 'images/nature/backgrounds/scops-night.webp',
 };
 
-const CAMPFIRE_POSTER_PATH = 'images/nature/backgrounds/campfire-loop-poster-v1.webp';
-const CAMPFIRE_VIDEO_PATH = 'video/nature/campfire-loop-v1.mp4';
+const CAMPFIRE_POSTER_PATH = 'images/nature/backgrounds/campfire-loop-poster-v2.webp';
+const CAMPFIRE_VIDEO_PATH = 'video/nature/campfire-loop-v2.mp4';
 
 interface NetworkInformationLike extends EventTarget {
   saveData?: boolean;

@@ -25,6 +25,9 @@ interface Props {
   onTimerChange: (min: number | null) => void;
   onVolumeChange: (vol: number) => void;
   subscribeEvents: (cb: (type: BackgroundSoundType) => void) => () => void;
+  /** Home scene cards open directly into the landscape; regular navigation
+      opens the composer so the top-level Nature menu remains one tap. */
+  initialSceneOnly?: boolean;
 }
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -47,11 +50,12 @@ export const NatureMode: React.FC<Props> = ({
   layers, isPlaying, timerMin, timeLeft, volume, activeMixId,
   onPlay, onStop, onToggleLayer, onLayerVolume, onToggleMute, onSelectMix,
   onTimerChange, onVolumeChange, subscribeEvents,
+  initialSceneOnly = false,
 }) => {
   const [selected, setSelected] = useState<BackgroundSoundType | null>(null);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [sceneOnly, setSceneOnly] = useState(true);
+  const [sceneOnly, setSceneOnly] = useState(initialSceneOnly);
   const [viewerControlsVisible, setViewerControlsVisible] = useState(true);
   const viewerRootRef = useRef<HTMLDivElement>(null);
   const viewerControlsTimerRef = useRef<number | null>(null);

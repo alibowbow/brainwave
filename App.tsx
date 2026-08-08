@@ -159,6 +159,7 @@ export default function App() {
       return typeof value === 'string' ? value : null;
     } catch { return null; }
   });
+  const [natureLaunchMode, setNatureLaunchMode] = useState<'studio' | 'scene'>('studio');
 
   const audioEngine = useRef<BinauralEngine | null>(null);
   if (!audioEngine.current) audioEngine.current = new BinauralEngine();
@@ -314,7 +315,7 @@ export default function App() {
     });
   };
 
-  const quickStartPreset = (preset: SessionPreset) => runAfterHeadphoneNotice(() => quickStartPresetNow(preset), true, 'binaural');
+  const quickStartPreset = quickStartPresetNow;
 
   const quickStartAmbienceNow = (preset: AmbiencePreset) => {
     if (natureStatus === 'running') stopNature();
@@ -353,7 +354,7 @@ export default function App() {
     });
   };
 
-  const quickStartAmbience = (preset: AmbiencePreset) => runAfterHeadphoneNotice(() => quickStartAmbienceNow(preset), true, 'binaural');
+  const quickStartAmbience = quickStartAmbienceNow;
 
   const pauseSession = () => {
     accumulateRun();
@@ -495,9 +496,34 @@ export default function App() {
 
   const resumeLastSession = () => {
     if (!lastSession) return;
-    loadUserPreset({ id: 'last', ...lastSession });
+    if (natureStatus === 'running') stopNature();
+    if (playbackStatus !== 'idle') engine.stop();
+    const seconds = lastSession.durationMinutes * 60;
+    setSelectedPreset({
+      id: 'last',
+      name: lastSession.name,
+      description: '최근 사용한 리듬과 사운드 조합',
+      defaultDurationMinutes: lastSession.durationMinutes,
+      brainWaveType: lastSession.brainWaveType,
+      defaultBackgroundSound: 'none',
+    });
+    setCurrentBrainWave(lastSession.brainWaveType);
+    setToneMode(lastSession.toneMode);
+    setBrainwaveEnabled(lastSession.brainwaveEnabled);
+    setActiveLayers(lastSession.layers.map((layer) => ({ ...layer })));
+    if (lastSession.mix) setVolumes((current) => normalizeMixVolumes({ ...current, ...lastSession.mix }));
     setSleepMode(lastSession.sleepMode);
     setIntention(lastSession.intention ?? '');
+    setMoodBefore(null);
+    setTimeLeft(seconds);
+    setSessionTotalSeconds(seconds);
+    playedMsRef.current = 0;
+    sessionStartedAtRef.current = new Date().toISOString();
+    playEngineSession(seconds, {
+      ...lastSession,
+      layers: lastSession.layers.map((layer) => ({ ...layer })),
+      mix: lastSession.mix ? { ...lastSession.mix } : { ...volumes },
+    });
   };
 
   const persistPresets = (next: UserPreset[]) => {
@@ -637,6 +663,36 @@ export default function App() {
     if (natureStatus === 'running') engine.setSounds(layers);
   };
 
+  const quickStartNature = (mix: NatureMix) => {
+    const layers = mix.layers.map((layer) => ({ ...layer }));
+    if (playbackStatus !== 'idle') {
+      engine.stop();
+      setPlaybackStatus('idle');
+      setImmersive(false);
+    }
+    if (natureStatus === 'running') engine.stop();
+    setNatureLayers(layers);
+    setNatureMixId(mix.id);
+    setNatureStatus('running');
+    if (natureTimerMin != null) {
+      natureEndRef.current = Date.now() + natureTimerMin * 60 * 1000;
+      setNatureTimeLeft(natureTimerMin * 60);
+    } else {
+      natureEndRef.current = null;
+    }
+    engine.start({
+      base: WAVE_FREQS.alpha.base,
+      beat: WAVE_FREQS.alpha.beat,
+      mode: 'binaural',
+      masterVol: natureVol,
+      binauralVol: 0,
+      bgVol: 1,
+      sounds: layers,
+    });
+    setNatureLaunchMode('scene');
+    navigate({ activeView: 'nature', viewMode: 'list', immersive: false });
+  };
+
   const subscribeNatureEvents = useCallback((callback: (type: BackgroundSoundType) => void) => engine.onSoundEvent(callback), [engine]);
 
   const exportData = () => {
@@ -741,6 +797,7 @@ export default function App() {
 
   const handleNavigate = (view: AppView) => {
     if (viewMode === 'feedback') saveSessionLog(moodBefore ?? 3);
+    if (view === 'nature') setNatureLaunchMode('studio');
     navigate({ activeView: view, viewMode: 'list', immersive: false });
   };
 
@@ -1002,10 +1059,11 @@ export default function App() {
             lastSession={lastSessionSummary}
             onResumeLast={resumeLastSession}
             onQuickStartPreset={quickStartPreset}
-            onConfigurePreset={configurePreset}
-            onQuickStartAmbience={quickStartAmbience}
+            onQuickStartNature={quickStartNature}
             onOpenLibrary={() => handleNavigate('library')}
             onOpenNature={() => handleNavigate('nature')}
+            onOpenInsights={() => handleNavigate('insights')}
+            onOpenSettings={() => handleNavigate('settings')}
           />
         )}
 
@@ -1119,6 +1177,7 @@ export default function App() {
           <div className="nature-route">
             <Suspense fallback={<LoadingPanel />}>
               <NatureMode
+                key={natureLaunchMode}
                 layers={natureLayers}
                 isPlaying={natureStatus === 'running'}
                 timerMin={natureTimerMin}
@@ -1134,6 +1193,7 @@ export default function App() {
                 onTimerChange={handleNatureTimer}
                 onVolumeChange={setNatureVol}
                 subscribeEvents={subscribeNatureEvents}
+                initialSceneOnly={natureLaunchMode === 'scene'}
               />
             </Suspense>
           </div>

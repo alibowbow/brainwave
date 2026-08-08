@@ -94,7 +94,7 @@ export const Player: React.FC<PlayerProps> = ({
   backgroundVariant,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
-  const [panel, setPanel] = useState<'controls' | 'sounds'>('controls');
+  const [panel, setPanel] = useState<'controls' | 'sounds'>('sounds');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [sceneChromeVisible, setSceneChromeVisible] = useState(true);
   const sceneChromeTimerRef = useRef<number | null>(null);
@@ -134,6 +134,7 @@ export const Player: React.FC<PlayerProps> = ({
   };
 
   const openDetails = () => {
+    setPanel('sounds');
     setDetailsOpen(true);
     if (!window.matchMedia('(min-width: 1024px)').matches) {
       window.setTimeout(() => detailsRef.current?.scrollIntoView({ block: 'start' }), 0);

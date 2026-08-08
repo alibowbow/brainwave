@@ -1,31 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { NATURE_MIXES, PRESETS } from '../../types';
-import { HOME_NATURE_MIX_IDS, HOME_PRESET_IDS } from './homeLaunchers';
+import { AMBIENCE_PRESETS, NATURE_MIXES, PRESETS } from '../../types';
+import { HOME_CATALOG } from './HomeDashboard';
 
-describe('home one-tap launchers', () => {
-  it('shows all six built-in routines', () => {
-    expect(HOME_PRESET_IDS).toHaveLength(6);
+describe('unified home catalog', () => {
+  it('includes every routine, soundscape, and nature scene', () => {
+    expect(HOME_CATALOG).toHaveLength(PRESETS.length + AMBIENCE_PRESETS.length + NATURE_MIXES.length);
   });
 
-  it('only references existing routine presets', () => {
-    const known = new Set(PRESETS.map((preset) => preset.id));
-    expect(HOME_PRESET_IDS.every((id) => known.has(id))).toBe(true);
+  it('preserves the complete source collection for each category', () => {
+    expect(HOME_CATALOG.filter((entry) => entry.kind === 'routine').map((entry) => entry.source.id)).toEqual(PRESETS.map((preset) => preset.id));
+    expect(HOME_CATALOG.filter((entry) => entry.kind === 'ambience').map((entry) => entry.source.id)).toEqual(AMBIENCE_PRESETS.map((preset) => preset.id));
+    expect(HOME_CATALOG.filter((entry) => entry.kind === 'nature').map((entry) => entry.source.id)).toEqual(NATURE_MIXES.map((mix) => mix.id));
   });
 
-  it('does not duplicate routine cards', () => {
-    expect(new Set(HOME_PRESET_IDS).size).toBe(HOME_PRESET_IDS.length);
-  });
-
-  it('shows four representative nature scenes', () => {
-    expect(HOME_NATURE_MIX_IDS).toHaveLength(4);
-  });
-
-  it('only references existing nature mixes', () => {
-    const known = new Set(NATURE_MIXES.map((mix) => mix.id));
-    expect(HOME_NATURE_MIX_IDS.every((id) => known.has(id))).toBe(true);
-  });
-
-  it('does not duplicate nature scene cards', () => {
-    expect(new Set(HOME_NATURE_MIX_IDS).size).toBe(HOME_NATURE_MIX_IDS.length);
+  it('uses unique cross-category card ids', () => {
+    expect(new Set(HOME_CATALOG.map((entry) => entry.id)).size).toBe(HOME_CATALOG.length);
   });
 });

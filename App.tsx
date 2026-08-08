@@ -470,6 +470,31 @@ export default function App() {
     navigate({ activeView, viewMode: 'config', immersive: false });
   };
 
+  const loadNatureMix = (mix: NatureMix) => {
+    if (playbackStatus !== 'idle') stopSession();
+    if (natureStatus === 'running') stopNature();
+    const durationMinutes = natureTimerMin ?? 30;
+    setSelectedPreset({
+      id: `nature:${mix.id}`,
+      name: mix.name,
+      description: '자연음만으로 구성하는 사운드 장면',
+      defaultDurationMinutes: durationMinutes,
+      brainWaveType: 'alpha',
+      defaultBackgroundSound: 'none',
+    });
+    setCurrentBrainWave('alpha');
+    setToneMode('binaural');
+    setBrainwaveEnabled(false);
+    setActiveLayers(mix.layers.map((layer) => ({ ...layer })));
+    setSleepMode(false);
+    setIntention('');
+    setMoodBefore(null);
+    const seconds = durationMinutes * 60;
+    setTimeLeft(seconds);
+    setSessionTotalSeconds(seconds);
+    navigate({ activeView: 'home', viewMode: 'config', immersive: false });
+  };
+
   const loadUserPreset = (preset: UserPreset) => {
     if (playbackStatus !== 'idle') stopSession();
     setSelectedPreset({
@@ -810,7 +835,7 @@ export default function App() {
     document.documentElement.classList.toggle('dark', settings.darkMode);
     document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);
     document.documentElement.style.colorScheme = settings.darkMode ? 'dark' : 'light';
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', settings.darkMode ? '#0f172a' : '#f8fafc');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', settings.darkMode ? '#07100e' : '#f4f1e9');
     localStorage.setItem('mc_brain_settings', JSON.stringify(settings));
   }, [settings]);
 
@@ -1057,13 +1082,32 @@ export default function App() {
             logs={logs}
             dailyGoalMinutes={settings.dailyGoalMinutes}
             lastSession={lastSessionSummary}
+            savedRoutines={userPresets.map((preset) => ({
+              id: preset.id,
+              name: preset.name,
+              durationMinutes: preset.durationMinutes,
+              layerCount: preset.layers.length,
+              waveLabel: preset.brainwaveEnabled ? getBrainWaveLabel(preset.brainWaveType).split(' ')[0] : '자연음',
+            }))}
+            favoriteIds={favoriteSet}
             onResumeLast={resumeLastSession}
+            onCreateCustom={() => configurePreset({
+              id: 'custom', name: '나만의 사운드', description: '시간·뇌파·사운드를 한 화면에서 직접 조합합니다.',
+              defaultDurationMinutes: 30, brainWaveType: 'alpha', defaultBackgroundSound: 'rain',
+            })}
+            onOpenPreset={configurePreset}
             onQuickStartPreset={quickStartPreset}
+            onOpenAmbience={loadAmbience}
+            onQuickStartAmbience={quickStartAmbience}
+            onOpenNatureMix={loadNatureMix}
             onQuickStartNature={quickStartNature}
-            onOpenLibrary={() => handleNavigate('library')}
-            onOpenNature={() => handleNavigate('nature')}
-            onOpenInsights={() => handleNavigate('insights')}
-            onOpenSettings={() => handleNavigate('settings')}
+            onOpenSaved={(id) => { const preset = userPresets.find((item) => item.id === id); if (preset) loadUserPreset(preset); }}
+            onDeleteSaved={(id) => {
+              const preset = userPresets.find((item) => item.id === id);
+              if (!preset || !window.confirm(`“${preset.name}” 루틴을 삭제할까요?`)) return;
+              persistPresets(userPresets.filter((item) => item.id !== id));
+            }}
+            onToggleFavorite={(id) => setFavoriteIds((current) => current.includes(id) ? current.filter((value) => value !== id) : [...current, id])}
           />
         )}
 

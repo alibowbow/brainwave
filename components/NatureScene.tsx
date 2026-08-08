@@ -367,12 +367,12 @@ const HIDDEN_LEGACY_TYPES = new Set<BackgroundSoundType>([
 ]);
 
 const FIREFLIES = [
-  { left: '17%', top: '49%', delay: '0s', size: 3 },
-  { left: '31%', top: '60%', delay: '-1.6s', size: 2 },
-  { left: '56%', top: '48%', delay: '-3.1s', size: 3 },
-  { left: '74%', top: '56%', delay: '-0.8s', size: 2 },
-  { left: '87%', top: '42%', delay: '-2.4s', size: 2 },
-  { left: '42%', top: '38%', delay: '-4.2s', size: 2 },
+  { left: '17%', top: '49%', delay: '0s', duration: '6.2s', size: 3 },
+  { left: '31%', top: '60%', delay: '-1.6s', duration: '7.4s', size: 2 },
+  { left: '56%', top: '48%', delay: '-3.1s', duration: '6.8s', size: 3 },
+  { left: '74%', top: '56%', delay: '-0.8s', duration: '7.8s', size: 2 },
+  { left: '87%', top: '42%', delay: '-2.4s', duration: '6.5s', size: 2 },
+  { left: '42%', top: '38%', delay: '-4.2s', duration: '7.1s', size: 2 },
 ];
 
 const LEAVES = [
@@ -779,12 +779,19 @@ export const NatureScene: React.FC<Props> = ({ types, backgroundVariant, tall, f
       {hasHeartbeat && <GeneratedEnvironmentObject spec={ENVIRONMENT_OBJECTS.heartbeat} className="sc-v3-heartbeat" />}
 
       {theme === 'night-pond' && FIREFLIES.map((firefly, index) => (
-        <GeneratedEnvironmentObject
-          key={index}
-          spec={ENVIRONMENT_OBJECTS.firefly}
+        <span
+          key={`firefly-${index}`}
           className="sc-v3-firefly"
-          index={index}
-          style={{ left: firefly.left, top: firefly.top, width: 18 + firefly.size * 2, height: 18 + firefly.size * 2, animationDelay: firefly.delay }}
+          data-firefly=""
+          aria-hidden="true"
+          style={{
+            left: firefly.left,
+            top: firefly.top,
+            width: 12 + firefly.size * 2,
+            height: 12 + firefly.size * 2,
+            animationDelay: firefly.delay,
+            animationDuration: firefly.duration,
+          }}
         />
       ))}
 

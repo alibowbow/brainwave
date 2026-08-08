@@ -6,6 +6,7 @@ import {
   HardDrive,
   Headphones,
   Moon,
+  RefreshCw,
   RotateCcw,
   Smartphone,
   Sparkles,
@@ -13,6 +14,7 @@ import {
   Trash2,
   Upload,
 } from 'lucide-react';
+import type { AppUpdateStatus } from '../../appUpdate';
 import { Toggle } from '../Toggle';
 
 interface Props {
@@ -23,12 +25,14 @@ interface Props {
   logCount: number;
   presetCount: number;
   canInstall: boolean;
+  updateStatus: AppUpdateStatus;
   importMessage: string | null;
   onToggleDarkMode: () => void;
   onToggleSoundNotice: () => void;
   onToggleReduceMotion: () => void;
   onDailyGoalChange: (minutes: number) => void;
   onInstall: () => void;
+  onForceUpdate: () => void;
   onExport: () => void;
   onImport: (file: File) => void;
   onClearHistory: () => void;
@@ -45,12 +49,14 @@ export const SettingsView: React.FC<Props> = ({
   logCount,
   presetCount,
   canInstall,
+  updateStatus,
   importMessage,
   onToggleDarkMode,
   onToggleSoundNotice,
   onToggleReduceMotion,
   onDailyGoalChange,
   onInstall,
+  onForceUpdate,
   onExport,
   onImport,
   onClearHistory,
@@ -127,6 +133,22 @@ export const SettingsView: React.FC<Props> = ({
           <div className="rounded-[20px] bg-slate-50 p-4 dark:bg-white/[0.035]"><Sparkles size={17} className="text-violet-500" /><strong className="mt-3 block text-xl font-black text-slate-950 dark:text-white">{presetCount}</strong><span className="text-[10px] font-semibold text-slate-400">저장 루틴</span></div>
         </div>
         {canInstall ? <button type="button" onClick={onInstall} className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 text-xs font-black text-white dark:bg-white dark:text-slate-950"><Smartphone size={15} /> 홈 화면에 앱 설치</button> : <div className="mt-3 flex items-center gap-2 rounded-2xl border border-slate-200 px-4 py-3 text-[11px] font-bold text-slate-400 dark:border-white/8"><Smartphone size={15} /> 브라우저 메뉴에서 홈 화면에 추가할 수 있어요.</div>}
+        <button
+          type="button"
+          onClick={onForceUpdate}
+          disabled={updateStatus === 'checking' || updateStatus === 'installing'}
+          className="mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 text-xs font-black text-amber-800 transition-colors hover:bg-amber-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 disabled:cursor-wait disabled:opacity-65 dark:border-amber-200/15 dark:bg-amber-200/[0.06] dark:text-amber-100 dark:hover:bg-amber-200/[0.1]"
+        >
+          <RefreshCw size={15} className={updateStatus === 'checking' || updateStatus === 'installing' ? 'animate-spin' : ''} />
+          {updateStatus === 'checking' ? '최신 버전 확인 중…' : updateStatus === 'installing' ? '새 버전 적용 중…' : '강제 업데이트하기'}
+        </button>
+        <p role="status" className={`mt-2 px-1 text-[10px] leading-relaxed ${updateStatus === 'error' ? 'font-bold text-red-500' : updateStatus === 'ready' ? 'font-bold text-amber-600 dark:text-amber-300' : 'text-slate-400'}`}>
+          {updateStatus === 'error'
+            ? '업데이트하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 눌러주세요.'
+            : updateStatus === 'ready'
+              ? '새 버전이 준비됐습니다. 누르면 바로 교체됩니다.'
+              : '오래 저장된 앱 파일만 새로 받습니다. 기록·루틴·설정은 유지됩니다.'}
+        </p>
         <div className="mt-2 grid grid-cols-2 gap-2">
           <button type="button" onClick={onExport} className="flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 text-xs font-black text-slate-500 transition-colors hover:text-slate-950 dark:border-white/8 dark:text-slate-400 dark:hover:text-white"><Download size={15} /> 백업</button>
           <button type="button" onClick={() => importRef.current?.click()} className="flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 text-xs font-black text-slate-500 transition-colors hover:text-slate-950 dark:border-white/8 dark:text-slate-400 dark:hover:text-white"><Upload size={15} /> 복원</button>

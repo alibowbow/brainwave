@@ -25,6 +25,11 @@ describe('app navigation history', () => {
     expect(readAppHistoryEntry(state)).toEqual(HOME);
   });
 
+  it('restores the brainwave guide as a first-class app location', () => {
+    const guide: AppHistoryEntry = { ...HOME, activeView: 'guide', index: 2 };
+    expect(readAppHistoryEntry(withAppHistoryEntry({}, guide))).toEqual(guide);
+  });
+
   it('rejects malformed or incompatible history entries', () => {
     expect(readAppHistoryEntry(null)).toBeNull();
     expect(readAppHistoryEntry({ [APP_HISTORY_KEY]: { ...HOME, version: 2 } })).toBeNull();

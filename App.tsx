@@ -53,6 +53,7 @@ const StatsDashboard = lazy(() => import('./components/StatsDashboard').then((mo
 const ImmersiveMode = lazy(() => import('./components/ImmersiveMode').then((module) => ({ default: module.ImmersiveMode })));
 const Player = lazy(() => import('./components/Player').then((module) => ({ default: module.Player })));
 const RoutineLibrary = lazy(() => import('./components/app/RoutineLibrary').then((module) => ({ default: module.RoutineLibrary })));
+const BrainwaveGuidePage = lazy(() => import('./components/app/BrainwaveGuidePage').then((module) => ({ default: module.BrainwaveGuidePage })));
 const SettingsView = lazy(() => import('./components/app/SettingsView').then((module) => ({ default: module.SettingsView })));
 const SessionSetup = lazy(() => import('./components/session/SessionSetup').then((module) => ({ default: module.SessionSetup })));
 const SessionReflection = lazy(() => import('./components/redesign/SessionReflection').then((module) => ({ default: module.SessionReflection })));
@@ -1137,6 +1138,19 @@ export default function App() {
               persistPresets(userPresets.filter((item) => item.id !== id));
             }}
               onToggleFavorite={(id) => setFavoriteIds((current) => current.includes(id) ? current.filter((value) => value !== id) : [...current, id])}
+            />
+          </Suspense>
+        )}
+
+        {viewMode === 'list' && activeView === 'guide' && (
+          <Suspense fallback={<LoadingPanel />}>
+            <BrainwaveGuidePage
+              wave={currentBrainWave}
+              onWaveChange={setCurrentBrainWave}
+              onCreateSound={() => configurePreset({
+                id: 'custom', name: '나만의 사운드', description: '시간·뇌파·사운드를 한 화면에서 직접 조합합니다.',
+                defaultDurationMinutes: 30, brainWaveType: currentBrainWave, defaultBackgroundSound: 'rain',
+              })}
             />
           </Suspense>
         )}

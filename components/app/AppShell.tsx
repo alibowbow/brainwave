@@ -2,6 +2,7 @@ import React from 'react';
 import {
   BarChart3,
   Brain,
+  BrainCircuit,
   Headphones,
   Home,
   Moon,
@@ -9,7 +10,7 @@ import {
   Sun,
 } from 'lucide-react';
 
-export type AppView = 'home' | 'library' | 'nature' | 'insights' | 'settings';
+export type AppView = 'home' | 'library' | 'nature' | 'guide' | 'insights' | 'settings';
 
 interface Props {
   activeView: AppView;
@@ -25,6 +26,7 @@ interface Props {
 
 const NAV_ITEMS = [
   { id: 'home' as const, label: '사운드 홈', mobileLabel: '홈', Icon: Home },
+  { id: 'guide' as const, label: '뇌파 가이드', mobileLabel: '뇌파', Icon: BrainCircuit },
   { id: 'insights' as const, label: '리포트', mobileLabel: '리포트', Icon: BarChart3 },
 ];
 
@@ -32,6 +34,7 @@ const PAGE_META: Record<AppView, { eyebrow: string; title: string }> = {
   home: { eyebrow: 'SOUND HOME', title: '모든 사운드' },
   library: { eyebrow: 'SOUND HOME', title: '모든 사운드' },
   nature: { eyebrow: 'LIVING SOUNDSCAPE', title: '자연 장면' },
+  guide: { eyebrow: 'BRAINWAVE GUIDE', title: '뇌파 리듬 이해하기' },
   insights: { eyebrow: 'YOUR PROGRESS', title: '리포트' },
   settings: { eyebrow: 'PREFERENCES', title: '설정' },
 };
@@ -102,7 +105,7 @@ export const AppShell: React.FC<Props> = ({
           </nav>
 
           <div className="hidden min-w-0 flex-1 items-center lg:flex">
-            {pageMeta || activeView === 'nature' ? (
+            {pageMeta || activeView === 'nature' || activeView === 'guide' ? (
               <div className="ml-2 min-w-0 border-l border-slate-200 pl-5 dark:border-white/10">
                 <p className="text-[9px] font-black tracking-[0.16em] text-primary-500 dark:text-primary-400">{meta.eyebrow}</p>
                 <p className="mt-0.5 truncate text-xs font-bold text-slate-700 dark:text-slate-400">{meta.title}</p>
@@ -153,7 +156,7 @@ export const AppShell: React.FC<Props> = ({
         {children}
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 grid h-[calc(64px+env(safe-area-inset-bottom))] grid-cols-3 border-t border-slate-200 bg-slate-50/95 px-3 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden dark:border-white/10 dark:bg-slate-950/95" aria-label="주요 메뉴">
+      <nav className="fixed inset-x-0 bottom-0 z-50 grid h-[calc(64px+env(safe-area-inset-bottom))] grid-cols-4 border-t border-slate-200 bg-slate-50/95 px-3 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden dark:border-white/10 dark:bg-slate-950/95" aria-label="주요 메뉴">
         {NAV_ITEMS.map(({ id, mobileLabel, Icon }) => {
           const active = id === 'home' ? soundHomeActive : activeView === id;
           return (

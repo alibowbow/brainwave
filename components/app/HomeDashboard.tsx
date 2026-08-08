@@ -99,7 +99,7 @@ const AMBIENCE_ARTWORK: Partial<Record<string, string>> = {
 };
 
 const NATURE_TONES = [
-  'from-primary-900 via-primary-900 to-slate-500',
+  'from-indigo-950 via-indigo-900 to-slate-500',
   'from-cyan-950 via-cyan-900 to-slate-500',
   'from-amber-950 via-rose-700 to-amber-500',
   'from-indigo-900 via-indigo-900 to-slate-500',
@@ -195,7 +195,7 @@ export const HomeDashboard: React.FC<Props> = ({
       <section className="grid gap-5 border-b border-slate-200 pb-6 dark:border-white/10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:pb-8">
         <div>
           <p className="text-[10px] font-black tracking-[0.18em] text-slate-500 dark:text-primary-400">{dayLabel} · SOUND HOME</p>
-          <h1 className="mt-2 max-w-3xl text-[32px] font-semibold leading-[1.12] tracking-[-0.045em] text-primary-900 sm:text-[42px] dark:text-amber-100">
+          <h1 className="mt-2 max-w-3xl text-[32px] font-semibold leading-[1.12] tracking-[-0.045em] text-slate-950 sm:text-[42px] dark:text-white">
             당신의 하루를 위한 사운드
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
@@ -205,7 +205,7 @@ export const HomeDashboard: React.FC<Props> = ({
         <button
           type="button"
           onClick={onCreateCustom}
-          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-primary-400/30 bg-primary-900 px-6 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-primary-700 active:translate-y-0 lg:w-auto"
+          className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-primary-600 px-6 text-sm font-bold text-white shadow-lg shadow-primary-600/20 transition-all hover:-translate-y-0.5 hover:bg-primary-700 active:translate-y-0 lg:w-auto"
         >
           <SlidersHorizontal size={18} /> 나만의 사운드 만들기
         </button>
@@ -213,17 +213,17 @@ export const HomeDashboard: React.FC<Props> = ({
 
       <section className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]" aria-label="오늘의 진행과 최근 구성">
         <article className="flex min-h-[94px] items-center gap-4 rounded-2xl border border-slate-200 bg-white/42 px-4 py-3 dark:border-white/10 dark:bg-white/[0.035]">
-          <span className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full bg-slate-100 text-sm font-black tabular-nums text-primary-700 dark:bg-primary-900 dark:text-primary-400">
+          <span className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full bg-primary-50 text-sm font-black tabular-nums text-primary-700 dark:bg-primary-500/15 dark:text-primary-300">
             {progress}%
             <span className="absolute inset-0 rounded-full border border-primary-400/30" />
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-3">
-              <strong className="text-sm font-bold text-slate-900 dark:text-amber-100">오늘 {todayMinutes}/{dailyGoalMinutes}분</strong>
+              <strong className="text-sm font-bold text-slate-900 dark:text-white">오늘 {todayMinutes}/{dailyGoalMinutes}분</strong>
               <span className="text-[10px] font-bold text-slate-500 dark:text-slate-500">{streak}일 연속</span>
             </div>
             <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
-              <div className="h-full rounded-full bg-primary-700 transition-[width] duration-500" style={{ width: `${progress}%` }} />
+              <div className="h-full rounded-full bg-primary-500 transition-[width] duration-500" style={{ width: `${progress}%` }} />
             </div>
             <p className="mt-2 truncate text-[10px] text-slate-500 dark:text-slate-500">
               {progress >= 100 ? '오늘의 목표를 채웠어요.' : `${Math.max(0, dailyGoalMinutes - todayMinutes)}분 더하면 오늘 목표를 채워요.`}
@@ -235,21 +235,21 @@ export const HomeDashboard: React.FC<Props> = ({
           <button
             type="button"
             onClick={onResumeLast}
-            className="group flex min-h-[94px] items-center gap-4 rounded-2xl border border-slate-200 bg-slate-950 px-4 py-3 text-left text-amber-100 shadow-lg transition-transform hover:-translate-y-0.5 dark:border-white/10 dark:bg-primary-900"
+            className="group flex min-h-[94px] items-center gap-4 rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-left text-white shadow-lg transition-transform hover:-translate-y-0.5 dark:border-white/10 dark:bg-slate-900"
           >
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-900 text-primary-300"><RotateCcw size={19} /></span>
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/8 text-primary-300"><RotateCcw size={19} /></span>
             <span className="min-w-0 flex-1">
               <span className="text-[9px] font-black tracking-[0.15em] text-slate-400">RECENT MIX · 바로 재생</span>
               <strong className="mt-1 block truncate text-base font-bold">{displayPresetName(lastSession.name)}</strong>
               <span className="mt-1 block truncate text-[10px] text-slate-400">{lastSession.waveLabel} · {lastSession.durationMinutes}분 · 사운드 {lastSession.layerCount}개</span>
             </span>
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-amber-100 text-primary-900 transition-transform group-hover:scale-105"><Play size={16} fill="currentColor" className="ml-0.5" /></span>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-primary-600 transition-transform group-hover:scale-105"><Play size={16} fill="currentColor" className="ml-0.5" /></span>
           </button>
         ) : (
           <div className="flex min-h-[94px] items-center gap-4 rounded-2xl border border-dashed border-slate-200 px-4 py-3 dark:border-white/12">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-slate-100 text-primary-500 dark:bg-primary-900 dark:text-primary-400"><Headphones size={19} /></span>
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-50 text-primary-500 dark:bg-primary-500/15 dark:text-primary-300"><Headphones size={19} /></span>
             <div>
-              <strong className="text-sm font-bold text-slate-900 dark:text-amber-100">첫 사운드를 시작해 보세요</strong>
+              <strong className="text-sm font-bold text-slate-900 dark:text-white">첫 사운드를 시작해 보세요</strong>
               <p className="mt-1 text-[11px] text-slate-500">다음부터 최근 믹스를 여기서 바로 재생할 수 있어요.</p>
             </div>
           </div>
@@ -261,7 +261,7 @@ export const HomeDashboard: React.FC<Props> = ({
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles size={15} className="text-amber-500" />
-              <h2 id="saved-routines-title" className="text-sm font-bold text-slate-900 dark:text-amber-100">내가 저장한 사운드</h2>
+              <h2 id="saved-routines-title" className="text-sm font-bold text-slate-900 dark:text-white">내가 저장한 사운드</h2>
             </div>
             <span className="text-[10px] font-bold text-slate-500">{savedRoutines.length}개</span>
           </div>
@@ -269,9 +269,9 @@ export const HomeDashboard: React.FC<Props> = ({
             {savedRoutines.map((routine) => (
               <article key={routine.id} className="relative flex w-[250px] shrink-0 items-center gap-3 rounded-2xl border border-slate-200 bg-white/45 p-3 dark:border-white/10 dark:bg-white/[0.035]">
                 <button type="button" onClick={() => onOpenSaved(routine.id)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-400"><Sparkles size={16} /></span>
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-50 text-primary-700 dark:bg-primary-500/15 dark:text-primary-300"><Sparkles size={16} /></span>
                   <span className="min-w-0">
-                    <strong className="block truncate text-xs font-bold text-slate-900 dark:text-amber-100">{routine.name}</strong>
+                    <strong className="block truncate text-xs font-bold text-slate-900 dark:text-white">{routine.name}</strong>
                     <span className="mt-1 block truncate text-[9px] text-slate-500">{routine.waveLabel} · {routine.durationMinutes}분 · {routine.layerCount}개</span>
                   </span>
                 </button>
@@ -286,7 +286,7 @@ export const HomeDashboard: React.FC<Props> = ({
         <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-[10px] font-black tracking-[0.17em] text-slate-500 dark:text-primary-400">ALL SOUNDS</p>
-            <h2 id="sound-catalog-title" className="mt-1 text-2xl font-semibold tracking-[-0.035em] text-primary-900 dark:text-amber-100">전체 사운드</h2>
+            <h2 id="sound-catalog-title" className="mt-1 text-2xl font-semibold tracking-[-0.035em] text-slate-950 dark:text-white">전체 사운드</h2>
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-2.5 lg:flex-row xl:max-w-[1080px] xl:justify-end">
             <label className="relative block min-w-0 flex-1 lg:max-w-[430px]">
@@ -297,10 +297,10 @@ export const HomeDashboard: React.FC<Props> = ({
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="사운드, 장면, 루틴 검색"
-                className="routine-search-input h-12 w-full rounded-2xl border border-slate-200 bg-white/52 pl-11 pr-12 text-sm font-semibold text-primary-900 outline-none transition-all focus:border-primary-400/30 focus:bg-white focus:ring-4 focus:ring-primary-500/10 dark:border-white/10 dark:bg-white/[0.045] dark:text-amber-100 dark:placeholder:text-slate-500 dark:focus:border-primary-400/30 dark:focus:bg-white/[0.065]"
+                className="routine-search-input h-12 w-full rounded-2xl border border-slate-200 bg-white/70 pl-11 pr-12 text-sm font-semibold text-slate-950 outline-none transition-all focus:border-primary-400 focus:bg-white focus:ring-4 focus:ring-primary-500/10 dark:border-white/10 dark:bg-white/[0.045] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-primary-400/60 dark:focus:bg-white/[0.065]"
               />
               {query ? (
-                <button type="button" onClick={() => setQuery('')} aria-label="검색어 지우기" className="absolute right-0.5 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-xl text-slate-400 hover:text-primary-900 dark:hover:text-white"><X size={16} /></button>
+                <button type="button" onClick={() => setQuery('')} aria-label="검색어 지우기" className="absolute right-0.5 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-xl text-slate-400 hover:text-slate-950 dark:hover:text-white"><X size={16} /></button>
               ) : null}
             </label>
             <div className="flex gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-white/36 p-1 scrollbar-hide dark:border-white/10 dark:bg-white/[0.025]" role="group" aria-label="사운드 분류">
@@ -311,8 +311,8 @@ export const HomeDashboard: React.FC<Props> = ({
                   onClick={() => setFilter(id)}
                   aria-pressed={filter === id}
                   className={`min-h-11 shrink-0 rounded-xl px-3.5 text-[11px] font-bold transition-colors ${filter === id
-                    ? 'bg-primary-900 text-white shadow-sm'
-                    : 'text-slate-500 hover:bg-white/70 hover:text-primary-900 dark:text-slate-500 dark:hover:bg-white/7 dark:hover:text-amber-100'}`}
+                    ? 'bg-primary-600 text-white shadow-sm'
+                    : 'text-slate-500 hover:bg-white/70 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/7 dark:hover:text-white'}`}
                 >
                   {id === 'favorites' ? <Heart size={12} className="mr-1 inline" fill={filter === id ? 'currentColor' : 'none'} /> : null}{label}
                 </button>
@@ -341,12 +341,12 @@ export const HomeDashboard: React.FC<Props> = ({
               const emoji = entry.kind === 'ambience' || entry.kind === 'nature' ? entry.source.emoji : null;
 
               return (
-                <article key={entry.id} className="content-auto group relative min-h-[286px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 text-amber-100 shadow-md transition-all hover:-translate-y-1 hover:border-slate-200 hover:shadow-xl dark:border-white/10 dark:bg-primary-900">
+                <article key={entry.id} className="content-auto group relative min-h-[286px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-white shadow-md transition-all hover:-translate-y-1 hover:border-slate-600 hover:shadow-xl dark:border-white/10 dark:bg-slate-900">
                   <div className={`absolute inset-x-0 top-0 h-[60%] bg-gradient-to-br ${gradient}`} aria-hidden="true">
                     {artwork ? <img src={artworkUrl(artwork)} alt="" loading="lazy" decoding="async" width="1000" height="400" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /> : null}
                     {emoji && !artwork ? <span className="absolute -right-2 top-1/2 -translate-y-1/2 text-[108px] opacity-[0.16]">{emoji}</span> : null}
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900 to-black/5" aria-hidden="true" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/95 to-black/5" aria-hidden="true" />
 
                   <div className="relative flex min-h-[286px] flex-col p-4">
                     <div className="flex items-start justify-between gap-3">
@@ -374,7 +374,7 @@ export const HomeDashboard: React.FC<Props> = ({
 
                     <div className="mt-3 grid grid-cols-[1fr_1.18fr] gap-2 border-t border-white/9 pt-3">
                       <button type="button" onClick={() => editEntry(entry)} className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-white/12 bg-white/[0.035] text-[11px] font-bold text-slate-300 transition-colors hover:bg-white/8 hover:text-white"><SlidersHorizontal size={14} /> 편집</button>
-                      <button type="button" onClick={() => playEntry(entry)} className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-primary-700 text-[11px] font-bold text-white transition-colors hover:bg-primary-700"><Play size={14} fill="currentColor" /> 재생</button>
+                      <button type="button" onClick={() => playEntry(entry)} className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-primary-600 text-[11px] font-bold text-white transition-colors hover:bg-primary-500"><Play size={14} fill="currentColor" /> 재생</button>
                     </div>
                   </div>
                 </article>
@@ -385,7 +385,7 @@ export const HomeDashboard: React.FC<Props> = ({
           <div className="mt-5 grid min-h-[260px] place-items-center rounded-2xl border border-dashed border-slate-200 text-center dark:border-white/12">
             <div className="px-6">
               <Search size={27} className="mx-auto text-slate-400" />
-              <h3 className="mt-3 text-sm font-bold text-slate-900 dark:text-amber-100">조건에 맞는 사운드가 없어요</h3>
+              <h3 className="mt-3 text-sm font-bold text-slate-900 dark:text-white">조건에 맞는 사운드가 없어요</h3>
               <p className="mt-1 text-[11px] text-slate-400">검색어를 지우거나 다른 분류를 선택해 보세요.</p>
             </div>
           </div>

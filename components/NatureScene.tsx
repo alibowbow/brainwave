@@ -533,7 +533,7 @@ const NaturalFauna: React.FC<NaturalFaunaProps> = ({ character, index, actionSig
     <Wrapper
       type={interactive ? 'button' : undefined}
       onClick={interactive ? onSelect : undefined}
-      className={`sc-v2-character absolute ${character.className} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
+      className={`sc-v2-character absolute ${character.className} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400' : ''}`}
       style={interactive ? { background: 'transparent', border: 'none', padding: 0 } : undefined}
       role={interactive ? undefined : 'img'}
       aria-label={interactive ? `${character.alt} — 사운드 선택` : character.alt}
@@ -787,8 +787,8 @@ export const NatureScene: React.FC<Props> = ({ types, backgroundVariant, tall, f
           style={{
             left: firefly.left,
             top: firefly.top,
-            width: 12 + firefly.size * 2,
-            height: 12 + firefly.size * 2,
+            width: firefly.size,
+            height: firefly.size,
             animationDelay: firefly.delay,
             animationDuration: firefly.duration,
           }}
@@ -856,7 +856,7 @@ export const NatureScene: React.FC<Props> = ({ types, backgroundVariant, tall, f
             type={interactive ? 'button' : undefined}
             aria-label={interactive ? `${getSoundLabel(type)} 사운드 선택` : undefined}
             onClick={interactive ? () => onSelectType?.(type) : undefined}
-            className={`sc-v2-legacy absolute ${meta.motion} ${pulses[type] ? 'sc-hit' : ''} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400' : ''}`}
+            className={`sc-v2-legacy absolute ${meta.motion} ${pulses[type] ? 'sc-hit' : ''} ${selected ? 'sc-selected' : ''} ${interactive ? 'cursor-pointer rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400' : ''}`}
             style={{ left, top, animationDelay: `${index * 0.4}s`, ...(interactive ? { background: 'transparent', border: 'none', padding: 0 } : {}) }}
           >
             <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true" dangerouslySetInnerHTML={{ __html: CHARACTER_SVG[type]! }} />
@@ -874,7 +874,7 @@ export const NatureScene: React.FC<Props> = ({ types, backgroundVariant, tall, f
             type="button"
             aria-label={`${getSoundLabel(t)} 사운드 선택`}
             onClick={() => onSelectType?.(t)}
-            className={`absolute z-10 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400 ${selected ? 'sc-hot-selected' : ''}`}
+            className={`absolute z-10 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400 ${selected ? 'sc-hot-selected' : ''}`}
             style={{ left: `${hot.x}%`, top: `${hot.y}%`, width: `${hot.w}%`, height: `${hot.h}%`, background: 'transparent', border: 'none', padding: 0 }}
           />
         );

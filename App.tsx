@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { BrainCircuit, Headphones, Save, X } from 'lucide-react';
+import { BrainCircuit, Headphones, RefreshCw, Save, X } from 'lucide-react';
 import { DEFAULT_MIX_VOLUMES, defaultSoundLevel, normalizeMixVolumes, type MixVolumes } from './audioLevels';
 import { SOUND_ORDER, getWaveColor } from './audioOptions';
 import {
@@ -34,6 +34,19 @@ import {
   type AppLocation,
   type AppViewMode,
 } from './appNavigation';
+import {
+  prepareForcedRefresh,
+  stripForceUpdateNonce,
+  waitForWaitingWorker,
+  type AppUpdateStatus,
+} from './appUpdate';
+import {
+  activateWaitingPwaUpdate,
+  checkForPwaUpdate,
+  getPwaRegistration,
+  startPwaClient,
+  subscribeToPwaUpdates,
+} from './pwaClient';
 
 const NatureMode = lazy(() => import('./components/NatureMode').then((module) => ({ default: module.NatureMode })));
 const StatsDashboard = lazy(() => import('./components/StatsDashboard').then((module) => ({ default: module.StatsDashboard })));
@@ -113,6 +126,7 @@ export default function App() {
   const [visualMode, setVisualMode] = useState<VisualMode>(DEFAULT_VISUAL_MODE);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [appUpdateStatus, setAppUpdateStatus] = useState<AppUpdateStatus>('idle');
   const sessionBackgroundVariant = selectedPreset?.id === 'relax' || selectedPreset?.id === 'amb:campfire_night'
     ? 'campfire' as const
     : undefined;
@@ -156,6 +170,8 @@ export default function App() {
   const natureEndRef = useRef<number | null>(null);
   const wakeLockRef = useRef<any>(null);
   const pendingStartRef = useRef<(() => void) | null>(null);
+  const updateBusyRef = useRef(false);
+  const updateFallbackTimerRef = useRef<number | null>(null);
   const navigationRef = useRef<AppHistoryEntry>({
     activeView: 'home',
     viewMode: 'list',
@@ -675,6 +691,54 @@ export default function App() {
     }
   };
 
+  const reloadLatestApp = useCallback(async (registration: ServiceWorkerRegistration | null) => {
+    const scopeUrl = new URL(import.meta.env.BASE_URL, window.location.origin).toString();
+    const nextUrl = await prepareForcedRefresh({
+      registration,
+      scopeUrl,
+      currentUrl: window.location.href,
+    });
+    window.location.replace(nextUrl);
+  }, []);
+
+  const forceAppUpdate = useCallback(async () => {
+    if (updateBusyRef.current) return;
+    updateBusyRef.current = true;
+    setAppUpdateStatus('checking');
+
+    try {
+      if (!('serviceWorker' in navigator)) {
+        await reloadLatestApp(null);
+        return;
+      }
+
+      const scopeUrl = new URL(import.meta.env.BASE_URL, window.location.origin).toString();
+      const registration = getPwaRegistration()
+        ?? await navigator.serviceWorker.getRegistration(scopeUrl)
+        ?? null;
+
+      if (registration) {
+        await registration.update();
+        if (await waitForWaitingWorker(registration)) {
+          setAppUpdateStatus('installing');
+          await activateWaitingPwaUpdate();
+          updateFallbackTimerRef.current = window.setTimeout(() => {
+            void reloadLatestApp(registration).catch(() => {
+              updateBusyRef.current = false;
+              setAppUpdateStatus('error');
+            });
+          }, 4_000);
+          return;
+        }
+      }
+
+      await reloadLatestApp(registration);
+    } catch {
+      updateBusyRef.current = false;
+      setAppUpdateStatus('error');
+    }
+  }, [reloadLatestApp]);
+
   const handleNavigate = (view: AppView) => {
     if (viewMode === 'feedback') saveSessionLog(moodBefore ?? 3);
     navigate({ activeView: view, viewMode: 'list', immersive: false });
@@ -692,6 +756,35 @@ export default function App() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', settings.darkMode ? '#0f172a' : '#f8fafc');
     localStorage.setItem('mc_brain_settings', JSON.stringify(settings));
   }, [settings]);
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+
+    const unsubscribe = subscribeToPwaUpdates((nextSignal) => {
+      setAppUpdateStatus((current) => {
+        if (current === 'checking' || current === 'installing') return current;
+        return nextSignal === 'ready' ? 'ready' : nextSignal === 'error' ? 'error' : current;
+      });
+    });
+    startPwaClient();
+
+    const checkForUpdate = () => {
+      if (document.visibilityState !== 'visible' || updateBusyRef.current) return;
+      void checkForPwaUpdate().catch(() => undefined);
+    };
+    const onVisibilityChange = () => checkForUpdate();
+    const interval = window.setInterval(checkForUpdate, 30 * 60 * 1_000);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('online', checkForUpdate);
+
+    return () => {
+      window.clearInterval(interval);
+      unsubscribe();
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('online', checkForUpdate);
+      if (updateFallbackTimerRef.current != null) window.clearTimeout(updateFallbackTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => { localStorage.setItem('mc_brain_volumes_v2', JSON.stringify(volumes)); }, [volumes]);
   useEffect(() => { localStorage.setItem('mc_brain_favorites', JSON.stringify(favoriteIds)); }, [favoriteIds]);
@@ -713,7 +806,11 @@ export default function App() {
       version: 1,
     };
     navigationRef.current = initial;
-    window.history.replaceState(withAppHistoryEntry(window.history.state, initial), '', window.location.href);
+    window.history.replaceState(
+      withAppHistoryEntry(window.history.state, initial),
+      '',
+      stripForceUpdateNonce(window.location.href),
+    );
 
     const onPopState = (event: PopStateEvent) => {
       const entry = readAppHistoryEntry(event.state);
@@ -1056,12 +1153,14 @@ export default function App() {
               logCount={logs.length}
               presetCount={userPresets.length}
               canInstall={!!installPrompt}
+              updateStatus={appUpdateStatus}
               importMessage={importMessage}
               onToggleDarkMode={() => setSettings((current) => ({ ...current, darkMode: !current.darkMode }))}
               onToggleSoundNotice={() => setSettings((current) => ({ ...current, showSoundNotice: !current.showSoundNotice }))}
               onToggleReduceMotion={() => setSettings((current) => ({ ...current, reduceMotion: !current.reduceMotion }))}
               onDailyGoalChange={(minutes) => setSettings((current) => ({ ...current, dailyGoalMinutes: minutes }))}
               onInstall={installApp}
+              onForceUpdate={() => void forceAppUpdate()}
               onExport={exportData}
               onImport={importData}
               onClearHistory={clearHistory}
@@ -1071,6 +1170,17 @@ export default function App() {
         )}
       </AppShell>
       {floating}
+
+      {appUpdateStatus === 'ready' && (
+        <div className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-1/2 z-[140] flex w-[min(calc(100%-1.5rem),29rem)] -translate-x-1/2 items-center gap-3 rounded-2xl border border-amber-200/70 bg-[#fffaf0]/95 px-3 py-2.5 text-slate-800 shadow-[0_18px_50px_rgba(53,43,22,0.22)] backdrop-blur-xl dark:border-amber-200/15 dark:bg-[#252117]/95 dark:text-amber-50 sm:bottom-6">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-200/10 dark:text-amber-200"><RefreshCw size={16} /></span>
+          <div className="min-w-0 flex-1">
+            <strong className="block text-xs font-black">새 버전이 준비됐어요</strong>
+            <span className="block truncate text-[10px] text-slate-500 dark:text-amber-100/55">기록은 그대로 두고 앱만 교체합니다.</span>
+          </div>
+          <button type="button" onClick={() => void forceAppUpdate()} className="min-h-10 shrink-0 rounded-xl bg-amber-300 px-3 text-[11px] font-black text-amber-950 transition-colors hover:bg-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300">업데이트</button>
+        </div>
+      )}
 
       {immersive && viewMode === 'player' && playbackStatus !== 'idle' && (
         <Suspense fallback={null}>

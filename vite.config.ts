@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
       plugins: [
         react(),
         VitePWA({
-          registerType: 'autoUpdate',
+          registerType: 'prompt',
           includeAssets: ['icon.svg', 'apple-touch-icon.png', 'favicon-32x32.png'],
           manifest: {
             name: 'Brainwave · Ritual Studio',
@@ -37,6 +37,9 @@ export default defineConfig(({ mode }) => {
             ],
           },
           workbox: {
+            cleanupOutdatedCaches: true,
+            clientsClaim: false,
+            skipWaiting: false,
             // Audio is deliberately absent: nature recordings are fetched only
             // when their layer is selected, then retained by the runtime cache.
             globPatterns: ['**/*.{js,css,html,svg,png,webp,ico,webmanifest}'],

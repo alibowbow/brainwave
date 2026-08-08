@@ -1,4 +1,7 @@
 ﻿export type BrainWaveType = 'alpha' | 'beta' | 'gamma' | 'theta' | 'delta';
+export type VisualMode = 'nature' | 'graphics';
+
+export const DEFAULT_VISUAL_MODE: VisualMode = 'nature';
 export type BackgroundSoundType =
   | 'none'
   | 'rain'

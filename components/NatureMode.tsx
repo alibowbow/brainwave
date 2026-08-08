@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Leaf, LibraryBig, Maximize2, Minimize2 } from 'lucide-react';
+import { Leaf, LibraryBig } from 'lucide-react';
 import { BackgroundSoundType, NatureMix, NATURE_MIXES } from '../types';
 import { SoundLayer } from '../services/audioEngine';
 import { NatureScene } from './NatureScene';
@@ -7,6 +7,7 @@ import { ComposerSheet } from './nature/ComposerSheet';
 import { SoundDrawer } from './nature/SoundDrawer';
 import { TransportControls, ActiveSoundList, RecommendChips, MixRail } from './nature/controls';
 import { getRecommendations } from './nature/recommend';
+import { VisualModeSwitch } from './VisualModeSwitch';
 
 interface Props {
   layers: SoundLayer[];
@@ -50,7 +51,7 @@ export const NatureMode: React.FC<Props> = ({
   const [selected, setSelected] = useState<BackgroundSoundType | null>(null);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [sceneOnly, setSceneOnly] = useState(false);
+  const [sceneOnly, setSceneOnly] = useState(true);
   const [viewerControlsVisible, setViewerControlsVisible] = useState(true);
   const viewerRootRef = useRef<HTMLDivElement>(null);
   const viewerControlsTimerRef = useRef<number | null>(null);
@@ -67,7 +68,12 @@ export const NatureMode: React.FC<Props> = ({
   const revealViewerControls = useCallback(() => {
     setViewerControlsVisible(true);
     if (viewerControlsTimerRef.current != null) window.clearTimeout(viewerControlsTimerRef.current);
-    viewerControlsTimerRef.current = window.setTimeout(() => setViewerControlsVisible(false), 2600);
+    viewerControlsTimerRef.current = window.setTimeout(() => setViewerControlsVisible(false), 3600);
+  }, []);
+
+  const holdViewerControls = useCallback(() => {
+    setViewerControlsVisible(true);
+    if (viewerControlsTimerRef.current != null) window.clearTimeout(viewerControlsTimerRef.current);
   }, []);
 
   const enterSceneOnly = () => {
@@ -100,6 +106,7 @@ export const NatureMode: React.FC<Props> = ({
 
   useEffect(() => {
     if (!sceneOnly) return;
+    revealViewerControls();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKeyDown = (event: KeyboardEvent) => {
@@ -119,7 +126,7 @@ export const NatureMode: React.FC<Props> = ({
       document.removeEventListener('fullscreenchange', onFullscreenChange);
       document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
     };
-  }, [exitSceneOnly, sceneOnly]);
+  }, [exitSceneOnly, revealViewerControls, sceneOnly]);
 
   useEffect(() => () => {
     if (viewerControlsTimerRef.current != null) window.clearTimeout(viewerControlsTimerRef.current);
@@ -153,14 +160,11 @@ export const NatureMode: React.FC<Props> = ({
       <div className="pointer-events-none absolute left-4 top-4 hidden rounded-full border border-white/12 bg-black/22 px-3 py-1.5 text-[10px] font-bold tracking-[0.12em] text-white/76 backdrop-blur-md sm:block">
         장면 속 오브젝트를 눌러 믹스
       </div>
-      <button
-        type="button"
-        onClick={enterSceneOnly}
-        className="absolute right-4 top-4 z-40 flex min-h-11 items-center gap-2 rounded-xl border border-white/70 bg-white/90 px-4 text-xs font-bold text-slate-950 shadow-lg backdrop-blur-md transition-colors hover:bg-white"
-        aria-label="자연 애니메이션만 전체 화면으로 보기"
-      >
-        <Maximize2 size={15} /> 자연 화면만 보기
-      </button>
+      <VisualModeSwitch
+        value="graphics"
+        onChange={(mode) => { if (mode === 'nature') enterSceneOnly(); }}
+        className="absolute left-1/2 top-4 z-40 -translate-x-1/2"
+      />
       <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
         <span className="rounded-full border border-white/12 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/95 shadow-lg backdrop-blur-md">
           <Leaf size={11} className="inline -mt-0.5 mr-1" />
@@ -191,15 +195,17 @@ export const NatureMode: React.FC<Props> = ({
             fill
             subscribeEvents={subscribeEvents}
           />
-          <button
-            type="button"
-            onClick={exitSceneOnly}
-            onFocus={revealViewerControls}
-            className={`nature-viewer-exit absolute left-[max(16px,env(safe-area-inset-left))] top-[max(16px,env(safe-area-inset-top))] z-50 flex min-h-11 items-center gap-2 rounded-xl border border-white/20 bg-black/38 px-3.5 text-xs font-bold text-white shadow-xl backdrop-blur-md transition-all duration-300 ${viewerControlsVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 pointer-events-none opacity-0'}`}
-            aria-label="자연 장면 전용 화면 닫기"
+          <div
+            onFocusCapture={holdViewerControls}
+            onBlurCapture={revealViewerControls}
+            className={`absolute left-1/2 top-[max(16px,env(safe-area-inset-top))] z-50 -translate-x-1/2 transition-[opacity,transform] duration-300 ${viewerControlsVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 pointer-events-none opacity-0'}`}
           >
-            <Minimize2 size={16} /> 장면에서 나오기
-          </button>
+            <VisualModeSwitch
+              value="nature"
+              onChange={(mode) => { if (mode === 'graphics') exitSceneOnly(); }}
+              quiet
+            />
+          </div>
         </div>
       ) : (
         <div className="relative flex min-h-[calc(100dvh-68px)] flex-col gap-3 p-3 pb-0 sm:p-4 sm:pb-0 lg:grid lg:min-h-[calc(100dvh-88px)] lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-4 lg:p-4">

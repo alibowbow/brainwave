@@ -15,7 +15,7 @@ import {
   Volume2,
   Wind,
 } from 'lucide-react';
-import { type BackgroundSoundType, type BrainWaveType, getBrainWaveLabel } from '../types';
+import { type BackgroundSoundType, type BrainWaveType, type VisualMode, getBrainWaveLabel } from '../types';
 import { WAVE_ORDER, getSoundLabel, getWaveShortLabel, getWaveColor } from '../audioOptions';
 import type { SoundLayer, ToneMode } from '../services/audioEngine';
 import type { MixVolumes } from '../audioLevels';
@@ -25,6 +25,7 @@ import { VolumeMixer } from './VolumeMixer';
 import { BreathingGuide } from './BreathingGuide';
 import { AuraVisualizer } from './AuraVisualizer';
 import { NatureScene } from './NatureScene';
+import { VisualModeSwitch } from './VisualModeSwitch';
 
 interface PlayerProps {
   sessionName: string;
@@ -49,6 +50,8 @@ interface PlayerProps {
   onToggleBrainwave: () => void;
   toneMode: ToneMode;
   onToneModeChange: (mode: ToneMode) => void;
+  visualMode: VisualMode;
+  onVisualModeChange: (mode: VisualMode) => void;
   getAnalyser: () => AnalyserNode | null;
   onImmersive: () => void;
 }
@@ -82,6 +85,8 @@ export const Player: React.FC<PlayerProps> = ({
   onToggleBrainwave,
   toneMode,
   onToneModeChange,
+  visualMode,
+  onVisualModeChange,
   getAnalyser,
   onImmersive,
 }) => {
@@ -107,18 +112,18 @@ export const Player: React.FC<PlayerProps> = ({
           <p className="text-[9px] font-black tracking-[0.17em] text-[#8d99ff]">NOW PLAYING</p>
           <h1 className="mt-0.5 max-w-[40vw] truncate text-sm font-black tracking-[-0.02em] sm:max-w-md">{sessionName}</h1>
         </div>
-        <button type="button" onClick={onImmersive} className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
+        <button type="button" onClick={onImmersive} aria-label="전체 화면 보기" className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
           <Maximize2 size={15} /><span className="hidden sm:inline">전체 화면</span>
         </button>
       </header>
 
       <main className="relative z-10 mx-auto grid w-full max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7">
         <section className="relative min-h-[540px] overflow-hidden rounded-[30px] border border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]">
-          <div className="absolute inset-0 opacity-90">
+          <div className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
             <NatureScene types={activeLayers.map((layer) => layer.type)} fill />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#050914]/36 via-[#050914]/38 to-[#050914]/90" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(3,6,14,0.32)_72%,rgba(3,6,14,0.72)_100%)]" />
+          <div className={`absolute inset-0 transition-colors duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/82' : 'bg-gradient-to-b from-[#050914]/42 via-[#050914]/46 to-[#050914]/92'}`} />
+          {visualMode === 'graphics' ? <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(3,6,14,0.32)_72%,rgba(3,6,14,0.72)_100%)]" /> : null}
 
           <div className="relative flex min-h-[540px] flex-col items-center justify-between p-5 sm:min-h-[650px] sm:p-8 lg:min-h-[calc(100dvh-134px)]">
             <div className="flex w-full items-center justify-between">
@@ -131,13 +136,23 @@ export const Player: React.FC<PlayerProps> = ({
               </div>
             </div>
 
-            <div className="my-auto flex flex-col items-center">
+            <VisualModeSwitch
+              value={visualMode}
+              onChange={onVisualModeChange}
+              className="absolute left-1/2 top-[74px] z-20 -translate-x-1/2 sm:top-6"
+            />
+
+            <div className="my-auto flex flex-col items-center pt-16 sm:pt-0">
               <div className="relative grid h-[250px] w-[250px] place-items-center sm:h-[310px] sm:w-[310px]">
-                <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={auraColor} className="absolute inset-0 h-full w-full" />
-                <div className="absolute inset-[18%] rounded-full border border-white/10 bg-black/18 shadow-[inset_0_0_45px_rgba(255,255,255,0.025)] backdrop-blur-md" />
-              <div className="relative z-10 text-center">
+                {visualMode === 'graphics' ? (
+                  <>
+                    <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={auraColor} className="absolute inset-0 h-full w-full" />
+                    <div className="absolute inset-[18%] rounded-full border border-white/10 bg-black/18 shadow-[inset_0_0_45px_rgba(255,255,255,0.025)] backdrop-blur-md" />
+                  </>
+                ) : null}
+                <div className={`relative z-10 text-center ${visualMode === 'nature' ? 'rounded-3xl border border-white/12 bg-[#06100c]/42 px-6 py-4 shadow-[0_16px_48px_rgba(0,0,0,0.24)] backdrop-blur-sm' : ''}`}>
                   <div className="text-[49px] font-extralight tabular-nums tracking-[-0.065em] drop-shadow-lg sm:text-[62px]">{formatTime(timeLeft)}</div>
-                  <p className="mt-2 text-[10px] font-black tracking-[0.16em] text-white/45">REMAINING</p>
+                  <p className={`mt-2 text-[10px] font-black tracking-[0.16em] ${visualMode === 'nature' ? 'text-white/70' : 'text-white/45'}`}>REMAINING</p>
                   {intention ? <p className="mx-auto mt-3 max-w-[220px] truncate text-[11px] font-bold text-white/58">“{intention}”</p> : null}
                 </div>
                 <BreathingGuide active={breathingOn && isPlaying} />
@@ -155,7 +170,7 @@ export const Player: React.FC<PlayerProps> = ({
             </div>
 
             <div className="w-full">
-              <div className="mb-4 h-1 overflow-hidden rounded-full bg-white/10" aria-label={`세션 ${Math.round(progress * 100)}% 진행`}><div className="h-full rounded-full bg-gradient-to-r from-[#7c89ff] to-[#b496ff] transition-[width] duration-500" style={{ width: `${progress * 100}%` }} /></div>
+              <div className="mb-4 h-1 overflow-hidden rounded-full bg-white/10" aria-label={`세션 ${Math.round(progress * 100)}% 진행`}><div className={`h-full rounded-full transition-[width] duration-500 ${visualMode === 'nature' ? 'bg-gradient-to-r from-emerald-300 to-lime-200' : 'bg-gradient-to-r from-[#7c89ff] to-[#b496ff]'}`} style={{ width: `${progress * 100}%` }} /></div>
               <div className="flex gap-2 overflow-x-auto scrollbar-hide">
                 {activeLayers.length ? activeLayers.map((layer) => (
                   <span key={layer.type} className="shrink-0 rounded-full border border-white/10 bg-black/22 px-3 py-1.5 text-[10px] font-black text-white/62 backdrop-blur-md">{getSoundLabel(layer.type)}</span>

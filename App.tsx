@@ -11,6 +11,7 @@ import {
 import { BinauralEngine, type SoundLayer, type ToneMode } from './services/audioEngine';
 import {
   NATURE_MIXES,
+  DEFAULT_VISUAL_MODE,
   WAVE_FREQS,
   getBrainWaveLabel,
   type AmbiencePreset,
@@ -20,6 +21,7 @@ import {
   type NatureMix,
   type SessionLog,
   type SessionPreset,
+  type VisualMode,
 } from './types';
 import { AppShell, type AppView } from './components/app/AppShell';
 import { HomeDashboard } from './components/app/HomeDashboard';
@@ -100,6 +102,7 @@ export default function App() {
   const [saveOpen, setSaveOpen] = useState(false);
   const [presetNameDraft, setPresetNameDraft] = useState('');
   const [immersive, setImmersive] = useState(false);
+  const [visualMode, setVisualMode] = useState<VisualMode>(DEFAULT_VISUAL_MODE);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
 
@@ -172,6 +175,7 @@ export default function App() {
       sounds: snapshot.layers,
     });
     beginRun(seconds);
+    setVisualMode(DEFAULT_VISUAL_MODE);
     setPlaybackStatus('running');
     setViewMode('player');
     setActiveView('home');
@@ -920,6 +924,8 @@ export default function App() {
               onToggleBrainwave={() => setBrainwaveEnabled((value) => !value)}
               toneMode={toneMode}
               onToneModeChange={handleToneModeChange}
+              visualMode={visualMode}
+              onVisualModeChange={setVisualMode}
               getAnalyser={() => engine.getAnalyser()}
               onImmersive={() => setImmersive(true)}
             />
@@ -998,7 +1004,10 @@ export default function App() {
             isPlaying={playbackStatus === 'running'}
             sessionName={selectedPreset?.name ?? '세션'}
             color={brainwaveEnabled ? getWaveColor(currentBrainWave) : '#34d399'}
+            visualMode={visualMode}
+            activeLayers={activeLayers}
             getAnalyser={() => engine.getAnalyser()}
+            onVisualModeChange={setVisualMode}
             onPlay={resumeSession}
             onPause={pauseSession}
             onStop={() => stopSession({ reflect: true, goHome: true })}

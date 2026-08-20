@@ -1,5 +1,6 @@
 import React, { useDeferredValue, useMemo, useState } from 'react';
 import {
+  ArrowRight,
   Check,
   Clock3,
   Headphones,
@@ -22,7 +23,8 @@ import {
   type SessionPreset,
 } from '../../types';
 import { getSoundLabel } from '../../audioOptions';
-import { currentStreak, getAmbienceVisual, getPresetVisual, minutesOnDate } from './catalog';
+import { currentStreak, getAmbienceVisual, getGreeting, getPresetVisual, minutesOnDate } from './catalog';
+import { getAdaptiveRecommendation } from './adaptiveRecommendation';
 import { displayPresetName } from './homeLaunchers';
 
 export interface LastSessionSummary {
@@ -169,6 +171,13 @@ export const HomeDashboard: React.FC<Props> = ({
   const streak = currentStreak(logs, now);
   const progress = Math.min(100, Math.round((todayMinutes / Math.max(1, dailyGoalMinutes)) * 100));
   const dayLabel = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' }).format(now);
+  const recommendation = useMemo(() => getAdaptiveRecommendation({
+    date: now,
+    logs,
+    dailyGoalMinutes,
+    todayMinutes,
+  }), [dailyGoalMinutes, logs, now, todayMinutes]);
+  const recommendedVisual = getPresetVisual(recommendation.primary);
 
   const results = useMemo(() => HOME_CATALOG.filter((entry) => {
     const matchesKind = filter === 'all'
@@ -196,10 +205,10 @@ export const HomeDashboard: React.FC<Props> = ({
         <div>
           <p className="text-[10px] font-black tracking-[0.18em] text-slate-500 dark:text-primary-400">{dayLabel} · SOUND HOME</p>
           <h1 className="mt-2 max-w-3xl text-[32px] font-semibold leading-[1.12] tracking-[-0.045em] text-slate-950 sm:text-[42px] dark:text-white">
-            당신의 하루를 위한 사운드
+            {getGreeting(now)}
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-            집중 루틴부터 자연 장면, 직접 조합한 믹스까지 이 화면에서 바로 고르고 편집하세요.
+            시간대와 오늘의 목표, 최근 세션 만족도를 함께 보고 지금 이어가기 좋은 리듬을 골랐어요.
           </p>
         </div>
         <button
@@ -211,7 +220,68 @@ export const HomeDashboard: React.FC<Props> = ({
         </button>
       </section>
 
-      <section className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]" aria-label="오늘의 진행과 최근 구성">
+      <section className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.7fr)]" aria-labelledby="adaptive-pick-title">
+        <article className={`relative isolate min-h-[310px] overflow-hidden rounded-[28px] border border-slate-800 bg-gradient-to-br ${recommendedVisual.gradient} p-5 text-white shadow-[0_24px_70px_rgba(15,23,42,0.24)] sm:p-7 dark:border-white/10`}>
+          {recommendedVisual.artwork ? (
+            <img
+              src={artworkUrl(recommendedVisual.artwork)}
+              alt=""
+              width="1000"
+              height="400"
+              className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+            />
+          ) : null}
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/94 via-slate-950/76 to-slate-950/24" aria-hidden="true" />
+          <div className="flex h-full min-h-[260px] max-w-3xl flex-col">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-white/16 bg-white/8 px-3 py-1.5 text-[9px] font-black tracking-[0.16em] text-primary-200 backdrop-blur-sm">TODAY'S PICK</span>
+              {recommendation.personalized ? <span className="rounded-full bg-emerald-300/16 px-3 py-1.5 text-[9px] font-black tracking-[0.1em] text-emerald-200">최근 만족도 반영</span> : null}
+            </div>
+            <p className="mt-6 text-[10px] font-black tracking-[0.16em] text-white/54">{recommendedVisual.eyebrow}</p>
+            <h2 id="adaptive-pick-title" className="mt-1 text-[30px] font-semibold tracking-[-0.045em] sm:text-[40px]">{displayPresetName(recommendation.primary.name)}</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-200/80">{recommendation.reason}</p>
+            <div className="mt-4 flex flex-wrap gap-2" aria-label="추천 근거">
+              {recommendation.context.map((item) => <span key={item} className="rounded-full border border-white/12 bg-black/18 px-3 py-1.5 text-[10px] font-bold text-white/72 backdrop-blur-sm">{item}</span>)}
+            </div>
+            <div className="mt-auto flex flex-col gap-2 pt-7 sm:flex-row">
+              <button type="button" onClick={() => onQuickStartPreset(recommendation.primary)} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-5 text-sm font-black text-slate-950 transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                <Play size={16} fill="currentColor" /> {recommendation.primary.defaultDurationMinutes}분 바로 시작
+              </button>
+              <button type="button" onClick={() => onOpenPreset(recommendation.primary)} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/16 bg-white/8 px-5 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/12">
+                <SlidersHorizontal size={16} /> 세부 조절
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <aside className="flex min-h-[310px] flex-col rounded-[28px] border border-slate-200 bg-white/54 p-5 dark:border-white/10 dark:bg-white/[0.035]" aria-label="다른 추천 루틴">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[9px] font-black tracking-[0.16em] text-primary-500">ALTERNATIVES</p>
+              <h2 className="mt-1 text-lg font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">지금 고르기 좋은 다른 리듬</h2>
+            </div>
+            <Sparkles size={17} className="mt-1 shrink-0 text-primary-500" />
+          </div>
+          <div className="mt-5 grid gap-2">
+            {recommendation.alternatives.map((preset) => {
+              const visual = getPresetVisual(preset);
+              return (
+                <button key={preset.id} type="button" onClick={() => onQuickStartPreset(preset)} className="group flex min-h-[82px] items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary-300 hover:shadow-md dark:border-white/8 dark:bg-white/[0.035] dark:hover:border-primary-400/40">
+                  <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br ${visual.gradient} text-white shadow-sm`}><Play size={15} fill="currentColor" /></span>
+                  <span className="min-w-0 flex-1">
+                    <strong className="block truncate text-sm font-bold text-slate-900 dark:text-white">{displayPresetName(preset.name)}</strong>
+                    <span className="mt-1 block truncate text-[10px] font-semibold text-slate-500 dark:text-slate-400">{visual.eyebrow} · {preset.defaultDurationMinutes}분</span>
+                  </span>
+                  <ArrowRight size={15} className="shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-primary-500 dark:text-slate-600" />
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-auto pt-4 text-[10px] leading-relaxed text-slate-400">추천 계산은 계정이나 서버 없이 이 기기의 최근 세션 기록만 사용합니다.</p>
+        </aside>
+      </section>
+
+      <section className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]" aria-label="오늘의 진행과 최근 구성">
         <article className="flex min-h-[94px] items-center gap-4 rounded-2xl border border-slate-200 bg-white/42 px-4 py-3 dark:border-white/10 dark:bg-white/[0.035]">
           <span className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full bg-primary-50 text-sm font-black tabular-nums text-primary-700 dark:bg-primary-500/15 dark:text-primary-300">
             {progress}%

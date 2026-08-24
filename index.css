@@ -130,7 +130,6 @@ h1, h2, h3, h4 {
   .scene-motion-sway { animation: sceneSway 4.5s ease-in-out infinite; transform-origin: bottom center; }
   .scene-motion-swim { animation: sceneSwim 16s ease-in-out infinite; }
   .scene-motion-flicker { animation: sceneFlicker 0.9s ease-in-out infinite; transform-origin: bottom center; }
-  .scene-motion-hop { animation: sceneHop 6.5s ease-in-out infinite; transform-origin: bottom center; }
   .scene-motion-pendulum { animation: scenePendulum 4.2s ease-in-out infinite; transform-origin: top center; }
   .scene-motion-peck { animation: scenePeck 4s linear infinite; transform-origin: 65% 55%; }
 }
@@ -146,15 +145,6 @@ h1, h2, h3, h4 {
   30% { transform: scale(1.025, 0.975); }
   55% { transform: scale(0.98, 1.02); }
   80% { transform: scale(1.015, 0.99); }
-}
-/* Mostly still, then a quick double hop. */
-@keyframes sceneHop {
-  0%, 78%, 100% { transform: translateY(0) scale(1, 1); }
-  80% { transform: translateY(-1px) scale(1.06, 0.94); }
-  84% { transform: translateY(-10px) scale(0.97, 1.04); }
-  88% { transform: translateY(0) scale(1.04, 0.96); }
-  91% { transform: translateY(-6px) scale(0.99, 1.02); }
-  94% { transform: translateY(0) scale(1, 1); }
 }
 @keyframes scenePendulum {
   0%, 100% { transform: rotate(-6deg); }
@@ -520,7 +510,6 @@ input[type='range']:disabled::-moz-range-thumb {
 .sc-v2-bird { left: 17%; top: 10%; width: 72px; height: 72px; }
 .sc-v2-owl { right: 13%; top: 16%; width: 68px; height: 68px; }
 .sc-v2-scops { right: 14%; top: 17%; width: 66px; height: 66px; }
-.sc-v2-frog { left: 23%; bottom: 2%; width: 76px; height: 76px; }
 .sc-v2-seabird { left: 62%; top: 7%; width: 64px; height: 64px; }
 .sc-v2-cuckoo { left: 62%; top: 17%; width: 64px; height: 64px; }
 .sc-v2-woodpecker { right: 7%; top: 14%; width: 66px; height: 66px; }
@@ -807,7 +796,6 @@ input[type='range']:disabled::-moz-range-thumb {
   .sc-v2-plate { animation: scV2PlateDrift 24s ease-in-out infinite alternate; }
   .sc-v2-bird { animation: scV2BirdDrift 22s ease-in-out infinite; }
   .sc-v2-owl, .sc-v2-scops { animation: scV2PerchDrift 28s ease-in-out infinite; }
-  .sc-v2-frog { animation: scV2FrogDrift 24s ease-in-out infinite; }
   .sc-v2-seabird { animation: scV2SeabirdFlight 19s ease-in-out infinite; }
   .sc-v2-cuckoo { animation: scV2PerchDrift 30s ease-in-out infinite reverse; }
   .sc-v2-woodpecker { animation: scV2PerchDrift 24s ease-in-out infinite; }
@@ -873,11 +861,6 @@ input[type='range']:disabled::-moz-range-thumb {
   0%, 18%, 100% { transform: translate3d(0, 0, 0) rotate(-0.12deg); }
   38%, 52% { transform: translate3d(2px, -2px, 0) rotate(0.18deg); }
   72%, 84% { transform: translate3d(-1px, -1px, 0) rotate(-0.16deg); }
-}
-@keyframes scV2FrogDrift {
-  0%, 20%, 100% { transform: translate3d(0, 0, 0); }
-  40%, 54% { transform: translate3d(2px, -1px, 0); }
-  74%, 88% { transform: translate3d(-1px, 0, 0); }
 }
 @keyframes scV2SeabirdFlight { 0%, 100% { transform: translate3d(-7px, 2px, 0) rotate(-1deg); } 28% { transform: translate3d(16px, -7px, 0) rotate(1deg); } 54% { transform: translate3d(4px, -2px, 0) rotate(-.4deg); } 78% { transform: translate3d(-14px, -6px, 0) rotate(.7deg); } }
 @keyframes scV2DuckDrift { 0%, 100% { transform: translate3d(-5px, 0, 0); } 36%, 48% { transform: translate3d(10px, -1px, 0); } 72%, 84% { transform: translate3d(2px, 1px, 0); } }

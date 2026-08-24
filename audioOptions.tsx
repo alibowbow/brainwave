@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  CloudRain, CloudLightning, Droplets, Mountain, Waves, Flame, Wind, Bird, Bug, Turtle,
+  CloudRain, CloudLightning, Droplets, Mountain, Waves, Flame, Wind, Bird, Bug,
   Feather, CloudMoon, Bell, Disc3, Orbit, Snowflake, Sailboat, Fan, Activity, AudioLines, Volume1,
   Sunrise, Hammer, Egg, Gem, Tent, Blinds, Droplet, Zap, HeartPulse, AudioWaveform, Sprout,
   Landmark, Shell, Fish, MoonStar,
@@ -13,7 +13,7 @@ export const SOUND_GROUPS: { label: string; sounds: BackgroundSoundType[] }[] = 
   { label: '환경음', sounds: ['forest', 'bamboo', 'night', 'ruralCrickets', 'cave'] },
   { label: '날씨', sounds: ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder', 'blizzard'] },
   { label: '물', sounds: ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea'] },
-  { label: '동물', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl', 'scops', 'cicadas', 'frogs', 'ducks'] },
+  { label: '동물', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl', 'scops', 'cicadas', 'ducks'] },
   { label: '오브젝트', sounds: ['fire', 'temple', 'chimes', 'bowl', 'fan'] },
   { label: '추상음', sounds: ['drone', 'heartbeat', 'brown', 'white', 'pink'] },
 ];
@@ -50,7 +50,6 @@ export const getSoundIcon = (type: BackgroundSoundType) => {
     case 'ducks': return <Egg size={20} />;
     case 'cave': return <Gem size={20} />;
     case 'cicadas': return <Bug size={20} />;
-    case 'frogs': return <Turtle size={20} />;
     case 'owl': return <Feather size={20} />;
     case 'night': return <CloudMoon size={20} />;
     case 'ruralCrickets': return <Bug size={20} />;
@@ -93,7 +92,6 @@ export const getSoundLabel = (type: BackgroundSoundType) => {
     case 'ducks': return '오리';
     case 'cave': return '동굴';
     case 'cicadas': return '매미';
-    case 'frogs': return '개구리';
     case 'owl': return '부엉이';
     case 'night': return '밤 벌레';
     case 'ruralCrickets': return '시골 풀벌레';

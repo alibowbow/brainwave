@@ -860,7 +860,6 @@ export class BinauralEngine {
       case 'ducks': this.startDucks(dest, bucket); break;
       case 'cave': this.startCave(dest, bucket); break;
       case 'cicadas': this.startCicadas(dest, bucket); break;
-      case 'frogs': this.startFrogs(dest, bucket); break;
       case 'owl': this.startOwl(dest, bucket); break;
       case 'night': this.startCrickets(dest, bucket); break;
       // The user's rural field recording is sample-only. Do not substitute the generic night-insect generator.
@@ -1580,85 +1579,6 @@ export class BinauralEngine {
     voice(3150, 92, 0.053, -0.62, 0.9);
     voice(3920, 117, 0.071, 0.1, 1);
     voice(4780, 139, 0.043, 0.68, 0.72);
-  }
-
-  // --- FROGS (pulsed croaks scattered around a pond) ---
-  private startFrogs(dest: AudioNode, bucket: Bucket) {
-    if (!this.ctx || !this.pinkNoiseBuffer || !this.brownNoiseBuffer) return;
-
-    // Quiet pond body keeps the scene alive between calls without turning it
-    // into another insect drone.
-    const pond = this.noiseSource(this.brownNoiseBuffer)!;
-    const pondLp = this.ctx.createBiquadFilter();
-    pondLp.type = 'lowpass'; pondLp.frequency.value = 320;
-    const pondGain = this.ctx.createGain();
-    pondGain.gain.value = 0.18;
-    pond.connect(pondLp).connect(pondGain).connect(dest);
-    pond.start();
-    this.register(bucket, pond);
-
-    // A croak is a fast train of noise grains ("rrr-ribbit") through a resonant
-    // band — the summed gain bumps give the creaky pulse texture, far more
-    // frog-like than an amplitude-modulated tone (which read as a duck/kazoo).
-    const croak = (t0: number, pan: number) => {
-      if (!this.ctx || !this.pinkNoiseBuffer) return;
-      const out = this.makePan(pan, dest);
-      const src = this.ctx.createBufferSource();
-      src.buffer = this.pinkNoiseBuffer;
-      const bp = this.ctx.createBiquadFilter();
-      bp.type = 'bandpass';
-      const centerF = 420 + Math.random() * 380;
-      bp.frequency.setValueAtTime(centerF, t0);
-      bp.Q.value = 1.4 + Math.random() * 1.1;
-      const g = this.ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t0);
-      src.connect(bp).connect(g).connect(out);
-
-      const body = this.ctx.createOscillator();
-      body.type = Math.random() < 0.5 ? 'triangle' : 'sine';
-      const bodyF = 135 + Math.random() * 90;
-      body.frequency.setValueAtTime(bodyF, t0);
-      const bodyEnv = this.ctx.createGain();
-      bodyEnv.gain.setValueAtTime(0.0001, t0);
-      const throat = this.ctx.createBiquadFilter();
-      throat.type = 'lowpass'; throat.frequency.value = 520;
-      body.connect(bodyEnv).connect(throat).connect(out);
-
-      const grains = 8 + Math.floor(Math.random() * 9);
-      const rate = 0.019 + Math.random() * 0.01;
-      let t = t0;
-      for (let i = 0; i < grains; i++) {
-        const gd = rate * 0.92;
-        const taper = i > grains - 3 ? 0.55 : 1;
-        g.gain.setValueAtTime(0.05, t);
-        g.gain.linearRampToValueAtTime(5.4 * taper, t + gd * 0.35);
-        g.gain.exponentialRampToValueAtTime(0.05, t + gd);
-        bodyEnv.gain.setValueAtTime(0.003, t);
-        bodyEnv.gain.linearRampToValueAtTime(0.46 * taper, t + gd * 0.3);
-        bodyEnv.gain.exponentialRampToValueAtTime(0.003, t + gd);
-        t += rate;
-      }
-      bp.frequency.linearRampToValueAtTime(centerF * 1.35, t); // "ribbit" lift
-      body.frequency.exponentialRampToValueAtTime(bodyF * 0.78, t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-      bodyEnv.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-      this.startNoiseBurst(src, t0, t + 0.08 - t0);
-      body.start(t0); body.stop(t + 0.08);
-      this.register(bucket, src, true);
-      this.register(bucket, body, true);
-    };
-
-    const loop = () => {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      this.emitEvent('frogs');
-      const pan = Math.random() * 1.6 - 0.8;
-      croak(t, pan);
-      if (Math.random() < 0.6) croak(t + 0.33, pan);
-      if (Math.random() < 0.45) croak(t + 0.6 + Math.random() * 0.4, -pan); // answer from the other side
-      this.schedule(bucket, loop, 650 + Math.random() * 1550);
-    };
-    loop();
   }
 
   // --- OWL (soft distant hoots) ---

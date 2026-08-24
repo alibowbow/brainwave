@@ -24,7 +24,7 @@ interface Props {
   selectedType?: BackgroundSoundType | null;
   onSelectType?: (type: BackgroundSoundType) => void;
   /** Engine hookup: fires when a sound makes a salient noise, so the matching
-      object reacts in sync (frog croak → call clip, thunder → flash). */
+      object reacts in sync (sound event → call clip, thunder → flash). */
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
@@ -293,31 +293,6 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
     actionProbability: 0.14,
     className: 'sc-v2-scops',
     alt: '밤의 소쩍새',
-  },
-  frogs: {
-    id: 'frog',
-    atlases: {
-      idle: { path: 'images/nature/motion/pond-frog-behavior-a-v3.webp', columns: 5, rows: 5 },
-      action: { path: 'images/nature/motion/pond-frog-behavior-b-v3.webp', columns: 5, rows: 5 },
-    },
-    microClips: [
-      { atlas: 'idle', frames: [0, 1, 2, 3, 4, 0], frameDurations: [260, 240, 300, 260, 280, 340] },
-      { atlas: 'idle', frames: [5, 6, 7, 8, 9, 0], frameDurations: [250, 190, 230, 210, 270, 350] },
-      { atlas: 'idle', frames: [10, 11, 12, 13, 14, 0], frameDurations: [270, 250, 310, 260, 280, 360] },
-      { atlas: 'idle', frames: [15, 16, 17, 18, 19, 0], frameDurations: [280, 250, 320, 260, 290, 370] },
-      { atlas: 'idle', frames: [20, 21, 22, 23, 24, 0], frameDurations: [270, 240, 300, 250, 280, 360] },
-      { atlas: 'action', frames: [15, 16, 17, 18, 19, 0], frameDurations: [260, 230, 290, 240, 270, 370] },
-    ],
-    actionClips: [
-      { atlas: 'action', frames: [0, 1, 2, 3, 4, 0], frameDurations: [250, 230, 280, 250, 290, 370] },
-      { atlas: 'action', frames: [5, 6, 7, 8, 9, 0], frameDurations: [230, 210, 320, 280, 250, 400] },
-      { atlas: 'action', frames: [10, 11, 12, 13, 14, 0], frameDurations: [260, 240, 300, 250, 280, 380] },
-      { atlas: 'action', frames: [20, 21, 22, 23, 24, 0], frameDurations: [250, 230, 300, 250, 280, 390] },
-    ],
-    restRange: [4200, 9500],
-    actionProbability: 0.17,
-    className: 'sc-v2-frog',
-    alt: '이끼 낀 돌 위의 개구리',
   },
   seabirds: makeFiveByFiveNpc({
     id: 'seabird', asset: 'seabird', className: 'sc-v2-seabird', alt: '해변 위를 활강하는 바닷새',

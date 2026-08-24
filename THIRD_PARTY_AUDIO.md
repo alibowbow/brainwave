@@ -117,7 +117,7 @@ The 24 lazy-loaded files total **9,474,217 bytes** (below the 10 MiB checked-in 
 - Ocean waves use `oceanRibeira`; pebbles and seabirds reuse it only as a lower-level shore bed while their procedural detail remains prominent.
 - Fire and forest use their matching recordings.
 - Bamboo uses a reduced `mountainWind` bed. Night uses a reduced `nightCrickets` bed; `ruralCrickets` uses only the user-provided field recording; no generated night-insect substitute is mixed in. Cicadas are deliberately unbound (a cricket recording under the cicada buzz read as the wrong species) and stay fully procedural. Blizzard uses a reduced `arcticWind` texture.
-- Birds use `forestBirdsAlishan` at full sample scale while retaining a prominent procedural component for local call detail. Frogs, owl, chimes, singing bowl, drone, fan, and white/pink noise remain procedural. Every hybrid binding retains a procedural component and failure fallback; the sample-only `ruralCrickets` layer is the deliberate exception.
+- Birds use `forestBirdsAlishan` at full sample scale while retaining a prominent procedural component for local call detail. Owl, chimes, singing bowl, drone, fan, and white/pink noise remain procedural. Every hybrid binding retains a procedural component and failure fallback; the sample-only `ruralCrickets` layer is the deliberate exception.
 
 The authoritative machine-readable manifest is [`audioSamples.ts`](./audioSamples.ts). It pins source repositories and commits, processing notes, hashes, codec order, decoded-memory estimates, trims, crossfade durations, and binding scales.
 

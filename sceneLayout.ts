@@ -43,7 +43,6 @@ export const SPATIAL: Partial<Record<BackgroundSoundType, SpatialSpec>> = {
   scops: { x: 0.6, depth: 'far' },
   // A cicada chorus surrounds you — point-panning it to one side reads wrong.
   cicadas: { x: 0.9, depth: 'mid', wide: true },
-  frogs: { x: 0.2, depth: 'near' },
   ducks: { x: 0.62, depth: 'near' },
 
   // 환경음

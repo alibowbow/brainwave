@@ -23,7 +23,6 @@ export type BackgroundSoundType =
   | 'woodpecker'
   | 'ducks'
   | 'cicadas'
-  | 'frogs'
   | 'owl'
   | 'scops'
   | 'night'
@@ -115,8 +114,8 @@ export const AMBIENCE_PRESETS: AmbiencePreset[] = [
     layers: [{ type: 'birds', volume: 0.7 }, { type: 'forest', volume: 0.8 }, { type: 'stream', volume: 0.55 }] },
   { id: 'rainy_forest', name: '비 오는 숲', description: '숲에 내리는 잔잔한 비', emoji: '🌧️', brainWaveType: 'theta', durationMinutes: 30,
     layers: [{ type: 'rain', volume: 0.8 }, { type: 'forest', volume: 0.7 }, { type: 'birds', volume: 0.45 }] },
-  { id: 'night_pond', name: '여름밤 연못', description: '풀벌레·개구리·부엉이의 밤', emoji: '🌙', brainWaveType: 'delta', durationMinutes: 40,
-    layers: [{ type: 'ruralCrickets', volume: 0.7 }, { type: 'frogs', volume: 0.55 }, { type: 'owl', volume: 0.5 }, { type: 'stream', volume: 0.55 }] },
+  { id: 'night_pond', name: '여름밤 연못', description: '풀벌레·부엉이의 밤', emoji: '🌙', brainWaveType: 'delta', durationMinutes: 40,
+    layers: [{ type: 'ruralCrickets', volume: 0.7 }, { type: 'owl', volume: 0.5 }, { type: 'stream', volume: 0.55 }] },
   { id: 'ocean_shore', name: '파도 해변', description: '바다와 갈매기', emoji: '🌊', brainWaveType: 'alpha', durationMinutes: 25,
     layers: [{ type: 'wave', volume: 0.8 }, { type: 'seabirds', volume: 0.5 }] },
   { id: 'waterfall_valley', name: '폭포 계곡', description: '절벽 폭포와 시냇물', emoji: '🏞️', brainWaveType: 'alpha', durationMinutes: 30,
@@ -151,14 +150,14 @@ export interface NatureMix {
 export const NATURE_MIXES: NatureMix[] = [
   { id: 'tent_rain', name: '텐트 속 빗소리', emoji: '⛺', layers: [{ type: 'tent', volume: 0.85 }, { type: 'dthunder', volume: 0.35 }] },
   { id: 'window_rain', name: '비 오는 창가', emoji: '🪟', layers: [{ type: 'window', volume: 0.8 }, { type: 'eaves', volume: 0.4 }] },
-  { id: 'monsoon_eaves', name: '장마철 처마', emoji: '☔', layers: [{ type: 'eaves', volume: 0.8 }, { type: 'rain', volume: 0.4 }, { type: 'frogs', volume: 0.3 }] },
+  { id: 'monsoon_eaves', name: '장마철 처마', emoji: '☔', layers: [{ type: 'eaves', volume: 0.8 }, { type: 'rain', volume: 0.4 } ] },
   { id: 'deep_sea', name: '깊은 바다', emoji: '🐋', layers: [{ type: 'deepsea', volume: 0.8 }] },
   { id: 'pebble_shore', name: '몽돌 해변', emoji: '🐚', layers: [{ type: 'pebbles', volume: 0.8 }, { type: 'wave', volume: 0.45 }, { type: 'seabirds', volume: 0.3 }] },
   { id: 'bamboo_grove', name: '대나무숲', emoji: '🎋', layers: [{ type: 'bamboo', volume: 0.8 }, { type: 'birds', volume: 0.4 }, { type: 'stream', volume: 0.35 }] },
   { id: 'temple_dawn', name: '산사의 아침', emoji: '🛕', layers: [{ type: 'temple', volume: 0.75 }, { type: 'forest', volume: 0.4 }, { type: 'birds', volume: 0.35 }] },
   { id: 'summer_valley', name: '여름 계곡', emoji: '🏞️', layers: [{ type: 'stream', volume: 0.75 }, { type: 'waterfall', volume: 0.5 }, { type: 'cicadas', volume: 0.4 }] },
   { id: 'scops_night', name: '소쩍새 밤', emoji: '🌙', layers: [{ type: 'scops', volume: 0.7 }, { type: 'night', volume: 0.6 }, { type: 'stream', volume: 0.3 }] },
-  { id: 'rural_summer_night', name: '시골 여름밤', emoji: '🌾', layers: [{ type: 'ruralCrickets', volume: 0.78 }, { type: 'frogs', volume: 0.35 }, { type: 'stream', volume: 0.22 }] },
+  { id: 'rural_summer_night', name: '시골 여름밤', emoji: '🌾', layers: [{ type: 'ruralCrickets', volume: 0.78 }, { type: 'stream', volume: 0.22 }] },
   { id: 'campfire', name: '모닥불 캠핑', emoji: '🔥', layers: [{ type: 'fire', volume: 0.8 }, { type: 'night', volume: 0.5 }, { type: 'owl', volume: 0.35 }] },
   { id: 'womb', name: '포근한 심장', emoji: '💗', layers: [{ type: 'heartbeat', volume: 0.75 }, { type: 'brown', volume: 0.35 }] },
   { id: 'winter_lodge', name: '겨울 산장', emoji: '❄️', layers: [{ type: 'blizzard', volume: 0.65 }, { type: 'fire', volume: 0.7 }] },

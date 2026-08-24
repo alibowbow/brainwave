@@ -176,7 +176,7 @@ describe('BinauralEngine multi-voice', () => {
     e.dispose();
   });
 
-  it('retries the user recording through a media element when Web Audio decode fails', async () => {
+  it('starts the user recording through the media path when the DOM is available', async () => {
     const cache = sampleCache(async () => {
       throw new Error('decode failed');
     });
@@ -192,6 +192,7 @@ describe('BinauralEngine multi-voice', () => {
     e.start(cfg([{ type: 'ruralCrickets', volume: 1 }]));
     await flushMicrotasks();
 
+    expect((cache.acquire as ReturnType<typeof vi.fn>)).not.toHaveBeenCalled();
     expect(mediaElements.some((media) => media.src.includes('rural-crickets-jun-v1.mp3') && media.played)).toBe(true);
     expect(e.activeSampleTypes()).toEqual(['ruralCrickets']);
     e.dispose();

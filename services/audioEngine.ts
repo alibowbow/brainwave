@@ -590,7 +590,15 @@ export class BinauralEngine {
       this.schedule(voice.bucket, () => this.playSampleEvent(type, voice), 1800 + Math.random() * 2200);
       return;
     }
-    void this.startLoopSample(type, voice, binding.assetIds[0]);
+
+    const assetId = binding.assetIds[0];
+    // Start sample-only recordings synchronously from the user action. This
+    // keeps mobile autoplay permission intact and avoids waiting for a binary
+    // Web Audio decode before the user's recording can be heard.
+    if (binding.proceduralMix === 0 && this.startMediaLoopSample(type, voice, assetId)) {
+      return;
+    }
+    void this.startLoopSample(type, voice, assetId);
   }
 
   private async startLoopSample(type: BackgroundSoundType, voice: Voice, assetId: NatureSampleId) {
@@ -633,9 +641,9 @@ export class BinauralEngine {
    * spatial pan, reverb send, and master bus as decoded AudioBuffers.
    */
   private startMediaLoopSample(type: BackgroundSoundType, voice: Voice, assetId: NatureSampleId) {
-    if (!this.ctx || typeof document === 'undefined') return;
+    if (!this.ctx || typeof document === 'undefined') return false;
     const candidate = natureSampleUrls(assetId)[0];
-    if (!candidate) return;
+    if (!candidate) return false;
 
     try {
       const media = document.createElement('audio');
@@ -672,8 +680,9 @@ export class BinauralEngine {
       // The engine is normally started from a user gesture. Catch the
       // rejection so a blocked media element never becomes an unhandled error.
       void media.play().catch(() => {});
+      return true;
     } catch {
-      // Keep the layer silent rather than substituting a different species.
+      return false;
     }
   }
 

@@ -24,7 +24,7 @@ interface Props {
   selectedType?: BackgroundSoundType | null;
   onSelectType?: (type: BackgroundSoundType) => void;
   /** Engine hookup: fires when a sound makes a salient noise, so the matching
-      object reacts in sync (, thunder → flash). */
+      object reacts in sync (sound event → call clip, thunder → flash). */
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
@@ -294,7 +294,7 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
     className: 'sc-v2-scops',
     alt: '밤의 소쩍새',
   },
- makeFiveByFiveNpc({
+  seabirds: makeFiveByFiveNpc({
     id: 'seabird', asset: 'seabird', className: 'sc-v2-seabird', alt: '해변 위를 활강하는 바닷새',
     restRange: [2600, 6800], actionProbability: 0.28, tempo: 0.82,
   }),

@@ -315,7 +315,7 @@ export const NATURE_SAMPLE_BINDINGS: Partial<Record<BackgroundSoundType, NatureS
   bamboo: { assetIds: ['mountainWind'], sampleScale: 0.75, proceduralMix: 0.8 },
   birds: { assetIds: ['forestBirdsAlishan'], sampleScale: 1, proceduralMix: 0.6 },
   night: { assetIds: ['nightCrickets'], sampleScale: 0.45, proceduralMix: 0.85 },
-  ruralCrickets: { assetIds: ['ruralCrickets'], sampleScale: 0.95, proceduralMix: 0.35 },
+  ruralCrickets: { assetIds: ['ruralCrickets'], sampleScale: 0.95, proceduralMix: 0 },
   // cicadas intentionally has NO binding: layering cricket recordings under
   // the cicada buzz read as a wrong-species chimera. The procedural AM chorus
   // carries 매미 on its own.

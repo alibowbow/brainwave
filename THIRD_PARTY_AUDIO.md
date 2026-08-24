@@ -2,7 +2,7 @@
 
 The nature mixer combines procedural Web Audio synthesis with locally shipped field recordings. Third-party recordings listed here are released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The `ruralCrickets` asset is a user-provided field recording and is marked separately. Source, author, exact imported bytes, and processing history are recorded here for auditability and reproducible builds.
 
-The app does not contact Freesound or the source repositories at runtime. Files under `public/audio/nature/` are requested only when a matching sound is enabled. They are deliberately excluded from the PWA precache; after a successful request, the service worker may retain that versioned file in the `nature-audio-v1` runtime cache for later/offline playback. Procedural sound starts immediately and remains available if a file cannot be fetched or decoded.
+The app does not contact Freesound or the source repositories at runtime. Files under `public/audio/nature/` are requested only when a matching sound is enabled. They are deliberately excluded from the PWA precache; after a successful request, the service worker may retain that versioned file in the `nature-audio-v1` runtime cache for later/offline playback. Hybrid layers start their procedural bed immediately and remain available if a file cannot be fetched or decoded. The user-recorded `ruralCrickets` layer is intentionally sample-only and never substitutes the generic night-insect generator.
 
 ## Important source distinction
 
@@ -116,8 +116,8 @@ The 24 lazy-loaded files total **9,474,217 bytes** (below the 10 MiB checked-in 
 - Stream uses `creekBrook`; waterfall uses `waterfallCaldeiroes`.
 - Ocean waves use `oceanRibeira`; pebbles and seabirds reuse it only as a lower-level shore bed while their procedural detail remains prominent.
 - Fire and forest use their matching recordings.
-- Bamboo uses a reduced `mountainWind` bed. Night uses a reduced `nightCrickets` bed; `ruralCrickets` uses the user-provided field recording as its primary texture with a lighter procedural underbed. Cicadas are deliberately unbound (a cricket recording under the cicada buzz read as the wrong species) and stay fully procedural. Blizzard uses a reduced `arcticWind` texture.
-- Birds use `forestBirdsAlishan` at full sample scale while retaining a prominent procedural component for local call detail. Frogs, owl, chimes, singing bowl, drone, fan, and white/pink noise remain procedural. Every hybrid binding also retains a procedural component and failure fallback.
+- Bamboo uses a reduced `mountainWind` bed. Night uses a reduced `nightCrickets` bed; `ruralCrickets` uses only the user-provided field recording; no generated night-insect substitute is mixed in. Cicadas are deliberately unbound (a cricket recording under the cicada buzz read as the wrong species) and stay fully procedural. Blizzard uses a reduced `arcticWind` texture.
+- Birds use `forestBirdsAlishan` at full sample scale while retaining a prominent procedural component for local call detail. Frogs, owl, chimes, singing bowl, drone, fan, and white/pink noise remain procedural. Every hybrid binding retains a procedural component and failure fallback; the sample-only `ruralCrickets` layer is the deliberate exception.
 
 The authoritative machine-readable manifest is [`audioSamples.ts`](./audioSamples.ts). It pins source repositories and commits, processing notes, hashes, codec order, decoded-memory estimates, trims, crossfade durations, and binding scales.
 

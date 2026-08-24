@@ -143,6 +143,22 @@ describe('BinauralEngine multi-voice', () => {
     expect(e.activeSoundTypes()).toEqual([]);
   });
 
+  it('uses the user recording without the generic cricket generator', async () => {
+    const buffer = new AudioBufferMock(1, 96_000) as unknown as AudioBuffer;
+    const release = vi.fn();
+    const cache = sampleCache(async () => ({ buffer, release }));
+    e = new BinauralEngine(cache);
+
+    e.start(cfg([{ type: 'ruralCrickets', volume: 0.8 }], 'isochronic'));
+    await flushMicrotasks();
+
+    expect(NATURE_SAMPLE_BINDINGS.ruralCrickets?.proceduralMix).toBe(0);
+    expect(oscillatorNodes).toHaveLength(1);
+    expect(bufferSourceNodes.some((source) => source.buffer === buffer && source.started)).toBe(true);
+    expect((cache.acquire as ReturnType<typeof vi.fn>).mock.calls[0][1]).toContain('rural-crickets-jun-v1.mp3');
+    e.dispose();
+  });
+
   it('layers sounds in and out independently', () => {
     e.start(cfg([{ type: 'rain', volume: 0.8 }]));
     e.addSound('fire', 0.5);

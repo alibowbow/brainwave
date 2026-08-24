@@ -6,6 +6,8 @@ export const AMBIE_COMMIT = '30601f527e092c77c2408c0d247893b9fa30a20e' as const;
 export const DYNAMIC_SURROUNDINGS_REPOSITORY = 'https://github.com/OreCruncher/DynamicSurroundingsFabric' as const;
 export const DYNAMIC_SURROUNDINGS_COMMIT = '0d352c7e57bbd39786defdba355156a5bdb850f4' as const;
 
+export type NatureSampleLicense = 'CC0-1.0' | 'user-recorded';
+
 export interface NatureSampleSource {
   fileName: string;
   mimeType: 'audio/ogg; codecs="vorbis"' | 'audio/mpeg';
@@ -19,17 +21,17 @@ export interface NatureSampleAsset {
   playback: 'loop' | 'event';
   sourceTitle: string;
   author: string;
-  freesoundId: number;
+  freesoundId: number | null;
   sourceUrl: string;
-  license: 'CC0-1.0';
-  licenseUrl: typeof CC0_1_0_URL;
+  license: NatureSampleLicense;
+  licenseUrl: typeof CC0_1_0_URL | null;
   sourceRepository: string | null;
   sourceCommit: string | null;
   distributedSourceUrl: string;
   distributedVariant: string;
   upstreamOriginalSpec: string;
   distributedSpec: string;
-  retrievedAt: '2026-07-12';
+  retrievedAt: string;
   processingCommand: string;
   distributedSourceSha256: string;
   sources: readonly NatureSampleSource[];
@@ -259,6 +261,29 @@ export const NATURE_SAMPLE_ASSETS = {
     sampleTrim: 1, crossfadeSeconds: 0, durationSeconds: 10.36, channels: 1, sampleRate: 48_000,
     decodedBytesEstimate: 1_989_120, integratedLufs: -22.5, truePeakDbtp: -5.7,
   },
+  ruralCrickets: {
+    playback: 'loop',
+    sourceTitle: '시골 풀벌레 현장 녹음',
+    author: 'Jun',
+    freesoundId: null,
+    sourceUrl: 'user-provided',
+    license: 'user-recorded',
+    licenseUrl: null,
+    sourceRepository: null,
+    sourceCommit: null,
+    distributedSourceUrl: 'local-user-recording://음성-260823-223505.m4a',
+    distributedVariant: '사용자 제공 M4A/AAC를 복구·디코드한 뒤 +21 dB 메이크업 게인, 리미터, MP3 96k로 최적화',
+    upstreamOriginalSpec: 'M4A/AAC, 48 kHz, mono, 약 128 kbps, 60.59 s',
+    distributedSpec: 'MP3, 48 kHz, 96 kbps CBR, mono, 60.62 s (인코더 패딩 포함)',
+    retrievedAt: '2026-08-24',
+    processingCommand: '복구된 AAC 프레임을 재구성·디코드 → +21 dB gain + -5 dBFS limiter → libmp3lame MP3 96k',
+    distributedSourceSha256: 'a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c',
+    sources: [
+      { fileName: 'rural-crickets-jun-v1.mp3', mimeType: 'audio/mpeg', codec: 'MP3', bitrateKbps: 96, sha256: 'a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c', role: 'universal' },
+    ],
+    sampleTrim: 1, crossfadeSeconds: 1.25, durationSeconds: 60.59, channels: 1, sampleRate: 48_000,
+    decodedBytesEstimate: 11_632_640, integratedLufs: -25.6, truePeakDbtp: -5.1,
+  },
 } as const satisfies Record<string, NatureSampleAsset>;
 
 export type NatureSampleId = keyof typeof NATURE_SAMPLE_ASSETS;
@@ -290,6 +315,7 @@ export const NATURE_SAMPLE_BINDINGS: Partial<Record<BackgroundSoundType, NatureS
   bamboo: { assetIds: ['mountainWind'], sampleScale: 0.75, proceduralMix: 0.8 },
   birds: { assetIds: ['forestBirdsAlishan'], sampleScale: 1, proceduralMix: 0.6 },
   night: { assetIds: ['nightCrickets'], sampleScale: 0.45, proceduralMix: 0.85 },
+  ruralCrickets: { assetIds: ['ruralCrickets'], sampleScale: 0.95, proceduralMix: 0.35 },
   // cicadas intentionally has NO binding: layering cricket recordings under
   // the cicada buzz read as a wrong-species chimera. The procedural AM chorus
   // carries 매미 on its own.

@@ -800,6 +800,7 @@ export class BinauralEngine {
       case 'frogs': this.startFrogs(dest, bucket); break;
       case 'owl': this.startOwl(dest, bucket); break;
       case 'night': this.startCrickets(dest, bucket); break;
+      case 'ruralCrickets': this.startCrickets(dest, bucket); break;
       case 'chimes': this.startChimes(dest, bucket); break;
       case 'bowl': this.startBowl(dest, bucket); break;
       case 'drone': this.startDrone(dest, bucket); break;

@@ -10,7 +10,7 @@ import { BackgroundSoundType, BrainWaveType } from './types';
 // Sounds grouped into the six soundscape categories — drives the picker UI
 // and the recommendation logic.
 export const SOUND_GROUPS: { label: string; sounds: BackgroundSoundType[] }[] = [
-  { label: '환경음', sounds: ['forest', 'bamboo', 'night', 'cave'] },
+  { label: '환경음', sounds: ['forest', 'bamboo', 'night', 'ruralCrickets', 'cave'] },
   { label: '날씨', sounds: ['rain', 'tent', 'window', 'eaves', 'thunder', 'dthunder', 'blizzard'] },
   { label: '물', sounds: ['stream', 'waterfall', 'wave', 'pebbles', 'deepsea'] },
   { label: '동물', sounds: ['birds', 'cuckoo', 'woodpecker', 'seabirds', 'owl', 'scops', 'cicadas', 'frogs', 'ducks'] },
@@ -53,6 +53,7 @@ export const getSoundIcon = (type: BackgroundSoundType) => {
     case 'frogs': return <Turtle size={20} />;
     case 'owl': return <Feather size={20} />;
     case 'night': return <CloudMoon size={20} />;
+    case 'ruralCrickets': return <Bug size={20} />;
     case 'chimes': return <Bell size={20} />;
     case 'bowl': return <Disc3 size={20} />;
     case 'drone': return <Orbit size={20} />;
@@ -95,6 +96,7 @@ export const getSoundLabel = (type: BackgroundSoundType) => {
     case 'frogs': return '개구리';
     case 'owl': return '부엉이';
     case 'night': return '밤 벌레';
+    case 'ruralCrickets': return '시골 풀벌레';
     case 'chimes': return '풍경';
     case 'bowl': return '싱잉볼';
     case 'drone': return '딥 드론';

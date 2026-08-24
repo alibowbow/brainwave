@@ -347,6 +347,10 @@ const GENERATED_CHARACTERS: Partial<Record<BackgroundSoundType, GeneratedCharact
     id: 'cricket', asset: 'cricket', className: 'sc-v2-cricket', alt: '풀숲에서 우는 귀뚜라미',
     restRange: [3300, 7600], actionProbability: 0.23, tempo: 0.78,
   }),
+  ruralCrickets: makeFiveByFiveNpc({
+    id: 'rural-cricket', asset: 'cricket', className: 'sc-v2-cricket', alt: '시골 풀숲에서 우는 풀벌레',
+    restRange: [3300, 7600], actionProbability: 0.2, tempo: 0.78,
+  }),
   stream: makeFiveByFiveNpc({
     id: 'stream-fish', asset: 'stream-fish', className: 'sc-v2-stream-fish', alt: '계곡물을 유영하는 작은 물고기',
     restRange: [2600, 6600], actionProbability: 0.2, tempo: 0.82,
@@ -397,7 +401,7 @@ const resolveTheme = (types: BackgroundSoundType[]): SceneTheme => {
   if (types.includes('cave')) return 'cave';
   if (types.includes('blizzard')) return 'winter';
   if (types.includes('wave') || types.includes('pebbles') || types.includes('seabirds')) return 'coast';
-  if (types.includes('night') || types.includes('owl') || types.includes('scops')) return 'night-pond';
+  if (types.includes('night') || types.includes('ruralCrickets') || types.includes('owl') || types.includes('scops')) return 'night-pond';
   return 'valley';
 };
 

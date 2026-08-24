@@ -1,6 +1,6 @@
-# Third-party nature audio
+# Nature audio provenance
 
-The nature mixer combines procedural Web Audio synthesis with locally shipped field recordings. Every recording listed here is released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). Attribution is not required by CC0, but the source, author, exact imported bytes, and processing history are recorded here for auditability and reproducible builds.
+The nature mixer combines procedural Web Audio synthesis with locally shipped field recordings. Third-party recordings listed here are released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The `ruralCrickets` asset is a user-provided field recording and is marked separately. Source, author, exact imported bytes, and processing history are recorded here for auditability and reproducible builds.
 
 The app does not contact Freesound or the source repositories at runtime. Files under `public/audio/nature/` are requested only when a matching sound is enabled. They are deliberately excluded from the PWA precache; after a successful request, the service worker may retain that versioned file in the `nature-audio-v1` runtime cache for later/offline playback. Procedural sound starts immediately and remains available if a file cannot be fetched or decoded.
 
@@ -12,7 +12,7 @@ The app does not contact Freesound or the source repositories at runtime. Files 
 - Ocean, forest birds, and waterfall are byte-for-byte copies of Freesound's **HQ MP3 previews**. They are explicitly not the original WAV downloads.
 - Forest, crickets, wind, arctic wind, and thunder use selected OGG derivatives/excerpts bundled by [DynamicSurroundingsFabric](https://github.com/OreCruncher/DynamicSurroundingsFabric/tree/0d352c7e57bbd39786defdba355156a5bdb850f4). They are not copies of the full Freesound originals. The repository's pinned `CREDITS.md` was used for the source mapping.
 
-Retrieval date for all distributed sources: **2026-07-12**.
+Retrieval date for third-party distributed sources: **2026-07-12**. The user-provided `ruralCrickets` recording was added and processed on **2026-08-24**.
 
 ## Provenance and imported-source integrity
 
@@ -26,6 +26,7 @@ Retrieval date for all distributed sources: **2026-07-12**.
 | `waterfallCaldeiroes` | [Ambiance_Waterfall_Ribeira_dos_Caldeirões_Loop_Stereo, #829633](https://freesound.org/s/829633/) by `Nox_Sound` | WAV, 96 kHz, 24-bit, stereo, 20.00 s; Sony PCM-D100 field recording | [Freesound HQ MP3 preview](https://cdn.freesound.org/previews/829/829633_9250976-hq.mp3), MP3 48 kHz stereo, about 188 kbps, 20.04 s; **not the original WAV** | `27214225e23c7bf2090e212ef24a37317fba7ffe56db858ff175bb4d74fdbbee` |
 | `forestField` | [001_forrest.wav, #262037](https://freesound.org/s/262037/) by `joepsporck` | WAV, 44.1 kHz, 24-bit, stereo, 53 s | [DynamicSurroundings `outside/forest.ogg`](https://github.com/OreCruncher/DynamicSurroundingsFabric/blob/0d352c7e57bbd39786defdba355156a5bdb850f4/common/src/main/resources/assets/dsurround/sounds/ambient/outside/forest.ogg), selected mono OGG excerpt: Vorbis 44.1 kHz, about 90 kbps, 46.11 s | `0159139e1a6591f5d82ce36b1c6d0edbfd1b3071edf93d9627e0ad900edd0f94` |
 | `nightCrickets` | [Soft, Chilled Crickets Field Recording, #202749](https://freesound.org/s/202749/) by `rayjensen` | FLAC, 44.1 kHz, 16-bit, stereo, 16.17 s | [DynamicSurroundings `outside/crickets.ogg`](https://github.com/OreCruncher/DynamicSurroundingsFabric/blob/0d352c7e57bbd39786defdba355156a5bdb850f4/common/src/main/resources/assets/dsurround/sounds/ambient/outside/crickets.ogg), mono OGG derivative: Vorbis 44.1 kHz, about 84 kbps, 16.17 s | `a87638cc0e9ce04f986e78702597b3bcf5f726ba043a88a7e90b6cc0cd95eac1` |
+| `ruralCrickets` | User-provided field recording by `Jun` | M4A/AAC, 48 kHz, mono, about 128 kbps, 60.59 s | Recovered and decoded user M4A, +21 dB gain + limiter, MP3 48 kHz mono 96k, 60.62 s | `a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c` |
 | `mountainWind` | [Wind blowing into some cactus spine, on the top of the mountain, in the desert of Atacama (Chile), #156414](https://freesound.org/s/156414/) by `felix.blume` | WAV, 96 kHz, 24-bit, stereo MS, 120.06 s; Schoeps CCM41+CCM8 / SD744T | [DynamicSurroundings `outside/wind.ogg`](https://github.com/OreCruncher/DynamicSurroundingsFabric/blob/0d352c7e57bbd39786defdba355156a5bdb850f4/common/src/main/resources/assets/dsurround/sounds/ambient/outside/wind.ogg), selected mono OGG excerpt: Vorbis 96 kHz, about 93 kbps, 43.65 s | `87011fbc6581571ff5e7b00e4dad6b08c2d76c8d3303a5f6e60168c1653550d9` |
 | `arcticWind` | [Howling Wind Ambience, #405601](https://freesound.org/s/405601/) by `DBlover` | MP3, 48 kHz, stereo, 85.43 s | [DynamicSurroundings `outside/arctic_wind.ogg`](https://github.com/OreCruncher/DynamicSurroundingsFabric/blob/0d352c7e57bbd39786defdba355156a5bdb850f4/common/src/main/resources/assets/dsurround/sounds/ambient/outside/arctic_wind.ogg), OGG derivative: Vorbis 44.1 kHz stereo, about 141 kbps, 13.64 s | `b98a132d5d393388fee6ac4c011bb2fce47cb7425be29e5f3942d6382f04115d` |
 | `thunderNear` | [Thunder 1, #253953](https://freesound.org/s/253953/) by `Yoyodaman234` | WAV, 44.1 kHz, 16-bit, stereo, 19.70 s | [DynamicSurroundings `weather/thunder1.ogg`](https://github.com/OreCruncher/DynamicSurroundingsFabric/blob/0d352c7e57bbd39786defdba355156a5bdb850f4/common/src/main/resources/assets/dsurround/sounds/ambient/weather/thunder1.ogg), mono OGG derivative: Vorbis 44.1 kHz, about 75 kbps, 15.81 s | `42178c1cfeaf26b5f8b2d41cc8601dbe11b765847d1024416a4ae3093eb418e3` |
@@ -59,6 +60,7 @@ The Ambie WAV derivatives were gain-adjusted and encoded for the app. The Nox_So
 | `waterfallCaldeiroes` | None; versioned byte-for-byte copy of the Freesound HQ preview | 0.25 s equal-power crossfade |
 | `forestField` | Preferred OGG copied unchanged; MP3 fallback encoded mono at 44.1 kHz/80k | 1.20 s equal-power crossfade |
 | `nightCrickets` | Preferred OGG copied unchanged; MP3 fallback encoded mono at 44.1 kHz/80k | 0.80 s equal-power crossfade |
+| `ruralCrickets` | Recovered user M4A/AAC, decoded, +21 dB makeup gain, -5 dBFS limiter, MP3 48 kHz mono 96k | 1.25 s equal-power crossfade |
 | `mountainWind` | Preferred OGG copied unchanged; MP3 fallback encoded mono at 48 kHz/80k | 1.10 s equal-power crossfade |
 | `arcticWind` | Preferred OGG copied unchanged; MP3 fallback encoded stereo at 44.1 kHz/96k | 0.85 s equal-power crossfade |
 | `thunderNear`, `thunderDistant`, `thunderStorm` | Preferred OGG copied unchanged; mono MP3 fallback encoded at 80k; no loop processing | None; one-shot event |
@@ -79,6 +81,7 @@ The final column is deliberately conservative for the encoded-source gain stage:
 | `waterfallCaldeiroes` | -21.3 LUFS | -5.6 dBTP | 1.00 | -21.3 LUFS | -4.0 dBTP |
 | `forestField` | -36.8 LUFS | -16 dBTP | 1.00 | -36.8 LUFS | -14.4 dBTP |
 | `nightCrickets` | -30.9 LUFS | -13.5 dBTP | 1.00 | -30.9 LUFS | -11.9 dBTP |
+| `ruralCrickets` | -25.6 LUFS | -5.1 dBTP | 1.00 | -25.6 LUFS | -4.0 dBTP |
 | `mountainWind` | -24.5 LUFS | -6.9 dBTP | 1.00 | -24.5 LUFS | -5.3 dBTP |
 | `arcticWind` | -21.7 LUFS | -7.4 dBTP | 1.00 | -21.7 LUFS | -5.8 dBTP |
 | `thunderNear` | -29.8 LUFS | -5.6 dBTP | 1.00 | -29.8 LUFS | -4.0 dBTP |
@@ -87,13 +90,14 @@ The final column is deliberately conservative for the encoded-source gain stage:
 
 ## Shipped-file integrity
 
-The 23 lazy-loaded files total **8,746,684 bytes** (below the 10 MiB checked-in audio budget). Browser capability detection prefers Vorbis where provided and falls back to MP3. The two Nox_Sound assets and the BayTsai bird asset are MP3-only universal sources.
+The 24 lazy-loaded files total **9,474,217 bytes** (below the 10 MiB checked-in audio budget). Browser capability detection prefers Vorbis where provided and falls back to MP3. The two Nox_Sound assets and the BayTsai bird asset are MP3-only universal sources.
 
 | File | Bytes | SHA-256 |
 | --- | ---: | --- |
 | `arctic-wind-cc0-v2.mp3` | 191,634 | `5f44a7ea070ac301ba04bff481741fd4831cc271d1db92d9e082f5df033e82ab` |
 | `creek-brook-cc0-v3.mp3` | 352,183 | `292d85cdf026ac4f02a248006facbf94a21b609f805a3ea92c9ef9309b3c0978` |
 | `crickets-night-cc0-v2.mp3` | 194,400 | `1f380ddf267c76577b6bfeaccb49a52d22f74a181662ed143c847999abcaf6e7` |
+| `rural-crickets-jun-v1.mp3` | 727,533 | `a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c` |
 | `fireplace-hearth-cc0-v2.mp3` | 246,491 | `3caeeb5bb4ef1fa317f18dbf3b77809e27b11e39c9be218ebda0ada376475086` |
 | `forest-birds-alishan-cc0-v2.mp3` | 560,640 | `165fc140e0c2d636a5542ec92dc7b5552c4f1ab08964136419c36ffd48d11029` |
 | `forest-field-cc0-v2.mp3` | 554,112 | `f6b4edafc65c71633168fdee202c0a764d99366e9fd1df97379f0bc310f1cfa6` |
@@ -112,11 +116,11 @@ The 23 lazy-loaded files total **8,746,684 bytes** (below the 10 MiB checked-in 
 - Stream uses `creekBrook`; waterfall uses `waterfallCaldeiroes`.
 - Ocean waves use `oceanRibeira`; pebbles and seabirds reuse it only as a lower-level shore bed while their procedural detail remains prominent.
 - Fire and forest use their matching recordings.
-- Bamboo uses a reduced `mountainWind` bed. Night uses a reduced `nightCrickets` bed; cicadas are deliberately unbound (a cricket recording under the cicada buzz read as the wrong species) and stay fully procedural. Blizzard uses a reduced `arcticWind` texture.
+- Bamboo uses a reduced `mountainWind` bed. Night uses a reduced `nightCrickets` bed; `ruralCrickets` uses the user-provided field recording as its primary texture with a lighter procedural underbed. Cicadas are deliberately unbound (a cricket recording under the cicada buzz read as the wrong species) and stay fully procedural. Blizzard uses a reduced `arcticWind` texture.
 - Birds use `forestBirdsAlishan` at full sample scale while retaining a prominent procedural component for local call detail. Frogs, owl, chimes, singing bowl, drone, fan, and white/pink noise remain procedural. Every hybrid binding also retains a procedural component and failure fallback.
 
 The authoritative machine-readable manifest is [`audioSamples.ts`](./audioSamples.ts). It pins source repositories and commits, processing notes, hashes, codec order, decoded-memory estimates, trims, crossfade durations, and binding scales.
 
 ## Perceptual QA gate
 
-All 23 files decode end-to-end without an FFmpeg error, and the 40.032-second Alishan bird preview has no one-second interval below -50 dBFS. Its codec, duration, SHA-256, -30.7 LUFS integrated loudness, and -6.3 dBTP peak were independently rechecked. Automated validation cannot determine whether a distant human, vehicle, aircraft, or distracting species call is perceptually objectionable. The Alishan recording therefore requires one uninterrupted 40-second headphone listen in the deployed preview before this draft is merged.
+All 24 files decode end-to-end without an FFmpeg error, and the 40.032-second Alishan bird preview has no one-second interval below -50 dBFS. Its codec, duration, SHA-256, -30.7 LUFS integrated loudness, and -6.3 dBTP peak were independently rechecked. Automated validation cannot determine whether a distant human, vehicle, aircraft, or distracting species call is perceptually objectionable. The Alishan recording therefore requires one uninterrupted 40-second headphone listen in the deployed preview before this draft is merged.

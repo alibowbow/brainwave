@@ -590,7 +590,15 @@ export class BinauralEngine {
       this.schedule(voice.bucket, () => this.playSampleEvent(type, voice), 1800 + Math.random() * 2200);
       return;
     }
-    void this.startLoopSample(type, voice, binding.assetIds[0]);
+
+    const assetId = binding.assetIds[0];
+    // Start sample-only recordings synchronously from the user action. This
+    // keeps mobile autoplay permission intact and avoids waiting for a binary
+    // Web Audio decode before the user's recording can be heard.
+    if (binding.proceduralMix === 0 && this.startMediaLoopSample(type, voice, assetId)) {
+      return;
+    }
+    void this.startLoopSample(type, voice, assetId);
   }
 
   private async startLoopSample(type: BackgroundSoundType, voice: Voice, assetId: NatureSampleId) {
@@ -618,8 +626,63 @@ export class BinauralEngine {
       voice.sampleGain.gain.setTargetAtTime(sampleLayerGain(type, assetId, voice.volume), now, 0.7);
       voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume) * voice.proceduralMix, now, 0.7);
     } catch (error) {
-      // Procedural audio was already running at 100%; network/decode/budget
-      // failures are therefore silent and fully functional offline fallbacks.
+      // Hybrid layers already have their procedural bed. The user recording is
+      // sample-only, so retry that same file through an HTML media element if
+      // Web Audio's binary decoder rejects it (some mobile/browser builds do).
+      if (NATURE_SAMPLE_BINDINGS[type]?.proceduralMix === 0) {
+        this.startMediaLoopSample(type, voice, assetId);
+      }
+    }
+  }
+
+  /**
+   * Keep the exact user recording audible when decodeAudioData rejects it.
+   * MediaElementAudioSourceNode still travels through the same sample gain,
+   * spatial pan, reverb send, and master bus as decoded AudioBuffers.
+   */
+  private startMediaLoopSample(type: BackgroundSoundType, voice: Voice, assetId: NatureSampleId) {
+    if (!this.ctx || typeof document === 'undefined') return false;
+    const candidate = natureSampleUrls(assetId)[0];
+    if (!candidate) return false;
+
+    try {
+      const media = document.createElement('audio');
+      media.preload = 'auto';
+      media.loop = true;
+      media.crossOrigin = 'anonymous';
+      media.src = candidate.url;
+
+      const source = this.ctx.createMediaElementSource(media);
+      source.connect(voice.sampleGain);
+      this.register(voice.bucket, source);
+      voice.bucket.cleanups.push(() => {
+        media.pause();
+        media.removeAttribute('src');
+        media.load();
+      });
+
+      const binding = NATURE_SAMPLE_BINDINGS[type]!;
+      voice.sampleActive = true;
+      voice.activeSampleId = assetId;
+      voice.proceduralMix = binding.proceduralMix;
+      const now = this.ctx.currentTime;
+      voice.sampleGain.gain.setTargetAtTime(
+        sampleLayerGain(type, assetId, voice.volume),
+        now,
+        0.7,
+      );
+      voice.gain.gain.setTargetAtTime(
+        layerGain(type, voice.volume) * voice.proceduralMix,
+        now,
+        0.7,
+      );
+
+      // The engine is normally started from a user gesture. Catch the
+      // rejection so a blocked media element never becomes an unhandled error.
+      void media.play().catch(() => {});
+      return true;
+    } catch {
+      return false;
     }
   }
 

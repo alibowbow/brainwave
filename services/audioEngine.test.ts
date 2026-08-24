@@ -31,6 +31,20 @@ class BiquadFilterNode extends GNode { type = 'lowpass'; frequency = new Param(3
 const oscillatorNodes: OscillatorNode[] = [];
 const compressorNodes: DynamicsCompressorNode[] = [];
 const bufferSourceNodes: AudioBufferSourceNode[] = [];
+class MediaElementMock {
+  src = '';
+  preload = '';
+  loop = false;
+  crossOrigin = '';
+  played = false;
+  paused = true;
+  canPlayType() { return 'probably'; }
+  play() { this.played = true; this.paused = false; return Promise.resolve(); }
+  pause() { this.paused = true; }
+  removeAttribute() {}
+  load() {}
+}
+const mediaElements: MediaElementMock[] = [];
 const timeoutCallbacks = new Map<number, () => void>();
 let nextTimerId = 0;
 
@@ -92,6 +106,7 @@ class AudioContextMock {
   createDynamicsCompressor() { const node = new DynamicsCompressorNode(); compressorNodes.push(node); return node; }
   createWaveShaper() { return new WaveShaperNode(); }
   createAnalyser() { return new AnalyserMock(); }
+  createMediaElementSource() { return new GNode(); }
   createBuffer(ch: number, len: number) { return new AudioBufferMock(ch, len); }
 }
 
@@ -131,6 +146,7 @@ describe('BinauralEngine multi-voice', () => {
     oscillatorNodes.length = 0;
     compressorNodes.length = 0;
     bufferSourceNodes.length = 0;
+    mediaElements.length = 0;
     timeoutCallbacks.clear();
     delete g.document;
     e = new BinauralEngine();
@@ -157,6 +173,28 @@ describe('BinauralEngine multi-voice', () => {
     expect(oscillatorNodes).toHaveLength(2);
     expect(bufferSourceNodes.some((source) => source.buffer === buffer && source.started)).toBe(true);
     expect((cache.acquire as ReturnType<typeof vi.fn>).mock.calls[0][1]).toContain('rural-crickets-jun-v1.mp3');
+    e.dispose();
+  });
+
+  it('starts the user recording through the media path when the DOM is available', async () => {
+    const cache = sampleCache(async () => {
+      throw new Error('decode failed');
+    });
+    g.document = {
+      createElement: () => {
+        const media = new MediaElementMock();
+        mediaElements.push(media);
+        return media;
+      },
+    };
+    e = new BinauralEngine(cache);
+
+    e.start(cfg([{ type: 'ruralCrickets', volume: 1 }]));
+    await flushMicrotasks();
+
+    expect((cache.acquire as ReturnType<typeof vi.fn>)).not.toHaveBeenCalled();
+    expect(mediaElements.some((media) => media.src.includes('rural-crickets-jun-v1.mp3') && media.played)).toBe(true);
+    expect(e.activeSampleTypes()).toEqual(['ruralCrickets']);
     e.dispose();
   });
 

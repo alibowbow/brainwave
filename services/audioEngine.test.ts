@@ -153,7 +153,8 @@ describe('BinauralEngine multi-voice', () => {
     await flushMicrotasks();
 
     expect(NATURE_SAMPLE_BINDINGS.ruralCrickets?.proceduralMix).toBe(0);
-    expect(oscillatorNodes).toHaveLength(1);
+    // Isochronic mode owns two oscillators (carrier + LFO); no extra cricket oscillator should be added.
+    expect(oscillatorNodes).toHaveLength(2);
     expect(bufferSourceNodes.some((source) => source.buffer === buffer && source.started)).toBe(true);
     expect((cache.acquire as ReturnType<typeof vi.fn>).mock.calls[0][1]).toContain('rural-crickets-jun-v1.mp3');
     e.dispose();

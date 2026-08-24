@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  CloudRain, CloudLightning, Droplets, Mountain, Waves, Flame, Wind, Bird,
+  CloudRain, CloudLightning, Droplets, Mountain, Waves, Flame, Wind, Bird, Bug,
   Feather, CloudMoon, Bell, Disc3, Orbit, Snowflake, Sailboat, Fan, Activity, AudioLines, Volume1,
   Sunrise, Hammer, Egg, Gem, Tent, Blinds, Droplet, Zap, HeartPulse, AudioWaveform, Sprout,
   Landmark, Shell, Fish, MoonStar,

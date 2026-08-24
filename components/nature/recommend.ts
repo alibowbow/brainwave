@@ -2,7 +2,7 @@ import { BackgroundSoundType, NATURE_MIXES } from '../../types';
 import { SOUND_GROUPS } from '../../audioOptions';
 import { SoundLayer } from '../../services/audioEngine';
 
-const DEFAULT_RECS: BackgroundSoundType[] = ['rain', 'fire', 'forest', 'wave', 'birds', 'night', 'stream', 'brown'];
+const DEFAULT_RECS: BackgroundSoundType[] = ['rain', 'fire', 'forest', 'wave', 'birds', 'ruralCrickets', 'night', 'stream', 'brown'];
 
 // Suggest sounds that fit the current scene: layers that co-occur with the
 // active ones in the curated mixes score highest, with a lighter nudge for

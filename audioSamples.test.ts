@@ -13,18 +13,27 @@ import {
 } from './audioSamples';
 
 describe('nature sample manifest', () => {
-  it('has complete CC0 provenance and valid local variants', () => {
+  it('has complete provenance and valid local variants', () => {
     let totalBytes = 0;
     for (const [assetId, asset] of Object.entries(NATURE_SAMPLE_ASSETS)) {
       expect(asset.sourceTitle, assetId).not.toBe('');
       expect(asset.author, assetId).not.toBe('');
-      expect(asset.sourceUrl, assetId).toBe(`https://freesound.org/s/${asset.freesoundId}/`);
-      expect(asset.license).toBe('CC0-1.0');
-      expect(asset.licenseUrl).toBe(CC0_1_0_URL);
-      expect(asset.distributedSourceUrl).toMatch(/^https:\/\//);
+      if (asset.license === 'CC0-1.0') {
+        expect(asset.freesoundId).not.toBeNull();
+        expect(asset.sourceUrl, assetId).toBe(`https://freesound.org/s/${asset.freesoundId}/`);
+        expect(asset.licenseUrl).toBe(CC0_1_0_URL);
+        expect(asset.distributedSourceUrl).toMatch(/^https:\/\//);
+        expect(asset.retrievedAt).toBe('2026-07-12');
+      } else {
+        expect(asset.license).toBe('user-recorded');
+        expect(asset.freesoundId).toBeNull();
+        expect(asset.sourceUrl, assetId).toBe('user-provided');
+        expect(asset.licenseUrl).toBeNull();
+        expect(asset.distributedSourceUrl).toMatch(/^local-user-recording:\/\//);
+        expect(asset.retrievedAt).toBe('2026-08-24');
+      }
       expect(asset.distributedSourceSha256).toMatch(/^[a-f0-9]{64}$/);
       expect(asset.processingCommand).not.toBe('');
-      expect(asset.retrievedAt).toBe('2026-07-12');
       expect(asset.sources.length).toBeGreaterThan(0);
       for (const source of asset.sources) {
         const path = resolve('public/audio/nature', source.fileName);

@@ -51,6 +51,7 @@ export const SPATIAL: Partial<Record<BackgroundSoundType, SpatialSpec>> = {
   bamboo: { x: 0.93, depth: 'near' },
   // Night insects chirp from everywhere, not from one bush.
   night: { x: 0.84, depth: 'near', wide: true },
+  ruralCrickets: { x: 0.58, depth: 'near', wide: true },
   cave: { x: 0.5, depth: 'far', wide: true },
 
   // 오브젝트

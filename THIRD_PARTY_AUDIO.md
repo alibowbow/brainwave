@@ -1,24 +1,25 @@
 # Nature audio provenance
 
-The nature mixer combines procedural Web Audio synthesis with locally shipped field recordings. Third-party recordings listed here are released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The `ruralCrickets` asset is a user-provided field recording and is marked separately. Source, author, exact imported bytes, and processing history are recorded here for auditability and reproducible builds.
+The nature mixer combines procedural Web Audio synthesis with locally shipped field recordings. Third-party recordings listed here are released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The `ruralCrickets` and `rainJun` assets are user-provided field recordings and are marked separately. Source, author, exact imported bytes, and processing history are recorded here for auditability and reproducible builds.
 
-The app does not contact Freesound or the source repositories at runtime. Files under `public/audio/nature/` are requested only when a matching sound is enabled. They are deliberately excluded from the PWA precache; after a successful request, the service worker may retain that versioned file in the `nature-audio-v1` runtime cache for later/offline playback. Hybrid layers start their procedural bed immediately and remain available if a file cannot be fetched or decoded. The user-recorded `ruralCrickets` layer is intentionally sample-only and never substitutes the generic night-insect generator.
+The app does not contact Freesound or the source repositories at runtime. Files under `public/audio/nature/` are requested only when a matching sound is enabled. They are deliberately excluded from the PWA precache; after a successful request, the service worker may retain that versioned file in the `nature-audio-v1` runtime cache for later/offline playback. Hybrid layers start their procedural bed immediately and remain available if a file cannot be fetched or decoded. The user-recorded `ruralCrickets` layer is intentionally sample-only and never substitutes the generic night-insect generator. The user-recorded `rainJun` layer uses the uploaded rain loop as its real recording source.
 
 ## Important source distinction
 
 - **Upstream original** means the recording described on the linked Freesound page. It establishes the author, title, license, and original recording specification.
 - **Distributed source** means the exact bytes actually imported into this repository. A distributed source is not necessarily the Freesound original.
-- Rain, creek, and fireplace use cropped PCM derivatives bundled by [Ambie](https://github.com/jenius-apps/ambie/tree/30601f527e092c77c2408c0d247893b9fa30a20e). They are not copies of the full-length Freesound WAV originals. Ambie's pinned `Data.json` was used to map those derivatives back to their Freesound records.
+- Creek and fireplace use cropped PCM derivatives bundled by [Ambie](https://github.com/jenius-apps/ambie/tree/30601f527e092c77c2408c0d247893b9fa30a20e). They are not copies of the full-length Freesound WAV originals. Ambie's pinned `Data.json` was used to map those derivatives back to their Freesound records.
+- `rainJun` is a user-provided stereo rain recording, loop-edited locally from the uploaded MP3 and distributed as a 128 kbps MP3.
 - Ocean, forest birds, and waterfall are byte-for-byte copies of Freesound's **HQ MP3 previews**. They are explicitly not the original WAV downloads.
 - Forest, crickets, wind, arctic wind, and thunder use selected OGG derivatives/excerpts bundled by [DynamicSurroundingsFabric](https://github.com/OreCruncher/DynamicSurroundingsFabric/tree/0d352c7e57bbd39786defdba355156a5bdb850f4). They are not copies of the full Freesound originals. The repository's pinned `CREDITS.md` was used for the source mapping.
 
-Retrieval date for third-party distributed sources: **2026-07-12**. The user-provided `ruralCrickets` recording was added and processed on **2026-08-24**.
+Retrieval date for third-party distributed sources: **2026-07-12**. The user-provided `ruralCrickets` recording was added and processed on **2026-08-24**; `rainJun` was added and processed on **2026-08-26**.
 
 ## Provenance and imported-source integrity
 
 | App asset | Freesound original | Upstream original specification | Exact distributed source used | Distributed-source SHA-256 |
 | --- | --- | --- | --- | --- |
-| `rainRural` | [Rain heavy 1 (rural), #200270](https://freesound.org/s/200270/) by `jmbphilmes` | WAV, 48 kHz, 24-bit, mono, 400 s | [Ambie `rain.wav`](https://github.com/jenius-apps/ambie/blob/30601f527e092c77c2408c0d247893b9fa30a20e/src/AmbientSounds.Uwp/Assets/Sounds/rain.wav), cropped WAV derivative: PCM 48 kHz/16-bit mono, 60.27 s | `5a68ea94b6e1d83e77db80fbc55d7c2f7abef192879dfb6a9b859c1c3f753fa0` |
+| `rainJun` | User-provided field recording by `Jun` | MP3, 48 kHz, stereo, about 194 kbps, 18.70 s | Uploaded MP3, low-discontinuity seam at 2.29 s, tail/head 1.5 s equal-power crossfade, normalized to MP3 48 kHz stereo 128k, 17.21 s | `0be4a672a3ee099cc2c1c0dc5f5a664ccc5eab82100dea0b93205bc1e8dc1b1a` |
 | `creekBrook` | [Burbling Brook, #324591](https://freesound.org/s/324591/) by `hargissssound` | WAV, 44.1 kHz, 16-bit, stereo, 185.21 s | [Ambie `creek.wav`](https://github.com/jenius-apps/ambie/blob/30601f527e092c77c2408c0d247893b9fa30a20e/src/AmbientSounds.Uwp/Assets/Sounds/creek.wav), cropped WAV derivative: PCM 44.1 kHz/16-bit stereo, 25.06 s | `3926d7cf09975740dc39baec395a4117ea06a8f4a322978a44798b3245863777` |
 | `fireplaceHearth` | [13_Fire in fireplace.wav, #499032](https://freesound.org/s/499032/) by `16FThumaF` | WAV, 48 kHz, 24-bit, stereo, 102.79 s | [Ambie `fireplace.wav`](https://github.com/jenius-apps/ambie/blob/30601f527e092c77c2408c0d247893b9fa30a20e/src/AmbientSounds.Uwp/Assets/Sounds/fireplace.wav), cropped WAV derivative: PCM 48 kHz/16-bit stereo, 17.57 s | `e3c10a5a1c328edbf261a87f66ce150234cabfb88a169ec3f0de70fabc561b20` |
 | `oceanRibeira` | [Ambiance_Ocean_Ribeira_Grande_Loop_Stereo_02, #829629](https://freesound.org/s/829629/) by `Nox_Sound` | WAV, 96 kHz, 24-bit, stereo, 60.00 s; Sony PCM-D100 field recording | [Freesound HQ MP3 preview](https://cdn.freesound.org/previews/829/829629_9250976-hq.mp3), MP3 48 kHz stereo, about 179 kbps, 60.05 s; **not the original WAV** | `53baa509447a5207ef394ee771ffd85fa383cd1f4b22ce1b2e93de5bedb1b647` |
@@ -52,7 +53,7 @@ The Ambie WAV derivatives were gain-adjusted and encoded for the app. The Nox_So
 
 | Asset | Processing performed for this app | Runtime seam |
 | --- | --- | --- |
-| `rainRural` | `ffmpeg -i rain.wav -af volume=4dB -ar 48000 -ac 1`, then Vorbis q4 and MP3 96k | 1.25 s equal-power crossfade |
+| `rainJun` | Uploaded MP3 → low-discontinuity seam at 2.29 s → 1.5 s tail/head `acrossfade` (`qsin`) → `loudnorm I=-22:TP=-5:LRA=7` → MP3 48 kHz stereo 128k | Baked 1.50 s equal-power seam plus 0.15 s runtime codec-edge guard |
 | `creekBrook` | `ffmpeg -i creek.wav -af volume=5.8dB -ar 48000 -ac 2`, then Vorbis q4 and MP3 96k; v3 brook voicing: 330 Hz highpass, -3.3 dB, soft-limit, lamejs MP3 112k | 1.10 s equal-power crossfade |
 | `fireplaceHearth` | `ffmpeg -i fireplace.wav -af volume=3dB -ar 48000 -ac 2`, then Vorbis q4 and MP3 96k | 0.90 s equal-power crossfade |
 | `oceanRibeira` | None; versioned byte-for-byte copy of the Freesound HQ preview | 0.30 s equal-power crossfade |
@@ -73,7 +74,7 @@ The final column is deliberately conservative for the encoded-source gain stage:
 
 | Asset | Encoded integrated loudness | Maximum encoded true peak | `sampleTrim` | Post-trim loudness at level 1.0 | Conservative peak at level 1.2 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| `rainRural` | -21.5 LUFS | -5 dBTP | 1.00 | -21.5 LUFS | -3.4 dBTP |
+| `rainJun` | -22.4 LUFS | -6.5 dBTP | 1.00 | -22.4 LUFS | -4.9 dBTP |
 | `creekBrook` | -24.8 LUFS | -5.9 dBTP | 1.00 | -24.8 LUFS | -4.3 dBTP |
 | `fireplaceHearth` | -32.2 LUFS | -5 dBTP | 1.00 | -32.2 LUFS | -3.4 dBTP |
 | `oceanRibeira` | -20.9 LUFS | -5.7 dBTP | 1.00 | -20.9 LUFS | -4.1 dBTP |
@@ -90,7 +91,7 @@ The final column is deliberately conservative for the encoded-source gain stage:
 
 ## Shipped-file integrity
 
-The 24 lazy-loaded files total **9,474,217 bytes** (below the 10 MiB checked-in audio budget). Browser capability detection prefers Vorbis where provided and falls back to MP3. The two Nox_Sound assets and the BayTsai bird asset are MP3-only universal sources.
+The 14 lazy-loaded files total **5,414,514 bytes** (below the 10 MiB checked-in audio budget). Browser capability detection prefers Vorbis where provided and falls back to MP3. The shipped nature assets are MP3-only universal sources.
 
 | File | Bytes | SHA-256 |
 | --- | ---: | --- |
@@ -103,7 +104,7 @@ The 24 lazy-loaded files total **9,474,217 bytes** (below the 10 MiB checked-in 
 | `forest-field-cc0-v2.mp3` | 554,112 | `f6b4edafc65c71633168fdee202c0a764d99366e9fd1df97379f0bc310f1cfa6` |
 | `mountain-wind-cc0-v2.mp3` | 524,160 | `3597008fdc94aadddc75fb4e2b8cf8dc36ff796dc3b487a65cb2ebdb14cc0505` |
 | `ocean-ribeira-cc0-v2.mp3` | 960,768 | `85edc622c0758d48cc59d118dd06123a69519f6a63d2efb68945b72364745a4c` |
-| `rain-rural-cc0-v2.mp3` | 723,744 | `44bf2d32f0af8d5092115b3bec21b47cc20af898b8293ec4888938f74657ae22` |
+| `rain-jun-v1.mp3` | 276,090 | `0be4a672a3ee099cc2c1c0dc5f5a664ccc5eab82100dea0b93205bc1e8dc1b1a` |
 | `thunder-distant-cc0-v2.mp3` | 178,416 | `fffdab0cc338ef90dcef915871fa95a9380eeb05c953f012d999b4ebbe83e398` |
 | `thunder-near-cc0-v2.mp3` | 222,096 | `aa70528270e291b89efd85d9d1102cfa91216bd14faaa7312db0e6c5aa56dafc` |
 | `thunder-storm-cc0-v2.mp3` | 145,488 | `b3c802a51391affbed5e8ecdaf5ca0f382205a51919aa87879f7c559bd0bcd5e` |
@@ -111,7 +112,7 @@ The 24 lazy-loaded files total **9,474,217 bytes** (below the 10 MiB checked-in 
 
 ## Runtime bindings
 
-- Rain, tent rain, and window rain share `rainRural` at different binding scales.
+- Rain, tent rain, and window rain share `rainJun` at different binding scales.
 - Thunder and distant thunder choose irregularly from the three one-shot thunder events; they do not loop a single strike.
 - Stream uses `creekBrook`; waterfall uses `waterfallCaldeiroes`.
 - Ocean waves use `oceanRibeira`; pebbles and seabirds reuse it only as a lower-level shore bed while their procedural detail remains prominent.
@@ -123,4 +124,4 @@ The authoritative machine-readable manifest is [`audioSamples.ts`](./audioSample
 
 ## Perceptual QA gate
 
-All 24 files decode end-to-end without an FFmpeg error, and the 40.032-second Alishan bird preview has no one-second interval below -50 dBFS. Its codec, duration, SHA-256, -30.7 LUFS integrated loudness, and -6.3 dBTP peak were independently rechecked. Automated validation cannot determine whether a distant human, vehicle, aircraft, or distracting species call is perceptually objectionable. The Alishan recording therefore requires one uninterrupted 40-second headphone listen in the deployed preview before this draft is merged.
+All 14 files decode end-to-end without an FFmpeg error, and the 17.208-second user rain loop was checked for a continuous encoded stream, a low-discontinuity baked seam, and a short runtime codec-edge guard. The 40.032-second Alishan bird preview has no one-second interval below -50 dBFS. Its codec, duration, SHA-256, -30.7 LUFS integrated loudness, and -6.3 dBTP peak were independently rechecked. Automated validation cannot determine whether a distant human, vehicle, aircraft, or distracting species call is perceptually objectionable. The Alishan recording therefore requires one uninterrupted 40-second headphone listen in the deployed preview before this draft is merged.

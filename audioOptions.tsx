@@ -107,6 +107,14 @@ export const getSoundLabel = (type: BackgroundSoundType) => {
   }
 };
 
+export type SoundOrigin = 'AI' | 'REAL';
+
+/** Origin labels shown in the sound library so synthetic and recorded layers are easy to tell apart. */
+export const getSoundOrigin = (type: BackgroundSoundType): SoundOrigin | null => {
+  if (type === 'none') return null;
+  return type === 'rain' || type === 'ruralCrickets' ? 'REAL' : 'AI';
+};
+
 const WAVE_SHORT: Record<BrainWaveType, string> = {
   alpha: '알파',
   beta: '베타',

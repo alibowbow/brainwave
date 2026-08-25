@@ -30,7 +30,7 @@ describe('nature sample manifest', () => {
         expect(asset.sourceUrl, assetId).toBe('user-provided');
         expect(asset.licenseUrl).toBeNull();
         expect(asset.distributedSourceUrl).toMatch(/^local-user-recording:\/\//);
-        expect(asset.retrievedAt).toBe('2026-08-24');
+        expect(asset.retrievedAt).toBe(assetId === 'ruralCrickets' ? '2026-08-24' : '2026-08-26');
       }
       expect(asset.distributedSourceSha256).toMatch(/^[a-f0-9]{64}$/);
       expect(asset.processingCommand).not.toBe('');
@@ -100,14 +100,14 @@ describe('nature sample URLs', () => {
   });
 
   it('serves the universal MP3 to every browser', () => {
-    const urls = natureSampleUrls('rainRural', '/brainwave/', () => true);
+    const urls = natureSampleUrls('rainJun', '/brainwave/', () => true);
     expect(urls.map((source) => source.codec)).toEqual(['MP3']);
-    expect(urls[0].url).toBe('/brainwave/audio/nature/rain-rural-cc0-v2.mp3');
+    expect(urls[0].url).toBe('/brainwave/audio/nature/rain-jun-v1.mp3');
   });
 
   it('falls back to MP3 sources when the mime probe rejects everything', () => {
-    const urls = natureSampleUrls('rainRural', '/', () => false);
+    const urls = natureSampleUrls('rainJun', '/', () => false);
     expect(urls.map((source) => source.codec)).toEqual(['MP3']);
-    expect(urls[0].url).toBe('/audio/nature/rain-rural-cc0-v2.mp3');
+    expect(urls[0].url).toBe('/audio/nature/rain-jun-v1.mp3');
   });
 });

@@ -37,7 +37,7 @@ export interface NatureSampleAsset {
   sources: readonly NatureSampleSource[];
   /** Calibrated independently from procedural NATURE_SOURCE_TRIM. */
   sampleTrim: number;
-  /** Runtime tail->head equal-power seam blend. Zero for event one-shots. */
+  /** Runtime tail->head equal-power seam blend; baked loops may retain a short codec-edge guard. */
   crossfadeSeconds: number;
   durationSeconds: number;
   channels: 1 | 2;
@@ -53,23 +53,23 @@ const dsRaw = (path: string) =>
   `${DYNAMIC_SURROUNDINGS_REPOSITORY}/blob/${DYNAMIC_SURROUNDINGS_COMMIT}/common/src/main/resources/assets/dsurround/sounds/ambient/${path}`;
 
 export const NATURE_SAMPLE_ASSETS = {
-  rainRural: {
+  rainJun: {
     playback: 'loop',
-    sourceTitle: 'Rain heavy 1 (rural)',
-    author: 'jmbphilmes', freesoundId: 200270, sourceUrl: 'https://freesound.org/s/200270/',
-    license: 'CC0-1.0', licenseUrl: CC0_1_0_URL,
-    sourceRepository: AMBIE_REPOSITORY, sourceCommit: AMBIE_COMMIT,
-    distributedSourceUrl: ambieRaw('rain.wav'),
-    distributedVariant: 'Ambie bundled, cropped WAV derivative',
-    upstreamOriginalSpec: 'WAV, 48 kHz, 24-bit, mono, 400 s',
-    distributedSpec: 'WAV PCM, 48 kHz, 16-bit, mono, 60.27 s', retrievedAt: '2026-07-12',
-    processingCommand: 'ffmpeg -i rain.wav -af volume=4dB -ar 48000 -ac 1 -> Vorbis q4 + MP3 96k; v2 remaster: browser decode → +10 dB gain + tanh soft-limit (knee -9 dBFS, ceiling -5 dBFS) → lamejs MP3 96k',
-    distributedSourceSha256: '5a68ea94b6e1d83e77db80fbc55d7c2f7abef192879dfb6a9b859c1c3f753fa0',
+    sourceTitle: '빗소리 현장 녹음',
+    author: 'Jun', freesoundId: null, sourceUrl: 'user-provided',
+    license: 'user-recorded', licenseUrl: null,
+    sourceRepository: null, sourceCommit: null,
+    distributedSourceUrl: 'local-user-recording://1000006320-output.mp3',
+    distributedVariant: '사용자 제공 MP3를 2.29초 저불연속 seam에서 1.5초 equal-power tail→head crossfade로 루프화한 배포본 (baked seam; 0.15초 runtime codec-edge guard)',
+    upstreamOriginalSpec: 'MP3, 48 kHz, stereo, 약 194 kbps, 18.70 s',
+    distributedSpec: 'MP3, 48 kHz, 128 kbps CBR, stereo, 17.21 s', retrievedAt: '2026-08-26',
+    processingCommand: 'ffmpeg: low-discontinuity seam at 2.29 s → 1.5 s tail/head acrossfade(c1=qsin:c2=qsin) → loudnorm I=-22:TP=-5:LRA=7 → MP3 128k',
+    distributedSourceSha256: '0be4a672a3ee099cc2c1c0dc5f5a664ccc5eab82100dea0b93205bc1e8dc1b1a',
     sources: [
-      { fileName: 'rain-rural-cc0-v2.mp3', mimeType: 'audio/mpeg', codec: 'MP3', bitrateKbps: 96, sha256: '44bf2d32f0af8d5092115b3bec21b47cc20af898b8293ec4888938f74657ae22', role: 'universal' },
+      { fileName: 'rain-jun-v1.mp3', mimeType: 'audio/mpeg', codec: 'MP3', bitrateKbps: 128, sha256: '0be4a672a3ee099cc2c1c0dc5f5a664ccc5eab82100dea0b93205bc1e8dc1b1a', role: 'universal' },
     ],
-    sampleTrim: 1, crossfadeSeconds: 1.25, durationSeconds: 60.27, channels: 1, sampleRate: 48_000,
-    decodedBytesEstimate: 11_571_840, integratedLufs: -21.5, truePeakDbtp: -5,
+    sampleTrim: 1, crossfadeSeconds: 0.15, durationSeconds: 17.208, channels: 2, sampleRate: 48_000,
+    decodedBytesEstimate: 6_607_872, integratedLufs: -22.4, truePeakDbtp: -6.5,
   },
   creekBrook: {
     playback: 'loop',
@@ -300,9 +300,9 @@ export const NATURE_SAMPLE_BINDINGS: Partial<Record<BackgroundSoundType, NatureS
   // against measured file RMS: recordings loud enough to carry get a ~50/50
   // blend; quiet ones stay texture so the layer never collapses in loudness
   // when the asynchronously decoded sample arrives.
-  rain: { assetIds: ['rainRural'], sampleScale: 1, proceduralMix: 0.45 },
-  tent: { assetIds: ['rainRural'], sampleScale: 0.82, proceduralMix: 0.55 },
-  window: { assetIds: ['rainRural'], sampleScale: 0.72, proceduralMix: 0.55 },
+  rain: { assetIds: ['rainJun'], sampleScale: 1, proceduralMix: 0.45 },
+  tent: { assetIds: ['rainJun'], sampleScale: 0.82, proceduralMix: 0.55 },
+  window: { assetIds: ['rainJun'], sampleScale: 0.72, proceduralMix: 0.55 },
   thunder: { assetIds: ['thunderNear', 'thunderDistant', 'thunderStorm'], sampleScale: 1, proceduralMix: 0.55, eventGapMs: [20_000, 60_000] },
   dthunder: { assetIds: ['thunderDistant', 'thunderStorm'], sampleScale: 0.72, proceduralMix: 0.55, eventGapMs: [28_000, 65_000] },
   stream: { assetIds: ['creekBrook'], sampleScale: 0.8, proceduralMix: 0.5 },

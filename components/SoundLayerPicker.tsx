@@ -1,7 +1,7 @@
 import React from 'react';
 import { BackgroundSoundType } from '../types';
 import { SoundLayer } from '../services/audioEngine';
-import { SOUND_GROUPS, getSoundIcon, getSoundLabel } from '../audioOptions';
+import { SOUND_GROUPS, getSoundIcon, getSoundLabel, getSoundOrigin } from '../audioOptions';
 import { MAX_LAYER_VOLUME } from '../audioLevels';
 import { VolumeSlider } from './VolumeSlider';
 
@@ -30,23 +30,34 @@ export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVo
               {group.label}
             </p>
             <div className={`grid gap-2 ${compact ? 'grid-cols-4 sm:grid-cols-5 xl:grid-cols-6' : 'grid-cols-4 sm:grid-cols-5'}`}>
-              {group.sounds.map((sound) => (
-                <button
-                  key={sound}
-                  type="button"
-                  onClick={() => onToggle(sound)}
-                  aria-pressed={isActive(sound)}
-                  aria-label={getSoundLabel(sound)}
-                  className={`flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${compact ? 'min-h-[64px] py-2' : 'min-h-[72px] py-2.5'} ${
-                    isActive(sound)
-                      ? 'border-[#7180ef]/45 bg-[#7180ef]/10 text-[#5f6fe3] shadow-sm dark:border-[#8491ff]/35 dark:bg-[#7180ef]/12 dark:text-[#aab3ff]'
-                      : 'border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-800 dark:bg-white/[0.035] dark:text-slate-500 dark:hover:bg-white/7 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {getSoundIcon(sound)}
-                  <span className="max-w-full truncate whitespace-nowrap px-0.5 text-[10px] font-black">{getSoundLabel(sound)}</span>
-                </button>
-              ))}
+              {group.sounds.map((sound) => {
+                const active = isActive(sound);
+                const origin = getSoundOrigin(sound);
+                const label = getSoundLabel(sound);
+                return (
+                  <button
+                    key={sound}
+                    type="button"
+                    onClick={() => onToggle(sound)}
+                    aria-pressed={active}
+                    aria-label={`${label} · ${origin === 'REAL' ? '리얼 녹음' : 'AI 합성'}`}
+                    className={`relative flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${compact ? 'min-h-[64px] py-2' : 'min-h-[72px] py-2.5'} ${
+                      active
+                        ? 'border-[#7180ef]/45 bg-[#7180ef]/10 text-[#5f6fe3] shadow-sm dark:border-[#8491ff]/35 dark:bg-[#7180ef]/12 dark:text-[#aab3ff]'
+                        : 'border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-800 dark:bg-white/[0.035] dark:text-slate-500 dark:hover:bg-white/7 dark:hover:text-slate-200'
+                    }`}
+                  >
+                    <span className={`pointer-events-none absolute left-1.5 top-1.5 rounded-md px-1 py-0.5 text-[7px] font-black leading-none tracking-[0.08em] ${origin === 'REAL'
+                    ? 'bg-emerald-500/12 text-emerald-600 dark:bg-emerald-400/12 dark:text-emerald-300'
+                    : 'bg-slate-200/80 text-slate-400 dark:bg-white/[0.06] dark:text-slate-500'}`}
+                    >
+                      {origin}
+                    </span>
+                    {getSoundIcon(sound)}
+                    <span className="max-w-full truncate whitespace-nowrap px-0.5 text-[10px] font-black">{label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         ))}

@@ -296,13 +296,11 @@ export interface NatureSampleBinding {
 }
 
 export const NATURE_SAMPLE_BINDINGS: Partial<Record<BackgroundSoundType, NatureSampleBinding>> = {
-  // proceduralMix keeps the synthesized body under the recording. Calibrated
-  // against measured file RMS: recordings loud enough to carry get a ~50/50
-  // blend; quiet ones stay texture so the layer never collapses in loudness
-  // when the asynchronously decoded sample arrives.
-  rain: { assetIds: ['rainJun'], sampleScale: 1, proceduralMix: 0.45 },
-  tent: { assetIds: ['rainJun'], sampleScale: 0.82, proceduralMix: 0.55 },
-  window: { assetIds: ['rainJun'], sampleScale: 0.72, proceduralMix: 0.55 },
+  // The uploaded rain recording is the complete source for each rain theme;
+  // no synthesized rain bed is mixed underneath it.
+  rain: { assetIds: ['rainJun'], sampleScale: 1, proceduralMix: 0 },
+  tent: { assetIds: ['rainJun'], sampleScale: 0.82, proceduralMix: 0 },
+  window: { assetIds: ['rainJun'], sampleScale: 0.72, proceduralMix: 0 },
   thunder: { assetIds: ['thunderNear', 'thunderDistant', 'thunderStorm'], sampleScale: 1, proceduralMix: 0.55, eventGapMs: [20_000, 60_000] },
   dthunder: { assetIds: ['thunderDistant', 'thunderStorm'], sampleScale: 0.72, proceduralMix: 0.55, eventGapMs: [28_000, 65_000] },
   stream: { assetIds: ['creekBrook'], sampleScale: 0.8, proceduralMix: 0.5 },

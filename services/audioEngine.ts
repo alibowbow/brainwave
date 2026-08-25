@@ -425,6 +425,8 @@ export class BinauralEngine {
     if (existing) { this.setSoundVolume(type, volume); return; }
 
     const safeVolume = clampLayerVolume(volume);
+    const binding = NATURE_SAMPLE_BINDINGS[type];
+    const sampleOnly = Boolean(binding?.assetIds.length && binding.proceduralMix === 0);
     const gain = this.ctx.createGain();
     gain.gain.value = 0;
     const sampleGain = this.ctx.createGain();
@@ -476,14 +478,18 @@ export class BinauralEngine {
       sampleGain,
       bucket,
       volume: safeVolume,
-      proceduralMix: 1,
+      proceduralMix: sampleOnly ? 0 : 1,
       sampleActive: false,
       sampleEventPlaying: false,
       activeSampleId: null,
       spatialNodes,
     };
     this.voices.set(type, voice);
-    gain.gain.setTargetAtTime(layerGain(type, safeVolume), this.ctx.currentTime, fadeSec / 3);
+    gain.gain.setTargetAtTime(
+      layerGain(type, safeVolume) * (sampleOnly ? 0 : 1),
+      this.ctx.currentTime,
+      fadeSec / 3,
+    );
     this.startHybridSample(type, voice);
     if (updateBus) this.updateNatureBusGain(fadeSec / 3);
   }
@@ -651,6 +657,7 @@ export class BinauralEngine {
       media.loop = true;
       media.crossOrigin = 'anonymous';
       media.src = candidate.url;
+      if (typeof media.play !== 'function') return false;
 
       const source = this.ctx.createMediaElementSource(media);
       source.connect(voice.sampleGain);

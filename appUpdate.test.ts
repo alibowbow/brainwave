@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   FORCE_UPDATE_PARAM,
+  isLegacyNatureAudioCache,
   isScopedPrecache,
   prepareForcedRefresh,
   stripForceUpdateNonce,
@@ -18,6 +19,8 @@ describe('forced app update helpers', () => {
     const scope = 'https://example.com/brainwave/';
     expect(isScopedPrecache(`workbox-precache-v2-${scope}`, scope)).toBe(true);
     expect(isScopedPrecache('nature-audio-v1', scope)).toBe(false);
+    expect(isLegacyNatureAudioCache('nature-audio-v1')).toBe(true);
+    expect(isLegacyNatureAudioCache('nature-audio-v2')).toBe(false);
     expect(isScopedPrecache('workbox-precache-v2-https://example.com/eng/', scope)).toBe(false);
   });
 
@@ -47,8 +50,9 @@ describe('forced app update helpers', () => {
       new URL(`https://example.com/brainwave/manifest.webmanifest?${FORCE_UPDATE_PARAM}=99`),
       { cache: 'no-store' },
     );
-    expect(deleteCache).toHaveBeenCalledTimes(1);
     expect(deleteCache).toHaveBeenCalledWith('workbox-precache-v2-https://example.com/brainwave/');
+    expect(deleteCache).toHaveBeenCalledWith('nature-audio-v1');
+    expect(deleteCache).toHaveBeenCalledTimes(2);
     expect(unregister).toHaveBeenCalledOnce();
     expect(nextUrl).toBe(`https://example.com/brainwave/?${FORCE_UPDATE_PARAM}=99#night`);
   });

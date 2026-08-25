@@ -279,7 +279,7 @@ describe('BinauralEngine multi-voice', () => {
     }).not.toThrow();
   });
 
-  it('decodes the universal MP3 and crossfades the procedural bed', async () => {
+  it('uses the new rain recording without a synthesized rain bed', async () => {
     g.document = { createElement: () => ({ canPlayType: () => 'probably' }) };
     const buffer = new AudioBufferMock(1, 96_000) as unknown as AudioBuffer;
     const release = vi.fn();
@@ -299,16 +299,15 @@ describe('BinauralEngine multi-voice', () => {
     expect(e.activeSampleTypes()).toEqual(['rain']);
     const voice = (e as any).voices.get('rain');
     expect(voice.proceduralMix).toBe(NATURE_SAMPLE_BINDINGS.rain!.proceduralMix);
-    expect(voice.gain.gain.value).toBeCloseTo(
-      layerGain('rain', 0.8) * NATURE_SAMPLE_BINDINGS.rain!.proceduralMix,
-    );
+    expect(NATURE_SAMPLE_BINDINGS.rain!.proceduralMix).toBe(0);
+    expect(voice.gain.gain.value).toBeCloseTo(0);
     expect(voice.sampleGain.gain.value).toBeCloseTo(sampleLayerGain('rain', 'rainJun', 0.8));
     expect(bufferSourceNodes.some((source) => source.buffer === buffer && source.started)).toBe(true);
     e.dispose();
     expect(release).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps the procedural fallback at 100% when every sample candidate fails', async () => {
+  it('does not revive the previous synthesized rain when the real sample is unavailable', async () => {
     g.document = { createElement: () => ({ canPlayType: () => 'probably' }) };
     const cache = sampleCache(async () => { throw new Error('offline'); });
     e = new BinauralEngine(cache);
@@ -318,8 +317,8 @@ describe('BinauralEngine multi-voice', () => {
     const voice = (e as any).voices.get('rain');
     expect(cache.acquire).toHaveBeenCalledTimes(1);
     expect(e.activeSampleTypes()).toEqual([]);
-    expect(voice.proceduralMix).toBe(1);
-    expect(voice.gain.gain.value).toBeCloseTo(layerGain('rain', 0.7));
+    expect(voice.proceduralMix).toBe(0);
+    expect(voice.gain.gain.value).toBeCloseTo(0);
     expect(voice.sampleGain.gain.value).toBe(0);
     e.dispose();
   });

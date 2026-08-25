@@ -16,7 +16,9 @@ export default defineConfig(({ mode }) => {
       plugins: [
         react(),
         VitePWA({
-          registerType: 'prompt',
+          // Audio replacements must reach an already-installed PWA without
+          // leaving the previous service worker in control of the old asset.
+          registerType: 'autoUpdate',
           includeAssets: ['icon.svg', 'apple-touch-icon.png', 'favicon-32x32.png'],
           manifest: {
             name: 'Brainwave · Ritual Studio',
@@ -38,8 +40,8 @@ export default defineConfig(({ mode }) => {
           },
           workbox: {
             cleanupOutdatedCaches: true,
-            clientsClaim: false,
-            skipWaiting: false,
+            clientsClaim: true,
+            skipWaiting: true,
             // Audio is deliberately absent: nature recordings are fetched only
             // when their layer is selected, then retained by the runtime cache.
             globPatterns: ['**/*.{js,css,html,svg,png,webp,ico,webmanifest}'],
@@ -63,7 +65,7 @@ export default defineConfig(({ mode }) => {
                 urlPattern: /\/audio\/nature\/.*\.(?:ogg|mp3)$/i,
                 handler: 'CacheFirst',
                 options: {
-                  cacheName: 'nature-audio-v1',
+                  cacheName: 'nature-audio-v2',
                   expiration: { maxEntries: 32, maxAgeSeconds: 60 * 60 * 24 * 180 },
                   cacheableResponse: { statuses: [0, 200] },
                 },

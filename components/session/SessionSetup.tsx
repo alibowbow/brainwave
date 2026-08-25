@@ -19,7 +19,7 @@ import {
 import { type BrainWaveType, type SessionPreset } from '../../types';
 import type { SoundLayer, ToneMode } from '../../services/audioEngine';
 import { DEFAULT_MIX_VOLUMES, MAX_LAYER_VOLUME, MIX_PROFILES, type MixVolumes } from '../../audioLevels';
-import { SOUND_GROUPS, WAVE_ORDER, getSoundIcon, getSoundLabel, getWaveShortLabel } from '../../audioOptions';
+import { SOUND_GROUPS, WAVE_ORDER, getSoundIcon, getSoundLabel, getSoundOrigin, getWaveShortLabel } from '../../audioOptions';
 import { Toggle } from '../Toggle';
 import { VolumeSlider } from '../VolumeSlider';
 import { BrainwaveGuide } from './BrainwaveGuide';
@@ -188,17 +188,25 @@ export const SessionSetup: React.FC<Props> = ({
             <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 xl:grid-cols-5">
               {visibleSounds.map(({ sound, group: soundGroup }) => {
                 const active = isActive(sound);
+                const origin = getSoundOrigin(sound);
                 return (
                   <button
                     key={sound}
                     type="button"
                     onClick={() => onToggleLayer(sound)}
                     aria-pressed={active}
+                    aria-label={`${getSoundLabel(sound)} · ${origin === 'REAL' ? '리얼 녹음' : 'AI 합성'}`}
                     className={`relative flex min-h-[78px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-center transition-all active:scale-[0.98] ${active
                       ? 'border-primary-300 bg-primary-50 text-primary-700 shadow-sm dark:border-primary-400/40 dark:bg-primary-500/15 dark:text-primary-300'
                       : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-primary-300 hover:bg-white hover:text-slate-950 dark:border-white/7 dark:bg-white/[0.035] dark:text-slate-400 dark:hover:border-primary-400/30 dark:hover:bg-white/7 dark:hover:text-white'}`}
                   >
                     {active ? <span className="absolute right-1.5 top-1.5 grid h-4 w-4 place-items-center rounded-full bg-primary-600 text-white"><Check size={10} strokeWidth={3} /></span> : null}
+                    <span className={`pointer-events-none absolute left-1.5 top-1.5 rounded-md px-1 py-0.5 text-[7px] font-black leading-none tracking-[0.08em] ${origin === 'REAL'
+                      ? 'bg-emerald-500/12 text-emerald-600 dark:bg-emerald-400/12 dark:text-emerald-300'
+                      : 'bg-slate-200/80 text-slate-400 dark:bg-white/[0.06] dark:text-slate-500'}`}
+                    >
+                      {origin}
+                    </span>
                     <span className="[&>svg]:h-[19px] [&>svg]:w-[19px]">{getSoundIcon(sound)}</span>
                     <span className="max-w-full truncate text-[10px] font-bold">{getSoundLabel(sound)}</span>
                     <span className="text-[8px] font-semibold opacity-55">{soundGroup}</span>

@@ -21,7 +21,6 @@ const OUT = '/home/user/brainwave/public/audio/nature/';
 
 // [srcFile, outName, gainDb, kbps]
 const JOBS = [
-  ['rain-rural-cc0-v1.ogg',            'rain-rural-cc0-v2.mp3',        10,   96],
   ['creek-brook-cc0-v1.ogg',           'creek-brook-cc0-v2.mp3',       9.5, 112],
   ['ocean-ribeira-cc0-v1.mp3',         'ocean-ribeira-cc0-v2.mp3',     3,   128],
   ['waterfall-caldeiroes-cc0-v1.mp3',  'waterfall-caldeiroes-cc0-v2.mp3', -1.5, 112],

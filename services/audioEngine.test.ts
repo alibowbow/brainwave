@@ -292,7 +292,7 @@ describe('BinauralEngine multi-voice', () => {
     expect(cache.acquire).toHaveBeenNthCalledWith(
       1,
       expect.anything(),
-      '/audio/nature/rain-rural-cc0-v2.mp3',
+      '/audio/nature/rain-jun-v1.mp3',
       expect.any(Number),
       expect.any(Number),
     );
@@ -302,7 +302,7 @@ describe('BinauralEngine multi-voice', () => {
     expect(voice.gain.gain.value).toBeCloseTo(
       layerGain('rain', 0.8) * NATURE_SAMPLE_BINDINGS.rain!.proceduralMix,
     );
-    expect(voice.sampleGain.gain.value).toBeCloseTo(sampleLayerGain('rain', 'rainRural', 0.8));
+    expect(voice.sampleGain.gain.value).toBeCloseTo(sampleLayerGain('rain', 'rainJun', 0.8));
     expect(bufferSourceNodes.some((source) => source.buffer === buffer && source.started)).toBe(true);
     e.dispose();
     expect(release).toHaveBeenCalledTimes(1);

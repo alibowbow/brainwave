@@ -87,6 +87,13 @@ describe('nature sample manifest', () => {
       expect(effectiveLufs, type).toBeCloseTo(expectation.expectedLufs, 1);
     }
   });
+
+  it('uses the uploaded real rain recording as the only rain-theme source', () => {
+    for (const type of ['rain', 'tent', 'window'] as const) {
+      expect(NATURE_SAMPLE_BINDINGS[type]?.assetIds).toEqual(['rainJun']);
+      expect(NATURE_SAMPLE_BINDINGS[type]?.proceduralMix).toBe(0);
+    }
+  });
 });
 
 describe('nature sample URLs', () => {

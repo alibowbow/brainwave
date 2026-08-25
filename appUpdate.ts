@@ -1,4 +1,5 @@
 export const FORCE_UPDATE_PARAM = 'brainwave-update';
+export const LEGACY_NATURE_AUDIO_CACHE = 'nature-audio-v1';
 
 export type AppUpdateStatus = 'idle' | 'checking' | 'ready' | 'installing' | 'error';
 
@@ -26,6 +27,8 @@ export const stripForceUpdateNonce = (href: string) => {
 export const isScopedPrecache = (cacheName: string, scopeUrl: string) => (
   cacheName.startsWith('workbox-precache') && cacheName.includes(scopeUrl)
 );
+
+export const isLegacyNatureAudioCache = (cacheName: string) => cacheName === LEGACY_NATURE_AUDIO_CACHE;
 
 export const waitForWaitingWorker = async (
   registration: ServiceWorkerRegistration,
@@ -59,8 +62,9 @@ export const waitForWaitingWorker = async (
 
 /**
  * Verifies that the network is reachable, then removes only this app's shell
- * precache and registration. User data and large nature audio/video caches are
- * deliberately preserved. The caller navigates to the returned cache-busted URL.
+ * precache, retired audio cache, and registration. User data and current nature
+ * audio/video caches are preserved. The caller navigates to the returned
+ * cache-busted URL.
  */
 export const prepareForcedRefresh = async ({
   registration,
@@ -81,7 +85,7 @@ export const prepareForcedRefresh = async ({
     const cacheNames = await cacheStorage.keys();
     await Promise.all(
       cacheNames
-        .filter((cacheName) => isScopedPrecache(cacheName, effectiveScope))
+        .filter((cacheName) => isScopedPrecache(cacheName, effectiveScope) || isLegacyNatureAudioCache(cacheName))
         .map((cacheName) => cacheStorage.delete(cacheName)),
     );
   }

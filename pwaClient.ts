@@ -1,4 +1,5 @@
 import { registerSW } from 'virtual:pwa-register';
+import { isLegacyNatureAudioCache } from './appUpdate';
 
 export type PwaUpdateSignal = 'idle' | 'ready' | 'error';
 
@@ -24,6 +25,11 @@ export const subscribeToPwaUpdates = (listener: SignalListener) => {
 export const startPwaClient = () => {
   if (started || !('serviceWorker' in navigator)) return;
   started = true;
+  if (typeof caches !== 'undefined') {
+    void caches.keys().then((cacheNames) => Promise.all(
+      cacheNames.filter(isLegacyNatureAudioCache).map((cacheName) => caches.delete(cacheName)),
+    )).catch(() => undefined);
+  }
   updateServiceWorker = registerSW({
     immediate: true,
     onNeedRefresh: () => emit('ready'),

@@ -108,6 +108,13 @@ const NATURE_TONES = [
 ] as const;
 
 export const HOME_CATALOG: CatalogEntry[] = [
+  ...NATURE_MIXES.slice(0, 1).map((source) => ({
+    kind: 'nature' as const,
+    id: `nature:${source.id}`,
+    name: source.name,
+    description: source.layers.map((layer) => getSoundLabel(layer.type)).join(' · '),
+    source,
+  })),
   ...PRESETS.map((source) => ({
     kind: 'routine' as const,
     id: `preset:${source.id}`,
@@ -122,7 +129,7 @@ export const HOME_CATALOG: CatalogEntry[] = [
     description: source.description,
     source,
   })),
-  ...NATURE_MIXES.map((source) => ({
+  ...NATURE_MIXES.slice(1).map((source) => ({
     kind: 'nature' as const,
     id: `nature:${source.id}`,
     name: source.name,

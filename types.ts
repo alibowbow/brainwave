@@ -148,6 +148,7 @@ export interface NatureMix {
 }
 
 export const NATURE_MIXES: NatureMix[] = [
+  { id: 'rural_summer_night', name: '시골 여름밤', emoji: '🌾', layers: [{ type: 'ruralCrickets', volume: 0.78 }] },
   { id: 'tent_rain', name: '텐트 속 빗소리', emoji: '⛺', layers: [{ type: 'tent', volume: 0.85 }, { type: 'dthunder', volume: 0.35 }] },
   { id: 'window_rain', name: '비 오는 창가', emoji: '🪟', layers: [{ type: 'window', volume: 0.8 }, { type: 'eaves', volume: 0.4 }] },
   { id: 'monsoon_eaves', name: '장마철 처마', emoji: '☔', layers: [{ type: 'eaves', volume: 0.8 }, { type: 'rain', volume: 0.4 } ] },
@@ -157,7 +158,6 @@ export const NATURE_MIXES: NatureMix[] = [
   { id: 'temple_dawn', name: '산사의 아침', emoji: '🛕', layers: [{ type: 'temple', volume: 0.75 }, { type: 'forest', volume: 0.4 }, { type: 'birds', volume: 0.35 }] },
   { id: 'summer_valley', name: '여름 계곡', emoji: '🏞️', layers: [{ type: 'stream', volume: 0.75 }, { type: 'waterfall', volume: 0.5 }, { type: 'cicadas', volume: 0.4 }] },
   { id: 'scops_night', name: '소쩍새 밤', emoji: '🌙', layers: [{ type: 'scops', volume: 0.7 }, { type: 'night', volume: 0.6 }, { type: 'stream', volume: 0.3 }] },
-  { id: 'rural_summer_night', name: '시골 여름밤', emoji: '🌾', layers: [{ type: 'ruralCrickets', volume: 0.78 }, { type: 'stream', volume: 0.22 }] },
   { id: 'campfire', name: '모닥불 캠핑', emoji: '🔥', layers: [{ type: 'fire', volume: 0.8 }, { type: 'night', volume: 0.5 }, { type: 'owl', volume: 0.35 }] },
   { id: 'womb', name: '포근한 심장', emoji: '💗', layers: [{ type: 'heartbeat', volume: 0.75 }, { type: 'brown', volume: 0.35 }] },
   { id: 'winter_lodge', name: '겨울 산장', emoji: '❄️', layers: [{ type: 'blizzard', volume: 0.65 }, { type: 'fire', volume: 0.7 }] },

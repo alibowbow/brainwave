@@ -16,4 +16,12 @@ describe('unified home catalog', () => {
   it('uses unique cross-category card ids', () => {
     expect(new Set(HOME_CATALOG.map((entry) => entry.id)).size).toBe(HOME_CATALOG.length);
   });
+
+  it('promotes the rural summer night and keeps it cricket-only', () => {
+    expect(NATURE_MIXES[0]).toMatchObject({
+      id: 'rural_summer_night',
+      layers: [{ type: 'ruralCrickets', volume: 0.78 }],
+    });
+    expect(HOME_CATALOG[0].id).toBe('nature:rural_summer_night');
+  });
 });

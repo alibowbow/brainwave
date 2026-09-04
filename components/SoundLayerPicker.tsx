@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Search, Check } from 'lucide-react';
 import { BackgroundSoundType } from '../types';
 import { SoundLayer } from '../services/audioEngine';
 import { SOUND_GROUPS, getSoundIcon, getSoundLabel, getSoundOrigin } from '../audioOptions';
@@ -19,17 +20,27 @@ interface Props {
 // sound in/out, and each active layer gets its own volume slider so users can
 // mix soundscapes.
 export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVolume, hideLevels, onBalance, compact = false }) => {
+  const [query, setQuery] = useState('');
+  const [originFilter, setOriginFilter] = useState<'all' | 'REAL' | 'AI'>('all');
+  const visibleGroups = SOUND_GROUPS.map((group) => ({ ...group, sounds: group.sounds.filter((type) => (originFilter === 'all' || getSoundOrigin(type) === originFilter) && getSoundLabel(type).includes(query.trim())) })).filter((group) => group.sounds.length);
   const isActive = (t: BackgroundSoundType) => activeLayers.some((l) => l.type === t);
 
   return (
-    <div>
+    <div className="sound-picker">
+      <div className="sound-library-tools">
+        <div className="sound-filters" aria-label="음원 종류">
+          {([['all', '전체'], ['REAL', '실제 녹음'], ['AI', '합성']] as const).map(([id, label]) => <button type="button" key={id} aria-pressed={originFilter === id} onClick={() => setOriginFilter(id)}>{label}</button>)}
+        </div>
+        <label className="sound-search"><Search size={17} /><input type="search" aria-label="소리 검색" placeholder="소리 검색" value={query} onChange={(e) => setQuery(e.target.value)} /></label>
+      </div>
+      {!visibleGroups.length && <div className="sound-empty" role="status">일치하는 소리가 없습니다. <button type="button" onClick={() => { setQuery(''); setOriginFilter('all'); }}>전체 보기</button></div>}
       <div className={`space-y-4 ${compact ? 'sound-picker-compact' : ''}`}>
-        {SOUND_GROUPS.map((group) => (
+        {visibleGroups.map((group) => (
           <div key={group.label}>
-            <p className="mb-2 text-[10px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-500">
+            <p className="sound-group-label">
               {group.label}
             </p>
-            <div className={`grid gap-2 ${compact ? 'grid-cols-4 sm:grid-cols-5 xl:grid-cols-6' : 'grid-cols-4 sm:grid-cols-5'}`}>
+            <div className="sound-option-grid">
               {group.sounds.map((sound) => {
                 const active = isActive(sound);
                 const origin = getSoundOrigin(sound);
@@ -41,20 +52,12 @@ export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVo
                     onClick={() => onToggle(sound)}
                     aria-pressed={active}
                     aria-label={`${label} · ${origin === 'REAL' ? '리얼 녹음' : 'AI 합성'}`}
-                    className={`relative flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 transition-all ${compact ? 'min-h-[64px] py-2' : 'min-h-[72px] py-2.5'} ${
-                      active
-                        ? 'border-[#7180ef]/45 bg-[#7180ef]/10 text-[#5f6fe3] shadow-sm dark:border-[#8491ff]/35 dark:bg-[#7180ef]/12 dark:text-[#aab3ff]'
-                        : 'border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-800 dark:bg-white/[0.035] dark:text-slate-500 dark:hover:bg-white/7 dark:hover:text-slate-200'
-                    }`}
+                    className={`sound-option ${active ? 'is-active' : ''}`}
                   >
-                    <span className={`pointer-events-none absolute left-1.5 top-1.5 rounded-md px-1 py-0.5 text-[7px] font-black leading-none tracking-[0.08em] ${origin === 'REAL'
-                    ? 'bg-emerald-500/12 text-emerald-600 dark:bg-emerald-400/12 dark:text-emerald-300'
-                    : 'bg-slate-200/80 text-slate-400 dark:bg-white/[0.06] dark:text-slate-500'}`}
-                    >
-                      {origin}
-                    </span>
+                    <span className="sound-origin" data-origin={origin}>{origin}</span>
+                    {active && <Check size={14} className="sound-option-check" aria-hidden="true" />}
                     {getSoundIcon(sound)}
-                    <span className="max-w-full truncate whitespace-nowrap px-0.5 text-[10px] font-black">{label}</span>
+                    <span className="sound-option-label">{label}</span>
                   </button>
                 );
               })}
@@ -95,3 +98,4 @@ export const SoundLayerPicker: React.FC<Props> = ({ activeLayers, onToggle, onVo
     </div>
   );
 };
+

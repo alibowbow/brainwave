@@ -3,8 +3,8 @@ import {
   BarChart3,
   Brain,
   BrainCircuit,
-  Headphones,
   Home,
+  Leaf,
   Moon,
   Settings,
   Sun,
@@ -26,6 +26,7 @@ interface Props {
 
 const NAV_ITEMS = [
   { id: 'home' as const, label: '사운드 홈', mobileLabel: '홈', Icon: Home },
+  { id: 'nature' as const, label: '자연의 소리', mobileLabel: '자연음', Icon: Leaf },
   { id: 'guide' as const, label: '뇌파 가이드', mobileLabel: '뇌파', Icon: BrainCircuit },
   { id: 'insights' as const, label: '리포트', mobileLabel: '리포트', Icon: BarChart3 },
 ];
@@ -62,7 +63,7 @@ export const AppShell: React.FC<Props> = ({
 }) => {
   const progress = Math.min(100, Math.round((dailyMinutes / Math.max(1, dailyGoalMinutes)) * 100));
   const meta = pageMeta ?? PAGE_META[activeView];
-  const soundHomeActive = activeView === 'home' || activeView === 'library' || activeView === 'nature';
+  const soundHomeActive = activeView === 'home' || activeView === 'library';
 
   if (focusMode) {
     return <div className="app-shell min-h-[100dvh] bg-indigo-950 text-white">{children}</div>;
@@ -145,9 +146,7 @@ export const AppShell: React.FC<Props> = ({
             >
               <Settings size={17} />
             </button>
-            <span className="hidden items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-2.5 text-[10px] font-bold text-slate-500 2xl:flex dark:border-white/10 dark:text-slate-400">
-              <Headphones size={13} className="text-primary-500" /> 로컬 엔진
-            </span>
+
           </div>
         </div>
       </header>
@@ -156,7 +155,7 @@ export const AppShell: React.FC<Props> = ({
         {children}
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 grid h-[calc(64px+env(safe-area-inset-bottom))] grid-cols-4 border-t border-slate-200 bg-slate-50/95 px-3 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden dark:border-white/10 dark:bg-slate-950/95" aria-label="주요 메뉴">
+      <nav className="fixed inset-x-0 bottom-0 z-50 grid h-[calc(64px+env(safe-area-inset-bottom))] grid-cols-5 border-t border-slate-200 bg-slate-50/95 px-3 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden dark:border-white/10 dark:bg-slate-950/95" aria-label="주요 메뉴">
         {NAV_ITEMS.map(({ id, mobileLabel, Icon }) => {
           const active = id === 'home' ? soundHomeActive : activeView === id;
           return (
@@ -189,3 +188,4 @@ export const AppShell: React.FC<Props> = ({
     </div>
   );
 };
+

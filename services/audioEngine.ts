@@ -122,7 +122,11 @@ interface Bucket {
   disposed: boolean;
 }
 
+export type SoundPlaybackState = 'loading' | 'playing' | 'error';
+export type SoundPlaybackSnapshot = Partial<Record<BackgroundSoundType, SoundPlaybackState>>;
+
 interface Voice {
+  playbackState: SoundPlaybackState;
   gain: GainNode;
   sampleGain: GainNode;
   bucket: Bucket;
@@ -171,6 +175,40 @@ export class BinauralEngine {
 
   // Scene-sync events: generators announce salient moments (a chirp, a bell
   // strike, a thunder roll) so the diorama can animate the matching object.
+  private playbackListeners = new Set<(states: SoundPlaybackSnapshot) => void>();
+
+  onPlaybackState(callback: (states: SoundPlaybackSnapshot) => void): () => void {
+    this.playbackListeners.add(callback);
+    callback(this.getPlaybackStates());
+    return () => { this.playbackListeners.delete(callback); };
+  }
+
+  getPlaybackStates(): SoundPlaybackSnapshot {
+    return Object.fromEntries([...this.voices].map(([type, voice]) => [type,
+      this.ctx?.state === 'suspended' && voice.playbackState === 'playing' ? 'loading' : voice.playbackState]));
+  }
+
+  private notifyPlayback() {
+    const states = this.getPlaybackStates();
+    this.playbackListeners.forEach((listener) => listener(states));
+  }
+
+  private setPlaybackState(type: BackgroundSoundType, voice: Voice, state: SoundPlaybackState) {
+    if (!this.isCurrentVoice(type, voice)) return;
+    voice.playbackState = state;
+    this.notifyPlayback();
+  }
+
+  retrySound(type: BackgroundSoundType) {
+    const voice = this.voices.get(type);
+    if (!voice || voice.playbackState !== 'error') return;
+    const volume = voice.volume;
+    this.voices.delete(type);
+    this.disposeVoice(voice);
+    this.resume();
+    this.addSound(type, volume);
+  }
+
   private eventListeners = new Set<(type: BackgroundSoundType) => void>();
 
   onSoundEvent(cb: (type: BackgroundSoundType) => void): () => void {
@@ -199,6 +237,7 @@ export class BinauralEngine {
   init() {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.ctx.onstatechange = () => this.notifyPlayback();
     }
     if (this.ctx.state === 'suspended') {
       this.ctx.resume();
@@ -474,6 +513,7 @@ export class BinauralEngine {
     const bucket: Bucket = { nodes: [], intervals: [], timeouts: [], cleanups: [], disposed: false };
     this.playBackgroundSound(type, gain, bucket);
     const voice: Voice = {
+      playbackState: sampleOnly ? 'loading' : 'playing',
       gain,
       sampleGain,
       bucket,
@@ -490,6 +530,7 @@ export class BinauralEngine {
       this.ctx.currentTime,
       fadeSec / 3,
     );
+    this.notifyPlayback();
     this.startHybridSample(type, voice);
     if (updateBus) this.updateNatureBusGain(fadeSec / 3);
   }
@@ -498,6 +539,7 @@ export class BinauralEngine {
     const voice = this.voices.get(type);
     if (!voice || !this.ctx) return;
     this.voices.delete(type);
+    this.notifyPlayback();
     this.retiringVoices.add(voice);
     voice.gain.gain.setTargetAtTime(0, this.ctx.currentTime, fadeSec / 3);
     voice.sampleGain.gain.setTargetAtTime(0, this.ctx.currentTime, fadeSec / 3);
@@ -508,7 +550,7 @@ export class BinauralEngine {
     }, Math.ceil(fadeSec * 1000) + 400);
   }
 
-  setSoundVolume(type: BackgroundSoundType, volume: number) {
+  setSoundVolume(type: BackgroundSoundType, volume: number, fadeSec = 0.24) {
     const voice = this.voices.get(type);
     if (!voice || !this.ctx) return;
     const safeVolume = clampLayerVolume(volume);
@@ -517,27 +559,27 @@ export class BinauralEngine {
     voice.gain.gain.setTargetAtTime(
       layerGain(type, safeVolume) * voice.proceduralMix,
       this.ctx.currentTime,
-      0.08,
+      Math.max(0.005, fadeSec / 3),
     );
     if (voice.activeSampleId) {
       voice.sampleGain.gain.setTargetAtTime(
         sampleLayerGain(type, voice.activeSampleId, safeVolume),
         this.ctx.currentTime,
-        0.08,
+        Math.max(0.005, fadeSec / 3),
       );
     }
     if (wasAudible !== (safeVolume > 0.001)) this.updateNatureBusGain(0.08);
   }
 
   // Reconcile active layers to a desired set (add missing, drop extra, update volumes).
-  setSounds(layers: SoundLayer[]) {
+  setSounds(layers: SoundLayer[], fadeSec = 0.8) {
     const desired = new Map(layers.map((l) => [l.type, l.volume] as const));
     for (const type of [...this.voices.keys()]) {
-      if (!desired.has(type)) this.removeSound(type);
+      if (!desired.has(type)) this.removeSound(type, fadeSec);
     }
     for (const [type, vol] of desired) {
-      if (this.voices.has(type)) this.setSoundVolume(type, vol);
-      else this.addSound(type, vol);
+      if (this.voices.has(type)) this.setSoundVolume(type, vol, fadeSec);
+      else this.addSound(type, vol, fadeSec);
     }
   }
 
@@ -626,6 +668,7 @@ export class BinauralEngine {
 
       const binding = NATURE_SAMPLE_BINDINGS[type]!;
       voice.sampleActive = true;
+      this.setPlaybackState(type, voice, 'playing');
       voice.activeSampleId = assetId;
       voice.proceduralMix = binding.proceduralMix;
       const now = this.ctx.currentTime;
@@ -636,7 +679,9 @@ export class BinauralEngine {
       // sample-only, so retry that same file through an HTML media element if
       // Web Audio's binary decoder rejects it (some mobile/browser builds do).
       if (NATURE_SAMPLE_BINDINGS[type]?.proceduralMix === 0) {
-        this.startMediaLoopSample(type, voice, assetId);
+        if (this.isCurrentVoice(type, voice) && !this.startMediaLoopSample(type, voice, assetId)) {
+          this.setPlaybackState(type, voice, 'error');
+        }
       }
     }
   }
@@ -669,24 +714,36 @@ export class BinauralEngine {
       });
 
       const binding = NATURE_SAMPLE_BINDINGS[type]!;
-      voice.sampleActive = true;
       voice.activeSampleId = assetId;
       voice.proceduralMix = binding.proceduralMix;
+      this.setPlaybackState(type, voice, 'loading');
       const now = this.ctx.currentTime;
-      voice.sampleGain.gain.setTargetAtTime(
-        sampleLayerGain(type, assetId, voice.volume),
-        now,
-        0.7,
-      );
-      voice.gain.gain.setTargetAtTime(
-        layerGain(type, voice.volume) * voice.proceduralMix,
-        now,
-        0.7,
-      );
-
-      // The engine is normally started from a user gesture. Catch the
-      // rejection so a blocked media element never becomes an unhandled error.
-      void media.play().catch(() => {});
+      voice.sampleGain.gain.setTargetAtTime(sampleLayerGain(type, assetId, voice.volume), now, 0.7);
+      voice.gain.gain.setTargetAtTime(layerGain(type, voice.volume) * voice.proceduralMix, now, 0.7);
+      const failed = () => {
+        if (!this.isCurrentVoice(type, voice)) return;
+        voice.sampleActive = false;
+        this.setPlaybackState(type, voice, 'error');
+      };
+      const playing = () => {
+        if (!this.isCurrentVoice(type, voice)) return;
+        voice.sampleActive = true;
+        this.setPlaybackState(type, voice, 'playing');
+      };
+      const waiting = () => this.setPlaybackState(type, voice, 'loading');
+      media.addEventListener?.('error', failed);
+      media.addEventListener?.('playing', playing);
+      media.addEventListener?.('waiting', waiting);
+      media.addEventListener?.('stalled', waiting);
+      voice.bucket.cleanups.push(() => {
+        media.removeEventListener?.('error', failed);
+        media.removeEventListener?.('playing', playing);
+        media.removeEventListener?.('waiting', waiting);
+        media.removeEventListener?.('stalled', waiting);
+      });
+      // play() resolving (or the playing event) is the success signal, never
+      // the mere creation of a media element. Keep failure visible and retryable.
+      void media.play().then(playing).catch(failed);
       return true;
     } catch {
       return false;
@@ -3265,6 +3322,7 @@ export class BinauralEngine {
     this.teardownTone();
     this.voices.forEach((v) => this.disposeVoice(v));
     this.voices.clear();
+    this.notifyPlayback();
     this.retiringVoices.forEach((v) => this.disposeVoice(v));
     this.retiringVoices.clear();
     this.pendingCleanups.forEach((id) => clearTimeout(id));
@@ -3314,3 +3372,4 @@ export class BinauralEngine {
     this.impulseBuffer = null;
   }
 }
+

@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Eye, LibraryBig, SlidersHorizontal } from 'lucide-react';
+import { Eye, SlidersHorizontal, Plus, RotateCcw, Leaf } from 'lucide-react';
 import { BackgroundSoundType, NatureMix, NATURE_MIXES } from '../types';
-import { SoundLayer } from '../services/audioEngine';
+import type { SoundLayer, SoundPlaybackSnapshot } from '../services/audioEngine';
+import { defaultSoundLevel } from '../audioLevels';
 import { NatureScene } from './NatureScene';
-import { ComposerSheet } from './nature/ComposerSheet';
-import { SoundDrawer } from './nature/SoundDrawer';
+import { SoundLayerPicker } from './SoundLayerPicker';
 import { TransportControls, ActiveSoundList, RecommendChips, MixRail } from './nature/controls';
 import { getRecommendations } from './nature/recommend';
 import { hasNatureSceneHistory, withNatureSceneHistory } from '../appNavigation';
@@ -28,6 +28,8 @@ interface Props {
   /** Home scene cards open directly into the landscape; regular navigation
       opens the composer so the top-level Nature menu remains one tap. */
   initialSceneOnly?: boolean;
+  playbackStates: SoundPlaybackSnapshot;
+  onRetrySound: (type: BackgroundSoundType) => void;
 }
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -50,11 +52,10 @@ export const NatureMode: React.FC<Props> = ({
   layers, isPlaying, timerMin, timeLeft, volume, activeMixId,
   onPlay, onStop, onToggleLayer, onLayerVolume, onToggleMute, onSelectMix,
   onTimerChange, onVolumeChange, subscribeEvents,
-  initialSceneOnly = false,
+  initialSceneOnly = false, playbackStates, onRetrySound,
 }) => {
   const [selected, setSelected] = useState<BackgroundSoundType | null>(null);
-  const [sheetExpanded, setSheetExpanded] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const catalogRef = useRef<HTMLElement>(null);
   const [sceneOnly, setSceneOnly] = useState(initialSceneOnly);
   const [viewerControlsVisible, setViewerControlsVisible] = useState(true);
   const viewerRootRef = useRef<HTMLDivElement>(null);
@@ -172,7 +173,7 @@ export const NatureMode: React.FC<Props> = ({
 
   const handleSceneSelect = (type: BackgroundSoundType) => {
     setSelected((prev) => (prev === type ? null : type));
-    setSheetExpanded(true);
+
   };
 
   const handleRemove = (type: BackgroundSoundType) => {
@@ -186,7 +187,7 @@ export const NatureMode: React.FC<Props> = ({
   };
 
   const stage = (
-    <div className="relative h-[clamp(400px,calc(100dvh-220px-env(safe-area-inset-bottom)),860px)] shrink-0 overflow-hidden rounded-[24px] border border-slate-200/70 bg-[#111621] shadow-[0_24px_64px_rgba(13,25,30,0.16)] lg:h-full lg:min-h-0 dark:border-white/8">
+    <div className="sound-stage">
       <NatureScene
         types={visibleTypes}
         backgroundVariant={activeMixId === 'campfire' ? 'campfire' : undefined}
@@ -256,94 +257,35 @@ export const NatureMode: React.FC<Props> = ({
           ) : null}
         </div>
       ) : (
-        <div className="relative flex min-h-[calc(100dvh-68px)] flex-col gap-3 p-3 pb-0 sm:p-4 sm:pb-0 lg:grid lg:min-h-[calc(100dvh-88px)] lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-4 lg:p-4">
-          {/* stage — always visible while composing */}
-          {stage}
-
-          {/* mobile: bottom composer sheet */}
-          <div className="-mx-3 flex min-h-0 shrink-0 flex-col sm:-mx-4 lg:hidden" style={{ height: sheetExpanded ? 'min(46dvh, 420px)' : 'auto' }}>
-            <ComposerSheet
-              layers={layers}
-              isPlaying={isPlaying}
-              mixName={mixName}
-              timerMin={timerMin}
-              timeLeft={timeLeft}
-              volume={volume}
-              activeMixId={activeMixId}
-              selectedType={selectedValid}
-              recommendations={recommendations}
-              expanded={sheetExpanded}
-              onToggleExpanded={() => setSheetExpanded((v) => !v)}
-              onPlay={onPlay}
-              onStop={onStop}
-              onVolumeChange={onVolumeChange}
-              onTimerChange={onTimerChange}
-              onLayerVolume={onLayerVolume}
-              onToggleMute={onToggleMute}
-              onRemove={handleRemove}
-              onSelectType={setSelected}
-              onAddSound={handleAdd}
-              onSelectMix={onSelectMix}
-              onOpenDrawer={() => setDrawerOpen(true)}
-            />
-          </div>
-
-          {/* desktop: fixed side panel — the scene stays in view while mixing */}
-          <div className="hidden min-h-0 flex-col gap-4 overflow-y-auto pr-1 scrollbar-hide lg:flex">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-              <div className="mb-4 flex items-end justify-between gap-4">
-                <div className="min-w-0"><h2 className="truncate text-lg font-bold text-slate-800 dark:text-slate-100">{mixName}</h2><p className="mt-1 text-xs text-slate-400">레이어 {layers.length}개 · 기기에서 실시간 합성</p></div>
-                {isPlaying ? <span className="shrink-0 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-500">재생 중</span> : null}
+        <div className="sound-studio">
+          <header className="sound-studio-heading">
+            <div><p className="sound-eyebrow">SOUND SPACES</p><h1>자연의 소리 <Leaf size={24} aria-hidden="true" /></h1><p className="sound-subtitle">{mixName}</p></div>
+            {isPlaying && timerMin != null && <span className="sound-countdown">{fmt(timeLeft)} 남음</span>}
+          </header>
+          <div className="sound-workspace">
+            <section className="sound-transport-panel" aria-label="재생 조절">
+              <TransportControls isPlaying={isPlaying} canPlay={layers.length > 0} timerMin={timerMin} volume={volume} onPlay={onPlay} onStop={onStop} onTimerChange={onTimerChange} onVolumeChange={onVolumeChange} />
+            </section>
+            <section className="sound-mixer" aria-labelledby="active-sounds-title">
+              <div className="sound-section-heading"><h2 id="active-sounds-title">선택한 소리 <span>{layers.length}</span></h2>
+                {layers.length > 0 && <button type="button" className="sound-text-button" onClick={() => layers.forEach((layer) => { if (!layer.muted) onLayerVolume(layer.type, defaultSoundLevel(layer.type)); })}><RotateCcw size={14} /> 추천 음량</button>}
               </div>
-              <TransportControls
-                isPlaying={isPlaying}
-                canPlay={layers.length > 0}
-                timerMin={timerMin}
-                volume={volume}
-                onPlay={onPlay}
-                onStop={onStop}
-                onTimerChange={onTimerChange}
-                onVolumeChange={onVolumeChange}
-              />
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-              <p className="mb-2 text-xs font-bold text-slate-400 dark:text-slate-500">활성 사운드</p>
-              <ActiveSoundList
-                layers={layers}
-                selectedType={selectedValid}
-                onSelectType={setSelected}
-                onLayerVolume={onLayerVolume}
-                onToggleMute={onToggleMute}
-                onRemove={handleRemove}
-              />
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-              <p className="mb-2 text-xs font-bold text-slate-400 dark:text-slate-500">이 장면에 어울리는 소리</p>
-              <RecommendChips recommendations={recommendations} onAdd={handleAdd} />
-              <p className="mb-2 mt-4 text-xs font-bold text-slate-400 dark:text-slate-500">추천 조합</p>
-              <MixRail activeMixId={activeMixId} onSelectMix={onSelectMix} />
-              <button
-                type="button"
-                onClick={() => setDrawerOpen(true)}
-                className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
-              >
-                <LibraryBig size={15} /> 전체 사운드 보기
-              </button>
-            </div>
+              <ActiveSoundList layers={layers} selectedType={selectedValid} isPlaying={isPlaying} playbackStates={playbackStates} onRetrySound={onRetrySound} onSelectType={setSelected} onLayerVolume={onLayerVolume} onToggleMute={onToggleMute} onRemove={handleRemove} />
+              <button type="button" className="sound-add" onClick={() => { catalogRef.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); catalogRef.current?.querySelector<HTMLInputElement>('input[type="search"]')?.focus({ preventScroll: true }); }}><Plus size={18} /> 소리 추가</button>
+            </section>
+            {stage}
           </div>
+          <section className="sound-spaces" aria-labelledby="sound-spaces-title">
+            <div className="sound-section-heading"><h2 id="sound-spaces-title">소리 공간</h2><span className="sound-section-note">조합을 골라 바로 전환</span></div>
+            <MixRail activeMixId={activeMixId} onSelectMix={onSelectMix} />
+          </section>
+          <section ref={catalogRef} className="sound-catalog" aria-labelledby="sound-catalog-title">
+            <div className="sound-section-heading"><h2 id="sound-catalog-title">소리 보관함</h2></div>
+            <SoundLayerPicker activeLayers={layers} onToggle={onToggleLayer} onVolume={onLayerVolume} hideLevels />
+            {recommendations.length > 0 && <div className="sound-suggestions"><h3>함께 듣기</h3><RecommendChips recommendations={recommendations} onAdd={handleAdd} /></div>}
+          </section>
         </div>
       )}
-
-      {!sceneOnly ? (
-        <SoundDrawer
-          open={drawerOpen}
-          layers={layers}
-          onToggle={(type) => onToggleLayer(type)}
-          onClose={() => setDrawerOpen(false)}
-        />
-      ) : null}
     </div>
   );
 };

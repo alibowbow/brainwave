@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './index.css';
+import './sound-studio.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -15,3 +16,4 @@ root.render(
     <App />
   </React.StrictMode>
 );
+

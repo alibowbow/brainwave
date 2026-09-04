@@ -365,6 +365,62 @@ describe('BinauralEngine multi-voice', () => {
     e.dispose();
   });
 
+  it('reports rejected media playback and retries the same recording without substituting a generator', async () => {
+    let attempts = 0;
+    g.document = { createElement: () => {
+      const media = new MediaElementMock();
+      media.play = () => ++attempts === 1 ? Promise.reject(new Error('autoplay blocked')) : Promise.resolve();
+      mediaElements.push(media);
+      return media;
+    } };
+    e.start(cfg([{ type: 'ruralCrickets', volume: 0.68 }]));
+    expect(e.getPlaybackStates().ruralCrickets).toBe('loading');
+    expect(e.activeSampleTypes()).toEqual([]);
+    await flushMicrotasks();
+    expect(e.getPlaybackStates().ruralCrickets).toBe('error');
+    const originalUrl = mediaElements.find((media) => media.src.includes('rural-crickets'))!.src;
+    e.retrySound('ruralCrickets');
+    await flushMicrotasks();
+    expect(e.getPlaybackStates().ruralCrickets).toBe('playing');
+    expect(e.activeSampleTypes()).toEqual(['ruralCrickets']);
+    expect(mediaElements.at(-1)!.src).toBe(originalUrl);
+    expect((e as any).voices.get('ruralCrickets').proceduralMix).toBe(0);
+    e.dispose();
+  });
+
+  it('ignores a late media success after the layer was removed', async () => {
+    let resolvePlay!: () => void;
+    g.document = { createElement: () => {
+      const media = new MediaElementMock();
+      media.play = () => new Promise<void>((resolve) => { resolvePlay = resolve; });
+      return media;
+    } };
+    e.start(cfg([{ type: 'rain', volume: 0.72 }]));
+    const listener = vi.fn();
+    const unsubscribe = e.onPlaybackState(listener);
+    e.removeSound('rain');
+    resolvePlay();
+    await flushMicrotasks();
+    expect(e.getPlaybackStates()).toEqual({});
+    expect(e.activeSampleTypes()).toEqual([]);
+    expect(listener).toHaveBeenLastCalledWith({});
+    unsubscribe();
+    e.dispose();
+  });
+
+  it('crossfades a changed mix while retaining shared sources and their volume', () => {
+    e.start(cfg([{ type: 'pink', volume: 0.4 }, { type: 'brown', volume: 0.6 }]));
+    const shared = (e as any).voices.get('pink');
+    const retired = (e as any).voices.get('brown');
+    e.setSounds([{ type: 'pink', volume: 0.2 }, { type: 'white', volume: 0.3 }], 3);
+    expect((e as any).voices.get('pink')).toBe(shared);
+    expect(shared.volume).toBe(0.2);
+    expect((e as any).retiringVoices.has(retired)).toBe(true);
+    expect(retired.gain.gain.value).toBe(0);
+    expect(e.activeSoundTypes()).toEqual(['pink', 'white']);
+    e.dispose();
+  });
+
   it('clears the decoded sample cache on full engine disposal', () => {
     const cache = sampleCache(async () => { throw new Error('unused'); });
     e = new BinauralEngine(cache);
@@ -448,3 +504,4 @@ describe('audio quality invariants', () => {
     expect(restored.bg).toBe(DEFAULT_MIX_VOLUMES.bg);
   });
 });
+

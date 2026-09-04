@@ -8,7 +8,7 @@ import {
   type LastSession,
   type UserPreset,
 } from './experience';
-import { BinauralEngine, type SoundLayer, type ToneMode } from './services/audioEngine';
+import { BinauralEngine, type SoundLayer, type ToneMode, type SoundPlaybackSnapshot } from './services/audioEngine';
 import {
   NATURE_MIXES,
   DEFAULT_VISUAL_MODE,
@@ -165,6 +165,8 @@ export default function App() {
   const audioEngine = useRef<BinauralEngine | null>(null);
   if (!audioEngine.current) audioEngine.current = new BinauralEngine();
   const engine = audioEngine.current;
+  const [soundPlayback, setSoundPlayback] = useState<SoundPlaybackSnapshot>({});
+  useEffect(() => engine.onPlaybackState(setSoundPlayback), [engine]);
   const endTimeRef = useRef<number | null>(null);
   const runStartRef = useRef<number | null>(null);
   const playedMsRef = useRef(0);
@@ -653,19 +655,18 @@ export default function App() {
 
   const toggleNatureLayer = (type: BackgroundSoundType) => {
     setNatureMixId(null);
-    setNatureLayers((current) => {
-      if (current.some((layer) => layer.type === type)) {
-        const next = current.filter((layer) => layer.type !== type);
-        if (natureStatus === 'running') {
-          engine.removeSound(type);
-          if (next.length === 0) stopNature();
-        }
-        return next;
+    if (natureLayers.some((layer) => layer.type === type)) {
+      const next = natureLayers.filter((layer) => layer.type !== type);
+      setNatureLayers(next);
+      if (natureStatus === 'running') {
+        engine.removeSound(type);
+        if (!next.length) stopNature();
       }
+    } else {
       const volume = defaultSoundLevel(type);
+      setNatureLayers([...natureLayers, { type, volume }]);
       if (natureStatus === 'running') engine.addSound(type, volume);
-      return [...current, { type, volume }];
-    });
+    }
   };
 
   const setNatureLayerVolume = (type: BackgroundSoundType, volume: number) => {
@@ -686,7 +687,7 @@ export default function App() {
     const layers = mix.layers.map((layer) => ({ ...layer }));
     setNatureLayers(layers);
     setNatureMixId(mix.id);
-    if (natureStatus === 'running') engine.setSounds(layers);
+    if (natureStatus === 'running') engine.setSounds(layers, 3);
   };
 
   const quickStartNature = (mix: NatureMix) => {
@@ -715,7 +716,7 @@ export default function App() {
       bgVol: 1,
       sounds: layers,
     });
-    setNatureLaunchMode('scene');
+    setNatureLaunchMode('studio');
     navigate({ activeView: 'nature', viewMode: 'list', immersive: false });
   };
 
@@ -1101,6 +1102,11 @@ export default function App() {
             onOpenAmbience={loadAmbience}
             onQuickStartAmbience={quickStartAmbience}
             onOpenNatureMix={loadNatureMix}
+            onOpenNatureStudio={(mix) => {
+              selectNatureMix(mix);
+              setNatureLaunchMode('studio');
+              navigate({ activeView: 'nature', viewMode: 'list', immersive: false });
+            }}
             onQuickStartNature={quickStartNature}
             onOpenSaved={(id) => { const preset = userPresets.find((item) => item.id === id); if (preset) loadUserPreset(preset); }}
             onDeleteSaved={(id) => {
@@ -1250,6 +1256,8 @@ export default function App() {
                 onSelectMix={selectNatureMix}
                 onTimerChange={handleNatureTimer}
                 onVolumeChange={setNatureVol}
+                playbackStates={soundPlayback}
+                onRetrySound={(type) => engine.retrySound(type)}
                 subscribeEvents={subscribeNatureEvents}
                 initialSceneOnly={natureLaunchMode === 'scene'}
               />
@@ -1349,3 +1357,4 @@ export default function App() {
     </>
   );
 }
+

@@ -157,3 +157,7 @@
 .sound-studio input[type='range']::-moz-range-track { background:var(--sound-line); }
 .sound-studio input[type='range']::-moz-range-progress { background:var(--sound-accent); }
 .sound-studio input[type='range']::-moz-range-thumb { background:var(--sound-ink); }
+
+.sound-mix-symbol { height:100px; display:grid; place-items:center; color:var(--sound-accent); background:var(--sound-soft); }
+.sound-mix-symbol svg { width:32px; height:32px; stroke-width:1.25; }
+@media(max-width:767px) { .sound-mix-symbol { height:90px; } }

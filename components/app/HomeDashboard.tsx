@@ -56,6 +56,7 @@ interface Props {
   onOpenAmbience: (preset: AmbiencePreset) => void;
   onQuickStartAmbience: (preset: AmbiencePreset) => void;
   onOpenNatureMix: (mix: NatureMix) => void;
+  onOpenNatureStudio: (mix: NatureMix) => void;
   onQuickStartNature: (mix: NatureMix) => void;
   onOpenSaved: (id: string) => void;
   onDeleteSaved: (id: string) => void;
@@ -166,6 +167,7 @@ export const HomeDashboard: React.FC<Props> = ({
   onOpenAmbience,
   onQuickStartAmbience,
   onOpenNatureMix,
+  onOpenNatureStudio,
   onQuickStartNature,
   onOpenSaved,
   onDeleteSaved,
@@ -221,7 +223,7 @@ export const HomeDashboard: React.FC<Props> = ({
             <p>{NATURE_MIXES[0].layers.map((layer) => getSoundLabel(layer.type)).join(' · ')}</p>
             <div className="home-nature-actions">
               <button type="button" onClick={() => onQuickStartNature(NATURE_MIXES[0])}><Play size={18} fill="currentColor" /> 바로 듣기</button>
-              <button type="button" onClick={() => onOpenNatureMix(NATURE_MIXES[0])}><SlidersHorizontal size={17} /> 소리 조절</button>
+              <button type="button" onClick={() => onOpenNatureStudio(NATURE_MIXES[0])}><SlidersHorizontal size={17} /> 소리 조절</button>
             </div>
           </div>
         </article>

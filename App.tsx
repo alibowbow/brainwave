@@ -1102,6 +1102,11 @@ export default function App() {
             onOpenAmbience={loadAmbience}
             onQuickStartAmbience={quickStartAmbience}
             onOpenNatureMix={loadNatureMix}
+            onOpenNatureStudio={(mix) => {
+              selectNatureMix(mix);
+              setNatureLaunchMode('studio');
+              navigate({ activeView: 'nature', viewMode: 'list', immersive: false });
+            }}
             onQuickStartNature={quickStartNature}
             onOpenSaved={(id) => { const preset = userPresets.find((item) => item.id === id); if (preset) loadUserPreset(preset); }}
             onDeleteSaved={(id) => {

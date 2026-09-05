@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { NATURE_MIXES } from './types';
 import { NATURE_SCENES, inferNatureScene, isNatureSceneId, projectScenePoint } from './sceneCatalog';
 
 describe('landscape identity and responsive anchors', () => {
   it('gives every existing mix a shipped, distinct scene preview', () => {
     const images = new Set<string>();
+    for (const scene of Object.values(NATURE_SCENES)) {
+      const data = readFileSync(`public/${scene.image}`);
+      expect(data.length).toBeGreaterThan(1024);
+      expect(data.toString('ascii', 0, 4)).toBe('RIFF');
+      expect(data.toString('ascii', 8, 12)).toBe('WEBP');
+    }
     for (const mix of NATURE_MIXES) {
       expect(isNatureSceneId(mix.id)).toBe(true);
       if (!isNatureSceneId(mix.id)) continue;

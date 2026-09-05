@@ -123,6 +123,14 @@ try {
   await page.evaluate(() => document.documentElement.classList.remove('dark'));
   await page.evaluate(() => window.scrollTo(0, 0));
   await capture('light-mobile');
+  // Legacy custom layers can restore a scene that is not one of the mix cards.
+  await page.evaluate(() => {
+    const state = JSON.parse(localStorage.getItem('mc_nature_state'));
+    localStorage.setItem('mc_nature_state', JSON.stringify({ ...state, sceneId: 'cave' }));
+  });
+  await page.reload();
+  await page.getByRole('button', { name: '자연음', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('.landscape')?.dataset.scene === 'cave' && !document.querySelector('.landscape-status'));
   assert.deepEqual(errors, []);
   console.log('PASS: scene prominence at 4 widths; all 13 scenes and their touch targets; inline focus; independent persisted scenery; real recording playback; mute; reduced motion; fullscreen video continuity and controls; artwork failure/retry.');
 } finally { await browser.close(); }

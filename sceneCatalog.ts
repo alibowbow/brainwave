@@ -12,7 +12,7 @@ export interface SceneSpec {
 }
 const art = (name: string) => `images/nature/backgrounds/${name}`;
 export const NATURE_SCENES = {
-  rural_summer_night: { name: '시골 여름밤', image: art('rural-anime-v6.webp'), mood: 'night', points: { ruralCrickets: { x: .38, y: .69 } } },
+  rural_summer_night: { name: '시골 여름밤', image: art('rural-anime-soft-v7.webp'), mood: 'night', points: { ruralCrickets: { x: .38, y: .69 } } },
   tent_rain: { name: '텐트 속 빗소리', image: art('tent-v5.webp'), mood: 'rain', points: { tent: { x: .75, y: .6 }, dthunder: { x: .48, y: .28 } } },
   window_rain: { name: '비 오는 창가', image: art('window-v5.webp'), mood: 'rain', points: { window: { x: .5, y: .53 }, eaves: { x: .33, y: .26 } } },
   monsoon_eaves: { name: '장마철 처마', image: art('eaves-v5.webp'), mood: 'rain', points: { eaves: { x: .42, y: .21 }, rain: { x: .6, y: .63 } } },

@@ -1,3 +1,4 @@
+import { NATURE_SCENES, type NatureSceneId } from '../../sceneCatalog';
 import React from 'react';
 import { Play, Pause, Timer, Volume2, VolumeX, X, Plus, RotateCcw } from 'lucide-react';
 import { BackgroundSoundType, NatureMix, NATURE_MIXES } from '../../types';
@@ -67,19 +68,10 @@ export const RecommendChips: React.FC<{ recommendations: BackgroundSoundType[]; 
   <div className="sound-recommendations">{recommendations.map((type) => <button key={type} type="button" onClick={() => onAdd(type)}><Plus size={14} />{getSoundLabel(type)}</button>)}</div>
 );
 
-const MIX_ARTWORK: Record<string, string> = {
-  rural_summer_night: 'nature/backgrounds/scops-night.webp',
-  window_rain: 'presets/focus.webp',
-  summer_valley: 'nature/backgrounds/summer-valley.webp',
-  scops_night: 'nature/backgrounds/scops-night.webp',
-  campfire: 'nature/backgrounds/campfire-loop-poster-v2.webp',
-  winter_lodge: 'nature/backgrounds/campfire-loop-poster-v2.webp',
-};
-
 export const MixRail: React.FC<{ activeMixId: string | null; onSelectMix: (mix: NatureMix) => void }> = ({ activeMixId, onSelectMix }) => (
   <div className="sound-mix-grid">{NATURE_MIXES.map((mix) => <button type="button" key={mix.id} onClick={() => onSelectMix(mix)} aria-pressed={activeMixId === mix.id}>
-    {MIX_ARTWORK[mix.id]
-      ? <img src={`${import.meta.env.BASE_URL}images/${MIX_ARTWORK[mix.id]}`} alt="" width="320" height="160" loading="lazy" />
+    {NATURE_SCENES[mix.id as NatureSceneId]?.image
+      ? <img src={`${import.meta.env.BASE_URL}${NATURE_SCENES[mix.id as NatureSceneId].image}`} alt="" width="320" height="160" loading="lazy" />
       : <div className="sound-mix-symbol" aria-hidden="true">{getSoundIcon(mix.layers[0].type)}</div>}
     <span><strong>{mix.name}</strong><small>{mix.layers.length}개 소리</small></span>
   </button>)}</div>

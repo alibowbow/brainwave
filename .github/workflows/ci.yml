@@ -33,3 +33,11 @@ jobs:
 
       - name: Check bundle budget
         run: npm run check:bundle
+
+      - name: Install browser
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Verify scene experience
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 &
+          npm run verify:scenes

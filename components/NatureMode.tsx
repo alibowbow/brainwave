@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Eye, SlidersHorizontal, Plus, RotateCcw, Leaf } from 'lucide-react';
-import { BackgroundSoundType, NatureMix, NATURE_MIXES } from '../types';
+import { Eye, SlidersHorizontal, Plus, RotateCcw, X, ChevronDown, Volume2, VolumeX } from 'lucide-react';
+import { BackgroundSoundType, NatureMix } from '../types';
 import type { SoundLayer, SoundPlaybackSnapshot } from '../services/audioEngine';
 import { defaultSoundLevel } from '../audioLevels';
 import { NatureScene } from './NatureScene';
+import { NATURE_SCENES, type NatureSceneId } from '../sceneCatalog';
+import { VolumeSlider } from './VolumeSlider';
+import { MAX_LAYER_VOLUME } from '../audioLevels';
+import { getSoundLabel } from '../audioOptions';
 import { SoundLayerPicker } from './SoundLayerPicker';
 import { TransportControls, ActiveSoundList, RecommendChips, MixRail } from './nature/controls';
 import { getRecommendations } from './nature/recommend';
@@ -15,7 +19,9 @@ interface Props {
   timerMin: number | null;      // null = endless (∞)
   timeLeft: number;             // seconds remaining, only when a finite timer is running
   volume: number;
-  activeMixId: string | null;
+  sceneId: NatureSceneId;
+  onSceneChange: (id: NatureSceneId) => void;
+  onPositionsChange: (positions: Partial<Record<BackgroundSoundType, number>>) => void;
   onPlay: () => void;
   onStop: () => void;
   onToggleLayer: (type: BackgroundSoundType) => void;
@@ -45,17 +51,19 @@ const fullscreenElement = () => {
   return document.fullscreenElement ?? fullscreenDocument.webkitFullscreenElement ?? null;
 };
 
-// 자연의 소리: a living soundscape composer. The scene IS the interface —
-// tap an object to select its sound; the bottom sheet (mobile) or side panel
-// (desktop) carries transport, faders, recommendations and the full catalog.
+// The landscape stays mounted when entering fullscreen; controls expand on demand.
 export const NatureMode: React.FC<Props> = ({
-  layers, isPlaying, timerMin, timeLeft, volume, activeMixId,
+  layers, isPlaying, timerMin, timeLeft, volume,
   onPlay, onStop, onToggleLayer, onLayerVolume, onToggleMute, onSelectMix,
-  onTimerChange, onVolumeChange, subscribeEvents,
+  onTimerChange, onVolumeChange, subscribeEvents, sceneId, onSceneChange, onPositionsChange,
   initialSceneOnly = false, playbackStates, onRetrySound,
 }) => {
   const [selected, setSelected] = useState<BackgroundSoundType | null>(null);
   const catalogRef = useRef<HTMLElement>(null);
+  const inspectorRef = useRef<HTMLElement>(null);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [mixerOpen, setMixerOpen] = useState(false);
+  const [keepSounds, setKeepSounds] = useState(false);
   const [sceneOnly, setSceneOnly] = useState(initialSceneOnly);
   const [viewerControlsVisible, setViewerControlsVisible] = useState(true);
   const viewerRootRef = useRef<HTMLDivElement>(null);
@@ -63,14 +71,20 @@ export const NatureMode: React.FC<Props> = ({
   const sceneOnlyRef = useRef(sceneOnly);
   const sceneHistoryActiveRef = useRef(false);
 
-  const activeMix = NATURE_MIXES.find((m) => m.id === activeMixId) ?? null;
-  const mixName = activeMix ? `${activeMix.emoji} ${activeMix.name}` : layers.length > 0 ? '커스텀 조합' : '자연의 소리';
+  const mixName = NATURE_SCENES[sceneId].name;
   const recommendations = useMemo(() => getRecommendations(layers), [layers]);
   const selectedValid = selected != null && layers.some((l) => l.type === selected) ? selected : null;
   const visibleTypes = useMemo(
-    () => layers.filter((layer) => !layer.muted).map((layer) => layer.type),
+    () => layers.map((layer) => layer.type),
     [layers],
   );
+
+  const quietTypes = useMemo(() => layers.filter(l => l.muted || l.volume === 0).map(l => l.type), [layers]);
+  const selectedLayer = inspectorOpen ? layers.find(l => l.type === selectedValid) : undefined;
+  useEffect(() => {
+    if (!selectedValid || !inspectorOpen) return;
+    inspectorRef.current?.querySelector<HTMLInputElement>('input[type=range]')?.focus({ preventScroll: true });
+  }, [selectedValid, inspectorOpen]);
 
   const revealViewerControls = useCallback(() => {
     setViewerControlsVisible(true);
@@ -103,6 +117,7 @@ export const NatureMode: React.FC<Props> = ({
   const exitSceneOnly = useCallback(() => {
     sceneOnlyRef.current = false;
     setSceneOnly(false);
+    requestAnimationFrame(() => viewerRootRef.current?.querySelector<HTMLButtonElement>('.scene-button')?.focus({ preventScroll: true }));
     if (sceneHistoryActiveRef.current && hasNatureSceneHistory(window.history.state)) {
       sceneHistoryActiveRef.current = false;
       window.history.back();
@@ -147,7 +162,14 @@ export const NatureMode: React.FC<Props> = ({
     revealViewerControls();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    const focusFrame = requestAnimationFrame(() => viewerRootRef.current?.querySelector<HTMLButtonElement>('.scene-button')?.focus({ preventScroll: true }));
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') {
+        const controls = Array.from(viewerRootRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled),input:not(:disabled),select:not(:disabled)') ?? []).filter(el => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden');
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !viewerRootRef.current?.contains(document.activeElement))) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
       if (event.key === 'Escape' && !fullscreenElement()) exitSceneOnly();
       else revealViewerControls();
     };
@@ -160,6 +182,7 @@ export const NatureMode: React.FC<Props> = ({
     document.addEventListener('fullscreenchange', onFullscreenChange);
     document.addEventListener('webkitfullscreenchange', onFullscreenChange);
     return () => {
+      cancelAnimationFrame(focusFrame);
       document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('fullscreenchange', onFullscreenChange);
@@ -172,8 +195,16 @@ export const NatureMode: React.FC<Props> = ({
   }, []);
 
   const handleSceneSelect = (type: BackgroundSoundType) => {
-    setSelected((prev) => (prev === type ? null : type));
-
+    setSelected(type);
+    setInspectorOpen(true);
+    holdViewerControls();
+  };
+  const closeInspector = () => {
+    const type = selected;
+    setInspectorOpen(false);
+    setSelected(null);
+    viewerRootRef.current?.querySelector<HTMLButtonElement>(`[data-sound="${type}"]`)?.focus({ preventScroll: true });
+    revealViewerControls();
   };
 
   const handleRemove = (type: BackgroundSoundType) => {
@@ -186,106 +217,41 @@ export const NatureMode: React.FC<Props> = ({
     setSelected(type);
   };
 
-  const stage = (
-    <div className="sound-stage">
-      <NatureScene
-        types={visibleTypes}
-        backgroundVariant={activeMixId === 'campfire' ? 'campfire' : undefined}
-        fill
-        interactive
-        selectedType={selectedValid}
-        onSelectType={handleSceneSelect}
-        subscribeEvents={subscribeEvents}
-      />
-      <div className="pointer-events-none absolute left-4 top-4 hidden rounded-full border border-white/12 bg-black/22 px-3 py-1.5 text-[10px] font-bold tracking-[0.12em] text-white/76 backdrop-blur-md sm:block">
-        장면 속 오브젝트를 눌러 믹스
-      </div>
-      <button
-        type="button"
-        onClick={enterSceneOnly}
-        className="absolute right-3 top-3 z-40 flex min-h-11 items-center gap-2 rounded-full border border-white/16 bg-black/55 px-4 text-xs font-bold text-white shadow-lg backdrop-blur-md transition-colors hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-      >
-        <Eye size={15} aria-hidden="true" /> 장면만 보기
-      </button>
-      <div className="pointer-events-none absolute bottom-3 right-3 flex items-end justify-end">
-        {isPlaying && timerMin != null && (
-          <span className="rounded-full border border-white/14 bg-black/55 px-3 py-1.5 font-mono text-[11px] font-bold text-white backdrop-blur-md">
-            ⏱ {fmt(timeLeft)}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-
   return (
-    <div
-      ref={viewerRootRef}
-      className={sceneOnly ? 'nature-viewer-root fixed inset-0 z-[200] h-[100dvh] overflow-hidden bg-slate-950' : 'relative'}
-      role={sceneOnly ? 'dialog' : undefined}
-      aria-modal={sceneOnly ? true : undefined}
-      aria-label={sceneOnly ? '자연 장면만 보기' : undefined}
-    >
-      {sceneOnly ? (
-        <div
-          className="relative h-full w-full cursor-default overflow-hidden"
-          onPointerMove={revealViewerControls}
-          onPointerDown={revealViewerControls}
-        >
-          <NatureScene
-            types={visibleTypes}
-            backgroundVariant={activeMixId === 'campfire' ? 'campfire' : undefined}
-            fill
-            subscribeEvents={subscribeEvents}
-          />
-          <div
-            onFocusCapture={holdViewerControls}
-            onBlurCapture={revealViewerControls}
-            className={`absolute right-[max(12px,env(safe-area-inset-right))] top-[max(12px,env(safe-area-inset-top))] z-50 transition-[opacity,transform] duration-300 ${viewerControlsVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 invisible pointer-events-none opacity-0'}`}
-          >
-            <button
-              type="button"
-              onClick={exitSceneOnly}
-              className="flex min-h-11 items-center gap-2 rounded-full border border-white/16 bg-black/58 px-4 text-xs font-bold text-white shadow-[0_12px_32px_rgba(0,0,0,0.3)] backdrop-blur-md transition-colors hover:bg-black/72 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              <SlidersHorizontal size={15} aria-hidden="true" /> 소리 조절
-            </button>
-          </div>
-          {isPlaying ? (
-            <div className={`pointer-events-none absolute bottom-[max(14px,env(safe-area-inset-bottom))] left-[max(14px,env(safe-area-inset-left))] z-40 rounded-full border border-white/14 bg-black/52 px-3 py-2 text-[11px] font-bold text-white/92 backdrop-blur-md transition-opacity duration-300 ${viewerControlsVisible ? 'opacity-100' : 'opacity-0'}`}>
-              {timerMin == null ? '재생 중 · ∞' : `재생 중 · ${fmt(timeLeft)}`}
-            </div>
-          ) : null}
-        </div>
-      ) : (
-        <div className="sound-studio">
-          <header className="sound-studio-heading">
-            <div><p className="sound-eyebrow">SOUND SPACES</p><h1>자연의 소리 <Leaf size={24} aria-hidden="true" /></h1><p className="sound-subtitle">{mixName}</p></div>
-            {isPlaying && timerMin != null && <span className="sound-countdown">{fmt(timeLeft)} 남음</span>}
+    <div ref={viewerRootRef} className={`sound-studio ${sceneOnly ? 'nature-viewer-root' : ''}`} role={sceneOnly ? 'dialog' : undefined} aria-modal={sceneOnly || undefined} aria-label={sceneOnly ? '자연 장면만 보기' : undefined} data-controls={sceneOnly && !viewerControlsVisible && !selectedLayer ? 'hidden' : 'visible'}>
+      <div className="sound-experience" onPointerMove={sceneOnly ? revealViewerControls : undefined} onPointerDown={sceneOnly ? revealViewerControls : undefined}>
+        <div className="sound-stage">
+          <NatureScene types={visibleTypes} quietTypes={quietTypes} sceneId={sceneId} fill active={isPlaying} interactive selectedType={selectedValid} onSelectType={handleSceneSelect} subscribeEvents={subscribeEvents} onPositionsChange={onPositionsChange} />
+          <header className="scene-heading">
+            <div><h1>{mixName}</h1><p>{isPlaying ? '재생 중' : '재생 대기'} · {layers.length}개 소리{isPlaying && timerMin != null ? ` · ${fmt(timeLeft)}` : ''}</p></div>
+            <button type="button" className="scene-button" onClick={sceneOnly ? exitSceneOnly : enterSceneOnly}><Eye size={18} />{sceneOnly ? '전체화면 나가기' : '장면만 보기'}</button>
           </header>
-          <div className="sound-workspace">
-            <section className="sound-transport-panel" aria-label="재생 조절">
-              <TransportControls isPlaying={isPlaying} canPlay={layers.length > 0} timerMin={timerMin} volume={volume} onPlay={onPlay} onStop={onStop} onTimerChange={onTimerChange} onVolumeChange={onVolumeChange} />
-            </section>
-            <section className="sound-mixer" aria-labelledby="active-sounds-title">
-              <div className="sound-section-heading"><h2 id="active-sounds-title">선택한 소리 <span>{layers.length}</span></h2>
-                {layers.length > 0 && <button type="button" className="sound-text-button" onClick={() => layers.forEach((layer) => { if (!layer.muted) onLayerVolume(layer.type, defaultSoundLevel(layer.type)); })}><RotateCcw size={14} /> 추천 음량</button>}
-              </div>
-              <ActiveSoundList layers={layers} selectedType={selectedValid} isPlaying={isPlaying} playbackStates={playbackStates} onRetrySound={onRetrySound} onSelectType={setSelected} onLayerVolume={onLayerVolume} onToggleMute={onToggleMute} onRemove={handleRemove} />
-              <button type="button" className="sound-add" onClick={() => { catalogRef.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); catalogRef.current?.querySelector<HTMLInputElement>('input[type="search"]')?.focus({ preventScroll: true }); }}><Plus size={18} /> 소리 추가</button>
-            </section>
-            {stage}
-          </div>
-          <section className="sound-spaces" aria-labelledby="sound-spaces-title">
-            <div className="sound-section-heading"><h2 id="sound-spaces-title">소리 공간</h2><span className="sound-section-note">조합을 골라 바로 전환</span></div>
-            <MixRail activeMixId={activeMixId} onSelectMix={onSelectMix} />
-          </section>
-          <section ref={catalogRef} className="sound-catalog" aria-labelledby="sound-catalog-title">
-            <div className="sound-section-heading"><h2 id="sound-catalog-title">소리 보관함</h2></div>
-            <SoundLayerPicker activeLayers={layers} onToggle={onToggleLayer} onVolume={onLayerVolume} hideLevels />
-            {recommendations.length > 0 && <div className="sound-suggestions"><h3>함께 듣기</h3><RecommendChips recommendations={recommendations} onAdd={handleAdd} /></div>}
-          </section>
+          {selectedLayer && <section ref={inspectorRef} className="scene-inspector" aria-label="선택한 소리 조절" onFocusCapture={holdViewerControls} onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); closeInspector(); } }}>
+            <div className="scene-inspector-heading"><strong>{getSoundLabel(selectedLayer.type)}</strong><button type="button" className="sound-icon-button" aria-label="소리 조절 닫기" onClick={closeInspector}><X size={18} /></button></div>
+            <VolumeSlider label="" ariaLabel={`${getSoundLabel(selectedLayer.type)} 장면 음량`} value={selectedLayer.volume} max={MAX_LAYER_VOLUME} onChange={value => onLayerVolume(selectedLayer.type, value)} />
+            <div className="scene-inspector-actions"><button type="button" className="sound-text-button" aria-pressed={!!selectedLayer.muted} onClick={() => onToggleMute(selectedLayer.type)}>{selectedLayer.muted ? <VolumeX size={17} /> : <Volume2 size={17} />}{selectedLayer.muted ? '음소거 해제' : '음소거'}</button>
+            {isPlaying && playbackStates[selectedLayer.type] === 'error' && <button type="button" className="sound-retry" onClick={() => onRetrySound(selectedLayer.type)}>다시 불러오기</button>}</div>
+          </section>}
         </div>
-      )}
+        <section className="sound-transport-panel" aria-label="재생 조절" onFocusCapture={holdViewerControls}>
+          <TransportControls isPlaying={isPlaying} canPlay={layers.length > 0} timerMin={timerMin} volume={volume} onPlay={onPlay} onStop={onStop} onTimerChange={onTimerChange} onVolumeChange={onVolumeChange} />
+          {sceneOnly ? <label className="scene-layer-select"><SlidersHorizontal size={18} /><span className="sr-only">조절할 소리</span><select aria-label="조절할 소리" value={selectedValid ?? ''} onChange={e => { if (e.target.value) handleSceneSelect(e.target.value as BackgroundSoundType); }}><option value="">소리 조절</option>{layers.map(l => <option key={l.type} value={l.type}>{getSoundLabel(l.type)}</option>)}</select></label> : <button type="button" className="sound-editor-toggle" aria-expanded={mixerOpen} aria-controls="sound-editor" onClick={() => setMixerOpen(v => !v)}><SlidersHorizontal size={18} />소리 조절<ChevronDown size={16} /></button>}
+        </section>
+      </div>
+      <section className="sound-mixer" id="sound-editor" hidden={!mixerOpen || sceneOnly} aria-labelledby="active-sounds-title">
+        <div className="sound-section-heading"><h2 id="active-sounds-title">선택한 소리 <span>{layers.length}</span></h2><button type="button" className="sound-text-button" onClick={() => layers.forEach(layer => { if (!layer.muted) onLayerVolume(layer.type, defaultSoundLevel(layer.type)); })}><RotateCcw size={14} />추천 음량</button></div>
+        <ActiveSoundList layers={layers} selectedType={selectedValid} isPlaying={isPlaying} playbackStates={playbackStates} onRetrySound={onRetrySound} onSelectType={type => { setSelected(type); setInspectorOpen(false); }} onLayerVolume={onLayerVolume} onToggleMute={onToggleMute} onRemove={handleRemove} />
+        <button type="button" className="sound-add" onClick={() => { catalogRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' }); catalogRef.current?.querySelector<HTMLInputElement>('input[type="search"]')?.focus({ preventScroll: true }); }}><Plus size={18} />소리 추가</button>
+      </section>
+      <section className="sound-spaces" hidden={sceneOnly} aria-labelledby="sound-spaces-title">
+        <div className="sound-section-heading"><h2 id="sound-spaces-title">다른 풍경</h2><label className="scene-keep-sounds"><input type="checkbox" checked={keepSounds} onChange={e => setKeepSounds(e.target.checked)} />소리 유지</label></div>
+        <MixRail activeMixId={sceneId} onSelectMix={mix => { setSelected(null); setInspectorOpen(false); if (keepSounds) onSceneChange(mix.id as NatureSceneId); else onSelectMix(mix); }} />
+      </section>
+      <section ref={catalogRef} className="sound-catalog" hidden={sceneOnly} aria-labelledby="sound-catalog-title">
+        <div className="sound-section-heading"><h2 id="sound-catalog-title">소리 보관함</h2></div>
+        <SoundLayerPicker activeLayers={layers} onToggle={onToggleLayer} onVolume={onLayerVolume} hideLevels />
+        {recommendations.length > 0 && <div className="sound-suggestions"><h3>함께 듣기</h3><RecommendChips recommendations={recommendations} onAdd={handleAdd} /></div>}
+      </section>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import type { BackgroundSoundType } from '../types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Play, Pause, Square, Minimize2 } from 'lucide-react';
 import type { VisualMode } from '../types';
@@ -20,6 +21,7 @@ interface Props {
   onStop: () => void;
   onExit: () => void;
   backgroundVariant?: NatureBackgroundVariant;
+  subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
 const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
@@ -28,7 +30,7 @@ const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${
 // explicit alternative selected with the same control used in the player.
 export const ImmersiveMode: React.FC<Props> = ({
   timeLeft, isPlaying, sessionName, color, visualMode, activeLayers, getAnalyser,
-  onVisualModeChange, onPlay, onPause, onStop, onExit, backgroundVariant,
+  onVisualModeChange, onPlay, onPause, onStop, onExit, backgroundVariant, subscribeEvents,
 }) => {
   const [controlsVisible, setControlsVisible] = useState(true);
   const controlsTimerRef = useRef<number | null>(null);
@@ -73,7 +75,7 @@ export const ImmersiveMode: React.FC<Props> = ({
     >
       {visualMode === 'nature' ? (
         <div className="absolute inset-0">
-          <NatureScene types={activeLayers.map((layer) => layer.type)} backgroundVariant={backgroundVariant} fill />
+          <NatureScene types={activeLayers.map((layer) => layer.type)} backgroundVariant={backgroundVariant} active={isPlaying} subscribeEvents={subscribeEvents} fill />
           <div className="absolute inset-0 bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60" />
         </div>
       ) : (

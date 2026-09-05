@@ -1,10 +1,8 @@
 import type { BackgroundSoundType } from './types';
 
-// Single source of truth for where each sound lives in the diorama.
-// The scene places characters/scenery from it, and the audio engine derives
-// stereo pan (from x) and distance treatment (from depth) so what you see is
-// what you hear: an owl drawn on the right hoots from the right, the far-off
-// temple bell arrives softer and wetter than the campfire at your feet.
+// Default stereo anchors for sounds without a visible scene point. The active
+// landscape projects its image anchors through the responsive crop and sends
+// the resulting positions to the engine. Enveloping sources stay centered.
 
 export type SceneDepth = 'near' | 'mid' | 'far';
 
@@ -80,24 +78,4 @@ export const spatialPan = (type: BackgroundSoundType): number => {
   const s = SPATIAL[type];
   if (!s || s.wide) return 0;
   return Math.max(-0.6, Math.min(0.6, (s.x - 0.5) * 1.3));
-};
-
-// Tappable scene hotspots for scenery sounds (characters get hotspots from
-// their own anchor). Percent coordinates inside the scene box.
-export interface SceneHotspot { x: number; y: number; w: number; h: number }
-
-export const SCENERY_HOTSPOTS: Partial<Record<BackgroundSoundType, SceneHotspot>> = {
-  fire: { x: 38, y: 52, w: 24, h: 40 },
-  tent: { x: 62, y: 46, w: 22, h: 40 },
-  window: { x: 16, y: 44, w: 20, h: 40 },
-  waterfall: { x: 0, y: 22, w: 14, h: 60 },
-  bamboo: { x: 86, y: 18, w: 14, h: 66 },
-  temple: { x: 34, y: 42, w: 18, h: 22 },
-  wave: { x: 30, y: 82, w: 40, h: 16 },
-  pebbles: { x: 30, y: 74, w: 40, h: 14 },
-  rain: { x: 38, y: 2, w: 24, h: 20 },
-  thunder: { x: 62, y: 2, w: 20, h: 18 },
-  dthunder: { x: 62, y: 2, w: 20, h: 18 },
-  blizzard: { x: 16, y: 2, w: 20, h: 18 },
-  eaves: { x: 22, y: 30, w: 16, h: 14 },
 };

@@ -1,3 +1,4 @@
+import { NATURE_SCENES } from '../../sceneCatalog';
 import React, { useDeferredValue, useMemo, useState } from 'react';
 import {
   ArrowRight,
@@ -83,14 +84,7 @@ const KIND_LABELS = {
   nature: '자연 장면',
 } as const;
 
-const NATURE_ARTWORK: Partial<Record<string, string>> = {
-  rural_summer_night: 'images/nature/backgrounds/scops-night.webp',
-  summer_valley: 'images/nature/backgrounds/summer-valley.webp',
-  bamboo_grove: 'images/nature/backgrounds/summer-valley.webp',
-  campfire: 'images/nature/backgrounds/campfire-loop-poster-v2.webp',
-  winter_lodge: 'images/nature/backgrounds/campfire-loop-poster-v2.webp',
-  scops_night: 'images/nature/backgrounds/scops-night.webp',
-};
+const NATURE_ARTWORK: Partial<Record<string, string>> = Object.fromEntries(Object.entries(NATURE_SCENES).map(([id, scene]) => [id, scene.image]));
 
 const AMBIENCE_ARTWORK: Partial<Record<string, string>> = {
   morning_forest: 'images/nature/backgrounds/summer-valley.webp',
@@ -216,7 +210,7 @@ export const HomeDashboard: React.FC<Props> = ({
       </section>
       <section className="home-listening-grid" aria-label="빠른 재생">
         <article className="home-nature-feature">
-          <img src={artworkUrl('images/nature/backgrounds/scops-night.webp')} alt="" width="1000" height="500" />
+          <img src={artworkUrl(NATURE_SCENES.rural_summer_night.image)} alt="" width="1000" height="500" />
           <div className="home-nature-copy">
             <span className="home-recording-label">REAL · 직접 녹음한 소리</span>
             <h2>{NATURE_MIXES[0].name}</h2>

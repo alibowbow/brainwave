@@ -1,3 +1,4 @@
+import { inferNatureScene, isNatureSceneId, type NatureSceneId } from './sceneCatalog';
 import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BrainCircuit, Headphones, RefreshCw, Save, X } from 'lucide-react';
 import { DEFAULT_MIX_VOLUMES, defaultSoundLevel, normalizeMixVolumes, type MixVolumes } from './audioLevels';
@@ -159,6 +160,14 @@ export default function App() {
       const value = JSON.parse(localStorage.getItem('mc_nature_state') ?? 'null')?.mixId;
       return typeof value === 'string' ? value : null;
     } catch { return null; }
+  });
+  const [natureSceneId, setNatureSceneId] = useState<NatureSceneId>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('mc_nature_state') ?? 'null');
+      if (isNatureSceneId(saved?.sceneId)) return saved.sceneId;
+      if (isNatureSceneId(saved?.mixId)) return saved.mixId;
+    } catch { /* Older or malformed saved state uses the current layers. */ }
+    return inferNatureScene(natureLayers.map(layer => layer.type));
   });
   const [natureLaunchMode, setNatureLaunchMode] = useState<'studio' | 'scene'>('studio');
 
@@ -687,6 +696,7 @@ export default function App() {
     const layers = mix.layers.map((layer) => ({ ...layer }));
     setNatureLayers(layers);
     setNatureMixId(mix.id);
+    if (isNatureSceneId(mix.id)) setNatureSceneId(mix.id);
     if (natureStatus === 'running') engine.setSounds(layers, 3);
   };
 
@@ -700,6 +710,7 @@ export default function App() {
     if (natureStatus === 'running') engine.stop();
     setNatureLayers(layers);
     setNatureMixId(mix.id);
+    if (isNatureSceneId(mix.id)) setNatureSceneId(mix.id);
     setNatureStatus('running');
     if (natureTimerMin != null) {
       natureEndRef.current = Date.now() + natureTimerMin * 60 * 1000;
@@ -720,6 +731,7 @@ export default function App() {
     navigate({ activeView: 'nature', viewMode: 'list', immersive: false });
   };
 
+  const updateScenePositions = useCallback((positions: Partial<Record<BackgroundSoundType, number>>) => engine.setScenePositions(positions), [engine]);
   const subscribeNatureEvents = useCallback((callback: (type: BackgroundSoundType) => void) => engine.onSoundEvent(callback), [engine]);
 
   const exportData = () => {
@@ -873,8 +885,8 @@ export default function App() {
   useEffect(() => { localStorage.setItem('mc_brain_volumes_v2', JSON.stringify(volumes)); }, [volumes]);
   useEffect(() => { localStorage.setItem('mc_brain_favorites', JSON.stringify(favoriteIds)); }, [favoriteIds]);
   useEffect(() => {
-    localStorage.setItem('mc_nature_state', JSON.stringify({ layers: natureLayers, timerMin: natureTimerMin, volume: natureVol, mixId: natureMixId }));
-  }, [natureLayers, natureTimerMin, natureVol, natureMixId]);
+    localStorage.setItem('mc_nature_state', JSON.stringify({ layers: natureLayers, timerMin: natureTimerMin, volume: natureVol, mixId: natureMixId, sceneId: natureSceneId }));
+  }, [natureLayers, natureTimerMin, natureVol, natureMixId, natureSceneId]);
 
   useEffect(() => {
     document.querySelector<HTMLElement>('[data-app-scroll]')?.scrollTo({ top: 0, behavior: 'auto' });
@@ -1195,6 +1207,7 @@ export default function App() {
         {viewMode === 'player' && selectedPreset && (
           <Suspense fallback={<LoadingPanel />}>
             <Player
+              subscribeEvents={subscribeNatureEvents}
               sessionName={selectedPreset.name.replace(/\s*\([^)]*\)/, '')}
               intention={intention}
               timeLeft={timeLeft}
@@ -1247,7 +1260,9 @@ export default function App() {
                 timerMin={natureTimerMin}
                 timeLeft={natureTimeLeft}
                 volume={natureVol}
-                activeMixId={natureMixId}
+                sceneId={natureSceneId}
+                onSceneChange={setNatureSceneId}
+                onPositionsChange={updateScenePositions}
                 onPlay={startNature}
                 onStop={() => stopNature()}
                 onToggleLayer={toggleNatureLayer}
@@ -1311,6 +1326,7 @@ export default function App() {
       {immersive && viewMode === 'player' && playbackStatus !== 'idle' && (
         <Suspense fallback={null}>
           <ImmersiveMode
+              subscribeEvents={subscribeNatureEvents}
             timeLeft={timeLeft}
             isPlaying={playbackStatus === 'running'}
             sessionName={selectedPreset?.name ?? '세션'}

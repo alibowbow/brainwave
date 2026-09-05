@@ -138,6 +138,7 @@ interface Voice {
   activeSampleId: NatureSampleId | null;
   /** Shared spatial tail (pan/distance) fed by both procedural and sample paths. */
   spatialNodes: AudioNode[];
+  panner: StereoPannerNode;
 }
 
 export class BinauralEngine {
@@ -523,6 +524,7 @@ export class BinauralEngine {
       sampleEventPlaying: false,
       activeSampleId: null,
       spatialNodes,
+      panner,
     };
     this.voices.set(type, voice);
     gain.gain.setTargetAtTime(
@@ -548,6 +550,15 @@ export class BinauralEngine {
       this.retiringVoices.delete(voice);
       this.disposeVoice(voice);
     }, Math.ceil(fadeSec * 1000) + 400);
+  }
+
+  setScenePositions(positions: Partial<Record<BackgroundSoundType, number>>) {
+    if (!this.ctx) return;
+    this.voices.forEach((voice, type) => {
+      const x = positions[type];
+      const pan = SPATIAL[type]?.wide ? 0 : x == null ? spatialPan(type) : Math.max(-0.6, Math.min(0.6, (x - 0.5) * 1.3));
+      voice.panner.pan.setTargetAtTime(pan, this.ctx!.currentTime, 0.15);
+    });
   }
 
   setSoundVolume(type: BackgroundSoundType, volume: number, fadeSec = 0.24) {

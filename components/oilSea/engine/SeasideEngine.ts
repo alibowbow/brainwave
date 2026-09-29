@@ -1,0 +1,294 @@
+import * as THREE from 'three';
+import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
+import { detectTier, DynamicResolution, isMobileDevice, isSoftwareRenderer } from '../../rainyWindow/engine/quality';
+import { createGrass, createShrubs } from './grass';
+import { createOcean } from './ocean';
+import { createPine } from './pine';
+import { OilPaintPost } from './post';
+import { createRocks } from './rocks';
+import { createSky } from './sky';
+import { createTerrain } from './terrain';
+import { CAMERA, SUN } from './world';
+
+export type SeasideQuality = 'high' | 'medium' | 'low' | 'software';
+
+export interface SeasideOptions {
+  canvas: HTMLCanvasElement;
+  onContextLost?: () => void;
+  /** Overrides the quality picked from the device (for development). */
+  quality?: SeasideQuality;
+}
+
+interface Profile {
+  /** Most pixels the painting is made with; the canvas is scaled up to fill the view. */
+  maxPixels: number;
+  maxPixelRatio: number;
+  /** Brush (Kuwahara) radius for a 1280×720 painting, scaled with the resolution. */
+  brush: number;
+  /** Brush samples: every pixel (1) or every other one (2). */
+  stride: number;
+  strokeSteps: number;
+  terrainDetail: number;
+  skyDetail: number;
+  grass: number;
+  shrubs: number;
+  rocks: number;
+}
+
+const PROFILES: Record<SeasideQuality, Profile> = {
+  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 4, stride: 2, strokeSteps: 9, terrainDetail: 1, skyDetail: 1, grass: 22000, shrubs: 700, rocks: 140 },
+  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 4, stride: 2, strokeSteps: 6, terrainDetail: 0.8, skyDetail: 1, grass: 15000, shrubs: 500, rocks: 110 },
+  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, terrainDetail: 0.6, skyDetail: 0.5, grass: 9000, shrubs: 320, rocks: 80 },
+  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, terrainDetail: 0.5, skyDetail: 0.5, grass: 5000, shrubs: 260, rocks: 70 },
+};
+
+/** The painting draws itself when the scene first starts: pencil, then paint. */
+const SKETCH_SECONDS = 1.6;
+const PAINT_SECONDS = 3.4;
+const INTRO_SECONDS = SKETCH_SECONDS + PAINT_SECONDS;
+const REFERENCE_PIXELS = 1280 * 720;
+
+/*
+ * A headland above a bay at sunset, simulated in 3D and painted in oils:
+ * the sea, the land, the grass and a wind-bent pine are rendered as a real
+ * scene, then each frame is repainted with brushwork that follows its forms.
+ */
+export class SeasideEngine implements LiveSceneEngine {
+  readonly renderer: THREE.WebGLRenderer;
+  private readonly quality: SeasideQuality;
+  private readonly profile: Profile;
+  private readonly scene = new THREE.Scene();
+  private readonly camera = new THREE.PerspectiveCamera(40, 16 / 9, 1, 30000);
+  private readonly sunDirection = new THREE.Vector3(SUN.x, SUN.y, SUN.z).normalize();
+  private readonly pacer: DynamicResolution;
+  private readonly timed: THREE.ShaderMaterial[] = [];
+  private readonly textures: THREE.Texture[] = [];
+  private sky: THREE.Mesh | null = null;
+  private skyMaterial: THREE.ShaderMaterial | null = null;
+  private oceanMaterial: THREE.ShaderMaterial | null = null;
+  private sceneTarget: THREE.WebGLRenderTarget | null = null;
+  private readonly post: OilPaintPost;
+  private readonly sunPoint = new THREE.Vector3();
+  private cssWidth = 1;
+  private cssHeight = 1;
+  private devicePixelRatio = 1;
+  private time = 0;
+  private energy = 1;
+  /** Seconds into the drawing-in; Infinity once the painting is finished. */
+  private intro = 0;
+  /** When a still of the finished painting was first shown, before the scene ever ran. */
+  private stillShownAt = 0;
+  private raf = 0;
+  private lastFrame = 0;
+  private running = false;
+  private ready = false;
+  private disposed = false;
+
+  static isSupported() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl2');
+      gl?.getExtension('WEBGL_lose_context')?.loseContext();
+      return !!gl;
+    } catch {
+      return false;
+    }
+  }
+
+  constructor(private readonly options: SeasideOptions) {
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: options.canvas,
+      antialias: false,
+      alpha: false,
+      depth: true,
+      stencil: false,
+      powerPreference: 'high-performance',
+      preserveDrawingBuffer: false,
+    });
+    this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+    this.renderer.autoClear = true;
+    const gl = this.renderer.getContext();
+    const debug = gl.getExtension('WEBGL_debug_renderer_info');
+    const name = debug ? String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL)) : String(gl.getParameter(gl.RENDERER));
+    const nav = navigator as Navigator & { deviceMemory?: number; userAgentData?: { mobile?: boolean } };
+    this.quality = options.quality ?? (isSoftwareRenderer(name) ? 'software' : detectTier({
+      renderer: name,
+      cores: nav.hardwareConcurrency,
+      memory: nav.deviceMemory,
+      mobile: isMobileDevice(nav.userAgent, nav.maxTouchPoints, nav.userAgentData?.mobile),
+      maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE) as number,
+    }));
+    this.profile = PROFILES[this.quality];
+    this.pacer = new DynamicResolution(0.6, 1, 1, 0.75);
+    options.canvas.addEventListener('webglcontextlost', this.handleContextLost, false);
+
+    this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
+    this.camera.rotation.order = 'YXZ';
+    this.camera.rotation.set(CAMERA.pitch, -CAMERA.yaw, 0);
+
+    this.post = new OilPaintPost(this.renderer, { radius: this.profile.brush, stride: this.profile.stride, strokeSteps: this.profile.strokeSteps });
+  }
+
+  private get software() {
+    return this.quality === 'software';
+  }
+
+  private handleContextLost = (event: Event) => {
+    event.preventDefault();
+    this.stop();
+    this.options.onContextLost?.();
+  };
+
+  async init() {
+    const { profile } = this;
+    const sky = createSky(this.sunDirection, profile.skyDetail);
+    sky.mesh.scale.setScalar(20000);
+    this.sky = sky.mesh;
+    this.skyMaterial = sky.material;
+    this.scene.add(sky.mesh);
+    const ocean = createOcean(this.sunDirection);
+    this.oceanMaterial = ocean.material;
+    this.scene.add(ocean.mesh);
+    const terrain = createTerrain(this.sunDirection, profile.terrainDetail);
+    this.scene.add(terrain.mesh);
+    const grass = createGrass(this.sunDirection, profile.grass);
+    this.scene.add(grass.mesh);
+    const shrubs = createShrubs(this.sunDirection, profile.shrubs);
+    this.scene.add(shrubs.mesh);
+    const rocks = createRocks(this.sunDirection, profile.rocks);
+    this.scene.add(rocks.mesh);
+    const pine = createPine(this.sunDirection);
+    this.scene.add(pine.group);
+    this.timed.push(sky.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, ...pine.materials);
+    this.textures.push(sky.texture, grass.texture, shrubs.texture, ...pine.textures);
+    await this.renderer.compileAsync(this.scene, this.camera);
+    if (this.disposed) return;
+    this.resize();
+    this.ready = true;
+  }
+
+  setSize(width: number, height: number, devicePixelRatio: number) {
+    this.cssWidth = Math.max(1, width);
+    this.cssHeight = Math.max(1, height);
+    this.devicePixelRatio = devicePixelRatio || 1;
+    if (this.ready) this.resize();
+  }
+
+  setWaveEnergy(level: number) {
+    this.energy = Math.max(0, Math.min(1.5, level));
+  }
+
+  private resize() {
+    const { profile } = this;
+    const ratio = Math.min(this.devicePixelRatio, profile.maxPixelRatio) * this.pacer.scale;
+    let width = Math.round(this.cssWidth * ratio);
+    let height = Math.round(this.cssHeight * ratio);
+    const budget = profile.maxPixels * this.pacer.scale * this.pacer.scale;
+    if (width * height > budget) {
+      const scale = Math.sqrt(budget / (width * height));
+      width = Math.round(width * scale);
+      height = Math.round(height * scale);
+    }
+    width = Math.max(1, width);
+    height = Math.max(1, height);
+    this.renderer.setPixelRatio(1);
+    this.renderer.setSize(width, height, false);
+    const aspect = width / height;
+    this.camera.aspect = aspect;
+    // Keep the bay, the sun and the pine in view on narrow screens.
+    this.camera.fov = aspect >= 16 / 9 ? 40 : THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(20)) * Math.min(1.6, (16 / 9) / aspect)));
+    this.camera.updateProjectionMatrix();
+    this.sceneTarget?.dispose();
+    this.sceneTarget = new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: true });
+    // The same brush on the same picture, whatever the resolution it is made at.
+    this.post.setSize(width, height, profile.brush * Math.sqrt((width * height) / REFERENCE_PIXELS));
+    this.sunPoint.copy(this.sunDirection).multiplyScalar(10000).add(this.camera.position).project(this.camera);
+    this.post.setSun(this.sunPoint.x * 0.5 + 0.5, this.sunPoint.y * 0.5 + 0.5, Math.abs(this.sunPoint.x) < 1.2 && this.sunPoint.z < 1);
+    if (this.oceanMaterial) {
+      // Angle one pixel covers, for filtering waves finer than a pixel.
+      this.oceanMaterial.uniforms.uDetail.value = (2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2))) / height;
+    }
+  }
+
+  start() {
+    if (this.running || this.disposed) return;
+    // A painting that has already been on screen is not drawn again from
+    // scratch when it starts moving; one that starts right away is.
+    if (this.intro === 0 && this.stillShownAt && performance.now() - this.stillShownAt > 800) this.intro = Infinity;
+    this.running = true;
+    this.lastFrame = 0;
+    this.pacer.reset();
+    this.raf = requestAnimationFrame(this.loop);
+  }
+
+  stop() {
+    this.running = false;
+    cancelAnimationFrame(this.raf);
+  }
+
+  private get frameInterval() {
+    if (this.software) return 1000 / 12;
+    return this.pacer.rate === 60 ? 1000 / 75 : 1000 / 35;
+  }
+
+  private loop = (now: number) => {
+    if (!this.running) return;
+    this.raf = requestAnimationFrame(this.loop);
+    if (!this.ready) return;
+    if (this.lastFrame && now - this.lastFrame < this.frameInterval) return;
+    const elapsed = this.lastFrame ? now - this.lastFrame : 1000 / 60;
+    this.lastFrame = now;
+    if (!this.software && this.pacer.update(elapsed)) this.resize();
+    this.renderFrame(Math.min(0.1, elapsed / 1000));
+  };
+
+  /** Advance by `dt` seconds and draw one frame (dt 0 redraws as is). */
+  renderFrame(dt: number) {
+    if (!this.ready || !this.sceneTarget) return;
+    this.time += dt;
+    // Until it first runs, a still frame (paused, reduced motion) shows the
+    // finished painting; the drawing-in plays when the scene starts moving.
+    const notStarted = !this.running && dt === 0 && this.intro === 0;
+    if (notStarted && !this.stillShownAt) this.stillShownAt = performance.now();
+    if (Number.isFinite(this.intro) && dt > 0) this.intro += dt;
+    const intro = notStarted || !Number.isFinite(this.intro) ? INTRO_SECONDS : this.intro;
+    if (!notStarted && intro >= INTRO_SECONDS) this.intro = Infinity;
+    this.post.setIntro(
+      Math.min(1, Math.max(0, (intro - 0.3) / (SKETCH_SECONDS - 0.3))),
+      Math.min(1, Math.max(0, (intro - SKETCH_SECONDS) / PAINT_SECONDS)),
+    );
+
+    for (const material of this.timed) material.uniforms.uTime.value = this.time;
+    if (this.oceanMaterial) this.oceanMaterial.uniforms.uEnergy.value = this.energy;
+    if (this.sky && this.skyMaterial) {
+      this.sky.position.copy(this.camera.position);
+      // The clouds drift slowly in from the sea.
+      this.skyMaterial.uniforms.uCloudDrift.value = this.time * 0.0004;
+    }
+    this.renderer.setRenderTarget(this.sceneTarget);
+    this.renderer.render(this.scene, this.camera);
+    this.post.render(this.sceneTarget.texture, this.debugView === 1);
+  }
+
+  /** Development aid: 1 shows the render before it is painted. */
+  debugView = 0;
+
+  get isReady() { return this.ready; }
+
+  dispose() {
+    this.disposed = true;
+    this.stop();
+    this.options.canvas.removeEventListener('webglcontextlost', this.handleContextLost, false);
+    this.sceneTarget?.dispose();
+    this.scene.traverse((object) => {
+      if (object instanceof THREE.Mesh) {
+        object.geometry.dispose();
+        (object.material as THREE.Material).dispose();
+      }
+    });
+    this.post.dispose();
+    for (const texture of this.textures) texture.dispose();
+    this.renderer.dispose();
+    this.renderer.forceContextLoss();
+  }
+}

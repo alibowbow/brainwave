@@ -8,7 +8,7 @@ import { rainIntensityFor, waveEnergyFor, type SessionBackdropVariant } from './
 
 // three.js stays out of every other session: only this routine loads it.
 const RainyWindowScene = lazy(() => import('./rainyWindow/RainyWindowScene'));
-// Likewise the painted sea's renderer loads only for the ocean shore.
+// Likewise the painted seaside (three.js too) loads only for the ocean shore.
 const OilSeaScene = lazy(() => import('./oilSea/OilSeaScene'));
 
 /** A chunk that cannot load (offline before first use) leaves the still in place. */

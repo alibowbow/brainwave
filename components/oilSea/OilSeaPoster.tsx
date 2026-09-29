@@ -1,7 +1,7 @@
 import React from 'react';
 
 /** A still of the finished painting, for devices without WebGL 2 or when the scene cannot load. */
-export const OIL_SEA_POSTER = 'images/nature/backgrounds/oil-sea-v1.webp';
+export const OIL_SEA_POSTER = 'images/nature/backgrounds/oil-sea-v2.webp';
 
 export const OilSeaPoster: React.FC = () => (
   <img

@@ -48,16 +48,18 @@ export default defineConfig(({ mode }) => {
             // Nature plates and cutouts are loaded per scene. Keeping them out
             // of the initial precache prevents the first visit from downloading
             // the entire illustration library.
-            globIgnores: ['**/images/nature/**', '**/assets/RainyWindowScene-*.js'],
+            globIgnores: ['**/images/nature/**', '**/assets/RainyWindowScene-*.js', '**/assets/OilSeaScene-*.js', '**/assets/three-*.js'],
             runtimeCaching: [
               {
-                // The real-time study (three.js) is fetched only when the deep-focus
-                // routine plays, then kept for offline sessions.
-                urlPattern: /\/assets\/RainyWindowScene-[\w-]+\.js$/i,
+                // The real-time scenes (the rainy study, the painted seaside) and
+                // three.js are fetched only when their routine plays, then kept
+                // for offline sessions. (The cache keeps the name it had when it
+                // held the study alone, so no stale copy is left behind.)
+                urlPattern: /\/assets\/(?:RainyWindowScene|OilSeaScene|three)-[\w-]+\.js$/i,
                 handler: 'CacheFirst',
                 options: {
                   cacheName: 'focus-scene-v1',
-                  expiration: { maxEntries: 2, maxAgeSeconds: 60 * 60 * 24 * 180 },
+                  expiration: { maxEntries: 6, maxAgeSeconds: 60 * 60 * 24 * 180 },
                   cacheableResponse: { statuses: [0, 200] },
                 },
               },
@@ -104,6 +106,16 @@ export default defineConfig(({ mode }) => {
           },
         }),
       ],
+      build: {
+        rollupOptions: {
+          output: {
+            // three.js is shared by the real-time scenes and split into a chunk
+            // of its own; name it so the service worker can leave it to load
+            // with the first scene that needs it.
+            chunkFileNames: (chunk) => (!chunk.isDynamicEntry && chunk.moduleIds.some((id) => id.includes('/node_modules/three/')) ? 'assets/three-[hash].js' : 'assets/[name]-[hash].js'),
+          },
+        },
+      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

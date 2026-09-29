@@ -37,6 +37,15 @@ import {
   type AppViewMode,
 } from './appNavigation';
 import {
+  appRouteHash,
+  readAppRoute,
+  resolveSessionLink,
+  sessionForLink,
+  sessionShareUrl,
+  withAppRoute,
+  type AppRoute,
+} from './appLink';
+import {
   prepareForcedRefresh,
   stripForceUpdateNonce,
   waitForWaitingWorker,
@@ -182,6 +191,8 @@ export default function App() {
   const natureEndRef = useRef<number | null>(null);
   const wakeLockRef = useRef<any>(null);
   const pendingStartRef = useRef<(() => void) | null>(null);
+  /** A routine opened from a link, waiting on the player for its first play. */
+  const readySnapshotRef = useRef<LastSession | null>(null);
   const updateBusyRef = useRef(false);
   const updateFallbackTimerRef = useRef<number | null>(null);
   const navigationRef = useRef<AppHistoryEntry>({
@@ -235,6 +246,7 @@ export default function App() {
   };
 
   const playEngineSession = (seconds: number, snapshot: LastSession) => {
+    readySnapshotRef.current = null;
     const frequencies = WAVE_FREQS[snapshot.brainWaveType];
     engine.start({
       base: frequencies.base,
@@ -388,9 +400,66 @@ export default function App() {
     });
     beginRun(timeLeft);
     setPlaybackStatus('running');
+    const ready = readySnapshotRef.current;
+    if (ready) {
+      readySnapshotRef.current = null;
+      sessionStartedAtRef.current = new Date().toISOString();
+      persistLastSession({ ...ready, mix: ready.mix ?? { ...volumes } });
+    }
   };
 
+  /** Play from the player; a routine opened from a link starts after the headphone notice when it applies. */
+  const playSession = () => {
+    if (readySnapshotRef.current) runAfterHeadphoneNotice(resumeSession);
+    else resumeSession();
+  };
+
+  /**
+   * A routine opened from a link waits on the player, ready to play: browsers
+   * only let sound start after a tap.
+   */
+  const prepareSession = (selected: SessionPreset, snapshot: LastSession, behavior: 'push' | 'replace') => {
+    if (natureStatus === 'running') stopNature();
+    if (playbackStatus !== 'idle') engine.stop();
+    const seconds = snapshot.durationMinutes * 60;
+    endTimeRef.current = null;
+    runStartRef.current = null;
+    playedMsRef.current = 0;
+    sessionStartedAtRef.current = new Date().toISOString();
+    setSelectedPreset(selected);
+    setCurrentBrainWave(snapshot.brainWaveType);
+    setToneMode(snapshot.toneMode);
+    setBrainwaveEnabled(snapshot.brainwaveEnabled);
+    setActiveLayers(snapshot.layers.map((layer) => ({ ...layer })));
+    if (snapshot.mix) setVolumes((current) => normalizeMixVolumes({ ...current, ...snapshot.mix }));
+    setSleepMode(snapshot.sleepMode);
+    setIntention(snapshot.intention ?? '');
+    setMoodBefore(null);
+    setTimeLeft(seconds);
+    setSessionTotalSeconds(seconds);
+    setVisualMode(DEFAULT_VISUAL_MODE);
+    setPlaybackStatus('paused');
+    readySnapshotRef.current = snapshot;
+    navigate({ activeView: 'home', viewMode: 'player', immersive: false }, behavior);
+  };
+
+  /** Show the page or routine an address names; false when this device has no such routine. */
+  const applyRoute = (route: AppRoute, behavior: 'push' | 'replace') => {
+    if (route.kind === 'view') {
+      navigate({ activeView: route.view, viewMode: 'list', immersive: false }, behavior);
+      return true;
+    }
+    const target = resolveSessionLink(route.sessionId, { userPresets, lastSession });
+    if (!target) return false;
+    const { selected, snapshot } = sessionForLink(target, natureTimerMin ?? 30);
+    prepareSession(selected, snapshot, behavior);
+    return true;
+  };
+  const applyRouteRef = useRef(applyRoute);
+  applyRouteRef.current = applyRoute;
+
   const stopSession = ({ reflect = false, goHome = false }: { reflect?: boolean; goHome?: boolean } = {}) => {
+    readySnapshotRef.current = null;
     accumulateRun();
     endTimeRef.current = null;
     setPlaybackStatus('idle');
@@ -929,6 +998,53 @@ export default function App() {
     window.history.replaceState(withAppHistoryEntry(window.history.state, entry), '', window.location.href);
   }, [activeView, immersive, viewMode]);
 
+  // Every page and every routine on the player has an address after `#`, so
+  // it can be copied, shared, bookmarked or reloaded.
+  const initialRouteRef = useRef<AppRoute | null | undefined>(undefined);
+  if (initialRouteRef.current === undefined) initialRouteRef.current = readAppRoute(window.location.href);
+  const routePendingRef = useRef(initialRouteRef.current !== null);
+
+  useEffect(() => {
+    const route = initialRouteRef.current;
+    initialRouteRef.current = null;
+    if (!route) return;
+    if (route.kind === 'view') {
+      applyRouteRef.current(route, 'replace');
+      return;
+    }
+    // Keep home underneath a linked routine so Back returns to the app.
+    window.history.replaceState(window.history.state, '', withAppRoute(window.location.href, null));
+    if (!applyRouteRef.current(route, 'push')) routePendingRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    const route: AppRoute = viewMode === 'player' && selectedPreset
+      ? { kind: 'play', sessionId: selectedPreset.id }
+      : { kind: 'view', view: activeView };
+    if (routePendingRef.current) {
+      // The address the app was opened with is still being applied.
+      if (route.kind === 'view' && route.view === 'home') return;
+      routePendingRef.current = false;
+    }
+    const next = withAppRoute(window.location.href, route);
+    if (next !== window.location.href) window.history.replaceState(window.history.state, '', next);
+  }, [activeView, viewMode, selectedPreset?.id]);
+
+  useEffect(() => {
+    // An address typed or followed within the page (the app's own history
+    // entries are restored by popstate instead).
+    const onHashChange = () => {
+      if (readAppHistoryEntry(window.history.state)) return;
+      const route = readAppRoute(window.location.href);
+      if (!route) return;
+      navigationRef.current = { ...navigationRef.current, index: navigationRef.current.index + 1 };
+      if (applyRouteRef.current(route, 'replace')) return;
+      window.history.replaceState(withAppHistoryEntry(window.history.state, navigationRef.current), '', withAppRoute(window.location.href, null));
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
   useEffect(() => {
     if (!noticeOpen && !saveOpen) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -1030,7 +1146,7 @@ export default function App() {
       setHandler('pause', () => stopNature());
       setHandler('stop', () => stopNature());
     } else {
-      setHandler('play', resumeSession);
+      setHandler('play', playSession);
       setHandler('pause', pauseSession);
       setHandler('stop', () => stopSession({ reflect: true, goHome: true }));
     }
@@ -1056,7 +1172,7 @@ export default function App() {
         subtitle={`${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')} · ${playbackStatus === 'running' ? '재생 중' : '일시정지'}`}
         isPlaying={playbackStatus === 'running'}
         onOpen={() => navigate({ activeView: 'home', viewMode: 'player', immersive: false })}
-        onToggle={playbackStatus === 'running' ? pauseSession : resumeSession}
+        onToggle={playbackStatus === 'running' ? pauseSession : playSession}
         onStop={() => stopSession({ reflect: true, goHome: true })}
       />
     )
@@ -1206,13 +1322,14 @@ export default function App() {
         {viewMode === 'player' && selectedPreset && (
           <Suspense fallback={<LoadingPanel />}>
             <Player
+              shareUrl={appRouteHash({ kind: 'play', sessionId: selectedPreset.id }) ? sessionShareUrl(window.location.href, selectedPreset.id) : undefined}
               subscribeEvents={subscribeNatureEvents}
               sessionName={selectedPreset.name.replace(/\s*\([^)]*\)/, '')}
               intention={intention}
               timeLeft={timeLeft}
               totalSeconds={sessionTotalSeconds}
               isPlaying={playbackStatus === 'running'}
-              onPlay={resumeSession}
+              onPlay={playSession}
               onPause={pauseSession}
               onStop={() => stopSession({ reflect: true, goHome: true })}
               onMinimize={() => navigateBack({ activeView: 'home', viewMode: 'list', immersive: false })}
@@ -1335,7 +1452,7 @@ export default function App() {
             activeLayers={activeLayers}
             getAnalyser={() => engine.getAnalyser()}
             onVisualModeChange={setVisualMode}
-            onPlay={resumeSession}
+            onPlay={playSession}
             onPause={pauseSession}
             onStop={() => stopSession({ reflect: true, goHome: true })}
             onExit={() => navigateBack({ activeView: 'home', viewMode: 'player', immersive: false })}

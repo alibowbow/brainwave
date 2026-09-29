@@ -37,6 +37,15 @@ export const createSoftClipCurve = (samples = 4096, ceiling = SOFT_CLIP_CEILING)
   return curve;
 };
 
+/** Crossfade from a recording's media element to its decoded loop. */
+export const MEDIA_HANDOVER_SECONDS = 2;
+const equalPowerCurve = (rising: boolean) => Float32Array.from({ length: 33 }, (_, index) => {
+  const phase = (index / 32) * (Math.PI / 2);
+  return rising ? Math.sin(phase) : Math.cos(phase);
+});
+const EQUAL_POWER_IN = equalPowerCurve(true);
+const EQUAL_POWER_OUT = equalPowerCurve(false);
+
 export const finalizeNoiseChannel = (data: Float32Array, targetRms: number, sampleRate: number) => {
   if (!data.length) return data;
   let mean = 0;
@@ -237,7 +246,14 @@ export class BinauralEngine {
 
   init() {
     if (!this.ctx) {
-      this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const Context: typeof AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      // Ambient playback never needs low latency. A larger output buffer rides
+      // out busy moments (a heavy page, background work) instead of crackling.
+      try {
+        this.ctx = new Context({ latencyHint: 'playback' });
+      } catch {
+        this.ctx = new Context();
+      }
       this.ctx.onstatechange = () => this.notifyPlayback();
     }
     if (this.ctx.state === 'suspended') {
@@ -716,13 +732,11 @@ export class BinauralEngine {
       if (typeof media.play !== 'function') return false;
 
       const source = this.ctx.createMediaElementSource(media);
-      source.connect(voice.sampleGain);
+      const mediaFade = this.ctx.createGain();
+      source.connect(mediaFade);
+      mediaFade.connect(voice.sampleGain);
       this.register(voice.bucket, source);
-      voice.bucket.cleanups.push(() => {
-        media.pause();
-        media.removeAttribute('src');
-        media.load();
-      });
+      this.register(voice.bucket, mediaFade);
 
       const binding = NATURE_SAMPLE_BINDINGS[type]!;
       voice.activeSampleId = assetId;
@@ -746,19 +760,90 @@ export class BinauralEngine {
       media.addEventListener?.('playing', playing);
       media.addEventListener?.('waiting', waiting);
       media.addEventListener?.('stalled', waiting);
-      voice.bucket.cleanups.push(() => {
+      let detached = false;
+      const detach = () => {
+        if (detached) return;
+        detached = true;
         media.removeEventListener?.('error', failed);
         media.removeEventListener?.('playing', playing);
         media.removeEventListener?.('waiting', waiting);
         media.removeEventListener?.('stalled', waiting);
-      });
+      };
+      let unloaded = false;
+      const unload = () => {
+        detach();
+        if (unloaded) return;
+        unloaded = true;
+        media.pause();
+        media.removeAttribute('src');
+        media.load();
+        try { source.disconnect(); mediaFade.disconnect(); } catch { /* already disconnected */ }
+      };
+      voice.bucket.cleanups.push(unload);
       // play() resolving (or the playing event) is the success signal, never
       // the mere creation of a media element. Keep failure visible and retryable.
-      void media.play().then(playing).catch(failed);
+      void media.play().then(() => { if (!detached) playing(); }).catch(() => { if (!detached) failed(); });
+      void this.handOverToBufferLoop(type, voice, assetId, mediaFade, detach, () => {
+        unload();
+        const index = voice.bucket.cleanups.indexOf(unload);
+        if (index >= 0) voice.bucket.cleanups.splice(index, 1);
+      });
       return true;
     } catch {
       return false;
     }
+  }
+
+  /**
+   * The media element starts a recording the moment the listener presses
+   * play, but it cannot loop cleanly: MP3 files carry a few milliseconds of
+   * encoder padding at each end, so every pass through the file clicks, and
+   * the element's own decoder stutters when the device is busy. As soon as the
+   * same file is decoded into a gapless, seam-crossfaded buffer, cross over to
+   * it and let the element go. Browsers that cannot decode it keep the element.
+   */
+  private async handOverToBufferLoop(
+    type: BackgroundSoundType,
+    voice: Voice,
+    assetId: NatureSampleId,
+    mediaFade: GainNode,
+    detachMedia: () => void,
+    releaseMedia: () => void,
+  ) {
+    let lease: SampleLease;
+    try {
+      lease = await this.acquireNatureSample(assetId);
+    } catch {
+      return;
+    }
+    if (!this.ctx || !this.isCurrentVoice(type, voice)) {
+      lease.release();
+      return;
+    }
+    this.holdLease(voice.bucket, lease);
+    detachMedia();
+    const source = this.ctx.createBufferSource();
+    const fade = this.ctx.createGain();
+    source.buffer = lease.buffer;
+    source.loop = true;
+    source.loopStart = 0;
+    source.loopEnd = lease.buffer.duration;
+    fade.gain.value = 0;
+    source.connect(fade);
+    fade.connect(voice.sampleGain);
+    this.register(voice.bucket, source);
+    this.register(voice.bucket, fade);
+    // Rain and crickets are noise-like, so an equal-power crossfade between
+    // unrelated moments of the recording is seamless (lining the two copies
+    // up would comb-filter instead).
+    const start = this.ctx.currentTime + 0.05;
+    source.start(start, Math.random() * lease.buffer.duration);
+    fade.gain.setValueCurveAtTime(EQUAL_POWER_IN, start, MEDIA_HANDOVER_SECONDS);
+    mediaFade.gain.cancelScheduledValues(start);
+    mediaFade.gain.setValueCurveAtTime(EQUAL_POWER_OUT, start, MEDIA_HANDOVER_SECONDS);
+    voice.sampleActive = true;
+    this.setPlaybackState(type, voice, 'playing');
+    this.schedule(voice.bucket, releaseMedia, (MEDIA_HANDOVER_SECONDS + 0.3) * 1000);
   }
 
   private scheduleNextSampleEvent(type: BackgroundSoundType, voice: Voice) {

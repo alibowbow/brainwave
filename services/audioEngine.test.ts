@@ -23,6 +23,8 @@ class Param {
   linearRampToValueAtTime(value: number) { this.value = value; return this; }
   exponentialRampToValueAtTime(value: number) { this.value = value; return this; }
   setTargetAtTime(value: number) { this.value = value; this.targets.push(value); return this; }
+  setValueCurveAtTime(values: Float32Array) { this.value = values[values.length - 1]; this.curves.push(values); return this; }
+  curves: Float32Array[] = [];
   cancelScheduledValues() { return this; }
 }
 class GNode { connect(d: any) { return d; } disconnect() {} }
@@ -33,6 +35,7 @@ const compressorNodes: DynamicsCompressorNode[] = [];
 const bufferSourceNodes: AudioBufferSourceNode[] = [];
 class MediaElementMock {
   src = '';
+  removedSource = false;
   preload = '';
   loop = false;
   crossOrigin = '';
@@ -41,7 +44,7 @@ class MediaElementMock {
   canPlayType() { return 'probably'; }
   play() { this.played = true; this.paused = false; return Promise.resolve(); }
   pause() { this.paused = true; }
-  removeAttribute() {}
+  removeAttribute() { this.removedSource = true; }
   load() {}
 }
 const mediaElements: MediaElementMock[] = [];
@@ -192,10 +195,48 @@ describe('BinauralEngine multi-voice', () => {
     e.start(cfg([{ type: 'ruralCrickets', volume: 1 }]));
     await flushMicrotasks();
 
-    expect((cache.acquire as ReturnType<typeof vi.fn>)).not.toHaveBeenCalled();
-    expect(mediaElements.some((media) => media.src.includes('rural-crickets-jun-v1.mp3') && media.played)).toBe(true);
+    // The decoded loop is attempted in the background; when it cannot be
+    // decoded the media element simply keeps playing.
+    expect((cache.acquire as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(1);
+    expect(mediaElements.some((media) => media.src.includes('rural-crickets-jun-v1.mp3') && media.played && !media.paused)).toBe(true);
     expect(e.activeSampleTypes()).toEqual(['ruralCrickets']);
     e.dispose();
+  });
+
+  it('hands a recording from its media element over to the gapless decoded loop', async () => {
+    const buffer = new AudioBufferMock(2, 48_000 * 17) as unknown as AudioBuffer;
+    const release = vi.fn();
+    const cache = sampleCache(async () => ({ buffer, release }));
+    g.document = {
+      createElement: () => {
+        const media = new MediaElementMock();
+        mediaElements.push(media);
+        return media;
+      },
+    };
+    e = new BinauralEngine(cache);
+
+    e.start(cfg([{ type: 'rain', volume: 0.8 }]));
+    const media = mediaElements.find((item) => item.src.includes('rain-jun-v1.mp3'))!;
+    expect(media.played).toBe(true);
+    await flushMicrotasks();
+
+    // The decoded loop starts looping gaplessly and crossfades in at equal power...
+    const loop = bufferSourceNodes.find((source) => source.buffer === buffer)!;
+    expect(loop.started).toBe(true);
+    expect(loop.loop).toBe(true);
+    expect(loop.loopEnd).toBeCloseTo(buffer.duration);
+    expect(e.getPlaybackStates().rain).toBe('playing');
+    expect(e.activeSampleTypes()).toEqual(['rain']);
+    // ...while the media element keeps sounding until the crossfade is over.
+    expect(media.paused).toBe(false);
+    for (const callback of [...timeoutCallbacks.values()]) callback();
+    expect(media.paused).toBe(true);
+    expect(media.removedSource).toBe(true);
+    expect(e.getPlaybackStates().rain).toBe('playing');
+
+    e.dispose();
+    expect(release).toHaveBeenCalledTimes(1);
   });
 
   it('layers sounds in and out independently', () => {
@@ -383,7 +424,8 @@ describe('BinauralEngine multi-voice', () => {
     await flushMicrotasks();
     expect(e.getPlaybackStates().ruralCrickets).toBe('playing');
     expect(e.activeSampleTypes()).toEqual(['ruralCrickets']);
-    expect(mediaElements.at(-1)!.src).toBe(originalUrl);
+    // (Codec probes also create elements; the retry is the last one given a source.)
+    expect(mediaElements.filter((media) => media.src).at(-1)!.src).toBe(originalUrl);
     expect((e as any).voices.get('ruralCrickets').proceduralMix).toBe(0);
     e.dispose();
   });

@@ -71,6 +71,24 @@ describe('runtime loop seam transform', () => {
 });
 
 describe('decoded sample cache', () => {
+  it('calls the browser fetch unbound by default (browsers throw "Illegal invocation" otherwise)', async () => {
+    const original = globalThis.fetch;
+    const calls: unknown[] = [];
+    globalThis.fetch = function strictFetch(this: unknown) {
+      if (this !== undefined && this !== globalThis) throw new TypeError('Illegal invocation');
+      calls.push(this);
+      return Promise.resolve(response());
+    } as typeof fetch;
+    try {
+      const context = new TestContext(new TestBuffer(1, 1_000, 1_000));
+      const lease = await new DecodedSampleCache().acquire(context as unknown as AudioContext, '/rain.mp3', 0.1, 4_000);
+      expect(calls).toHaveLength(1);
+      lease.release();
+    } finally {
+      globalThis.fetch = original;
+    }
+  });
+
   it('loads lazily and deduplicates concurrent fetch/decode work', async () => {
     const fetcher = vi.fn(async () => response());
     const context = new TestContext(new TestBuffer(1, 1_000, 1_000));

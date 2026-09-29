@@ -1,6 +1,8 @@
 import * as THREE from 'three';
+import { createTarget, FullscreenPass, passMaterial } from './fullscreen';
 import { GLSL_NOISE } from './glsl';
 import { GLASS_BOTTOM } from './layout';
+import type { WaterRegion } from './waterMap';
 
 /*
  * The window pane. Clear glass shows the defocused city; each bead of water
@@ -21,6 +23,7 @@ void main() {
 const FRAGMENT = /* glsl */ `
 ${GLSL_NOISE}
 uniform sampler2D tWater;
+uniform sampler2D tGrime;
 uniform vec4 uWaterRect;
 uniform vec2 uWaterTexel;
 uniform vec2 uTexelMM;
@@ -65,8 +68,11 @@ void main() {
 
   // Water pools in a wavering line along the bottom of the pane.
   float sillY = vWorld.y - ${GLASS_BOTTOM.toFixed(4)};
-  float pool = (1.0 - smoothstep(0.0, 0.006 + 0.004 * vnoise(vec2(vWorld.x * 40.0, uTime * 0.2)), sillY)) * uHasWater;
-  slope.y += pool * 0.5 * (vnoise(vec2(vWorld.x * 90.0, 3.0)) - 0.3);
+  float pool = 0.0;
+  if (sillY < 0.012) {
+    pool = (1.0 - smoothstep(0.0, 0.006 + 0.004 * vnoise(vec2(vWorld.x * 40.0, uTime * 0.2)), sillY)) * uHasWater;
+    slope.y += pool * 0.5 * (vnoise(vec2(vWorld.x * 90.0, 3.0)) - 0.3);
+  }
 
   if (uDebug > 0.5) {
     gl_FragColor = vec4(water.r * 1.5, water.g * 15.0, length(slope) * 0.25, 1.0);
@@ -104,7 +110,7 @@ void main() {
   color += uLampColor * (front + back) * wet * glintBody * lampFalloff;
 
   // Dust and smudges on the pane catch the lamp.
-  float grime = fbm(vWorld.xy * vec2(7.0, 10.0));
+  float grime = texture2D(tGrime, wuv).r;
   color += uLampColor * 0.0035 * lampFalloff * smoothstep(0.35, 0.9, grime);
 
   // Faint reflection of the lit room in the inner surface.
@@ -124,6 +130,7 @@ export const createGlassMaterial = () => new THREE.ShaderMaterial({
   fragmentShader: FRAGMENT,
   uniforms: {
     tWater: { value: null },
+    tGrime: { value: null },
     uWaterRect: { value: new THREE.Vector4(0, 0, 1, 1) },
     uWaterTexel: { value: new THREE.Vector2(1, 1) },
     uTexelMM: { value: new THREE.Vector2(1, 1) },
@@ -143,3 +150,30 @@ export const createGlassMaterial = () => new THREE.ShaderMaterial({
     uDebug: { value: 0 },
   },
 });
+
+const GRIME_FRAGMENT = /* glsl */ `
+${GLSL_NOISE}
+uniform vec4 uRegion;
+varying vec2 vUv;
+void main() {
+  gl_FragColor = vec4(fbm((uRegion.xy + vUv * uRegion.zw) * vec2(7.0, 10.0)), 0.0, 0.0, 1.0);
+}
+`;
+
+/** Smudges on the pane never change: draw their noise once over the visible glass. */
+export function bakeGrime(renderer: THREE.WebGLRenderer, region: WaterRegion) {
+  const width = region.x1 - region.x0;
+  const height = region.y1 - region.y0;
+  // 512 texels per metre resolves the finest octave (about 160 cycles per metre).
+  const target = createTarget(Math.min(2048, Math.max(64, width * 512)), Math.min(2048, Math.max(64, height * 512)), {
+    type: THREE.UnsignedByteType,
+    format: THREE.RedFormat,
+  });
+  const material = passMaterial(GRIME_FRAGMENT, { uRegion: { value: new THREE.Vector4(region.x0, region.y0, width, height) } });
+  const pass = new FullscreenPass();
+  pass.render(renderer, material, target);
+  renderer.setRenderTarget(null);
+  pass.dispose();
+  material.dispose();
+  return target;
+}

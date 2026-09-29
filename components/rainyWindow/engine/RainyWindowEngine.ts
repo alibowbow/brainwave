@@ -2,15 +2,16 @@ import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { CityBackdrop } from './city';
 import { createTarget } from './fullscreen';
-import { createGlassMaterial } from './glass';
+import { bakeGrime, createGlassMaterial } from './glass';
 import { buildInterior, LAMP_COLOR, type Interior } from './interior';
 import { shadowTaps } from './materials';
 import {
   CAMERA_POSITION, frameForAspect, GLASS_BOTTOM, GLASS_HALF_WIDTH, GLASS_TOP, GLASS_Z,
 } from './layout';
+import { LOOK_LIMIT, LOOK_PIVOT, LookSpring } from './look';
 import { updateMirrorCamera } from './mirror';
 import { PostProcessor } from './post';
-import { detectTier, DynamicResolution, isSoftwareRenderer, QUALITY, type QualityProfile, type QualityTier } from './quality';
+import { detectTier, DynamicResolution, isMobileDevice, isSoftwareRenderer, QUALITY, samplesFor, type QualityProfile, type QualityTier } from './quality';
 import { mulberry32 } from './random';
 import { DEFAULT_RAIN, RainSimulation } from './rainSimulation';
 import { bakeTextures, type BakedTextures } from './textures';
@@ -33,8 +34,6 @@ export class RainyWindowEngine {
   readonly renderer: THREE.WebGLRenderer;
   readonly tier: QualityTier;
   readonly profile: QualityProfile;
-  /** Minimum time between drawn frames. */
-  private readonly frameInterval: number;
   private readonly software: boolean;
   private readonly scene = new THREE.Scene();
   private readonly camera = new THREE.PerspectiveCamera(36, 16 / 9, 0.02, 30);
@@ -53,6 +52,8 @@ export class RainyWindowEngine {
   private envTarget: THREE.WebGLRenderTarget | null = null;
   private mainTarget: THREE.WebGLRenderTarget | null = null;
   private reflectionTarget: THREE.WebGLRenderTarget | null = null;
+  private grime: THREE.WebGLRenderTarget | null = null;
+  private grimeRegion = '';
   private cssWidth = 1;
   private cssHeight = 1;
   private devicePixelRatio = 1;
@@ -63,12 +64,25 @@ export class RainyWindowEngine {
   private raf = 0;
   private lastFrame = 0;
   private running = false;
+  private frameIndex = 0;
+  /** Draw every layer on the next frame (after a resize, or when redrawing a paused view). */
+  private refreshAll = true;
   private ready = false;
   private disposed = false;
   private flashes: { start: number; strength: number }[] = [];
   private flashLevel = 0;
   private rainIntensity = 1;
   private readonly lookTarget = new THREE.Vector3();
+  private readonly look = new LookSpring();
+  private readonly drift = new THREE.Vector3();
+  private readonly sway = new THREE.Vector3();
+  private readonly rest = new THREE.Vector3();
+  private readonly forward = new THREE.Vector3();
+  private readonly right = new THREE.Vector3();
+  private readonly pivot = new THREE.Vector3();
+  private readonly aim = new THREE.Vector3();
+  private readonly orbit = new THREE.Quaternion();
+  private readonly orbitPitch = new THREE.Quaternion();
 
   static isSupported() {
     try {
@@ -101,12 +115,11 @@ export class RainyWindowEngine {
     const nav = navigator as Navigator & { deviceMemory?: number; userAgentData?: { mobile?: boolean } };
     const rendererName = debug ? String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL)) : String(gl.getParameter(gl.RENDERER));
     this.software = isSoftwareRenderer(rendererName);
-    this.frameInterval = this.software ? 1000 / 12 : 1000 / 64;
     this.tier = options.quality && options.quality !== 'auto' ? options.quality : detectTier({
       renderer: rendererName,
       cores: nav.hardwareConcurrency,
       memory: nav.deviceMemory,
-      mobile: nav.userAgentData?.mobile ?? /Android|iPhone|iPad|Mobile/i.test(nav.userAgent),
+      mobile: isMobileDevice(nav.userAgent, nav.maxTouchPoints, nav.userAgentData?.mobile),
       maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE) as number,
     });
     this.profile = QUALITY[this.tier];
@@ -129,20 +142,29 @@ export class RainyWindowEngine {
   /** Build every resource; resolves once the first frame can be drawn without hitches. */
   async init() {
     const renderer = this.renderer;
+    // Building the study takes a few heavy steps; yielding between them keeps
+    // the page responsive (the poster shows meanwhile).
+    const breathe = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      return this.disposed;
+    };
     RectAreaLightUniformsLib.init();
     shadowTaps.search = this.profile.shadowTaps[0];
     shadowTaps.filter = this.profile.shadowTaps[1];
     const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     this.textures = bakeTextures(renderer, this.profile.textureScale, anisotropy);
+    if (await breathe()) return;
     this.interior = buildInterior(this.textures, this.options.seed ?? 11);
     this.scene.add(this.interior.group);
     this.scene.add(this.glass);
+    if (await breathe()) return;
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     this.envTarget = pmrem.fromScene(this.interior.environmentScene, 0, 0.05, 20, { position: new THREE.Vector3(0.1, 0.16, -0.1), size: 256 });
     pmrem.dispose();
     this.scene.environment = this.envTarget.texture;
     this.scene.environmentIntensity = 1;
+    if (await breathe()) return;
 
     this.city = new CityBackdrop(renderer, {
       zenith: new THREE.Color(0.007, 0.019, 0.056),
@@ -154,9 +176,12 @@ export class RainyWindowEngine {
     this.sim = new RainSimulation(1, 1, { ...DEFAULT_RAIN, maxDrops: this.profile.maxDrops }, mulberry32((this.options.seed ?? 11) * 31));
     this.post = new PostProcessor(renderer, Math.max(1, this.profile.dofTaps));
     if (!this.profile.dofTaps) this.post.settings.focus = 0;
+    if (await breathe()) return;
 
     this.interior.renderLampShadow(renderer, this.profile.shadowSize);
+    if (await breathe()) return;
     this.applySize(true);
+    if (await breathe()) return;
     this.prewet();
     try {
       await renderer.compileAsync(this.scene, this.camera);
@@ -196,6 +221,16 @@ export class RainyWindowEngine {
     if (this.sim) this.sim.intensity = this.rainIntensity;
   }
 
+  /** Turn the view slightly for a drag of `dx`, `dy` shorter sides of the view. */
+  drag(dx: number, dy: number) {
+    this.look.drag(dx, dy);
+  }
+
+  /** Ease the view back to the resting shot. */
+  releaseDrag() {
+    this.look.release();
+  }
+
   /** Distant lightning: a few ragged pulses through the clouds. */
   flash(strength = 1) {
     const start = this.time;
@@ -207,8 +242,21 @@ export class RainyWindowEngine {
     }
   }
 
+  /**
+   * Minimum time between drawn frames. The thresholds sit between display
+   * refresh multiples so 60, 90, 120 and 144 Hz screens all pace evenly.
+   */
+  private get frameInterval() {
+    if (this.software) return 1000 / 12;
+    return this.dynamic.rate === 60 ? 1000 / 75 : 1000 / 35;
+  }
+
+  private basePixelRatio() {
+    return Math.min(this.devicePixelRatio, this.profile.maxPixelRatio);
+  }
+
   private pixelRatio() {
-    return Math.min(this.devicePixelRatio, this.profile.maxPixelRatio) * this.dynamic.scale;
+    return this.basePixelRatio() * this.dynamic.scale;
   }
 
   private applySize(force: boolean) {
@@ -221,45 +269,67 @@ export class RainyWindowEngine {
     this.renderHeight = height;
     this.renderer.setPixelRatio(1);
     this.renderer.setSize(width, height, false);
+    this.refreshAll = true;
 
     const aspect = width / height;
     const frame = frameForAspect(aspect);
+    this.lookTarget.set(frame.target.x, frame.target.y, frame.target.z);
     for (const camera of [this.camera, this.baseCamera]) {
       camera.aspect = aspect;
       camera.fov = frame.fov;
-      camera.position.set(CAMERA_POSITION.x, CAMERA_POSITION.y, CAMERA_POSITION.z);
-      camera.lookAt(frame.target.x, frame.target.y, frame.target.z);
       camera.updateProjectionMatrix();
-      camera.updateMatrixWorld();
+      this.pose(camera, 0, 0);
     }
-    this.lookTarget.set(frame.target.x, frame.target.y, frame.target.z);
 
     this.mainTarget?.dispose();
-    this.mainTarget = createTarget(width, height, { samples: this.profile.msaa, depth: true, depthTexture: this.profile.dofTaps > 0 });
+    this.mainTarget = createTarget(width, height, { samples: samplesFor(this.profile, ratio), depth: true, depthTexture: this.profile.dofTaps > 0 });
     this.reflectionTarget?.dispose();
     this.reflectionTarget = this.profile.reflection
       ? createTarget(width * this.profile.reflectionScale, height * this.profile.reflectionScale, { depth: true })
       : null;
     this.post.setSize(width, height);
 
-    this.city.setView(this.baseCamera.quaternion, frame.fov, aspect, CITY_MARGIN);
-    const cityWidth = width * this.profile.cityScale * CITY_MARGIN;
-    const cityHeight = height * this.profile.cityScale * CITY_MARGIN;
-    const focalPx = height / (2 * Math.tan((frame.fov * Math.PI) / 360));
+    // The view can turn a little when dragged: the city and the rain must
+    // already cover every pose it can reach.
+    const poses = [this.baseCamera];
+    for (const [yaw, pitch] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      const camera = this.baseCamera.clone();
+      this.pose(camera, yaw * LOOK_LIMIT.yaw, pitch * LOOK_LIMIT.pitch);
+      poses.push(camera);
+    }
+    const edges = [[-1, -1], [1, -1], [-1, 1], [1, 1], [0, -1], [0, 1], [-1, 0], [1, 0]];
+    const tanHalf = Math.tan((frame.fov * Math.PI) / 360);
+    const direction = new THREE.Vector3();
+    let reach = 1;
+    for (const camera of poses) {
+      for (const [nx, ny] of edges) {
+        direction.set(nx, ny, 0.5).unproject(camera).sub(camera.position).transformDirection(this.baseCamera.matrixWorldInverse);
+        reach = Math.max(reach, Math.abs(direction.x / direction.z) / (tanHalf * aspect), Math.abs(direction.y / direction.z) / tanHalf);
+      }
+    }
+    // Leave room for the blur and the drops' lens beyond the furthest turn.
+    const margin = Math.max(CITY_MARGIN, reach * 1.08);
+    this.city.setView(this.baseCamera.quaternion, frame.fov, aspect, margin);
+    // The city follows the full-resolution frame, so dynamic resolution never
+    // has to redraw and re-blur it.
+    const fullHeight = this.cssHeight * this.basePixelRatio();
+    const cityWidth = this.cssWidth * this.basePixelRatio() * this.profile.cityScale * margin;
+    const cityHeight = fullHeight * this.profile.cityScale * margin;
+    const focalPx = fullHeight / (2 * tanHalf);
     this.city.setSize(cityWidth, cityHeight, COC_ANGLE * focalPx * this.profile.cityScale);
 
-    // Rain covers exactly the visible part of the pane.
-    const corners = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
+    // Rain covers exactly the part of the pane any pose can see.
     let x0 = Infinity; let x1 = -Infinity; let y0 = Infinity; let y1 = -Infinity;
-    const origin = this.baseCamera.position;
-    for (const [nx, ny] of corners) {
-      const point = new THREE.Vector3(nx * 1.04, ny * 1.04, 0.5).unproject(this.baseCamera);
-      const dir = point.sub(origin).normalize();
-      const t = (GLASS_Z - origin.z) / dir.z;
-      x0 = Math.min(x0, origin.x + dir.x * t);
-      x1 = Math.max(x1, origin.x + dir.x * t);
-      y0 = Math.min(y0, origin.y + dir.y * t);
-      y1 = Math.max(y1, origin.y + dir.y * t);
+    for (const camera of poses) {
+      const origin = camera.position;
+      for (const [nx, ny] of edges) {
+        const dir = direction.set(nx * 1.04, ny * 1.04, 0.5).unproject(camera).sub(origin).normalize();
+        const t = (GLASS_Z - origin.z) / dir.z;
+        x0 = Math.min(x0, origin.x + dir.x * t);
+        x1 = Math.max(x1, origin.x + dir.x * t);
+        y0 = Math.min(y0, origin.y + dir.y * t);
+        y1 = Math.max(y1, origin.y + dir.y * t);
+      }
     }
     y0 = Math.max(GLASS_BOTTOM - 0.01, y0);
     y1 = Math.min(GLASS_TOP, y1);
@@ -284,6 +354,13 @@ export class RainyWindowEngine {
     }
 
     const uniforms = this.glassMaterial.uniforms;
+    const grimeRegion = [x0, y0, x1, y1].map((value) => value.toFixed(4)).join();
+    if (grimeRegion !== this.grimeRegion || !this.grime) {
+      this.grime?.dispose();
+      this.grime = bakeGrime(this.renderer, { x0, y0, x1, y1 });
+      this.grimeRegion = grimeRegion;
+    }
+    uniforms.tGrime.value = this.grime.texture;
     uniforms.uWaterRect.value.set(x0, y0, x1, y1);
     uniforms.uWaterTexel.value.set(1 / this.water.width, 1 / this.water.height);
     uniforms.uTexelMM.value.set(widthMM / this.water.width, heightMM / this.water.height);
@@ -317,19 +394,36 @@ export class RainyWindowEngine {
     this.renderFrame(Math.min(0.1, elapsed / 1000));
   };
 
-  private updateCamera() {
+  /**
+   * Place a camera at the resting shot turned by `yaw` (right) and `pitch`
+   * (up) around a point near the lamp and mug, with optional hand-held drift.
+   */
+  private pose(camera: THREE.PerspectiveCamera, yaw: number, pitch: number, drift?: THREE.Vector3, sway?: THREE.Vector3) {
+    this.rest.set(CAMERA_POSITION.x, CAMERA_POSITION.y, CAMERA_POSITION.z);
+    this.forward.copy(this.lookTarget).sub(this.rest).normalize();
+    this.pivot.copy(this.rest).addScaledVector(this.forward, LOOK_PIVOT);
+    this.right.crossVectors(this.forward, camera.up).normalize();
+    // Turning right swings the camera left around the pivot; turning up swings it down.
+    this.orbit.setFromAxisAngle(camera.up, -yaw).multiply(this.orbitPitch.setFromAxisAngle(this.right, pitch));
+    camera.position.copy(this.rest).sub(this.pivot).applyQuaternion(this.orbit).add(this.pivot);
+    this.aim.copy(this.lookTarget).sub(this.pivot).applyQuaternion(this.orbit).add(this.pivot);
+    if (drift) camera.position.add(drift);
+    if (sway) this.aim.add(sway);
+    camera.lookAt(this.aim);
+    camera.updateMatrixWorld();
+  }
+
+  private updateCamera(dt: number) {
     const t = this.time;
+    this.look.update(dt);
     // A resting camera: slow, sub-millimetre breathing and drift.
-    const bx = Math.sin(t * 0.21) * 0.0016 + Math.sin(t * 0.53 + 1.3) * 0.0006;
-    const by = Math.sin(t * 0.17 + 0.6) * 0.0012 + Math.sin(t * 0.41) * 0.0005;
-    const bz = Math.sin(t * 0.13 + 2.1) * 0.001;
-    this.camera.position.set(CAMERA_POSITION.x + bx, CAMERA_POSITION.y + by, CAMERA_POSITION.z + bz);
-    this.camera.lookAt(
-      this.lookTarget.x + Math.sin(t * 0.11 + 0.4) * 0.0035,
-      this.lookTarget.y + Math.sin(t * 0.09 + 2.2) * 0.0025,
-      this.lookTarget.z,
+    this.drift.set(
+      Math.sin(t * 0.21) * 0.0016 + Math.sin(t * 0.53 + 1.3) * 0.0006,
+      Math.sin(t * 0.17 + 0.6) * 0.0012 + Math.sin(t * 0.41) * 0.0005,
+      Math.sin(t * 0.13 + 2.1) * 0.001,
     );
-    this.camera.updateMatrixWorld();
+    this.sway.set(Math.sin(t * 0.11 + 0.4) * 0.0035, Math.sin(t * 0.09 + 2.2) * 0.0025, 0);
+    this.pose(this.camera, this.look.yaw, this.look.pitch, this.drift, this.sway);
   }
 
   private updateFlash() {
@@ -364,9 +458,17 @@ export class RainyWindowEngine {
     if (ticks === 4) this.simCarry = 0;
     this.water.render(this.sim);
 
-    this.updateCamera();
+    this.updateCamera(dt);
     this.updateFlash();
-    this.city.render(this.time, this.flashLevel);
+    // At 60 fps the far city and the room's faint reflection in the pane
+    // change too little between frames to redraw both every time, so they
+    // take turns; each frame then carries about the same load.
+    this.frameIndex++;
+    const everything = this.refreshAll || dt === 0 || this.software || this.dynamic.rate !== 60;
+    this.refreshAll = false;
+    const drawCity = everything || this.frameIndex % 2 === 0;
+    const drawReflection = everything || this.frameIndex % 2 === 1;
+    if (drawCity) this.city.render(this.time, this.flashLevel);
     this.interior.windowLight.intensity = this.interior.windowLightBase * (1 + this.flashLevel * 7);
     this.interior.update(this.time, this.camera, this.renderHeight / (2 * Math.tan((this.camera.fov * Math.PI) / 360)));
 
@@ -380,7 +482,7 @@ export class RainyWindowEngine {
     uniforms.uTime.value = this.time;
 
     renderer.setClearColor(0x000000, 1);
-    if (this.reflectionTarget) {
+    if (this.reflectionTarget && drawReflection) {
       updateMirrorCamera(this.camera, new THREE.Vector3(0, 0, GLASS_Z), new THREE.Vector3(0, 0, 1), this.mirrorCamera, this.reflectionMatrix, true);
       this.mirrorCamera.layers.set(0);
       renderer.setRenderTarget(this.reflectionTarget);
@@ -427,6 +529,7 @@ export class RainyWindowEngine {
     this.envTarget?.dispose();
     this.mainTarget?.dispose();
     this.reflectionTarget?.dispose();
+    this.grime?.dispose();
     this.glass.geometry.dispose();
     this.glassMaterial.dispose();
     this.renderer.dispose();

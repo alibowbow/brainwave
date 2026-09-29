@@ -68,6 +68,8 @@ export const ImmersiveMode: React.FC<Props> = ({
   return (
     <div
       className="fixed inset-0 z-[100] flex h-[100dvh] flex-col items-center justify-center overflow-hidden bg-slate-950 text-white animate-fade-in"
+      data-scene-surface
+      style={visualMode === 'nature' && backgroundVariant === 'rainy-window' ? { touchAction: 'none' } : undefined}
       onPointerMove={visualMode === 'nature' ? revealControls : undefined}
       onPointerDown={visualMode === 'nature' ? revealControls : undefined}
       role="dialog"
@@ -84,6 +86,7 @@ export const ImmersiveMode: React.FC<Props> = ({
       )}
 
       <div
+        data-scene-drag
         onFocusCapture={holdControls}
         onBlurCapture={revealControls}
         className={`absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${chromeVisible ? 'visible opacity-100' : 'invisible pointer-events-none opacity-0'}`}

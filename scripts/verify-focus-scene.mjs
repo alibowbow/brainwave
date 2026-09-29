@@ -49,6 +49,26 @@ try {
   assert.ok(shot.length > 90_000, `scene renders detail (${shot.length} bytes)`);
   if (output) await page.screenshot({ path: `${output}/focus-player.png` });
 
+  // Dragging over the view turns it a little and letting go eases it back;
+  // a press on the controls never starts a drag.
+  const lookState = () => page.evaluate(() => document.querySelector('.rainy-window')?.getAttribute('data-look') ?? null);
+  await page.evaluate(() => {
+    const canvas = document.querySelector('.rainy-window-canvas');
+    const rect = canvas.getBoundingClientRect();
+    const init = { bubbles: true, isPrimary: true, pointerId: 7, pointerType: 'mouse', button: 0, clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2 };
+    canvas.dispatchEvent(new PointerEvent('pointerdown', init));
+    window.dispatchEvent(new PointerEvent('pointermove', { ...init, clientX: init.clientX + 160 }));
+  });
+  assert.equal(await lookState(), 'drag', 'a drag over the scene turns the view');
+  await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 7, pointerType: 'mouse', button: 0 })));
+  assert.equal(await lookState(), null, 'letting go eases the view back');
+  await page.evaluate(() => {
+    const time = document.querySelector('[aria-label^="남은 시간"]');
+    time.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, pointerId: 8, pointerType: 'mouse', button: 0 }));
+  });
+  assert.equal(await lookState(), null, 'the controls never start a drag');
+  await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 8, pointerType: 'mouse', button: 0 })));
+
   // Pausing the session freezes the scene (and keeps the rest of the test light).
   await press('일시정지');
   await page.waitForFunction(() => document.querySelector('.rainy-window')?.getAttribute('data-motion') === 'paused');
@@ -72,7 +92,7 @@ try {
   await page.waitForFunction(() => !document.querySelector('.rainy-window-canvas'));
 
   assert.deepEqual(errors, []);
-  console.log('PASS: deep-focus plays the live rainy study (no illustration or CSS rain), renders detail, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
+  console.log('PASS: deep-focus plays the live rainy study (no illustration or CSS rain), renders detail, turns a little under a drag, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
 } finally {
   await browser.close();
 }

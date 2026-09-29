@@ -170,8 +170,11 @@ export const Player: React.FC<PlayerProps> = ({
 
       <main className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>
         <section
+          data-scene-surface
           onPointerMove={visualMode === 'nature' ? revealSceneChrome : undefined}
           onPointerDown={visualMode === 'nature' ? revealSceneChrome : undefined}
+          // The study turns a little under a drag; only page scrolling (when the details are open) stays with the browser.
+          style={litStudy && visualMode === 'nature' ? { touchAction: detailsOpen ? 'pan-y' : 'none' } : undefined}
           className={`relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] ${visualMode === 'nature' ? 'min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]' : 'min-h-[540px] rounded-[30px] border sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]'}`}
         >
           <div className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
@@ -182,6 +185,7 @@ export const Player: React.FC<PlayerProps> = ({
 
           {visualMode === 'nature' ? (
             <div
+              data-scene-drag
               onFocusCapture={holdSceneChrome}
               onBlurCapture={revealSceneChrome}
               className={`absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${sceneChromeVisible ? 'visible opacity-100' : 'invisible pointer-events-none opacity-0'}`}

@@ -205,7 +205,7 @@ export class WaterMap {
   private readonly beadStamps = new StampBatch(this.beadMaterial, 4096);
   private readonly eraseStamps = new StampBatch(this.eraseMaterial, 512);
   private readonly filmStamps = new StampBatch(this.filmMaterial, 512);
-  private pendingTicks = 0;
+  private decayTicks = 0;
   private needsClear = true;
 
   constructor(private readonly renderer: THREE.WebGLRenderer) {}
@@ -236,7 +236,7 @@ export class WaterMap {
 
   /** Queue what one simulation tick changed on the glass. */
   collect(sim: RainSimulation) {
-    this.pendingTicks++;
+    this.decayTicks++;
     for (const bead of sim.droplets) {
       this.beadStamps.push(bead.x, bead.y, bead.x, bead.y, bead.r, bead.r, bead.r * CAP_HEIGHT, 0);
     }
@@ -266,10 +266,12 @@ export class WaterMap {
     const autoClear = renderer.autoClear;
     renderer.autoClear = false;
 
-    if (this.pendingTicks > 0) {
-      // Beads slowly evaporate or merge away; film dries faster.
-      this.decayMaterial.uniforms.uDecay.value.set(Math.pow(0.99965, this.pendingTicks), Math.pow(0.9975, this.pendingTicks));
+    // Beads slowly evaporate or merge away and film dries faster. Both change
+    // so slowly that touching every texel a few times a second is plenty.
+    if (this.decayTicks >= 8) {
+      this.decayMaterial.uniforms.uDecay.value.set(Math.pow(0.99965, this.decayTicks), Math.pow(0.9975, this.decayTicks));
       this.pass.render(renderer, this.decayMaterial, this.beads);
+      this.decayTicks = 0;
     }
     renderer.setRenderTarget(this.beads);
     for (const batch of [this.eraseStamps, this.filmStamps, this.beadStamps]) {
@@ -278,7 +280,6 @@ export class WaterMap {
       renderer.render(batch.mesh, this.camera);
       batch.reset();
     }
-    this.pendingTicks = 0;
 
     this.copyMaterial.uniforms.tSource.value = this.beads!.texture;
     this.pass.render(renderer, this.copyMaterial, this.water);

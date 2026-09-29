@@ -84,7 +84,9 @@ export class DecodedSampleCache implements SampleBufferCache {
   constructor(
     private readonly maxBytes = DEFAULT_DECODED_AUDIO_BUDGET,
     private readonly maxEntries = DEFAULT_DECODED_AUDIO_ENTRIES,
-    private readonly fetcher: typeof fetch = fetch,
+    // Browsers reject fetch called as a method of another object ("Illegal
+    // invocation"), so the default calls it unbound.
+    private readonly fetcher: typeof fetch = (input, init) => fetch(input, init),
   ) {}
 
   private reservedBytes() {

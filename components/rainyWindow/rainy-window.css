@@ -1,0 +1,7 @@
+.rainy-window { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: #050a14; }
+.rainy-window-mount { position: absolute; inset: 0; }
+.rainy-window-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 900ms ease; }
+.rainy-window[data-state='ready'] .rainy-window-canvas { opacity: 1; }
+.rainy-window[data-state='failed'] .rainy-window-canvas { display: none; }
+.reduce-motion .rainy-window-canvas { transition: none; }
+@media (prefers-reduced-motion: reduce) { .rainy-window-canvas { transition: none; } }

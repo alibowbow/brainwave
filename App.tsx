@@ -25,6 +25,7 @@ import {
   type VisualMode,
 } from './types';
 import { AppShell, type AppView } from './components/app/AppShell';
+import { sessionBackdropFor } from './components/rainyWindow/sessionBackdrop';
 import { HomeDashboard } from './components/app/HomeDashboard';
 import { NowPlayingBar } from './components/app/NowPlayingBar';
 import {
@@ -129,9 +130,7 @@ export default function App() {
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [appUpdateStatus, setAppUpdateStatus] = useState<AppUpdateStatus>('idle');
-  const sessionBackgroundVariant = selectedPreset?.id === 'relax' || selectedPreset?.id === 'amb:campfire_night'
-    ? 'campfire' as const
-    : undefined;
+  const sessionBackgroundVariant = sessionBackdropFor(selectedPreset);
 
   const [natureLayers, setNatureLayers] = useState<SoundLayer[]>(() => {
     try {
@@ -1235,6 +1234,7 @@ export default function App() {
               getAnalyser={() => engine.getAnalyser()}
               onImmersive={() => navigate({ activeView: 'home', viewMode: 'player', immersive: true })}
               backgroundVariant={sessionBackgroundVariant}
+              sceneCovered={immersive}
             />
           </Suspense>
         )}

@@ -1,9 +1,13 @@
 import * as THREE from 'three';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
 import { LIGHT_GLSL } from './terrain';
-import { coastDistance, fbm2, headlandFall, terrainHeight } from './world';
+import { CAMERA, coastDistance, fbm2, headlandFall, terrainHeight } from './world';
 
-/** A tuft of dry grass drawn once on a canvas: blades from olive roots to sunlit golden tips. */
+/**
+ * A tuft of long grass drawn once on a canvas: blades rising from dark
+ * roots and bending over to the left under the wind, olive low down, dry
+ * gold towards their tips.
+ */
 function drawTuft(size: number, seed: number) {
   const canvas = document.createElement('canvas');
   canvas.width = size;
@@ -15,24 +19,27 @@ function drawTuft(size: number, seed: number) {
     s = (s * 1664525 + 1013904223) >>> 0;
     return s / 4294967296;
   };
-  for (let i = 0; i < 140; i++) {
-    const x0 = size * (0.1 + 0.8 * rand());
-    const height = size * (0.35 + 0.62 * rand());
-    const lean = (rand() - 0.15) * size * 0.4;
-    const width = size * (0.006 + 0.012 * rand());
+  for (let i = 0; i < 120; i++) {
+    const x0 = size * (0.3 + 0.62 * rand());
+    const height = size * (0.4 + 0.58 * Math.pow(rand(), 0.6));
+    const lean = size * (0.1 + 0.3 * rand()) * (height / size);
+    const width = size * (0.007 + 0.012 * rand());
     const warm = rand();
     const green = rand() < 0.3 ? 1 : 0;
     const gradient = g.createLinearGradient(0, size, 0, size - height);
-    gradient.addColorStop(0, `rgba(${34 + warm * 16}, ${38 + warm * 12}, 18, 1)`);
-    gradient.addColorStop(0.5, `rgba(${Math.round(95 + warm * 45 - green * 30)}, ${Math.round(88 + warm * 25 + green * 10)}, ${40 + warm * 10}, 1)`);
-    gradient.addColorStop(1, `rgba(${Math.round(200 + warm * 45 - green * 50)}, ${Math.round(150 + warm * 42 - green * 5)}, ${66 + warm * 34}, 1)`);
-    g.strokeStyle = gradient;
-    g.lineWidth = width;
-    g.lineCap = 'round';
+    gradient.addColorStop(0, `rgb(${30 + warm * 14}, ${34 + warm * 10}, 16)`);
+    gradient.addColorStop(0.45, `rgb(${Math.round(92 + warm * 50 - green * 30)}, ${Math.round(86 + warm * 28 + green * 14)}, ${38 + warm * 12})`);
+    gradient.addColorStop(1, `rgb(${Math.round(196 + warm * 50 - green * 56)}, ${Math.round(150 + warm * 44 - green * 8)}, ${Math.round(70 + warm * 36 - green * 10)})`);
+    g.fillStyle = gradient;
+    // A tapering blade that bends over to the left.
+    const tipX = x0 - lean;
+    const tipY = size - height;
     g.beginPath();
-    g.moveTo(x0, size);
-    g.quadraticCurveTo(x0 + lean * 0.2, size - height * 0.6, x0 + lean, size - height);
-    g.stroke();
+    g.moveTo(x0 - width, size);
+    g.quadraticCurveTo(x0 - width * 0.6, size - height * 0.62, tipX, tipY);
+    g.quadraticCurveTo(x0 + width * 0.4, size - height * 0.62, x0 + width, size);
+    g.closePath();
+    g.fill();
   }
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.NoColorSpace;
@@ -42,9 +49,10 @@ function drawTuft(size: number, seed: number) {
 }
 
 /**
- * Grass on the headland: crossed cards of tufts, thick near the viewer,
- * swaying in the wind off the sea and glowing where the low sun shines
- * through the blades.
+ * Long grass on the headland, in clumps: each clump a few cards of the drawn
+ * tuft turned to the viewer, bent over by the wind and stirring in it, olive
+ * or gold or pale and dry from one clump to the next, the ground showing
+ * dark between them. The low sun shines through the tips.
  */
 export function createGrass(sunDirection: THREE.Vector3, count: number) {
   const texture = drawTuft(256, 7);
@@ -59,15 +67,18 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
     },
     vertexShader: /* glsl */ `
       uniform float uTime;
+      attribute vec4 aTint;
       varying vec2 vUv;
       varying vec3 vWorld;
+      varying vec4 vTint;
       void main() {
         vUv = uv;
+        vTint = aTint;
         vec4 world = modelMatrix * instanceMatrix * vec4(position, 1.0);
+        vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
         float bend = uv.y * uv.y;
         float gust = sin(uTime * 1.3 + world.x * 0.15 + world.z * 0.11) * 0.6 + sin(uTime * 2.7 + world.x * 0.4) * 0.25;
-        world.x += (0.18 + 0.12 * gust) * bend;
-        world.z += 0.05 * gust * bend;
+        world.xyz -= right * (0.1 + 0.12 * gust) * bend * aTint.w;
         vWorld = world.xyz;
         gl_Position = projectionMatrix * viewMatrix * world;
       }
@@ -76,59 +87,80 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
       uniform sampler2D tTuft;
       varying vec2 vUv;
       varying vec3 vWorld;
+      varying vec4 vTint;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
       void main() {
         vec4 tuft = texture2D(tTuft, vUv);
         if (tuft.a < 0.45) discard;
-        float patchy = fbm3(vWorld.xz * 0.05);
-        float dark = fbm3(vWorld.xz * 0.018 + 4.0);
-        float sunlit = fbm3(vWorld.xz * 0.03 + 9.0);
-        vec3 albedo = tuft.rgb * mix(vec3(1.0), vec3(0.66, 0.8, 0.52), smoothstep(0.45, 0.68, patchy) * 0.85);
-        albedo *= mix(1.0, 0.58, smoothstep(0.45, 0.62, dark));
+        vec3 albedo = tuft.rgb * vTint.rgb;
         // Swathes where the low sun comes through, and where it does not.
-        albedo *= mix(0.78, 1.28, smoothstep(0.32, 0.6, sunlit));
-        // The low sun shines through the tips.
+        albedo *= mix(0.8, 1.22, smoothstep(0.32, 0.6, fbm3(vWorld.xz * 0.03 + 9.0)));
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 3.0);
-        vec3 col = lightGround(albedo, vec3(0.0, 1.0, 0.0), 0.8) + albedo * vec3(1.0, 0.7, 0.35) * through * vUv.y * 1.2;
-        col *= 0.8 + 0.2 * vUv.y;
+        vec3 col = lightGround(albedo, vec3(0.0, 1.0, 0.0), 0.85) + albedo * vec3(1.0, 0.84, 0.52) * through * vUv.y * 1.35;
+        col *= 0.72 + 0.28 * vUv.y;
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,
     side: THREE.DoubleSide,
   });
   const mesh = new THREE.InstancedMesh(card, material, count);
+  const tints = new Float32Array(count * 4);
   const matrix = new THREE.Matrix4();
   const position = new THREE.Vector3();
   const quaternion = new THREE.Quaternion();
   const scale = new THREE.Vector3();
   const up = new THREE.Vector3(0, 1, 0);
+  const palette = [
+    [1.22, 1.0, 0.7], // gold
+    [1.32, 1.12, 0.82], // pale and dry
+    [0.9, 0.95, 0.58], // olive
+    [0.78, 0.72, 0.5], // dark, in shadow
+  ];
   let s = 12345;
   const rand = () => {
     s = (s * 1664525 + 1013904223) >>> 0;
     return s / 4294967296;
   };
   let placed = 0;
-  for (let tries = 0; placed < count && tries < count * 8; tries++) {
-    // Over the part of the headland the viewer looks across: its face and top, right of the view.
-    const distance = 6 + Math.pow(rand(), 0.85) * 170;
+  for (let tries = 0; placed < count && tries < count * 4; tries++) {
+    // A clump somewhere on the part of the headland in view.
+    const distance = 5 + Math.pow(rand(), 0.8) * 175;
     const bearing = -0.05 + rand() * 0.95;
-    const x = Math.sin(bearing) * distance;
-    const z = -Math.cos(bearing) * distance;
-    const fall = headlandFall(x, z);
-    if (fall > 0.85 || coastDistance(x, z) > -6) continue;
+    const cx = Math.sin(bearing) * distance;
+    const cz = -Math.cos(bearing) * distance;
+    const fall = headlandFall(cx, cz);
+    if (fall > 0.85 || coastDistance(cx, cz) > -6) continue;
     // Bare rock breaks through lower down the slopes.
-    if (fbm2(x * 0.05, z * 0.05, 3) < 0.2 + 0.35 * Math.max(0, fall)) continue;
-    if (fbm2(x * 0.08, z * 0.08, 3) < 0.26) continue;
-    const y = terrainHeight(x, z);
-    position.set(x, y - 0.05, z);
-    quaternion.setFromAxisAngle(up, rand() * Math.PI);
-    const size = 0.9 + Math.pow(rand(), 2) * 1.2;
-    scale.set(size * 1.4, size * (0.7 + rand() * 0.55), 1);
-    matrix.compose(position, quaternion, scale);
-    mesh.setMatrixAt(placed++, matrix);
+    if (fbm2(cx * 0.05, cz * 0.05, 3) < 0.2 + 0.35 * Math.max(0, fall)) continue;
+    // Taller near the viewer, where every tuft shows.
+    const near = Math.max(0, 1 - distance / 40);
+    const clumpHeight = (0.8 + 0.7 * rand()) * (1 + 1.2 * near);
+    const radius = clumpHeight * (0.5 + 0.6 * rand());
+    const kind = fbm2(cx * 0.06 + 3.0, cz * 0.06, 3) + (rand() - 0.5) * 0.25;
+    // Pockets in the shade of the slope and the scrub.
+    const pocket = fbm2(cx * 0.035 + 7.0, cz * 0.035, 3) < 0.37;
+    const tint = pocket ? palette[3] : kind < 0.33 ? palette[2] : kind < 0.56 ? palette[0] : kind < 0.66 ? palette[1] : palette[rand() < 0.7 ? 0 : 3];
+    const cards = 3 + Math.floor(rand() * 4);
+    for (let c = 0; c < cards && placed < count; c++) {
+      const a = rand() * Math.PI * 2;
+      const r = Math.sqrt(rand()) * radius;
+      const x = cx + Math.cos(a) * r;
+      const z = cz + Math.sin(a) * r;
+      position.set(x, terrainHeight(x, z) - 0.05, z);
+      // Turned to the viewer, give or take.
+      quaternion.setFromAxisAngle(up, Math.atan2(CAMERA.x - x, CAMERA.z - z) + (rand() - 0.5) * 1.1);
+      const height = clumpHeight * (0.7 + 0.5 * rand());
+      scale.set(height * (1.1 + 0.5 * rand()), height, 1);
+      matrix.compose(position, quaternion, scale);
+      mesh.setMatrixAt(placed, matrix);
+      const shade = (pocket ? 0.72 : 0.84) + 0.28 * rand();
+      tints.set([tint[0] * shade, tint[1] * shade, tint[2] * shade, height], placed * 4);
+      placed++;
+    }
   }
+  card.setAttribute('aTint', new THREE.InstancedBufferAttribute(tints, 4));
   mesh.count = placed;
   mesh.frustumCulled = false;
   return { mesh, material, texture };

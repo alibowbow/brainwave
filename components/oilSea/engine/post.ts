@@ -146,6 +146,69 @@ void main() {
 `;
 
 /*
+ * Dabs of paint laid over the painting: on a jittered grid, each dab an
+ * elongated stroke turned along the local form, carrying the colour found
+ * at its centre, shorter where there is detail to keep, stopping at strong
+ * edges, a little different in mix from its neighbours and marked by its
+ * bristles. The top-most dab over a pixel shows; the painting beneath shows
+ * through the gaps and soft ends.
+ */
+const DAB_FRAGMENT = /* glsl */ `
+varying vec2 vUv;
+uniform sampler2D tPaint;
+uniform sampler2D tTensor;
+uniform vec2 uResolution;
+uniform float uCell;
+float hash12(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+vec2 hash22(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973)); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.xx + p3.yz) * p3.zy); }
+void main() {
+  vec2 px = vUv * uResolution;
+  vec3 base = texture2D(tPaint, vUv).rgb;
+  vec2 cell = floor(px / uCell);
+  float best = -1.0;
+  vec4 top = vec4(base, 0.0);
+  for (int j = -1; j <= 1; j++) {
+    for (int i = -1; i <= 1; i++) {
+      vec2 c = cell + vec2(float(i), float(j));
+      vec2 jitter = hash22(c);
+      vec2 centre = (c + 0.1 + 0.8 * jitter) * uCell;
+      vec2 at = centre / uResolution;
+      // Along the form at the dab's centre (level where there is none).
+      vec3 t = texture2D(tTensor, at).xyz;
+      float root = sqrt(max((t.x - t.z) * (t.x - t.z) + 4.0 * t.y * t.y, 0.0));
+      vec2 v = vec2(0.5 * (t.x + t.z + root) - t.x, -t.y);
+      float strength = smoothstep(0.0003, 0.003, t.x + t.z);
+      vec2 along = normalize(mix(vec2(1.0, 0.0), dot(v, v) > 1e-12 ? normalize(v) * sign(v.x + 1e-6) : vec2(1.0, 0.0), strength) + vec2(1e-4, 0.0));
+      float detail = smoothstep(0.002, 0.02, t.x + t.z);
+      float halfLength = uCell * (1.45 - 0.75 * detail) * (0.8 + 0.4 * jitter.x);
+      float halfWidth = uCell * (0.6 - 0.2 * detail);
+      vec2 d = px - centre;
+      vec2 local = vec2(dot(d, along), dot(d, vec2(-along.y, along.x)));
+      float e = length(local / vec2(halfLength, halfWidth));
+      float cover = 1.0 - smoothstep(0.75, 1.0, e);
+      if (cover <= 0.0) continue;
+      vec3 colour = texture2D(tPaint, at).rgb;
+      // Paint keeps within the forms: no dab across a strong edge.
+      vec3 diff = colour - base;
+      cover *= 1.0 - smoothstep(0.008, 0.03, dot(diff, diff));
+      float priority = hash12(c + 17.0);
+      if (cover > 0.02 && priority > best) {
+        best = priority;
+        // Each dab a slightly different mix, streaked by its bristles.
+        float mixing = (hash12(c + 3.1) - 0.5) * (0.5 + 0.5 * strength);
+        colour *= 1.0 + 0.12 * mixing;
+        colour = mix(colour, colour * vec3(1.05, 1.0, 0.92), max(mixing, 0.0) * 0.8);
+        float bristle = hash12(vec2(floor(local.y * 0.9 + 40.0), c.x * 7.0 + c.y * 57.0));
+        colour *= 0.93 + 0.13 * bristle * smoothstep(1.0, 0.3, abs(local.x) / halfLength);
+        top = vec4(colour, cover);
+      }
+    }
+  }
+  gl_FragColor = vec4(mix(base, top.rgb, top.a), 1.0);
+}
+`;
+
+/*
  * The finished canvas. Brush marks: noise smeared along the direction the
  * forms run (line integral convolution over the structure tensor), which
  * modulates the paint a little and raises it into ridges that catch the
@@ -248,7 +311,7 @@ void main() {
   float r = length((vUv - uSun) * vec2(uResolution.x / uResolution.y, 1.0));
   float glow = exp(-r * 6.0) * uSunVisible;
   col *= 1.0 - 0.2 * dot(v * vec2(1.0, 1.25), v * vec2(1.0, 1.25)) * (1.0 - glow);
-  col += vec3(0.16, 0.1, 0.03) * glow * uPaint;
+  col += (vec3(0.24, 0.16, 0.06) * glow + vec3(0.3, 0.27, 0.18) * exp(-r * 22.0) * uSunVisible) * uPaint;
   gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
 }
 `;
@@ -269,6 +332,8 @@ export interface PaintSettings {
   stride: number;
   /** Samples taken along the flow, each way, for the brush marks. */
   strokeSteps: number;
+  /** Lay separate dabs of paint over the painting. */
+  dabs: boolean;
 }
 
 /** Turns the rendered frame into the painting. */
@@ -278,6 +343,12 @@ export class OilPaintPost {
   private readonly tensor = pass(TENSOR_FRAGMENT, { tColor: { value: null }, uTexel: { value: new THREE.Vector2() } });
   private readonly blur = pass(BLUR_FRAGMENT, { tInput: { value: null }, uStep: { value: new THREE.Vector2() } });
   private readonly kuwahara: ReturnType<typeof pass>;
+  private readonly dab = pass(DAB_FRAGMENT, {
+    tPaint: { value: null },
+    tTensor: { value: null },
+    uResolution: { value: new THREE.Vector2() },
+    uCell: { value: 5 },
+  });
   private readonly finish: ReturnType<typeof pass>;
   private readonly finishUniforms = {
     tPaint: { value: null },
@@ -293,6 +364,7 @@ export class OilPaintPost {
   private tensorA: THREE.WebGLRenderTarget | null = null;
   private tensorB: THREE.WebGLRenderTarget | null = null;
   private painted: THREE.WebGLRenderTarget | null = null;
+  private dabbed: THREE.WebGLRenderTarget | null = null;
   private width = 1;
   private height = 1;
 
@@ -318,12 +390,16 @@ export class OilPaintPost {
     this.height = height;
     this.radius = Math.min(this.settings.radius, Math.max(1.5, radius));
     this.kuwahara.material.uniforms.uRadius.value = this.radius;
-    for (const target of [this.colour, this.tensorA, this.tensorB, this.painted]) target?.dispose();
+    for (const target of [this.colour, this.tensorA, this.tensorB, this.painted, this.dabbed]) target?.dispose();
     const options = { depthBuffer: false, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
     this.colour = new THREE.WebGLRenderTarget(width, height, options);
     this.tensorA = new THREE.WebGLRenderTarget(width, height, { ...options, type: THREE.HalfFloatType });
     this.tensorB = new THREE.WebGLRenderTarget(width, height, { ...options, type: THREE.HalfFloatType });
     this.painted = new THREE.WebGLRenderTarget(width, height, options);
+    this.dabbed = this.settings.dabs ? new THREE.WebGLRenderTarget(width, height, options) : null;
+    (this.dab.material.uniforms.uResolution.value as THREE.Vector2).set(width, height);
+    // Dabs a little bigger than the brush that smoothed the paint under them.
+    this.dab.material.uniforms.uCell.value = Math.max(4.0, this.radius * 2.3);
     const texel = new THREE.Vector2(1 / width, 1 / height);
     (this.tensor.material.uniforms.uTexel.value as THREE.Vector2).copy(texel);
     (this.kuwahara.material.uniforms.uTexel.value as THREE.Vector2).copy(texel);
@@ -371,12 +447,19 @@ export class OilPaintPost {
     this.kuwahara.material.uniforms.tColor.value = this.colour.texture;
     this.kuwahara.material.uniforms.tTensor.value = this.tensorA.texture;
     this.draw(this.kuwahara, this.painted);
-    this.finish.material.uniforms.tPaint.value = this.painted.texture;
+    let paint = this.painted;
+    if (this.dabbed) {
+      this.dab.material.uniforms.tPaint.value = this.painted.texture;
+      this.dab.material.uniforms.tTensor.value = this.tensorA.texture;
+      this.draw(this.dab, this.dabbed);
+      paint = this.dabbed;
+    }
+    this.finish.material.uniforms.tPaint.value = paint.texture;
     this.draw(this.finish, null);
   }
 
   dispose() {
-    for (const target of [this.colour, this.tensorA, this.tensorB, this.painted]) target?.dispose();
-    for (const step of [this.grade, this.tensor, this.blur, this.kuwahara, this.finish]) step.material.dispose();
+    for (const target of [this.colour, this.tensorA, this.tensorB, this.painted, this.dabbed]) target?.dispose();
+    for (const step of [this.grade, this.tensor, this.blur, this.kuwahara, this.dab, this.finish]) step.material.dispose();
   }
 }

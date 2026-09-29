@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import { detectTier, DynamicResolution, isMobileDevice, isSoftwareRenderer } from '../../rainyWindow/engine/quality';
+import { createClouds } from './clouds';
 import { createGrass, createShrubs } from './grass';
 import { createOcean } from './ocean';
 import { createPine } from './pine';
@@ -28,18 +29,19 @@ interface Profile {
   /** Brush samples: every pixel (1) or every other one (2). */
   stride: number;
   strokeSteps: number;
+  dabs: boolean;
   terrainDetail: number;
-  skyDetail: number;
+  clouds: number;
   grass: number;
   shrubs: number;
   rocks: number;
 }
 
 const PROFILES: Record<SeasideQuality, Profile> = {
-  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, terrainDetail: 1, skyDetail: 1, grass: 22000, shrubs: 1000, rocks: 140 },
-  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, terrainDetail: 0.8, skyDetail: 1, grass: 15000, shrubs: 700, rocks: 110 },
-  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, terrainDetail: 0.6, skyDetail: 0.5, grass: 9000, shrubs: 450, rocks: 80 },
-  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, terrainDetail: 0.5, skyDetail: 0.5, grass: 5000, shrubs: 260, rocks: 70 },
+  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 150, grass: 22000, shrubs: 1000, rocks: 140 },
+  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 130, grass: 15000, shrubs: 700, rocks: 110 },
+  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 110, grass: 9000, shrubs: 450, rocks: 80 },
+  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 90, grass: 5000, shrubs: 260, rocks: 70 },
 };
 
 /** The painting draws itself when the scene first starts: pencil, then paint. */
@@ -58,13 +60,12 @@ export class SeasideEngine implements LiveSceneEngine {
   private readonly quality: SeasideQuality;
   private readonly profile: Profile;
   private readonly scene = new THREE.Scene();
-  private readonly camera = new THREE.PerspectiveCamera(40, 16 / 9, 1, 30000);
+  private readonly camera = new THREE.PerspectiveCamera(40, 16 / 9, 1, 80000);
   private readonly sunDirection = new THREE.Vector3(SUN.x, SUN.y, SUN.z).normalize();
   private readonly pacer: DynamicResolution;
   private readonly timed: THREE.ShaderMaterial[] = [];
   private readonly textures: THREE.Texture[] = [];
   private sky: THREE.Mesh | null = null;
-  private skyMaterial: THREE.ShaderMaterial | null = null;
   private oceanMaterial: THREE.ShaderMaterial | null = null;
   private sceneTarget: THREE.WebGLRenderTarget | null = null;
   private readonly post: OilPaintPost;
@@ -126,7 +127,7 @@ export class SeasideEngine implements LiveSceneEngine {
     this.camera.rotation.order = 'YXZ';
     this.camera.rotation.set(CAMERA.pitch, -CAMERA.yaw, 0);
 
-    this.post = new OilPaintPost(this.renderer, { radius: this.profile.brush, stride: this.profile.stride, strokeSteps: this.profile.strokeSteps });
+    this.post = new OilPaintPost(this.renderer, { radius: this.profile.brush, stride: this.profile.stride, strokeSteps: this.profile.strokeSteps, dabs: this.profile.dabs });
   }
 
   private get software() {
@@ -141,11 +142,12 @@ export class SeasideEngine implements LiveSceneEngine {
 
   async init() {
     const { profile } = this;
-    const sky = createSky(this.sunDirection, profile.skyDetail);
+    const sky = createSky(this.sunDirection);
     sky.mesh.scale.setScalar(20000);
     this.sky = sky.mesh;
-    this.skyMaterial = sky.material;
     this.scene.add(sky.mesh);
+    const clouds = createClouds(this.sunDirection, profile.clouds);
+    this.scene.add(clouds.mesh);
     const ocean = createOcean(this.sunDirection);
     this.oceanMaterial = ocean.material;
     this.scene.add(ocean.mesh);
@@ -159,8 +161,8 @@ export class SeasideEngine implements LiveSceneEngine {
     this.scene.add(rocks.mesh);
     const pine = createPine(this.sunDirection);
     this.scene.add(pine.group);
-    this.timed.push(sky.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, ...pine.materials);
-    this.textures.push(sky.texture, grass.texture, shrubs.texture, ...pine.textures);
+    this.timed.push(sky.material, clouds.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, ...pine.materials);
+    this.textures.push(clouds.texture, grass.texture, shrubs.texture, ...pine.textures);
     await this.renderer.compileAsync(this.scene, this.camera);
     if (this.disposed) return;
     this.resize();
@@ -202,6 +204,7 @@ export class SeasideEngine implements LiveSceneEngine {
     this.sceneTarget = new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: true });
     // The same brush on the same picture, whatever the resolution it is made at.
     this.post.setSize(width, height, profile.brush * Math.sqrt((width * height) / REFERENCE_PIXELS));
+    this.camera.updateMatrixWorld();
     this.sunPoint.copy(this.sunDirection).multiplyScalar(10000).add(this.camera.position).project(this.camera);
     this.post.setSun(this.sunPoint.x * 0.5 + 0.5, this.sunPoint.y * 0.5 + 0.5, Math.abs(this.sunPoint.x) < 1.2 && this.sunPoint.z < 1);
     if (this.oceanMaterial) {
@@ -260,11 +263,7 @@ export class SeasideEngine implements LiveSceneEngine {
 
     for (const material of this.timed) material.uniforms.uTime.value = this.time;
     if (this.oceanMaterial) this.oceanMaterial.uniforms.uEnergy.value = this.energy;
-    if (this.sky && this.skyMaterial) {
-      this.sky.position.copy(this.camera.position);
-      // The clouds drift slowly in from the sea.
-      this.skyMaterial.uniforms.uCloudDrift.value = this.time * 0.0004;
-    }
+    this.sky?.position.copy(this.camera.position);
     this.renderer.setRenderTarget(this.sceneTarget);
     this.renderer.render(this.scene, this.camera);
     this.post.render(this.sceneTarget.texture, this.debugView === 1);

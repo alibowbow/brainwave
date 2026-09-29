@@ -174,8 +174,9 @@ export function terrainHeight(x: number, z: number) {
   const hillRise = smoothstep(35, 480, inland);
   const lift = 1 + 0.8 * smoothstep(-1500, -3200, z);
   const rolling = fbm2(x * 0.0016 + 3.1, z * 0.0016, 5);
-  const spurs = ridged(x * 0.003, z * 0.003);
-  h += hillRise * lift * (30 + 110 * rolling + 25 * spurs) * (0.55 + 0.45 * smoothstep(0, 900, inland));
+  // Spurs and gullies running down towards the bay: ridged noise stretched along the fall line.
+  const spurs = ridged(x * 0.0042 + z * 0.0012, z * 0.0028 - x * 0.0008);
+  h += hillRise * lift * (30 + 95 * rolling + 70 * spurs * smoothstep(60, 400, inland)) * (0.55 + 0.45 * smoothstep(0, 900, inland));
   // The headland: a grassy top, a steep face falling to the sea and the bay,
   // a gentler slope down to the low ground behind the beach.
   const fall = headlandFall(x, z);

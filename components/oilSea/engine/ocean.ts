@@ -20,27 +20,49 @@ uniform float uDetail;
 const float TAU = 6.2831853;
 const vec2 SWELL_DIR = vec2(0.7596, 0.6504);
 
-// Open-sea swell: exponential-sine waves (sharp crests, flat troughs),
-// steep and short-crested out where the wind is working on it. Its mean is
-// about 0.35 of SWELL_SUM, its crests reach towards SWELL_SUM.
-const float SWELL_SUM = 5.0;
-const float SWELL_MEAN = 0.35;
-float swell(vec2 p, float fade) {
+// The long swell, rolling in from the open sea in rows: a few long
+// exponential-sine waves (sharp crests, flat troughs), their heights
+// exaggerated so that the rows still read from high on the headland.
+const float LONG_MEAN = 1.34;
+const float LONG_RANGE = 1.5;
+float longSwell(vec2 p, float fade) {
   float h = 0.0;
   float angle = atan(SWELL_DIR.y, SWELL_DIR.x);
-  for (int i = 0; i < 9; i++) {
+  for (int i = 0; i < 3; i++) {
     float fi = float(i);
-    float wavelength = 60.0 * pow(0.72, fi);
-    // Steepest around 20-30 m: the waves the wind is building.
-    float amplitude = 1.1 * pow(0.72, fi) * (1.0 + 0.9 * exp(-(fi - 2.0) * (fi - 2.0) / 3.0));
-    float a = angle + (mod(fi, 2.0) * 2.0 - 1.0) * (0.34 + 0.12 * fi);
+    float wavelength = 150.0 * pow(0.74, fi);
+    float amplitude = 1.4 * pow(0.78, fi);
+    float a = angle + (fi - 1.0) * 0.18;
     vec2 d = vec2(cos(a), sin(a));
     float k = TAU / wavelength;
     float w = sqrt(9.81 * k);
-    float visible = smoothstep(fade * 0.9, fade * 2.2, wavelength);
+    float visible = smoothstep(fade * 2.0, fade * 5.0, wavelength);
+    h += amplitude * mix(0.4, exp(1.3 * (sin(dot(d, p) * k - w * uTime + fi * 2.3) - 1.0)), visible);
+  }
+  return h;
+}
+
+// The wind's chop on top: shorter, short-crested waves from a wider spread
+// of directions, dropped once they would be finer than a few pixels.
+float chop(vec2 p, float fade) {
+  float h = 0.0;
+  float angle = atan(SWELL_DIR.y, SWELL_DIR.x);
+  for (int i = 0; i < 6; i++) {
+    float fi = float(i);
+    float wavelength = 42.0 * pow(0.7, fi);
+    float amplitude = 0.55 * pow(0.66, fi);
+    float a = angle + (mod(fi, 2.0) * 2.0 - 1.0) * (0.45 + 0.15 * fi);
+    vec2 d = vec2(cos(a), sin(a));
+    float k = TAU / wavelength;
+    float w = sqrt(9.81 * k);
+    float visible = smoothstep(fade * 3.0, fade * 7.0, wavelength);
     h += amplitude * visible * exp(1.6 * (sin(dot(d, p) * k - w * uTime + fi * 1.7) - 1.0));
   }
   return h;
+}
+
+float swell(vec2 p, float fade) {
+  return longSwell(p, fade) + chop(p, fade);
 }
 
 // Distance along the coast, for what varies from one stretch of a crest to the next.
@@ -139,11 +161,10 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float broken = brokenAt(p, d, wave);
   float surfZone = smoothstep(330.0, 170.0, d);
   float inner = smoothstep(90.0, 30.0, d);
-  float swellH = swell(p, fade);
-  float crest = clamp((swellH - SWELL_MEAN * SWELL_SUM) / (0.4 * SWELL_SUM), -1.0, 1.0);
+  float crest = clamp((longSwell(p, fade) - LONG_MEAN) / LONG_RANGE, -1.0, 1.0) * smoothstep(fade * 2.0, fade * 5.0, 110.0);
 
   // Light through the water: deep blue-teal, turquoise over the sand, milky in the churned surf.
-  vec3 body = mix(vec3(0.03, 0.28, 0.38), vec3(0.05, 0.36, 0.43), exp(-depth / 14.0));
+  vec3 body = mix(vec3(0.03, 0.25, 0.31), vec3(0.05, 0.35, 0.38), exp(-depth / 14.0));
   body = mix(body, vec3(0.13, 0.43, 0.48), exp(-depth / 3.0));
   body = mix(body, vec3(0.42, 0.5, 0.44), exp(-depth / 0.7) * 0.5);
   body = mix(body, vec3(0.28, 0.5, 0.56), inner * 0.35);
@@ -153,8 +174,8 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   body *= 0.86 + 0.28 * streak;
   // Crests lit through by the low sun behind them glow turquoise; troughs are deep.
   float backlit = pow(max(dot(-v, uSunDir) * 0.5 + 0.5, 0.0), 2.0);
-  body += vec3(0.03, 0.26, 0.2) * max(crest, 0.0) * (0.3 + 0.7 * backlit);
-  body *= 0.86 + 0.16 * crest;
+  body += vec3(0.02, 0.28, 0.22) * smoothstep(-0.25, 0.9, crest) * (0.35 + 0.65 * backlit);
+  body *= 0.8 + 0.2 * smoothstep(-0.9, 0.4, crest);
   // Each wave's face, turned to the shore: glassy, dark down in the trough,
   // turquoise and green higher up where the low sun behind shines through.
   float face = smoothstep(0.52, 0.86, cycle) * smoothstep(1.0, 0.965, cycle) * smoothstep(0.1, 0.5, waveSize) * surfZone;
@@ -167,9 +188,11 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   vec3 r = reflect(-v, n);
   r.y = abs(r.y) + 0.06 + 0.06 * smoothstep(2.0, 20.0, fade);
   r = normalize(r);
-  float fresnel = min(0.55, 0.02 + 0.98 * pow(1.0 - max(dot(n, v), 0.0), 5.0));
+  float fresnel = min(0.42, 0.02 + 0.98 * pow(1.0 - max(dot(n, v), 0.0), 5.0));
   // The evening sky as the water gives it back: cooler and deeper than it looks overhead.
-  vec3 mirrored = mix(skyLight(r, 0.1), vec3(0.44, 0.58, 0.68), 0.65);
+  // Towards the sun it gives back gold; away from it, the cool upper sky.
+  float sunward = pow(max(dot(normalize(vec3(r.x, 0.0, r.z)), normalize(vec3(uSunDir.x, 0.0, uSunDir.z))), 0.0), 8.0);
+  vec3 mirrored = mix(vec3(0.42, 0.54, 0.6), skyLight(r, 0.1), 0.3 + 0.6 * sunward);
   vec3 col = mix(body, mirrored, fresnel);
 
   // The sun's glitter: facets tilted to send the sun to the eye; a rough
@@ -177,11 +200,18 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   vec3 halfway = normalize(v + uSunDir);
   float nh = max(dot(n, halfway), 1e-3);
   float nh2 = nh * nh;
-  float roughness = 0.022 + min(0.05, fade * 0.002);
+  // Rougher where gusts touch down: the path breaks into patches.
+  float roughness = 0.026 + 0.034 * streak + min(0.03, fade * 0.0012);
   float facets = exp((nh2 - 1.0) / (nh2 * roughness)) / (3.1416 * roughness * nh2 * nh2);
   float glitterFresnel = 0.02 + 0.98 * pow(1.0 - max(dot(halfway, v), 0.0), 5.0);
   float glitter = facets * glitterFresnel / (4.0 * max(dot(n, v), 0.08)) * 0.09;
-  col += vec3(1.0, 0.68, 0.3) * (1.0 - exp(-glitter * 1.6)) * 1.05 + vec3(1.0, 0.86, 0.6) * max(glitter - 2.5, 0.0) * 0.05;
+  // It breaks into dabs: facets catching the sun, about as big on screen
+  // near and far, shimmering as the water moves.
+  vec2 rel = p - eye.xz;
+  vec2 dabAt = vec2(atan(rel.x, -rel.y) * 90.0, 15000.0 / max(length(rel), 1.0) + uTime * 0.8);
+  float dab = vnoise(dabAt) * 0.65 + vnoise(dabAt * 2.3 + 5.0) * 0.35;
+  glitter *= smoothstep(0.3, 0.72, dab) * 1.7;
+  col += vec3(1.0, 0.72, 0.3) * (1.0 - exp(-glitter * 1.3)) * 1.15 + vec3(1.0, 0.86, 0.6) * max(glitter - 2.5, 0.0) * 0.04;
 
   // Foam. Where it is dense it is solid white; as it thins, holes open along
   // its lace. A broken crest has a curling lip and the bore rushing behind
@@ -211,8 +241,8 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // Old foam drifting in streaks, and whitecaps on the open sea.
   float drift = smoothstep(0.6, 0.8, fbm3(p * vec2(0.05, 0.02) + vec2(0.0, uTime * 0.02))) * smoothstep(340.0, 120.0, d);
   density = max(density, drift * 0.35);
-  float capAt = vnoise(vec2(dot(p, across) * 0.032, dot(p, SWELL_DIR) * 0.09 - uTime * 0.15));
-  float caps = smoothstep(0.2, 0.55, crest) * (1.0 - surfZone) * smoothstep(0.55, 0.74, capAt) * smoothstep(40.0, 4.0, fade);
+  float capAt = vnoise(vec2(dot(p, across) * 0.02, dot(p, SWELL_DIR) * 0.035 - uTime * 0.08));
+  float caps = smoothstep(0.35, 0.7, crest) * (1.0 - surfZone) * smoothstep(0.62, 0.8, capAt) * smoothstep(12.0, 3.0, fade);
   density = max(density, caps);
   density = clamp(density * (0.85 + 0.15 * uEnergy), 0.0, 1.0);
   float foam = smoothstep(1.0 - density - 0.12, 1.0 - density + 0.12, texture) * min(1.0, density * 3.0);

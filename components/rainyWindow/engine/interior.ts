@@ -6,7 +6,8 @@ import {
   GLASS_BOTTOM, GLASS_Z, LAMP_BASE, MUG_POSITION, MULLION_WIDTH, MULLION_X, PLANT_POSITION, VASE_POSITION,
 } from './layout';
 import {
-  createLampShadowUniforms, createOcclusionUniforms, patchMaterial, type LampShadowUniforms, type OcclusionUniforms,
+  bakeDeskLighting, createDeskLightingUniforms, createLampShadowUniforms, createOcclusionUniforms, linearizeLampDepth, patchMaterial,
+  type LampShadowUniforms, type OcclusionUniforms,
 } from './materials';
 import { mulberry32, range, type Rng } from './random';
 import type { BakedTextures } from './textures';
@@ -15,6 +16,9 @@ import type { BakedTextures } from './textures';
 export const LAMP_COLOR = new THREE.Color(1.0, 0.64, 0.34);
 
 const CASTER_LAYER = 2;
+
+/** The desk top: a plane at y = 0 centred on x = 0. */
+const DESK = { width: 2.6, depth: 1.3, z: 0.03 } as const;
 
 export interface Interior {
   group: THREE.Group;
@@ -296,6 +300,7 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   const disposables: { dispose(): void }[] = [];
   const shadow = createLampShadowUniforms();
   const occlusion = createOcclusionUniforms();
+  const deskLighting = createDeskLightingUniforms();
   const track = <T extends { dispose(): void }>(item: T) => { disposables.push(item); return item; };
   const add = (geometry: THREE.BufferGeometry, material: THREE.Material, cast = true) => {
     const mesh = new THREE.Mesh(track(geometry), material);
@@ -315,8 +320,8 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
     clearcoat: 0.2,
     clearcoatRoughness: 0.38,
     specularIntensity: 0.4,
-  }), { lampShadow: shadow, occlusion }));
-  add(new THREE.PlaneGeometry(2.6, 1.3).rotateX(-Math.PI / 2).translate(0, 0, 0.03), deskMaterial, false);
+  }), { lampShadow: shadow, occlusion, deskLighting }));
+  add(new THREE.PlaneGeometry(DESK.width, DESK.depth).rotateX(-Math.PI / 2).translate(0, 0, DESK.z), deskMaterial, false);
 
   const frameMaterial = track(patchMaterial(new THREE.MeshPhysicalMaterial({
     color: new THREE.Color(0.014, 0.0145, 0.016),
@@ -802,14 +807,16 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   shadowCamera.updateMatrixWorld();
   shadowCamera.layers.set(CASTER_LAYER);
   const depthMaterial = track(new THREE.MeshDepthMaterial({ side: THREE.DoubleSide }));
-  let depthTarget: THREE.WebGLRenderTarget | null = null;
+  let shadowTarget: THREE.WebGLRenderTarget | null = null;
+  let deskTarget: THREE.WebGLRenderTarget | null = null;
 
   const renderLampShadow = (renderer: THREE.WebGLRenderer, size: number) => {
-    depthTarget?.dispose();
+    shadowTarget?.dispose();
+    deskTarget?.dispose();
     const depthTexture = new THREE.DepthTexture(size, size, THREE.FloatType);
     depthTexture.minFilter = THREE.NearestFilter;
     depthTexture.magFilter = THREE.NearestFilter;
-    depthTarget = new THREE.WebGLRenderTarget(size, size, { depthBuffer: true, depthTexture, type: THREE.UnsignedByteType });
+    const depthTarget = new THREE.WebGLRenderTarget(size, size, { depthBuffer: true, depthTexture, type: THREE.UnsignedByteType });
     const scene = new THREE.Scene();
     scene.overrideMaterial = depthMaterial;
     const parent = group.parent;
@@ -823,7 +830,10 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
     renderer.setRenderTarget(null);
     scene.remove(group);
     parent?.add(group);
-    shadow.tLampDepth.value = depthTexture;
+    shadowTarget = linearizeLampDepth(renderer, depthTexture, shadowCamera.near, shadowCamera.far, size);
+    depthTarget.dispose();
+    depthTexture.dispose();
+    shadow.tLampDepth.value = shadowTarget.texture;
     shadow.uLampNear.value = shadowCamera.near;
     shadow.uLampFar.value = shadowCamera.far;
     shadow.uLampSize.value = 0.056 / (2 * Math.tan((shadowCamera.fov * Math.PI) / 360));
@@ -834,6 +844,12 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
       0.0, 0.0, 0.5, 0.5,
       0.0, 0.0, 0.0, 1.0,
     ).multiply(shadowCamera.projectionMatrix).multiply(shadowCamera.matrixWorldInverse);
+
+    // The desk top reads its lamp shadow and occlusion from a one-time bake.
+    const area = { x0: -DESK.width / 2, z0: DESK.z - DESK.depth / 2, width: DESK.width, depth: DESK.depth };
+    deskTarget = bakeDeskLighting(renderer, shadow, occlusion, area, size, size / 2);
+    deskLighting.tDeskLighting.value = deskTarget.texture;
+    deskLighting.uDeskLightingRect.value.set(area.x0, area.z0, 1 / area.width, 1 / area.depth);
   };
 
   const billboard = new THREE.Vector3();
@@ -858,7 +874,8 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
       });
     },
     dispose() {
-      depthTarget?.dispose();
+      shadowTarget?.dispose();
+      deskTarget?.dispose();
       for (const item of disposables) item.dispose();
     },
   };

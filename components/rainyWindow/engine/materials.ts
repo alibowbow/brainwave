@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createTarget, FullscreenPass, passMaterial } from './fullscreen';
 
 /*
  * Shared additions to three's physical materials:
@@ -44,23 +45,32 @@ export const createOcclusionUniforms = (): OcclusionUniforms => ({
   uAoBoxShape: { value: Array.from({ length: MAX_AO_BOXES }, () => new THREE.Vector2(0, 0)) },
 });
 
-const PCSS = /* glsl */ `
+/** A Vogel (golden-angle) disk as GLSL constants, so no tap pays for sqrt, sin and cos. */
+export function vogelDisk(name: string, count: number) {
+  const points: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const r = Math.sqrt((i + 0.5) / count);
+    const theta = i * 2.39996323;
+    points.push(`vec2(${(Math.cos(theta) * r).toFixed(6)}, ${(Math.sin(theta) * r).toFixed(6)})`);
+  }
+  return `const vec2 ${name}[${count}] = vec2[](${points.join(', ')});`;
+}
+
+// tLampDepth holds linear distance from the lamp in metres (converted once
+// when the static depth map is drawn).
+const pcss = (searchTaps: number, filterTaps: number) => /* glsl */ `
 uniform sampler2D tLampDepth;
 uniform mat4 uLampShadowMatrix;
 uniform float uLampNear;
 uniform float uLampFar;
 uniform float uLampSize;
 uniform float uLampShadowTexel;
+${vogelDisk('LAMP_SEARCH_DISK', searchTaps)}
+${vogelDisk('LAMP_FILTER_DISK', filterTaps)}
 
 float lampLinearDepth(float depth) {
   float z = depth * 2.0 - 1.0;
   return 2.0 * uLampNear * uLampFar / (uLampFar + uLampNear - z * (uLampFar - uLampNear));
-}
-
-vec2 lampVogel(int index, int count, float phi) {
-  float r = sqrt((float(index) + 0.5) / float(count));
-  float theta = float(index) * 2.39996323 + phi;
-  return vec2(cos(theta), sin(theta)) * r;
 }
 
 float lampShadow(vec3 worldPosition, vec3 worldNormal) {
@@ -70,6 +80,8 @@ float lampShadow(vec3 worldPosition, vec3 worldNormal) {
   if (coord.x < 0.0 || coord.x > 1.0 || coord.y < 0.0 || coord.y > 1.0 || coord.z > 1.0) return 1.0;
   float receiver = lampLinearDepth(coord.z);
   float phi = fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715)))) * 6.2831853;
+  vec2 cs = vec2(cos(phi), sin(phi));
+  mat2 rotation = mat2(cs.x, cs.y, -cs.y, cs.x);
   float bias = 0.0025 + receiver * 0.004;
 
   // Blocker search over the light's footprint (uLampSize = light width / (2 tan(fov / 2))).
@@ -77,8 +89,8 @@ float lampShadow(vec3 worldPosition, vec3 worldNormal) {
   float searchRadius = 0.5 * uLampSize * max(receiver - searchNear, 0.0) / (receiver * searchNear);
   float blockerSum = 0.0;
   float blockers = 0.0;
-  for (int i = 0; i < LAMP_SEARCH_TAPS; i++) {
-    float blocker = lampLinearDepth(texture2D(tLampDepth, coord.xy + lampVogel(i, LAMP_SEARCH_TAPS, phi) * searchRadius).r);
+  for (int i = 0; i < ${searchTaps}; i++) {
+    float blocker = texture2D(tLampDepth, coord.xy + rotation * LAMP_SEARCH_DISK[i] * searchRadius).r;
     if (blocker < receiver - bias) { blockerSum += blocker; blockers += 1.0; }
   }
   if (blockers < 0.5) return 1.0;
@@ -86,12 +98,14 @@ float lampShadow(vec3 worldPosition, vec3 worldNormal) {
   float penumbra = 0.5 * uLampSize * (receiver - averageBlocker) / (averageBlocker * receiver);
   float radius = clamp(penumbra, uLampShadowTexel * 1.2, searchRadius);
 
+  // The filter disk is turned against the search disk so their patterns never line up.
+  mat2 filterRotation = rotation * mat2(-0.128844, 0.991665, -0.991665, -0.128844);
   float lit = 0.0;
-  for (int i = 0; i < LAMP_FILTER_TAPS; i++) {
-    float blocker = lampLinearDepth(texture2D(tLampDepth, coord.xy + lampVogel(i, LAMP_FILTER_TAPS, phi + 1.7) * radius).r);
+  for (int i = 0; i < ${filterTaps}; i++) {
+    float blocker = texture2D(tLampDepth, coord.xy + filterRotation * LAMP_FILTER_DISK[i] * radius).r;
     lit += smoothstep(receiver - bias - 0.0015, receiver - bias + 0.0015, blocker);
   }
-  return lit / float(LAMP_FILTER_TAPS);
+  return lit / float(${filterTaps});
 }
 `;
 
@@ -128,9 +142,26 @@ float deskVisibility(vec3 p) {
 }
 `;
 
+/** Lamp shadow and desk occlusion baked over the desk top (R: shadow, G: occlusion). */
+export interface DeskLightingUniforms {
+  tDeskLighting: THREE.IUniform<THREE.Texture | null>;
+  /** x0, z0, 1 / width, 1 / depth of the baked area. */
+  uDeskLightingRect: THREE.IUniform<THREE.Vector4>;
+}
+
+export const createDeskLightingUniforms = (): DeskLightingUniforms => ({
+  tDeskLighting: { value: null },
+  uDeskLightingRect: { value: new THREE.Vector4(0, 0, 1, 1) },
+});
+
 export interface PatchOptions {
   /** Receive the lamp's PCSS shadow. */
   lampShadow?: LampShadowUniforms;
+  /**
+   * Read the lamp shadow and desk occlusion from the bake instead of working
+   * them out per pixel (only for surfaces lying on the desk top).
+   */
+  deskLighting?: DeskLightingUniforms;
   /** Receive contact occlusion from the objects on the desk. */
   occlusion?: OcclusionUniforms;
   /** Upright objects darken where they meet the desk. */
@@ -153,7 +184,7 @@ let patchId = 0;
 export function patchMaterial<T extends THREE.Material>(material: T, options: PatchOptions): T {
   const key = `rainy-${patchId++}`;
   material.onBeforeCompile = (shader) => {
-    Object.assign(shader.uniforms, options.uniforms ?? {}, options.lampShadow ?? {}, options.occlusion ?? {});
+    Object.assign(shader.uniforms, options.uniforms ?? {}, options.lampShadow ?? {}, options.occlusion ?? {}, options.deskLighting ?? {});
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', `#include <common>\nvarying vec3 vWPos;\nvarying vec3 vWNormal;\n${options.vertexHeader ?? ''}`)
       .replace('#include <fog_vertex>', `#include <fog_vertex>
@@ -167,28 +198,38 @@ export function patchMaterial<T extends THREE.Material>(material: T, options: Pa
 
     let lights = THREE.ShaderChunk.lights_fragment_begin;
     let header = `varying vec3 vWPos;\nvarying vec3 vWNormal;\n${options.fragmentHeader ?? ''}`;
-    if (options.lampShadow) {
-      header += `#define LAMP_SEARCH_TAPS ${shadowTaps.search}\n#define LAMP_FILTER_TAPS ${shadowTaps.filter}\n${PCSS}`;
+    const baked = options.deskLighting;
+    if (baked) {
+      header += `
+uniform sampler2D tDeskLighting;
+uniform vec4 uDeskLightingRect;
+vec2 rwDeskLighting() { return texture2D(tDeskLighting, (vWPos.xz - uDeskLightingRect.xy) * uDeskLightingRect.zw).rg; }
+`;
+    }
+    if (options.lampShadow || baked) {
+      if (!baked) header += pcss(shadowTaps.search, shadowTaps.filter);
+      const shadow = baked ? 'rwBaked.r' : 'lampShadow( vWPos, normalize( vWNormal ) )';
+      // Outside the lamp's cone there is no light to shadow.
       lights = lights.replace(
         'getSpotLightInfo( spotLight, geometryPosition, directLight );',
-        'getSpotLightInfo( spotLight, geometryPosition, directLight );\n\t\tdirectLight.color *= lampShadow( vWPos, normalize( vWNormal ) );',
+        `getSpotLightInfo( spotLight, geometryPosition, directLight );\n\t\tif ( directLight.visible ) directLight.color *= ${shadow};`,
       );
     }
     let occlusion = '';
-    if (options.occlusion || options.groundContact) {
-      if (options.occlusion) header += OCCLUSION;
+    if (options.occlusion || options.groundContact || baked) {
+      if (options.occlusion && !baked) header += OCCLUSION;
       const terms = [
-        options.occlusion ? 'deskVisibility( vWPos )' : '1.0',
+        baked ? 'rwBaked.g' : options.occlusion ? 'deskVisibility( vWPos )' : '1.0',
         options.groundContact ? 'mix( 0.42, 1.0, smoothstep( 0.0, 0.022, vWPos.y ) )' : '1.0',
       ].join(' * ');
-      header += `\nfloat rwOcclusion() { return ${terms}; }\n`;
-      lights = lights.replace(
+      // Worked out once per pixel for the window light and the ambient terms alike.
+      lights = `float rwAo = ${terms};\n${lights}`.replace(
         'RE_Direct_RectArea( rectAreaLight,',
-        'rectAreaLight.color *= rwOcclusion();\n\t\tRE_Direct_RectArea( rectAreaLight,',
+        'rectAreaLight.color *= rwAo;\n\t\tRE_Direct_RectArea( rectAreaLight,',
       );
       occlusion = `
       {
-        float ambientOcclusion = rwOcclusion();
+        float ambientOcclusion = rwAo;
         reflectedLight.indirectDiffuse *= ambientOcclusion;
         #if defined( USE_CLEARCOAT )
           clearcoatSpecularIndirect *= ambientOcclusion;
@@ -203,6 +244,8 @@ export function patchMaterial<T extends THREE.Material>(material: T, options: Pa
       }`;
     }
 
+    // One lookup serves both the shadow and the occlusion.
+    if (baked) lights = `vec2 rwBaked = rwDeskLighting();\n${lights}`;
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>\n${header}`)
       .replace('#include <lights_fragment_begin>', lights)
@@ -213,4 +256,89 @@ export function patchMaterial<T extends THREE.Material>(material: T, options: Pa
   };
   material.customProgramCacheKey = () => `${key}-${shadowTaps.search}-${shadowTaps.filter}`;
   return material;
+}
+
+/** Part of the desk top a lighting bake covers, in metres. */
+export interface DeskArea {
+  x0: number;
+  z0: number;
+  width: number;
+  depth: number;
+}
+
+const BLUR_FRAGMENT = /* glsl */ `
+uniform sampler2D tSource;
+uniform vec2 uTexel;
+varying vec2 vUv;
+void main() {
+  vec4 sum = vec4(0.0);
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      float w = (x == 0 ? 2.0 : 1.0) * (y == 0 ? 2.0 : 1.0);
+      sum += texture2D(tSource, vUv + vec2(float(x), float(y)) * uTexel) * w;
+    }
+  }
+  gl_FragColor = sum / 16.0;
+}
+`;
+
+/**
+ * Bake the lamp's soft shadow and the objects' occlusion over the desk top.
+ * Nothing in the room moves, so the widest surface in view pays for this
+ * lighting once, with more taps than a frame could afford, instead of every
+ * frame. Returns an RGBA8 target (R: shadow, G: occlusion).
+ */
+export function bakeDeskLighting(
+  renderer: THREE.WebGLRenderer,
+  shadow: LampShadowUniforms,
+  occlusion: OcclusionUniforms,
+  area: DeskArea,
+  width: number,
+  height: number,
+) {
+  const bake = passMaterial(/* glsl */ `
+${pcss(24, 64)}
+${OCCLUSION}
+uniform vec4 uArea;
+varying vec2 vUv;
+void main() {
+  vec3 world = vec3(uArea.x + vUv.x * uArea.z, 0.0, uArea.y + vUv.y * uArea.w);
+  gl_FragColor = vec4(lampShadow(world, vec3(0.0, 1.0, 0.0)), deskVisibility(world), 0.0, 1.0);
+}
+`, { ...shadow, ...occlusion, uArea: { value: new THREE.Vector4(area.x0, area.z0, area.width, area.depth) } });
+  const blur = passMaterial(BLUR_FRAGMENT, { tSource: { value: null }, uTexel: { value: new THREE.Vector2(1 / width, 1 / height) } });
+  const raw = createTarget(width, height, { type: THREE.UnsignedByteType });
+  const target = createTarget(width, height, { type: THREE.UnsignedByteType });
+  const pass = new FullscreenPass();
+  pass.render(renderer, bake, raw);
+  // A light tent filter melts the per-texel sampling noise in the penumbrae.
+  blur.uniforms.tSource.value = raw.texture;
+  pass.render(renderer, blur, target);
+  renderer.setRenderTarget(null);
+  pass.dispose();
+  bake.dispose();
+  blur.dispose();
+  raw.dispose();
+  return target;
+}
+
+/** Turn the lamp's depth buffer into linear distance once, so shadow taps skip the conversion. */
+export function linearizeLampDepth(renderer: THREE.WebGLRenderer, depth: THREE.DepthTexture, near: number, far: number, size: number) {
+  const material = passMaterial(/* glsl */ `
+uniform sampler2D tDepth;
+uniform float uNear;
+uniform float uFar;
+varying vec2 vUv;
+void main() {
+  float z = texture2D(tDepth, vUv).r * 2.0 - 1.0;
+  gl_FragColor = vec4(2.0 * uNear * uFar / (uFar + uNear - z * (uFar - uNear)), 0.0, 0.0, 1.0);
+}
+`, { tDepth: { value: depth }, uNear: { value: near }, uFar: { value: far } });
+  const target = createTarget(size, size, { type: THREE.FloatType, format: THREE.RedFormat, filter: THREE.NearestFilter });
+  const pass = new FullscreenPass();
+  pass.render(renderer, material, target);
+  renderer.setRenderTarget(null);
+  pass.dispose();
+  material.dispose();
+  return target;
 }

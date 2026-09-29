@@ -25,7 +25,7 @@ import {
   type VisualMode,
 } from './types';
 import { AppShell, type AppView } from './components/app/AppShell';
-import { sessionBackdropFor } from './components/rainyWindow/sessionBackdrop';
+import { sessionBackdropFor } from './components/session/sessionBackdrop';
 import { HomeDashboard } from './components/app/HomeDashboard';
 import { NowPlayingBar } from './components/app/NowPlayingBar';
 import {

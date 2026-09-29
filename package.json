@@ -12,6 +12,7 @@
     "test": "vitest run",
     "verify:scenes": "node scripts/verify-scenes.mjs",
     "verify:focus": "node scripts/verify-focus-scene.mjs",
+    "verify:sea": "node scripts/verify-sea-scene.mjs",
     "verify:links": "node scripts/verify-links.mjs"
   },
   "dependencies": {

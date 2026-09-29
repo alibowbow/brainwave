@@ -50,6 +50,15 @@ class RainyWindowHost {
     if (this.status === 'ready' && this.top?.running) this.engine?.flash(strength);
   }
 
+  /** Turn the view a little while the view on top is dragged. */
+  drag(holder: RainyWindowHolder, dx: number, dy: number) {
+    if (this.top === holder) this.engine?.drag(dx, dy);
+  }
+
+  releaseDrag(holder: RainyWindowHolder) {
+    if (this.top === holder) this.engine?.releaseDrag();
+  }
+
   private get top(): RainyWindowHolder | undefined {
     return this.holders[this.holders.length - 1];
   }
@@ -103,6 +112,8 @@ class RainyWindowHost {
   private attachTop() {
     const top = this.top;
     if (!top || !this.canvas) return;
+    // A drag belongs to the view it started in.
+    this.engine?.releaseDrag();
     if (this.canvas.parentElement !== top.mount) top.mount.appendChild(this.canvas);
     this.observe(top.mount);
     this.resize();

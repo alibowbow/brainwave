@@ -26,7 +26,7 @@ export interface RainyWindowOptions {
 }
 
 /** Circle of confusion for the far city, as an angle (radians) so every framing matches. */
-const COC_ANGLE = 0.0088;
+const COC_ANGLE = 0.0062;
 const CITY_MARGIN = 1.3;
 
 export class RainyWindowEngine {
@@ -139,14 +139,15 @@ export class RainyWindowEngine {
     this.scene.environmentIntensity = 1;
 
     this.city = new CityBackdrop(renderer, {
-      zenith: new THREE.Color(0.006, 0.014, 0.038),
-      horizon: new THREE.Color(0.026, 0.05, 0.105),
-      glow: new THREE.Color(0.03, 0.046, 0.085),
-      fog: new THREE.Color(0.028, 0.05, 0.1),
+      zenith: new THREE.Color(0.007, 0.019, 0.056),
+      horizon: new THREE.Color(0.028, 0.064, 0.15),
+      glow: new THREE.Color(0.028, 0.052, 0.11),
+      fog: new THREE.Color(0.03, 0.062, 0.14),
     }, (this.options.seed ?? 11) * 7919);
     this.water = new WaterMap(renderer);
     this.sim = new RainSimulation(1, 1, { ...DEFAULT_RAIN, maxDrops: this.profile.maxDrops }, mulberry32((this.options.seed ?? 11) * 31));
-    this.post = new PostProcessor(renderer);
+    this.post = new PostProcessor(renderer, Math.max(1, this.profile.dofTaps));
+    if (!this.profile.dofTaps) this.post.settings.focus = 0;
 
     this.interior.renderLampShadow(renderer, this.profile.shadowSize);
     this.applySize(true);
@@ -228,7 +229,7 @@ export class RainyWindowEngine {
     this.lookTarget.set(frame.target.x, frame.target.y, frame.target.z);
 
     this.mainTarget?.dispose();
-    this.mainTarget = createTarget(width, height, { samples: this.profile.msaa, depth: true });
+    this.mainTarget = createTarget(width, height, { samples: this.profile.msaa, depth: true, depthTexture: this.profile.dofTaps > 0 });
     this.reflectionTarget?.dispose();
     this.reflectionTarget = this.profile.reflection
       ? createTarget(width * this.profile.reflectionScale, height * this.profile.reflectionScale, { depth: true })
@@ -382,7 +383,8 @@ export class RainyWindowEngine {
     renderer.setRenderTarget(this.mainTarget);
     renderer.clear();
     renderer.render(this.scene, this.camera);
-    this.post.render(this.mainTarget.texture, this.time, null);
+    const depth = this.mainTarget.depthTexture ? { texture: this.mainTarget.depthTexture, near: this.camera.near, far: this.camera.far } : null;
+    this.post.render(this.mainTarget.texture, this.time, null, depth);
   }
 
   /** Debug/testing hook: advance the simulation without drawing. */

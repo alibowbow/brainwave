@@ -10,7 +10,7 @@ export const GLASS_HALF_WIDTH = 3.4;
 export const MULLION_X = [-0.37, 0.5] as const;
 export const MULLION_WIDTH = 0.056;
 
-export const CAMERA_POSITION = { x: 0.015, y: 0.235, z: 0.78 } as const;
+export const CAMERA_POSITION = { x: 0.015, y: 0.26, z: 0.78 } as const;
 
 export const LAMP_BASE = { x: 0.445, z: -0.33 } as const;
 export const MUG_POSITION = { x: 0.262, z: -0.085 } as const;
@@ -18,7 +18,7 @@ export const PLANT_POSITION = { x: -0.56, z: -0.3 } as const;
 export const VASE_POSITION = { x: -0.365, z: -0.37 } as const;
 
 /** Height of the viewer above the river, used by the city backdrop. */
-export const CITY_EYE_HEIGHT = 34;
+export const CITY_EYE_HEIGHT = 17.5;
 
 export interface CameraFrame {
   /** Vertical field of view in degrees. */
@@ -49,7 +49,7 @@ export function frameForAspect(aspect: number): CameraFrame {
     fov,
     target: {
       x: lerp(0.25, 0.02, landscape),
-      y: lerp(0.262, 0.252, landscape),
+      y: lerp(0.262, 0.245, landscape),
       z: GLASS_Z,
     },
   };

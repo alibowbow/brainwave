@@ -19,12 +19,14 @@ export interface QualityProfile {
   maxDrops: number;
   /** Upper bound for the water map, in texels. */
   maxWaterTexels: number;
+  /** Depth-of-field gather taps; 0 disables it. */
+  dofTaps: number;
 }
 
 export const QUALITY: Record<QualityTier, QualityProfile> = {
-  high: { maxPixelRatio: 2, msaa: 4, waterDensity: 1.3, cityScale: 0.62, reflection: true, reflectionScale: 0.5, shadowSize: 2048, shadowTaps: [16, 32], textureScale: 1, maxDrops: 2600, maxWaterTexels: 5_000_000 },
-  medium: { maxPixelRatio: 1.6, msaa: 2, waterDensity: 1.0, cityScale: 0.52, reflection: false, reflectionScale: 0.4, shadowSize: 1536, shadowTaps: [10, 20], textureScale: 0.75, maxDrops: 1800, maxWaterTexels: 2_600_000 },
-  low: { maxPixelRatio: 1.25, msaa: 0, waterDensity: 0.8, cityScale: 0.45, reflection: false, reflectionScale: 0.35, shadowSize: 1024, shadowTaps: [8, 12], textureScale: 0.5, maxDrops: 1100, maxWaterTexels: 1_400_000 },
+  high: { maxPixelRatio: 2, msaa: 4, waterDensity: 1.3, cityScale: 0.62, reflection: true, reflectionScale: 0.5, shadowSize: 2048, shadowTaps: [16, 32], textureScale: 1, maxDrops: 2600, maxWaterTexels: 5_000_000, dofTaps: 40 },
+  medium: { maxPixelRatio: 1.6, msaa: 2, waterDensity: 1.0, cityScale: 0.52, reflection: false, reflectionScale: 0.4, shadowSize: 1536, shadowTaps: [10, 20], textureScale: 0.75, maxDrops: 1800, maxWaterTexels: 2_600_000, dofTaps: 24 },
+  low: { maxPixelRatio: 1.25, msaa: 0, waterDensity: 0.8, cityScale: 0.45, reflection: false, reflectionScale: 0.35, shadowSize: 1024, shadowTaps: [8, 12], textureScale: 0.5, maxDrops: 1100, maxWaterTexels: 1_400_000, dofTaps: 0 },
 };
 
 export interface DeviceHints {

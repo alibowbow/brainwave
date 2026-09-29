@@ -36,7 +36,7 @@ interface Sprite {
 }
 
 const ACCENTS: [number, number, number][] = [
-  [0.35, 0.62, 1.0], [0.5, 0.85, 1.0], [0.85, 0.9, 1.0], [0.62, 0.45, 1.0], [0.3, 0.95, 0.9],
+  [0.3, 0.58, 1.0], [0.45, 0.8, 1.0], [0.75, 0.86, 1.0], [0.5, 0.45, 1.0], [0.3, 0.9, 0.95], [0.3, 0.58, 1.0],
 ];
 
 function makeBuilding(rng: Rng, x: number, z: number, w: number, d: number, h: number, style: number): Building {
@@ -88,7 +88,7 @@ function generateBuildings(rng: Rng): Building[] {
       const w = tower ? range(rng, 24, 46) : range(rng, 26, 60);
       const d = tower ? range(rng, 22, 44) : range(rng, 24, 58);
       const building = makeBuilding(rng, x, z, w, d, h, styleFor(tower ? 0.9 : 0.3));
-      if (tower && rng() < 0.2 + 0.25 * core) {
+      if (tower && rng() < 0.34 + 0.3 * core) {
         building.accent = range(rng, 0.45, 1);
         building.crown = rng() < 0.55 ? range(rng, 0.5, 1) : 0;
       }
@@ -144,15 +144,17 @@ function generateSprites(rng: Rng, buildings: Building[]): Sprite[] {
   };
   const warm: [number, number, number] = [1.0, 0.74, 0.46];
   const sodium: [number, number, number] = [1.0, 0.58, 0.24];
-  const cool: [number, number, number] = [0.74, 0.86, 1.0];
-  const blue: [number, number, number] = [0.46, 0.64, 1.0];
+  const cool: [number, number, number] = [0.62, 0.8, 1.0];
+  const blue: [number, number, number] = [0.38, 0.58, 1.0];
 
-  const glintsFor = (x: number, height: number, z: number, color: [number, number, number], intensity: number, count: number) => {
+  // A light's reflection on rippled water: a glittering path around the
+  // mirror point, which lies closer to the viewer the higher the light is.
+  const glintsFor = (x: number, height: number, z: number, color: [number, number, number], intensity: number, count: number, spreadScale = 1) => {
     const distance = -z;
     const center = distance * CITY_EYE_HEIGHT / (CITY_EYE_HEIGHT + height);
     for (let i = 0; i < count; i++) {
-      const spread = (rng() + rng() + rng() - 1.5) * 0.19;
-      const d = Math.min(distance * 0.985, Math.max(distance * 0.55, center * (1 + spread)));
+      const spread = (rng() + rng() + rng() - 1.5) * 0.22 * spreadScale;
+      const d = Math.min(-SHORE_Z * 0.99, Math.max(60, center * (1 + spread)));
       add({
         x: x * d / distance + range(rng, -1.2, 1.2), y: 0.05, z: -d,
         r: color[0], g: color[1], b: color[2],
@@ -166,12 +168,12 @@ function generateSprites(rng: Rng, buildings: Building[]): Sprite[] {
   for (let x = -3600; x < 3600; x += range(rng, 18, 38)) {
     // Dark stretches (parks, piers) break the promenade into districts.
     if (Math.sin(x * 0.0041 + 1.3) + Math.sin(x * 0.0113) > 1.25 || rng() < 0.08) continue;
-    const district = Math.floor((x + 5000) / 420) % 4;
-    const color = district === 0 || district === 3 ? cool : district === 1 ? warm : sodium;
+    const district = Math.floor((x + 5000) / 420) % 5;
+    const color = district === 0 || district === 3 ? cool : district === 4 ? blue : district === 1 ? warm : sodium;
     const intensity = range(rng, 0.9, 2.6);
     const y = GROUND_Y + 7;
     add({ x, y, z: SHORE_Z - 4, r: color[0], g: color[1], b: color[2], intensity });
-    glintsFor(x, y, SHORE_Z - 4, color, intensity, 9);
+    glintsFor(x, y, SHORE_Z - 4, color, intensity * 1.2, 14);
   }
 
   // Riverside boulevard traffic.
@@ -220,14 +222,19 @@ function generateSprites(rng: Rng, buildings: Building[]): Sprite[] {
         const u = (column + 0.5) * b.winW - columns * b.winW / 2;
         const y = 2 + (floor + 0.5) * b.floorH;
         const tint = rng();
-        const base = b.warmth + (tint - 0.5) * 0.6 > 0.55 ? warm : rng() < 0.35 ? blue : cool;
+        const base = b.warmth + (tint - 0.5) * 0.6 > 0.62 ? warm : rng() < 0.5 ? blue : cool;
         const colored = rng() < 0.05;
         const color: [number, number, number] = colored ? (rng() < 0.6 ? [0.35, 0.55, 1.0] : [0.9, 0.55, 1.0]) : base;
+        const wx = basis.cx + basis.tx * u + basis.nx * 0.8;
+        const wz = basis.cz + basis.tz * u + basis.nz * 0.8;
+        const intensity = range(rng, 0.4, 1.1);
         add({
-          x: basis.cx + basis.tx * u + basis.nx * 0.8, y, z: basis.cz + basis.tz * u + basis.nz * 0.8,
-          r: color[0], g: color[1], b: color[2], intensity: range(rng, 0.45, 1.25),
+          x: wx, y, z: wz,
+          r: color[0], g: color[1], b: color[2], intensity,
           kind: rng() < 0.16 ? SpriteKind.Toggle : SpriteKind.Static, speed: range(rng, 0.015, 0.05),
         });
+        // Front-facing windows of the nearer districts also glitter in the river.
+        if (face === 'front' && -wz < 2600 && rng() < 0.55) glintsFor(wx, y, wz, color, intensity * 0.7, 2, 1.6);
       }
     }
 
@@ -337,7 +344,7 @@ void main() {
     else mask = filteredPulse(uu, 0.18, 0.82, fw) * filteredPulse(vv, 0.24, 0.8, fh);
 
     vec3 warm = vec3(1.0, 0.7, 0.4);
-    vec3 cool = vec3(0.7, 0.83, 1.0);
+    vec3 cool = vec3(0.56, 0.75, 1.0);
     vec3 lightColor = mix(cool, warm, clamp(warmth + (rnd2 - 0.5) * 0.55, 0.0, 1.0));
     float bright = 0.35 + 1.5 * rnd2 * rnd2;
     vec3 unlit = vec3(0.005, 0.008, 0.015) * (0.6 + 0.8 * hash12(cell + 7.0));
@@ -448,7 +455,7 @@ void main() {
   vec3 reflection = sum / weight;
   float breakup = 0.55 + 0.9 * smoothstep(0.2, 0.8, vnoise(vWorld.xz * vec2(0.012, 0.25)));
   float dist = length(vWorld - cameraPosition);
-  vec3 color = vec3(0.0012, 0.002, 0.0034) + reflection * fresnel * 0.9 * breakup;
+  vec3 color = vec3(0.0015, 0.0026, 0.0048) + reflection * fresnel * 1.35 * breakup;
   color = applyFog(color, vWorld, dist * 0.7);
   gl_FragColor = vec4(color, dist / ${DIST_NORM.toFixed(1)});
 }
@@ -622,7 +629,7 @@ export class CityBackdrop {
     const buildings = generateBuildings(rng);
     const sprites = generateSprites(rng, buildings);
 
-    const fogUniforms = { uFogColor: { value: palette.fog }, uFogDensity: { value: 0.00042 } };
+    const fogUniforms = { uFogColor: { value: palette.fog }, uFogDensity: { value: 0.00046 } };
     const sky = new THREE.ShaderMaterial({
       vertexShader: WORLD_VERTEX,
       fragmentShader: SKY_FRAGMENT,
@@ -791,6 +798,11 @@ export class CityBackdrop {
   }
 
   get blurTexture() { return this.blur!.texture; }
+
+  /** Intermediate layers for development tools. */
+  get debugTextures() {
+    return { staticSharp: this.staticSharp?.texture, reflection: this.reflection?.texture, staticBlur: this.staticBlur?.texture, blur: this.blur?.texture, sharp: this.sharp?.texture };
+  }
   get sharpTexture() { return this.sharp!.texture; }
 
   private renderStatic() {

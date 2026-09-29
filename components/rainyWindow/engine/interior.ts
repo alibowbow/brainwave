@@ -312,9 +312,9 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
     normalScale: new THREE.Vector2(0.5, 0.5),
     roughness: 1,
     metalness: 0,
-    clearcoat: 0.32,
-    clearcoatRoughness: 0.3,
-    specularIntensity: 0.45,
+    clearcoat: 0.2,
+    clearcoatRoughness: 0.38,
+    specularIntensity: 0.4,
   }), { lampShadow: shadow, occlusion }));
   add(new THREE.PlaneGeometry(2.6, 1.3).rotateX(-Math.PI / 2).translate(0, 0, 0.03), deskMaterial, false);
 
@@ -346,8 +346,8 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   const lampBase = new THREE.Vector3(LAMP_BASE.x, 0, LAMP_BASE.z);
   const joint = new THREE.Vector3(LAMP_BASE.x + 0.02, 0.462, LAMP_BASE.z - 0.005);
   const shadeTop = joint.clone().add(new THREE.Vector3(-0.014, -0.006, 0.008));
-  const direction = new THREE.Vector3(-0.461, -0.782, 0.421).normalize();
-  const bulb = shadeTop.clone().addScaledVector(direction, 0.052);
+  const direction = new THREE.Vector3(-0.46, -0.835, 0.3).normalize();
+  const bulb = shadeTop.clone().addScaledVector(direction, 0.046);
   const lampBody = track(patchMaterial(new THREE.MeshPhysicalMaterial({
     color: new THREE.Color(0.006, 0.006, 0.0066),
     roughness: 0.52,
@@ -368,11 +368,13 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   neck.position.copy(joint).lerp(shadeTop, 0.5);
   neck.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), shadeTop.clone().sub(joint).normalize());
 
-  const shadeLength = 0.14;
-  const outerProfile: THREE.Vector2[] = [v(0, 0.0036), v(0.012, 0.0036), v(0.022, 0.0016), v(0.0285, -0.0036), v(0.031, -0.012)];
+  const shadeLength = 0.128;
+  const topRadius = 0.0265;
+  const openRadius = 0.0625;
+  const outerProfile: THREE.Vector2[] = [v(0, 0.0032), v(0.0105, 0.0032), v(0.019, 0.0014), v(0.0243, -0.0032), v(topRadius, -0.0105)];
   for (let i = 1; i <= 10; i++) {
     const t = i / 10;
-    outerProfile.push(v(0.031 + (0.0716 - 0.031) * Math.pow(t, 0.9), -0.012 - t * (shadeLength - 0.012)));
+    outerProfile.push(v(topRadius + (openRadius - topRadius) * Math.pow(t, 0.92), -0.0105 - t * (shadeLength - 0.0105)));
   }
   const shadeGroup = new THREE.Group();
   shadeGroup.position.copy(shadeTop);
@@ -388,7 +390,7 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
     roughness: 0.6,
     emissive: LAMP_COLOR,
   }), {
-    uniforms: { uBulb: { value: bulb }, uShadeGlow: { value: 0.03 } },
+    uniforms: { uBulb: { value: bulb }, uShadeGlow: { value: 0.045 } },
     fragmentHeader: 'uniform vec3 uBulb;\nuniform float uShadeGlow;',
     fragmentEmissive: `
       vec3 rwToBulb = uBulb - vWPos;
@@ -400,16 +402,16 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   const shadeInner = new THREE.Mesh(track(new THREE.LatheGeometry(innerProfile, 96)), shadeInnerMaterial);
   shadeGroup.add(shadeInner);
   const rimMaterial = track(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.02, 0.019, 0.018), roughness: 0.3, metalness: 0.6 }));
-  const rimMesh = new THREE.Mesh(track(new THREE.TorusGeometry(0.0716, 0.0013, 10, 128).rotateX(Math.PI / 2)), rimMaterial);
+  const rimMesh = new THREE.Mesh(track(new THREE.TorusGeometry(openRadius, 0.0012, 10, 128).rotateX(Math.PI / 2)), rimMaterial);
   rimMesh.position.y = -shadeLength;
   shadeGroup.add(rimMesh);
   const bulbMaterial = track(new THREE.MeshBasicMaterial({ color: LAMP_COLOR.clone().multiplyScalar(55) }));
-  const bulbMesh = new THREE.Mesh(track(new THREE.SphereGeometry(0.019, 32, 16)), bulbMaterial);
+  const bulbMesh = new THREE.Mesh(track(new THREE.SphereGeometry(0.017, 32, 16)), bulbMaterial);
   bulbMesh.position.copy(bulb);
   group.add(bulbMesh);
 
-  const angle = 0.69;
-  const spot = new THREE.SpotLight(LAMP_COLOR, 7.5, 0, angle, 0.5, 2);
+  const angle = Math.atan(openRadius / (shadeLength - 0.046)) * 0.98;
+  const spot = new THREE.SpotLight(LAMP_COLOR, 8.5, 0, angle, 0.72, 2);
   spot.position.copy(bulb);
   spot.target.position.copy(bulb).add(direction);
   group.add(spot, spot.target);
@@ -597,7 +599,7 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   vase.position.set(VASE_POSITION.x, 0, VASE_POSITION.z);
 
   // ---------- Open notebook with a pen ----------
-  const notebookCenter = new THREE.Vector3(-0.035, 0, 0.075);
+  const notebookCenter = new THREE.Vector3(-0.035, 0, 0.02);
   const notebookAngle = -0.07;
   const notebook = new THREE.Group();
   notebook.position.copy(notebookCenter);
@@ -657,7 +659,7 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   }
 
   // ---------- Closed book ----------
-  const bookCenter = new THREE.Vector3(-0.43, 0, 0.085);
+  const bookCenter = new THREE.Vector3(-0.44, 0, 0.035);
   const bookAngle = 0.2;
   const book = new THREE.Group();
   book.position.copy(bookCenter);
@@ -785,7 +787,7 @@ export function buildInterior(textures: BakedTextures, seed = 11): Interior {
   environmentScene.add(new THREE.Mesh(track(new THREE.PlaneGeometry(2.6, 1.3).rotateX(-Math.PI / 2).translate(0, 0, 0.03)), deskEnvMaterial));
   const poolMaterial = track(new THREE.MeshBasicMaterial({ color: new THREE.Color(0.16, 0.09, 0.045) }));
   const pool = new THREE.Mesh(track(new THREE.CircleGeometry(0.22, 32).rotateX(-Math.PI / 2)), poolMaterial);
-  pool.position.set(0.18, 0.001, -0.085);
+  pool.position.set(0.2, 0.001, -0.16);
   environmentScene.add(pool);
   const envBulbMaterial = track(new THREE.MeshBasicMaterial({ color: LAMP_COLOR.clone().multiplyScalar(30) }));
   const envBulb = new THREE.Mesh(track(new THREE.SphereGeometry(0.05, 16, 8)), envBulbMaterial);

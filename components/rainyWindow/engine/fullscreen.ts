@@ -70,6 +70,8 @@ export interface TargetOptions {
   filter?: THREE.MagnificationTextureFilter;
   wrap?: THREE.Wrapping;
   colorSpace?: THREE.ColorSpace;
+  /** Attach a sampleable depth texture (resolved from MSAA). */
+  depthTexture?: boolean;
 }
 
 export const createTarget = (width: number, height: number, options: TargetOptions = {}) => {
@@ -85,6 +87,7 @@ export const createTarget = (width: number, height: number, options: TargetOptio
     wrapS: options.wrap ?? THREE.ClampToEdgeWrapping,
     wrapT: options.wrap ?? THREE.ClampToEdgeWrapping,
     colorSpace: options.colorSpace ?? THREE.NoColorSpace,
+    depthTexture: options.depthTexture ? new THREE.DepthTexture(Math.max(1, Math.round(width)), Math.max(1, Math.round(height)), THREE.UnsignedIntType) : null,
   });
   return target;
 };

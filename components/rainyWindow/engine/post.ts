@@ -55,11 +55,68 @@ void main() {
 }
 `;
 
+/*
+ * Depth of field: a thin-lens circle of confusion from scene depth, gathered
+ * at half resolution. The camera focuses on the lamp and mug; the rain on the
+ * glass stays crisp while the notebook right under the lens softens.
+ */
+const DOF_PREP = /* glsl */ `
+uniform sampler2D tScene;
+uniform sampler2D tDepth;
+uniform vec2 uTexel;
+uniform float uNear;
+uniform float uFar;
+uniform float uFocus;
+uniform float uStrength;
+uniform float uMaxCoc;
+varying vec2 vUv;
+float linearDepth(float depth) {
+  float z = depth * 2.0 - 1.0;
+  return 2.0 * uNear * uFar / (uFar + uNear - z * (uFar - uNear));
+}
+float coc(vec2 uv) {
+  return clamp(abs(1.0 / uFocus - 1.0 / linearDepth(texture2D(tDepth, uv).r)) * uStrength, 0.0, uMaxCoc);
+}
+void main() {
+  vec2 o = uTexel * 0.5;
+  vec3 color = (texture2D(tScene, vUv + vec2(-o.x, -o.y)).rgb + texture2D(tScene, vUv + vec2(o.x, -o.y)).rgb
+    + texture2D(tScene, vUv + vec2(-o.x, o.y)).rgb + texture2D(tScene, vUv + vec2(o.x, o.y)).rgb) * 0.25;
+  float radius = max(max(coc(vUv + vec2(-o.x, -o.y)), coc(vUv + vec2(o.x, -o.y))), max(coc(vUv + vec2(-o.x, o.y)), coc(vUv + vec2(o.x, o.y))));
+  gl_FragColor = vec4(color, radius);
+}
+`;
+
+const DOF_BLUR = /* glsl */ `
+uniform sampler2D tSource;
+uniform vec2 uTexel;
+varying vec2 vUv;
+void main() {
+  vec4 center = texture2D(tSource, vUv);
+  float radius = center.a * 0.5;
+  if (radius < 0.6) { gl_FragColor = center; return; }
+  vec3 sum = center.rgb;
+  float weight = 1.0;
+  for (int i = 0; i < DOF_TAPS; i++) {
+    float r = sqrt((float(i) + 0.5) / float(DOF_TAPS));
+    float a = float(i) * 2.39996323;
+    vec2 offset = vec2(cos(a), sin(a)) * r * radius;
+    vec4 tap = texture2D(tSource, vUv + offset * uTexel);
+    // A tap only spreads over this pixel if its own blur reaches it.
+    float w = clamp(tap.a * 0.5 - length(offset) + 1.0, 0.0, 1.0);
+    sum += tap.rgb * w;
+    weight += w;
+  }
+  gl_FragColor = vec4(sum / weight, center.a);
+}
+`;
+
 const COMPOSITE = /* glsl */ `
 ${GLSL_NOISE}
 ${GLSL_COLOR}
 uniform sampler2D tScene;
 uniform sampler2D tBloom;
+uniform sampler2D tDof;
+uniform float uDof;
 uniform vec2 uResolution;
 uniform float uBloom;
 uniform float uExposure;
@@ -89,6 +146,10 @@ void main() {
   color.r = texture2D(tScene, vUv - shift).r;
   color.g = texture2D(tScene, vUv).g;
   color.b = texture2D(tScene, vUv + shift).b;
+  if (uDof > 0.5) {
+    vec4 dof = texture2D(tDof, vUv);
+    color = mix(color, dof.rgb, smoothstep(1.2, 2.6, dof.a));
+  }
   color += texture2D(tBloom, vUv).rgb * uBloom;
   color *= uExposure;
   float vignette = pow(clamp(1.0 - r2 * 0.62, 0.0, 1.0), 2.2);
@@ -97,10 +158,10 @@ void main() {
   color = acesFitted(color);
   float l = luma(color);
   // Cool the shadows toward the rainy blue night, keep warm highlights warm.
-  vec3 shadows = vec3(0.82, 0.94, 1.2);
+  vec3 shadows = vec3(0.76, 0.91, 1.28);
   vec3 highlights = vec3(1.06, 1.0, 0.9);
   color *= mix(shadows, highlights, smoothstep(0.06, 0.62, l));
-  color = mix(vec3(l), color, 1.04);
+  color = mix(vec3(l), color, 1.1);
   color = linearToSrgb(color * uFade);
 
   vec2 pixel = gl_FragCoord.xy;
@@ -112,6 +173,10 @@ void main() {
 `;
 
 export interface PostSettings {
+  /** Focus distance in metres; 0 disables depth of field. */
+  focus: number;
+  /** Circle of confusion in pixels per dioptre at 1080 lines. */
+  dofStrength: number;
   exposure: number;
   bloom: number;
   bloomThreshold: number;
@@ -121,6 +186,8 @@ export interface PostSettings {
 }
 
 export const DEFAULT_POST: PostSettings = {
+  focus: 1.08,
+  dofStrength: 8.5,
   exposure: 1.2,
   bloom: 1.15,
   bloomThreshold: 0.45,
@@ -144,9 +211,24 @@ export class PostProcessor {
     blendSrc: THREE.OneFactor,
     blendDst: THREE.OneFactor,
   });
+  private dofHalf: THREE.WebGLRenderTarget | null = null;
+  private dofBlurred: THREE.WebGLRenderTarget | null = null;
+  private readonly dofPrep = passMaterial(DOF_PREP, {
+    tScene: { value: null },
+    tDepth: { value: null },
+    uTexel: { value: new THREE.Vector2() },
+    uNear: { value: 0.02 },
+    uFar: { value: 30 },
+    uFocus: { value: 1 },
+    uStrength: { value: 8 },
+    uMaxCoc: { value: 14 },
+  });
+  private readonly dofBlur: THREE.ShaderMaterial;
   private readonly composite = passMaterial(COMPOSITE, {
     tScene: { value: null },
     tBloom: { value: null },
+    tDof: { value: null },
+    uDof: { value: 0 },
     uResolution: { value: new THREE.Vector2(1, 1) },
     uBloom: { value: 1 },
     uExposure: { value: 1 },
@@ -157,7 +239,9 @@ export class PostProcessor {
     uFade: { value: 1 },
   });
 
-  constructor(private readonly renderer: THREE.WebGLRenderer) {}
+  constructor(private readonly renderer: THREE.WebGLRenderer, dofTaps = 40) {
+    this.dofBlur = passMaterial(DOF_BLUR, { tSource: { value: null }, uTexel: { value: new THREE.Vector2() } }, { defines: { DOF_TAPS: dofTaps } });
+  }
 
   setSize(width: number, height: number) {
     if (width === this.width && height === this.height && this.mips.length) return;
@@ -173,12 +257,32 @@ export class PostProcessor {
       h = Math.floor(h / 2);
     }
     this.composite.uniforms.uResolution.value.set(width, height);
+    this.dofHalf?.dispose();
+    this.dofBlurred?.dispose();
+    this.dofHalf = createTarget(width / 2, height / 2);
+    this.dofBlurred = createTarget(width / 2, height / 2);
   }
 
-  render(scene: THREE.Texture, time: number, target: THREE.WebGLRenderTarget | null = null) {
+  render(scene: THREE.Texture, time: number, target: THREE.WebGLRenderTarget | null = null, depth?: { texture: THREE.Texture; near: number; far: number } | null) {
     const renderer = this.renderer;
     const autoClear = renderer.autoClear;
     renderer.autoClear = false;
+    const dof = !!depth && this.settings.focus > 0 && !!this.dofHalf && !!this.dofBlurred;
+    if (dof && depth && this.dofHalf && this.dofBlurred) {
+      const prep = this.dofPrep.uniforms;
+      prep.tScene.value = scene;
+      prep.tDepth.value = depth.texture;
+      prep.uTexel.value.set(1 / this.width, 1 / this.height);
+      prep.uNear.value = depth.near;
+      prep.uFar.value = depth.far;
+      prep.uFocus.value = this.settings.focus;
+      prep.uStrength.value = this.settings.dofStrength * this.height / 1080;
+      prep.uMaxCoc.value = 16 * this.height / 1080;
+      this.pass.render(renderer, this.dofPrep, this.dofHalf);
+      this.dofBlur.uniforms.tSource.value = this.dofHalf.texture;
+      this.dofBlur.uniforms.uTexel.value.set(1 / this.dofHalf.width, 1 / this.dofHalf.height);
+      this.pass.render(renderer, this.dofBlur, this.dofBlurred);
+    }
     let source = scene;
     let sourceWidth = this.width;
     let sourceHeight = this.height;
@@ -202,6 +306,8 @@ export class PostProcessor {
     const uniforms = this.composite.uniforms;
     uniforms.tScene.value = scene;
     uniforms.tBloom.value = this.mips[0]?.texture ?? scene;
+    uniforms.tDof.value = dof ? this.dofBlurred!.texture : scene;
+    uniforms.uDof.value = dof ? 1 : 0;
     uniforms.uBloom.value = this.settings.bloom / Math.max(1, this.mips.length);
     uniforms.uExposure.value = this.settings.exposure;
     uniforms.uVignette.value = this.settings.vignette;
@@ -215,6 +321,10 @@ export class PostProcessor {
 
   dispose() {
     for (const mip of this.mips) mip.dispose();
+    this.dofHalf?.dispose();
+    this.dofBlurred?.dispose();
+    this.dofPrep.dispose();
+    this.dofBlur.dispose();
     this.downsample.dispose();
     this.upsample.dispose();
     this.composite.dispose();

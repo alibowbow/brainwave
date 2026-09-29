@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "verify:scenes": "node scripts/verify-scenes.mjs",
-    "verify:focus": "node scripts/verify-focus-scene.mjs"
+    "verify:focus": "node scripts/verify-focus-scene.mjs",
+    "verify:links": "node scripts/verify-links.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.555.0",

@@ -40,6 +40,7 @@ try {
   assert.equal(await page.locator('.landscape-rain').count(), 0, 'the CSS rain overlay is gone');
   assert.equal(await page.locator('.rainy-window-canvas').count(), 1, 'one shared canvas');
   assert.equal(await scene.getAttribute('data-motion'), 'running');
+  assert.equal(await page.evaluate(() => location.hash), '#/play/focus', 'the address names the routine');
 
   // A drawn night scene compresses poorly; a blank or flat canvas would be tiny.
   // Page screenshots skip element-stability waits, which crawl under software WebGL.

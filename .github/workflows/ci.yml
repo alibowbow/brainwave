@@ -42,3 +42,4 @@ jobs:
           npm run preview -- --host 127.0.0.1 --port 4173 &
           npm run verify:scenes
           npm run verify:focus
+          npm run verify:links

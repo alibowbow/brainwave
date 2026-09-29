@@ -2,10 +2,12 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Activity,
   ArrowDown,
+  Check,
   Clock3,
   Expand,
   Headphones,
   Layers3,
+  Link2,
   Maximize2,
   Pause,
   Play,
@@ -60,6 +62,8 @@ interface PlayerProps {
   /** The fullscreen view covers the player; its scene can rest meanwhile. */
   sceneCovered?: boolean;
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
+  /** Address that opens this routine on the player; enables the copy-link button. */
+  shareUrl?: string;
 }
 
 const formatTime = (seconds: number) => {
@@ -95,11 +99,13 @@ export const Player: React.FC<PlayerProps> = ({
   onVisualModeChange,
   getAnalyser,
   onImmersive,
-  backgroundVariant, sceneCovered = false, subscribeEvents,
+  backgroundVariant, sceneCovered = false, subscribeEvents, shareUrl,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
   const [panel, setPanel] = useState<'controls' | 'sounds'>('sounds');
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const linkCopiedTimerRef = useRef<number | null>(null);
   const [sceneChromeVisible, setSceneChromeVisible] = useState(true);
   const sceneChromeTimerRef = useRef<number | null>(null);
   const detailsRef = useRef<HTMLElement>(null);
@@ -134,6 +140,27 @@ export const Player: React.FC<PlayerProps> = ({
     };
   }, [revealSceneChrome, visualMode]);
 
+  useEffect(() => () => {
+    if (linkCopiedTimerRef.current != null) window.clearTimeout(linkCopiedTimerRef.current);
+  }, []);
+
+  const copyShareLink = async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setLinkCopied(true);
+      if (linkCopiedTimerRef.current != null) window.clearTimeout(linkCopiedTimerRef.current);
+      linkCopiedTimerRef.current = window.setTimeout(() => setLinkCopied(false), 2200);
+    } catch {
+      // No clipboard access (older browsers, some in-app browsers): hand the link over another way.
+      if (typeof navigator.share === 'function') {
+        try { await navigator.share({ title: sessionName, url: shareUrl }); } catch { /* dismissed */ }
+      } else {
+        window.prompt('이 링크를 복사해 주세요', shareUrl);
+      }
+    }
+  };
+
   const handleVisualModeChange = (mode: VisualMode) => {
     if (mode === 'graphics') setDetailsOpen(false);
     onVisualModeChange(mode);
@@ -163,9 +190,17 @@ export const Player: React.FC<PlayerProps> = ({
           <p className="text-[9px] font-black tracking-[0.17em] text-[#8d99ff]">NOW PLAYING</p>
           <h1 className="mt-0.5 max-w-[40vw] truncate text-sm font-black tracking-[-0.02em] sm:max-w-md">{sessionName}</h1>
         </div>
-        <button type="button" onClick={onImmersive} aria-label="전체 화면 보기" className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
-          <Maximize2 size={15} /><span className="hidden sm:inline">전체 화면</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {shareUrl ? (
+            <button type="button" onClick={copyShareLink} aria-label="이 루틴 링크 복사" title="이 루틴으로 바로 오는 링크를 복사해요" className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
+              {linkCopied ? <Check size={15} className="text-emerald-300" /> : <Link2 size={15} />}<span className="hidden sm:inline">{linkCopied ? '복사됨' : '링크 복사'}</span>
+            </button>
+          ) : null}
+          <button type="button" onClick={onImmersive} aria-label="전체 화면 보기" className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
+            <Maximize2 size={15} /><span className="hidden sm:inline">전체 화면</span>
+          </button>
+        </div>
+        <span className="sr-only" role="status" aria-live="polite">{linkCopied ? '링크를 복사했어요' : ''}</span>
       </header>
 
       <main className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>

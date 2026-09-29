@@ -48,8 +48,19 @@ export default defineConfig(({ mode }) => {
             // Nature plates and cutouts are loaded per scene. Keeping them out
             // of the initial precache prevents the first visit from downloading
             // the entire illustration library.
-            globIgnores: ['**/images/nature/**'],
+            globIgnores: ['**/images/nature/**', '**/assets/RainyWindowScene-*.js'],
             runtimeCaching: [
+              {
+                // The real-time study (three.js) is fetched only when the deep-focus
+                // routine plays, then kept for offline sessions.
+                urlPattern: /\/assets\/RainyWindowScene-[\w-]+\.js$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'focus-scene-v1',
+                  expiration: { maxEntries: 2, maxAgeSeconds: 60 * 60 * 24 * 180 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
               {
                 // Large scene loops are downloaded only after that scene opens.
                 urlPattern: /\/video\/nature\/campfire-loop-v\d+\.mp4$/i,

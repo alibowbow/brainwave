@@ -4,7 +4,8 @@ import { Play, Pause, Square, Minimize2 } from 'lucide-react';
 import type { VisualMode } from '../types';
 import type { SoundLayer } from '../services/audioEngine';
 import { AuraVisualizer } from './AuraVisualizer';
-import { NatureScene, type NatureBackgroundVariant } from './NatureScene';
+import { SessionBackdrop } from './SessionBackdrop';
+import type { SessionBackdropVariant } from './rainyWindow/sessionBackdrop';
 import { VisualModeSwitch } from './VisualModeSwitch';
 
 interface Props {
@@ -20,7 +21,7 @@ interface Props {
   onPause: () => void;
   onStop: () => void;
   onExit: () => void;
-  backgroundVariant?: NatureBackgroundVariant;
+  backgroundVariant?: SessionBackdropVariant;
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
@@ -75,8 +76,8 @@ export const ImmersiveMode: React.FC<Props> = ({
     >
       {visualMode === 'nature' ? (
         <div className="absolute inset-0">
-          <NatureScene types={activeLayers.map((layer) => layer.type)} backgroundVariant={backgroundVariant} active={isPlaying} subscribeEvents={subscribeEvents} fill />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60" />
+          <SessionBackdrop variant={backgroundVariant} layers={activeLayers} active={isPlaying} subscribeEvents={subscribeEvents} />
+          <div className={`pointer-events-none absolute inset-0 ${backgroundVariant === 'rainy-window' ? 'bg-gradient-to-b from-transparent via-transparent via-75% to-[#02050b]/45' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60'}`} />
         </div>
       ) : (
         <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={color} className="absolute inset-0 h-full w-full" />

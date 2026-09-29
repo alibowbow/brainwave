@@ -43,15 +43,15 @@ uniform float uTime;
 vec3 skyLight(vec3 dir, float glow) {
   float h = max(dir.y, 0.0);
   float toSun = max(dot(dir, uSunDir), 0.0);
-  vec3 col = mix(vec3(0.84, 0.76, 0.74), vec3(0.99, 0.8, 0.61), pow(1.0 - h, 7.0));
-  col = mix(col, vec3(1.0, 0.75, 0.49), pow(1.0 - h, 24.0));
+  vec3 col = mix(vec3(0.8, 0.78, 0.82), vec3(1.0, 0.83, 0.64), pow(1.0 - h, 7.0));
+  col = mix(col, vec3(1.0, 0.78, 0.5), pow(1.0 - h, 24.0));
   // Warmer and brighter towards the sun, rose along the horizon away from it.
   float side = pow(toSun, 3.0);
   col = mix(col, vec3(1.0, 0.72, 0.42), side * pow(1.0 - h, 6.0) * 0.7);
   col = mix(col, vec3(0.96, 0.7, 0.64), (1.0 - side) * pow(1.0 - h, 16.0) * 0.35);
-  col += vec3(1.0, 0.72, 0.36) * pow(toSun, 6.0) * 0.24 * glow;
-  col += vec3(1.0, 0.86, 0.56) * pow(toSun, 24.0) * 0.35 * glow;
-  col += vec3(1.0, 0.92, 0.7) * pow(toSun, 120.0) * 0.5 * glow;
+  col += vec3(1.0, 0.74, 0.36) * pow(toSun, 6.0) * 0.26 * glow;
+  col += vec3(1.0, 0.86, 0.52) * pow(toSun, 24.0) * 0.4 * glow;
+  col += vec3(1.0, 0.94, 0.72) * pow(toSun, 160.0) * 0.8 * glow;
   return col;
 }
 vec3 skyBase(vec3 dir) { return skyLight(dir, 1.0); }
@@ -178,9 +178,9 @@ vec3 skyColour(vec3 dir) {
     if (cover > 0.0) {
       float nearSun = pow(max(dot(dir, uSunDir), 0.0), 8.0);
       float light = clamp(cloud.r + billows * 0.3, 0.0, 1.0);
-      vec3 shadow = mix(vec3(0.8, 0.6, 0.62), vec3(0.92, 0.6, 0.46), nearSun);
-      vec3 middle = mix(vec3(0.97, 0.76, 0.6), vec3(1.04, 0.78, 0.5), nearSun);
-      vec3 lit = mix(vec3(1.05, 0.93, 0.74), vec3(1.14, 0.96, 0.64), nearSun);
+      vec3 shadow = mix(vec3(0.74, 0.6, 0.66), vec3(0.92, 0.6, 0.46), nearSun);
+      vec3 middle = mix(vec3(0.96, 0.75, 0.62), vec3(1.04, 0.78, 0.5), nearSun);
+      vec3 lit = mix(vec3(1.06, 0.95, 0.8), vec3(1.14, 0.97, 0.68), nearSun);
       vec3 shade = light < 0.5 ? mix(shadow, middle, light * 2.0) : mix(middle, lit, light * 2.0 - 1.0);
       // Thin edges near the sun glow gold.
       shade += vec3(0.5, 0.3, 0.08) * nearSun * (1.0 - cloud.a);

@@ -109,8 +109,11 @@ export function createTerrain(sunDirection: THREE.Vector3, detail = 1) {
         vec3 col = mix(vec3(0.3, 0.38, 0.17), vec3(0.46, 0.46, 0.22), smoothstep(0.3, 0.7, mid));
         float dry = smoothstep(0.45, 0.75, large + 0.25 * dot(n, uSunDir));
         col = mix(col, vec3(0.7, 0.58, 0.3), dry * 0.75);
-        float woods = smoothstep(0.5, 0.66, fbm3(p * 0.02 + 5.0)) * smoothstep(40.0, 200.0, inland);
-        col = mix(col, vec3(0.1, 0.16, 0.08), woods * 0.85);
+        float woods = smoothstep(0.47, 0.6, fbm3(p * 0.02 + 5.0) + 0.16 * (vnoise(p * 0.12) - 0.5)) * smoothstep(40.0, 200.0, inland);
+        col = mix(col, vec3(0.08, 0.13, 0.07), woods * 0.9);
+        // Single trees and hedgerows dotted over the open slopes.
+        float dots = smoothstep(0.66, 0.78, vnoise(p * 0.09 + 3.0)) * smoothstep(0.35, 0.55, fbm3(p * 0.006 + 1.0)) * smoothstep(60.0, 300.0, inland);
+        col = mix(col, vec3(0.1, 0.15, 0.08), dots * 0.8);
         // The headland: olive grass over dark earth.
         float headland = smoothstep(8.0, 20.0, height) * smoothstep(-260.0, -150.0, p.y) * smoothstep(260.0, 160.0, p.x);
         col = mix(col, mix(vec3(0.34, 0.3, 0.14), vec3(0.5, 0.42, 0.2), mid), headland);

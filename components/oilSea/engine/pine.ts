@@ -48,11 +48,11 @@ function tube(limb: Limb, sides: number, positions: number[], normals: number[],
 }
 
 /**
- * A tuft of pine needles drawn once on a canvas: needles fanning out and up
- * from a twig, dark where they crowd at the base, catching the light at
- * their tips.
+ * A clump of pine foliage drawn once on a canvas: feathery tufts of needles
+ * heaped into a soft mass, lit gold along its top and sunward (left) edge,
+ * dark olive underneath.
  */
-function drawTuft(size: number) {
+function drawClump(size: number) {
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
@@ -64,27 +64,30 @@ function drawTuft(size: number) {
     return s / 4294967296;
   };
   g.lineCap = 'round';
-  for (let i = 0; i < 1400; i++) {
-    // Twig points spread along the middle of the card; needles fan out from them.
-    const tx = size * (0.2 + 0.6 * rand());
-    const ty = size * (0.55 + 0.12 * (rand() - 0.5));
-    const up = rand() < 0.72;
-    const angle = (up ? -Math.PI / 2 : Math.PI / 2) + (rand() - 0.5) * 2.4;
-    const length = size * (0.06 + 0.2 * rand()) * (up ? 1 : 0.6);
-    const x2 = tx + Math.cos(angle) * length;
-    const y2 = ty + Math.sin(angle) * length;
-    // Outer, upper needles are lit; those crowded near the twig are dark.
-    const reach = Math.min(1, length / (size * 0.24));
-    const light = Math.min(1, (up ? 0.25 : 0.05) + 0.75 * reach * rand());
-    const red = Math.round(38 + light * 170);
-    const green = Math.round(42 + light * 128);
-    const blue = Math.round(18 + light * 48);
-    g.strokeStyle = `rgb(${red}, ${green}, ${blue})`;
-    g.lineWidth = size * (0.004 + 0.004 * rand());
-    g.beginPath();
-    g.moveTo(tx, ty);
-    g.quadraticCurveTo(tx + (x2 - tx) * 0.5 - size * 0.02, ty + (y2 - ty) * 0.5, x2, y2);
-    g.stroke();
+  const tufts: { x: number; y: number }[] = [];
+  for (let i = 0; i < 80; i++) {
+    const a = rand() * Math.PI * 2;
+    const r = Math.sqrt(rand());
+    tufts.push({ x: 0.5 + Math.cos(a) * r * 0.36, y: 0.56 + Math.sin(a) * r * 0.24 });
+  }
+  // Lower tufts first, so the lit ones above overlap them.
+  tufts.sort((a, b) => b.y - a.y);
+  for (const tuft of tufts) {
+    const light = Math.min(1, Math.max(0, 0.25 + (0.6 - tuft.y) * 2.2 + (0.5 - tuft.x) * 0.6 + (rand() - 0.5) * 0.3));
+    for (let k = 0; k < 44; k++) {
+      // Needles fan out from the tuft, mostly upwards and outwards.
+      const angle = -Math.PI / 2 + (rand() - 0.5) * 2.8;
+      const length = size * (0.025 + 0.055 * rand());
+      const x0 = (tuft.x + (rand() - 0.5) * 0.03) * size;
+      const y0 = (tuft.y + (rand() - 0.5) * 0.02) * size;
+      const tip = Math.min(1, light * (0.55 + 0.6 * rand()));
+      g.strokeStyle = `rgb(${Math.round(36 + tip * 200)}, ${Math.round(36 + tip * 140)}, ${Math.round(16 + tip * 54)})`;
+      g.lineWidth = size * (0.003 + 0.003 * rand());
+      g.beginPath();
+      g.moveTo(x0, y0);
+      g.quadraticCurveTo(x0 + Math.cos(angle) * length * 0.5 - size * 0.006, y0 + Math.sin(angle) * length * 0.5, x0 + Math.cos(angle) * length, y0 + Math.sin(angle) * length);
+      g.stroke();
+    }
   }
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.NoColorSpace;
@@ -219,91 +222,98 @@ export function createPine(sunDirection: THREE.Vector3) {
       void main() {
         vec3 n = normalize(vNormal);
         // Furrowed bark, grey-brown, warm where the low sun catches it.
-        float bark = vnoise(vec2(vWorld.y * 5.0, atan(n.z, n.x) * 4.0)) * 0.6 + vnoise(vWorld.xz * 3.0 + vWorld.y) * 0.4;
-        vec3 albedo = mix(vec3(0.12, 0.09, 0.07), vec3(0.34, 0.27, 0.21), bark);
-        vec3 col = lightGround(albedo, n, 0.9);
+        // Deep furrows running along the trunk and limbs.
+        float furrows = abs(vnoise(vec2(atan(n.z, n.x) * 5.0, vWorld.y * 1.5)) - 0.5) * 2.0;
+        float bark = vnoise(vec2(vWorld.y * 5.0, atan(n.z, n.x) * 4.0)) * 0.5 + (1.0 - furrows) * 0.5;
+        vec3 albedo = mix(vec3(0.05, 0.04, 0.035), vec3(0.28, 0.22, 0.17), bark * bark);
+        vec3 col = lightGround(albedo, n, 0.75);
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,
   });
 
-  // Pads of needles: several tufts each, spread flat and level, tilted a little up.
-  const tuftTexture = drawTuft(256);
-  const card = new THREE.PlaneGeometry(1, 1);
+  // Foliage: at each branch tip a few clumps, drawn as soft masses facing the viewer.
+  const clumpTexture = drawClump(512);
+  const quad = new THREE.PlaneGeometry(1, 1);
+  const foliage = new THREE.InstancedBufferGeometry();
+  foliage.index = quad.index;
+  foliage.setAttribute('position', quad.getAttribute('position'));
+  foliage.setAttribute('uv', quad.getAttribute('uv'));
+  const clumpsPerPad = 4;
+  const clumpData = new Float32Array(pads.length * clumpsPerPad * 4);
+  const shadeData = new Float32Array(pads.length * clumpsPerPad * 2);
+  const top = Math.max(...pads.map((pad) => pad.at.y));
+  let n = 0;
+  for (const pad of pads) {
+    // Higher, outer pads are in the sun; low, inner ones in the crown's shade.
+    const lit = Math.min(1, Math.max(0, 0.4 + 0.6 * (1 - (top - pad.at.y) / 11)));
+    for (let c = 0; c < clumpsPerPad; c++) {
+      const spread = pad.size * 0.8;
+      clumpData.set([
+        pad.at.x + (rand() - 0.5) * spread * 1.6,
+        pad.at.y + (rand() - 0.4) * spread * 0.45,
+        pad.at.z + (rand() - 0.5) * spread * 1.6,
+        pad.size * (0.75 + 0.5 * rand()),
+      ], n * 4);
+      shadeData.set([lit * (0.85 + 0.15 * rand()), (rand() - 0.5) * 0.5], n * 2);
+      n++;
+    }
+  }
+  foliage.setAttribute('aClump', new THREE.InstancedBufferAttribute(clumpData, 4));
+  foliage.setAttribute('aShade', new THREE.InstancedBufferAttribute(shadeData, 2));
+  foliage.instanceCount = n;
   const needleMaterial = new THREE.ShaderMaterial({
-    uniforms: { ...uniforms(), tTuft: { value: tuftTexture } },
+    uniforms: { ...uniforms(), tClump: { value: clumpTexture } },
     vertexShader: /* glsl */ `
       ${sway}
-      attribute vec4 aPad;
+      attribute vec4 aClump;
+      attribute vec2 aShade;
       varying vec2 vUv;
       varying vec3 vWorld;
-      varying vec3 vOut;
       varying float vShade;
       void main() {
         vUv = uv;
-        vec4 world = instanceMatrix * vec4(position, 1.0);
-        vec3 p = swayed(world.xyz);
+        vec3 centre = swayed(aClump.xyz);
+        // Facing the viewer, a little turned, wider than tall.
+        vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
+        vec3 up = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
+        float c = cos(aShade.y);
+        float s = sin(aShade.y);
+        vec2 corner = mat2(c, s, -s, c) * (position.xy * vec2(1.7, 1.0)) * aClump.w;
+        vec3 p = centre + right * corner.x + up * corner.y;
         vWorld = p;
-        // Which way this part of the pad faces: out from its middle, and up.
-        vOut = normalize(normalize(world.xyz - aPad.xyz + vec3(0.0, 0.001, 0.0)) + vec3(0.0, 0.8, 0.0));
-        vShade = aPad.w;
+        vShade = aShade.x;
         gl_Position = projectionMatrix * viewMatrix * vec4(p, 1.0);
       }
     `,
     fragmentShader: /* glsl */ `
-      uniform sampler2D tTuft;
+      uniform sampler2D tClump;
       varying vec2 vUv;
       varying vec3 vWorld;
-      varying vec3 vOut;
       varying float vShade;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
       void main() {
-        vec4 tuft = texture2D(tTuft, vUv);
-        if (tuft.a < 0.5) discard;
-        vec3 albedo = tuft.rgb * mix(vec3(0.66, 0.74, 0.52), vec3(1.08, 0.96, 0.7), vShade);
-        vec3 n = normalize(vOut);
-        vec3 col = lightGround(albedo, n, 0.35 + 0.65 * vShade);
-        // The low sun shines through the outer needles.
+        vec4 clump = texture2D(tClump, vUv);
+        if (clump.a < 0.5) discard;
+        // The clump carries its own light and shade; the crown adds warm
+        // evening light above and shadow within.
+        vec3 col = clump.rgb * mix(vec3(0.5, 0.5, 0.52), vec3(1.22, 1.02, 0.74), vShade);
+        vec3 albedo = clump.rgb;
+        // The low sun shines through the thin edges of the crown.
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 4.0);
-        col += albedo * vec3(1.0, 0.72, 0.34) * through * vShade * 1.3;
+        col += albedo * vec3(1.0, 0.72, 0.34) * through * vShade * 0.6;
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,
     side: THREE.DoubleSide,
   });
-  const cardsPerPad = 10;
-  const needles = new THREE.InstancedMesh(card, needleMaterial, pads.length * cardsPerPad);
-  const padAttribute = new Float32Array(pads.length * cardsPerPad * 4);
-  const matrix = new THREE.Matrix4();
-  const quaternion = new THREE.Quaternion();
-  const euler = new THREE.Euler();
-  const scale = new THREE.Vector3();
-  const offset = new THREE.Vector3();
-  const top = Math.max(...pads.map((pad) => pad.at.y));
-  let n = 0;
-  for (const pad of pads) {
-    const heading = Math.atan2(-pad.heading.x, -pad.heading.z);
-    // Higher, outer pads are in the sun; low, inner ones in the crown's shade.
-    const lit = Math.min(1, Math.max(0, 0.45 + 0.55 * (1 - (top - pad.at.y) / 12)));
-    for (let c = 0; c < cardsPerPad; c++) {
-      euler.set((rand() - 0.5) * 0.7, heading + (rand() - 0.5) * 2.2, (rand() - 0.5) * 0.5, 'YXZ');
-      quaternion.setFromEuler(euler);
-      offset.set((rand() - 0.5) * pad.size * 1.6, (rand() - 0.35) * pad.size * 0.3, (rand() - 0.5) * pad.size * 1.6);
-      const size = pad.size * (0.8 + 0.5 * rand());
-      scale.set(size * 1.5, size * 0.95, 1);
-      matrix.compose(pad.at.clone().add(offset), quaternion, scale);
-      needles.setMatrixAt(n, matrix);
-      padAttribute.set([pad.at.x, pad.at.y, pad.at.z, lit * (0.8 + 0.2 * rand())], n * 4);
-      n++;
-    }
-  }
-  card.setAttribute('aPad', new THREE.InstancedBufferAttribute(padAttribute, 4));
+  const needles = new THREE.Mesh(foliage, needleMaterial);
   needles.frustumCulled = false;
   const woodMesh = new THREE.Mesh(wood, woodMaterial);
   woodMesh.frustumCulled = false;
   const group = new THREE.Group();
   group.add(woodMesh, needles);
-  return { group, materials: [woodMaterial, needleMaterial], textures: [tuftTexture] };
+  return { group, materials: [woodMaterial, needleMaterial], textures: [clumpTexture] };
 }

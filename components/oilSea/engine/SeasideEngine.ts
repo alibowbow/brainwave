@@ -36,9 +36,9 @@ interface Profile {
 }
 
 const PROFILES: Record<SeasideQuality, Profile> = {
-  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 4, stride: 2, strokeSteps: 9, terrainDetail: 1, skyDetail: 1, grass: 22000, shrubs: 700, rocks: 140 },
-  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 4, stride: 2, strokeSteps: 6, terrainDetail: 0.8, skyDetail: 1, grass: 15000, shrubs: 500, rocks: 110 },
-  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, terrainDetail: 0.6, skyDetail: 0.5, grass: 9000, shrubs: 320, rocks: 80 },
+  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, terrainDetail: 1, skyDetail: 1, grass: 22000, shrubs: 1000, rocks: 140 },
+  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, terrainDetail: 0.8, skyDetail: 1, grass: 15000, shrubs: 700, rocks: 110 },
+  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, terrainDetail: 0.6, skyDetail: 0.5, grass: 9000, shrubs: 450, rocks: 80 },
   software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, terrainDetail: 0.5, skyDetail: 0.5, grass: 5000, shrubs: 260, rocks: 70 },
 };
 

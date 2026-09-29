@@ -18,14 +18,14 @@ function drawTuft(size: number, seed: number) {
   for (let i = 0; i < 140; i++) {
     const x0 = size * (0.1 + 0.8 * rand());
     const height = size * (0.35 + 0.62 * rand());
-    const lean = (rand() - 0.35) * size * 0.35;
+    const lean = (rand() - 0.15) * size * 0.4;
     const width = size * (0.006 + 0.012 * rand());
     const warm = rand();
     const green = rand() < 0.3 ? 1 : 0;
     const gradient = g.createLinearGradient(0, size, 0, size - height);
     gradient.addColorStop(0, `rgba(${34 + warm * 16}, ${38 + warm * 12}, 18, 1)`);
     gradient.addColorStop(0.5, `rgba(${Math.round(95 + warm * 45 - green * 30)}, ${Math.round(88 + warm * 25 + green * 10)}, ${40 + warm * 10}, 1)`);
-    gradient.addColorStop(1, `rgba(${Math.round(175 + warm * 50 - green * 50)}, ${Math.round(135 + warm * 40 - green * 5)}, ${60 + warm * 30}, 1)`);
+    gradient.addColorStop(1, `rgba(${Math.round(200 + warm * 45 - green * 50)}, ${Math.round(150 + warm * 42 - green * 5)}, ${66 + warm * 34}, 1)`);
     g.strokeStyle = gradient;
     g.lineWidth = width;
     g.lineCap = 'round';
@@ -66,7 +66,7 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
         vec4 world = modelMatrix * instanceMatrix * vec4(position, 1.0);
         float bend = uv.y * uv.y;
         float gust = sin(uTime * 1.3 + world.x * 0.15 + world.z * 0.11) * 0.6 + sin(uTime * 2.7 + world.x * 0.4) * 0.25;
-        world.x -= (0.18 + 0.12 * gust) * bend;
+        world.x += (0.18 + 0.12 * gust) * bend;
         world.z += 0.05 * gust * bend;
         vWorld = world.xyz;
         gl_Position = projectionMatrix * viewMatrix * world;
@@ -84,8 +84,11 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
         if (tuft.a < 0.45) discard;
         float patchy = fbm3(vWorld.xz * 0.05);
         float dark = fbm3(vWorld.xz * 0.018 + 4.0);
+        float sunlit = fbm3(vWorld.xz * 0.03 + 9.0);
         vec3 albedo = tuft.rgb * mix(vec3(1.0), vec3(0.66, 0.8, 0.52), smoothstep(0.45, 0.68, patchy) * 0.85);
-        albedo *= mix(1.0, 0.62, smoothstep(0.45, 0.62, dark));
+        albedo *= mix(1.0, 0.58, smoothstep(0.45, 0.62, dark));
+        // Swathes where the low sun comes through, and where it does not.
+        albedo *= mix(0.78, 1.28, smoothstep(0.32, 0.6, sunlit));
         // The low sun shines through the tips.
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 3.0);
         vec3 col = lightGround(albedo, vec3(0.0, 1.0, 0.0), 0.8) + albedo * vec3(1.0, 0.7, 0.35) * through * vUv.y * 1.2;
@@ -121,8 +124,8 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
     const y = terrainHeight(x, z);
     position.set(x, y - 0.05, z);
     quaternion.setFromAxisAngle(up, rand() * Math.PI);
-    const size = 0.9 + rand() * 0.9;
-    scale.set(size * 1.4, size * (0.7 + rand() * 0.5), 1);
+    const size = 0.9 + Math.pow(rand(), 2) * 1.2;
+    scale.set(size * 1.4, size * (0.7 + rand() * 0.55), 1);
     matrix.compose(position, quaternion, scale);
     mesh.setMatrixAt(placed++, matrix);
   }
@@ -228,7 +231,7 @@ export function createShrubs(sunDirection: THREE.Vector3, count: number) {
     const z = -Math.cos(bearing) * distance;
     if (headlandFall(x, z) > 0.8 || coastDistance(x, z) > -6) continue;
     // In clumps.
-    if (fbm2(x * 0.045 + 11.0, z * 0.045, 3) < 0.45) continue;
+    if (fbm2(x * 0.045 + 11.0, z * 0.045, 3) < 0.4) continue;
     const width = 2 + rand() * 3;
     const height = width * (0.45 + 0.3 * rand());
     position.set(x, terrainHeight(x, z) - 0.15, z);

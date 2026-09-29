@@ -189,7 +189,7 @@ vec2 flowAt(vec2 uv) {
   return normalize(mix(vec2(1.0, 0.0), along, strength) + vec2(1e-4, 0.0));
 }
 float bristles(vec2 px) {
-  return vnoise(px / uBrush) * 0.65 + vnoise(px / (uBrush * 0.45) + 7.0) * 0.35;
+  return vnoise(px / (uBrush * 1.4)) * 0.65 + vnoise(px / (uBrush * 0.6) + 7.0) * 0.35;
 }
 float strokes(vec2 uv) {
   vec2 px = uv * uResolution;
@@ -204,10 +204,10 @@ float strokes(vec2 uv) {
     float w = 1.0 - float(i) / float(STROKE_STEPS + 1);
     vec2 fa = flowAt(a);
     forward = dot(fa, forward) < 0.0 ? -fa : fa;
-    a += forward * texel * uBrush * 0.6;
+    a += forward * texel * uBrush * 0.38;
     vec2 fb = flowAt(b);
     backward = dot(fb, backward) < 0.0 ? -fb : fb;
-    b += backward * texel * uBrush * 0.6;
+    b += backward * texel * uBrush * 0.38;
     sum += (bristles(a * uResolution) + bristles(b * uResolution)) * w;
     weight += 2.0 * w;
   }
@@ -219,9 +219,12 @@ void main() {
   float stroke = 0.5;
   if (uBrush > 0.5 && STROKE_STEPS > 0) {
     stroke = strokes(vUv);
-    // Ridges of paint lit from the upper left.
+    // Ridges of paint lit from the upper left, laid on thinly where the
+    // picture is smooth (open sky) and thickly where it has form.
+    vec3 t = texture2D(tTensor, vUv).xyz;
+    float body = 0.35 + 0.65 * smoothstep(0.0003, 0.003, t.x + t.z);
     vec2 slope = vec2(dFdx(stroke), dFdy(stroke));
-    col *= 1.0 + (stroke - 0.5) * 0.14 + dot(slope, vec2(-0.7, 0.7)) * 0.8;
+    col *= 1.0 + ((stroke - 0.5) * 0.16 + dot(slope, vec2(-0.7, 0.7)) * 0.55) * body;
   }
   float cloth = weave(gl_FragCoord.xy);
   // The drawing-in: pencil lines spreading over the bare canvas, then the

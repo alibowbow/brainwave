@@ -50,16 +50,6 @@ export function seaLayout(aspect: number): SeaLayout {
   };
 }
 
-/**
- * Height of a coarse brush cell in canvas pixels. Strokes scale with the
- * shorter side of the view so a phone and a monitor show the same painting,
- * within limits that keep strokes legible and the stroke search affordable.
- */
-export function strokeCell(width: number, height: number) {
-  const short = Math.max(1, Math.min(width, height));
-  return Math.min(18, Math.max(6, short * 0.0125));
-}
-
 /** The largest paint surface drawn; beyond it the browser scales the canvas (the painting is soft anyway). */
 export const MAX_PAINT_PIXELS = 1_700_000;
 

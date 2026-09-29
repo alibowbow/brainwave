@@ -1,43 +1,50 @@
 import { DynamicResolution, isSoftwareRenderer } from '../../rainyWindow/engine/quality';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import { createPass, createTarget, createTexture, finishPass, formats, type Pass, type Target, type Texture } from './gl';
-import { paintSize, seaLayout, strokeCell, type SeaLayout } from './layout';
-import { RepaintCycle } from './repaint';
-import { COMPOSITE_FRAGMENT, FLOW_FRAGMENT, LIGHT_FRAGMENT, SCENE_FRAGMENT, STROKE_FRAGMENT } from './shaders';
+import { paintSize, seaLayout, type SeaLayout } from './layout';
+import { FINAL_FRAGMENT, LAYER_FRAGMENT, PAPER_FRAGMENT, STROKE_FRAGMENT, STROKE_SEGMENTS, STROKE_VERTEX } from './paintShaders';
+import { GUIDE_FRAGMENT, SEA_FRAGMENT, STILL_FRAGMENT } from './sceneShaders';
+import { FLOATS_PER_STROKE, planStrokes, type Guide, type StrokeGroup } from './strokes';
 
 export interface OilSeaOptions {
   canvas: HTMLCanvasElement;
   onContextLost?: () => void;
 }
 
-/** The colour source is smooth, so it is drawn at a fraction of the canvas. */
+/** The colour the brush picks up is smooth, so it is drawn at a fraction of the canvas. */
 const SCENE_SCALE = 0.5;
-const FLOW_SCALE = 0.25;
+/** One guide texel per this many canvas pixels. */
+const GUIDE_STEP = 6;
 /** Paper, then the pencil drawing spreading over it, then the paint going on. */
-const INTRO_SECONDS = 2.8 + 3.8 * 1.06;
+const SKETCH_SECONDS = 2.8;
+const PAINT_SECONDS = 4.2;
+const INTRO_SECONDS = SKETCH_SECONDS + PAINT_SECONDS * 1.05;
 
-interface StrokeSet {
-  offset: Texture;
-  light: Texture;
-  mask: Texture;
-  strokes: Target;
-  lighting: Target;
-  seed: number;
+type PassName = 'still' | 'sea' | 'guide' | 'stroke' | 'layer' | 'paper' | 'final';
+type GroupName = 'sea' | 'still' | 'tree';
+interface Surface {
+  texture: Texture;
+  target: Target;
+}
+interface DrawGroup {
+  vao: WebGLVertexArrayObject;
+  count: number;
 }
 
 /*
- * An animated sea painted in oils: a small procedural seascape supplies the
- * colour, two alternating stroke sets lay it down as brushwork. The painting
- * first draws itself (a pencil sketch spreading over the paper, then strokes of
- * paint), then lives: the surf rolls in and, every so often, a fresh layer of
- * strokes is painted over the last.
+ * An animated sea painted in oils. A small procedural seascape supplies the
+ * colour; tens of thousands of brush strokes, planned once per canvas size,
+ * lay it down: broad strokes first, then finer ones where there is detail.
+ * The still parts are painted once into a layer; every frame the sea's
+ * strokes are painted again with the colour of the moving water, riding the
+ * swell towards the shore, and the pine's strokes sway. The painting first
+ * draws itself: a pencil sketch spreading over the paper, then the paint.
  */
 export class OilSeaEngine implements LiveSceneEngine {
   private readonly gl: WebGL2RenderingContext;
   private readonly software: boolean;
   private readonly pacer = new DynamicResolution(1, 1, 1, 1);
-  private readonly repaint = new RepaintCycle(6, 9, 6, 4);
-  private passes: Record<'scene' | 'flow' | 'strokes' | 'light' | 'composite', Pass> | null = null;
+  private passes: Record<PassName, Pass> | null = null;
   private readonly vao: WebGLVertexArrayObject | null;
   private layout: SeaLayout = seaLayout(16 / 9);
   private cssWidth = 1;
@@ -45,12 +52,16 @@ export class OilSeaEngine implements LiveSceneEngine {
   private devicePixelRatio = 1;
   private width = 0;
   private height = 0;
-  private cell = 12;
-  private scene: { texture: Texture; target: Target } | null = null;
-  private flow: { texture: Texture; target: Target } | null = null;
-  private shape: Texture | null = null;
-  private order: Texture | null = null;
-  private sets: [StrokeSet, StrokeSet] | null = null;
+  private still: Surface | null = null;
+  /** The ground behind the pine, opaque but for the sea: the still layer's base. */
+  private stillBase: Texture | null = null;
+  private sea: Surface | null = null;
+  private guide: Surface | null = null;
+  private layer: Surface | null = null;
+  private paint: Surface | null = null;
+  private strokeBuffer: WebGLBuffer | null = null;
+  private groups: Record<GroupName, DrawGroup> | null = null;
+  private layerPainted = false;
   private seeds = 0;
   private time = 0;
   /** Seconds into the drawing-in; Infinity once the painting is finished. */
@@ -102,12 +113,14 @@ export class OilSeaEngine implements LiveSceneEngine {
 
   async init() {
     const gl = this.gl;
-    const passes = {
-      scene: createPass(gl, SCENE_FRAGMENT),
-      flow: createPass(gl, FLOW_FRAGMENT),
-      strokes: createPass(gl, STROKE_FRAGMENT),
-      light: createPass(gl, LIGHT_FRAGMENT),
-      composite: createPass(gl, COMPOSITE_FRAGMENT),
+    const passes: Record<PassName, Pass> = {
+      still: createPass(gl, STILL_FRAGMENT),
+      sea: createPass(gl, SEA_FRAGMENT),
+      guide: createPass(gl, GUIDE_FRAGMENT),
+      stroke: createPass(gl, STROKE_FRAGMENT, STROKE_VERTEX),
+      layer: createPass(gl, LAYER_FRAGMENT),
+      paper: createPass(gl, PAPER_FRAGMENT),
+      final: createPass(gl, FINAL_FRAGMENT),
     };
     // Let the driver compile in parallel where it can before anything waits on it.
     const parallel = gl.getExtension('KHR_parallel_shader_compile');
@@ -148,59 +161,91 @@ export class OilSeaEngine implements LiveSceneEngine {
     this.options.canvas.width = width;
     this.options.canvas.height = height;
     this.layout = seaLayout(width / height);
-    this.cell = strokeCell(width, height);
     this.releaseTargets();
 
     const f = formats(gl);
-    const sceneTexture = createTexture(gl, Math.max(64, Math.round(width * SCENE_SCALE)), Math.max(64, Math.round(height * SCENE_SCALE)), f.linear);
-    this.scene = { texture: sceneTexture, target: createTarget(gl, [sceneTexture]) };
-    const flowTexture = createTexture(gl, Math.max(32, Math.round(width * FLOW_SCALE)), Math.max(32, Math.round(height * FLOW_SCALE)), f.linear);
-    this.flow = { texture: flowTexture, target: createTarget(gl, [flowTexture]) };
-    this.shape = createTexture(gl, width, height, f.nearest);
-    this.order = createTexture(gl, width, height, f.nearest);
-    const makeSet = (): StrokeSet => {
-      const offset = createTexture(gl, width, height, f.nearest);
-      const light = createTexture(gl, width, height, f.nearest);
-      const mask = createTexture(gl, width, height, f.nearest);
-      return {
-        offset,
-        light,
-        mask,
-        strokes: createTarget(gl, [offset, this.shape!, this.order!]),
-        lighting: createTarget(gl, [light, mask]),
-        seed: 0,
-      };
+    const surface = (w: number, h: number, linear: boolean): Surface => {
+      const texture = createTexture(gl, Math.max(2, w), Math.max(2, h), linear ? f.linear : f.nearest);
+      return { texture, target: createTarget(gl, [texture]) };
     };
-    this.sets = [makeSet(), makeSet()];
+    const sceneWidth = Math.round(width * SCENE_SCALE);
+    const sceneHeight = Math.round(height * SCENE_SCALE);
+    const stillColour = createTexture(gl, sceneWidth, sceneHeight, f.linear);
+    this.stillBase = createTexture(gl, sceneWidth, sceneHeight, f.linear);
+    this.still = { texture: stillColour, target: createTarget(gl, [stillColour, this.stillBase]) };
+    this.sea = surface(sceneWidth, sceneHeight, true);
+    this.guide = surface(Math.ceil(width / GUIDE_STEP), Math.ceil(height / GUIDE_STEP), false);
+    this.layer = surface(width, height, false);
+    this.paint = surface(width, height, false);
 
-    this.drawFlow();
-    for (const index of [0, 1] as const) {
-      this.buildStrokes(index, 0, 1, true);
-      this.lightStrokes(index);
-    }
+    this.use(this.passes!.still, this.still, this.time);
+    this.draw();
+    this.layOutStrokes();
+    this.layerPainted = false;
+  }
+
+  /** Read the guide back and lay out the strokes for this canvas. */
+  private layOutStrokes() {
+    const gl = this.gl;
+    const guideSurface = this.guide!;
+    this.use(this.passes!.guide, guideSurface, this.time);
+    this.draw();
+    const { width, height } = guideSurface.texture;
+    const data = new Uint8Array(width * height * 4);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, guideSurface.target.framebuffer);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    const guide: Guide = { width, height, data };
+    const plan = planStrokes(guide, this.width, this.height, ++this.seeds * 7919);
+
+    const buffer = gl.createBuffer();
+    if (!buffer) throw new Error('Could not create the stroke buffer');
+    this.strokeBuffer = buffer;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, plan.data, gl.STATIC_DRAW);
+    const stride = FLOATS_PER_STROKE * 4;
+    const group = ({ first, count }: StrokeGroup): DrawGroup => {
+      const vao = gl.createVertexArray();
+      if (!vao) throw new Error('Could not create a vertex array');
+      gl.bindVertexArray(vao);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      for (let location = 0; location < 3; location++) {
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, 4, gl.FLOAT, false, stride, first * stride + location * 16);
+        gl.vertexAttribDivisor(location, 1);
+      }
+      gl.bindVertexArray(null);
+      return { vao, count };
+    };
+    this.groups = { sea: group(plan.sea), still: group(plan.still), tree: group(plan.tree) };
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
 
   private releaseTargets() {
     const gl = this.gl;
-    const textures: (Texture | null | undefined)[] = [this.scene?.texture, this.flow?.texture, this.shape, this.order];
-    const targets: (Target | null | undefined)[] = [this.scene?.target, this.flow?.target];
-    for (const set of this.sets ?? []) {
-      textures.push(set.offset, set.light, set.mask);
-      targets.push(set.strokes, set.lighting);
+    for (const surface of [this.still, this.sea, this.guide, this.layer, this.paint]) {
+      if (!surface) continue;
+      gl.deleteTexture(surface.texture.texture);
+      gl.deleteFramebuffer(surface.target.framebuffer);
     }
-    for (const texture of textures) if (texture) gl.deleteTexture(texture.texture);
-    for (const target of targets) if (target) gl.deleteFramebuffer(target.framebuffer);
-    this.scene = null;
-    this.flow = null;
-    this.shape = null;
-    this.order = null;
-    this.sets = null;
+    if (this.stillBase) gl.deleteTexture(this.stillBase.texture);
+    this.stillBase = null;
+    for (const group of Object.values(this.groups ?? {})) gl.deleteVertexArray(group.vao);
+    if (this.strokeBuffer) gl.deleteBuffer(this.strokeBuffer);
+    this.still = null;
+    this.sea = null;
+    this.guide = null;
+    this.layer = null;
+    this.paint = null;
+    this.groups = null;
+    this.strokeBuffer = null;
   }
 
-  private use(pass: Pass, target: Target | null, width: number, height: number) {
+  /** Bind a pass drawing into a surface (or the canvas) with the shared uniforms set. */
+  private use(pass: Pass, surface: Surface | null, time: number) {
     const gl = this.gl;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, target ? target.framebuffer : null);
-    gl.viewport(0, 0, width, height);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, surface ? surface.target.framebuffer : null);
+    gl.viewport(0, 0, surface ? surface.texture.width : this.width, surface ? surface.texture.height : this.height);
     gl.useProgram(pass.program);
     gl.bindVertexArray(this.vao);
     const u = pass.uniforms;
@@ -212,9 +257,8 @@ export class OilSeaEngine implements LiveSceneEngine {
     const tree = u.get('uTree');
     if (tree) gl.uniform3f(tree, l.treeX, l.treeY, l.treeScale);
     set1('uHorizon', l.horizon);
-    set1('uTime', this.time);
+    set1('uTime', time);
     set1('uEnergy', this.energy);
-    set1('uCell', this.cell);
     set2('uResolution', this.width, this.height);
     return { set1, set2 };
   }
@@ -231,37 +275,45 @@ export class OilSeaEngine implements LiveSceneEngine {
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
   }
 
-  private drawFlow() {
-    if (!this.passes || !this.flow) return;
-    this.use(this.passes.flow, this.flow.target, this.flow.texture.width, this.flow.texture.height);
-    this.draw();
-  }
-
-  /** Lay out strokes for one horizontal band of a set (a new seed when the set starts over). */
-  private buildStrokes(index: 0 | 1, band: number, bands: number, fresh: boolean) {
+  /** Copy a texture over the surface being painted, either as is or blended (premultiplied). */
+  private copy(source: Texture, into: Surface, blend: boolean) {
     const gl = this.gl;
-    if (!this.passes || !this.sets || !this.flow) return;
-    const set = this.sets[index];
-    if (fresh || band === 0) set.seed = ++this.seeds * 1.618 + index * 0.37;
-    const pass = this.passes.strokes;
-    const { set1 } = this.use(pass, set.strokes, this.width, this.height);
-    set1('uSeed', set.seed);
-    this.bind(pass, 'tFlow', 0, this.flow.texture);
-    const y0 = Math.floor((this.height * band) / bands);
-    const y1 = Math.floor((this.height * (band + 1)) / bands);
-    gl.enable(gl.SCISSOR_TEST);
-    gl.scissor(0, y0, this.width, y1 - y0);
+    const pass = this.passes!.layer;
+    this.use(pass, into, this.time);
+    this.bind(pass, 'tLayer', 0, source);
+    if (blend) {
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    }
     this.draw();
-    gl.disable(gl.SCISSOR_TEST);
+    gl.disable(gl.BLEND);
   }
 
-  private lightStrokes(index: 0 | 1) {
-    if (!this.passes || !this.sets || !this.shape || !this.order) return;
-    const pass = this.passes.light;
-    this.use(pass, this.sets[index].lighting, this.width, this.height);
-    this.bind(pass, 'tShape', 0, this.shape);
-    this.bind(pass, 'tOrder', 1, this.order);
-    this.draw();
+  private paintStrokes(name: GroupName, colour: Surface, into: Surface, motion: 0 | 1 | 2, reveal: number) {
+    const gl = this.gl;
+    const group = this.groups?.[name];
+    if (!group || !group.count) return;
+    const pass = this.passes!.stroke;
+    const { set1 } = this.use(pass, into, this.time);
+    this.bind(pass, 'tColor', 0, colour.texture);
+    set1('uReveal', reveal);
+    const at = pass.uniforms.get('uMotion');
+    if (at) gl.uniform1i(at, motion);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.bindVertexArray(group.vao);
+    gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 2 * (STROKE_SEGMENTS + 1), group.count);
+    gl.bindVertexArray(this.vao);
+    gl.disable(gl.BLEND);
+  }
+
+  /** The still strokes, painted once into their own layer. */
+  private paintLayer() {
+    const gl = this.gl;
+    const layer = this.layer!;
+    this.copy(this.stillBase!, layer, false);
+    this.paintStrokes('still', this.still!, layer, 0, 2);
+    this.layerPainted = true;
   }
 
   start() {
@@ -298,53 +350,55 @@ export class OilSeaEngine implements LiveSceneEngine {
 
   /** Advance by `dt` seconds and draw one frame (dt 0 redraws as is). */
   renderFrame(dt: number) {
-    if (!this.ready || !this.passes || !this.sets || !this.scene) return;
+    if (!this.ready || !this.passes || !this.still || !this.sea || !this.paint) return;
     const gl = this.gl;
     this.time += dt;
     // Until it first runs, a still frame (paused, reduced motion) shows the
     // finished painting; the drawing-in plays when the scene starts moving.
     const notStarted = !this.running && dt === 0 && this.intro === 0;
     if (notStarted && !this.stillShownAt) this.stillShownAt = performance.now();
-    if (!Number.isFinite(this.intro)) {
-      // Finished: keep the painting alive.
-      const step = this.repaint.update(dt);
-      if (step?.kind === 'strokes') this.buildStrokes(step.set, step.band, step.bands, false);
-      else if (step?.kind === 'light') this.lightStrokes(step.set);
-    } else if (dt > 0) {
-      this.intro += dt;
+    if (Number.isFinite(this.intro) && dt > 0) this.intro += dt;
+    const intro = notStarted || !Number.isFinite(this.intro) ? INTRO_SECONDS : this.intro;
+    if (!notStarted && intro >= INTRO_SECONDS) this.intro = Infinity;
+    const finished = intro >= INTRO_SECONDS;
+
+    this.use(this.passes.sea, this.sea, this.time);
+    this.draw();
+
+    const paint = this.paint;
+    if (this.debugView) {
+      this.copy(this.debugView === 1 ? this.still.texture : this.sea.texture, paint, false);
+    } else if (finished) {
+      if (!this.layerPainted) this.paintLayer();
+      this.copy(this.sea.texture, paint, false);
+      this.paintStrokes('sea', this.sea, paint, 1, 2);
+      this.copy(this.layer!.texture, paint, true);
+      this.paintStrokes('tree', this.still, paint, 2, 2);
+    } else {
+      const pass = this.passes.paper;
+      const { set1, set2 } = this.use(pass, paint, this.time);
+      this.bind(pass, 'tScene', 0, this.still.texture);
+      set1('uSketch', Math.min(1, Math.max(0, (intro - 0.5) / (SKETCH_SECONDS - 0.5))));
+      set2('uSceneSize', this.still.texture.width, this.still.texture.height);
+      this.draw();
+      const reveal = Math.max(0, (intro - SKETCH_SECONDS) / PAINT_SECONDS);
+      this.paintStrokes('sea', this.sea, paint, 1, reveal);
+      this.paintStrokes('still', this.still, paint, 0, reveal);
+      this.paintStrokes('tree', this.still, paint, 2, reveal);
     }
 
-    this.use(this.passes.scene, this.scene.target, this.scene.texture.width, this.scene.texture.height);
+    const pass = this.passes.final;
+    const { set1 } = this.use(pass, null, this.time);
+    this.bind(pass, 'tPaint', 0, paint.texture);
+    set1('uGlow', finished ? 1 : Math.min(1, Math.max(0, (intro - SKETCH_SECONDS) / PAINT_SECONDS)));
+    set1('uUnit', Math.min(this.width, this.height) / 100);
     this.draw();
-
-    const view = this.repaint.view;
-    const pass = this.passes.composite;
-    const { set1, set2 } = this.use(pass, null, this.width, this.height);
-    const shown = this.sets[view.shown];
-    const over = this.sets[view.painting ?? (view.shown === 0 ? 1 : 0)];
-    this.bind(pass, 'tScene', 0, this.scene.texture);
-    this.bind(pass, 'tOffsetA', 1, shown.offset);
-    this.bind(pass, 'tLightA', 2, shown.light);
-    this.bind(pass, 'tMaskA', 3, shown.mask);
-    this.bind(pass, 'tOffsetB', 4, over.offset);
-    this.bind(pass, 'tLightB', 5, over.light);
-    this.bind(pass, 'tMaskB', 6, over.mask);
-    const painting = pass.uniforms.get('uPainting');
-    if (painting) gl.uniform1i(painting, view.painting === null ? 0 : 1);
-    set1('uProgress', view.progress);
-    const intro = notStarted || !Number.isFinite(this.intro) ? INTRO_SECONDS : this.intro;
-    set1('uSketch', Math.min(1, Math.max(0, (intro - 0.5) / 2.8)));
-    set1('uPaintIn', Math.min(1.06, Math.max(0, (intro - 2.8) / 3.8)));
-    if (!notStarted && intro >= INTRO_SECONDS) this.intro = Infinity;
-    set2('uSceneSize', this.scene.texture.width, this.scene.texture.height);
-    const debug = pass.uniforms.get('uDebug');
-    if (debug) gl.uniform1i(debug, this.debugView);
-    this.draw();
+    gl.bindVertexArray(null);
   }
 
   get isReady() { return this.ready; }
 
-  /** Development aid: 1 shows the colour source without brushwork. */
+  /** Development aid: 1 shows the still colour source, 2 the sea's, without brushwork. */
   debugView = 0;
 
   dispose() {

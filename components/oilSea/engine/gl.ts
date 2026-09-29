@@ -12,6 +12,8 @@ void main() {
 export interface Pass {
   program: WebGLProgram;
   uniforms: Map<string, WebGLUniformLocation>;
+  /** Kept until the program is checked, for their compile logs. */
+  shaders: WebGLShader[];
 }
 
 const compile = (gl: WebGL2RenderingContext, type: number, source: string) => {
@@ -22,25 +24,27 @@ const compile = (gl: WebGL2RenderingContext, type: number, source: string) => {
   return shader;
 };
 
-/** Compile a full-screen pass; errors surface when the program is first checked. */
-export function createPass(gl: WebGL2RenderingContext, fragment: string): Pass {
+/** Compile a pass (full screen unless given a vertex shader); errors surface when the program is first checked. */
+export function createPass(gl: WebGL2RenderingContext, fragment: string, vertexSource = FULLSCREEN_VERTEX): Pass {
   const program = gl.createProgram();
   if (!program) throw new Error('Could not create program');
-  const vertex = compile(gl, gl.VERTEX_SHADER, FULLSCREEN_VERTEX);
+  const vertex = compile(gl, gl.VERTEX_SHADER, vertexSource);
   const shader = compile(gl, gl.FRAGMENT_SHADER, fragment);
   gl.attachShader(program, vertex);
   gl.attachShader(program, shader);
   gl.linkProgram(program);
-  gl.deleteShader(vertex);
-  gl.deleteShader(shader);
-  return { program, uniforms: new Map() };
+  return { program, uniforms: new Map(), shaders: [vertex, shader] };
 }
 
 /** Finish linking (after any parallel compilation) and read uniform locations. */
 export function finishPass(gl: WebGL2RenderingContext, pass: Pass) {
-  if (!gl.getProgramParameter(pass.program, gl.LINK_STATUS)) {
+  const linked = gl.getProgramParameter(pass.program, gl.LINK_STATUS);
+  const logs = linked ? [] : pass.shaders.map((shader) => gl.getShaderInfoLog(shader) ?? '').filter(Boolean);
+  for (const shader of pass.shaders) gl.deleteShader(shader);
+  pass.shaders = [];
+  if (!linked) {
     const log = gl.getProgramInfoLog(pass.program) ?? '';
-    throw new Error(`Shader program failed to link: ${log}`);
+    throw new Error(`Shader program failed to link: ${[log, ...logs].join('\n')}`);
   }
   const count = gl.getProgramParameter(pass.program, gl.ACTIVE_UNIFORMS) as number;
   for (let i = 0; i < count; i++) {

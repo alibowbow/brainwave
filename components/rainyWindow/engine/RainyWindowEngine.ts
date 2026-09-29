@@ -349,6 +349,10 @@ export class RainyWindowEngine {
     const renderer = this.renderer;
     this.time += dt;
 
+    // Rain comes and goes in slow waves on top of what the listener chose.
+    const t = this.time;
+    const wave = 0.74 + 0.5 * (0.5 + 0.5 * Math.sin(t * 0.021)) * (0.5 + 0.5 * Math.sin(t * 0.047 + 1.7));
+    this.sim.intensity = this.rainIntensity * wave;
     this.simCarry += dt * 60;
     let ticks = 0;
     while (this.simCarry >= 1 && ticks < 4) {

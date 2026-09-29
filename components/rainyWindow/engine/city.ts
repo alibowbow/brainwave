@@ -26,7 +26,7 @@ interface Building {
   accentColor: [number, number, number];
 }
 
-const enum SpriteKind { Static = 0, Moving = 1, Blink = 2, Glint = 3, Toggle = 4 }
+const enum SpriteKind { Static = 0, Moving = 1, Blink = 2, Glint = 3, Toggle = 4, Aircraft = 5 }
 
 interface Sprite {
   x: number; y: number; z: number;
@@ -199,6 +199,16 @@ function generateSprites(rng: Rng, buildings: Building[]): Sprite[] {
       add({ x: 0, y: 0.05, z: -560 + 14 + k * 9, r, g, b, intensity: 0.35 - k * 0.08, kind: SpriteKind.Moving, phase: phase + range(rng, -1.5, 1.5), speed: 2.6, dirX: 1, dirZ: 0, span: 2600, size: 0.95 });
     }
   }
+
+  // Now and then an aircraft crosses high above the city.
+  const flights: [number, number, number, number, number][] = [
+    [820, -3600, 1, 72, 12000], [1150, -5200, -1, 85, 17000],
+  ];
+  flights.forEach(([altitude, z, dir, speed, span], index) => {
+    const phase = range(rng, 0, span);
+    add({ x: 0, y: altitude, z, r: 1.0, g: 1.0, b: 1.0, intensity: 2.6, kind: SpriteKind.Aircraft, phase, speed, dirX: dir, dirZ: 0, span, size: 0.75 });
+    add({ x: 0, y: altitude - 2, z, r: 1.0, g: 0.12, b: 0.06, intensity: 1.6, kind: SpriteKind.Aircraft, phase: phase + 11 + index * 7, speed, dirX: dir, dirZ: 0, span, size: 0.75 });
+  });
 
   // City street lights between the buildings (mostly occluded).
   for (let i = 0; i < 420; i++) {
@@ -492,8 +502,14 @@ void main() {
     float a = 0.5 + 0.5 * sin(uTime * speed + phase * 6.2831);
     float b = 0.5 + 0.5 * sin(uTime * speed * 2.37 + phase * 17.0);
     intensity *= 0.12 + 0.88 * pow(a * b, 1.4);
-  } else if (kind > 3.5) {
+  } else if (kind > 3.5 && kind < 4.5) {
     intensity *= smoothstep(-0.35, 0.35, sin(uTime * speed + phase * 6.2831));
+  } else if (kind > 4.5) {
+    // Aircraft: cruising across the sky with a short strobe over a faint glow.
+    float s = mod(phase + uTime * speed, aMotion.z) - 0.5 * aMotion.z;
+    p.xz += aMotion.xy * s;
+    float c = fract(uTime * 0.85 + phase * 0.0137);
+    intensity *= 0.06 + smoothstep(0.0, 0.015, c) * (1.0 - smoothstep(0.05, 0.085, c));
   }
   vec4 clip = uViewProj * vec4(p, 1.0);
   vColor = aColor * intensity * uGain;

@@ -81,7 +81,11 @@ export class RainSimulation {
   intensity = 1;
   private dropletCarry = 0;
   private spawnCarry = 0;
-  private grid = new Map<number, Drop[]>();
+  /** Uniform grid as linked lists in typed arrays: no per-tick allocation. */
+  private cellHead = new Int32Array(0);
+  private cellNext = new Int32Array(0);
+  private cols = 0;
+  private rows = 0;
   private cell = 1;
   /** Live drops including those created during the current tick. */
   private live = 0;
@@ -171,18 +175,26 @@ export class RainSimulation {
 
   private buildGrid() {
     this.cell = this.params.maxR * 3.2;
-    this.grid.clear();
-    for (const drop of this.drops) {
+    // One cell of margin left/right and two above for drops just off the pane.
+    this.cols = Math.ceil(this.width / this.cell) + 3;
+    this.rows = Math.ceil(this.height / this.cell) + 5;
+    const cells = this.cols * this.rows;
+    if (this.cellHead.length < cells) this.cellHead = new Int32Array(cells);
+    this.cellHead.fill(-1, 0, cells);
+    if (this.cellNext.length < this.drops.length) this.cellNext = new Int32Array(Math.ceil(this.drops.length * 1.5) + 64);
+    for (let i = 0; i < this.drops.length; i++) {
+      const drop = this.drops[i];
       if (drop.killed) continue;
-      const key = this.key(Math.floor(drop.x / this.cell), Math.floor(drop.y / this.cell));
-      const bucket = this.grid.get(key);
-      if (bucket) bucket.push(drop);
-      else this.grid.set(key, [drop]);
+      const index = this.cellIndex(drop.x, drop.y);
+      this.cellNext[i] = this.cellHead[index];
+      this.cellHead[index] = i;
     }
   }
 
-  private key(cx: number, cy: number) {
-    return (cy + 1024) * 4096 + (cx + 1024);
+  private cellIndex(x: number, y: number) {
+    const cx = Math.min(this.cols - 1, Math.max(0, Math.floor(x / this.cell) + 1));
+    const cy = Math.min(this.rows - 1, Math.max(0, Math.floor(y / this.cell) + 2));
+    return cy * this.cols + cx;
   }
 
   /** Advance one tick (1/60 s) scaled by `timeScale`. */
@@ -257,19 +269,22 @@ export class RainSimulation {
 
   private collide(drop: Drop, timeScale: number) {
     const p = this.params;
-    const cx = Math.floor(drop.x / this.cell);
-    const cy = Math.floor(drop.y / this.cell);
+    const home = this.cellIndex(drop.x, drop.y);
+    const cx = home % this.cols;
+    const cy = (home - cx) / this.cols;
     for (let oy = -1; oy <= 1; oy++) {
+      const row = cy + oy;
+      if (row < 0 || row >= this.rows) continue;
       for (let ox = -1; ox <= 1; ox++) {
-        const bucket = this.grid.get(this.key(cx + ox, cy + oy));
-        if (!bucket) continue;
-        for (const other of bucket) {
+        const column = cx + ox;
+        if (column < 0 || column >= this.cols) continue;
+        for (let j = this.cellHead[row * this.cols + column]; j >= 0; j = this.cellNext[j]) {
+          const other = this.drops[j];
           if (other === drop || other.killed || drop.r <= other.r || drop.parent === other || other.parent === drop) continue;
           const dx = other.x - drop.x;
           const dy = other.y - drop.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
           const reach = (drop.r + other.r) * (p.collisionRadius + (drop.momentum / K) * p.collisionRadiusIncrease * timeScale);
-          if (distance >= reach) continue;
+          if (dx * dx + dy * dy >= reach * reach) continue;
           const area = Math.PI * drop.r * drop.r + Math.PI * other.r * other.r * 0.8;
           const targetR = Math.min(Math.sqrt(area / Math.PI), p.maxR * 1.35);
           drop.r = targetR;

@@ -29,6 +29,9 @@ export const QUALITY: Record<QualityTier, QualityProfile> = {
   low: { maxPixelRatio: 1.25, msaa: 0, waterDensity: 0.8, cityScale: 0.45, reflection: false, reflectionScale: 0.35, shadowSize: 1024, shadowTaps: [8, 12], textureScale: 0.5, maxDrops: 1100, maxWaterTexels: 1_400_000, dofTaps: 0 },
 };
 
+/** WebGL implemented on the CPU: draw rarely and small so the device stays responsive. */
+export const isSoftwareRenderer = (renderer = '') => /swiftshader|llvmpipe|software|microsoft basic/i.test(renderer);
+
 export interface DeviceHints {
   renderer?: string;
   cores?: number;
@@ -40,7 +43,7 @@ export interface DeviceHints {
 /** Pick a starting tier; the dynamic resolution controller refines it at run time. */
 export function detectTier(hints: DeviceHints): QualityTier {
   const renderer = (hints.renderer ?? '').toLowerCase();
-  if (/swiftshader|llvmpipe|software|microsoft basic/.test(renderer)) return 'low';
+  if (isSoftwareRenderer(renderer)) return 'low';
   const weakGpu = /mali-[gt]?[0-9]{2}\b|adreno \(tm\) [3-5][0-9]{2}\b|powervr|intel.*hd graphics [2-5][0-9]{2,3}\b/.test(renderer);
   if (weakGpu || (hints.memory !== undefined && hints.memory <= 3) || (hints.cores !== undefined && hints.cores <= 4 && hints.mobile)) return 'low';
   if (hints.mobile) return 'medium';

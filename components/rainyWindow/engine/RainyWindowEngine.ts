@@ -10,7 +10,7 @@ import {
 } from './layout';
 import { updateMirrorCamera } from './mirror';
 import { PostProcessor } from './post';
-import { detectTier, DynamicResolution, QUALITY, type QualityProfile, type QualityTier } from './quality';
+import { detectTier, DynamicResolution, isSoftwareRenderer, QUALITY, type QualityProfile, type QualityTier } from './quality';
 import { mulberry32 } from './random';
 import { DEFAULT_RAIN, RainSimulation } from './rainSimulation';
 import { bakeTextures, type BakedTextures } from './textures';
@@ -33,6 +33,9 @@ export class RainyWindowEngine {
   readonly renderer: THREE.WebGLRenderer;
   readonly tier: QualityTier;
   readonly profile: QualityProfile;
+  /** Minimum time between drawn frames. */
+  private readonly frameInterval: number;
+  private readonly software: boolean;
   private readonly scene = new THREE.Scene();
   private readonly camera = new THREE.PerspectiveCamera(36, 16 / 9, 0.02, 30);
   private readonly baseCamera = new THREE.PerspectiveCamera(36, 16 / 9, 0.02, 30);
@@ -96,15 +99,18 @@ export class RainyWindowEngine {
     const gl = this.renderer.getContext();
     const debug = gl.getExtension('WEBGL_debug_renderer_info');
     const nav = navigator as Navigator & { deviceMemory?: number; userAgentData?: { mobile?: boolean } };
+    const rendererName = debug ? String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL)) : String(gl.getParameter(gl.RENDERER));
+    this.software = isSoftwareRenderer(rendererName);
+    this.frameInterval = this.software ? 1000 / 12 : 1000 / 64;
     this.tier = options.quality && options.quality !== 'auto' ? options.quality : detectTier({
-      renderer: debug ? String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL)) : String(gl.getParameter(gl.RENDERER)),
+      renderer: rendererName,
       cores: nav.hardwareConcurrency,
       memory: nav.deviceMemory,
       mobile: nav.userAgentData?.mobile ?? /Android|iPhone|iPad|Mobile/i.test(nav.userAgent),
       maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE) as number,
     });
     this.profile = QUALITY[this.tier];
-    this.dynamic = new DynamicResolution(0.55, 1, 1);
+    this.dynamic = new DynamicResolution(0.55, 1, this.software && options.dynamicResolution !== false ? 0.6 : 1);
     this.glass = new THREE.Mesh(
       new THREE.PlaneGeometry(GLASS_HALF_WIDTH * 2, GLASS_TOP - GLASS_BOTTOM).translate(0, (GLASS_TOP + GLASS_BOTTOM) / 2, GLASS_Z),
       this.glassMaterial,
@@ -304,10 +310,10 @@ export class RainyWindowEngine {
     if (!this.running) return;
     this.raf = requestAnimationFrame(this.loop);
     if (!this.ready) return;
-    if (this.lastFrame && now - this.lastFrame < 1000 / 64) return;
+    if (this.lastFrame && now - this.lastFrame < this.frameInterval) return;
     const elapsed = this.lastFrame ? now - this.lastFrame : 1000 / 60;
     this.lastFrame = now;
-    if (this.options.dynamicResolution !== false && this.dynamic.update(elapsed)) this.applySize(false);
+    if (this.options.dynamicResolution !== false && !this.software && this.dynamic.update(elapsed)) this.applySize(false);
     this.renderFrame(Math.min(0.1, elapsed / 1000));
   };
 

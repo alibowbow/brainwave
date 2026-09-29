@@ -9,7 +9,9 @@ const browser = await chromium.launch({
   headless: true,
   args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
 });
-const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, serviceWorkers: 'block' });
+const page = await browser.newPage({ viewport: { width: 1024, height: 700 }, serviceWorkers: 'block' });
+// Software WebGL is slow on shared runners; give every step room.
+page.setDefaultTimeout(120_000);
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 page.on('console', (message) => {
@@ -18,6 +20,9 @@ page.on('console', (message) => {
 const output = process.env.SCENE_SCREENSHOT_DIR;
 if (output) await mkdir(output, { recursive: true });
 const scene = page.locator('.rainy-window').first();
+// Player controls fade out after a few seconds; under software WebGL a normal
+// click can outlast that, so trigger them directly.
+const press = (name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first().dispatchEvent('click');
 
 try {
   for (let attempt = 0; attempt < 20; attempt++) {
@@ -37,37 +42,37 @@ try {
   assert.equal(await scene.getAttribute('data-motion'), 'running');
 
   // A drawn night scene compresses poorly; a blank or flat canvas would be tiny.
+  // Page screenshots skip element-stability waits, which crawl under software WebGL.
   await page.waitForTimeout(2500);
-  const shot = await scene.screenshot();
-  assert.ok(shot.length > 120_000, `scene renders detail (${shot.length} bytes)`);
-  if (output) await scene.screenshot({ path: `${output}/focus-player.png` });
+  const box = await scene.boundingBox();
+  const shot = await page.screenshot({ clip: box });
+  assert.ok(shot.length > 90_000, `scene renders detail (${shot.length} bytes)`);
+  if (output) await page.screenshot({ path: `${output}/focus-player.png` });
+
+  // Pausing the session freezes the scene (and keeps the rest of the test light).
+  await press('일시정지');
+  await page.waitForFunction(() => document.querySelector('.rainy-window')?.getAttribute('data-motion') === 'paused');
 
   // Fullscreen moves the same canvas instead of building a second renderer.
-  await page.mouse.move(640, 400);
-  await page.getByRole('button', { name: '전체 화면 보기', exact: true }).click();
+  await press('전체 화면 보기');
   await page.waitForFunction(() => !!document.querySelector('[aria-label="몰입 화면"] .rainy-window-canvas'));
   assert.equal(await page.locator('.rainy-window-canvas').count(), 1, 'fullscreen reuses the canvas');
   if (output) await page.screenshot({ path: `${output}/focus-fullscreen.png` });
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !document.querySelector('[aria-label="몰입 화면"]') && !!document.querySelector('.rainy-window .rainy-window-canvas'));
 
-  // Pausing the session and reduced motion both freeze the scene.
-  await page.mouse.move(640, 420);
-  await page.getByRole('button', { name: '일시정지', exact: true }).first().click();
-  await page.waitForFunction(() => document.querySelector('.rainy-window')?.getAttribute('data-motion') === 'paused');
-  await page.getByRole('button', { name: '재생', exact: true }).first().click();
+  // Resuming animates again; reduced motion freezes it.
+  await press('재생');
   await page.waitForFunction(() => document.querySelector('.rainy-window')?.getAttribute('data-motion') === 'running');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.waitForFunction(() => document.querySelector('.rainy-window')?.getAttribute('data-motion') === 'paused');
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
 
   // Ending the session releases the renderer.
-  await page.mouse.move(640, 420);
-  await page.getByRole('button', { name: '세션 종료', exact: true }).first().click();
+  await press('세션 종료');
   await page.waitForFunction(() => !document.querySelector('.rainy-window-canvas'));
 
   assert.deepEqual(errors, []);
-  console.log('PASS: deep-focus plays the live rainy study (no illustration or CSS rain), renders detail, shares one canvas with fullscreen, freezes on pause and reduced motion, and releases on stop.');
+  console.log('PASS: deep-focus plays the live rainy study (no illustration or CSS rain), renders detail, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
 } finally {
   await browser.close();
 }

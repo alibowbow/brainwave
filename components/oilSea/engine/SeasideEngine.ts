@@ -240,7 +240,7 @@ export class SeasideEngine implements LiveSceneEngine {
     this.slide(0);
   }
 
-  /** Turn the view slightly for a drag of `dx`, `dy` shorter sides of the view. */
+  /** Slide the view across a little for a drag of `dx`, `dy` shorter sides of the view (only across counts). */
   drag(dx: number, dy: number) {
     this.look.drag(dx, dy);
   }

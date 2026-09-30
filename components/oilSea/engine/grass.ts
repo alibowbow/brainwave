@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { Raster } from './raster';
+import { CLOUD_SHADOW_GLSL } from './clouds';
+import { bleed, Raster } from './raster';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
 import { LIGHT_GLSL } from './terrain';
 import { CAMERA, coastDistance, fbm2, headlandFall, terrainHeight } from './world';
@@ -7,16 +8,19 @@ import { CAMERA, coastDistance, fbm2, headlandFall, terrainHeight } from './worl
 /**
  * A tuft of long grass drawn once on a canvas: blades rising from dark
  * roots and bending over to the left under the wind, deep green low down,
- * fresh yellow-green towards their tips. Beside it the same tuft in flower,
- * the flower heads drawn in pure white for the shader to colour as daisies,
- * buttercups, poppies or cornflowers (grass never has much blue in it, so
- * the blue channel tells flower from blade, even blurred at a distance).
+ * fresh yellow-green towards their tips. Beside it the same tuft in flower:
+ * small heads on the taller stems, each a ring of petals round its centre,
+ * tipped towards the viewer or seen edge on. The petals are drawn in white
+ * and the centres in magenta, for the shader to colour as daisies,
+ * buttercups, poppies, cornflowers or thrift (grass never has much blue in
+ * it, so the blue channel tells flower from blade, even blurred at a
+ * distance, and blue over green tells a centre from its petals).
  */
 function drawTuft(size: number, seed: number) {
   const canvas = document.createElement('canvas');
   canvas.width = size * 2;
   canvas.height = size;
-  const g = canvas.getContext('2d');
+  const g = canvas.getContext('2d', { willReadFrequently: true });
   if (!g) throw new Error('2D canvas unavailable');
   let s = seed;
   const rand = () => {
@@ -49,20 +53,67 @@ function drawTuft(size: number, seed: number) {
     }
     if (height > size * 0.55) tips.push({ x: tipX, y: tipY });
   }
-  // Flower heads on the taller stems.
-  g.fillStyle = 'rgb(255, 255, 255)';
-  for (const tip of tips.slice(0, 11)) {
-    const r = size * (0.035 + 0.02 * rand());
+  // Flower heads on the taller stems, a few of them still in bud.
+  for (const tip of tips.slice(0, 12)) {
+    const r = size * (0.024 + 0.016 * rand());
+    const cx = size + Math.max(r * 2, tip.x);
+    const cy = Math.max(r * 2, tip.y + r * 0.2);
+    if (rand() < 0.2) {
+      g.fillStyle = 'rgb(255, 255, 255)';
+      g.beginPath();
+      g.ellipse(cx, cy, r * 0.45, r * 0.6, 0, 0, Math.PI * 2);
+      g.fill();
+      continue;
+    }
+    // Tipped towards the viewer (1) or seen nearly edge on, and turned a little.
+    const tilt = 0.3 + 0.7 * rand();
+    const turn = (rand() - 0.5) * 0.9;
+    const cos = Math.cos(turn);
+    const sin = Math.sin(turn);
+    const petals = 11 + Math.floor(rand() * 5);
+    g.fillStyle = 'rgb(255, 255, 255)';
+    for (let k = 0; k < petals; k++) {
+      const a = ((k + 0.3 * rand()) / petals) * Math.PI * 2;
+      const px = Math.cos(a) * r * 0.55;
+      const py = Math.sin(a) * r * 0.55 * tilt;
+      g.beginPath();
+      g.ellipse(cx + px * cos - py * sin, cy + px * sin + py * cos, r * 0.5, r * 0.2, Math.atan2(Math.sin(a) * tilt, Math.cos(a)) + turn, 0, Math.PI * 2);
+      g.fill();
+    }
+    g.fillStyle = 'rgb(255, 0, 255)';
     g.beginPath();
-    g.ellipse(size + Math.max(r, tip.x), Math.max(r, tip.y + r * 0.3), r, r * 0.8, 0, 0, Math.PI * 2);
+    g.ellipse(cx, cy, r * 0.32, r * 0.32 * Math.max(0.5, tilt), turn, 0, Math.PI * 2);
     g.fill();
   }
-  const texture = new THREE.CanvasTexture(canvas);
+  // Give the empty pixels the colour beside them, so the blades and flowers
+  // keep their colour when the texture is shrunk instead of darkening.
+  const data = new Uint8Array(g.getImageData(0, 0, size * 2, size).data.buffer);
+  const flipped = new Uint8Array(data.length);
+  const row = size * 2 * 4;
+  for (let y = 0; y < size; y++) flipped.set(data.subarray(y * row, (y + 1) * row), (size - 1 - y) * row);
+  bleed(flipped, size * 2, size);
+  const texture = new THREE.DataTexture(flipped, size * 2, size, THREE.RGBAFormat);
   texture.colorSpace = THREE.NoColorSpace;
-  texture.generateMipmaps = true;
+  texture.magFilter = THREE.LinearFilter;
   texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.generateMipmaps = true;
+  texture.needsUpdate = true;
   return texture;
 }
+
+/**
+ * Gusts sweeping over the headland: bands of stronger wind, broad across
+ * the wind and narrow along it, travelling with it (the way the grass is
+ * blown, to the left of the view). 0 in the steady breeze, up to 1 in the
+ * heart of a gust. Needs NOISE_GLSL and uTime; right is the view's right.
+ */
+const GUST_GLSL = /* glsl */ `
+float gustAt(vec2 p, vec3 right) {
+  vec2 wind = -normalize(right.xz);
+  vec2 at = p - wind * uTime * 7.0;
+  return smoothstep(0.5, 0.82, vnoise(vec2(dot(at, wind) * 0.07, dot(at, vec2(-wind.y, wind.x)) * 0.03)));
+}
+`;
 
 /**
  * Long grass on the headland, in clumps: each clump a few cards of the drawn
@@ -71,7 +122,7 @@ function drawTuft(size: number, seed: number) {
  * drifts of wild flowers. The sun shines through the tips.
  */
 export function createGrass(sunDirection: THREE.Vector3, count: number) {
-  const texture = drawTuft(256, 7);
+  const texture = drawTuft(384, 7);
   const card = new THREE.PlaneGeometry(1, 1, 1, 3);
   card.translate(0, 0.5, 0);
   const material = new THREE.ShaderMaterial({
@@ -82,62 +133,102 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
       uHaze: { value: 1 },
     },
     vertexShader: /* glsl */ `
-      uniform float uTime;
       attribute vec4 aTint;
-      attribute vec4 aBloom;
+      attribute vec2 aBloom;
       varying vec2 vUv;
-      varying vec3 vWorld;
       varying vec4 vTint;
-      varying vec3 vBloom;
+      varying float vKind;
+      varying float vSunlit;
+      varying float vSweep;
+      varying vec3 vLight;
+      varying float vThrough;
+      varying vec4 vHaze;
+      ${NOISE_GLSL}
+      ${SKY_GLSL}
+      ${LIGHT_GLSL}
+      ${CLOUD_SHADOW_GLSL}
+      ${GUST_GLSL}
       void main() {
-        vUv = vec2((aBloom.w + uv.x) * 0.5, uv.y);
-        vTint = aTint;
-        vBloom = aBloom.rgb;
+        vUv = vec2((aBloom.y + uv.x) * 0.5, uv.y);
+        vKind = aBloom.x;
         vec4 world = modelMatrix * instanceMatrix * vec4(position, 1.0);
         vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
         float bend = uv.y * uv.y;
         float gust = sin(uTime * 1.3 + world.x * 0.15 + world.z * 0.11) * 0.6 + sin(uTime * 2.7 + world.x * 0.4) * 0.25;
-        world.xyz -= right * (0.1 + 0.12 * gust) * bend * aTint.w;
-        vWorld = world.xyz;
+        // Now and then a gust sweeps over, bending the blades further and flatter.
+        float sweep = gustAt(world.xz, right);
+        world.xyz -= right * (0.1 + 0.12 * gust + 0.3 * sweep) * bend * aTint.w;
+        world.y -= 0.12 * sweep * bend * aTint.w;
+        vSweep = sweep;
+        // Light, air and the swathes of sun hardly change across a card, so
+        // they are worked out here rather than for every pixel of it.
+        vSunlit = cloudSun(world.xyz);
+        vLight = lightGround(vec3(1.0), vec3(0.0, 1.0, 0.0), 0.85 * vSunlit);
+        vThrough = pow(max(dot(normalize(cameraPosition - world.xyz), -uSunDir) * 0.5 + 0.5, 0.0), 3.0) * vSunlit;
+        vHaze = hazeAt(world.xyz, cameraPosition);
+        // Swathes where the sun comes through, and where it does not.
+        vTint = vec4(aTint.rgb * mix(0.8, 1.22, smoothstep(0.32, 0.6, fbm3(world.xz * 0.03 + 9.0))), aTint.w);
         gl_Position = projectionMatrix * viewMatrix * world;
       }
     `,
     fragmentShader: /* glsl */ `
       uniform sampler2D tTuft;
       varying vec2 vUv;
-      varying vec3 vWorld;
       varying vec4 vTint;
-      varying vec3 vBloom;
-      ${NOISE_GLSL}
-      ${SKY_GLSL}
-      ${LIGHT_GLSL}
+      varying float vKind;
+      varying float vSunlit;
+      varying float vSweep;
+      varying vec3 vLight;
+      varying float vThrough;
+      varying vec4 vHaze;
+      // Petals and centre of each kind: daisy, buttercup, poppy, cornflower, thrift.
+      vec3 petalColour(float kind) {
+        if (kind < 0.5) return vec3(0.97, 0.97, 0.92);
+        if (kind < 1.5) return vec3(1.0, 0.82, 0.12);
+        if (kind < 2.5) return vec3(0.88, 0.14, 0.07);
+        if (kind < 3.5) return vec3(0.36, 0.48, 0.95);
+        return vec3(0.95, 0.56, 0.72);
+      }
+      vec3 centreColour(float kind) {
+        if (kind < 0.5) return vec3(1.0, 0.76, 0.1);
+        if (kind < 1.5) return vec3(0.9, 0.62, 0.06);
+        if (kind < 2.5) return vec3(0.1, 0.07, 0.06);
+        if (kind < 3.5) return vec3(0.2, 0.24, 0.62);
+        return vec3(0.82, 0.4, 0.58);
+      }
       void main() {
         vec4 tuft = texture2D(tTuft, vUv);
         if (tuft.a < 0.45) discard;
-        vec3 albedo = tuft.rgb * vTint.rgb;
-        // How much of this texel is flower head (the blades have little blue).
-        float petal = clamp((tuft.b - 0.46) / 0.4, 0.0, 1.0);
-        // Swathes where the sun comes through, and where it does not.
-        albedo *= mix(0.8, 1.22, smoothstep(0.32, 0.6, fbm3(vWorld.xz * 0.03 + 9.0)));
-        float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 3.0);
-        vec3 col = lightGround(albedo, vec3(0.0, 1.0, 0.0), 0.85) + albedo * vec3(0.8, 1.0, 0.5) * through * vUv.y * 0.9;
+        // Where the blades only partly cover a texel (their edges, and the
+        // whole tuft seen from afar) the gaps between them are in shadow.
+        vec3 albedo = tuft.rgb * vTint.rgb * mix(0.68, 1.0, smoothstep(0.45, 0.95, tuft.a));
+        // The sun shines through the tips.
+        vec3 col = albedo * vLight + albedo * vec3(0.8, 1.0, 0.5) * vThrough * vUv.y * 0.9;
         col *= 0.72 + 0.28 * vUv.y;
-        col = mix(col, vBloom * 1.05, petal);
-        gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
+        // Laid over by a gust, the blades turn their paler, glossier side up.
+        col = mix(col, col * 1.2 + vec3(0.035, 0.045, 0.03) * vSunlit, vSweep * smoothstep(0.15, 0.9, vUv.y));
+        // How much of this texel is flower head (the blades have little blue),
+        // and how much of that is its centre (blue over green). The flowers
+        // catch the sun like the grass, their petals glowing where it shines through.
+        float petal = clamp((tuft.b - 0.46) / 0.4, 0.0, 1.0);
+        if (petal > 0.0) {
+          vec3 flower = mix(petalColour(vKind), centreColour(vKind), smoothstep(0.25, 0.75, tuft.b - tuft.g));
+          col = mix(col, flower * (vLight * 0.8 + vThrough * 0.25), petal);
+        }
+        gl_FragColor = vec4(mix(col, vHaze.rgb, vHaze.a), 1.0);
       }
     `,
     side: THREE.DoubleSide,
   });
   const mesh = new THREE.InstancedMesh(card, material, count);
   const tints = new Float32Array(count * 4);
-  const blooms = new Float32Array(count * 4);
-  // Summer flowers: daisies, buttercups, poppies, cornflowers.
-  const flowers = [
-    [0.97, 0.97, 0.94],
-    [1.0, 0.84, 0.14],
-    [0.9, 0.18, 0.1],
-    [0.42, 0.52, 0.95],
-  ];
+  const blooms = new Float32Array(count * 2);
+  // Summer flowers (see petalColour in the shader).
+  const DAISY = 0;
+  const BUTTERCUP = 1;
+  const POPPY = 2;
+  const CORNFLOWER = 3;
+  const THRIFT = 4;
   const matrix = new THREE.Matrix4();
   const position = new THREE.Vector3();
   const quaternion = new THREE.Quaternion();
@@ -179,7 +270,9 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
     const bloom = fbm2(cx * 0.09 + 21.0, cz * 0.09, 3);
     const flowering = rand() < (bloom - 0.36) * 3.5;
     const drift = fbm2(cx * 0.012 + 5.0, cz * 0.012, 2);
-    const flower = flowers[drift < 0.42 ? 0 : drift < 0.52 ? 1 : drift < 0.6 ? 3 : drift < 0.66 ? 2 : 0];
+    // Pink cushions of thrift along the cliff's edge and down its face.
+    const edge = fall > 0.08 && fall < 0.75 && fbm2(cx * 0.05 + 2.0, cz * 0.05 + 8.0, 2) > 0.5;
+    const flower = edge ? THRIFT : drift < 0.42 ? DAISY : drift < 0.52 ? BUTTERCUP : drift < 0.6 ? CORNFLOWER : drift < 0.66 ? POPPY : DAISY;
     for (let c = 0; c < cards && placed < count; c++) {
       const a = rand() * Math.PI * 2;
       const r = Math.sqrt(rand()) * radius;
@@ -194,12 +287,12 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
       mesh.setMatrixAt(placed, matrix);
       const shade = (pocket ? 0.72 : 0.84) + 0.28 * rand();
       tints.set([tint[0] * shade, tint[1] * shade, tint[2] * shade, height], placed * 4);
-      blooms.set([flower[0], flower[1], flower[2], flowering && rand() < 0.6 ? 1 : 0], placed * 4);
+      blooms.set([flower, (flowering || edge) && rand() < (edge ? 0.85 : 0.6) ? 1 : 0], placed * 2);
       placed++;
     }
   }
   card.setAttribute('aTint', new THREE.InstancedBufferAttribute(tints, 4));
-  card.setAttribute('aBloom', new THREE.InstancedBufferAttribute(blooms, 4));
+  card.setAttribute('aBloom', new THREE.InstancedBufferAttribute(blooms, 2));
   mesh.count = placed;
   mesh.frustumCulled = false;
   return { mesh, material, texture };
@@ -244,12 +337,18 @@ export function createShrubs(sunDirection: THREE.Vector3, count: number) {
       uniform float uTime;
       varying vec2 vUv;
       varying vec3 vWorld;
+      varying float vSunlit;
+      ${NOISE_GLSL}
+      ${CLOUD_SHADOW_GLSL}
+      ${GUST_GLSL}
       void main() {
         vUv = uv;
         vec4 world = modelMatrix * instanceMatrix * vec4(position, 1.0);
         float gust = sin(uTime * 1.1 + world.x * 0.12 + world.z * 0.09);
-        world.x -= 0.06 * gust * uv.y;
+        vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
+        world.xyz -= right * (0.06 * gust + 0.1 * gustAt(world.xz, right)) * uv.y;
         vWorld = world.xyz;
+        vSunlit = cloudSun(world.xyz);
         gl_Position = projectionMatrix * viewMatrix * world;
       }
     `,
@@ -257,6 +356,7 @@ export function createShrubs(sunDirection: THREE.Vector3, count: number) {
       uniform sampler2D tBush;
       varying vec2 vUv;
       varying vec3 vWorld;
+      varying float vSunlit;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
@@ -265,8 +365,8 @@ export function createShrubs(sunDirection: THREE.Vector3, count: number) {
         if (bush.a < 0.5) discard;
         vec3 albedo = bush.rgb * mix(vec3(0.85, 0.95, 0.85), vec3(1.08, 1.04, 0.86), vnoise(vWorld.xz * 0.2));
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 3.0);
-        vec3 col = lightGround(albedo, normalize(vec3(0.0, 1.0, 0.0) + (vUv.x - 0.5) * vec3(1.0, 0.0, 0.0)), 0.5 + 0.5 * vUv.y);
-        col += albedo * vec3(0.8, 1.0, 0.5) * through * vUv.y * 0.6;
+        vec3 col = lightGround(albedo, normalize(vec3(0.0, 1.0, 0.0) + (vUv.x - 0.5) * vec3(1.0, 0.0, 0.0)), (0.5 + 0.5 * vUv.y) * vSunlit);
+        col += albedo * vec3(0.8, 1.0, 0.5) * through * vUv.y * 0.6 * vSunlit;
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,

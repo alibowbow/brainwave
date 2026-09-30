@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CLOUD_SHADOW_GLSL } from './clouds';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
 import { cliffTop, headlandFall, SUN, terrainHeight, woodsDensity, WORLD_GLSL } from './world';
 
@@ -220,7 +221,8 @@ vec3 lightGround(vec3 albedo, vec3 n, float sunlight) {
   vec3 bounce = vec3(0.36, 0.38, 0.26) * 0.14;
   return albedo * (sun + sky + bounce);
 }
-vec3 addHaze(vec3 col, vec3 world, vec3 eye) {
+// The air between the eye and a point: its colour (rgb) and how much of it (a).
+vec4 hazeAt(vec3 world, vec3 eye) {
   vec3 toEye = eye - world;
   float dist = length(toEye);
   vec3 dir = -toEye / dist;
@@ -230,7 +232,11 @@ vec3 addHaze(vec3 col, vec3 world, vec3 eye) {
   float thin = exp(-max(0.0, 0.5 * (world.y + eye.y)) / 1500.0);
   float haze = (1.0 - exp(-dist / 6500.0 * uHaze * thin)) * 0.8 + (1.0 - exp(-dist / 60000.0)) * 0.12;
   vec3 air = mix(skyLight(vec3(dir.x, max(dir.y, 0.0) * 0.3, dir.z), 0.4), vec3(0.6, 0.7, 0.86), 0.55);
-  return mix(col, air, haze);
+  return vec4(air, haze);
+}
+vec3 addHaze(vec3 col, vec3 world, vec3 eye) {
+  vec4 haze = hazeAt(world, eye);
+  return mix(col, haze.rgb, haze.a);
 }
 `;
 
@@ -242,6 +248,7 @@ export function createTerrain(sunDirection: THREE.Vector3, detail = 1) {
       uHaze: { value: 1 },
     },
     vertexShader: /* glsl */ `
+      uniform float uTime;
       attribute float aSun;
       attribute vec2 aLand;
       attribute float aCliff;
@@ -250,11 +257,13 @@ export function createTerrain(sunDirection: THREE.Vector3, detail = 1) {
       varying float vSun;
       varying vec2 vLand;
       varying float vCliff;
+      ${NOISE_GLSL}
+      ${CLOUD_SHADOW_GLSL}
       void main() {
         vec4 world = modelMatrix * vec4(position, 1.0);
         vWorld = world.xyz;
         vNormal = normal;
-        vSun = aSun;
+        vSun = aSun * cloudSun(world.xyz);
         vLand = aLand;
         vCliff = aCliff;
         gl_Position = projectionMatrix * viewMatrix * world;
@@ -325,6 +334,23 @@ export function createTerrain(sunDirection: THREE.Vector3, detail = 1) {
         col = mix(col, mix(vec3(0.97, 0.91, 0.76), vec3(0.9, 0.83, 0.67), fine), beach);
         float wet = smoothstep(7.0, 0.5, inland) * smoothstep(2.5, 0.6, height);
         col = mix(col, vec3(0.62, 0.6, 0.54), wet);
+        // The swash: each wave runs up the sand in a thin sheet with a line
+        // of foam at its edge, quickly, then slides back more slowly, a
+        // little ahead of or behind its neighbours along the shore.
+        float swashZone = smoothstep(16.0, 10.0, inland) * smoothstep(3.0, 0.8, height) * smoothstep(-2.0, 0.0, inland);
+        if (swashZone > 0.0) {
+          float shore = p.y - 0.55 * p.x;
+          float wave = uTime / 9.0 + 0.6 * vnoise(vec2(shore * 0.012, 2.0)) + 0.25 * vnoise(vec2(shore * 0.05, 5.0));
+          float phase = fract(wave);
+          // Some waves run farther up than others (each changes as the last has drained away).
+          float reach = 11.0 * sin(3.1416 * pow(phase, 0.45)) * (0.6 + 0.4 * vnoise(vec2(shore * 0.03, floor(wave))));
+          float sheet = smoothstep(reach + 0.6, reach - 0.6, inland) * swashZone;
+          float edge = smoothstep(reach - 2.2, reach - 0.2, inland) * sheet * (0.5 + 0.5 * smoothstep(0.55, 0.15, phase));
+          vec3 view = normalize(vWorld - cameraPosition);
+          vec3 film = mix(col * vec3(0.72, 0.78, 0.8), skyLight(vec3(view.x, abs(view.y) + 0.1, view.z), 0.3), 0.45);
+          col = mix(col, film, sheet * 0.75);
+          col = mix(col, vec3(0.95, 0.96, 0.95), edge * (0.6 + 0.4 * vnoise(vec2(shore * 0.6, inland * 0.8))));
+        }
         // Rock where the ground is steep.
         vec3 rock = mix(vec3(0.32, 0.3, 0.28), vec3(0.6, 0.57, 0.51), smoothstep(0.3, 0.8, fine + 0.3 * mid));
         col = mix(col, rock, smoothstep(0.36, 0.6, steep));

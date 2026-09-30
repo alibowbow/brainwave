@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
+import { CLOUD_SHADOW_GLSL } from './clouds';
 import { LIGHT_GLSL } from './terrain';
 
 type Colour = [number, number, number];
@@ -105,12 +106,13 @@ export function createBoats(sunDirection: THREE.Vector3) {
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
+      ${CLOUD_SHADOW_GLSL}
       void main() {
         vec3 n = normalize(vNormal);
         // Sails are thin: lit on whichever side is seen (a boat heading back
         // is mirrored, so the facing of its triangles says nothing).
         n = dot(n, cameraPosition - vWorld) < 0.0 ? -n : n;
-        vec3 col = lightGround(vColour, n, 1.0) * 1.1;
+        vec3 col = lightGround(vColour, n, cloudSun(vWorld)) * 1.1;
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,

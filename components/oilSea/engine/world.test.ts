@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest';
+import { BOATS } from './boats';
+import { LIGHTHOUSE } from './buildings';
 import { PINE_BASE } from './pine';
-import { CAMERA, coastDistance, fieldAt, headlandFall, headlandFrame, headlandPoint, SLOPE_RUN, seaDepth, shoreX, terrainHeight, woodsDensity } from './world';
+import { CAMERA, cliffTop, coastDistance, farCoastX, fieldAt, headlandFall, headlandFrame, headlandPoint, SLOPE_RUN, seaDepth, shoreX, terrainHeight, woodsDensity } from './world';
+
+/** Whether the ground anywhere between the viewer and a point rises above the line of sight. */
+function inView(x: number, y: number, z: number) {
+  for (let t = 0.01; t < 0.99; t += 0.002) {
+    const ground = Math.max(0, terrainHeight(CAMERA.x + (x - CAMERA.x) * t, CAMERA.z + (z - CAMERA.z) * t));
+    if (ground > CAMERA.y + (y - CAMERA.y) * t) return false;
+  }
+  return true;
+}
 
 describe('seaside world', () => {
   it('maps points to and from the headland frame', () => {
@@ -54,6 +65,37 @@ describe('seaside world', () => {
       }
     }
     expect(crossings).toBeGreaterThan(5);
+  });
+
+  it('sails the boats on open water, clear of the coast', () => {
+    for (const boat of BOATS) {
+      for (let dx = -boat.range; dx <= boat.range; dx += 10) {
+        expect(coastDistance(boat.x + dx, boat.z)).toBeGreaterThan(200);
+      }
+      expect(inView(boat.x, 5, boat.z)).toBe(true);
+    }
+  });
+
+  it('stands the lighthouse on the far headland, in sight of the viewer', () => {
+    const { x, z } = LIGHTHOUSE;
+    expect(coastDistance(x, z)).toBeLessThan(-40);
+    const ground = terrainHeight(x, z);
+    expect(ground).toBeGreaterThan(50);
+    // Its lantern, and the tower well down from it.
+    expect(inView(x, ground + 40, z)).toBe(true);
+    expect(inView(x, ground + 15, z)).toBe(true);
+  });
+
+  it('gives the cliffs a level top and none elsewhere', () => {
+    expect(cliffTop(shoreX(-1200) - 50, -1200)).toBe(0);
+    // Along a far headland's cliff, the top runs level from one point to the next.
+    let previous = -1;
+    for (let z = -12400; z <= -11800; z += 25) {
+      const top = cliffTop(farCoastX(z) - 30, z);
+      expect(top).toBeGreaterThan(60);
+      if (previous >= 0) expect(Math.abs(top - previous)).toBeLessThan(30);
+      previous = top;
+    }
   });
 
   it('shelves the sea floor away from the beach', () => {

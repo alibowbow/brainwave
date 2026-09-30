@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import { detectTier, DynamicResolution, isMobileDevice, isSoftwareRenderer } from '../../rainyWindow/engine/quality';
+import { createBoats } from './boats';
+import { createBuildings } from './buildings';
 import { createClouds } from './clouds';
 import { createGrass, createShrubs } from './grass';
 import { createOcean } from './ocean';
@@ -164,9 +166,13 @@ export class SeasideEngine implements LiveSceneEngine {
     this.scene.add(rocks.mesh);
     const trees = createTrees(this.sunDirection, profile.trees);
     this.scene.add(trees.mesh);
+    const buildings = createBuildings(this.sunDirection);
+    this.scene.add(buildings.mesh);
+    const boats = createBoats(this.sunDirection);
+    this.scene.add(boats.mesh);
     const pine = createPine(this.sunDirection);
     this.scene.add(pine.group);
-    this.timed.push(sky.material, clouds.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, trees.material, ...pine.materials);
+    this.timed.push(sky.material, clouds.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, trees.material, buildings.material, boats.material, ...pine.materials);
     this.textures.push(clouds.texture, grass.texture, shrubs.texture, trees.texture, ...pine.textures);
     await this.renderer.compileAsync(this.scene, this.camera);
     if (this.disposed) return;

@@ -179,6 +179,9 @@ void main() {
       vec2 v = vec2(0.5 * (t.x + t.z + root) - t.x, -t.y);
       float strength = smoothstep(0.0003, 0.003, t.x + t.z);
       vec2 along = normalize(mix(vec2(1.0, 0.0), dot(v, v) > 1e-12 ? normalize(v) * sign(v.x + 1e-6) : vec2(1.0, 0.0), strength) + vec2(1e-4, 0.0));
+      // Where there is no form to follow, the brush wanders a little.
+      float wander = (jitter.y - 0.5) * 1.1 * (1.0 - strength);
+      along = vec2(along.x * cos(wander) - along.y * sin(wander), along.x * sin(wander) + along.y * cos(wander));
       float detail = smoothstep(0.002, 0.02, t.x + t.z);
       float halfLength = uCell * (1.45 - 0.75 * detail) * (0.8 + 0.4 * jitter.x);
       float halfWidth = uCell * (0.6 - 0.2 * detail);
@@ -195,11 +198,11 @@ void main() {
       if (cover > 0.02 && priority > best) {
         best = priority;
         // Each dab a slightly different mix, streaked by its bristles.
-        float mixing = (hash12(c + 3.1) - 0.5) * (0.5 + 0.5 * strength);
+        float mixing = (hash12(c + 3.1) - 0.5) * (0.3 + 0.7 * strength);
         colour *= 1.0 + 0.12 * mixing;
         colour = mix(colour, colour * vec3(1.05, 1.0, 0.92), max(mixing, 0.0) * 0.8);
         float bristle = hash12(vec2(floor(local.y * 0.9 + 40.0), c.x * 7.0 + c.y * 57.0));
-        colour *= 0.93 + 0.13 * bristle * smoothstep(1.0, 0.3, abs(local.x) / halfLength);
+        colour *= 1.0 - (0.07 - 0.13 * bristle * smoothstep(1.0, 0.3, abs(local.x) / halfLength)) * (0.45 + 0.55 * strength);
         top = vec4(colour, cover);
       }
     }

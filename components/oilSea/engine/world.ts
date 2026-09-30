@@ -31,12 +31,38 @@ const smoothstep = (a: number, b: number, x: number) => {
 /** East–west position of the bay's shoreline at a given z (land lies east of it). */
 export function shoreX(z: number) {
   const d = Math.max(0, -z - 150);
-  if (d < 1700) return 180 + 0.12 * d - 0.00007 * d * d;
-  return 181.7 - 0.118 * (d - 1700);
+  const base = d < 1700 ? 180 + 0.12 * d - 0.00007 * d * d : 181.7 - 0.118 * (d - 1700);
+  // Coves and points along the rocky northern end of the bay.
+  const rocky = smoothstep(2300, 3300, d);
+  if (rocky === 0) return base;
+  return base + rocky * (38 * Math.sin(z * 0.0105 + 0.7) + 17 * Math.sin(z * 0.029 + 2.1) + 7 * Math.sin(z * 0.071 + 0.3));
 }
 
 /** The northern end of the bay's headland. */
 export const HEADLAND_TIP_Z = -4250;
+
+/**
+ * Beyond the bay's headland the coast runs on to the north, and headland
+ * after headland juts out west into the sea, each farther and hazier than
+ * the last: where each one reaches out (z), how far, how broad, how high.
+ */
+const FAR_HEADLANDS = [
+  { z: -8400, reach: 1450, width: 900, height: 430 },
+  { z: -12800, reach: 2260, width: 1400, height: 500 },
+  { z: -18800, reach: 3730, width: 2000, height: 580 },
+  { z: -27000, reach: 6000, width: 2800, height: 640 },
+];
+
+/** East–west position of the far coast north of the bay at a given z (land lies east of it). */
+export function farCoastX(z: number) {
+  const d = Math.max(0, -z - 5000);
+  let x = 1100 - 0.2 * d;
+  for (const h of FAR_HEADLANDS) {
+    const t = (z - h.z) / h.width;
+    x -= h.reach * Math.exp(-t * t);
+  }
+  return x;
+}
 
 /**
  * The headland the viewer stands on, in its own frame: a runs down its
@@ -93,8 +119,14 @@ export function headlandDistance(x: number, z: number) {
 export function coastDistance(x: number, z: number) {
   const dz = 1;
   const slope = (shoreX(z + dz) - shoreX(z - dz)) / (2 * dz);
-  const main = Math.max((shoreX(z) - x) / Math.sqrt(1 + slope * slope), HEADLAND_TIP_Z - z);
-  return smoothMin(main, headlandDistance(x, z), 60);
+  const bay = (shoreX(z) - x) / Math.sqrt(1 + slope * slope);
+  // The land round the bay ends in the north at its headland's rounded point;
+  // beyond it the land lies east of the far coast. (That is never the nearer
+  // where the headland's point is already farther off than the bay's shore.)
+  const north = HEADLAND_TIP_Z - z;
+  const bayLand = smoothMax(bay, north, 250);
+  const land = -north >= bayLand ? bayLand : Math.min(bayLand, Math.max(farCoastX(z) - x, -north));
+  return smoothMin(land, headlandDistance(x, z), 60);
 }
 
 /** How deep the water is at a distance out from the shore, with a sandbar. */
@@ -158,14 +190,32 @@ function ridged(x: number, y: number) {
   return sum;
 }
 
+/** Mountains standing well back inland, to the north-east, above the hills. */
+function mountains(x: number, z: number) {
+  const r = Math.hypot(x, z);
+  // Within the backdrop's reach, so their far side falls away before it ends.
+  const rise = smoothstep(9000, 16000, r) * smoothstep(-1500, 4500, x) * smoothstep(35000, 28000, r);
+  if (rise <= 0) return 0;
+  const ranges = ridged(x * 0.00018 + 11.3, z * 0.00018 - 4.1);
+  const crests = ridged(x * 0.0006 + 3.7, z * 0.0006 + 9.2);
+  const massif = fbm2(x * 0.0001 + 2.2, z * 0.0001 + 6.6, 3);
+  return rise * (300 + (2200 * ranges + 600 * crests) * smoothstep(0.2, 0.55, massif + 0.1));
+}
+
+/** How much a stretch of coast is cliff: the bay's headland, and the point of each far headland. */
+export function cliffiness(z: number) {
+  let c = smoothstep(-2500, -3500, z) * (1 - smoothstep(-4700, -5400, z));
+  for (const headland of FAR_HEADLANDS) {
+    const t = (z - headland.z) / (headland.width * 0.75);
+    c = Math.max(c, Math.exp(-t * t));
+  }
+  return c;
+}
+
 /** Height of the ground (the sea floor below water) at a point. */
 export function terrainHeight(x: number, z: number) {
   const distance = coastDistance(x, z);
-  // A far range of hazy hills closes the horizon on the right.
-  const far = z < -5600 && x > -1400
-    ? smoothstep(-5600, -7000, z) * smoothstep(-1400, 200, x) * (90 + 380 * fbm2(x * 0.0009, z * 0.0009, 4)) - 25
-    : -40;
-  if (distance > 0) return Math.max(-seaDepth(distance), far);
+  if (distance > 0) return -seaDepth(distance);
 
   const inland = -distance;
   // Sand at the water's edge, dunes behind it.
@@ -177,6 +227,22 @@ export function terrainHeight(x: number, z: number) {
   // Spurs and gullies running down towards the bay: ridged noise stretched along the fall line.
   const spurs = ridged(x * 0.0042 + z * 0.0012, z * 0.0028 - x * 0.0008);
   h += hillRise * lift * (30 + 95 * rolling + 70 * spurs * smoothstep(60, 400, inland)) * (0.55 + 0.45 * smoothstep(0, 900, inland));
+  // On the headlands the land meets the sea in cliffs, rising straight from the water to a rough top.
+  const rocky = cliffiness(z);
+  if (rocky > 0.01) {
+    const top = 70 + 80 * fbm2(x * 0.004 + 1.3, z * 0.004 - 2.2, 3) + 25 * (noise2(x * 0.02, z * 0.02) - 0.5);
+    const cliff = top * Math.pow(smoothstep(0, 150, inland), 0.45);
+    h = Math.max(h, h + (cliff - h) * rocky);
+  }
+  // A ridge along each far headland, falling away to its point and running
+  // back into the hills.
+  for (const headland of FAR_HEADLANDS) {
+    const t = (z - headland.z) / (headland.width * 0.6);
+    if (t * t > 9) continue;
+    const spine = headland.height * Math.exp(-t * t) * (0.78 + 0.44 * fbm2(x * 0.0009 + 4.1, z * 0.0009, 3));
+    h = Math.max(h, spine * Math.pow(smoothstep(0, 450, inland), 0.5) * smoothstep(headland.reach + 3500, headland.reach, inland));
+  }
+  h += mountains(x, z);
   // The headland: a grassy top, a steep face falling to the sea and the bay,
   // a gentler slope down to the low ground behind the beach.
   const fall = headlandFall(x, z);
@@ -189,7 +255,25 @@ export function terrainHeight(x: number, z: number) {
     const ledges = falling * (4 * (fbm2(x * 0.06, z * 0.06, 4) - 0.5) + 1.8 * (noise2(x * 0.3, z * 0.3) - 0.5));
     h = Math.max(h, 0.6 + (top - 0.6) * standing + ledges * standing);
   }
-  return Math.max(h, far);
+  return h;
+}
+
+/**
+ * How high the cliff rises near a point by a cliffed coast (0 elsewhere):
+ * the height of the land a little way in from the nearest stretch of coast.
+ */
+export function cliffTop(x: number, z: number) {
+  if (cliffiness(z) < 0.02) return 0;
+  const distance = coastDistance(x, z);
+  if (distance > 900 || distance < -500) return 0;
+  const e = 2;
+  const gx = (coastDistance(x + e, z) - distance) / e;
+  const gz = (coastDistance(x, z + e) - distance) / e;
+  const g = Math.hypot(gx, gz);
+  if (g < 1e-3) return 0;
+  // The coast's distance field is steeper than 1 along the headlands' flanks: undo that.
+  const reach = distance / g + 110;
+  return terrainHeight(x - (gx / g) * reach, z - (gz / g) * reach);
 }
 
 /** Woods on the hills: in the folds and in copses, none on the beach or the headland. */
@@ -279,7 +363,15 @@ export const WORLD_GLSL = /* glsl */ `
 const float HEADLAND_TIP_Z = ${HEADLAND_TIP_Z.toFixed(1)};
 float shoreX(float z) {
   float d = max(0.0, -z - 150.0);
-  return d < 1700.0 ? 180.0 + 0.12 * d - 0.00007 * d * d : 181.7 - 0.118 * (d - 1700.0);
+  float base = d < 1700.0 ? 180.0 + 0.12 * d - 0.00007 * d * d : 181.7 - 0.118 * (d - 1700.0);
+  float rocky = smoothstep(2300.0, 3300.0, d);
+  return base + rocky * (38.0 * sin(z * 0.0105 + 0.7) + 17.0 * sin(z * 0.029 + 2.1) + 7.0 * sin(z * 0.071 + 0.3));
+}
+float farCoastX(float z) {
+  float d = max(0.0, -z - 5000.0);
+  float x = 1100.0 - 0.2 * d;
+${FAR_HEADLANDS.map((h) => `  x -= ${h.reach.toFixed(1)} * exp(-pow((z - (${h.z.toFixed(1)})) / ${h.width.toFixed(1)}, 2.0));`).join('\n')}
+  return x;
 }
 float smoothMin(float a, float b, float k) {
   float h = max(k - abs(a - b), 0.0) / k;
@@ -288,10 +380,20 @@ float smoothMin(float a, float b, float k) {
 // Signed distance to the coast in metres: positive at sea, negative ashore.
 float coastDistance(vec2 p) {
   float slope = (shoreX(p.y + 1.0) - shoreX(p.y - 1.0)) * 0.5;
-  float main = max((shoreX(p.y) - p.x) / sqrt(1.0 + slope * slope), HEADLAND_TIP_Z - p.y);
+  float bay = (shoreX(p.y) - p.x) / sqrt(1.0 + slope * slope);
+  float north = HEADLAND_TIP_Z - p.y;
+  float bayLand = -smoothMin(-bay, -north, 250.0);
+  float farLand = max(farCoastX(p.y) - p.x, -north);
+  float main = min(bayLand, farLand);
   vec2 q = p - vec2(${TOP_CORNER.x.toFixed(2)}, ${TOP_CORNER.z.toFixed(2)});
   float headland = dot(q, vec2(${FALL_SIN.toFixed(5)}, ${(-FALL_COS).toFixed(5)})) - ${SLOPE_RUN.toFixed(1)};
   return smoothMin(main, headland, 60.0);
+}
+// How much a stretch of coast is cliff: the bay's headland, and the point of each far headland.
+float cliffiness(float z) {
+  float c = smoothstep(-2500.0, -3500.0, z) * (1.0 - smoothstep(-4700.0, -5400.0, z));
+${FAR_HEADLANDS.map((h) => `  c = max(c, exp(-pow((z - (${h.z.toFixed(1)})) / ${(h.width * 0.75).toFixed(1)}, 2.0)));`).join('\n')}
+  return c;
 }
 float seaDepth(float distance) {
   float d = max(0.0, distance);

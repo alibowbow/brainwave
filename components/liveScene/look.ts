@@ -10,6 +10,14 @@ export interface LookLimit {
   pitch: number;
 }
 
+/** How the view moves: seconds to catch up with a drag, and to ease home once let go. */
+export interface LookFeel {
+  follow: number;
+  settle: number;
+}
+
+const QUICK: LookFeel = { follow: 0.09, settle: 0.45 };
+
 /** How quickly a drag approaches the limit, per shorter side of the view. */
 const LOOK_GAIN = 2.2;
 
@@ -48,7 +56,7 @@ export class LookSpring {
   private targetPitch = 0;
   private held = false;
 
-  constructor(private readonly limit: LookLimit) {}
+  constructor(private readonly limit: LookLimit, private readonly feel: LookFeel = QUICK) {}
 
   /** Follow a drag of `dx`, `dy` shorter sides from where it started. */
   drag(dx: number, dy: number) {
@@ -71,7 +79,7 @@ export class LookSpring {
 
   update(dt: number) {
     if (!(dt > 0)) return;
-    const smoothTime = this.held ? 0.09 : 0.45;
+    const smoothTime = this.held ? this.feel.follow : this.feel.settle;
     [this.yaw, this.yawVelocity] = smoothDamp(this.yaw, this.targetYaw, this.yawVelocity, smoothTime, dt);
     [this.pitch, this.pitchVelocity] = smoothDamp(this.pitch, this.targetPitch, this.pitchVelocity, smoothTime, dt);
   }

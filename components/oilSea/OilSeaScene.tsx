@@ -12,7 +12,7 @@ interface Props {
   waveEnergy: number;
 }
 
-/** The ocean-shore routine's sea, painted in oils as it plays; a drag turns the view a little. */
+/** The ocean-shore routine's sea, painted in oils as it plays; a drag moves the view across a little. */
 export default function OilSeaScene({ active, waveEnergy }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);

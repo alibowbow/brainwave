@@ -55,7 +55,7 @@ const REFERENCE_PIXELS = 1280 * 720;
  * A headland above a bay on a summer day, simulated in 3D and painted in
  * oils: the sea, the land with its fields and woods, the grass and a
  * wind-bent pine are rendered as a real scene, then each frame is repainted
- * with brushwork that follows its forms. A drag turns the view a little.
+ * with brushwork that follows its forms. A drag moves the view across a little.
  */
 export class SeasideEngine implements LiveSceneEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -72,15 +72,12 @@ export class SeasideEngine implements LiveSceneEngine {
   private sceneTarget: THREE.WebGLRenderTarget | null = null;
   private readonly post: OilPaintPost;
   private readonly sunPoint = new THREE.Vector3();
-  private readonly look = new LookSpring(LOOK);
-  /** The camera's turn at rest (the shot), and from the turned view back to it. */
-  private readonly shot = new THREE.Quaternion().setFromEuler(new THREE.Euler(CAMERA.pitch, -CAMERA.yaw, 0, 'YXZ'));
-  private readonly toShot = new THREE.Matrix3();
-  private readonly turn = new THREE.Matrix4();
-  private readonly turnQuaternion = new THREE.Quaternion();
+  /** A drag moves the view slowly and glides it home when let go. */
+  private readonly look = new LookSpring(LOOK, { follow: 0.22, settle: 0.8 });
   private cssWidth = 1;
   private cssHeight = 1;
-  /** Height of the rendered frame, in pixels. */
+  /** Size of the rendered frame, in pixels. */
+  private frameWidth = 1;
   private frameHeight = 1;
   private devicePixelRatio = 1;
   private time = 0;
@@ -131,7 +128,7 @@ export class SeasideEngine implements LiveSceneEngine {
 
     this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
     this.camera.rotation.order = 'YXZ';
-    this.camera.quaternion.copy(this.shot);
+    this.camera.rotation.set(CAMERA.pitch, -CAMERA.yaw, 0);
 
     this.post = new OilPaintPost(this.renderer, { radius: this.profile.brush, stride: this.profile.stride, strokeSteps: this.profile.strokeSteps, dabs: this.profile.dabs });
   }
@@ -207,6 +204,7 @@ export class SeasideEngine implements LiveSceneEngine {
     height = Math.max(1, height);
     this.renderer.setPixelRatio(1);
     this.renderer.setSize(width, height, false);
+    this.frameWidth = width;
     this.frameHeight = height;
     const aspect = width / height;
     this.camera.aspect = aspect;
@@ -234,18 +232,20 @@ export class SeasideEngine implements LiveSceneEngine {
   }
 
   /**
-   * Aim the camera: the shot, turned by the drag so the scene follows the
-   * pointer (dragging right swings the view left). The sun's glow and the
-   * brushwork follow the turn.
+   * Frame the view: a drag slides it sideways across the scene, as over a
+   * wider painting, so the scene follows the pointer. The camera itself never
+   * turns (turning would swing the whole sea like a tilted board), and the
+   * view moves by whole pixels, so the painting slides along as it is instead
+   * of shimmering. The sun's glow and the brushwork go with it.
    */
   private pose() {
-    this.camera.rotation.set(CAMERA.pitch - this.look.pitch, -(CAMERA.yaw - this.look.yaw), 0);
+    const focal = this.frameHeight / 2 / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+    const pan = Math.round(-Math.tan(this.look.yaw) * focal);
+    this.camera.setViewOffset(this.frameWidth, this.frameHeight, pan, 0, this.frameWidth, this.frameHeight);
     this.camera.updateMatrixWorld();
     this.sunPoint.copy(this.sunDirection).multiplyScalar(10000).add(this.camera.position).project(this.camera);
     this.post.setSun(this.sunPoint.x * 0.5 + 0.5, this.sunPoint.y * 0.5 + 0.5, Math.abs(this.sunPoint.x) < 1.2 && this.sunPoint.z < 1);
-    this.turnQuaternion.copy(this.shot).invert().multiply(this.camera.quaternion);
-    this.toShot.setFromMatrix4(this.turn.makeRotationFromQuaternion(this.turnQuaternion));
-    this.post.setLook(this.toShot, this.frameHeight / 2 / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)));
+    this.post.setPan(pan);
   }
 
   start() {

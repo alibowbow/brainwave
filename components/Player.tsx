@@ -111,7 +111,7 @@ export const Player: React.FC<PlayerProps> = ({
   const detailsRef = useRef<HTMLElement>(null);
   const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#7886ff';
   // The rainy study and the painted sea are live 3D scenes: their lower third
-  // stays visible under the controls, and a drag turns them a little.
+  // stays visible under the controls, and a drag moves their view a little.
   const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea';
   const minutesLeft = Math.max(1, Math.ceil(timeLeft / 60));
   const progress = totalSeconds > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / totalSeconds)) : 0;

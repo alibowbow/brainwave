@@ -78,6 +78,19 @@ describe('look spring', () => {
     expect(spring.pitch).toBe(0);
   });
 
+  it('moves more slowly with a heavier feel', () => {
+    const quick = new LookSpring(LOOK_LIMIT);
+    const heavy = new LookSpring(LOOK_LIMIT, { follow: 0.22, settle: 0.8 });
+    for (const spring of [quick, heavy]) spring.drag(1, 0);
+    run(quick, 0.1, 1 / 60);
+    run(heavy, 0.1, 1 / 60);
+    expect(heavy.yaw).toBeLessThan(quick.yaw * 0.8);
+    for (const spring of [quick, heavy]) spring.release();
+    run(quick, 0.5, 1 / 60);
+    run(heavy, 0.5, 1 / 60);
+    expect(heavy.yaw).toBeGreaterThan(quick.yaw);
+  });
+
   it('comes to rest exactly at the shot', () => {
     const spring = new LookSpring(LOOK_LIMIT);
     expect(spring.moving).toBe(false);

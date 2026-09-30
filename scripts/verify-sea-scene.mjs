@@ -58,8 +58,8 @@ try {
   assert.ok(!before.equals(after), 'the sea moves while the routine plays');
   assert.ok(after.length > 150_000, `the moving painting keeps its detail (${after.length} bytes)`);
 
-  // Dragging over the view turns it a little and letting go eases it back;
-  // a press on the controls never starts a drag.
+  // Dragging over the view moves it across a little and letting go eases it
+  // back; a press on the controls never starts a drag.
   const lookState = () => page.evaluate(() => document.querySelector('.oil-sea')?.getAttribute('data-look') ?? null);
   await page.evaluate(() => {
     const canvas = document.querySelector('.oil-sea-canvas');
@@ -68,10 +68,10 @@ try {
     canvas.dispatchEvent(new PointerEvent('pointerdown', init));
     window.dispatchEvent(new PointerEvent('pointermove', { ...init, clientX: init.clientX + 200, clientY: init.clientY + 60 }));
   });
-  assert.equal(await lookState(), 'drag', 'a drag over the scene turns the view');
+  assert.equal(await lookState(), 'drag', 'a drag over the scene moves the view');
   await page.waitForTimeout(1500);
   const turned = await shoot();
-  assert.ok(turned.length > 150_000, `the turned view keeps its detail (${turned.length} bytes)`);
+  assert.ok(turned.length > 150_000, `the moved view keeps its detail (${turned.length} bytes)`);
   await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 7, pointerType: 'mouse', button: 0 })));
   assert.equal(await lookState(), null, 'letting go eases the view back');
   await page.evaluate(() => {
@@ -104,7 +104,7 @@ try {
   await page.waitForFunction(() => !document.querySelector('.oil-sea-canvas'));
 
   assert.deepEqual(errors, []);
-  console.log('PASS: the ocean shore plays in front of the sea painted in oils (no illustration), shows the finished painting until played, moves while playing, turns a little under a drag, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
+  console.log('PASS: the ocean shore plays in front of the sea painted in oils (no illustration), shows the finished painting until played, moves while playing, moves across a little under a drag, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
 } finally {
   await browser.close();
 }

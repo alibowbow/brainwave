@@ -51,6 +51,11 @@ export class Raster {
     }
   }
 
+  /** See {@link bleed}. */
+  bleed() {
+    bleed(this.data, this.width, this.height);
+  }
+
   texture() {
     const texture = new THREE.DataTexture(this.data, this.width, this.height, THREE.RGBAFormat);
     texture.colorSpace = THREE.NoColorSpace;
@@ -59,5 +64,79 @@ export class Raster {
     texture.generateMipmaps = true;
     texture.needsUpdate = true;
     return texture;
+  }
+}
+
+/**
+ * Give the empty pixels round the drawing the colour of the drawing beside
+ * them (they stay transparent), so that when the image is filtered or
+ * shrunk its edges keep their colour instead of darkening towards black.
+ */
+export function bleed(data: Uint8Array, width: number, height: number) {
+  const filled = new Uint8Array(width * height);
+  let red = 0;
+  let green = 0;
+  let blue = 0;
+  let count = 0;
+  for (let i = 0; i < filled.length; i++) {
+    if (data[i * 4 + 3] === 0) continue;
+    filled[i] = 1;
+    red += data[i * 4];
+    green += data[i * 4 + 1];
+    blue += data[i * 4 + 2];
+    count++;
+  }
+  const copy = (to: number, from: number) => {
+    data[to * 4] = data[from * 4];
+    data[to * 4 + 1] = data[from * 4 + 1];
+    data[to * 4 + 2] = data[from * 4 + 2];
+  };
+  // Along each row, from the nearest drawn pixel either side.
+  const coloured = filled.slice();
+  for (let y = 0; y < height; y++) {
+    const row = y * width;
+    let last = -1;
+    const nearestLeft = new Int32Array(width).fill(-1);
+    for (let x = 0; x < width; x++) {
+      if (filled[row + x]) last = x;
+      nearestLeft[x] = last;
+    }
+    last = -1;
+    for (let x = width - 1; x >= 0; x--) {
+      if (filled[row + x]) {
+        last = x;
+        continue;
+      }
+      const left = nearestLeft[x];
+      const from = left < 0 ? last : last < 0 ? left : x - left <= last - x ? left : last;
+      if (from < 0) continue;
+      copy(row + x, row + from);
+      coloured[row + x] = 1;
+    }
+  }
+  // Then down and up each column, for rows with nothing drawn in them.
+  for (let x = 0; x < width; x++) {
+    let last = -1;
+    const nearestAbove = new Int32Array(height).fill(-1);
+    for (let y = 0; y < height; y++) {
+      if (coloured[y * width + x]) last = y;
+      nearestAbove[y] = last;
+    }
+    last = -1;
+    for (let y = height - 1; y >= 0; y--) {
+      const i = y * width + x;
+      if (coloured[i]) {
+        last = y;
+        continue;
+      }
+      const above = nearestAbove[y];
+      const from = above < 0 ? last : last < 0 ? above : y - above <= last - y ? above : last;
+      if (from >= 0) copy(i, from * width + x);
+      else if (count) {
+        data[i * 4] = red / count;
+        data[i * 4 + 1] = green / count;
+        data[i * 4 + 2] = blue / count;
+      }
+    }
   }
 }

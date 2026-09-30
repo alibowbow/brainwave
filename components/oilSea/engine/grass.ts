@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Raster } from './raster';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
 import { LIGHT_GLSL } from './terrain';
 import { CAMERA, coastDistance, fbm2, headlandFall, terrainHeight } from './world';
@@ -204,13 +205,9 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
   return { mesh, material, texture };
 }
 
-/** A bush drawn once on a canvas: a mound of small leaves, dark inside, lit along its top. */
+/** A bush drawn once: a mound of small leaves, dark inside, lit along its top. */
 function drawBush(size: number, seed: number) {
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const g = canvas.getContext('2d');
-  if (!g) throw new Error('2D canvas unavailable');
+  const image = new Raster(size, size);
   let s = seed;
   const rand = () => {
     s = (s * 1664525 + 1013904223) >>> 0;
@@ -224,19 +221,12 @@ function drawBush(size: number, seed: number) {
     const y = size * (1 - Math.sin(a) * r * 0.8);
     const top = Math.sin(a) * r;
     const light = Math.min(1, 0.08 + 0.9 * Math.pow(top, 1.6) * rand() + 0.12 * rand());
-    const red = Math.round(16 + light * 84);
-    const green = Math.round(38 + light * 128);
-    const blue = Math.round(14 + light * 44);
-    g.fillStyle = `rgb(${red}, ${green}, ${blue})`;
-    g.beginPath();
-    g.ellipse(x, y, size * (0.008 + 0.012 * rand()), size * (0.005 + 0.007 * rand()), rand() * Math.PI, 0, Math.PI * 2);
-    g.fill();
+    image.ellipse(x, y, size * (0.008 + 0.012 * rand()), size * (0.005 + 0.007 * rand()), rand() * Math.PI, 16 + light * 84, 38 + light * 128, 14 + light * 44);
   }
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.NoColorSpace;
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  return texture;
+  image.bleed();
+  return image.texture();
 }
+
 
 /** Dark scrub in clumps among the grass: crossed cards of the drawn bush, stirring in the wind. */
 export function createShrubs(sunDirection: THREE.Vector3, count: number) {

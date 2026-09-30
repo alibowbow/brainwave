@@ -1,8 +1,8 @@
 /*
  * The place, in metres: a grassy headland (where the viewer stands, high
- * above the water) at the south end of a long bay. From its top a steep
- * slope falls north-west to the sea, where the sun is setting, and a gentler
- * one north-east to the low ground behind the beach. The beach runs away to
+ * above the water) at the south end of a long bay, on a summer day. From
+ * its top a steep slope falls north-west to the sea and a gentler one
+ * north-east to the low ground behind the beach. The beach runs away to
  * the north-east and ends under a hilly headland. y is up, the view looks
  * north (-z), sea level is y = 0.
  *
@@ -12,10 +12,10 @@
 
 export const CAMERA = { x: 0, y: 61, z: 0, yaw: 0.18, pitch: -0.2 };
 
-/** Towards the sun: low in the west-north-west, a little left of the view. */
+/** Towards the sun: high in a summer sky behind the viewer's left shoulder, lighting the scene from the side. */
 export const SUN = (() => {
-  const azimuth = -0.3; // radians, from north (-z) towards the west (-x)
-  const elevation = 0.07;
+  const azimuth = -2.0; // radians, from north (-z) towards the west (-x)
+  const elevation = 0.75;
   return {
     x: Math.sin(azimuth) * Math.cos(elevation),
     y: Math.sin(elevation),
@@ -192,6 +192,88 @@ export function terrainHeight(x: number, z: number) {
   return Math.max(h, far);
 }
 
+/** Woods on the hills: in the folds and in copses, none on the beach or the headland. */
+export function woodsDensity(x: number, z: number) {
+  const inland = -coastDistance(x, z);
+  if (inland < 60 || headlandFall(x, z) < 0.9) return 0;
+  const folds = fbm2(x * 0.0035 + 5.3, z * 0.0035 - 2.1, 4);
+  const copses = noise2(x * 0.018 + 1.7, z * 0.018 + 8.2);
+  const woods = smoothstep(0.54, 0.63, folds) + 0.9 * smoothstep(0.82, 0.9, copses);
+  return Math.min(1, woods) * smoothstep(60, 220, inland) * smoothstep(0.9, 1.3, headlandFall(x, z));
+}
+
+/*
+ * The fields on the gentler slopes: cells of a Voronoi pattern, turned a
+ * little and stretched along the valley, with hedgerows along their borders.
+ * The shaders colour the fields; the hedgerow trees are placed on the CPU,
+ * so the same hash runs in both (in single precision here, as on the GPU).
+ */
+const FIELD_SIZE = 150;
+const FIELD_COS = Math.cos(0.35);
+const FIELD_SIN = Math.sin(0.35);
+const f32 = Math.fround;
+const fract = (v: number) => v - Math.floor(v);
+function hash22(px: number, py: number): [number, number] {
+  let x = fract(f32(px * 0.1031));
+  let y = fract(f32(py * 0.103));
+  let z = fract(f32(px * 0.0973));
+  const d = f32(x * f32(y + 33.33) + y * f32(z + 33.33) + z * f32(x + 33.33));
+  x = f32(x + d);
+  y = f32(y + d);
+  z = f32(z + d);
+  return [fract(f32(f32(x + y) * z)), fract(f32(f32(x + z) * y))];
+}
+
+/** The field a point lies in (its cell) and how far it is from the field's border, in metres. */
+export function fieldAt(x: number, z: number) {
+  const qx = (FIELD_COS * x - FIELD_SIN * z) / FIELD_SIZE;
+  const qz = ((FIELD_SIN * x + FIELD_COS * z) / FIELD_SIZE) * 1.6;
+  const ix = Math.floor(qx);
+  const iz = Math.floor(qz);
+  const fx = qx - ix;
+  const fz = qz - iz;
+  let best = 8;
+  let cell: [number, number] = [0, 0];
+  let rx = 0;
+  let rz = 0;
+  for (let j = -1; j <= 1; j++) {
+    for (let i = -1; i <= 1; i++) {
+      const [hx, hz] = hash22(ix + i, iz + j);
+      const dx = i + hx - fx;
+      const dz = j + hz - fz;
+      const d = dx * dx + dz * dz;
+      if (d < best) {
+        best = d;
+        cell = [ix + i, iz + j];
+        rx = dx;
+        rz = dz;
+      }
+    }
+  }
+  let border = 8;
+  for (let j = -2; j <= 2; j++) {
+    for (let i = -2; i <= 2; i++) {
+      const cx = cell[0] - ix + i;
+      const cz = cell[1] - iz + j;
+      const [hx, hz] = hash22(ix + cx, iz + cz);
+      const dx = cx + hx - fx;
+      const dz = cz + hz - fz;
+      const ex = dx - rx;
+      const ez = dz - rz;
+      const length = Math.hypot(ex, ez);
+      if (length < 1e-4) continue;
+      border = Math.min(border, ((rx + dx) * 0.5 * ex + (rz + dz) * 0.5 * ez) / length);
+    }
+  }
+  return { cell, border: (border * FIELD_SIZE) / 1.3 };
+}
+
+/** Where the land is gentle enough to farm. */
+export function farmland(x: number, z: number, slope: number) {
+  const inland = -coastDistance(x, z);
+  return smoothstep(120, 220, inland) * smoothstep(0.25, 0.12, slope) * smoothstep(0.9, 1.3, headlandFall(x, z));
+}
+
 /** The same coastline for the shaders. */
 export const WORLD_GLSL = /* glsl */ `
 const float HEADLAND_TIP_Z = ${HEADLAND_TIP_Z.toFixed(1)};
@@ -214,5 +296,34 @@ float coastDistance(vec2 p) {
 float seaDepth(float distance) {
   float d = max(0.0, distance);
   return min(32.0, 0.35 + 0.045 * d + 0.9 * sin(d * 0.07) * exp(-d / 70.0));
+}
+// The field a point lies in: its cell's hash (xy) and the distance to its border in metres (z).
+vec3 fieldAt(vec2 p) {
+  vec2 q = vec2(${FIELD_COS.toFixed(6)} * p.x - ${FIELD_SIN.toFixed(6)} * p.y, (${FIELD_SIN.toFixed(6)} * p.x + ${FIELD_COS.toFixed(6)} * p.y) * 1.6) / ${FIELD_SIZE.toFixed(1)};
+  vec2 i = floor(q);
+  vec2 f = q - i;
+  float best = 8.0;
+  vec2 cell = vec2(0.0);
+  vec2 r = vec2(0.0);
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 g = vec2(float(x), float(y));
+      vec2 d = g + hash22(i + g) - f;
+      float dd = dot(d, d);
+      if (dd < best) { best = dd; cell = g; r = d; }
+    }
+  }
+  float border = 8.0;
+  for (int y = -2; y <= 2; y++) {
+    for (int x = -2; x <= 2; x++) {
+      vec2 g = cell + vec2(float(x), float(y));
+      vec2 d = g + hash22(i + g) - f;
+      vec2 e = d - r;
+      float len = length(e);
+      if (len < 1e-4) continue;
+      border = min(border, dot(0.5 * (r + d), e) / len);
+    }
+  }
+  return vec3(hash22(i + cell + 91.7), border * ${(FIELD_SIZE / 1.3).toFixed(3)});
 }
 `;

@@ -9,9 +9,10 @@ import { WORLD_GLSL } from './world';
  *    west-north-west, now and then a whitecap on a crest;
  *  - the surf: crests that follow the coast, steepen over the shallows and
  *    break in stretches that spread along them, leaving whitewater behind;
- *  - colour through the water (deep teal to turquoise over sand), the
- *    evening sky mirrored with Fresnel, and the sun's glitter from a rough
- *    surface: wide and soft far out, broken into sparks near by.
+ *  - colour through the water (deep blue to turquoise over sand), the
+ *    sky mirrored with Fresnel, and the sun's glitter from a rough surface
+ *    (when the sun is before the viewer): wide and soft far out, broken
+ *    into sparks near by.
  */
 export const OCEAN_GLSL = /* glsl */ `
 uniform float uEnergy;
@@ -78,8 +79,15 @@ float surfPhase(vec2 p, float d) {
   float section = along / 75.0 + 0.6 * vnoise(vec2(d * 0.02, 5.0));
   float here = hash12(vec2(floor(section), 3.0));
   float next = hash12(vec2(floor(section) + 1.0, 3.0));
-  spacing += 0.32 * (mix(here, next, smoothstep(0.65, 1.0, fract(section))) - 0.5) * smoothstep(20.0, 120.0, d);
-  return spacing + 0.5 * (vnoise(vec2(along * 0.004, 1.3)) - 0.5) + 0.55 * (fbm3(p * 0.007) - 0.5) + 0.3 * (fbm3(p * 0.02 + 3.0) - 0.5) + 0.22 * (vnoise(p * 0.045 + 9.0) - 0.5) + 0.16 * (vnoise(p * 0.11) - 0.5) + uTime / 9.0;
+  spacing += 0.42 * (mix(here, next, smoothstep(0.6, 1.0, fract(section))) - 0.5) * smoothstep(20.0, 120.0, d);
+  return spacing + 0.5 * (vnoise(vec2(along * 0.004, 1.3)) - 0.5) + 0.7 * (fbm3(p * 0.007) - 0.5) + 0.4 * (fbm3(p * 0.02 + 3.0) - 0.5) + 0.26 * (vnoise(p * 0.045 + 9.0) - 0.5) + 0.16 * (vnoise(p * 0.11) - 0.5) + uTime / 9.0;
+}
+
+// The swell arrives in sets: a few big waves, then a lull of smaller ones.
+float setStrength(float wave) {
+  float group = floor(wave / 5.0);
+  float offset = hash12(vec2(group, 7.0)) * 6.2831;
+  return 0.5 + 0.5 * sin(wave * 1.25 + offset);
 }
 
 // Where along a wave its crest has broken. Stretches break first where the
@@ -89,9 +97,9 @@ float brokenAt(vec2 p, float d, float wave) {
   float breakLine = 160.0 + 70.0 * vnoise(vec2(along * 0.01, 3.1));
   float progress = smoothstep(breakLine + 10.0, breakLine - 100.0, d);
   float stretch = vnoise(vec2(along * 0.032 + wave * 7.1, wave * 2.3)) * 0.7 + vnoise(vec2(along * 0.12 + wave * 3.3, wave * 5.7)) * 0.3;
-  float threshold = 0.62 - 0.42 * progress - 0.2 * smoothstep(70.0, 25.0, d);
-  // Smaller waves in a set only break close in.
-  float small = step(hash12(vec2(wave, 11.0)), 0.3) * smoothstep(40.0, 90.0, d);
+  float threshold = 0.64 - 0.32 * progress - 0.14 * smoothstep(70.0, 25.0, d);
+  // Smaller waves between the sets only break close in.
+  float small = step(setStrength(wave), 0.72) * smoothstep(40.0, 90.0, d);
   return smoothstep(threshold, threshold + 0.06, stretch) * smoothstep(breakLine + 25.0, breakLine, d) * (1.0 - small);
 }
 
@@ -104,7 +112,7 @@ float surf(vec2 p, float d, out float cycle, out float wave, out float size) {
   float along = alongShore(p);
   float breakLine = 160.0 + 70.0 * vnoise(vec2(along * 0.01, 3.1));
   float progress = smoothstep(breakLine + 10.0, breakLine - 100.0, d);
-  float setSize = 0.35 + 0.65 * vnoise(vec2(along * 0.012, wave * 1.7));
+  float setSize = (0.35 + 0.65 * vnoise(vec2(along * 0.012, wave * 1.7))) * (0.45 + 0.7 * setStrength(wave));
   float envelope = smoothstep(320.0, breakLine, d) * (1.0 - 0.45 * progress) * smoothstep(0.0, 12.0, d);
   float back = pow(1.0 - cycle, 2.5);
   float front = pow(smoothstep(0.8, 1.0, cycle), 1.6);
@@ -118,6 +126,22 @@ float seaHeight(vec2 p, float d, float fade) {
   float size;
   float calm = smoothstep(2.0, 60.0, d);
   return swell(p, fade) * (0.3 + 0.7 * calm) + surf(p, d, cycle, wave, size);
+}
+
+// Distance to the nearest border between cells (0 on the threads of the foam's lace).
+float laceBorder(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  float d1 = 8.0;
+  float d2 = 8.0;
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 g = vec2(float(x), float(y));
+      float dist = length(g + hash22(i + g) - f);
+      if (dist < d1) { d2 = d1; d1 = dist; } else if (dist < d2) { d2 = dist; }
+    }
+  }
+  return d2 - d1;
 }
 
 // Foam lace: 1 on the threads between cells, 0 in the holes.
@@ -164,39 +188,37 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float crest = clamp((longSwell(p, fade) - LONG_MEAN) / LONG_RANGE, -1.0, 1.0) * smoothstep(fade * 2.0, fade * 5.0, 110.0);
 
   // Light through the water: deep blue-teal, turquoise over the sand, milky in the churned surf.
-  vec3 body = mix(vec3(0.03, 0.25, 0.31), vec3(0.05, 0.35, 0.38), exp(-depth / 14.0));
-  body = mix(body, vec3(0.13, 0.43, 0.48), exp(-depth / 3.0));
-  body = mix(body, vec3(0.42, 0.5, 0.44), exp(-depth / 0.7) * 0.5);
-  body = mix(body, vec3(0.28, 0.5, 0.56), inner * 0.35);
+  vec3 body = mix(vec3(0.02, 0.16, 0.33), vec3(0.03, 0.27, 0.43), exp(-depth / 14.0));
+  body = mix(body, vec3(0.07, 0.5, 0.52), exp(-depth / 3.0));
+  body = mix(body, vec3(0.46, 0.6, 0.52), exp(-depth / 0.7) * 0.5);
+  body = mix(body, vec3(0.3, 0.6, 0.64), inner * 0.35);
   // Patches of rougher, darker water where gusts touch down.
   vec2 across = vec2(SWELL_DIR.y, -SWELL_DIR.x);
   float streak = fbm3(vec2(dot(p, across) * 0.006, dot(p, SWELL_DIR) * 0.012) + vec2(0.0, uTime * 0.02));
   body *= 0.86 + 0.28 * streak;
-  // Crests lit through by the low sun behind them glow turquoise; troughs are deep.
+  // Crests lit through by the sun glow turquoise; troughs are deep.
   float backlit = pow(max(dot(-v, uSunDir) * 0.5 + 0.5, 0.0), 2.0);
-  body += vec3(0.02, 0.28, 0.22) * smoothstep(-0.25, 0.9, crest) * (0.35 + 0.65 * backlit);
+  body += vec3(0.02, 0.26, 0.24) * smoothstep(-0.25, 0.9, crest) * (0.35 + 0.65 * backlit);
   body *= 0.8 + 0.2 * smoothstep(-0.9, 0.4, crest);
   // Each wave's face, turned to the shore: glassy, dark down in the trough,
-  // turquoise and green higher up where the low sun behind shines through.
+  // turquoise and green higher up where the light shines through.
   float face = smoothstep(0.52, 0.86, cycle) * smoothstep(1.0, 0.965, cycle) * smoothstep(0.1, 0.5, waveSize) * surfZone;
   float faceTop = smoothstep(0.6, 0.9, cycle);
-  vec3 faceColour = mix(vec3(0.03, 0.2, 0.27), vec3(0.1, 0.44, 0.43), faceTop);
-  faceColour += vec3(0.04, 0.14, 0.08) * faceTop * faceTop * backlit;
+  vec3 faceColour = mix(vec3(0.02, 0.17, 0.3), vec3(0.08, 0.5, 0.5), faceTop);
+  faceColour += vec3(0.03, 0.16, 0.1) * faceTop * faceTop * backlit;
   body = mix(body, faceColour, face * 0.85 * smoothstep(14.0, 4.0, fade));
 
   // The sky mirrored in the swell; the ripples no sample resolves tilt it up.
   vec3 r = reflect(-v, n);
   r.y = abs(r.y) + 0.06 + 0.06 * smoothstep(2.0, 20.0, fade);
   r = normalize(r);
-  float fresnel = min(0.42, 0.02 + 0.98 * pow(1.0 - max(dot(n, v), 0.0), 5.0));
-  // The evening sky as the water gives it back: cooler and deeper than it looks overhead.
-  // Towards the sun it gives back gold; away from it, the cool upper sky.
-  float sunward = pow(max(dot(normalize(vec3(r.x, 0.0, r.z)), normalize(vec3(uSunDir.x, 0.0, uSunDir.z))), 0.0), 8.0);
-  vec3 mirrored = mix(vec3(0.42, 0.54, 0.6), skyLight(r, 0.1), 0.3 + 0.6 * sunward);
+  float fresnel = min(0.5, 0.02 + 0.98 * pow(1.0 - max(dot(n, v), 0.0), 5.0));
+  // The sky as the water gives it back: a little deeper than it looks overhead.
+  vec3 mirrored = mix(skyLight(r, 0.2), vec3(0.5, 0.66, 0.86), 0.25);
   vec3 col = mix(body, mirrored, fresnel);
 
   // The sun's glitter: facets tilted to send the sun to the eye; a rough
-  // surface spreads it into a broad golden path, broken by the waves.
+  // surface spreads it into a broad path, broken by the waves.
   vec3 halfway = normalize(v + uSunDir);
   float nh = max(dot(n, halfway), 1e-3);
   float nh2 = nh * nh;
@@ -211,49 +233,50 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   vec2 dabAt = vec2(atan(rel.x, -rel.y) * 90.0, 15000.0 / max(length(rel), 1.0) + uTime * 0.8);
   float dab = vnoise(dabAt) * 0.65 + vnoise(dabAt * 2.3 + 5.0) * 0.35;
   glitter *= smoothstep(0.3, 0.72, dab) * 1.7;
-  col += vec3(1.0, 0.72, 0.3) * (1.0 - exp(-glitter * 1.3)) * 1.15 + vec3(1.0, 0.86, 0.6) * max(glitter - 2.5, 0.0) * 0.04;
+  col += vec3(1.0, 0.98, 0.9) * (1.0 - exp(-glitter * 1.3)) * 1.1 + vec3(1.0, 0.98, 0.94) * max(glitter - 2.5, 0.0) * 0.04;
 
-  // Foam. Where it is dense it is solid white; as it thins, holes open along
-  // its lace. A broken crest has a curling lip and the bore rushing behind
-  // it; closer in, the surf is churned white; the swash on the sand.
+  // Foam. Its lace is a net of threads between cells, stretched along the
+  // crests and carried in with them: where foam is dense the threads merge
+  // into solid white, where it thins only fine threads are left. A broken
+  // crest has a thick ragged lip and the bore rushing behind it, trailing
+  // lace; old foam lies in threads between the waves; the swash on the sand.
   float along = alongShore(p);
-  vec2 laceAt = p * vec2(0.07, 0.1) + vec2(0.0, uTime * 0.02);
-  vec2 warp = vec2(fbm3(laceAt * 0.4), fbm3(laceAt * 0.4 + 4.0)) - 0.5;
-  float threads = lace(laceAt + warp * 1.6) * 0.6 + lace(laceAt * 2.4 + warp * 2.5 + 7.0) * 0.4;
-  // Streaked along the crests and carried in with them.
-  float phase = wave + cycle - step(0.5, cycle);
-  vec2 streaks = vec2(along * 0.06, phase * 36.0 * 0.14);
-  float clots = fbm3(streaks + warp * 2.0) * 0.6 + fbm3(streaks * 2.3 + 5.0) * 0.4;
-  float texture = clamp(0.2 * threads + 1.3 * clots - 0.28, 0.0, 1.0);
+  vec2 laceAt = vec2(along * 0.085, (d + uTime * 1.2) * 0.2);
+  vec2 warp = vec2(fbm3(laceAt * 0.35), fbm3(laceAt * 0.35 + 4.0)) - 0.5;
+  float border = min(laceBorder(laceAt + warp * 2.2), laceBorder(laceAt * 2.3 + warp * 3.0 + 7.0) * 1.25);
+  // Threads thicken and thin along their length, and break.
+  float threadWidth = 0.25 + 1.3 * fbm3(laceAt * 2.6 + 11.0);
   float ragged = vnoise(vec2(along * 0.25, wave * 3.7)) * 0.6 + vnoise(vec2(along * 0.8, wave * 1.9)) * 0.4;
   float thick = 0.55 + 0.45 * vnoise(vec2(along * 0.05, wave * 3.1));
   float lip = smoothstep(0.86 - 0.08 * thick - 0.04 * ragged, 0.93 - 0.05 * thick, cycle) + smoothstep(0.03 + 0.04 * ragged, 0.0, cycle);
-  float bore = exp(-cycle / (0.2 + 0.5 * thick * waveSize)) * (0.8 + 0.2 * ragged);
-  float patches = smoothstep(0.3, 0.62, fbm3(p * 0.025 + vec2(0.0, uTime * 0.04)));
+  float bore = exp(-cycle / (0.08 + 0.3 * thick * waveSize));
   float swath = smoothstep(0.22, 0.72, vnoise(vec2(along * 0.014 + wave * 4.1, wave * 0.7)) * 0.75 + vnoise(vec2(along * 0.05, wave * 2.3)) * 0.25 + 0.1 * inner);
-  float density = broken * max(lip * (0.25 + 0.75 * swath), bore * swath);
-  density = max(density, inner * (0.4 + 0.45 * patches) * (0.6 + 0.4 * smoothstep(0.6, 0.0, cycle)));
-  // Old foam from the waves before, lying in lace across the surf.
-  density = max(density, smoothstep(260.0, 130.0, d) * (0.26 + 0.34 * patches));
-  density = max(density, smoothstep(12.0, 0.0, d));
+  float patches = smoothstep(0.3, 0.7, fbm3(p * 0.02 + vec2(0.0, uTime * 0.03)));
+  float density = broken * max(lip * (0.3 + 0.7 * swath), bore * (0.35 + 0.65 * swath));
+  // Churned water close in, and old foam lying in threads between the waves.
+  density = max(density, inner * (0.04 + 0.2 * patches) * (0.6 + 0.4 * smoothstep(0.6, 0.0, cycle)));
+  density = max(density, smoothstep(280.0, 140.0, d) * (0.03 + 0.09 * patches));
   // Unbroken crests spill a little white at the very top.
   density = max(density, (1.0 - broken) * surfZone * smoothstep(0.955, 0.99, cycle) * smoothstep(0.35, 0.8, ragged) * 0.6);
-  // Old foam drifting in streaks, and whitecaps on the open sea.
-  float drift = smoothstep(0.6, 0.8, fbm3(p * vec2(0.05, 0.02) + vec2(0.0, uTime * 0.02))) * smoothstep(340.0, 120.0, d);
-  density = max(density, drift * 0.35);
+  // Whitecaps on the open sea.
   float capAt = vnoise(vec2(dot(p, across) * 0.02, dot(p, SWELL_DIR) * 0.035 - uTime * 0.08));
   float caps = smoothstep(0.35, 0.7, crest) * (1.0 - surfZone) * smoothstep(0.62, 0.8, capAt) * smoothstep(12.0, 3.0, fade);
-  density = max(density, caps);
+  density = max(density, caps * 0.8);
   density = clamp(density * (0.85 + 0.15 * uEnergy), 0.0, 1.0);
-  float foam = smoothstep(1.0 - density - 0.12, 1.0 - density + 0.12, texture) * min(1.0, density * 3.0);
+  // Threads widen with the density until they close up; far off, where the
+  // lace is finer than a pixel, it is seen as a tint.
+  float width = density * 0.62 * mix(threadWidth, 1.0, smoothstep(0.5, 0.9, density));
+  float laceFoam = 1.0 - smoothstep(width, width + 0.06 + 0.1 * smoothstep(2.0, 10.0, fade), border);
+  float foam = mix(laceFoam * min(1.0, density * 4.0), density, smoothstep(3.0, 14.0, fade));
   foam = max(foam, broken * smoothstep(0.3, 0.9, lip) * smoothstep(0.0, 0.4, swath));
-  // Whitecaps: a solid roll along the top of the crest, lace spilling behind.
+  // The swash on the sand, and the lip of each whitecap.
+  foam = max(foam, smoothstep(10.0, 1.0, d) * (0.7 + 0.3 * (1.0 - smoothstep(0.1, 0.3, border))));
   foam = max(foam, caps * smoothstep(0.35, 0.65, crest));
+  float clots = fbm3(laceAt * 1.3 + 2.0);
   // Lit on top, in blue shadow on the curl's face and in the troughs.
   float curl = smoothstep(0.86, 0.94, cycle) * smoothstep(1.0, 0.96, cycle) * broken;
   float lit = clamp(0.7 + 0.35 * dot(n, uSunDir) + 0.2 * n.y - 0.45 * curl, 0.0, 1.2);
-  vec3 foamColour = mix(vec3(0.58, 0.64, 0.74), vec3(1.04, 0.98, 0.9), lit) * (0.9 + 0.2 * clots);
-  foamColour += vec3(0.2, 0.11, -0.02) * backlit * lit;
+  vec3 foamColour = mix(vec3(0.6, 0.7, 0.84), vec3(1.04, 1.03, 1.0), lit) * (0.92 + 0.16 * clots);
   return mix(col, foamColour, foam);
 }
 `;
@@ -289,7 +312,7 @@ export function createOcean(sunDirection: THREE.Vector3) {
         float dist = length(toEye);
         vec3 dir = -toEye / dist;
         float haze = 1.0 - exp(-dist / 7000.0 * uHaze);
-        col = mix(col, mix(skyLight(vec3(dir.x, 0.02, dir.z), 0.3), vec3(0.62, 0.64, 0.72), 0.5), haze);
+        col = mix(col, mix(skyLight(vec3(dir.x, 0.02, dir.z), 0.3), vec3(0.66, 0.78, 0.9), 0.5), haze);
         gl_FragColor = vec4(col, 1.0);
       }
     `,

@@ -9,6 +9,7 @@ import { OilPaintPost } from './post';
 import { createRocks } from './rocks';
 import { createSky } from './sky';
 import { createTerrain } from './terrain';
+import { createTrees } from './trees';
 import { CAMERA, SUN } from './world';
 
 export type SeasideQuality = 'high' | 'medium' | 'low' | 'software';
@@ -35,13 +36,14 @@ interface Profile {
   grass: number;
   shrubs: number;
   rocks: number;
+  trees: number;
 }
 
 const PROFILES: Record<SeasideQuality, Profile> = {
-  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 150, grass: 22000, shrubs: 1000, rocks: 140 },
-  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 130, grass: 15000, shrubs: 700, rocks: 110 },
-  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 110, grass: 9000, shrubs: 450, rocks: 80 },
-  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 90, grass: 5000, shrubs: 260, rocks: 70 },
+  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 110, grass: 22000, shrubs: 1000, rocks: 140, trees: 7000 },
+  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 100, grass: 15000, shrubs: 700, rocks: 110, trees: 5000 },
+  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 85, grass: 9000, shrubs: 450, rocks: 80, trees: 3000 },
+  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 70, grass: 5000, shrubs: 260, rocks: 70, trees: 1600 },
 };
 
 /** The painting draws itself when the scene first starts: pencil, then paint. */
@@ -51,9 +53,10 @@ const INTRO_SECONDS = SKETCH_SECONDS + PAINT_SECONDS;
 const REFERENCE_PIXELS = 1280 * 720;
 
 /*
- * A headland above a bay at sunset, simulated in 3D and painted in oils:
- * the sea, the land, the grass and a wind-bent pine are rendered as a real
- * scene, then each frame is repainted with brushwork that follows its forms.
+ * A headland above a bay on a summer day, simulated in 3D and painted in
+ * oils: the sea, the land with its fields and woods, the grass and a
+ * wind-bent pine are rendered as a real scene, then each frame is repainted
+ * with brushwork that follows its forms.
  */
 export class SeasideEngine implements LiveSceneEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -159,10 +162,12 @@ export class SeasideEngine implements LiveSceneEngine {
     this.scene.add(shrubs.mesh);
     const rocks = createRocks(this.sunDirection, profile.rocks);
     this.scene.add(rocks.mesh);
+    const trees = createTrees(this.sunDirection, profile.trees);
+    this.scene.add(trees.mesh);
     const pine = createPine(this.sunDirection);
     this.scene.add(pine.group);
-    this.timed.push(sky.material, clouds.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, ...pine.materials);
-    this.textures.push(clouds.texture, grass.texture, shrubs.texture, ...pine.textures);
+    this.timed.push(sky.material, clouds.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, trees.material, ...pine.materials);
+    this.textures.push(clouds.texture, grass.texture, shrubs.texture, trees.texture, ...pine.textures);
     await this.renderer.compileAsync(this.scene, this.camera);
     if (this.disposed) return;
     this.resize();

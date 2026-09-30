@@ -22,7 +22,7 @@ vec3 knee(vec3 c) {
 void main() {
   vec3 c = knee(texture2D(tScene, vUv).rgb);
   float grey = dot(c, vec3(0.3, 0.55, 0.15));
-  c = mix(vec3(grey), c, 1.18);
+  c = mix(vec3(grey), c, 1.02);
   // A gentle S-curve: deeper darks, fuller lights.
   c = mix(c, c * c * (3.0 - 2.0 * c), 0.25);
   gl_FragColor = vec4(clamp(c, 0.0, 1.0), 1.0);

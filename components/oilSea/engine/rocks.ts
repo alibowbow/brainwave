@@ -57,9 +57,9 @@ export function createRocks(sunDirection: THREE.Vector3, count: number) {
       void main() {
         vec3 n = normalize(vNormal);
         float grain = vnoise(vLocal.xz * 6.0 + vLocal.y * 3.0) * 0.6 + vnoise(vWorld.xz * 0.9) * 0.4;
-        vec3 albedo = mix(vec3(0.16, 0.13, 0.11), vec3(0.42, 0.35, 0.28), grain);
-        // Lichen and dry grass on the tops.
-        albedo = mix(albedo, vec3(0.5, 0.44, 0.24), smoothstep(0.6, 0.9, n.y) * 0.5);
+        vec3 albedo = mix(vec3(0.2, 0.19, 0.18), vec3(0.52, 0.5, 0.46), grain);
+        // Lichen and moss on the tops.
+        albedo = mix(albedo, vec3(0.42, 0.48, 0.28), smoothstep(0.6, 0.9, n.y) * 0.5);
         // Wet and dark where the sea reaches.
         albedo *= mix(0.55, 1.0, smoothstep(0.3, 1.6, vWorld.y));
         vec3 col = lightGround(albedo, n, 1.0);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PINE_BASE } from './pine';
-import { CAMERA, coastDistance, headlandFall, headlandFrame, headlandPoint, SLOPE_RUN, seaDepth, shoreX, terrainHeight } from './world';
+import { CAMERA, coastDistance, fieldAt, headlandFall, headlandFrame, headlandPoint, SLOPE_RUN, seaDepth, shoreX, terrainHeight, woodsDensity } from './world';
 
 describe('seaside world', () => {
   it('maps points to and from the headland frame', () => {
@@ -28,6 +28,32 @@ describe('seaside world', () => {
   it('roots the pine on the headland top', () => {
     expect(coastDistance(PINE_BASE.x, PINE_BASE.z)).toBeLessThan(-20);
     expect(headlandFall(PINE_BASE.x, PINE_BASE.z)).toBeLessThan(0.1);
+  });
+
+  it('keeps the woods off the beach and the headland', () => {
+    expect(woodsDensity(CAMERA.x, CAMERA.z)).toBe(0);
+    expect(woodsDensity(shoreX(-1200) + 20, -1200)).toBe(0);
+    let wooded = 0;
+    for (let i = 0; i < 400; i++) wooded += woodsDensity(400 + (i % 20) * 60, -600 - Math.floor(i / 20) * 80) > 0.5 ? 1 : 0;
+    expect(wooded).toBeGreaterThan(20);
+    expect(wooded).toBeLessThan(300);
+  });
+
+  it('measures the distance to the field borders', () => {
+    let crossings = 0;
+    for (let i = 0; i < 3000; i++) {
+      const x = 300 + (i % 60) * 7.3;
+      const z = -900 - Math.floor(i / 60) * 9.1;
+      const here = fieldAt(x, z);
+      const next = fieldAt(x + 1, z);
+      expect(here.border).toBeGreaterThanOrEqual(-0.01);
+      if (here.cell[0] !== next.cell[0] || here.cell[1] !== next.cell[1]) {
+        crossings++;
+        expect(here.border).toBeLessThan(2);
+        expect(next.border).toBeLessThan(2);
+      }
+    }
+    expect(crossings).toBeGreaterThan(5);
   });
 
   it('shelves the sea floor away from the beach', () => {

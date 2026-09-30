@@ -49,8 +49,8 @@ function tube(limb: Limb, sides: number, positions: number[], normals: number[],
 
 /**
  * A clump of pine foliage drawn once on a canvas: feathery tufts of needles
- * heaped into a soft mass, lit gold along its top and sunward (left) edge,
- * dark olive underneath.
+ * heaped into a soft mass, lit along its top and sunward (left) edge,
+ * dark green underneath.
  */
 function drawClump(size: number) {
   const canvas = document.createElement('canvas');
@@ -81,7 +81,7 @@ function drawClump(size: number) {
       const x0 = (tuft.x + (rand() - 0.5) * 0.03) * size;
       const y0 = (tuft.y + (rand() - 0.5) * 0.02) * size;
       const tip = Math.min(1, light * (0.55 + 0.6 * rand()));
-      g.strokeStyle = `rgb(${Math.round(36 + tip * 200)}, ${Math.round(36 + tip * 140)}, ${Math.round(16 + tip * 54)})`;
+      g.strokeStyle = `rgb(${Math.round(14 + tip * 104)}, ${Math.round(34 + tip * 150)}, ${Math.round(16 + tip * 56)})`;
       g.lineWidth = size * (0.003 + 0.003 * rand());
       g.beginPath();
       g.moveTo(x0, y0);
@@ -221,12 +221,12 @@ export function createPine(sunDirection: THREE.Vector3) {
       ${LIGHT_GLSL}
       void main() {
         vec3 n = normalize(vNormal);
-        // Furrowed bark, grey-brown, warm where the low sun catches it.
         // Deep furrows running along the trunk and limbs.
         float furrows = abs(vnoise(vec2(atan(n.z, n.x) * 5.0, vWorld.y * 1.5)) - 0.5) * 2.0;
         float bark = vnoise(vec2(vWorld.y * 5.0, atan(n.z, n.x) * 4.0)) * 0.5 + (1.0 - furrows) * 0.5;
-        vec3 albedo = mix(vec3(0.05, 0.04, 0.035), vec3(0.28, 0.22, 0.17), bark * bark);
-        vec3 col = lightGround(albedo, n, 0.75);
+        // Pine bark: grey-brown plates, a warm red-brown where they have flaked.
+        vec3 albedo = mix(vec3(0.2, 0.16, 0.13), vec3(0.62, 0.46, 0.34), bark);
+        vec3 col = lightGround(albedo, n, 1.0) * 1.15;
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,
@@ -297,13 +297,13 @@ export function createPine(sunDirection: THREE.Vector3) {
       void main() {
         vec4 clump = texture2D(tClump, vUv);
         if (clump.a < 0.5) discard;
-        // The clump carries its own light and shade; the crown adds warm
-        // evening light above and shadow within.
-        vec3 col = clump.rgb * mix(vec3(0.5, 0.5, 0.52), vec3(1.22, 1.02, 0.74), vShade);
+        // The clump carries its own light and shade; the crown adds
+        // sunlight above and shadow within.
+        vec3 col = clump.rgb * mix(vec3(0.56, 0.64, 0.66), vec3(1.18, 1.14, 0.96), vShade);
         vec3 albedo = clump.rgb;
-        // The low sun shines through the thin edges of the crown.
+        // The sun shines through the thin edges of the crown.
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 4.0);
-        col += albedo * vec3(1.0, 0.72, 0.34) * through * vShade * 0.6;
+        col += albedo * vec3(0.7, 0.95, 0.45) * through * vShade * 0.4;
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,

@@ -30,10 +30,9 @@ float fbm3(vec2 p) {
 `;
 
 /*
- * The evening sky as a function of direction: gold low towards the sun,
- * peach higher up, rose away from it, a pale lilac blue overhead, and the
- * sun's glow. The water mirrors this (without the clouds) and distant land
- * fades into it.
+ * The summer sky as a function of direction: deep blue overhead, paling to
+ * a hazy white-blue along the horizon, brighter around the sun. The water
+ * mirrors this (without the clouds) and distant land fades into it.
  */
 export const SKY_GLSL = /* glsl */ `
 uniform vec3 uSunDir;
@@ -43,16 +42,12 @@ uniform float uTime;
 vec3 skyLight(vec3 dir, float glow) {
   float h = max(dir.y, 0.0);
   float toSun = max(dot(dir, uSunDir), 0.0);
-  vec3 col = mix(vec3(0.8, 0.78, 0.82), vec3(1.0, 0.83, 0.64), pow(1.0 - h, 7.0));
-  col = mix(col, vec3(1.0, 0.78, 0.5), pow(1.0 - h, 24.0));
-  // Warmer and brighter towards the sun, rose along the horizon away from it.
-  float side = pow(toSun, 3.0);
-  col = mix(col, vec3(1.0, 0.72, 0.42), side * pow(1.0 - h, 6.0) * 0.7);
-  col = mix(col, vec3(0.96, 0.7, 0.64), (1.0 - side) * pow(1.0 - h, 16.0) * 0.35);
-  col += vec3(1.0, 0.74, 0.36) * pow(toSun, 6.0) * 0.24 * glow;
-  col += vec3(1.0, 0.86, 0.52) * pow(toSun, 30.0) * 0.36 * glow;
-  col += vec3(1.0, 0.95, 0.76) * pow(toSun, 220.0) * 0.9 * glow;
-  col += vec3(1.0, 0.98, 0.88) * pow(toSun, 1400.0) * 1.2 * glow;
+  vec3 col = mix(vec3(0.42, 0.65, 0.93), vec3(0.2, 0.44, 0.84), smoothstep(0.04, 0.45, h));
+  // A pale haze along the horizon, a little warmer on the sunny side.
+  vec3 horizon = mix(vec3(0.74, 0.85, 0.95), vec3(0.88, 0.9, 0.9), pow(toSun, 2.0) * 0.6);
+  col = mix(col, horizon, pow(1.0 - h, 16.0));
+  col += vec3(1.0, 0.97, 0.9) * pow(toSun, 6.0) * 0.14 * glow;
+  col += vec3(1.0, 0.98, 0.92) * pow(toSun, 60.0) * 0.3 * glow;
   return col;
 }
 vec3 skyBase(vec3 dir) { return skyLight(dir, 1.0); }
@@ -60,7 +55,7 @@ vec3 skyBase(vec3 dir) { return skyLight(dir, 1.0); }
 // The sun itself: a bright disc blooming into the glow around it.
 vec3 sunDisc(vec3 dir) {
   float toSun = max(dot(dir, uSunDir), 0.0);
-  return vec3(1.0, 0.93, 0.7) * (smoothstep(0.99962, 0.9998, toSun) * 1.7 + pow(toSun, 2500.0) * 0.9 + pow(toSun, 350.0) * 0.6);
+  return vec3(1.0, 0.98, 0.92) * (smoothstep(0.99962, 0.9998, toSun) * 1.7 + pow(toSun, 2500.0) * 0.9 + pow(toSun, 350.0) * 0.6);
 }
 `;
 

@@ -121,11 +121,11 @@ function bakeAtlas() {
 const DRIFT_SPEED = 6;
 
 /*
- * The evening clouds: cloud images hung in a layer over the sea and the
+ * The summer clouds: cloud images hung in a layer over the sea and the
  * land, upright and turned to the viewer. Perspective does the rest: near
  * clouds high and large, far ones small, flattened and crowded along the
- * horizon, where they fade into the haze. Each is lit where it hangs: side
- * lit gold and rose away from the sun, dark with glowing edges before it.
+ * horizon, where they fade into the haze. Each is lit where it hangs:
+ * bright white where the sun strikes it, blue-grey in its own shade.
  */
 export function createClouds(sunDirection: THREE.Vector3, count: number) {
   const texture = bakeAtlas();
@@ -243,17 +243,17 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
         vec3 n = normalize(vRight * slope.x + vec3(0.0, slope.y, 0.0) + toCamera * sqrt(max(0.0, 1.0 - dot(slope, slope))));
         float thick = cloud.b;
         // Sunlight on the side that faces it, wrapping a little round the billows.
-        float lit = clamp((dot(n, uSunDir) + 0.3) / 1.3, 0.0, 1.0);
+        float lit = clamp((dot(n, uSunDir) + 0.5) / 1.5, 0.0, 1.0);
         // Before the sun: light scattered forwards through the thin edges.
         float before = pow(max(dot(-toCamera, uSunDir), 0.0), 6.0);
         float silver = before * pow(1.0 - thick, 1.5);
-        vec3 shade = mix(vec3(0.64, 0.53, 0.6), vec3(0.86, 0.56, 0.44), before);
-        vec3 light = mix(vec3(1.16, 0.98, 0.82), vec3(1.24, 0.97, 0.66), before);
+        vec3 shade = vec3(0.7, 0.76, 0.88);
+        vec3 light = vec3(1.1, 1.09, 1.06);
         vec3 col = mix(shade, light, lit * (1.0 - 0.55 * before * thick));
-        // Lit from the bright sky above as well; shaded in the dense core and underneath.
-        col += vec3(0.16, 0.14, 0.13) * smoothstep(0.0, 0.8, n.y);
-        col *= 1.0 - 0.22 * smoothstep(0.3, 1.0, thick) - 0.12 * smoothstep(0.0, -0.7, n.y);
-        col += vec3(1.0, 0.8, 0.45) * silver * 1.8;
+        // Lit from the blue sky above as well; shaded in the dense core and underneath.
+        col += vec3(0.06, 0.08, 0.12) * smoothstep(0.0, 0.8, n.y);
+        col *= 1.0 - 0.1 * smoothstep(0.3, 1.0, thick) - 0.14 * smoothstep(0.0, -0.7, n.y);
+        col += vec3(1.0, 0.98, 0.92) * silver * 1.2;
         // Far clouds sink into the haze along the horizon.
         vec3 dir = -toCamera;
         float dist = length(cameraPosition - vWorld);

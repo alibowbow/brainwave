@@ -1,28 +1,36 @@
 /*
- * A gentle look-around. Dragging over the study turns the view a few degrees
- * around a point near the lamp and mug, so they hold still while the city
- * slides behind the window frame; letting go eases the view back to the shot.
+ * A gentle look-around for the live scenes. Dragging over a scene turns its
+ * view a few degrees, never past the scene's limit; letting go eases the view
+ * back to the shot.
  */
 
-/** Largest turn a drag can make, in radians (about 3.4° across, 2° up and down). */
-export const LOOK_LIMIT = { yaw: 0.06, pitch: 0.035 } as const;
+/** Largest turn a drag can make each way, in radians. */
+export interface LookLimit {
+  yaw: number;
+  pitch: number;
+}
 
-/** How far in front of the camera the view turns around, in metres (near the focus distance). */
-export const LOOK_PIVOT = 1;
+/** How the view moves: seconds to catch up with a drag, and to ease home once let go. */
+export interface LookFeel {
+  follow: number;
+  settle: number;
+}
+
+const QUICK: LookFeel = { follow: 0.09, settle: 0.45 };
 
 /** How quickly a drag approaches the limit, per shorter side of the view. */
 const LOOK_GAIN = 2.2;
 
 /**
- * The turn for a drag measured in shorter sides of the view. The scene follows
- * the pointer like a turntable: dragging right turns the view right, dragging
- * down tips it down, and the turn eases into its limit instead of stopping hard.
+ * The turn for a drag measured in shorter sides of the view: a drag to the
+ * right gives a positive yaw, a drag down a negative pitch, easing into the
+ * limit instead of stopping hard. Each scene decides which way that turns it.
  */
-export function lookForDrag(dx: number, dy: number) {
+export function lookForDrag(dx: number, dy: number, limit: LookLimit) {
   const safe = (value: number) => (Number.isFinite(value) ? value : 0);
   return {
-    yaw: LOOK_LIMIT.yaw * Math.tanh(safe(dx) * LOOK_GAIN),
-    pitch: -LOOK_LIMIT.pitch * Math.tanh(safe(dy) * LOOK_GAIN),
+    yaw: limit.yaw * Math.tanh(safe(dx) * LOOK_GAIN),
+    pitch: -limit.pitch * Math.tanh(safe(dy) * LOOK_GAIN),
   };
 }
 
@@ -48,9 +56,11 @@ export class LookSpring {
   private targetPitch = 0;
   private held = false;
 
+  constructor(private readonly limit: LookLimit, private readonly feel: LookFeel = QUICK) {}
+
   /** Follow a drag of `dx`, `dy` shorter sides from where it started. */
   drag(dx: number, dy: number) {
-    const turn = lookForDrag(dx, dy);
+    const turn = lookForDrag(dx, dy, this.limit);
     this.targetYaw = turn.yaw;
     this.targetPitch = turn.pitch;
     this.held = true;
@@ -62,9 +72,14 @@ export class LookSpring {
     this.held = false;
   }
 
+  /** Whether the view is turned, or turning. */
+  get moving() {
+    return this.held || this.yaw !== 0 || this.pitch !== 0;
+  }
+
   update(dt: number) {
     if (!(dt > 0)) return;
-    const smoothTime = this.held ? 0.09 : 0.45;
+    const smoothTime = this.held ? this.feel.follow : this.feel.settle;
     [this.yaw, this.yawVelocity] = smoothDamp(this.yaw, this.targetYaw, this.yawVelocity, smoothTime, dt);
     [this.pitch, this.pitchVelocity] = smoothDamp(this.pitch, this.targetPitch, this.pitchVelocity, smoothTime, dt);
   }

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import { LookSpring } from '../../liveScene/look';
 import { CityBackdrop } from './city';
 import { createTarget } from './fullscreen';
 import { bakeGrime, createGlassMaterial } from './glass';
@@ -8,7 +9,6 @@ import { shadowTaps } from './materials';
 import {
   CAMERA_POSITION, frameForAspect, GLASS_BOTTOM, GLASS_HALF_WIDTH, GLASS_TOP, GLASS_Z,
 } from './layout';
-import { LOOK_LIMIT, LOOK_PIVOT, LookSpring } from './look';
 import { updateMirrorCamera } from './mirror';
 import { PostProcessor } from './post';
 import { detectTier, DynamicResolution, isMobileDevice, isSoftwareRenderer, QUALITY, samplesFor, type QualityProfile, type QualityTier } from './quality';
@@ -29,6 +29,15 @@ export interface RainyWindowOptions {
 /** Circle of confusion for the far city, as an angle (radians) so every framing matches. */
 const COC_ANGLE = 0.0062;
 const CITY_MARGIN = 1.3;
+
+/*
+ * A drag turns the view a few degrees around a point near the lamp and mug,
+ * so they hold still while the city slides behind the window frame.
+ */
+/** Largest turn a drag can make, in radians (about 3.4° across, 2° up and down). */
+const LOOK_LIMIT = { yaw: 0.06, pitch: 0.035 } as const;
+/** How far in front of the camera the view turns around, in metres (near the focus distance). */
+const LOOK_PIVOT = 1;
 
 export class RainyWindowEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -73,7 +82,7 @@ export class RainyWindowEngine {
   private flashLevel = 0;
   private rainIntensity = 1;
   private readonly lookTarget = new THREE.Vector3();
-  private readonly look = new LookSpring();
+  private readonly look = new LookSpring(LOOK_LIMIT);
   private readonly drift = new THREE.Vector3();
   private readonly sway = new THREE.Vector3();
   private readonly rest = new THREE.Vector3();

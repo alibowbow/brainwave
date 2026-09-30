@@ -5,7 +5,7 @@ import type { VisualMode } from '../types';
 import type { SoundLayer } from '../services/audioEngine';
 import { AuraVisualizer } from './AuraVisualizer';
 import { SessionBackdrop } from './SessionBackdrop';
-import type { SessionBackdropVariant } from './rainyWindow/sessionBackdrop';
+import type { SessionBackdropVariant } from './session/sessionBackdrop';
 import { VisualModeSwitch } from './VisualModeSwitch';
 
 interface Props {
@@ -69,7 +69,7 @@ export const ImmersiveMode: React.FC<Props> = ({
     <div
       className="fixed inset-0 z-[100] flex h-[100dvh] flex-col items-center justify-center overflow-hidden bg-slate-950 text-white animate-fade-in"
       data-scene-surface
-      style={visualMode === 'nature' && backgroundVariant === 'rainy-window' ? { touchAction: 'none' } : undefined}
+      style={visualMode === 'nature' && (backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea') ? { touchAction: 'none' } : undefined}
       onPointerMove={visualMode === 'nature' ? revealControls : undefined}
       onPointerDown={visualMode === 'nature' ? revealControls : undefined}
       role="dialog"
@@ -79,7 +79,7 @@ export const ImmersiveMode: React.FC<Props> = ({
       {visualMode === 'nature' ? (
         <div className="absolute inset-0">
           <SessionBackdrop variant={backgroundVariant} layers={activeLayers} active={isPlaying} subscribeEvents={subscribeEvents} />
-          <div className={`pointer-events-none absolute inset-0 ${backgroundVariant === 'rainy-window' ? 'bg-gradient-to-b from-transparent via-transparent via-75% to-[#02050b]/45' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60'}`} />
+          <div className={`pointer-events-none absolute inset-0 ${backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea' ? 'bg-gradient-to-b from-transparent via-transparent via-75% to-[#02050b]/45' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60'}`} />
         </div>
       ) : (
         <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={color} className="absolute inset-0 h-full w-full" />

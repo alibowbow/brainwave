@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
+import { LookSpring } from '../../liveScene/look';
 import { detectTier, DynamicResolution, isMobileDevice, isSoftwareRenderer } from '../../rainyWindow/engine/quality';
 import { createBoats } from './boats';
 import { createBuildings } from './buildings';
@@ -12,7 +13,7 @@ import { createRocks } from './rocks';
 import { createSky } from './sky';
 import { createTerrain } from './terrain';
 import { createTrees } from './trees';
-import { CAMERA, SUN } from './world';
+import { CAMERA, LOOK, SUN } from './world';
 
 export type SeasideQuality = 'high' | 'medium' | 'low' | 'software';
 
@@ -42,23 +43,19 @@ interface Profile {
 }
 
 const PROFILES: Record<SeasideQuality, Profile> = {
-  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 110, grass: 22000, shrubs: 1000, rocks: 140, trees: 7000 },
-  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 100, grass: 15000, shrubs: 700, rocks: 110, trees: 5000 },
-  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 85, grass: 9000, shrubs: 450, rocks: 80, trees: 3000 },
-  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 70, grass: 5000, shrubs: 260, rocks: 70, trees: 1600 },
+  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 132, grass: 31000, shrubs: 1200, rocks: 140, trees: 9000 },
+  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 120, grass: 21500, shrubs: 820, rocks: 110, trees: 6400 },
+  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 102, grass: 12800, shrubs: 530, rocks: 80, trees: 3850 },
+  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 84, grass: 7100, shrubs: 300, rocks: 70, trees: 2050 },
 };
 
-/** The painting draws itself when the scene first starts: pencil, then paint. */
-const SKETCH_SECONDS = 1.6;
-const PAINT_SECONDS = 3.4;
-const INTRO_SECONDS = SKETCH_SECONDS + PAINT_SECONDS;
 const REFERENCE_PIXELS = 1280 * 720;
 
 /*
  * A headland above a bay on a summer day, simulated in 3D and painted in
  * oils: the sea, the land with its fields and woods, the grass and a
  * wind-bent pine are rendered as a real scene, then each frame is repainted
- * with brushwork that follows its forms.
+ * with brushwork that follows its forms. A drag turns the view a little.
  */
 export class SeasideEngine implements LiveSceneEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -75,15 +72,19 @@ export class SeasideEngine implements LiveSceneEngine {
   private sceneTarget: THREE.WebGLRenderTarget | null = null;
   private readonly post: OilPaintPost;
   private readonly sunPoint = new THREE.Vector3();
+  private readonly look = new LookSpring(LOOK);
+  /** The camera's turn at rest (the shot), and from the turned view back to it. */
+  private readonly shot = new THREE.Quaternion().setFromEuler(new THREE.Euler(CAMERA.pitch, -CAMERA.yaw, 0, 'YXZ'));
+  private readonly toShot = new THREE.Matrix3();
+  private readonly turn = new THREE.Matrix4();
+  private readonly turnQuaternion = new THREE.Quaternion();
   private cssWidth = 1;
   private cssHeight = 1;
+  /** Height of the rendered frame, in pixels. */
+  private frameHeight = 1;
   private devicePixelRatio = 1;
   private time = 0;
   private energy = 1;
-  /** Seconds into the drawing-in; Infinity once the painting is finished. */
-  private intro = 0;
-  /** When a still of the finished painting was first shown, before the scene ever ran. */
-  private stillShownAt = 0;
   private raf = 0;
   private lastFrame = 0;
   private running = false;
@@ -130,7 +131,7 @@ export class SeasideEngine implements LiveSceneEngine {
 
     this.camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z);
     this.camera.rotation.order = 'YXZ';
-    this.camera.rotation.set(CAMERA.pitch, -CAMERA.yaw, 0);
+    this.camera.quaternion.copy(this.shot);
 
     this.post = new OilPaintPost(this.renderer, { radius: this.profile.brush, stride: this.profile.stride, strokeSteps: this.profile.strokeSteps, dabs: this.profile.dabs });
   }
@@ -206,6 +207,7 @@ export class SeasideEngine implements LiveSceneEngine {
     height = Math.max(1, height);
     this.renderer.setPixelRatio(1);
     this.renderer.setSize(width, height, false);
+    this.frameHeight = height;
     const aspect = width / height;
     this.camera.aspect = aspect;
     // Keep the bay, the sun and the pine in view on narrow screens.
@@ -215,20 +217,39 @@ export class SeasideEngine implements LiveSceneEngine {
     this.sceneTarget = new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: true });
     // The same brush on the same picture, whatever the resolution it is made at.
     this.post.setSize(width, height, profile.brush * Math.sqrt((width * height) / REFERENCE_PIXELS));
-    this.camera.updateMatrixWorld();
-    this.sunPoint.copy(this.sunDirection).multiplyScalar(10000).add(this.camera.position).project(this.camera);
-    this.post.setSun(this.sunPoint.x * 0.5 + 0.5, this.sunPoint.y * 0.5 + 0.5, Math.abs(this.sunPoint.x) < 1.2 && this.sunPoint.z < 1);
+    this.pose();
     if (this.oceanMaterial) {
       // Angle one pixel covers, for filtering waves finer than a pixel.
       this.oceanMaterial.uniforms.uDetail.value = (2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2))) / height;
     }
   }
 
+  /** Turn the view slightly for a drag of `dx`, `dy` shorter sides of the view. */
+  drag(dx: number, dy: number) {
+    this.look.drag(dx, dy);
+  }
+
+  releaseDrag() {
+    this.look.release();
+  }
+
+  /**
+   * Aim the camera: the shot, turned by the drag so the scene follows the
+   * pointer (dragging right swings the view left). The sun's glow and the
+   * brushwork follow the turn.
+   */
+  private pose() {
+    this.camera.rotation.set(CAMERA.pitch - this.look.pitch, -(CAMERA.yaw - this.look.yaw), 0);
+    this.camera.updateMatrixWorld();
+    this.sunPoint.copy(this.sunDirection).multiplyScalar(10000).add(this.camera.position).project(this.camera);
+    this.post.setSun(this.sunPoint.x * 0.5 + 0.5, this.sunPoint.y * 0.5 + 0.5, Math.abs(this.sunPoint.x) < 1.2 && this.sunPoint.z < 1);
+    this.turnQuaternion.copy(this.shot).invert().multiply(this.camera.quaternion);
+    this.toShot.setFromMatrix4(this.turn.makeRotationFromQuaternion(this.turnQuaternion));
+    this.post.setLook(this.toShot, this.frameHeight / 2 / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)));
+  }
+
   start() {
     if (this.running || this.disposed) return;
-    // A painting that has already been on screen is not drawn again from
-    // scratch when it starts moving; one that starts right away is.
-    if (this.intro === 0 && this.stillShownAt && performance.now() - this.stillShownAt > 800) this.intro = Infinity;
     this.running = true;
     this.lastFrame = 0;
     this.pacer.reset();
@@ -260,18 +281,10 @@ export class SeasideEngine implements LiveSceneEngine {
   renderFrame(dt: number) {
     if (!this.ready || !this.sceneTarget) return;
     this.time += dt;
-    // Until it first runs, a still frame (paused, reduced motion) shows the
-    // finished painting; the drawing-in plays when the scene starts moving.
-    const notStarted = !this.running && dt === 0 && this.intro === 0;
-    if (notStarted && !this.stillShownAt) this.stillShownAt = performance.now();
-    if (Number.isFinite(this.intro) && dt > 0) this.intro += dt;
-    const intro = notStarted || !Number.isFinite(this.intro) ? INTRO_SECONDS : this.intro;
-    if (!notStarted && intro >= INTRO_SECONDS) this.intro = Infinity;
-    this.post.setIntro(
-      Math.min(1, Math.max(0, (intro - 0.3) / (SKETCH_SECONDS - 0.3))),
-      Math.min(1, Math.max(0, (intro - SKETCH_SECONDS) / PAINT_SECONDS)),
-    );
-
+    if (this.look.moving) {
+      this.look.update(dt);
+      this.pose();
+    }
     for (const material of this.timed) material.uniforms.uTime.value = this.time;
     if (this.oceanMaterial) this.oceanMaterial.uniforms.uEnergy.value = this.energy;
     this.sky?.position.copy(this.camera.position);

@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { LOOK_LIMIT, LookSpring, lookForDrag } from './look';
+import { LookSpring, lookForDrag as lookFor } from './look';
 
-const DEG = 180 / Math.PI;
+const LOOK_LIMIT = { yaw: 0.06, pitch: 0.035 };
+const lookForDrag = (dx: number, dy: number) => lookFor(dx, dy, LOOK_LIMIT);
 
 describe('drag look-around', () => {
   it('follows the pointer like a turntable', () => {
@@ -15,9 +16,7 @@ describe('drag look-around', () => {
     expect(back.pitch).toBeCloseTo(-down.pitch, 10);
   });
 
-  it('turns only a few degrees however far the drag goes', () => {
-    expect(LOOK_LIMIT.yaw * DEG).toBeLessThan(4);
-    expect(LOOK_LIMIT.pitch * DEG).toBeLessThan(2.5);
+  it('never turns past its limit however far the drag goes', () => {
     const far = lookForDrag(40, -40);
     expect(far.yaw).toBeLessThanOrEqual(LOOK_LIMIT.yaw);
     expect(far.pitch).toBeLessThanOrEqual(LOOK_LIMIT.pitch);
@@ -44,7 +43,7 @@ describe('look spring', () => {
   };
 
   it('keeps up with a drag and eases home after release', () => {
-    const spring = new LookSpring();
+    const spring = new LookSpring(LOOK_LIMIT);
     spring.drag(1, 0);
     const target = lookForDrag(1, 0).yaw;
     run(spring, 0.4, 1 / 60);
@@ -59,7 +58,7 @@ describe('look spring', () => {
   });
 
   it('stays calm on slow devices and never overshoots', () => {
-    const spring = new LookSpring();
+    const spring = new LookSpring(LOOK_LIMIT);
     spring.drag(-2, 2);
     const target = lookForDrag(-2, 2);
     const peak = run(spring, 2, 0.1);
@@ -72,10 +71,22 @@ describe('look spring', () => {
   });
 
   it('holds still without time passing', () => {
-    const spring = new LookSpring();
+    const spring = new LookSpring(LOOK_LIMIT);
     spring.drag(1, 1);
     for (const dt of [0, -1, Number.NaN]) spring.update(dt);
     expect(spring.yaw).toBe(0);
     expect(spring.pitch).toBe(0);
+  });
+
+  it('comes to rest exactly at the shot', () => {
+    const spring = new LookSpring(LOOK_LIMIT);
+    expect(spring.moving).toBe(false);
+    spring.drag(0.5, -0.5);
+    expect(spring.moving).toBe(true);
+    spring.release();
+    run(spring, 4, 1 / 60);
+    expect(spring.yaw).toBe(0);
+    expect(spring.pitch).toBe(0);
+    expect(spring.moving).toBe(false);
   });
 });

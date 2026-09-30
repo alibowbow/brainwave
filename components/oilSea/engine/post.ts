@@ -146,6 +146,25 @@ void main() {
 `;
 
 /*
+ * When a drag turns the view, the brushwork stays on the scene: its patterns
+ * are laid out where each pixel lay in the shot (the view at rest), and dab
+ * centres are carried back into the turned view.
+ */
+const LOOK_GLSL = /* glsl */ `
+uniform mat3 uToShot;
+uniform mat3 uToView;
+uniform float uFocal;
+vec2 inShot(vec2 px) {
+  vec3 ray = uToShot * vec3((px - 0.5 * uResolution) / uFocal, -1.0);
+  return 0.5 * uResolution + ray.xy / -ray.z * uFocal;
+}
+vec2 fromShot(vec2 px) {
+  vec3 ray = uToView * vec3((px - 0.5 * uResolution) / uFocal, -1.0);
+  return 0.5 * uResolution + ray.xy / -ray.z * uFocal;
+}
+`;
+
+/*
  * Dabs of paint laid over the painting: on a jittered grid, each dab an
  * elongated stroke turned along the local form, carrying the colour found
  * at its centre, shorter where there is detail to keep, stopping at strong
@@ -159,19 +178,20 @@ uniform sampler2D tPaint;
 uniform sampler2D tTensor;
 uniform vec2 uResolution;
 uniform float uCell;
+${LOOK_GLSL}
 float hash12(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 vec2 hash22(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973)); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.xx + p3.yz) * p3.zy); }
 void main() {
   vec2 px = vUv * uResolution;
   vec3 base = texture2D(tPaint, vUv).rgb;
-  vec2 cell = floor(px / uCell);
+  vec2 cell = floor(inShot(px) / uCell);
   float best = -1.0;
   vec4 top = vec4(base, 0.0);
   for (int j = -1; j <= 1; j++) {
     for (int i = -1; i <= 1; i++) {
       vec2 c = cell + vec2(float(i), float(j));
       vec2 jitter = hash22(c);
-      vec2 centre = (c + 0.1 + 0.8 * jitter) * uCell;
+      vec2 centre = fromShot((c + 0.1 + 0.8 * jitter) * uCell);
       vec2 at = centre / uResolution;
       // Along the form at the dab's centre (level where there is none).
       vec3 t = texture2D(tTensor, at).xyz;
@@ -226,9 +246,8 @@ uniform vec2 uResolution;
 uniform vec2 uSun;
 uniform float uSunVisible;
 uniform float uBrush;
-uniform float uSketch;
-uniform float uPaint;
 const int STROKE_STEPS = STROKE_STEP_COUNT;
+${LOOK_GLSL}
 float hash12(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float vnoise(vec2 p) {
   vec2 i = floor(p);
@@ -255,7 +274,8 @@ vec2 flowAt(vec2 uv) {
   return normalize(mix(vec2(1.0, 0.0), along, strength) + vec2(1e-4, 0.0));
 }
 float bristles(vec2 px) {
-  return vnoise(px / (uBrush * 1.4)) * 0.65 + vnoise(px / (uBrush * 0.6) + 7.0) * 0.35;
+  vec2 p = inShot(px);
+  return vnoise(p / (uBrush * 1.4)) * 0.65 + vnoise(p / (uBrush * 0.6) + 7.0) * 0.35;
 }
 float strokes(vec2 uv) {
   vec2 px = uv * uResolution;
@@ -279,7 +299,6 @@ float strokes(vec2 uv) {
   }
   return sum / weight;
 }
-float luma(vec2 uv) { return dot(texture2D(tPaint, uv).rgb, vec3(0.3, 0.55, 0.15)); }
 void main() {
   vec3 col = texture2D(tPaint, vUv).rgb;
   float stroke = 0.5;
@@ -293,28 +312,13 @@ void main() {
     col *= 1.0 + ((stroke - 0.5) * 0.16 + dot(slope, vec2(-0.7, 0.7)) * 0.55) * body;
   }
   float cloth = weave(gl_FragCoord.xy);
-  // The drawing-in: pencil lines spreading over the bare canvas, then the
-  // paint laid over them stroke by stroke, the distance first.
-  if (uPaint < 1.0) {
-    vec2 px = gl_FragCoord.xy;
-    vec2 texel = 1.0 / uResolution;
-    vec3 paper = vec3(0.945, 0.929, 0.89) * (0.975 + 0.03 * cloth);
-    float gx = luma(vUv + vec2(texel.x, 0.0)) - luma(vUv - vec2(texel.x, 0.0));
-    float gy = luma(vUv + vec2(0.0, texel.y)) - luma(vUv - vec2(0.0, texel.y));
-    float line = smoothstep(0.06, 0.2, length(vec2(gx, gy)));
-    float reach = vnoise(px / 90.0) * 0.4 + (1.0 - vUv.y) * 0.6;
-    float sketched = smoothstep(reach - 0.06, reach + 0.06, uSketch * 1.12);
-    vec3 drawing = mix(paper, vec3(0.38, 0.35, 0.32), line * 0.5 * sketched);
-    float order = (1.0 - vUv.y) * 0.5 + vnoise(px / 150.0) * 0.3 + clamp((stroke - 0.5) * 3.0 + 0.5, 0.0, 1.0) * 0.2;
-    col = mix(drawing, col, smoothstep(order - 0.025, order + 0.025, uPaint * 1.06));
-  }
   col *= 0.985 + 0.025 * cloth;
   col *= vec3(1.015, 1.0, 0.97);
   vec2 v = vUv - 0.5;
   float r = length((vUv - uSun) * vec2(uResolution.x / uResolution.y, 1.0));
   float glow = exp(-r * 6.0) * uSunVisible;
   col *= 1.0 - 0.2 * dot(v * vec2(1.0, 1.25), v * vec2(1.0, 1.25)) * (1.0 - glow);
-  col += (vec3(0.24, 0.16, 0.06) * glow + vec3(0.3, 0.27, 0.18) * exp(-r * 22.0) * uSunVisible) * uPaint;
+  col += vec3(0.24, 0.16, 0.06) * glow + vec3(0.3, 0.27, 0.18) * exp(-r * 22.0) * uSunVisible;
   gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
 }
 `;
@@ -346,22 +350,28 @@ export class OilPaintPost {
   private readonly tensor = pass(TENSOR_FRAGMENT, { tColor: { value: null }, uTexel: { value: new THREE.Vector2() } });
   private readonly blur = pass(BLUR_FRAGMENT, { tInput: { value: null }, uStep: { value: new THREE.Vector2() } });
   private readonly kuwahara: ReturnType<typeof pass>;
+  /** The turn of the view from the shot, shared by the passes whose brushwork keeps to the scene. */
+  private readonly look = {
+    uToShot: { value: new THREE.Matrix3() },
+    uToView: { value: new THREE.Matrix3() },
+    uFocal: { value: 1 },
+  };
   private readonly dab = pass(DAB_FRAGMENT, {
     tPaint: { value: null },
     tTensor: { value: null },
     uResolution: { value: new THREE.Vector2() },
     uCell: { value: 5 },
+    ...this.look,
   });
   private readonly finish: ReturnType<typeof pass>;
   private readonly finishUniforms = {
     tPaint: { value: null },
     tTensor: { value: null },
     uBrush: { value: 3 },
-    uSketch: { value: 1 },
-    uPaint: { value: 1 },
     uResolution: { value: new THREE.Vector2() },
     uSun: { value: new THREE.Vector2(0.1, 0.8) },
     uSunVisible: { value: 1 },
+    ...this.look,
   };
   private colour: THREE.WebGLRenderTarget | null = null;
   private tensorA: THREE.WebGLRenderTarget | null = null;
@@ -409,10 +419,14 @@ export class OilPaintPost {
     (this.finish.material.uniforms.uResolution.value as THREE.Vector2).set(width, height);
   }
 
-  /** How far the drawing-in has got: the sketch, then the paint (both 0..1). */
-  setIntro(sketch: number, paint: number) {
-    this.finish.material.uniforms.uSketch.value = sketch;
-    this.finish.material.uniforms.uPaint.value = paint;
+  /**
+   * How the view is turned from the shot (a rotation from this view's camera
+   * space into the shot's), and its focal length in pixels.
+   */
+  setLook(toShot: THREE.Matrix3, focal: number) {
+    this.look.uToShot.value.copy(toShot);
+    this.look.uToView.value.copy(toShot).transpose();
+    this.look.uFocal.value = focal;
   }
 
   /** Where the sun is on screen (0..1), for its glow. */
@@ -426,7 +440,7 @@ export class OilPaintPost {
     this.renderer.render(step.scene, this.camera);
   }
 
-  /** Paint the rendered scene (and hand back the painting, before the finish, for the drawing-in). */
+  /** Paint the rendered scene (`raw` shows it unpainted, for development). */
   render(scene: THREE.Texture, raw = false) {
     if (!this.colour || !this.tensorA || !this.tensorB || !this.painted) return;
     this.grade.material.uniforms.tScene.value = scene;

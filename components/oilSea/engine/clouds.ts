@@ -143,7 +143,8 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
     // (low clouds are far away, over the horizon; high ones close).
     const elevation = 0.005 + Math.pow(rand(), 1.3) * 0.2;
     const depth = Math.min(55000, Math.max(3000, (1500 / Math.tan(elevation)) * (0.7 + 0.6 * rand())));
-    const side = (rand() * 2 - 1) * depth;
+    // Across the sky in view, however far a drag turns it.
+    const side = (rand() * 2 - 1) * depth * 1.2;
     // Clouds gather in groups: a big heap with smaller ones beside it.
     const group = 1 + Math.floor(rand() * rand() * 4);
     for (let k = 0; k < group && clouds.length < count; k++) {

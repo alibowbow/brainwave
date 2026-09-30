@@ -110,10 +110,9 @@ export const Player: React.FC<PlayerProps> = ({
   const sceneChromeTimerRef = useRef<number | null>(null);
   const detailsRef = useRef<HTMLElement>(null);
   const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#7886ff';
-  // The rainy study is lit from the desk and the painted sea glows at sunset;
-  // keep their lower third visible under the controls.
-  const litStudy = backgroundVariant === 'rainy-window';
-  const liveScene = litStudy || backgroundVariant === 'oil-sea';
+  // The rainy study and the painted sea are live 3D scenes: their lower third
+  // stays visible under the controls, and a drag turns them a little.
+  const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea';
   const minutesLeft = Math.max(1, Math.ceil(timeLeft / 60));
   const progress = totalSeconds > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / totalSeconds)) : 0;
 
@@ -210,8 +209,8 @@ export const Player: React.FC<PlayerProps> = ({
           data-scene-surface
           onPointerMove={visualMode === 'nature' ? revealSceneChrome : undefined}
           onPointerDown={visualMode === 'nature' ? revealSceneChrome : undefined}
-          // The study turns a little under a drag; only page scrolling (when the details are open) stays with the browser.
-          style={litStudy && visualMode === 'nature' ? { touchAction: detailsOpen ? 'pan-y' : 'none' } : undefined}
+          // The live scenes turn a little under a drag; only page scrolling (when the details are open) stays with the browser.
+          style={liveScene && visualMode === 'nature' ? { touchAction: detailsOpen ? 'pan-y' : 'none' } : undefined}
           className={`relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] ${visualMode === 'nature' ? 'min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]' : 'min-h-[540px] rounded-[30px] border sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]'}`}
         >
           <div className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>

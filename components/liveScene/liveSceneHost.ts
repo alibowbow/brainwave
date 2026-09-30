@@ -15,6 +15,10 @@ export interface LiveSceneEngine {
   start(): void;
   stop(): void;
   dispose(): void;
+  /** Turn the view slightly for a drag of `dx`, `dy` shorter sides of the view (scenes that can look around). */
+  drag?(dx: number, dy: number): void;
+  /** Ease the view back once the drag ends. */
+  releaseDrag?(): void;
 }
 
 export interface LiveSceneHostOptions<E extends LiveSceneEngine> {
@@ -64,8 +68,14 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
   /** Called with each new engine before it initialises, to apply stored settings. */
   protected configure(_engine: E) {}
 
-  /** Called whenever a different view comes on top. */
-  protected topChanged() {}
+  /** Turn the view a little while the view on top is dragged. */
+  drag(holder: LiveSceneHolder, dx: number, dy: number) {
+    if (this.top === holder) this.engine?.drag?.(dx, dy);
+  }
+
+  releaseDrag(holder: LiveSceneHolder) {
+    if (this.top === holder) this.engine?.releaseDrag?.();
+  }
 
   private release(holder: LiveSceneHolder) {
     this.holders = this.holders.filter((item) => item !== holder);
@@ -116,7 +126,8 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
   private attachTop() {
     const top = this.top;
     if (!top || !this.canvas) return;
-    this.topChanged();
+    // A drag belongs to the view it started in.
+    this.engine?.releaseDrag?.();
     if (this.canvas.parentElement !== top.mount) top.mount.appendChild(this.canvas);
     this.observe(top.mount);
     this.resize();

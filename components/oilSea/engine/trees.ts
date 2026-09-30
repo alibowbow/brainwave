@@ -93,8 +93,9 @@ export function createTrees(sunDirection: THREE.Vector3, count: number) {
   const trees: Tree[] = [];
   const yaw = CAMERA.yaw;
   for (let tries = 0; trees.length < count && tries < count * 40; tries++) {
-    // Over the hills in view, fewer far away (where clumps stand in for several trees).
-    const bearing = yaw - 0.4 + rand() * 1.05;
+    // Over the hills in view however far a drag turns it, fewer far away
+    // (where clumps stand in for several trees).
+    const bearing = yaw - 0.4 + rand() * 1.2;
     const distance = 160 + Math.pow(rand(), 1.6) * 4800;
     const x = CAMERA.x + Math.sin(bearing) * distance;
     const z = CAMERA.z - Math.cos(bearing) * distance;

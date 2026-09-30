@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useLookDrag } from '../liveScene/useLookDrag';
 import { useSceneMotion } from '../useSceneMotion';
 import { oilSeaHost, type OilSeaHolder, type OilSeaStatus } from './oilSeaHost';
 import { OilSeaPoster } from './OilSeaPoster';
@@ -11,8 +12,9 @@ interface Props {
   waveEnergy: number;
 }
 
-/** The ocean-shore routine's sea, painted in oils as it plays. */
+/** The ocean-shore routine's sea, painted in oils as it plays; a drag turns the view a little. */
 export default function OilSeaScene({ active, waveEnergy }: Props) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
   const holderRef = useRef<OilSeaHolder | null>(null);
   const [status, setStatus] = useState<OilSeaStatus>('loading');
@@ -38,8 +40,10 @@ export default function OilSeaScene({ active, waveEnergy }: Props) {
     oilSeaHost.setWaveEnergy(waveEnergy);
   }, [waveEnergy]);
 
+  useLookDrag(oilSeaHost, rootRef, holderRef, motion);
+
   return (
-    <div className="oil-sea" data-state={status} data-motion={motion ? 'running' : 'paused'}>
+    <div ref={rootRef} className="oil-sea" data-state={status} data-motion={motion ? 'running' : 'paused'}>
       {status === 'failed' ? <OilSeaPoster /> : null}
       <div ref={mountRef} className="oil-sea-mount" />
       {status === 'loading' ? <span className="sr-only" role="status">바다 그림을 준비하고 있어요</span> : null}

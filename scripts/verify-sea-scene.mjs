@@ -58,6 +58,29 @@ try {
   assert.ok(!before.equals(after), 'the sea moves while the routine plays');
   assert.ok(after.length > 150_000, `the moving painting keeps its detail (${after.length} bytes)`);
 
+  // Dragging over the view turns it a little and letting go eases it back;
+  // a press on the controls never starts a drag.
+  const lookState = () => page.evaluate(() => document.querySelector('.oil-sea')?.getAttribute('data-look') ?? null);
+  await page.evaluate(() => {
+    const canvas = document.querySelector('.oil-sea-canvas');
+    const rect = canvas.getBoundingClientRect();
+    const init = { bubbles: true, isPrimary: true, pointerId: 7, pointerType: 'mouse', button: 0, clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2 };
+    canvas.dispatchEvent(new PointerEvent('pointerdown', init));
+    window.dispatchEvent(new PointerEvent('pointermove', { ...init, clientX: init.clientX + 200, clientY: init.clientY + 60 }));
+  });
+  assert.equal(await lookState(), 'drag', 'a drag over the scene turns the view');
+  await page.waitForTimeout(1500);
+  const turned = await shoot();
+  assert.ok(turned.length > 150_000, `the turned view keeps its detail (${turned.length} bytes)`);
+  await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 7, pointerType: 'mouse', button: 0 })));
+  assert.equal(await lookState(), null, 'letting go eases the view back');
+  await page.evaluate(() => {
+    const time = document.querySelector('[aria-label^="남은 시간"]');
+    time.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, pointerId: 8, pointerType: 'mouse', button: 0 }));
+  });
+  assert.equal(await lookState(), null, 'the controls never start a drag');
+  await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 8, pointerType: 'mouse', button: 0 })));
+
   // Pausing the session freezes the scene (and keeps the rest of the test light).
   await press('일시정지');
   await page.waitForFunction(() => document.querySelector('.oil-sea')?.getAttribute('data-motion') === 'paused');
@@ -81,7 +104,7 @@ try {
   await page.waitForFunction(() => !document.querySelector('.oil-sea-canvas'));
 
   assert.deepEqual(errors, []);
-  console.log('PASS: the ocean shore plays in front of the sea painted in oils (no illustration), shows the finished painting until played, moves while playing, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
+  console.log('PASS: the ocean shore plays in front of the sea painted in oils (no illustration), shows the finished painting until played, moves while playing, turns a little under a drag, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
 } finally {
   await browser.close();
 }

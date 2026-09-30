@@ -159,7 +159,7 @@ export function buildTerrainGeometry(detail = 1) {
  * left out; the land is lit without cast shadows.
  */
 export function buildBackdropGeometry(detail = 1) {
-  const bearings = axis(-0.75, 1.1, () => 0.0024 / detail);
+  const bearings = axis(-0.75, 1.25, () => 0.0024 / detail);
   const rows = Math.round(80 * detail);
   const far = 34000;
   const columns = bearings.length;

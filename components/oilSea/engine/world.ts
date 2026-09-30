@@ -12,6 +12,9 @@
 
 export const CAMERA = { x: 0, y: 61, z: 0, yaw: 0.18, pitch: -0.2 };
 
+/** How far a drag can turn the view from there, each way, in radians (about 8° across, 2.6° up and down). */
+export const LOOK = { yaw: 0.14, pitch: 0.045 } as const;
+
 /** Towards the sun: high in a summer sky behind the viewer's left shoulder, lighting the scene from the side. */
 export const SUN = (() => {
   const azimuth = -2.0; // radians, from north (-z) towards the west (-x)

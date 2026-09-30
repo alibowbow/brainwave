@@ -69,7 +69,7 @@ export const ImmersiveMode: React.FC<Props> = ({
     <div
       className="fixed inset-0 z-[100] flex h-[100dvh] flex-col items-center justify-center overflow-hidden bg-slate-950 text-white animate-fade-in"
       data-scene-surface
-      style={visualMode === 'nature' && backgroundVariant === 'rainy-window' ? { touchAction: 'none' } : undefined}
+      style={visualMode === 'nature' && (backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea') ? { touchAction: 'none' } : undefined}
       onPointerMove={visualMode === 'nature' ? revealControls : undefined}
       onPointerDown={visualMode === 'nature' ? revealControls : undefined}
       role="dialog"

@@ -155,9 +155,10 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
   };
   let placed = 0;
   for (let tries = 0; placed < count && tries < count * 4; tries++) {
-    // A clump somewhere on the part of the headland in view.
+    // A clump somewhere on the part of the headland in view, however far a
+    // drag turns it (narrow screens also see more of the slope below).
     const distance = 5 + Math.pow(rand(), 0.8) * 175;
-    const bearing = -0.05 + rand() * 0.95;
+    const bearing = -0.36 + rand() * 1.36;
     const cx = Math.sin(bearing) * distance;
     const cz = -Math.cos(bearing) * distance;
     const fall = headlandFall(cx, cz);
@@ -295,7 +296,7 @@ export function createShrubs(sunDirection: THREE.Vector3, count: number) {
   let placed = 0;
   for (let tries = 0; placed < count * 2 && tries < count * 40; tries++) {
     const distance = 10 + Math.pow(rand(), 0.8) * 190;
-    const bearing = -0.1 + rand() * 1.05;
+    const bearing = -0.4 + rand() * 1.45;
     const x = Math.sin(bearing) * distance;
     const z = -Math.cos(bearing) * distance;
     if (headlandFall(x, z) > 0.8 || coastDistance(x, z) > -6) continue;

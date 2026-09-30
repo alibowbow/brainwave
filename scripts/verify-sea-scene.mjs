@@ -69,11 +69,15 @@ try {
     window.dispatchEvent(new PointerEvent('pointermove', { ...init, clientX: init.clientX + 200, clientY: init.clientY + 60 }));
   });
   assert.equal(await lookState(), 'drag', 'a drag over the scene moves the view');
-  await page.waitForTimeout(1500);
+  // The painting slides under the view on the page, not by painting it again.
+  const slid = () => page.evaluate(() => document.querySelector('.oil-sea-canvas')?.style.transform ?? '');
+  await page.waitForFunction(() => /translate3d\(\d/.test(document.querySelector('.oil-sea-canvas')?.style.transform ?? ''));
   const turned = await shoot();
   assert.ok(turned.length > 150_000, `the moved view keeps its detail (${turned.length} bytes)`);
   await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 7, pointerType: 'mouse', button: 0 })));
   assert.equal(await lookState(), null, 'letting go eases the view back');
+  await page.waitForFunction(() => !(document.querySelector('.oil-sea-canvas')?.style.transform ?? ''));
+  assert.equal(await slid(), '', 'the painting settles back under the view');
   await page.evaluate(() => {
     const time = document.querySelector('[aria-label^="남은 시간"]');
     time.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, pointerId: 8, pointerType: 'mouse', button: 0 }));

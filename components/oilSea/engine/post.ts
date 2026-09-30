@@ -159,21 +159,19 @@ uniform sampler2D tPaint;
 uniform sampler2D tTensor;
 uniform vec2 uResolution;
 uniform float uCell;
-// How far the view has slid across the painting (whole pixels); the dabs stay on the painting.
-uniform vec2 uPan;
 float hash12(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 vec2 hash22(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973)); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.xx + p3.yz) * p3.zy); }
 void main() {
   vec2 px = vUv * uResolution;
   vec3 base = texture2D(tPaint, vUv).rgb;
-  vec2 cell = floor((px + uPan) / uCell);
+  vec2 cell = floor(px / uCell);
   float best = -1.0;
   vec4 top = vec4(base, 0.0);
   for (int j = -1; j <= 1; j++) {
     for (int i = -1; i <= 1; i++) {
       vec2 c = cell + vec2(float(i), float(j));
       vec2 jitter = hash22(c);
-      vec2 centre = (c + 0.1 + 0.8 * jitter) * uCell - uPan;
+      vec2 centre = (c + 0.1 + 0.8 * jitter) * uCell;
       vec2 at = centre / uResolution;
       // Along the form at the dab's centre (level where there is none).
       vec3 t = texture2D(tTensor, at).xyz;
@@ -229,8 +227,8 @@ uniform vec2 uSun;
 uniform float uSunVisible;
 uniform float uBrush;
 const int STROKE_STEPS = STROKE_STEP_COUNT;
-// How far the view has slid across the painting; the bristle marks stay on it.
-uniform vec2 uPan;
+// How much of the painting's width the view shows (the rest is painted for the view to slide over).
+uniform float uView;
 float hash12(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float vnoise(vec2 p) {
   vec2 i = floor(p);
@@ -257,8 +255,7 @@ vec2 flowAt(vec2 uv) {
   return normalize(mix(vec2(1.0, 0.0), along, strength) + vec2(1e-4, 0.0));
 }
 float bristles(vec2 px) {
-  vec2 p = px + uPan;
-  return vnoise(p / (uBrush * 1.4)) * 0.65 + vnoise(p / (uBrush * 0.6) + 7.0) * 0.35;
+  return vnoise(px / (uBrush * 1.4)) * 0.65 + vnoise(px / (uBrush * 0.6) + 7.0) * 0.35;
 }
 float strokes(vec2 uv) {
   vec2 px = uv * uResolution;
@@ -297,7 +294,8 @@ void main() {
   float cloth = weave(gl_FragCoord.xy);
   col *= 0.985 + 0.025 * cloth;
   col *= vec3(1.015, 1.0, 0.97);
-  vec2 v = vUv - 0.5;
+  // The vignette frames the view.
+  vec2 v = (vUv - 0.5) * vec2(1.0 / uView, 1.0);
   float r = length((vUv - uSun) * vec2(uResolution.x / uResolution.y, 1.0));
   float glow = exp(-r * 6.0) * uSunVisible;
   col *= 1.0 - 0.2 * dot(v * vec2(1.0, 1.25), v * vec2(1.0, 1.25)) * (1.0 - glow);
@@ -333,14 +331,11 @@ export class OilPaintPost {
   private readonly tensor = pass(TENSOR_FRAGMENT, { tColor: { value: null }, uTexel: { value: new THREE.Vector2() } });
   private readonly blur = pass(BLUR_FRAGMENT, { tInput: { value: null }, uStep: { value: new THREE.Vector2() } });
   private readonly kuwahara: ReturnType<typeof pass>;
-  /** How far the view has slid across the painting, shared by the passes whose brushwork stays on it. */
-  private readonly pan = { value: new THREE.Vector2() };
   private readonly dab = pass(DAB_FRAGMENT, {
     tPaint: { value: null },
     tTensor: { value: null },
     uResolution: { value: new THREE.Vector2() },
     uCell: { value: 5 },
-    uPan: this.pan,
   });
   private readonly finish: ReturnType<typeof pass>;
   private readonly finishUniforms = {
@@ -350,7 +345,7 @@ export class OilPaintPost {
     uResolution: { value: new THREE.Vector2() },
     uSun: { value: new THREE.Vector2(0.1, 0.8) },
     uSunVisible: { value: 1 },
-    uPan: this.pan,
+    uView: { value: 1 },
   };
   private colour: THREE.WebGLRenderTarget | null = null;
   private tensorA: THREE.WebGLRenderTarget | null = null;
@@ -376,8 +371,12 @@ export class OilPaintPost {
     });
   }
 
-  /** Size of the painting, and the brush for it (at most the radius it was made for). */
-  setSize(width: number, height: number, radius = this.settings.radius) {
+  /**
+   * Size of the painting, the brush for it (at most the radius it was made
+   * for), and how much of its width the view shows.
+   */
+  setSize(width: number, height: number, radius = this.settings.radius, view = 1) {
+    this.finish.material.uniforms.uView.value = view;
     this.width = width;
     this.height = height;
     this.radius = Math.min(this.settings.radius, Math.max(1.5, radius));
@@ -398,10 +397,6 @@ export class OilPaintPost {
     (this.finish.material.uniforms.uResolution.value as THREE.Vector2).set(width, height);
   }
 
-  /** How many pixels the view has slid across the painting (to the right). */
-  setPan(pixels: number) {
-    this.pan.value.set(pixels, 0);
-  }
 
   /** Where the sun is on screen (0..1), for its glow. */
   setSun(x: number, y: number, visible: boolean) {

@@ -243,9 +243,11 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float along = alongShore(p);
   vec2 laceAt = vec2(along * 0.085, (d + uTime * 1.2) * 0.2);
   vec2 warp = vec2(fbm3(laceAt * 0.35), fbm3(laceAt * 0.35 + 4.0)) - 0.5;
-  float border = min(laceBorder(laceAt + warp * 2.2), laceBorder(laceAt * 2.3 + warp * 3.0 + 7.0) * 1.25);
+  float border = laceBorder(laceAt + warp * 3.2);
   // Threads thicken and thin along their length, and break.
   float threadWidth = 0.25 + 1.3 * fbm3(laceAt * 2.6 + 11.0);
+  // Thin foam keeps only scraps of its lace, not a whole net.
+  float scraps = smoothstep(0.38, 0.62, fbm3(laceAt * 0.45 + 17.0));
   float ragged = vnoise(vec2(along * 0.25, wave * 3.7)) * 0.6 + vnoise(vec2(along * 0.8, wave * 1.9)) * 0.4;
   float thick = 0.55 + 0.45 * vnoise(vec2(along * 0.05, wave * 3.1));
   float lip = smoothstep(0.86 - 0.08 * thick - 0.04 * ragged, 0.93 - 0.05 * thick, cycle) + smoothstep(0.03 + 0.04 * ragged, 0.0, cycle);
@@ -253,9 +255,12 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float swath = smoothstep(0.22, 0.72, vnoise(vec2(along * 0.014 + wave * 4.1, wave * 0.7)) * 0.75 + vnoise(vec2(along * 0.05, wave * 2.3)) * 0.25 + 0.1 * inner);
   float patches = smoothstep(0.3, 0.7, fbm3(p * 0.02 + vec2(0.0, uTime * 0.03)));
   float density = broken * max(lip * (0.3 + 0.7 * swath), bore * (0.35 + 0.65 * swath));
-  // Churned water close in, and old foam lying in threads between the waves.
-  density = max(density, inner * (0.04 + 0.2 * patches) * (0.6 + 0.4 * smoothstep(0.6, 0.0, cycle)));
-  density = max(density, smoothstep(280.0, 140.0, d) * (0.03 + 0.09 * patches));
+  // Churned water close in, and old foam drifting between the waves: in
+  // scattered patches and streaks along the crests, clear water between.
+  float scattered = smoothstep(0.55, 0.85, patches);
+  float streaks = smoothstep(0.5, 0.8, vnoise(vec2(along * 0.025, d * 0.35 + wave * 2.7)));
+  density = max(density, inner * 0.32 * scattered * (0.6 + 0.4 * smoothstep(0.6, 0.0, cycle)));
+  density = max(density, smoothstep(280.0, 140.0, d) * 0.24 * scattered * streaks);
   // Unbroken crests spill a little white at the very top.
   density = max(density, (1.0 - broken) * surfZone * smoothstep(0.955, 0.99, cycle) * smoothstep(0.35, 0.8, ragged) * 0.6);
   // Whitecaps on the open sea.
@@ -267,7 +272,8 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // lace is finer than a pixel, it is seen as a tint.
   float width = density * 0.62 * mix(threadWidth, 1.0, smoothstep(0.5, 0.9, density));
   float laceFoam = 1.0 - smoothstep(width, width + 0.06 + 0.1 * smoothstep(2.0, 10.0, fade), border);
-  float foam = mix(laceFoam * min(1.0, density * 4.0), density, smoothstep(3.0, 14.0, fade));
+  laceFoam *= mix(scraps, 1.0, smoothstep(0.3, 0.55, density));
+  float foam = mix(laceFoam * smoothstep(0.06, 0.3, density), density, smoothstep(3.0, 14.0, fade));
   foam = max(foam, broken * smoothstep(0.3, 0.9, lip) * smoothstep(0.0, 0.4, swath));
   // The swash on the sand, and the lip of each whitecap.
   foam = max(foam, smoothstep(10.0, 1.0, d) * (0.7 + 0.3 * (1.0 - smoothstep(0.1, 0.3, border))));

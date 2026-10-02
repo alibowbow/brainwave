@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CLOUD_SHADOW_GLSL } from './clouds';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
 import { Raster } from './raster';
 import { LIGHT_GLSL } from './terrain';
@@ -261,8 +262,12 @@ export function createTrees(sunDirection: THREE.Vector3, count: number) {
       varying vec2 vUv;
       varying vec3 vWorld;
       varying float vTint;
+      varying float vShadow;
+      ${NOISE_GLSL}
+      ${CLOUD_SHADOW_GLSL}
       void main() {
         vec3 base = aPlace.xyz;
+        vShadow = cloudShadow(base);
         vec3 toCamera = cameraPosition - base;
         toCamera.y = 0.0;
         toCamera = normalize(toCamera);
@@ -282,6 +287,7 @@ export function createTrees(sunDirection: THREE.Vector3, count: number) {
       varying vec2 vUv;
       varying vec3 vWorld;
       varying float vTint;
+      varying float vShadow;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
@@ -293,6 +299,8 @@ export function createTrees(sunDirection: THREE.Vector3, count: number) {
         vec3 col = tree.rgb * tint;
         // The image carries its own light; the day adds the sky's blue in the shade.
         col = col * vec3(1.05, 1.03, 0.98) + vec3(0.01, 0.02, 0.05) * (1.0 - tree.g);
+        // Under a cloud's shadow only the sky's cooler light is left.
+        col *= mix(vec3(1.0), vec3(0.6, 0.66, 0.8), vShadow);
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,

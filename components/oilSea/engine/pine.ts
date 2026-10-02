@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Raster } from './raster';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
+import { CLOUD_SHADOW_GLSL } from './clouds';
 import { LIGHT_GLSL } from './terrain';
 import { terrainHeight } from './world';
 
@@ -272,8 +273,12 @@ export function createPine(sunDirection: THREE.Vector3) {
       varying vec3 vWorld;
       varying vec3 vNormal;
       varying vec3 vBark;
+      varying float vSunlit;
+      ${NOISE_GLSL}
+      ${CLOUD_SHADOW_GLSL}
       void main() {
         vec3 p = swayed(position);
+        vSunlit = cloudSun(uBase);
         vWorld = p;
         vNormal = normal;
         vBark = aBark;
@@ -284,6 +289,7 @@ export function createPine(sunDirection: THREE.Vector3) {
       varying vec3 vWorld;
       varying vec3 vNormal;
       varying vec3 vBark;
+      varying float vSunlit;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
@@ -322,7 +328,7 @@ export function createPine(sunDirection: THREE.Vector3) {
         albedo = mix(albedo, vec3(0.56, 0.6, 0.5), lichen * 0.7);
         // Undersides and the cracks' depths get little of the sky.
         float open = (0.55 + 0.45 * smoothstep(-0.7, 0.6, n.y)) * (1.0 - 0.25 * crack);
-        vec3 col = lightGround(albedo, n, 1.0) * 1.15 * open;
+        vec3 col = lightGround(albedo, n, vSunlit) * 1.15 * open;
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,
@@ -373,7 +379,11 @@ export function createPine(sunDirection: THREE.Vector3) {
       varying vec3 vWorld;
       varying float vShade;
       varying float vHue;
+      varying float vShadow;
+      ${NOISE_GLSL}
+      ${CLOUD_SHADOW_GLSL}
       void main() {
+        vShadow = cloudShadow(uBase);
         float kind = floor(aShade.z);
         vUv = vec2((kind + (fract(aShade.z) > 0.25 ? 1.0 - uv.x : uv.x)) / ${CLUMP_KINDS.toFixed(1)}, uv.y);
         vHue = aShade.w;
@@ -396,6 +406,7 @@ export function createPine(sunDirection: THREE.Vector3) {
       varying vec3 vWorld;
       varying float vShade;
       varying float vHue;
+      varying float vShadow;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
@@ -410,7 +421,8 @@ export function createPine(sunDirection: THREE.Vector3) {
         vec3 albedo = clump.rgb;
         // The sun shines through the thin edges of the crown.
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 4.0);
-        col += albedo * vec3(0.7, 0.95, 0.45) * through * vShade * 0.4;
+        col += albedo * vec3(0.7, 0.95, 0.45) * through * vShade * 0.4 * (1.0 - vShadow);
+        col *= mix(vec3(1.0), vec3(0.6, 0.66, 0.8), vShadow);
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,

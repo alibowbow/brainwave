@@ -120,6 +120,28 @@ function bakeAtlas() {
 /** How far the clouds drift across the view, in metres per second at any distance. */
 const DRIFT_SPEED = 6;
 
+/** Which way they drift over the ground (across the view, to the right). */
+const DRIFT = { x: Math.cos(CAMERA.yaw) * DRIFT_SPEED, z: Math.sin(CAMERA.yaw) * DRIFT_SPEED };
+
+/**
+ * The clouds' shadows, drifting over land and sea as the clouds do: soft
+ * patches a few hundred metres to a kilometre or two across. cloudShadow is
+ * how deep in one a point is (0 in the open); cloudSun how much of the sun
+ * gets through there. Right by the viewer a passing shadow only dims the
+ * light a little, so the painting's foreground keeps its colours. Needs
+ * NOISE_GLSL and uTime.
+ */
+export const CLOUD_SHADOW_GLSL = /* glsl */ `
+float cloudShadow(vec3 world) {
+  vec2 q = (world.xz - vec2(${DRIFT.x.toFixed(3)}, ${DRIFT.z.toFixed(3)}) * uTime) * 0.0017;
+  float cover = fbm3(q + vec2(0.3, 7.7)) + 0.3 * vnoise(q * 3.7 + 7.0);
+  return smoothstep(0.665, 0.735, cover) * mix(0.3, 1.0, smoothstep(60.0, 450.0, distance(world.xz, cameraPosition.xz)));
+}
+float cloudSun(vec3 world) {
+  return 1.0 - 0.62 * cloudShadow(world);
+}
+`;
+
 /*
  * The summer clouds: cloud images hung in a layer over the sea and the
  * land, upright and turned to the viewer. Perspective does the rest: near
@@ -148,7 +170,7 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
     // Clouds gather in groups: a big heap with smaller ones beside it.
     const group = 1 + Math.floor(rand() * rand() * 4);
     for (let k = 0; k < group && clouds.length < count; k++) {
-      const angular = (0.07 + 1.3 * elevation) * (0.6 + 0.9 * rand()) * (k === 0 ? 1 : 0.55 + 0.3 * rand());
+      const angular = (0.07 + 1.3 * Math.min(elevation, 0.1) + 0.8 * Math.max(0, elevation - 0.1)) * (0.6 + 0.9 * rand()) * (k === 0 ? 1 : 0.55 + 0.3 * rand());
       const width = depth * angular;
       const flatten = 0.4 + 0.6 * Math.min(1, elevation / 0.12);
       const low = elevation < 0.03 && rand() < 0.6;
@@ -165,8 +187,19 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
       });
     }
   }
+  // High in the sky, where clouds loom largest (a tall view sees far up it),
+  // leave more of it blue.
+  let thinning = 77;
+  const keep = () => {
+    thinning = (thinning * 1664525 + 1013904223) >>> 0;
+    return thinning / 4294967296;
+  };
+  const shown = clouds.filter((cloud) => {
+    const elevation = Math.atan2(cloud.altitude, cloud.depth);
+    return elevation < 0.1 || keep() < Math.pow(0.1 / elevation, 2.2);
+  });
   // Far to near, so nearer clouds are drawn over farther ones.
-  clouds.sort((a, b) => b.depth - a.depth);
+  shown.sort((a, b) => b.depth - a.depth);
 
   const quad = new THREE.PlaneGeometry(1, 1);
   quad.translate(0, 0.5, 0);
@@ -174,9 +207,9 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
   geometry.index = quad.index;
   geometry.setAttribute('position', quad.getAttribute('position'));
   geometry.setAttribute('uv', quad.getAttribute('uv'));
-  const place = new Float32Array(clouds.length * 4);
-  const size = new Float32Array(clouds.length * 4);
-  clouds.forEach((cloud, i) => {
+  const place = new Float32Array(shown.length * 4);
+  const size = new Float32Array(shown.length * 4);
+  shown.forEach((cloud, i) => {
     place.set([cloud.depth, cloud.side, cloud.altitude, cloud.depth], i * 4);
     const column = cloud.tile % COLUMNS;
     const row = Math.floor(cloud.tile / COLUMNS);
@@ -184,7 +217,7 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
   });
   geometry.setAttribute('aPlace', new THREE.InstancedBufferAttribute(place, 4));
   geometry.setAttribute('aSize', new THREE.InstancedBufferAttribute(size, 4));
-  geometry.instanceCount = clouds.length;
+  geometry.instanceCount = shown.length;
 
   const material = new THREE.ShaderMaterial({
     uniforms: {

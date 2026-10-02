@@ -6,6 +6,7 @@ import { createBoats } from './boats';
 import { createBuildings } from './buildings';
 import { createClouds } from './clouds';
 import { createGrass, createShrubs } from './grass';
+import { createGulls } from './gulls';
 import { createOcean } from './ocean';
 import { createPine } from './pine';
 import { OilPaintPost } from './post';
@@ -40,13 +41,14 @@ interface Profile {
   shrubs: number;
   rocks: number;
   trees: number;
+  gulls: number;
 }
 
 const PROFILES: Record<SeasideQuality, Profile> = {
-  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 132, grass: 31000, shrubs: 1200, rocks: 140, trees: 9000 },
-  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 120, grass: 21500, shrubs: 820, rocks: 110, trees: 6400 },
-  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 102, grass: 12800, shrubs: 530, rocks: 80, trees: 3850 },
-  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 84, grass: 7100, shrubs: 300, rocks: 70, trees: 2050 },
+  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 132, grass: 31000, shrubs: 1200, rocks: 140, trees: 9000, gulls: 6 },
+  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 120, grass: 21500, shrubs: 820, rocks: 110, trees: 6400, gulls: 6 },
+  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 102, grass: 12800, shrubs: 530, rocks: 80, trees: 3850, gulls: 5 },
+  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 84, grass: 7100, shrubs: 300, rocks: 70, trees: 2050, gulls: 4 },
 };
 
 const REFERENCE_PIXELS = 1280 * 720;
@@ -174,7 +176,9 @@ export class SeasideEngine implements LiveSceneEngine {
     this.scene.add(boats.mesh);
     const pine = createPine(this.sunDirection);
     this.scene.add(pine.group);
-    this.timed.push(sky.material, clouds.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, trees.material, buildings.material, boats.material, ...pine.materials);
+    const gulls = createGulls(this.sunDirection, profile.gulls);
+    this.scene.add(gulls.mesh);
+    this.timed.push(sky.material, clouds.material, ocean.material, terrain.material, grass.material, shrubs.material, rocks.material, trees.material, buildings.material, boats.material, gulls.material, ...pine.materials);
     this.textures.push(clouds.texture, grass.texture, shrubs.texture, trees.texture, ...pine.textures);
     await this.renderer.compileAsync(this.scene, this.camera);
     if (this.disposed) return;

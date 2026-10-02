@@ -1,20 +1,38 @@
 import * as THREE from 'three';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { CLOUD_SHADOW_GLSL } from './clouds';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
 import { LIGHT_GLSL } from './terrain';
 import { CAMERA, headlandPoint, noise2, SLOPE_RUN, terrainHeight } from './world';
 
-/** A boulder: a ball pushed in and out by noise, flattened, with a few facets cut in. */
+/** How many different boulders the rocks are drawn from. */
+const SHAPES = 3;
+
+/**
+ * A boulder: a lump pushed in and out by noise and split along a few
+ * fracture planes into flat faces with rounded edges, then squashed. Its
+ * vertices are shared, so it is shaded smoothly between the faces.
+ */
 function boulderGeometry(seed: number) {
-  const geometry = new THREE.IcosahedronGeometry(1, 3);
+  const geometry = mergeVertices(new THREE.IcosahedronGeometry(1, 3).deleteAttribute('normal').deleteAttribute('uv'));
   const position = geometry.attributes.position as THREE.BufferAttribute;
   const v = new THREE.Vector3();
+  // Fracture planes: which way each faces, and how far out it cuts.
+  const planes: { n: THREE.Vector3; d: number }[] = [];
+  for (let i = 0; i < 5; i++) {
+    const a = seed * 3.1 + i * 2.39;
+    const up = -0.35 + 0.9 * noise2(seed * 7 + i, 1.3);
+    planes.push({ n: new THREE.Vector3(Math.cos(a), up, Math.sin(a)).normalize(), d: 0.62 + 0.2 * noise2(seed * 5, i * 1.7) });
+  }
   for (let i = 0; i < position.count; i++) {
     v.fromBufferAttribute(position, i);
-    const bump = 0.75 + 0.35 * noise2(v.x * 1.7 + seed, v.y * 1.7 + v.z * 1.3) + 0.12 * noise2(v.x * 5 + seed, v.z * 5 - v.y);
+    const bump = 0.8 + 0.28 * noise2(v.x * 1.5 + seed, v.y * 1.5 + v.z * 1.2) + 0.08 * noise2(v.x * 4.6 + seed, v.z * 4.6 - v.y * 2);
     v.multiplyScalar(bump);
-    // Cut flat faces: clamp against a few planes.
-    v.y = Math.min(v.y, 0.55 + 0.1 * noise2(v.x * 2, v.z * 2 + seed));
-    v.x = Math.min(v.x, 0.8);
+    // Cut along the planes, keeping a little of the rounding at their edges.
+    for (const plane of planes) {
+      const over = v.dot(plane.n) - plane.d;
+      if (over > 0) v.addScaledVector(plane.n, -over * 0.85);
+    }
     v.y *= 0.62;
     position.setXYZ(i, v.x, v.y, v.z);
   }
@@ -23,12 +41,12 @@ function boulderGeometry(seed: number) {
 }
 
 /**
- * Rocks where the headland meets the water: dark boulders and ledges along
+ * Rocks where the headland meets the water: grey boulders and ledges along
  * its foot, the sea washing round them, and a few breaking through the grass
- * higher up.
+ * higher up. Their stone is layered and cracked, crusted on top with
+ * orange and grey-green lichen, dark and weedy where the sea reaches.
  */
 export function createRocks(sunDirection: THREE.Vector3, count: number) {
-  const geometry = boulderGeometry(3.7);
   const material = new THREE.ShaderMaterial({
     uniforms: {
       uSunDir: { value: sunDirection },
@@ -36,13 +54,20 @@ export function createRocks(sunDirection: THREE.Vector3, count: number) {
       uHaze: { value: 1 },
     },
     vertexShader: /* glsl */ `
+      uniform float uTime;
       varying vec3 vWorld;
       varying vec3 vNormal;
       varying vec3 vLocal;
+      varying float vSeed;
+      varying float vSunlit;
+      ${NOISE_GLSL}
+      ${CLOUD_SHADOW_GLSL}
       void main() {
         vec4 world = modelMatrix * instanceMatrix * vec4(position, 1.0);
         vWorld = world.xyz;
+        vSunlit = cloudSun(world.xyz);
         vLocal = position;
+        vSeed = fract(instanceMatrix[3].x * 0.137 + instanceMatrix[3].z * 0.071);
         vNormal = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * normal);
         gl_Position = projectionMatrix * viewMatrix * world;
       }
@@ -51,23 +76,47 @@ export function createRocks(sunDirection: THREE.Vector3, count: number) {
       varying vec3 vWorld;
       varying vec3 vNormal;
       varying vec3 vLocal;
+      varying float vSeed;
+      varying float vSunlit;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
       void main() {
         vec3 n = normalize(vNormal);
-        float grain = vnoise(vLocal.xz * 6.0 + vLocal.y * 3.0) * 0.6 + vnoise(vWorld.xz * 0.9) * 0.4;
-        vec3 albedo = mix(vec3(0.2, 0.19, 0.18), vec3(0.52, 0.5, 0.46), grain);
-        // Lichen and moss on the tops.
-        albedo = mix(albedo, vec3(0.42, 0.48, 0.28), smoothstep(0.6, 0.9, n.y) * 0.5);
-        // Wet and dark where the sea reaches.
-        albedo *= mix(0.55, 1.0, smoothstep(0.3, 1.6, vWorld.y));
-        vec3 col = lightGround(albedo, n, 1.0);
+        // Patterns laid out in metres, whatever the rock's size.
+        vec3 w = vWorld + vSeed * 31.0;
+        // Grey stone, warmer or cooler from rock to rock, grainy.
+        float grain = vnoise(w.xz * 3.0 + w.y) * 0.6 + vnoise(w.xz * 0.9 - w.y * 0.5) * 0.4;
+        vec3 stone = mix(vec3(0.42, 0.41, 0.4), vec3(0.52, 0.49, 0.45), vSeed);
+        vec3 albedo = stone * (0.78 + 0.38 * grain);
+        // Its beds: faint bands across the rock, and a few cracks.
+        float bed = vLocal.y * 14.0 + vLocal.x * 3.0 + vnoise(w.xz * 0.6) * 1.5;
+        albedo *= 0.94 + 0.06 * sin(bed * 3.1416);
+        float crack = 1.0 - smoothstep(0.008, 0.03, abs(vnoise(w.xz * 0.45 + w.y * 0.3) - 0.5));
+        albedo *= 1.0 - 0.35 * crack;
+        // Lichen crusts on the tops: grey-green, and small patches of orange.
+        float top = smoothstep(0.4, 0.85, n.y);
+        float green = smoothstep(0.52, 0.66, fbm3(w.xz * 1.1 + 9.0)) * top;
+        float orange = smoothstep(0.6, 0.68, fbm3(w.xz * 2.2 + 3.0)) * top;
+        albedo = mix(albedo, vec3(0.58, 0.63, 0.5), green * 0.6);
+        albedo = mix(albedo, vec3(0.8, 0.57, 0.22), orange * 0.7);
+        // Dark and weedy where the sea reaches, wet just above.
+        float height = vWorld.y;
+        albedo = mix(albedo, vec3(0.16, 0.16, 0.1), smoothstep(1.2, 0.4, height) * (0.6 + 0.4 * vnoise(vWorld.xz * 2.0)));
+        albedo *= mix(0.62, 1.0, smoothstep(0.6, 2.2, height));
+        vec3 col = lightGround(albedo, n, vSunlit);
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,
   });
-  const mesh = new THREE.InstancedMesh(geometry, material, count);
+  const group = new THREE.Group();
+  const meshes = Array.from({ length: SHAPES }, (_, i) => {
+    const mesh = new THREE.InstancedMesh(boulderGeometry(3.7 + i * 5.3), material, Math.ceil(count / SHAPES));
+    mesh.count = 0;
+    mesh.frustumCulled = false;
+    group.add(mesh);
+    return mesh;
+  });
   let s = 881;
   const rand = () => {
     s = (s * 1664525 + 1013904223) >>> 0;
@@ -97,9 +146,9 @@ export function createRocks(sunDirection: THREE.Vector3, count: number) {
     quaternion.setFromEuler(euler);
     scale.set(size * (0.8 + 0.5 * rand()), size * (0.7 + 0.5 * rand()), size * (0.8 + 0.5 * rand()));
     matrix.compose(position, quaternion, scale);
-    mesh.setMatrixAt(placed++, matrix);
+    const mesh = meshes[placed % SHAPES];
+    mesh.setMatrixAt(mesh.count++, matrix);
+    placed++;
   }
-  mesh.count = placed;
-  mesh.frustumCulled = false;
-  return { mesh, material };
+  return { mesh: group, material };
 }

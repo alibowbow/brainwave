@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
+import { CLOUD_SHADOW_GLSL } from './clouds';
 import { LIGHT_GLSL } from './terrain';
 import { CAMERA, coastDistance, farmland, fieldAt, headlandFall, terrainHeight } from './world';
 
@@ -177,8 +178,9 @@ export function createBuildings(sunDirection: THREE.Vector3) {
       ${NOISE_GLSL}
       ${SKY_GLSL}
       ${LIGHT_GLSL}
+      ${CLOUD_SHADOW_GLSL}
       void main() {
-        vec3 col = lightGround(vColour, normalize(vNormal), 1.0);
+        vec3 col = lightGround(vColour, normalize(vNormal), cloudSun(vWorld));
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);
       }
     `,

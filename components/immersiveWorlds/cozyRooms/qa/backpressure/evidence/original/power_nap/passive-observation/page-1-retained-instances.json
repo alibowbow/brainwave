@@ -1,0 +1,135 @@
+[
+  {
+    "instance": 1,
+    "taps": 23,
+    "lastHit": "canopy",
+    "frames": 7,
+    "time": 8.150000000000002,
+    "running": false,
+    "gpu": {
+      "submitted": 7,
+      "returned": 7,
+      "completed": 6,
+      "polls": 383,
+      "timeouts": 377,
+      "maxInFlight": 1,
+      "lastSubmit": 13198.80000000447,
+      "lastComplete": 13195.89999999851,
+      "lastWait": "TIMEOUT_EXPIRED",
+      "phase": "submitted",
+      "inFlight": 1,
+      "unconfirmed": 1,
+      "pending": 0,
+      "pollScheduled": false,
+      "failure": null,
+      "cleanupErrors": []
+    },
+    "phases": {
+      "constructorStart": 365.20000000298023,
+      "constructorEnd": 377,
+      "factoryStart": 384.5,
+      "factoryEnd": 821,
+      "initEnd": 822.5,
+      "firstRenderStart": 833.3000000044703,
+      "firstRenderEnd": 1316.8000000044703,
+      "disposeStart": 0,
+      "disposeEnd": 0
+    },
+    "drawCalls": 405,
+    "triangles": 1649238,
+    "memory": {
+      "geometries": 207,
+      "textures": 19
+    },
+    "lifetime": {
+      "created": 1,
+      "disposed": 0
+    },
+    "status": "ready",
+    "retired": []
+  },
+  {
+    "instance": 2,
+    "taps": 0,
+    "lastHit": "none",
+    "frames": 1,
+    "time": 8,
+    "running": false,
+    "gpu": {
+      "submitted": 1,
+      "returned": 1,
+      "completed": 0,
+      "polls": 0,
+      "timeouts": 0,
+      "maxInFlight": 1,
+      "lastSubmit": 20256.20000000298,
+      "lastComplete": 0,
+      "lastWait": "none",
+      "phase": "submitted",
+      "inFlight": 1,
+      "unconfirmed": 1,
+      "pending": null,
+      "pollScheduled": false,
+      "failure": null,
+      "cleanupErrors": []
+    },
+    "phases": {
+      "constructorStart": 19631.70000000298,
+      "constructorEnd": 19640.60000000149,
+      "factoryStart": 19641,
+      "factoryEnd": 19964.5,
+      "initEnd": 19965.20000000298,
+      "firstRenderStart": 19973.80000000447,
+      "firstRenderEnd": 20256.20000000298,
+      "disposeStart": 0,
+      "disposeEnd": 0
+    },
+    "drawCalls": 405,
+    "triangles": 1649238,
+    "memory": {
+      "geometries": 207,
+      "textures": 19
+    },
+    "lifetime": {
+      "created": 2,
+      "disposed": 1
+    },
+    "status": "ready",
+    "retired": [
+      {
+        "instance": 1,
+        "frames": 7,
+        "time": 8.150000000000002,
+        "gpu": {
+          "submitted": 7,
+          "returned": 7,
+          "completed": 6,
+          "polls": 383,
+          "timeouts": 377,
+          "maxInFlight": 1,
+          "lastSubmit": 13198.80000000447,
+          "lastComplete": 13195.89999999851,
+          "lastWait": "TIMEOUT_EXPIRED",
+          "phase": "disposed",
+          "inFlight": 0,
+          "unconfirmed": 1,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 365.20000000298023,
+          "constructorEnd": 377,
+          "factoryStart": 384.5,
+          "factoryEnd": 821,
+          "initEnd": 822.5,
+          "firstRenderStart": 833.3000000044703,
+          "firstRenderEnd": 1316.8000000044703,
+          "disposeStart": 19601.89999999851,
+          "disposeEnd": 19607.10000000149
+        }
+      }
+    ]
+  }
+]

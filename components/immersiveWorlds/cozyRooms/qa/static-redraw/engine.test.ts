@@ -23,7 +23,14 @@ vi.mock('three',async importOriginal=>{
     private canvas:HTMLCanvasElement;
     shadowMap={enabled:false,type:0};
     info={render:{calls:0,triangles:0},memory:{geometries:0,textures:0}};
+    // Immediate completion is deliberate in this older behavior suite. The
+    // separate backpressure suite controls real ordering/status scenarios.
+    private gl={SYNC_GPU_COMMANDS_COMPLETE:0x9117,ALREADY_SIGNALED:0x911a,
+      TIMEOUT_EXPIRED:0x911b,CONDITION_SATISFIED:0x911c,WAIT_FAILED:0x911d,
+      fenceSync:vi.fn(()=>({})),flush:vi.fn(),clientWaitSync:vi.fn(()=>0x911a),
+      deleteSync:vi.fn(),isContextLost:()=>false};
     constructor(options:{canvas:HTMLCanvasElement}){this.canvas=options.canvas;rendererState.instances.push(this);}
+    getContext(){return this.gl;}
     getSize(target:THREE.Vector2){return target.copy(this.size);}
     getPixelRatio(){return this.ratio;}
     setSize=vi.fn((width:number,height:number,_updateStyle?:boolean)=>{
@@ -40,6 +47,7 @@ vi.mock('three',async importOriginal=>{
 
 class CanvasDouble extends EventTarget {
   dataset:Record<string,string>={};
+  isConnected=true;
   width=300; height=150; className=''; parentElement:unknown=null;
   setAttribute=vi.fn();
   remove(){this.parentElement=null;}
@@ -74,13 +82,16 @@ function flushFrames(now:number){
 async function fixture(){
   const parts=worldFixture(),canvas=new CanvasDouble();
   const factory=vi.fn(()=>parts.world);
-  const engine=new CozyEngine(canvas as unknown as HTMLCanvasElement,factory,vi.fn());engines.push(engine);
+  const onLost=vi.fn();
+  const engine=new CozyEngine(canvas as unknown as HTMLCanvasElement,factory,onLost);engines.push(engine);
   engine.setSize(960,700,1);await engine.init();
   const renderer=rendererState.instances.at(-1)!;
-  return {...parts,canvas,factory,engine,renderer};
+  return {...parts,canvas,factory,engine,renderer,onLost};
 }
 beforeEach(()=>{
   vi.useFakeTimers();rendererState.instances.length=0;pendingFrames.clear();rafSerial=0;
+  vi.stubGlobal('document',Object.assign(new EventTarget(),{hidden:false}));
+  vi.stubGlobal('window',Object.assign(new EventTarget(),{setTimeout,clearTimeout,innerWidth:960,innerHeight:700,devicePixelRatio:1}));
   vi.stubGlobal('requestAnimationFrame',vi.fn((callback:FrameRequestCallback)=>{
     const id=++rafSerial;pendingFrames.set(id,callback);return id;
   }));
@@ -144,7 +155,7 @@ describe('CozyEngine static redraw behavior at the renderer boundary',()=>{
   it('keeps the shared host canvas and submits each same-size holder transfer/restoration',async()=>{
     const parts=worldFixture(),canvas=new CanvasDouble();let engine:CozyEngine;
     vi.stubGlobal('window',{setTimeout,clearTimeout,innerWidth:960,innerHeight:700,devicePixelRatio:1});
-    vi.stubGlobal('document',{createElement:()=>canvas});
+    vi.stubGlobal('document',Object.assign(new EventTarget(),{hidden:false,createElement:()=>canvas}));
     vi.stubGlobal('ResizeObserver',class{observe(){}disconnect(){}});
     const host=new LiveSceneHost({canvasClass:'cozy-test',isSupported:()=>true,create:(element,onLost)=>{
       engine=new CozyEngine(element,()=>parts.world,onLost);engines.push(engine);return engine;
@@ -213,7 +224,7 @@ describe('CozyEngine static redraw behavior at the renderer boundary',()=>{
     expect(f.engine.diagnostics().time).toBe(before.time);
   });
 
-  it('does not mistake a thrown positive render for a successful static frame',async()=>{
+  it('keeps failed counters honest and requires a new engine after a thrown render',async()=>{
     const f=await fixture();f.engine.renderFrame(0);const before=f.engine.diagnostics();
     f.renderer.render.mockImplementationOnce(()=>{throw new Error('render failed');});
     expect(()=>f.engine.renderFrame(.02)).toThrow('render failed');
@@ -222,10 +233,13 @@ describe('CozyEngine static redraw behavior at the renderer boundary',()=>{
     expect(failed.time).toBeCloseTo(before.time+.02); // The world update happened; no successful draw is claimed.
     expect(f.update).toHaveBeenLastCalledWith(failed.time,.02);
     const updates=f.update.mock.calls.length;
-    f.engine.renderFrame(0);expect(f.renderer.render).toHaveBeenCalledTimes(3);
-    expect(f.update).toHaveBeenCalledTimes(updates+1);expect(f.update).toHaveBeenLastCalledWith(failed.time,0);
-    expect(f.engine.diagnostics()).toMatchObject({frames:before.frames+1,time:failed.time});
-    f.engine.renderFrame(0);expect(f.renderer.render).toHaveBeenCalledTimes(3);
+    expect(f.onLost).toHaveBeenCalledTimes(1);
+    f.engine.renderFrame(0);f.engine.start();flushFrames(performance.now()+16);
+    expect(f.renderer.render).toHaveBeenCalledTimes(2);expect(f.update).toHaveBeenCalledTimes(updates);
+    expect(f.engine.diagnostics()).toMatchObject({frames:before.frames,time:failed.time});
+    const fresh=await fixture();fresh.engine.renderFrame(0);
+    expect(fresh.engine.instance).not.toBe(f.engine.instance);
+    expect(fresh.renderer.render).toHaveBeenCalledTimes(1);
   });
 
   it('does not leave deferred draws behind a skip, stop, or idempotent disposal',async()=>{

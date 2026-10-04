@@ -1,0 +1,1925 @@
+[
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 1,
+    "type": "observer-installed",
+    "at": 14.299999997019768,
+    "intervalMs": 1000,
+    "noExtraGLCalls": true
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 2,
+    "type": "sample",
+    "at": 2174.7999999970198,
+    "reason": "interval",
+    "lagMs": 1159.2999999970198,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 2169.5999999940395,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 676,
+      "triangles": 2697394,
+      "memory": {
+        "geometries": 373,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": null,
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 3,
+    "type": "sample",
+    "at": 3015.5,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 2169.5999999940395,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 676,
+      "triangles": 2697394,
+      "memory": {
+        "geometries": 373,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 4,
+    "type": "sample",
+    "at": 4015.6999999955297,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 2169.5999999940395,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 676,
+      "triangles": 2697394,
+      "memory": {
+        "geometries": 373,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 5,
+    "type": "sample",
+    "at": 5015.69999999553,
+    "reason": "interval",
+    "lagMs": 0.10000000149011612,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 2169.5999999940395,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 676,
+      "triangles": 2697394,
+      "memory": {
+        "geometries": 373,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 6,
+    "type": "sample",
+    "at": 6015.69999999553,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 2169.5999999940395,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 676,
+      "triangles": 2697394,
+      "memory": {
+        "geometries": 373,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 7,
+    "type": "sample",
+    "at": 7015.79999999702,
+    "reason": "interval",
+    "lagMs": 0.10000000149011612,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 2,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 2,
+        "returned": 2,
+        "completed": 1,
+        "polls": 1,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 6673.19999999553,
+        "lastComplete": 6648,
+        "lastWait": "CONDITION_SATISFIED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 559,
+      "triangles": 2655332,
+      "memory": {
+        "geometries": 373,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "2",
+        "connected": true,
+        "backingWidth": 412,
+        "backingHeight": 915,
+        "cssWidth": 412,
+        "cssHeight": 915
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 8,
+    "type": "sample",
+    "at": 8015.5,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 2,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 2,
+        "returned": 2,
+        "completed": 1,
+        "polls": 1,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 6673.19999999553,
+        "lastComplete": 6648,
+        "lastWait": "CONDITION_SATISFIED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 559,
+      "triangles": 2655332,
+      "memory": {
+        "geometries": 373,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "2",
+        "connected": true,
+        "backingWidth": 412,
+        "backingHeight": 915,
+        "cssWidth": 412,
+        "cssHeight": 915
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 9,
+    "type": "sample",
+    "at": 9015.59999999404,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 3,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 3,
+        "returned": 3,
+        "completed": 2,
+        "polls": 2,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 8154.0999999940395,
+        "lastComplete": 8140.5,
+        "lastWait": "CONDITION_SATISFIED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 704,
+      "triangles": 2710898,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "3",
+        "connected": true,
+        "backingWidth": 915,
+        "backingHeight": 412,
+        "cssWidth": 915,
+        "cssHeight": 412
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 10,
+    "type": "sample",
+    "at": 10015.5,
+    "reason": "interval",
+    "lagMs": 0.10000000149011612,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 3,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 3,
+        "returned": 3,
+        "completed": 2,
+        "polls": 2,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 8154.0999999940395,
+        "lastComplete": 8140.5,
+        "lastWait": "CONDITION_SATISFIED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 704,
+      "triangles": 2710898,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "3",
+        "connected": true,
+        "backingWidth": 915,
+        "backingHeight": 412,
+        "cssWidth": 915,
+        "cssHeight": 412
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 11,
+    "type": "sample",
+    "at": 11016.29999999702,
+    "reason": "interval",
+    "lagMs": 1,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 4,
+      "time": 8,
+      "running": true,
+      "gpu": {
+        "submitted": 4,
+        "returned": 4,
+        "completed": 3,
+        "polls": 24,
+        "timeouts": 21,
+        "maxInFlight": 1,
+        "lastSubmit": 10659.19999999553,
+        "lastComplete": 10647.39999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "4",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 12,
+    "type": "sample",
+    "at": 12015.29999999702,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 4,
+      "time": 8,
+      "running": true,
+      "gpu": {
+        "submitted": 4,
+        "returned": 4,
+        "completed": 3,
+        "polls": 84,
+        "timeouts": 81,
+        "maxInFlight": 1,
+        "lastSubmit": 10659.19999999553,
+        "lastComplete": 10647.39999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "4",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 13,
+    "type": "sample",
+    "at": 13015.29999999702,
+    "reason": "interval",
+    "lagMs": 0.09999999403953552,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 5,
+      "time": 8.05,
+      "running": true,
+      "gpu": {
+        "submitted": 5,
+        "returned": 5,
+        "completed": 4,
+        "polls": 144,
+        "timeouts": 140,
+        "maxInFlight": 1,
+        "lastSubmit": 12847.79999999702,
+        "lastComplete": 12843.79999999702,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "5",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 14,
+    "type": "sample",
+    "at": 14015.19999999553,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 5,
+      "time": 8.05,
+      "running": true,
+      "gpu": {
+        "submitted": 5,
+        "returned": 5,
+        "completed": 4,
+        "polls": 204,
+        "timeouts": 200,
+        "maxInFlight": 1,
+        "lastSubmit": 12847.79999999702,
+        "lastComplete": 12843.79999999702,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "5",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 15,
+    "type": "sample",
+    "at": 15015.19999999553,
+    "reason": "interval",
+    "lagMs": 0.09999999403953552,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 6,
+      "time": 8.100000000000001,
+      "running": true,
+      "gpu": {
+        "submitted": 6,
+        "returned": 6,
+        "completed": 5,
+        "polls": 264,
+        "timeouts": 259,
+        "maxInFlight": 1,
+        "lastSubmit": 14997.5,
+        "lastComplete": 14993.79999999702,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.016600000000000364,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "6",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 16,
+    "type": "sample",
+    "at": 16015.29999999702,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 6,
+      "time": 8.100000000000001,
+      "running": true,
+      "gpu": {
+        "submitted": 6,
+        "returned": 6,
+        "completed": 5,
+        "polls": 324,
+        "timeouts": 319,
+        "maxInFlight": 1,
+        "lastSubmit": 14997.5,
+        "lastComplete": 14993.79999999702,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "6",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 17,
+    "type": "sample",
+    "at": 17015.29999999702,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 6,
+      "time": 8.100000000000001,
+      "running": true,
+      "gpu": {
+        "submitted": 6,
+        "returned": 6,
+        "completed": 5,
+        "polls": 384,
+        "timeouts": 379,
+        "maxInFlight": 1,
+        "lastSubmit": 14997.5,
+        "lastComplete": 14993.79999999702,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "6",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 18,
+    "type": "sample",
+    "at": 18015.5,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 457,
+        "timeouts": 451,
+        "maxInFlight": 1,
+        "lastSubmit": 17249.09999999404,
+        "lastComplete": 17243.59999999404,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": true,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "7",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 19,
+    "type": "sample",
+    "at": 19015.59999999404,
+    "reason": "interval",
+    "lagMs": 0.20000000298023224,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 488,
+        "timeouts": 482,
+        "maxInFlight": 1,
+        "lastSubmit": 17249.09999999404,
+        "lastComplete": 17243.59999999404,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 20,
+    "type": "sample",
+    "at": 20015.39999999851,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 488,
+        "timeouts": 482,
+        "maxInFlight": 1,
+        "lastSubmit": 17249.09999999404,
+        "lastComplete": 17243.59999999404,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 21,
+    "type": "sample",
+    "at": 21015.29999999702,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 488,
+        "timeouts": 482,
+        "maxInFlight": 1,
+        "lastSubmit": 17249.09999999404,
+        "lastComplete": 17243.59999999404,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 22,
+    "type": "sample",
+    "at": 22015.39999999851,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 488,
+        "timeouts": 482,
+        "maxInFlight": 1,
+        "lastSubmit": 17249.09999999404,
+        "lastComplete": 17243.59999999404,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 23,
+    "type": "sample",
+    "at": 23015.39999999851,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 488,
+        "timeouts": 482,
+        "maxInFlight": 1,
+        "lastSubmit": 17249.09999999404,
+        "lastComplete": 17243.59999999404,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 366.69999999552965,
+        "constructorEnd": 382.09999999403954,
+        "factoryStart": 396.19999999552965,
+        "factoryEnd": 1059.0999999940395,
+        "initEnd": 1059.2999999970198,
+        "firstRenderStart": 1065.8999999985099,
+        "firstRenderEnd": 2169.5999999940395,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 24,
+    "type": "sample",
+    "at": 24987.09999999404,
+    "reason": "interval",
+    "lagMs": 971.5,
+    "diagnostic": {
+      "instance": 2,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 24982.89999999851,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 23661.39999999851,
+        "constructorEnd": 23674,
+        "factoryStart": 23674.39999999851,
+        "factoryEnd": 24253.89999999851,
+        "initEnd": 24253.89999999851,
+        "firstRenderStart": 24266.09999999404,
+        "firstRenderEnd": 24982.89999999851,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 343,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 2,
+        "disposed": 1
+      },
+      "status": "ready",
+      "retired": [
+        {
+          "instance": 1,
+          "frames": 7,
+          "time": 8.150000000000002,
+          "gpu": {
+            "submitted": 7,
+            "returned": 7,
+            "completed": 6,
+            "polls": 488,
+            "timeouts": 482,
+            "maxInFlight": 1,
+            "lastSubmit": 17249.09999999404,
+            "lastComplete": 17243.59999999404,
+            "lastWait": "TIMEOUT_EXPIRED",
+            "phase": "disposed",
+            "inFlight": 0,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 366.69999999552965,
+            "constructorEnd": 382.09999999403954,
+            "factoryStart": 396.19999999552965,
+            "factoryEnd": 1059.0999999940395,
+            "initEnd": 1059.2999999970198,
+            "firstRenderStart": 1065.8999999985099,
+            "firstRenderEnd": 2169.5999999940395,
+            "disposeStart": 23633.89999999851,
+            "disposeEnd": 23639.59999999404
+          }
+        }
+      ]
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 2,
+        "instance": "2",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": null,
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156865705-e28b29e69dc62",
+    "sequence": 25,
+    "type": "sample",
+    "at": 25028.19999999553,
+    "reason": "before-original-browser-close",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 2,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 24982.89999999851,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 23661.39999999851,
+        "constructorEnd": 23674,
+        "factoryStart": 23674.39999999851,
+        "factoryEnd": 24253.89999999851,
+        "initEnd": 24253.89999999851,
+        "firstRenderStart": 24266.09999999404,
+        "firstRenderEnd": 24982.89999999851,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 632,
+      "triangles": 2675962,
+      "memory": {
+        "geometries": 343,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 2,
+        "disposed": 1
+      },
+      "status": "ready",
+      "retired": [
+        {
+          "instance": 1,
+          "frames": 7,
+          "time": 8.150000000000002,
+          "gpu": {
+            "submitted": 7,
+            "returned": 7,
+            "completed": 6,
+            "polls": 488,
+            "timeouts": 482,
+            "maxInFlight": 1,
+            "lastSubmit": 17249.09999999404,
+            "lastComplete": 17243.59999999404,
+            "lastWait": "TIMEOUT_EXPIRED",
+            "phase": "disposed",
+            "inFlight": 0,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 366.69999999552965,
+            "constructorEnd": 382.09999999403954,
+            "factoryStart": 396.19999999552965,
+            "factoryEnd": 1059.0999999940395,
+            "initEnd": 1059.2999999970198,
+            "firstRenderStart": 1065.8999999985099,
+            "firstRenderEnd": 2169.5999999940395,
+            "disposeStart": 23633.89999999851,
+            "disposeEnd": 23639.59999999404
+          }
+        }
+      ]
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 2,
+        "instance": "2",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "nature:winter_lodge",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  }
+]

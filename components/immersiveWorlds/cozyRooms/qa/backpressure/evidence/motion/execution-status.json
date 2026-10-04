@@ -1,0 +1,9 @@
+{
+  "exitCode": 1,
+  "startedAt": "2026-10-04T23:37:55Z",
+  "finishedAt": "2026-10-04T23:37:55.967605+00:00",
+  "status": "UNRUN pixel proof: original prerequisite failed before browser launch",
+  "verificationInput": "../original/relax/verification.json",
+  "reason": "Original group aborted at relax; no aggregate passed report exists. The same-source failed report is supplied without modifying it or its prerequisite.",
+  "pixelChecks": 0
+}

@@ -1,0 +1,377 @@
+{
+  "method": "SHA256 of each exact file; aggregate sorted relative path + NUL + bytes; excludes this manifest itself. Source and bundle per-file identities are in FROZEN_IDENTITY.",
+  "aggregateSHA256": "107e01480f284a2edbd64247a3e5dc0b278c29da623996895eee9592c780ffd4",
+  "fileCount": 74,
+  "files": [
+    {
+      "file": "FINAL_RESULTS.json",
+      "bytes": 20634,
+      "sha256": "01e20443d18d999889ebe8be640c6b967fecfe59ccc29481f865f5baec52e22b"
+    },
+    {
+      "file": "FROZEN_IDENTITY.json",
+      "bytes": 5145,
+      "sha256": "763a891b76d297dbf290f53aa95dd3089cb9e09d8a4d55382796e5233ab8c585"
+    },
+    {
+      "file": "HANDOFF.md",
+      "bytes": 9867,
+      "sha256": "a4ba2aeedb72de1236490bc2a4d6ab555567c73a5b76587b170fdb0e9c187670"
+    },
+    {
+      "file": "INDEPENDENT_AUDIT.md",
+      "bytes": 9643,
+      "sha256": "756d6dea00b58599473e463255f065b23e552d65e2d0fc210940581a7ae54013"
+    },
+    {
+      "file": "PNG_MANIFEST.json",
+      "bytes": 4530,
+      "sha256": "6ad1b1cc9281972850d4250e4e07ca7cbf7239c7f624d96df9475d686f5d03db"
+    },
+    {
+      "file": "PREVIOUS_CHECKPOINT.json",
+      "bytes": 832,
+      "sha256": "bd2a95a674274e4bc130b7058b228b4f2b851557ed611f394b281cca29b943a8"
+    },
+    {
+      "file": "engine.test.ts",
+      "bytes": 28301,
+      "sha256": "d45053c654ae72c7e879bddc94d4bf2cd4a95b2a017a8a636b6b5c8158893b5b"
+    },
+    {
+      "file": "evidence/context-loss/context-loss.json",
+      "bytes": 21962,
+      "sha256": "7e2bf0adf7b90f5aa87f071598036c824276a85fdefccde353b9efb5c0d8a7b2"
+    },
+    {
+      "file": "evidence/context-loss/execution-status.json",
+      "bytes": 171,
+      "sha256": "23e93537ecf0f9a0f66fb52c02cd5a78249c260747d2c61e229f216b15ff4e61"
+    },
+    {
+      "file": "evidence/context-loss/execution.log",
+      "bytes": 2470,
+      "sha256": "eefcd4f3468e095bb97eca60db5f7de5ccc9dc496dd9e2f64589a91f9a18eff3"
+    },
+    {
+      "file": "evidence/context-loss/progress.jsonl",
+      "bytes": 1546,
+      "sha256": "5de77603fd20f4618e34a619793d5d137301f0869a9922568879b2aefd297a24"
+    },
+    {
+      "file": "evidence/motion/execution-status.json",
+      "bytes": 445,
+      "sha256": "9203232b9a2b8d8c90412a33460dcedc6a15add5168b75d0380c78a0d9dd0bcf"
+    },
+    {
+      "file": "evidence/motion/prerequisite.log",
+      "bytes": 430,
+      "sha256": "c894e3f9aa31b8bd7c68e7d012a4fd39674f9c9f1cb1eaca11c9247c11e48e23"
+    },
+    {
+      "file": "evidence/original/execution-status.json",
+      "bytes": 273,
+      "sha256": "1b4ba5d3e76a27320705ca7941654e865e5da046d646bead9aca634f3a1f1ac8"
+    },
+    {
+      "file": "evidence/original/execution.log",
+      "bytes": 3345,
+      "sha256": "d3ee8ce7b074ae44f352f2fb08c0beb32bb00a6b32e468a33d09830ece83bd8d"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/execution-status.json",
+      "bytes": 299,
+      "sha256": "cd30c9e944ace3495c9b32a47c8ef9cc27501fa97dffab3301dab48896b12acf"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/execution.log",
+      "bytes": 1857,
+      "sha256": "194e6366c51670dcf0698df5704ce8e341baa3099598a1c60a8d5d773105e5e8"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/passive-observation/events.jsonl",
+      "bytes": 36910,
+      "sha256": "f9cbb3c68f81fc65bece16c869eb4959760cbd12d138599c12285821f5ffa84b"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/passive-observation/observation.json",
+      "bytes": 15713,
+      "sha256": "c7e06e2a41c2e712737c1f64f3174728a97e07760bf4e74327fca0ba01fad600"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/passive-observation/page-1-events.json",
+      "bytes": 46598,
+      "sha256": "4d1825279604d2e396672009c39fda33911958c30102105a4b61311890afe17e"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/passive-observation/page-1-readback.jsonl",
+      "bytes": 36565,
+      "sha256": "64edba24581f44baf15a7f22c323a742d75c533ecc1a69c0d871854061cac110"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/passive-observation/page-1-retained-instances.json",
+      "bytes": 3336,
+      "sha256": "e71b0422a367da14d96d659e820256973a00e4c9e9a45ec3a625710545a433d4"
+    },
+    {
+      "file": "evidence/original/nature-winter_lodge/verification.json",
+      "bytes": 6240,
+      "sha256": "226089755d713d61bc8d052addb40c1ecdba7838816a179a84497c730fd61721"
+    },
+    {
+      "file": "evidence/original/power_nap/execution-status.json",
+      "bytes": 299,
+      "sha256": "e3f6aab0739bf385284b068dd6747b5a810622103b2446620f84a2dc5fa537b8"
+    },
+    {
+      "file": "evidence/original/power_nap/execution.log",
+      "bytes": 1770,
+      "sha256": "9648186a9865749aa409bd092f922b2d88d2ab8f1bdecbdc03965a137cb5625b"
+    },
+    {
+      "file": "evidence/original/power_nap/passive-observation/events.jsonl",
+      "bytes": 31593,
+      "sha256": "6769721760f24ed4675e89af25186744b37b45913b8a9477ff3506227a8064bf"
+    },
+    {
+      "file": "evidence/original/power_nap/passive-observation/observation.json",
+      "bytes": 15617,
+      "sha256": "05ee619c5608a6601a7f15797dd7e147a833f2882596e5ab63f1794bd4f4abf2"
+    },
+    {
+      "file": "evidence/original/power_nap/passive-observation/page-1-events.json",
+      "bytes": 39409,
+      "sha256": "b3a8024c2d197a2e58b144389605c32c417e8e34eca61f50131b6efd02f82502"
+    },
+    {
+      "file": "evidence/original/power_nap/passive-observation/page-1-readback.jsonl",
+      "bytes": 31248,
+      "sha256": "b520813368128407822abe8bb99b360331fa9a31a9fcca0ab7b44cb12cb823bc"
+    },
+    {
+      "file": "evidence/original/power_nap/passive-observation/page-1-retained-instances.json",
+      "bytes": 3215,
+      "sha256": "085f41d5762bd7a55bfefba16d54ba55b7c2fbda22f4bd95a98b59054b5d4eb9"
+    },
+    {
+      "file": "evidence/original/power_nap/power_nap-desktop.png",
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/original/power_nap/power_nap-fold-inner-viewport.png",
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/original/power_nap/power_nap-portrait.png",
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/original/power_nap/verification.json",
+      "bytes": 5492,
+      "sha256": "378936d0e0b2f4605fcf1de1791ff15de68896ae8165088c54826562203db33c"
+    },
+    {
+      "file": "evidence/original/relax/passive-observation/events.jsonl",
+      "bytes": 19595,
+      "sha256": "fe1be2df83d6201332f62d1b26843171b13186546f09af6ba280ba854fcb7b15"
+    },
+    {
+      "file": "evidence/original/relax/passive-observation/first-failure.json",
+      "bytes": 718,
+      "sha256": "f2408a1ef4ebb6fe4163d09dcdaa22556ea7e30a08b24fda31a999e1b991ba69"
+    },
+    {
+      "file": "evidence/original/relax/passive-observation/observation.json",
+      "bytes": 16725,
+      "sha256": "fbe413e2525c9de2aa4bd8a1c8916a2c8eac9ba43a600a9aaa5cc19125dc7e3a"
+    },
+    {
+      "file": "evidence/original/relax/passive-observation/page-1-events.json",
+      "bytes": 19145,
+      "sha256": "881021267b0183396dd24f732156681b3c4946c86bb78d93bdc27aeded2b24a4"
+    },
+    {
+      "file": "evidence/original/relax/passive-observation/page-1-readback.jsonl",
+      "bytes": 18537,
+      "sha256": "857339772bc8d239af7a7bbfb8fabc7760db4677015a77da6fab3da81790d736"
+    },
+    {
+      "file": "evidence/original/relax/passive-observation/page-1-retained-instances.json",
+      "bytes": 1146,
+      "sha256": "7ec290abc432f02a420e9d8198c5fda3e55818dd9bfe3c497db9a43bc3b45360"
+    },
+    {
+      "file": "evidence/original/relax/relax-chrome-visible.png",
+      "bytes": 516860,
+      "sha256": "4289435a3bc62c8853769e438ad92506b2a65a568e7adcc958dda53b4d989140"
+    },
+    {
+      "file": "evidence/original/relax/relax-desktop.png",
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "evidence/original/relax/relax-portrait.png",
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "evidence/original/relax/verification.json",
+      "bytes": 1760,
+      "sha256": "16639fb49c4c19e75b8694b19c791f1b3422ce8be7b6b6a027d6d73025b7d282"
+    },
+    {
+      "file": "evidence/original/sleep_prep/execution-status.json",
+      "bytes": 299,
+      "sha256": "146b36701281149eb6f2ca1d12861f8c82d319d720ac6a0bf81a1bd92815bdc3"
+    },
+    {
+      "file": "evidence/original/sleep_prep/execution.log",
+      "bytes": 2329,
+      "sha256": "e44d984a53e05429db1d82f62271b42e8af19bb2bda9159cde04a08438f8cd77"
+    },
+    {
+      "file": "evidence/original/sleep_prep/passive-observation/events.jsonl",
+      "bytes": 14707,
+      "sha256": "8cbe135e7d53ed1c7e8ebf83cf64097ad839efc4d8b11bad1158d2b53776b6c5"
+    },
+    {
+      "file": "evidence/original/sleep_prep/passive-observation/first-failure.json",
+      "bytes": 719,
+      "sha256": "f139bb33f95ca350479e159113ba98aa9013415a0ae9eb0f8a840951743b2934"
+    },
+    {
+      "file": "evidence/original/sleep_prep/passive-observation/observation.json",
+      "bytes": 16584,
+      "sha256": "763245ec5c2edce419b841f889d9c5efb7b80be417de2b953868fd7e06694ddd"
+    },
+    {
+      "file": "evidence/original/sleep_prep/passive-observation/page-1-events.json",
+      "bytes": 11685,
+      "sha256": "dc4e2f3fd60282aa7eb55a5b7ce2a6185b01d968643f3333b18a77132dce2b17"
+    },
+    {
+      "file": "evidence/original/sleep_prep/passive-observation/page-1-readback.jsonl",
+      "bytes": 13648,
+      "sha256": "198274b059ed8d2eed0d040034e23ec05a5f9c5d63faa57aaea8179bbc5a3a2c"
+    },
+    {
+      "file": "evidence/original/sleep_prep/passive-observation/page-1-retained-instances.json",
+      "bytes": 1175,
+      "sha256": "dd83d638b4fe7c4c22939f3684b422e4138830fd2c0e65a4b6da72e68b66b3d9"
+    },
+    {
+      "file": "evidence/original/sleep_prep/sleep_prep-desktop.png",
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/original/sleep_prep/sleep_prep-portrait.png",
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "evidence/original/sleep_prep/verification.json",
+      "bytes": 1765,
+      "sha256": "a5add4abff8b07054c84fd84181d8ba07c2cc2875ea4badc2ad4b6a9460d5262"
+    },
+    {
+      "file": "evidence/tooling/budget-final.log",
+      "bytes": 292,
+      "sha256": "641c2dd8d786742e25c33ce221f1f704e13febc42f4d77eb9c0d60f7cb8db2c8"
+    },
+    {
+      "file": "evidence/tooling/budget.log",
+      "bytes": 292,
+      "sha256": "641c2dd8d786742e25c33ce221f1f704e13febc42f4d77eb9c0d60f7cb8db2c8"
+    },
+    {
+      "file": "evidence/tooling/build-final.log",
+      "bytes": 2983,
+      "sha256": "db74da0c3a897fed02828e351b4d2ae4966c327a187489fdbbc622989aba142e"
+    },
+    {
+      "file": "evidence/tooling/build.log",
+      "bytes": 2983,
+      "sha256": "48e5fbe7009fbcdd8a8fba78a56f825a08d17c175544ef773fef1ea89d20bef1"
+    },
+    {
+      "file": "evidence/tooling/bundle.log",
+      "bytes": 1794,
+      "sha256": "adb83eaa190e7964e871704338c8203ae1604cf22e375fc48952ae7aee5a3932"
+    },
+    {
+      "file": "evidence/tooling/typecheck-final-complete.log",
+      "bytes": 158,
+      "sha256": "f351d6cc7f837f6090b2d50736a5ed84cc07aee8c71a95acdbdeca9a31a22ceb"
+    },
+    {
+      "file": "evidence/tooling/typecheck-final.log",
+      "bytes": 158,
+      "sha256": "f351d6cc7f837f6090b2d50736a5ed84cc07aee8c71a95acdbdeca9a31a22ceb"
+    },
+    {
+      "file": "evidence/tooling/typecheck.log",
+      "bytes": 158,
+      "sha256": "f351d6cc7f837f6090b2d50736a5ed84cc07aee8c71a95acdbdeca9a31a22ceb"
+    },
+    {
+      "file": "evidence/tooling/unit-final-complete.log",
+      "bytes": 382,
+      "sha256": "700579322cba033e4254003f61b7256108b67dc624713ae2601f07708d506d15"
+    },
+    {
+      "file": "evidence/tooling/unit-final.log",
+      "bytes": 382,
+      "sha256": "12daab6f7548505dd973b764322a20f284a7686ddf2ed931906eadf9c1fbbfaf"
+    },
+    {
+      "file": "evidence/tooling/unit.log",
+      "bytes": 2216,
+      "sha256": "ff02ef6859be739125373f67a9d9c141736997dbd4b7e6c61f7e0f4e2a8c17c3"
+    },
+    {
+      "file": "evidence/winter-cycles/execution-status.json",
+      "bytes": 171,
+      "sha256": "0a9156025c086671207dfbb2476956704861ce514cdcfe0f076b0fa45ee8bf98"
+    },
+    {
+      "file": "evidence/winter-cycles/execution.log",
+      "bytes": 2479,
+      "sha256": "a7dc3b4380b7c9df0980d5600941bfe8dcd71943483379ddbf6c8288049bbac8"
+    },
+    {
+      "file": "evidence/winter-cycles/progress.jsonl",
+      "bytes": 1585,
+      "sha256": "74cac357f772201d3b39d5fb9412ec5d08f42a8bb3ddd944dbc5bc232f5f5c41"
+    },
+    {
+      "file": "evidence/winter-cycles/recreation-cycle.json",
+      "bytes": 14663,
+      "sha256": "cefeaa2458770738fb65c2ef47285c3a17ce2ce6c426b13e3aeaebd4b8457c0f"
+    },
+    {
+      "file": "observe-original.mjs",
+      "bytes": 19828,
+      "sha256": "58ee719812102d8424af55a7726a34fe0045610cb6d6175e585d54eed9c511e4"
+    }
+  ]
+}

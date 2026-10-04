@@ -1,12 +1,27 @@
 import * as THREE from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
 import type { SanctuaryBuilder } from './worldTypes';
+import { createMeditationEnvironment } from './meditationEnvironment';
+import { checkMeditationTarget, selectCheckedTarget, type TargetDiagnostics, type TargetMode } from './meditationTargets';
 
 /** Original geometry and deterministic material maps. No downloaded artwork. */
-export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
+export function createMeditationCourtBuilder(options: { targetMode?: TargetMode } = {}): SanctuaryBuilder {
+return (renderer) => {
+  // Only the standalone QA harness selects force-byte; the public entry stays auto.
+  const mode = options.targetMode ?? 'auto';
   const floatColorBuffer = renderer.extensions.has('EXT_color_buffer_float');
   const halfFloatColorBuffer = renderer.extensions.has('EXT_color_buffer_half_float');
-  const supportsHalfFloatColor = floatColorBuffer || halfFloatColorBuffer;
+  const capabilities = { floatColorBuffer, halfFloatColorBuffer };
+  const diagnostics: TargetDiagnostics = { checks: [], attempts: [] };
+  const publishDiagnostics = (status: 'ready' | 'failed', error?: unknown) => {
+    renderer.domElement.dataset.targetCompatibility = JSON.stringify({
+      mode, capabilities, ...diagnostics, status, ...(error === undefined ? {} : { error: String(error) }),
+      chosen: {
+        reflection: reflectionTarget ? { type: reflectionTarget.texture.type, width: reflectionTarget.width, height: reflectionTarget.height } : null,
+        environment: environmentTarget ? { type: environmentTarget.texture.type, width: environmentTarget.width, height: environmentTarget.height, mapping: environmentTarget.texture.mapping } : null,
+      },
+    });
+  };
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#bdd1d4');
   scene.fog = new THREE.Fog('#c8d1c5', 23, 70);
@@ -14,6 +29,9 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
   let seed = 4411;
   const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   const textures: THREE.Texture[] = [];
+  let environmentTarget: THREE.WebGLRenderTarget | undefined;
+  let reflectionTarget: THREE.WebGLRenderTarget | undefined;
+  try {
 
   // Broad sky and stone bounce for the metal's microfacets. Basin reflection below
   // uses the actual scene; this modest environment only supplies indirect light.
@@ -29,10 +47,10 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     return canvas;
   });
   const environment = new THREE.CubeTexture(faces); environment.colorSpace = THREE.SRGBColorSpace; environment.needsUpdate = true;
-  // Three's automatic PMREM also allocates half-float color targets. On the byte
-  // compatibility path retain direct/hemisphere lighting without invoking PMREM.
-  scene.environment = supportsHalfFloatColor ? environment : null;
-  scene.environmentIntensity = .42; textures.push(environment);
+  textures.push(environment);
+  environmentTarget = createMeditationEnvironment(renderer, environment, mode, capabilities, diagnostics);
+  scene.environment = environmentTarget.texture;
+  scene.environmentIntensity = .42;
 
   function texture(kind: 'stone' | 'wood' | 'bronze' | 'soil', size = 256) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
@@ -221,17 +239,23 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
         }`,
     },
   });
-  // Reflector r186 constructs an RGBA HalfFloat target, but WebGL2 alone does
-  // not guarantee that RGBA16F is color-renderable. Enable the advertised
-  // color-buffer extension and choose the target type before its first use.
-  // The target is still unallocated here, so no stale GPU attachment survives.
-  const reflectionTarget = water.getRenderTarget();
-  reflectionTarget.texture.type = supportsHalfFloatColor
-    ? THREE.HalfFloatType : THREE.UnsignedByteType;
+  // Probe Reflector's actual 1024² color/depth storage before its first draw.
+  // Reuse its texture identity, but dispose failed GPU storage before changing type.
+  scene.add(water); // Include detached geometry/material in failure cleanup too.
+  reflectionTarget = water.getRenderTarget();
+  const candidateTarget = reflectionTarget;
+  selectCheckedTarget(capabilities, mode, (storage) => {
+    candidateTarget.texture.type = storage === 'half-float' ? THREE.HalfFloatType : THREE.UnsignedByteType;
+    return {
+      value: candidateTarget,
+      check: () => checkMeditationTarget(renderer, candidateTarget, 'reflection', diagnostics),
+      dispose: () => candidateTarget.dispose(),
+    };
+  }, (storage, ok, error) => diagnostics.attempts.push({ target: 'reflection', storage, ok, ...(error === undefined ? {} : { error: String(error) }) }));
   renderer.domElement.dataset.reflectionTargetType = reflectionTarget.texture.type === THREE.HalfFloatType ? 'half-float' : 'unsigned-byte';
   renderer.domElement.dataset.reflectionFloatExtension = String(floatColorBuffer);
   renderer.domElement.dataset.reflectionHalfFloatExtension = String(halfFloatColorBuffer);
-  water.rotation.x = -Math.PI / 2; water.position.set(.05, .392, -2.1); water.name = 'bounded-reflective-water'; scene.add(water);
+  water.rotation.x = -Math.PI / 2; water.position.set(.05, .392, -2.1); water.name = 'bounded-reflective-water';
   const waterMaterial = water.material as THREE.ShaderMaterial;
   // One tiny carved spout, with a barely moving thread of water.
   box(-.98, .66, -5.14, .50, .40, .50, wornEdge);
@@ -321,6 +345,7 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     hill.scale.set(8 + random() * 5, 5 + random() * 6, 9);
   }
 
+  publishDiagnostics('ready');
   const raycaster = new THREE.Raycaster(); let elapsed = 0; let bowlTouch = -100;
   return {
     scene, camera,
@@ -355,8 +380,28 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     },
     dispose() {
       water.getRenderTarget().dispose();
+      environmentTarget?.dispose();
       // These procedural maps are shared by cloned scene materials. Texture.dispose is idempotent.
       textures.forEach((map) => map.dispose());
     },
   };
+  } catch (error) {
+    // A throwing builder is never installed in SanctuaryEngine. Release its
+    // partially built scene and both owned target paths here before propagating
+    // the honest host error state (including a failed final byte target).
+    publishDiagnostics('failed', error);
+    reflectionTarget?.dispose(); environmentTarget?.dispose();
+    textures.forEach((map) => map.dispose());
+    scene.traverse((object) => {
+      const mesh = object as THREE.Mesh;
+      mesh.geometry?.dispose();
+      if (mesh.material) (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).forEach((material) => material.dispose());
+      const light = object as THREE.Light & { shadow?: THREE.LightShadow };
+      light.shadow?.dispose();
+    });
+    throw error;
+  }
 };
+}
+
+export const buildMeditationCourt: SanctuaryBuilder = createMeditationCourtBuilder();

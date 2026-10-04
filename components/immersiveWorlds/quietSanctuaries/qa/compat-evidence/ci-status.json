@@ -1,0 +1,112 @@
+{
+  "checkedAt": "2026-10-04T22:25:11.690Z",
+  "sourceCommit": "af147afa0c0565dbc0fa5afcfc98fd5c4fc4e408",
+  "runUrl": "https://github.com/alibowbow/brainwave/actions/runs/37239531624",
+  "workflow": {
+    "workflow_runs": [
+      {
+        "id": 37239531624,
+        "name": "CI",
+        "status": "completed",
+        "conclusion": "success",
+        "run_number": 311,
+        "jobs_url": "https://api.github.com/repos/alibowbow/brainwave/actions/runs/37239531624/jobs",
+        "logs_url": "https://api.github.com/repos/alibowbow/brainwave/actions/runs/37239531624/logs",
+        "workflow_id": 296618122
+      }
+    ]
+  },
+  "jobs": {
+    "jobs": [
+      {
+        "id": 111545251784,
+        "name": "build",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 37239531624,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Checkout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Setup Node.js",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Install dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Type check",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Test",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Check bundle budget",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Install browser",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Verify scene experience",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Post Setup Node.js",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          },
+          {
+            "name": "Post Checkout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21
+          }
+        ]
+      }
+    ]
+  },
+  "scope": "Repository CI is separate from the isolated Quiet target-compatibility real-render verification."
+}

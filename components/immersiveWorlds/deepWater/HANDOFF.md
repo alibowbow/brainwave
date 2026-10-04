@@ -1,5 +1,7 @@
 # Deep water group — integration contract
 
+The original PR56 delivery below is preserved. Its bounded follow-up lives on isolated `codex/deep-water-followup-33aff899`, based on expected original head `33aff89945cb6911279073e4156eca24ab4842b8`; original branch must not be overwritten. See `FOLLOWUP.md` for new evidence. Entry paths, required props and callback contract are unchanged. Merge remains the coordinator's responsibility.
+
 Started from fetched remote `main` **14940149cc5c0fccb778b58d4d755a04aea55e53** (includes protected seaside PR #51), in isolated branch `codex/deep-water-worlds`. No AGENTS.md or .agents/skills existed at this baseline or workspace parents. README/package verification instructions were read. Do not merge from this worker; the shared integration Work owns wiring and merge.
 
 | Canonical ID | Default component |

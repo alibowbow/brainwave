@@ -1,5 +1,16 @@
 # Deep water worlds — sources and design
 
+## Bounded follow-up, 2026-10-04
+
+The original observations and assets below are retained. The follow-up changes only target compatibility, guarded chrome input, waterfall material layers and GPU submission backpressure; no reference code/assets or paid services were added.
+
+- Read the exact upstream [Three r186 Reflector](https://raw.githubusercontent.com/mrdoob/three.js/r186/examples/jsm/objects/Reflector.js). Download SHA256 `57836df976f02a474b2dcfbb6609bca8bde0ccc6e77159ad8e418fa11c065d3b` is byte-identical to installed Three 0.186.1. It constructs a HalfFloat target without allocating GPU storage in the constructor. Our wrapper selects the texture type before the first target bind and reflection draw.
+- Read [Khronos EXT_color_buffer_half_float revision 9](https://registry.khronos.org/webgl/extensions/EXT_color_buffer_half_float/): WebGL2 RGBA16F is color-renderable with this extension; WebGL2 alone is insufficient. The pool uses RGBA16F/RGBA8 with zero samples, never RGB16F. Both real float/half-float extensions are checked/enabled; no extension or GL API is spoofed.
+- Every DeepWater render target was searched. Only waterfall/cave pool Reflectors allocate floating-point targets; sea has none, and no PMREM or offscreen postprocessing is used. Existing shadow targets remain Three's ordinary byte/depth targets.
+- Nonblocking WebGL2 completion fences bound full scene submissions to two in flight. The read-only forest owner's approach confirmed this general GL synchronization principle. No forest code/assets were copied and no forest/core files changed. Native RAF, antialiasing, geometry, 1024-square reflections and DPR up to 2 remain unchanged.
+
+See `FOLLOWUP.md` for exact source-bound evidence and remaining limits.
+
 All scene geometry, procedural materials, particles, vegetation, animals, camera compositions and interaction code in this group were independently authored for this assignment. No external image/model/audio files, paid services, access changes or permission tokens were used. The public asset directory is intentionally empty: all assets are generated at runtime and require no downloads.
 
 ## Runtime dependencies

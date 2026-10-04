@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
+import { preparePoolTarget } from './poolTarget';
 
 /** Deterministic erosion of a triangulated solid, not a scaled smooth sphere. */
 export function rockGeometry(seed: number, radius = 1): THREE.BufferGeometry {
@@ -89,6 +90,17 @@ export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, o
       }`,
   };
   const mesh = new Reflector(new THREE.PlaneGeometry(options.width, options.depth), { textureWidth: 1024, textureHeight: 1024, clipBias: .003, multisample: 0, color: options.color ?? '#164d4a', shader });
+  const reflect = mesh.onBeforeRender;
+  let prepared = false;
+  mesh.onBeforeRender = function (renderer, ...args) {
+    if (!prepared) { preparePoolTarget(renderer, mesh.getRenderTarget()); prepared = true; }
+    // Upstream r186 restores the target, but omits cube face/mip. Preserve those
+    // too, including if a reflection pass throws, without changing its geometry.
+    const previous = renderer.getRenderTarget();
+    const face = renderer.getActiveCubeFace(), mip = renderer.getActiveMipmapLevel();
+    try { reflect.call(this, renderer, ...args); }
+    finally { renderer.setRenderTarget(previous, face, mip); }
+  };
   mesh.name = 'deepwater-reflective-pool';
   mesh.rotation.x = -Math.PI / 2;
   mesh.position.set(...(options.position ?? [0, options.y, 0]));

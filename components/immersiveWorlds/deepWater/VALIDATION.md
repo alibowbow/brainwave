@@ -1,5 +1,7 @@
 # Deep water verification record
 
+This section retains the verified PR56 baseline unchanged as historical evidence. The separate bounded correction and fresh final-source verification are recorded in `FOLLOWUP.md`; new images/results are under `qa/evidence/followup/`. Do not attribute these original 77 effective checks to the follow-up source.
+
 Production scene source: **75a6121620937baef8a03a7bea985c2207e9a3b8**. Baseline main: **14940149cc5c0fccb778b58d4d755a04aea55e53**. Draft PR: https://github.com/alibowbow/brainwave/pull/56 . Branch: `codex/deep-water-worlds`. Integration and merge belong to the separate shared-core Work.
 
 ## Static and build gates

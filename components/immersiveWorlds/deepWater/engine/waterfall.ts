@@ -135,32 +135,36 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   bottom.position.set(0, -1.8, -8);
   scene.add(bottom);
 
-  // Long ribbons retain depth and a lit front edge, while the fragmented sheet lets rock show through.
+  // Broad translucent flow carries a few denser cords. Separate curved veils keep the
+  // water in front of the damp rock without turning the fall into an opaque white panel.
   const waterfallMaterial = new THREE.ShaderMaterial({
-    uniforms: { uTime: timeUniform },
+    uniforms: { uTime: timeUniform, uSeed: { value: 0 }, uDensity: { value: 1 } },
     vertexShader: `
       varying vec2 vUv; varying vec3 vWorld;
-      uniform float uTime;
+      uniform float uTime,uSeed;
       void main(){
         vUv=uv; vec3 p=position;
-        p.x += sin(p.y*1.6-uTime*1.8+p.x*4.0)*0.018;
-        p.z += sin(p.y*2.4-uTime*3.3+p.x*3.0)*0.025;
+        p.x += sin(p.y*1.3-uTime*1.8+p.x*4.0+uSeed)*0.023;
+        p.z += sin(p.y*2.0-uTime*2.7+p.x*3.0+uSeed)*0.04;
         vWorld=(modelMatrix*vec4(p,1.)).xyz;
         gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);
       }`,
     fragmentShader: `
-      varying vec2 vUv; varying vec3 vWorld; uniform float uTime;
+      varying vec2 vUv; varying vec3 vWorld; uniform float uTime,uSeed,uDensity;
       float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
       float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+1.),f.x),f.y);}
       void main(){
-        float flow = n(vec2(vUv.x*24.,vUv.y*10.3+uTime*1.8));
-        float fine = n(vec2(vUv.x*86.+sin(vUv.y*32.-uTime*6.)*.7,vUv.y*22.+uTime*4.7));
-        float lanes = n(vec2(vUv.x*23.,vUv.y*1.8+uTime*.20));
-        float edge = smoothstep(0.,.11,vUv.x)*smoothstep(0.,.11,1.-vUv.x);
-        float broken = smoothstep(.12,.71,flow*.6+fine*.4);
+        float descent = vUv.y*5.2+uTime*1.8;
+        float warp = n(vec2(vUv.x*3.1+uSeed,vUv.y*6.+uTime*.8))-.5;
+        float flow = n(vec2(vUv.x*5.3+warp*.75+uSeed,descent));
+        float cords = n(vec2(vUv.x*19.+warp*1.4+uSeed,vUv.y*4.5+uTime*2.2));
+        float fine = n(vec2(vUv.x*51.+warp,vUv.y*26.+uTime*5.1));
+        float edge = smoothstep(0.,.09,vUv.x)*smoothstep(0.,.14,1.-vUv.x);
+        float body = smoothstep(.18,.79,flow);
+        float ridge = smoothstep(.50,.86,cords)*(.35+body*.65);
         float base = smoothstep(0.,.035,vUv.y);
-        float alpha = edge * base * (.035+pow(broken,1.35)*.83+lanes*.07);
-        vec3 white = mix(vec3(.61,.78,.75),vec3(.94,.98,.9),.35+fine*.65);
+        float alpha = edge * base * (.055+body*.43+ridge*.34+fine*.045)*uDensity;
+        vec3 white = mix(vec3(.43,.65,.64),vec3(.91,.98,.93),body*.47+ridge*.39+fine*.14);
         float distanceFade = clamp(length(cameraPosition-vWorld)*.006,0.,.3);
         white=mix(white,vec3(.6,.75,.7),distanceFade);
         gl_FragColor=vec4(white,alpha);
@@ -169,11 +173,13 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
       }`,
     transparent: true, depthWrite: false, side: THREE.DoubleSide,
   });
-  makeFall(.72, 20.45, 2.48, -25.65, 0);
-  makeFall(-.95, 20.2, .46, -25.73, 1.7);
-  makeFall(2.12, 20.4, .43, -25.6, 3.4);
+  makeFall(.72, 20.45, 2.48, -25.65, 0, 1.03, 0);
+  makeFall(.39, 20.40, 1.04, -25.56, 2.8, .58, .22);
+  makeFall(1.30, 20.40, .63, -25.53, 4.3, .78, .38);
+  makeFall(-.95, 20.2, .46, -25.73, 1.7, .73, .10);
+  makeFall(2.12, 20.4, .43, -25.6, 3.4, .88, .18);
   // A smaller side seep follows a separate ledge on the left wall.
-  makeFall(-7.0, 7.0, 0.25, -20.0, 5.5);
+  makeFall(-7.0, 7.0, 0.25, -20.0, 5.5, .68, 0);
 
   const foamMat = new THREE.ShaderMaterial({
     uniforms: { uTime: timeUniform },
@@ -212,7 +218,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
       void main(){
         float life=fract(position.y+uTime*.16);float angle=position.x*6.2831853;
         float radius=(.6+position.z*2.4)*sqrt(life);
-        vec3 p=vec3(.85+cos(angle)*radius,.12+sin(life*3.14159)*(1.+position.z*2.8),-24.0+sin(angle)*radius*.65+life*.3);
+        vec3 p=vec3(.85+cos(angle)*radius,.12+sin(life*3.14159)*(.45+position.z*1.15),-23.35+sin(angle)*radius*.65+life*.3);
         vec4 mv=modelViewMatrix*vec4(p,1.);vLife=sin(life*3.14159);
         gl_Position=projectionMatrix*mv;gl_PointSize=clamp(aSize*uScale*.13/-mv.z,1.,12.);
       }`,
@@ -227,22 +233,24 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   scene.add(spray);
 
   // Low layered spray hangs at the foot of the fall; it never blankets the whole scene.
-  const mistMaterials: THREE.ShaderMaterial[] = [];
   for (let i = 0; i < 3; i++) {
     const mat = new THREE.ShaderMaterial({
       uniforms: { uTime: timeUniform, uSeed: { value: i * 4.21 } },
       vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-      fragmentShader: `varying vec2 vUv;uniform float uTime,uSeed;void main(){vec2 p=vUv*2.-1.;float a=exp(-dot(p*vec2(1.3,1.7),p*vec2(1.3,1.7))*3.);
-        float w=.7+.3*sin(p.x*6.+p.y*4.+uTime*.17+uSeed);gl_FragColor=vec4(.78,.9,.84,a*w*.095);
+      fragmentShader: `varying vec2 vUv;uniform float uTime,uSeed;void main(){vec2 p=vUv*2.-1.;
+        p.y += sin(p.x*4.2+uTime*.19+uSeed)*.12;
+        float a=exp(-dot(p*vec2(1.12,1.6),p*vec2(1.12,1.6))*2.7);
+        float w=.72+.18*sin(p.x*7.+p.y*4.+uTime*.17+uSeed)+.1*sin(p.x*13.-uTime*.11+uSeed);
+        gl_FragColor=vec4(.74,.87,.83,a*w*.14);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`,
       transparent: true, depthWrite: false, side: THREE.DoubleSide,
     });
-    const mist = new THREE.Mesh(new THREE.PlaneGeometry(8 + i * 1.5, 3.5), mat);
-    mist.position.set(0.8 - i * 0.45, 1.3, -23.6 + i * 0.7);
+    const mist = new THREE.Mesh(new THREE.PlaneGeometry(7.6 + i * 1.2, 2.1 + i * .12), mat);
+    mist.position.set(0.8 - i * 0.32, .68 + i * .08, -22.9 + i * .65);
     mist.rotation.y = i * 0.13;
-    scene.add(mist); mistMaterials.push(mat);
+    scene.add(mist);
   }
 
   const foliage = makeFoliage();
@@ -278,7 +286,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
     scene.add(mesh); occluders.push(mesh);
   }
 
-  function makeFall(x: number, height: number, width: number, z: number, seed: number) {
+  function makeFall(x: number, height: number, width: number, z: number, seed: number, density: number, forward: number) {
     const positions: number[] = [], uvs: number[] = [], indices: number[] = [];
     const rows = Math.max(32, Math.round(height * 7)), columns = 34;
     for (let y = 0; y <= rows; y++) {
@@ -288,7 +296,8 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
       for (let c = 0; c <= columns; c++) {
         const u = c / columns;
         positions.push(center + (u - .5) * spread + Math.sin(v * 43 + u * 19 + seed) * .025,
-          .16 + v * height, z + Math.sqrt(1 - v) * 1.55 + Math.sin(u * 19 + seed) * .035);
+          .16 + v * height, z + Math.sqrt(1 - v) * ((height > 10 ? 2.20 : 1.55) + forward)
+            + Math.sin(u * 11 + v * 3.5 + seed) * .13 * Math.sin(v * Math.PI));
         uvs.push(u, v);
         if (y < rows && c < columns) {
           const a = y * (columns + 1) + c, b = a + columns + 1;
@@ -300,7 +309,11 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
     geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
     geo.setIndex(indices); geo.computeVertexNormals();
-    const mesh = new THREE.Mesh(geo, waterfallMaterial); mesh.renderOrder = 2;
+    const material = seed === 0 ? waterfallMaterial : waterfallMaterial.clone();
+    material.uniforms.uTime = timeUniform;
+    material.uniforms.uSeed.value = seed;
+    material.uniforms.uDensity.value = density;
+    const mesh = new THREE.Mesh(geo, material); mesh.renderOrder = 2;
     scene.add(mesh);
   }
 

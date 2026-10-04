@@ -245,7 +245,12 @@ try {
     report.checks.disposalCycles = [];
     const cycleCount = stage === 'diagnostic' ? 1 : 2;
     for (let cycle = 1; cycle <= cycleCount; cycle++) {
-      if (drainBeforeDispose) await drain(`diagnostic-pre-disposal-${cycle}-gpuDrain`);
+      if (drainBeforeDispose) {
+        // A holder return can still have a scheduled ResizeObserver callback.
+        // Require strict static stability before observing the GPU; do not mask a frame change inside the fence.
+        await freeze(`diagnosticHolderSettled-${cycle}`, async () => {});
+        await drain(`diagnostic-pre-disposal-${cycle}-gpuDrain`);
+      }
       const prior = await inspect();
       report.beforeDisposalTelemetry = await page.evaluate(() => window.__waterEdgeQA.inspectTelemetry());
       await save();
@@ -253,6 +258,9 @@ try {
       await page.evaluate(() => window.__waterEdgeQA.unmount());
       await page.waitForFunction(() => window.__waterEdgeQA.inspect().diagnostics.live === 0, null, { timeout: 20000, polling: 100 });
       await page.waitForFunction(start => window.__waterEdgeQA.inspectTelemetry().timeline.some(x => x.kind === 'context-loss-observed' && x.atMs >= start), cycleStart, { timeout: 2000 });
+      // Let one overdue heartbeat record any disposal stall. The acceptance gate
+      // below still uses actual removal/context-loss event timestamps, not this wait.
+      await page.waitForTimeout(60);
       const disposed = await inspect(), telemetry = await page.evaluate(() => window.__waterEdgeQA.inspectTelemetry());
       assert(disposed.diagnostics.created === disposed.diagnostics.disposed && disposed.canvases.length === 0, 'Engine/canvas leaked after grace');
       const event = kind => telemetry.timeline.find(x => x.kind === kind && x.atMs >= cycleStart);

@@ -16,11 +16,14 @@ const qa = path.dirname(fileURLToPath(import.meta.url)), owned = path.dirname(qa
 const args = process.argv.slice(2), arg = (name, fallback) => args.find(x => x.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const stage = arg('stage', 'visual'), world = arg('world', 'pebble-shore'), mode = arg('mode', 'normal'), viewportName = arg('viewport', 'desktop');
 const viewport = ({ desktop: { width: 1280, height: 800 }, portrait: { width: 390, height: 844 } })[viewportName];
-if (!viewport || !['visual', 'behavior', 'lifecycle', 'diagnostic'].includes(stage) || !['normal', 'byte'].includes(mode)) throw new Error('Invalid stage/mode/viewport');
+if (!viewport || !['visual', 'behavior', 'lifecycle', 'diagnostic', 'static'].includes(stage) || !['normal', 'byte'].includes(mode)) throw new Error('Invalid stage/mode/viewport');
+if (stage === 'static' && viewportName !== 'desktop') throw new Error('Static roundtrip starts at the native desktop viewport');
 const tag = arg('tag', 'final');
 if (!/^[a-z0-9-]+$/.test(tag)) throw new Error('Invalid evidence tag');
 const drainBeforeDispose = args.includes('--drain-before-dispose');
 if (drainBeforeDispose && stage !== 'diagnostic') throw new Error('GPU-drained lifecycle must be a separately labelled diagnostic stage');
+const activeFrames = Number(arg('active-frames', '0'));
+if (![0, 2].includes(activeFrames) || (activeFrames && (stage !== 'diagnostic' || drainBeforeDispose))) throw new Error('The bounded two-frame diagnostic requires stage=diagnostic with no GPU drain');
 const base = process.env.WATER_EDGE_URL || 'http://127.0.0.1:4188';
 const evidenceName = arg('evidence', 'followup-lifecycle-evidence');
 if (!/^[a-z0-9-]+$/.test(evidenceName) || evidenceName === 'followup-evidence') throw new Error('Use a new owned evidence directory; original followup-evidence is immutable');
@@ -40,7 +43,7 @@ async function treeHash(root, keep = () => true, sourceOnly = false) {
   await walk(root); return digest.digest('hex');
 }
 const report = {
-  schema: 3, world, mode, stage, tag, drainBeforeDispose, viewportName, viewport, dpr: 1, generatedAt: new Date().toISOString(),
+  schema: 3, world, mode, stage, tag, drainBeforeDispose, activeFrames, viewportName, viewport, dpr: 1, generatedAt: new Date().toISOString(),
   scope: 'Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.',
   limitations: ['SwiftShader software GPU; no physical touch device or sustained hardware performance certification.',
     'Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.',
@@ -95,11 +98,33 @@ async function capture(label) {
   try { png = await page.screenshot({ path: path.join(output, file), fullPage: false, timeout: remaining }); }
   catch (error) { tainted = true; throw error; }
   const screenshotElapsedMs = Date.now() - screenshotStart, after = await inspect();
-  assert(png.readUInt32BE(16) === viewport.width && png.readUInt32BE(20) === viewport.height, 'Native PNG dimensions do not match viewport');
+  const capturedViewport = page.viewportSize();
+  assert(png.readUInt32BE(16) === capturedViewport.width && png.readUInt32BE(20) === capturedViewport.height, 'Native PNG dimensions do not match viewport');
   assert(before.canvases[0].frames === after.canvases[0].frames && before.canvases[0].time === after.canvases[0].time, 'Frame/time changed during paused capture');
   report.captures.push({ file, sha256: sha(png), bytes: png.length, captureMethod: 'Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition',
-    screenshotElapsedMs, combinedElapsedMs: Date.now() - began, fence, before, after }); await save();
+    viewport: capturedViewport, screenshotElapsedMs, combinedElapsedMs: Date.now() - began, fence, before, after }); await save();
   console.log(`${stem}: ${label} PNG; GPU drain ${fence.elapsedMs.toFixed(0)} ms; screenshot ${screenshotElapsedMs} ms`);
+  return png;
+}
+async function comparePixels(first, second) {
+  return page.evaluate(async ({ first, second }) => {
+    async function pixels(base64) {
+      const bitmap = await createImageBitmap(new Blob([Uint8Array.from(atob(base64), char => char.charCodeAt(0))], { type: 'image/png' }));
+      const canvas = new OffscreenCanvas(bitmap.width, bitmap.height), context = canvas.getContext('2d');
+      context.drawImage(bitmap, 0, 0);
+      return { width: bitmap.width, height: bitmap.height, rgba: context.getImageData(0, 0, bitmap.width, bitmap.height).data };
+    }
+    const a = await pixels(first), b = await pixels(second);
+    if (a.width !== b.width || a.height !== b.height) return { sameDimensions: false, changedPixels: null };
+    let changedPixels = 0, firstDifferentPixel = null;
+    for (let offset = 0; offset < a.rgba.length; offset += 4) {
+      if (a.rgba[offset] !== b.rgba[offset] || a.rgba[offset + 1] !== b.rgba[offset + 1] || a.rgba[offset + 2] !== b.rgba[offset + 2] || a.rgba[offset + 3] !== b.rgba[offset + 3]) {
+        changedPixels++;
+        firstDifferentPixel ??= { x: (offset / 4) % a.width, y: Math.floor(offset / 4 / a.width) };
+      }
+    }
+    return { sameDimensions: true, changedPixels, firstDifferentPixel, totalPixels: a.width * a.height };
+  }, { first: first.toString('base64'), second: second.toString('base64') });
 }
 async function activate() {
   await page.evaluate(() => window.__waterEdgeQA.setActive(true));
@@ -133,6 +158,44 @@ try {
   if (stage === 'visual') {
     await capture('initial');
     report.unrun.push('Behavior/lifecycle are separate clean stages; no inference from a still PNG.');
+  } else if (stage === 'static') {
+    const initialState = await inspect(), initialPNG = await capture('initial-desktop');
+    const transferStates = [];
+    for (let cycle = 1; cycle <= 3; cycle++) {
+      await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('static-transfer-secondary'); window.__waterEdgeQA.setSecondHolder(true); });
+      await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'secondary');
+      const secondary = await inspect();
+      await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('static-transfer-primary'); window.__waterEdgeQA.setSecondHolder(false); });
+      await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'primary');
+      await freeze(`sameSizeHolderRoundtrip-${cycle}`, async () => {});
+      const returned = await inspect();
+      assert(secondary.canvases[0].id === initialState.canvases[0].id && returned.canvases[0].id === initialState.canvases[0].id && returned.diagnostics.created === initialState.diagnostics.created, 'Static holder transfer replaced canvas/context');
+      assert(returned.canvases[0].frames === initialState.canvases[0].frames && returned.canvases[0].time === 0, 'Unchanged-size paused holder transfer submitted a redundant frame or advanced time');
+      transferStates.push({ cycle, secondary, returned });
+    }
+    const holderPNG = await capture('after-holder-roundtrips');
+    const holderPixels = await comparePixels(initialPNG, holderPNG);
+    assert(holderPixels.sameDimensions && holderPixels.changedPixels === 0, 'Native pixels changed after same-size static holder roundtrips');
+    report.checks.staticHolderRoundtrips = { status: 'passed', transferStates, pixelComparison: holderPixels };
+    const resizeStates = [];
+    let restoredPNG;
+    for (const [label, size] of [['portrait', { width: 390, height: 844 }], ['restored-desktop', viewport]]) {
+      const before = await inspect();
+      await page.evaluate(label => window.__waterEdgeQA.markTelemetry(`static-resize-${label}`), label);
+      await page.setViewportSize(size);
+      await page.waitForFunction(({ width, height }) => {
+        const canvas = window.__waterEdgeQA.inspect().canvases[0]; return canvas?.width === width && canvas?.height === height;
+      }, size);
+      await freeze(`pausedActualResize-${label}`, async () => {});
+      const after = await inspect();
+      assert(after.canvases[0].id === initialState.canvases[0].id && after.canvases[0].time === 0 && after.canvases[0].frames > before.canvases[0].frames, 'Actual paused resize lost identity/time or did not submit its final view');
+      const png = await capture(label); if (label === 'restored-desktop') restoredPNG = png;
+      resizeStates.push({ label, before, after });
+    }
+    const restoredPixels = await comparePixels(initialPNG, restoredPNG);
+    assert(restoredPixels.sameDimensions && restoredPixels.changedPixels === 0, 'Final native desktop pixels were not restored after portrait roundtrip');
+    report.checks.staticResizeRoundtrip = { status: 'passed', resizeStates, pixelComparison: restoredPixels };
+    report.unrun.push('This paused static regression is not active-motion performance or a clean no-capture lifecycle run.');
   } else if (stage === 'behavior') {
     await capture('chrome-initial');
     // No sibling drag overlay: trusted input lands directly in the production scene subtree.
@@ -250,6 +313,18 @@ try {
         // Require strict static stability before observing the GPU; do not mask a frame change inside the fence.
         await freeze(`diagnosticHolderSettled-${cycle}`, async () => {});
         await drain(`diagnostic-pre-disposal-${cycle}-gpuDrain`);
+      }
+      if (activeFrames) {
+        await freeze('diagnosticPreBurstSettled', async () => {});
+        const beforeBurst = await inspect();
+        await activate();
+        await page.waitForFunction(({ before, count }) => window.__waterEdgeQA.inspect().canvases[0].frames >= before + count,
+          { before: beforeBurst.canvases[0].frames, count: activeFrames }, { timeout: 30000, polling: 10 });
+        await page.evaluate(() => window.__waterEdgeQA.setActive(false)); await paused();
+        const afterBurst = await inspect();
+        assert(afterBurst.canvases[0].frames >= beforeBurst.canvases[0].frames + activeFrames && afterBurst.canvases[0].time > beforeBurst.canvases[0].time, 'Diagnostic active burst did not submit real advancing frames');
+        report.checks.noDrainActiveBurst = { status: 'passed', beforeBurst, afterBurst, requestedMinimumFrames: activeFrames,
+          method: 'Harness active toggle through real production motion policy/RAF, then pause and immediate unmount. No screenshot, readback, diagnostic GPU fence or post-burst settling wait. Trusted native input is independently exercised by the behavior stage.' };
       }
       const prior = await inspect();
       report.beforeDisposalTelemetry = await page.evaluate(() => window.__waterEdgeQA.inspectTelemetry());

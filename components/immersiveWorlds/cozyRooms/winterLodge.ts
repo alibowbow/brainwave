@@ -15,7 +15,7 @@ export function createWinterLodgeWorld(): WorldBuild {
   const brass = new THREE.MeshStandardMaterial({ color: '#af8c52', metalness: .72, roughness: .3 });
   const iron = rough('#292d2c', .76);
   const snowMat = new THREE.MeshStandardMaterial({color:'#d6e5ec',roughness:.95,emissive:'#5b7283',emissiveIntensity:.18});
-  const blanketMaterial = fabric('#777261', 6);
+  const blanketMaterial = fabric('#777261', 6); blanketMaterial.bumpScale=.003;
   const mossWeave = fabric('#5f6653', 7);
   const tableMat = wood('#694935', 3);
   const v = new THREE.Vector3();
@@ -114,70 +114,82 @@ export function createWinterLodgeWorld(): WorldBuild {
   fieldGeom.computeVertexNormals(); const ground = new THREE.Mesh(fieldGeom, snowMat); ground.receiveShadow = true; scene.add(ground);
   // Jagged swept ridgelines carry quiet variation rather than repeated cones.
   function mountain(z: number, height: number, color: string, seed: number) {
-    const rnd = seeded(seed), verts: number[] = [], colors: number[] = [];
-    const baseColor = new THREE.Color(color), pts: {x: number; y: number}[] = [];
-    for (let i = 0; i <= 36; i++) {
-      const x = -75 + i * 4.3;
-      const y = 2.6 + height * (.3 + .33 * Math.sin(i * .44 + seed) + .19 * Math.sin(i * 1.01 + 1) + rnd() * .2);
-      pts.push({ x, y });
+    // Indexed, smoothly shaded alpine surfaces, rather than disconnected ridge
+    // triangles. Their whole slopes exist in depth and dissolve into cold haze.
+    const geo=new THREE.PlaneGeometry(155,27,138,26);geo.rotateX(-Math.PI/2);
+    const p=geo.attributes.position, colors:number[]=[];
+    const base=new THREE.Color(color), snowColor=new THREE.Color('#c4d6e1');
+    for(let i=0;i<p.count;i++){
+      const x=p.getX(i), t=(p.getZ(i)+13.5)/27;
+      const crest=height*(.42+.20*Math.sin(x*.071+seed)+.13*Math.sin(x*.139+seed*.35)+.065*Math.cos(x*.32+seed));
+      const fold=.27*Math.sin(x*.21+t*7)+.12*Math.cos(x*.41-t*11);
+      const y=-2+(crest+2)*Math.pow(1-t,.79)+fold*Math.sin(t*Math.PI);
+      p.setXYZ(i,x,y,z+p.getZ(i));
+      const col=base.clone().lerp(snowColor,Math.max(0,(1-t)*.30-.06));
+      colors.push(col.r,col.g,col.b);
     }
-    for (let i = 0; i < pts.length - 1; i++) {
-      const a = pts[i], b = pts[i + 1], mid = (a.x + b.x) * .5;
-      const strip = [a.x,a.y,z, b.x,b.y,z, mid,-2,z+8, a.x,a.y,z, mid,-2,z+8, a.x,-2,z+7];
-      verts.push(...strip);
-      for (let k = 0; k < 6; k++) { const c = baseColor.clone().multiplyScalar(k % 3 === 0 ? 1.025 : .98); colors.push(c.r,c.g,c.b); }
-    }
-    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3)); geo.computeVertexNormals();
-    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, side: THREE.DoubleSide })); scene.add(mesh);
+    geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));geo.computeVertexNormals();
+    const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,side:THREE.DoubleSide}));scene.add(mesh);
   }
-  mountain(-114, 27, '#b5c9d7', 11); mountain(-91, 21, '#90abc1', 20); mountain(-72, 14, '#7997ae', 38);
+  mountain(-114, 26, '#a6bdcf', 11); mountain(-91, 21, '#8ca9bf', 20); mountain(-69, 16, '#7894ad', 38);
 
-  // Spruces are branching volumes assembled from long tapered foliage lobes.
-  // Instancing keeps this detailed forest to three draw calls.
-  const treeCount = 46, boughsPerTree = 48, boughCount = treeCount * boughsPerTree;
-  // Needle fans follow woody secondary twigs in actual volume. Their irregular
-  // silhouettes remain visible below the soft, broken snow on each branch.
-  const needleVertices:number[]=[];
-  function needle(a:THREE.Vector3,b:THREE.Vector3,width:number){
-    const side=new THREE.Vector3(width,0,width*.25);
-    needleVertices.push(a.x-side.x,a.y-.008,a.z-side.z,a.x+side.x,a.y+.014,a.z+side.z,b.x,b.y,b.z);
-    needleVertices.push(a.x,a.y-width*.45,a.z,a.x,a.y+width*.45,a.z,b.x,b.y,b.z);
+  // Original bent evergreen limbs with an opaque needle-bearing core and
+  // irregular, overlapping snow. Continuous spiral growth avoids whorl stacks.
+  const treeCount=56,boughsPerTree=72,boughCount=treeCount*boughsPerTree;
+  const branchVertices:number[]=[];
+  const branchRadius=(t:number)=>.225*Math.pow(1-t,.77)*(.68+.32*Math.sin(Math.min(1,t*4)*Math.PI/2));
+  const droop=(t:number)=>-.24*t-.105*Math.sin(t*Math.PI);
+  const radial=9, longitudinal=11;
+  function surface(t:number,a:number){
+    const r=branchRadius(t)*(1+.075*Math.sin(t*37+a*3));
+    return new THREE.Vector3(Math.cos(a)*r,droop(t)+Math.sin(a)*r*.68,t);
   }
-  for(let j=0;j<21;j++){
-    const z=.035+j*.044;
-    for(const side of [-1,1]){
-      const reach=(1-z)*.27+.017;
-      for(let k=0;k<4;k++){
-        const at=new THREE.Vector3(side*reach*k*.22,.014*Math.sin(j*2+k),z-.055*k);
-        const tip=new THREE.Vector3(at.x+side*(.036+random()*.027),at.y+.025+random()*.022,at.z+.03+random()*.04);
-        needle(at,tip,.012);
-      }
+  function tri(a:THREE.Vector3,b:THREE.Vector3,c:THREE.Vector3){branchVertices.push(a.x,a.y,a.z,b.x,b.y,b.z,c.x,c.y,c.z);}
+  for(let j=0;j<longitudinal;j++)for(let k=0;k<radial;k++){
+    const t0=j/longitudinal,t1=(j+1)/longitudinal,a0=k/radial*Math.PI*2,a1=(k+1)/radial*Math.PI*2;
+    const p0=surface(t0,a0),p1=surface(t0,a1),p2=surface(t1,a0),p3=surface(t1,a1);tri(p0,p2,p1);tri(p1,p2,p3);
+  }
+  // Thick sprays follow the branch envelope, with needle tips of mixed lengths.
+  for(let j=0;j<76;j++){
+    const t=.035+random()*.9,a=random()*Math.PI*2,at=surface(t,a);
+    const tip=at.clone().add(new THREE.Vector3(Math.cos(a)*(.036+random()*.045),Math.sin(a)*.058-.013,.02+random()*.055));
+    tri(at.clone().add(new THREE.Vector3(.012,0,-.027)),at.clone().add(new THREE.Vector3(-.012,.018,.012)),tip);
+    tri(at.clone().add(new THREE.Vector3(0,-.013,-.022)),at.clone().add(new THREE.Vector3(0,.023,.015)),tip);
+  }
+  const boughGeo=new THREE.BufferGeometry();boughGeo.setAttribute('position',new THREE.Float32BufferAttribute(branchVertices,3));boughGeo.computeVertexNormals();
+  // The snow cap bends and tapers with its supporting limb. Uneven thickness
+  // exposes dark foliage gaps, instead of floating oval discs above naked poles.
+  const snowGeo=new THREE.SphereGeometry(1,14,9);const sp=snowGeo.attributes.position;
+  for(let i=0;i<sp.count;i++){
+    const ox=sp.getX(i),oy=sp.getY(i),oz=sp.getZ(i),t=.13+(oz+1)*.385;
+    const width=branchRadius(t)*.99;
+    const wav=1+.12*Math.sin(t*25+ox*7)+.06*Math.cos(t*43);
+    sp.setXYZ(i,ox*width*wav,droop(t)+branchRadius(t)*.49+.067+oy*(.064+.042*Math.sin(t*9)**2),t);
+  }
+  snowGeo.computeVertexNormals();
+  const foliage=new THREE.InstancedMesh(boughGeo,new THREE.MeshStandardMaterial({color:'#315b60',roughness:1,side:THREE.DoubleSide}),boughCount);
+  const snowBoughs=new THREE.InstancedMesh(snowGeo,snowMat,boughCount);
+  const trunks=new THREE.InstancedMesh(new THREE.CylinderGeometry(.045,.11,1,8),rough('#50625d',1),treeCount);
+  const dummy=new THREE.Object3D();let bi=0;
+  for(let i=0;i<treeCount;i++){
+    const row=Math.floor(i/16), x=-37+(i%16)*4.9+(random()-.5)*3.4;
+    const z=-18-row*13-random()*9,h=3.8+random()*4.8,lean=(random()-.5)*.11,spread=.255+random()*.068;
+    dummy.position.set(x,h*.48,z);dummy.rotation.set(lean*.2,0,lean);dummy.scale.set(1,h*.98,1);dummy.updateMatrix();trunks.setMatrixAt(i,dummy.matrix);
+    for(let j=0;j<boughsPerTree;j++){
+      const t=.026+j/(boughsPerTree-1)*.974;
+      const angle=j*2.399963+i*.81+(random()-.5)*.49;
+      const len=Math.max(.1,Math.pow(1-t,.79)*h*spread*(.82+random()*.35));
+      const cy=.28+t*(h-.32)+(random()-.5)*.105;
+      dummy.position.set(x+lean*cy,cy,z);
+      dummy.rotation.set(-.16+random()*.15,angle,(random()-.5)*.11);
+      dummy.scale.set(len*(.85+random()*.26),len*(1.05+random()*.32),len);dummy.updateMatrix();foliage.setMatrixAt(bi,dummy.matrix);
+      // Asymmetric snow coverage varies between adjacent boughs; all snow is
+      // physically supported by the branch body even where the tips are bare.
+      const frostScale=.73+random()*.25;dummy.scale.x*=frostScale;dummy.scale.y*=.93+random()*.12;dummy.updateMatrix();snowBoughs.setMatrixAt(bi,dummy.matrix);bi++;
     }
   }
-  const boughGeo=new THREE.BufferGeometry();boughGeo.setAttribute('position',new THREE.Float32BufferAttribute(needleVertices,3));boughGeo.computeVertexNormals();
-  const snowGeo=new THREE.SphereGeometry(1,14,7);const sp=snowGeo.attributes.position;
-  for(let i=0;i<sp.count;i++){const x=sp.getX(i),y=sp.getY(i),z=sp.getZ(i);sp.setXYZ(i,x*(.94+.08*Math.sin(z*17+x*7)),y*(.92+.09*Math.sin(z*13)),z);}snowGeo.computeVertexNormals();
-  const foliage = new THREE.InstancedMesh(boughGeo, new THREE.MeshStandardMaterial({color:'#3a5f67',roughness:.99,side:THREE.DoubleSide}), boughCount);
-  const snowBoughs = new THREE.InstancedMesh(snowGeo, snowMat, boughCount);
-  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(.07, .12, 1, 7), rough('#5e605b', .98), treeCount);
-  foliage.castShadow = false; snowBoughs.castShadow = false;
-  const dummy = new THREE.Object3D(); let bi = 0;
-  for (let i = 0; i < treeCount; i++) {
-    const row = Math.floor(i / 15), x = -36 + (i % 15) * 5.4 + (random() - .5) * 2.7;
-    const z = -17 - row * 15 - random() * 7, h = 4 + random() * 4.4;
-    dummy.position.set(x, h / 2 - .15, z); dummy.scale.set(1, h, 1); dummy.rotation.set(0, 0, 0); dummy.updateMatrix(); trunks.setMatrixAt(i, dummy.matrix);
-    for (let j = 0; j < boughsPerTree; j++) {
-      const level = Math.floor(j / 6), angle = j * 2.399 + i * .82;
-      const t = level / 8, radius = Math.pow(1 - t,.82) * h * .31, len = radius * (.85 + random() * .23);
-      const cy = .43 + t * h * .97 + random() * .19;
-      dummy.position.set(x,cy,z);dummy.rotation.set(.04+random()*.13,angle,0);
-      dummy.scale.set(len*1.1,len*.9,len);dummy.updateMatrix();foliage.setMatrixAt(bi,dummy.matrix);
-      dummy.position.set(x+Math.sin(angle)*len*.40,cy+.056,z+Math.cos(angle)*len*.40);
-      dummy.rotation.set(.05,angle,.04*Math.sin(j));dummy.scale.set(len*.205,.069+len*.038,len*.445);dummy.updateMatrix();snowBoughs.setMatrixAt(bi,dummy.matrix);
-      bi++;
-    }
-  }
-  scene.add(foliage, snowBoughs, trunks);
+  scene.add(foliage,snowBoughs,trunks);
+
   // Uneven nearby snow-laden bare branches frame the broad distant forest.
   const bark = wood('#484842', 4);
   const branches = [
@@ -197,7 +209,7 @@ export function createWinterLodgeWorld(): WorldBuild {
   // A wool blanket lies over the seated viewer's knees, with long folded edge.
   const blanketGeo = new THREE.PlaneGeometry(2.7, 3.7, 82, 104); blanketGeo.rotateX(-Math.PI / 2);
   const bp = blanketGeo.attributes.position;
-  function blanketY(x: number, z: number) { return 1.02 + .10 * Math.sin(x * 5.7 + z * .7) + .055 * Math.sin(x * 13.8 - z * 1.8) + .105 * Math.exp(-Math.pow(x-.38,2)*4) - .18 * Math.max(0, -z - .5); }
+  function blanketY(x: number, z: number) { return .97 + .037 * Math.sin(x * 5.7 + z * .7) + .019 * Math.sin(x * 13.8 - z * 1.8) + .055 * Math.exp(-Math.pow(x-.38,2)*4) - .18 * Math.max(0, -z - .5); }
   for (let i = 0; i < bp.count; i++) { const x = bp.getX(i), z = bp.getZ(i); bp.setXYZ(i, x, blanketY(x,z), z + 1.3); }
   blanketGeo.computeVertexNormals(); const blanket = new THREE.Mesh(blanketGeo, blanketMaterial); blanket.receiveShadow = true; blanket.castShadow = true; scene.add(blanket);
   // Woven narrow bands follow the same deformed cloth surface.

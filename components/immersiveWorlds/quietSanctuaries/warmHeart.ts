@@ -178,12 +178,20 @@ export const buildWarmHeart: SanctuaryBuilder = () => {
   }), farMaterial);
   // One broad S-curled overlap merges into floor/roof and interrupts the round terminal silhouette.
   // Its ends are outside the enclosure, and its visible edge is a closed soft membrane, not a cut strip.
-  add(membrane(94, 98, (u, v) => {
-    const edgeX = -.12 + .37 * Math.sin(v * 5.3 + .45);
-    const x = -4.7 + u * (edgeX + 4.7);
+  add(membrane(112, 104, (u, v) => {
+    const shoulder = THREE.MathUtils.smoothstep(v, .38, .68);
+    const upperReturn = THREE.MathUtils.smoothstep(v, .48, .71);
+    const edgeX = -.17 + .26 * Math.sin(v * 4.4 + .45) + shoulder * .93;
+    const radius = .16 + .10 * Math.sin(v * Math.PI);
+    const bendStart = .82;
+    const curlT = Math.max(0, (u - bendStart) / (1 - bendStart));
+    const curlAngle = curlT * Math.PI * .84;
+    const x = u <= bendStart
+      ? -4.7 + (u / bendStart) * (edgeX - radius + 4.7)
+      : edgeX - radius + Math.sin(curlAngle) * radius;
     const y = -.42 + v * 5.8;
-    const curl = Math.exp(-(1 - u) * 12) * .19 * Math.sin((1 - u) * 19);
-    return point(x - curl, y, -9.7 + .58 * Math.sin(v * 2.7 + .5) - .38 * Math.sin(u * Math.PI) + u * .13);
+    const backwardCurl = radius * (1 - Math.cos(curlAngle));
+    return point(x, y, -9.7 + .58 * Math.sin(v * 2.7 + .5) - .38 * Math.sin(u * Math.PI) + u * .13 - backwardCurl - upperReturn * 2.4);
   }), [innerReverse, innerIvory, innerEdge], true);
 
   // Grounded fabric rises into the walls. Close textiles use their own dense irregular weave map.

@@ -1,6 +1,7 @@
 import * as T from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { loadCafeEnvironment } from './environment';
+import { cafeFramebuffer, cafeTargetState, configureCafeTarget, preserveCafeReflectorState, requireCafeFramebuffer, restoreCafeTargetState, selectCafeTargetType, withCafeTargetState, type CafeTargetPreference } from './renderTargets';
 import { LookSpring } from '../../liveScene/look';
 import { buildCafe, type CafeInteraction } from './world';
 
@@ -11,21 +12,26 @@ export class CafeEngine {
   private readonly world=buildCafe();
   private readonly look=new LookSpring({yaw:.052,pitch:.027},{follow:.20,settle:1.35});
   private readonly raycaster=new T.Raycaster();
-  private readonly target=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,depthBuffer:true});
+  private readonly target:T.WebGLRenderTarget;
+  private readonly capability:ReturnType<typeof selectCafeTargetType>;
+  private targetChecks:ReturnType<typeof requireCafeFramebuffer>[]=[];
+  private shadowTarget:T.WebGLRenderTarget|null=null;
+  private targetFallbackReason:string|null=null;
   private readonly glass:Reflector;
-  private readonly environment:T.WebGLRenderTarget;
+  private environment:T.DataTexture|null=null;
   private raf=0; private last=0;private ready=false;private disposed=false;private time=0;private width=1;private height=1;private ratio=1;
   private wipeAge=99;private cupPulse=0;private lampLevel=1;private lampTarget=1;
   private frames=0;
   private readonly lost=(event:Event)=>{event.preventDefault();this.onContextLost();};
-  constructor(private readonly canvas:HTMLCanvasElement,private readonly onContextLost:()=>void) {
+  constructor(private readonly canvas:HTMLCanvasElement,private readonly onContextLost:()=>void,preference:CafeTargetPreference='auto') {
     this.renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
     this.renderer.outputColorSpace=T.SRGBColorSpace;
     this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.02;
-    this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;
+    this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=T.PCFShadowMap;
     this.renderer.shadowMap.autoUpdate=false;
-    const environmentScene=new RoomEnvironment();const pmrem=new T.PMREMGenerator(this.renderer);
-    this.environment=pmrem.fromScene(environmentScene,.035);this.world.scene.environment=this.environment.texture;this.world.scene.environmentIntensity=.27;environmentScene.dispose();pmrem.dispose();
+    try { this.capability=selectCafeTargetType(this.renderer,preference); }
+    catch(error){this.world.dispose();this.renderer.dispose();this.renderer.forceContextLoss();throw error;}
+    this.target=configureCafeTarget(new T.WebGLRenderTarget(1,1,{depthBuffer:true}),this.capability.type);
     const g=this.world.glass;
     // Three's planar reflection utility provides correct moving perspective and oblique clipping.
     // Rain/refraction below is an original shader; no reference-page source is used.
@@ -41,12 +47,31 @@ export class CafeEngine {
       #include <colorspace_fragment>}`,
 
     }});
+    // Reflector's constructor creates a lazy HalfFloat target. Set its format
+    // before setRenderTarget/initRenderTarget/any scene rendering can allocate it.
+    configureCafeTarget(this.glass.getRenderTarget(),this.capability.type);
+    preserveCafeReflectorState(this.glass);
     (this.glass.material as T.ShaderMaterial).uniforms.sceneColor.value=this.target.texture;
     this.glass.position.set(g.x,g.y,g.z);this.world.scene.add(this.glass);this.glass.userData.interaction='window';this.world.interactables.push(this.glass);
     canvas.addEventListener('webglcontextlost',this.lost);
     canvas.dataset.engine='three-webgl2';canvas.dataset.lifecycle='created';
   }
-  async init(){if(this.disposed)return;this.ready=true;this.setSize(this.width,this.height,this.ratio);this.renderer.shadowMap.needsUpdate=true;this.renderFrame(0);this.canvas.dataset.lifecycle='ready';}
+  async init(){
+    if(this.disposed)return;
+    let environment:T.DataTexture;
+    try{environment=await loadCafeEnvironment();}catch(error){if(this.disposed)return;throw error;}
+    if(this.disposed){environment.dispose();return;}
+    this.environment=environment;this.world.scene.environment=environment;this.world.scene.environmentIntensity=.27;
+    // Match r186's actual PCF target: RGBA8 + depth comparison texture, no VSM
+    // blur targets. Allocate/check it before the first shadow draw.
+    const shadow=this.world.key.shadow,size=Math.min(2048,this.renderer.capabilities.maxTextureSize);
+    shadow.mapSize.set(size,size);
+    shadow.map=this.shadowTarget=configureCafeTarget(new T.WebGLRenderTarget(size,size),T.UnsignedByteType);
+    shadow.map.depthTexture=new T.DepthTexture(size,size,T.UnsignedIntType);
+    shadow.map.depthTexture.format=T.DepthFormat;shadow.map.depthTexture.compareFunction=T.LessEqualCompare;
+    shadow.map.depthTexture.minFilter=shadow.map.depthTexture.magFilter=T.LinearFilter;
+    this.ready=true;this.setSize(this.width,this.height,this.ratio);this.renderer.shadowMap.needsUpdate=true;this.renderFrame(0);this.canvas.dataset.lifecycle='ready';
+  }
   setSize(width:number,height:number,devicePixelRatio:number){
     this.width=Math.max(1,width);this.height=Math.max(1,height);this.ratio=Math.min(2,Math.max(1,devicePixelRatio));
     this.renderer.setPixelRatio(this.ratio);this.renderer.setSize(this.width,this.height,false);
@@ -56,6 +81,18 @@ export class CafeEngine {
     this.camera.aspect=this.width/this.height;this.renderer.shadowMap.needsUpdate=true;
     // Portrait keeps the near cup and table lamp together; wider views reveal the room to the right.
     this.camera.fov=43+7*(1-T.MathUtils.smoothstep(this.camera.aspect,.48,1.35));this.camera.updateProjectionMatrix();
+    if(this.ready){
+      // Check real dimensions as well as the tiny capability probe. On a driver
+      // allocation failure, discard HDR storage and select RGBA8 before reallocating.
+      const checks=[cafeFramebuffer(this.renderer,this.target,'refraction'),cafeFramebuffer(this.renderer,this.glass.getRenderTarget(),'reflection')];
+      if(this.capability.type===T.HalfFloatType&&checks.some(check=>!check.complete)){
+        this.targetFallbackReason='HalfFloat framebuffer incomplete at scene dimensions';
+        this.capability.type=T.UnsignedByteType;
+        for(const target of [this.target,this.glass.getRenderTarget()]){target.dispose();configureCafeTarget(target,T.UnsignedByteType);}
+      }
+      this.targetChecks=[requireCafeFramebuffer(this.renderer,this.target,'refraction'),requireCafeFramebuffer(this.renderer,this.glass.getRenderTarget(),'reflection'),requireCafeFramebuffer(this.renderer,this.shadowTarget!,'pcf-shadow')];
+      this.canvas.dataset.targets=JSON.stringify({capability:this.capability,fallbackReason:this.targetFallbackReason,targets:this.targetChecks,environment:{kind:'baked-cubeuv',type:this.environment!.type,internalFormat:this.environment!.internalFormat,mapping:this.environment!.mapping,width:this.environment!.image.width,height:this.environment!.image.height,runtimePmrem:false}});
+    }
   }
   renderFrame(dt:number){
     if(!this.ready||this.disposed)return;
@@ -74,8 +111,12 @@ export class CafeEngine {
     this.world.key.target.position.x=this.world.cup.position.x+.16;
     this.world.lamp.scale.setScalar(T.MathUtils.lerp(1,.8,portrait));
     this.camera.lookAt(aim);this.camera.rotateY(this.look.yaw);this.camera.rotateX(this.look.pitch);this.camera.updateMatrixWorld();
-    this.glass.visible=false;this.renderer.setRenderTarget(this.target);this.renderer.render(this.world.scene,this.camera);
-    this.glass.visible=true;this.renderer.setRenderTarget(null);this.renderer.render(this.world.scene,this.camera);
+    withCafeTargetState(this.renderer,()=>{
+      try{
+        this.glass.visible=false;this.renderer.setRenderTarget(this.target);this.renderer.render(this.world.scene,this.camera);
+        this.glass.visible=true;this.renderer.setRenderTarget(null);this.renderer.render(this.world.scene,this.camera);
+      }finally{this.glass.visible=true;}
+    });
     this.frames++;
     // Tiny read-only diagnostics support real lifecycle and WebGL verification in the isolated harness.
     this.canvas.dataset.frames=String(this.frames);this.canvas.dataset.time=this.time.toFixed(4);this.canvas.dataset.yaw=this.look.yaw.toFixed(5);
@@ -96,5 +137,19 @@ export class CafeEngine {
     if(kind==='lamp')this.lampTarget=this.lampTarget>.9?.78:1;
     return kind??null;
   }
-  dispose(){if(this.disposed)return;this.stop();this.disposed=true;this.canvas.removeEventListener('webglcontextlost',this.lost);this.glass.dispose();this.target.dispose();this.environment.dispose();this.world.dispose();this.renderer.dispose();this.renderer.forceContextLoss();this.canvas.dataset.lifecycle='disposed';}
+  /** Paused harness-only check of real GL target/face/mip restoration. */
+  verifyTargetStateForQA(){
+    if(this.raf||!this.ready)throw new Error('Target-state check requires a ready paused scene');
+    const saved=cafeTargetState(this.renderer),probe=new T.WebGLCubeRenderTarget(16,{type:T.UnsignedByteType,depthBuffer:false,generateMipmaps:true,minFilter:T.LinearMipmapLinearFilter});
+    const matches=()=>this.renderer.getRenderTarget()===probe&&this.renderer.getActiveCubeFace()===4&&this.renderer.getActiveMipmapLevel()===1;
+    try{
+      this.renderer.setRenderTarget(probe,4,1);
+      const gl=this.renderer.getContext();if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('QA cube mip framebuffer incomplete');
+      requireCafeFramebuffer(this.renderer,this.target,'state-probe');const probeRestored=matches();
+      this.renderer.render(this.world.scene,this.camera);const reflectorRestored=matches();
+      this.renderFrame(0);const frameRestored=matches();
+      return {face:4,mip:1,probeRestored,reflectorRestored,frameRestored,glError:gl.getError()};
+    }finally{restoreCafeTargetState(this.renderer,saved);probe.dispose();}
+  }
+  dispose(){if(this.disposed)return;this.stop();this.disposed=true;this.canvas.removeEventListener('webglcontextlost',this.lost);this.glass.dispose();this.target.dispose();this.environment?.dispose();this.world.dispose();this.renderer.dispose();this.renderer.forceContextLoss();this.canvas.dataset.lifecycle='disposed';}
 }

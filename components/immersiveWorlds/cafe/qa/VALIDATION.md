@@ -1,3 +1,5 @@
+> Historical visual baseline at 215c50ff / 8b9383b8. Its source-unbound lifecycle JSON has been removed. The compatibility correction will publish newly executed source-bound reports for both target policies; this historical report is not evidence for the new code.
+
 # Café pilot verification — 2026-10-04 visual revision
 
 ## Exact code and images

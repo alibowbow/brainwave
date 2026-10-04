@@ -1,6 +1,10 @@
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import CafeWorld from '../CafeWorld';
+import {cafeHost} from '../cafeHost';
+const targetPreference=new URLSearchParams(location.search).get('targets')==='byte'?'byte':'auto';
+cafeHost.setTargetPreferenceForQA(targetPreference);
+Object.assign(window,{cafeQA:{verifyTargetState:()=>cafeHost.verifyTargetStateForQA()}});
 function Harness(){const [active,setActive]=useState(!new URLSearchParams(location.search).has('paused')),[full,setFull]=useState(false),[mounted,setMounted]=useState(true),[event,setEvent]=useState('');return <>
   <main data-scene-surface style={{position:'absolute',inset:0}}>{mounted&&<CafeWorld active={active} onInteraction={setEvent}/>}</main>
   {full&&mounted&&<section id="fullscreen" data-scene-surface aria-label="몰입 화면"><CafeWorld active={active} onInteraction={setEvent}/></section>}

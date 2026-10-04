@@ -41,10 +41,11 @@ npm test
 npm run build
 npm run check:bundle
 node components/immersiveWorlds/cafe/qa/build.mjs
-SCENE_BROWSER_PATH=/path/to/chromium CAFE_OUTPUT=/tmp/cafe-qa node components/immersiveWorlds/cafe/qa/verify.mjs
+SCENE_BROWSER_PATH=/path/to/chromium CAFE_TARGETS=auto CAFE_OUTPUT=/tmp/cafe-supported node components/immersiveWorlds/cafe/qa/verify.mjs
+SCENE_BROWSER_PATH=/path/to/chromium CAFE_TARGETS=byte CAFE_OUTPUT=/tmp/cafe-byte node components/immersiveWorlds/cafe/qa/verify.mjs
 ```
 
-`verify.mjs` starts and closes its own server and browser and tests the **built** pilot. `capture.mjs` captures the source/dev harness; `dispose-check.mjs` is a focused resource-release diagnostic. No package.json or dependency lock change is required. The browser executable is test tooling, not a shipped dependency.
+Commit the source and built pilot before final verification. `verify.mjs` refuses uncommitted runtime changes and records the exact source commit/tree, bundle/environment SHA-256, run ID/time and screenshot hashes. It starts and closes its own server and browser and tests the **built** pilot. `capture.mjs` captures the source/dev harness; `dispose-check.mjs` is a focused resource-release diagnostic. No package.json or dependency lock change is required. The browser executable is test tooling, not a shipped dependency.
 
 The pilot build uses `.mjs`, which is outside the application's existing `.js` service-worker precache glob; the 3D pilot is fetched only when its review page opens. The tiny HTML/CSS can appear in the broad static precache. Regenerate the pilot after source changes using the command above. This bundle duplicates React/Three for isolated review only; integrated routing should import `CafeWorld.tsx` and let the app share its Three chunk. The integration owner may later remove the compiled review route after acceptance.
 
@@ -55,6 +56,7 @@ The pilot build uses `.mjs`, which is outside the application's existing `.js` s
 - `world.ts`: café geometry, local lighting and shadows, open lathed ceramic cup, steam, quiet seated people.
 - `exterior.ts`: varied street façades, recessed windows/curtains, wet paving, soft light halos and broken reflection strips.
 - `shelves.ts`: asymmetrical service shelves, curved pitchers, small cup stacks, muted bags/books and a restrained still life.
+- `renderTargets.ts`, `environment.ts`: verified render-target capability policy and sample-only prefiltered environment.
 - `materials.ts`, `plant.ts`: deterministic PBR canvas textures, custom curved leaves and ceramic pot.
 - `qa/**`: isolated entry, reproducible build, browser tests, evidence and handoff notes.
 - `public/immersive-worlds/cafe/pilot/**`: compiled optional review page.
@@ -71,3 +73,13 @@ The visual revision responds to the four review findings:
 These describe the implemented changes, not a new visual approval. Current screenshot/code correspondence and the final verification results belong in `qa/VALIDATION.md` and the screenshot manifest.
 
 Known limits: customers/buildings are original procedural models, not scans; street streaks approximate wet reflections while window interior reflection is true planar rendering; droplets use layered shader fields, not fluid collision/merging simulation. No image-generation assets were necessary. Actual Fold hardware/GPU performance and the shared production route remain integration-stage checks. See `PROVENANCE.md` and `qa/VALIDATION.md` for evidence and precise verification limits.
+
+## Render-target compatibility
+
+The approved camera, geometry, lights and materials are preserved. WebGL2 entry no longer requires EXT_color_buffer_float. Auto policy enables either genuine EXT_color_buffer_float **or** EXT_color_buffer_half_float, then probes the exact RGBA16F framebuffer. Reflection and refraction use HalfFloat on a complete target; otherwise they select RGBA8/UnsignedByte before allocation. Explicit `?targets=byte` is confined to the review harness; it never alters or hides GL extension APIs. Real-size targets are checked after resize, with a byte retry if HDR storage is incomplete. The PCF shadow target is RGBA8 plus an UnsignedInt depth texture, allocated and checked before drawing.
+
+`Reflector` in Three 0.186.1 creates a lazy HalfFloat target; this owner configures it before its first allocation. Both scene passes, framebuffer probes and Reflector callbacks restore target, active cube face and mip level, including exceptional exits.
+
+There is **no runtime PMREM generation**. Both policies sample the same bundled `room-environment.hdr` CubeUV atlas, baked from the previous RoomEnvironment(.035) at the same 256 face size. HDRLoader creates a sample-only RGBA16F texture (WebGL2 core); this texture is never attached to a framebuffer. Direct CubeUV mapping avoids Three's implicit cube/equirectangular PMREM conversion. Radiance range and roughness prefilter remain intact; measured maximum relative bake/decode error is below 0.4%. See the adjacent asset provenance JSON and `qa/bake-environment.mjs` for reproducibility.
+
+The supported path retains HDR reflection/refraction. The byte path has lower offscreen highlight range; it does not replace or lower the resolution of the 3D scene. A failed reflection FBO need not black the entire canvas. Shared routes/audio, packages and the protected scenes are unchanged.

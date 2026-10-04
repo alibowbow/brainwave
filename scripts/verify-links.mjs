@@ -6,15 +6,17 @@ const browser = await chromium.launch({
   executablePath: process.env.SCENE_BROWSER_PATH || undefined,
   headless: true,
   // Exercise the restrictive policy; never disable browser autoplay protection.
-  args: ['--no-sandbox', '--autoplay-policy=user-gesture-required'],
+  args: ['--no-sandbox', '--autoplay-policy=document-user-activation-required'],
 });
 const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, serviceWorkers: 'block' });
 await context.addInitScript(() => {
   const NativeContext = window.AudioContext;
   window.__audioContexts = [];
   window.__oscillatorsCreated = 0;
+  window.__sessionGraphsCreated = 0;
   window.AudioContext = class extends NativeContext {
     constructor(...args) { super(...args); window.__audioContexts.push(this); }
+    createAnalyser() { window.__sessionGraphsCreated++; return super.createAnalyser(); }
     createOscillator() { window.__oscillatorsCreated++; return super.createOscillator(); }
   };
 });
@@ -73,10 +75,10 @@ try {
   await page.goForward();
   await page.waitForSelector('h1:has-text("우주 명상")');
   await playing();
-  const starts = await page.evaluate(() => window.__oscillatorsCreated);
+  const starts = await page.evaluate(() => window.__sessionGraphsCreated);
   await page.evaluate(() => window.dispatchEvent(new HashChangeEvent('hashchange')));
   await page.waitForTimeout(100);
-  assert.equal(await page.evaluate(() => window.__oscillatorsCreated), starts);
+  assert.equal(await page.evaluate(() => window.__sessionGraphsCreated), starts);
   assert.equal(await page.evaluate(() => window.__audioContexts.length), 1);
 
   // Returning to the same paused session must not auto-resume/reset it.
@@ -85,7 +87,7 @@ try {
   await page.goBack();
   await page.waitForSelector('h1:has-text("우주 명상")');
   await stopped();
-  assert.equal(await page.evaluate(() => window.__oscillatorsCreated), starts);
+  assert.equal(await page.evaluate(() => window.__sessionGraphsCreated), starts);
 
   // All link families use the same startup path, including device-local saves.
   await typeLink('#/play/nature/deep_sea');

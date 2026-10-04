@@ -10,7 +10,7 @@ export function buildLakesideWorld(): WorldRecipe {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#72728d');
   scene.fog = new THREE.FogExp2('#696780', .0057);
-  sky(scene, '#172644', '#bc939e', 2048, 180);
+  sky(scene, '#172644', '#93809c', 2048, 180);
   scene.add(new THREE.HemisphereLight('#a9b5e8', '#4e3b39', 1.12));
   const twilight = new THREE.DirectionalLight('#dfbfce', 1.24);
   twilight.position.set(-18, 24, -35);
@@ -87,16 +87,16 @@ export function buildLakesideWorld(): WorldRecipe {
         vec3 viewDir=normalize(cameraPosition-vWorld); vec3 r=reflect(-viewDir,n);
         float fresnel=.18+.82*pow(1.-max(0.,dot(viewDir,n)),3.6);
         float h=clamp(r.y,0.,1.);
-        vec3 reflected=mix(vec3(.63,.40,.49),vec3(.095,.16,.285),smoothstep(0.,.65,h));
-        reflected+=vec3(.135,.075,.105)*exp(-pow((h-.105)*7.5,2.));
+        vec3 reflected=mix(vec3(.225,.18,.275),vec3(.045,.069,.13),smoothstep(0.,.65,h));
+        reflected+=vec3(.035,.015,.033)*exp(-pow((h-.105)*7.5,2.));
         float a=atan(r.x,-r.z); float silhouette=hill(a);
-        float soften=.0045+abs(vWorld.z)*.000018;
-        reflected=mix(vec3(.15,.20,.255),reflected,smoothstep(silhouette-soften,silhouette+soften,h));
-        reflected=mix(vec3(.105,.165,.18),reflected,smoothstep(silhouette*.57-soften,silhouette*.57+soften,h));
+        float soften=.016+abs(vWorld.z)*.00008;
+        reflected=mix(vec3(.064,.080,.125),reflected,smoothstep(silhouette-soften,silhouette+soften,h));
+        reflected=mix(vec3(.042,.068,.085),reflected,smoothstep(silhouette*.57-soften,silhouette*.57+soften,h));
         float ripples=sin(p.y*17.+sin(p.x*3.2)+uTime*.3)*.5+.5;
         float cloud=(sin(a*16.+h*35.)*.5+.5)*exp(-pow((h-.16)*14.,2.));
         reflected+=cloud*vec3(.025,.013,.019);
-        vec3 base=vec3(.045,.105,.135)+vec3(.055,.06,.055)*clamp(-vWorld.z/100.,0.,1.);
+        vec3 base=vec3(.025,.052,.067)+vec3(.022,.027,.039)*clamp(-vWorld.z/100.,0.,1.);
         vec3 color=mix(base,reflected,fresnel);
         vec3 moonDir=normalize(vec3(.34,.31,-1.));
         float moon=pow(max(dot(r,moonDir),0.),560.)*.43;
@@ -362,9 +362,10 @@ export function buildLakesideWorld(): WorldRecipe {
 
   // Birch trunks frame the open sky on the right. Branch fans are individually bent and sparse.
   const birchMaterial = material('bark', '#beb6a1');
-  const leafMaterial = material('fabric', '#596347'); leafMaterial.side = THREE.DoubleSide;
-  const leafGeometry = new THREE.SphereGeometry(1, 5, 3);
-  const foliage = new THREE.InstancedMesh(leafGeometry, leafMaterial, 370);
+  const leafMaterial = material('fabric', '#728164'); leafMaterial.side = THREE.DoubleSide;
+  leafMaterial.emissive.set('#263122'); leafMaterial.emissiveIntensity = .28;
+  const leafGeometry = new THREE.SphereGeometry(1, 8, 5);
+  const foliage = new THREE.InstancedMesh(leafGeometry, leafMaterial, 720);
   let leafIndex = 0;
   for (let tree = 0; tree < 3; tree++) {
     const x = 5.9 + tree * 2.1, z = -2.7 - tree * 3.2, h = 6.5 + rng() * 3;
@@ -374,9 +375,9 @@ export function buildLakesideWorld(): WorldRecipe {
       const by = h * (.48 + b * .061), angle = b * 2.36 + tree;
       const start = V(x + .3, by, z -.1), end = V(x + .3 + Math.cos(angle) * (1.35 + rng() * .7), by + .55 + rng() * .65, z + Math.sin(angle) * 1.3);
       add(tube([start, start.clone().lerp(end, .5).add(V(0, .2, 0)), end], .018 + (8 - b) * .0014, bark, 12));
-      for (let l = 0; l < 15 && leafIndex < 370; l++) {
+      for (let l = 0; l < 30 && leafIndex < 720; l++) {
         const t = .3 + rng() * .7; const p = start.clone().lerp(end, t).add(V((rng() - .5) * .8, rng() * .6, (rng() - .5) * .7));
-        dummy.position.copy(p); dummy.scale.set(.12 + rng() * .16, .026, .08 + rng() * .08); dummy.rotation.set(rng() * .8, rng() * 6, rng() * .8); dummy.updateMatrix(); foliage.setMatrixAt(leafIndex++, dummy.matrix);
+        dummy.position.copy(p); dummy.scale.set(.075 + rng() * .12, .014, .046 + rng() * .07); dummy.rotation.set(rng() * 1.3, rng() * 6, rng() * 1.3); dummy.updateMatrix(); foliage.setMatrixAt(leafIndex++, dummy.matrix);
       }
     }
   }
@@ -389,15 +390,15 @@ export function buildLakesideWorld(): WorldRecipe {
       // A narrow screen receives a closer semicircle of equipment. The tent's
       // doorway and the complete mug/lantern remain readable instead of a blind crop.
       const portrait = aspect < .85;
-      tent.position.x = portrait ? -1.98 : -3.06;
-      tent.position.z = portrait ? -3.65 : -3.3;
-      chair.position.x = portrait ? 1.66 : 2.16;
+      tent.position.x = portrait ? -1.45 : -3.06;
+      tent.position.z = portrait ? -3.80 : -3.3;
+      chair.position.x = portrait ? 1.40 : 2.16;
       chair.position.z = portrait ? -2.15 : -1.65;
       table.position.x = portrait ? .36 : .62;
-      lamp.group.position.x = portrait ? .90 : 1.16;
+      lamp.group.position.x = portrait ? .59 : 1.16;
       for (const steam of steamObjects) steam.position.x = steamOrigin.x + (portrait ? -.26 : 0);
       return portrait
-        ? { position: [.16, 1.65, 5.2], target: [-.05, 1.0, -5.7], fov: 61 }
+        ? { position: [.08, 1.28, 3.7], target: [.1, 1.3, -14], fov: 65 }
         : { position: [.12, 1.63, 4.23], target: [-.18, 1.10, -7.4], fov: 55 };
     },
     update: (time, dt) => {

@@ -5,6 +5,7 @@ const root = fileURLToPath(new URL('../../../../', import.meta.url));
 export default defineConfig({
   root,
   publicDir: false,
+  cacheDir: "components/immersiveWorlds/nightFires/qa/.vite",
   plugins: [react()],
   build: {
     outDir: 'components/immersiveWorlds/nightFires/qa/build',

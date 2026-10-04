@@ -37,7 +37,7 @@ async function sourceSnapshot() {
     try { entries = await readdir(dir, { withFileTypes: true }); }
     catch (error) { if (error.code === 'ENOENT') return; throw error; }
     for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
-      if (entry.name === 'evidence' || entry.name === 'build') continue;
+      if (entry.name === 'evidence' || entry.name === 'build' || entry.name === '.vite') continue;
       const absolute = path.join(dir, entry.name);
       if (entry.isDirectory()) await walk(absolute);
       else if (/\.(?:ts|tsx|js|mjs|css|html|glsl|png|webp|jpg|jpeg|glb|gltf|svg)$/i.test(entry.name)) {

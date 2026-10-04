@@ -71,11 +71,17 @@ function tube(limb: Limb, sides: number, positions: number[], normals: number[],
 const CLUMP_KINDS = 3;
 
 /**
- * Clumps of pine foliage drawn once, side by side: feathery tufts of needles
- * heaped into a soft mass, lit along its top and sunward (left) edge, dark
- * green underneath; each clump a little different in shape.
+ * Clumps of pine foliage drawn once, side by side. Each is a heap of
+ * needle bundles: at the end of each twig a fan of long needles, every
+ * needle a tapering stroke broad enough to show as a stroke in the
+ * painting, dark at its base in the bundle's own shade and lighter towards
+ * its tip. The bundles overlap into a soft mass lit along its top and
+ * sunward (left) edge, spiky at its outline, the ones at the back sunk into
+ * blue-green shadow, with gaps where the sky shows through, and a few cones
+ * hanging among them. Each clump is a little different in shape.
+ * (Exported for the atlas preview tooling.)
  */
-function drawClumps(size: number) {
+export function drawClumps(size: number) {
   const image = new Raster(size * CLUMP_KINDS, size);
   let s = 99;
   const rand = () => {
@@ -85,33 +91,61 @@ function drawClumps(size: number) {
   for (let kind = 0; kind < CLUMP_KINDS; kind++) {
     const x0 = kind * size;
     // Wider or rounder masses, a little lopsided.
-    const wide = [0.38, 0.33, 0.36][kind];
-    const tall = [0.22, 0.27, 0.24][kind];
-    const tufts: { x: number; y: number }[] = [];
-    for (let i = 0; i < 72; i++) {
+    const wide = [0.36, 0.31, 0.34][kind];
+    const tall = [0.2, 0.25, 0.22][kind];
+    const bundles: { x: number; y: number; depth: number }[] = [];
+    for (let i = 0; i < 30; i++) {
       const a = rand() * Math.PI * 2;
-      const r = Math.sqrt(rand());
-      tufts.push({ x: 0.5 + Math.cos(a) * r * wide + (kind - 1) * 0.02 * Math.sin(a * 2), y: 0.56 + Math.sin(a) * r * tall });
+      const r = Math.pow(rand(), 0.45);
+      bundles.push({ x: 0.5 + Math.cos(a) * r * wide + (kind - 1) * 0.02 * Math.sin(a * 2), y: 0.55 + Math.sin(a) * r * tall, depth: rand() });
     }
-    // Lower tufts first, so the lit ones above overlap them.
-    tufts.sort((a, b) => b.y - a.y);
-    for (const tuft of tufts) {
-      const light = Math.min(1, Math.max(0, 0.25 + (0.6 - tuft.y) * 2.2 + (0.5 - tuft.x) * 0.6 + (rand() - 0.5) * 0.3));
-      for (let k = 0; k < 36; k++) {
-        // Needles fan out from the tuft, mostly upwards and outwards, curving a little.
-        const angle = -Math.PI / 2 + (rand() - 0.5) * 2.8;
-        const length = size * (0.025 + 0.055 * rand());
-        const px = x0 + (tuft.x + (rand() - 0.5) * 0.03) * size;
-        const py = (tuft.y + (rand() - 0.5) * 0.02) * size;
-        const tip = Math.min(1, light * (0.55 + 0.6 * rand()));
-        const width = size * (0.003 + 0.003 * rand());
+    // Back and lower bundles first, so the lit ones in front overlap them.
+    bundles.sort((a, b) => (b.depth + b.y * 0.6) - (a.depth + a.y * 0.6));
+    for (const bundle of bundles) {
+      const front = 1 - bundle.depth;
+      const light = Math.min(1, Math.max(0, 0.2 + (0.58 - bundle.y) * 2.0 + (0.5 - bundle.x) * 0.6 + 0.35 * front + (rand() - 0.5) * 0.25));
+      const bx = x0 + bundle.x * size;
+      const by = bundle.y * size;
+      // The twig the bundle grows from, reaching in towards the clump's heart.
+      const inX = x0 + size * 0.5;
+      const inY = size * 0.58;
+      image.stroke(bx, by, bx + (inX - bx) * 0.3, by + (inY - by) * 0.3, size * 0.006, size * 0.004, 74, 54, 38);
+      // Cones: a few, hanging below the twig among the needles.
+      if (rand() < 0.06) {
+        const cr = size * (0.016 + 0.008 * rand());
+        const cx = bx + (rand() - 0.5) * size * 0.02;
+        const cy = by + size * 0.025;
+        image.ellipse(cx, cy, cr * 0.6, cr, 0.2 * (rand() - 0.5), 66, 48, 34);
+        for (let k = 0; k < 8; k++) {
+          image.ellipse(cx + (rand() - 0.5) * cr * 0.8, cy - cr * 0.8 + (k / 7) * cr * 1.6, cr * 0.2, cr * 0.13, 0, 100, 80, 56);
+        }
+      }
+      // The needles fan out from the twig's end: outwards from the clump's
+      // heart and upwards, each bending a little under its own weight.
+      const outX = bundle.x - 0.5;
+      const outY = bundle.y - 0.58;
+      const fan = Math.atan2(outY * 1.2 - 0.9, outX * 1.2) + (rand() - 0.5) * 0.5;
+      const count = 15 + Math.floor(rand() * 7);
+      for (let k = 0; k < count; k++) {
+        const angle = fan + (rand() - 0.5) * 2.2;
+        const length = size * (0.07 + 0.06 * rand());
+        const px = bx + (rand() - 0.5) * size * 0.01;
+        const py = by + (rand() - 0.5) * size * 0.01;
+        // Needles that point up and out catch more light than those hanging down.
+        const up = 0.5 - 0.5 * Math.sin(angle);
+        const tip = Math.min(1, light * (0.5 + 0.5 * up) * (0.7 + 0.5 * rand()));
+        const width = size * (0.0065 + 0.003 * rand());
         const mx = px + Math.cos(angle) * length * 0.5 - size * 0.006;
-        const my = py + Math.sin(angle) * length * 0.5;
-        const r = 14 + tip * 104;
-        const g = 34 + tip * 150;
-        const b = 16 + tip * 56;
-        image.stroke(px, py, mx, my, width, width, r, g, b);
-        image.stroke(mx, my, px + Math.cos(angle) * length, py + Math.sin(angle) * length, width, width * 0.6, r, g, b);
+        const my = py + Math.sin(angle) * length * 0.5 + size * 0.004;
+        const ex = px + Math.cos(angle) * length;
+        const ey = py + Math.sin(angle) * length + size * 0.012;
+        // Dark at the base, in the bundle's shade; the back of the clump is bluer.
+        const base = Math.max(0, tip * 0.45 - 0.08);
+        const blue = (1 - front) * 30;
+        const near: [number, number, number] = [18 + base * 100, 44 + base * 150, 30 + base * 50 + blue * (1 - base)];
+        const far: [number, number, number] = [22 + tip * 126, 52 + tip * 166, 28 + tip * 56 + blue * (1 - tip)];
+        image.stroke(px, py, mx, my, width, width * 0.8, Math.round(near[0]), Math.round(near[1]), Math.round(near[2]));
+        image.stroke(mx, my, ex, ey, width * 0.8, width * 0.35, Math.round(far[0]), Math.round(far[1]), Math.round(far[2]));
       }
     }
   }
@@ -322,6 +356,11 @@ export function createPine(sunDirection: THREE.Vector3) {
         // Plates grey-brown to a warm red-brown where the outer bark has flaked.
         vec3 albedo = mix(vec3(0.4, 0.31, 0.25), vec3(0.58, 0.39, 0.27), smoothstep(0.35, 0.95, plate.y) * old);
         albedo *= 0.88 + 0.24 * vnoise(surface * vec2(8.0, 2.5));
+        // The plates' own grain: fine ridges along the limb, and flakes lifting at their edges.
+        float grain = vnoise(surface * vec2(34.0, 9.0)) * 0.6 + vnoise(surface * vec2(70.0, 20.0) + 3.0) * 0.4;
+        albedo *= 0.92 + 0.16 * grain;
+        float flake = smoothstep(0.12, 0.2, plate.x) * (1.0 - smoothstep(0.2, 0.3, plate.x)) * old;
+        albedo *= 1.0 + 0.12 * flake;
         albedo = mix(albedo, vec3(0.16, 0.12, 0.1), crack * 0.6);
         // Grey-green lichen on the upper sides of the old wood.
         float lichen = smoothstep(0.6, 0.78, fbm3(surface * 1.7 + 4.0)) * smoothstep(0.1, 0.6, n.y) * smoothstep(0.08, 0.2, vBark.z);
@@ -335,13 +374,13 @@ export function createPine(sunDirection: THREE.Vector3) {
   });
 
   // Foliage: at each branch tip a few clumps, drawn as soft masses facing the viewer.
-  const clumpTexture = drawClumps(384);
+  const clumpTexture = drawClumps(768);
   const quad = new THREE.PlaneGeometry(1, 1);
   const foliage = new THREE.InstancedBufferGeometry();
   foliage.index = quad.index;
   foliage.setAttribute('position', quad.getAttribute('position'));
   foliage.setAttribute('uv', quad.getAttribute('uv'));
-  const clumpsPerPad = 4;
+  const clumpsPerPad = 5;
   const clumpData = new Float32Array(pads.length * clumpsPerPad * 4);
   const shadeData = new Float32Array(pads.length * clumpsPerPad * 4);
   const top = Math.max(...pads.map((pad) => pad.at.y));
@@ -354,7 +393,7 @@ export function createPine(sunDirection: THREE.Vector3) {
       const x = pad.at.x + (rand() - 0.5) * spread * 1.6;
       const rise = rand() - 0.4;
       const z = pad.at.z + (rand() - 0.5) * spread * 1.6;
-      clumpData.set([x, pad.at.y + rise * spread * 0.45, z, pad.size * (0.75 + 0.5 * rand())], n * 4);
+      clumpData.set([x, pad.at.y + rise * spread * 0.45, z, pad.size * (0.8 + 0.5 * rand())], n * 4);
       shadeData.set([
         // The underside of a pad is in its own shade.
         lit * (0.85 + 0.15 * rand()) * (0.8 + 0.2 * Math.min(1, Math.max(0, rise * 2 + 0.6))),
@@ -416,8 +455,8 @@ export function createPine(sunDirection: THREE.Vector3) {
         // The clump carries its own light and shade; the crown adds
         // sunlight above and shadow within. Each clump its own green:
         // old needles blue-green, fresh shoots yellower.
-        vec3 col = clump.rgb * mix(vec3(0.56, 0.64, 0.66), vec3(1.18, 1.14, 0.96), vShade);
-        col *= mix(vec3(0.9, 1.0, 1.1), vec3(1.1, 1.05, 0.84), vHue);
+        vec3 col = clump.rgb * mix(vec3(0.7, 0.8, 0.9), vec3(1.3, 1.22, 0.9), vShade);
+        col *= mix(vec3(0.88, 1.0, 1.12), vec3(1.14, 1.06, 0.8), vHue);
         vec3 albedo = clump.rgb;
         // The sun shines through the thin edges of the crown.
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 4.0);

@@ -45,10 +45,10 @@ interface Profile {
 }
 
 const PROFILES: Record<SeasideQuality, Profile> = {
-  high: { maxPixels: 1_600_000, maxPixelRatio: 1.25, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 132, grass: 31000, shrubs: 1200, rocks: 140, trees: 9000, gulls: 6 },
-  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 120, grass: 21500, shrubs: 820, rocks: 110, trees: 6400, gulls: 6 },
-  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 102, grass: 12800, shrubs: 530, rocks: 80, trees: 3850, gulls: 5 },
-  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 84, grass: 7100, shrubs: 300, rocks: 70, trees: 2050, gulls: 4 },
+  high: { maxPixels: 2_000_000, maxPixelRatio: 1.5, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 66, grass: 31000, shrubs: 1200, rocks: 140, trees: 9000, gulls: 6 },
+  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 60, grass: 21500, shrubs: 820, rocks: 110, trees: 6400, gulls: 6 },
+  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 52, grass: 12800, shrubs: 530, rocks: 80, trees: 3850, gulls: 5 },
+  software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 42, grass: 7100, shrubs: 300, rocks: 70, trees: 2050, gulls: 4 },
 };
 
 const REFERENCE_PIXELS = 1280 * 720;
@@ -168,6 +168,7 @@ export class SeasideEngine implements LiveSceneEngine {
     this.scene.add(shrubs.mesh);
     const rocks = createRocks(this.sunDirection, profile.rocks);
     this.scene.add(rocks.mesh);
+    ocean.setRocks(rocks.waterline);
     const trees = createTrees(this.sunDirection, profile.trees);
     this.scene.add(trees.mesh);
     const buildings = createBuildings(this.sunDirection);
@@ -230,7 +231,8 @@ export class SeasideEngine implements LiveSceneEngine {
     this.camera.updateProjectionMatrix();
     this.camera.updateMatrixWorld();
     this.sceneTarget?.dispose();
-    this.sceneTarget = new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: true });
+    // The depth buffer is kept as a texture: the painting works near things with a finer brush.
+    this.sceneTarget = new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: true, depthTexture: new THREE.DepthTexture(width, height) });
     // The same brush on the same picture, whatever the resolution it is made at.
     const shown = width * (this.cssWidth / painted);
     this.post.setSize(width, height, profile.brush * Math.sqrt((shown * height) / REFERENCE_PIXELS), shown / width);
@@ -311,10 +313,10 @@ export class SeasideEngine implements LiveSceneEngine {
     this.sky?.position.copy(this.camera.position);
     this.renderer.setRenderTarget(this.sceneTarget);
     this.renderer.render(this.scene, this.camera);
-    this.post.render(this.sceneTarget.texture, this.debugView === 1);
+    this.post.render(this.sceneTarget.texture, this.sceneTarget.depthTexture, [this.camera.near, this.camera.far], this.debugView);
   }
 
-  /** Development aid: 1 shows the render before it is painted. */
+  /** Development aid: 1 shows the render before it is painted, 2 the brush each pixel gets. */
   debugView = 0;
 
   get isReady() { return this.ready; }

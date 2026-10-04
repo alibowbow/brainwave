@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CLOUD_SHADOW_GLSL } from './clouds';
 import { NOISE_GLSL, SKY_GLSL } from './sky';
+import { WATERLINE_ROCKS, type WaterlineRock } from './rocks';
 import { WORLD_GLSL } from './world';
 
 /*
@@ -18,6 +19,8 @@ import { WORLD_GLSL } from './world';
 export const OCEAN_GLSL = /* glsl */ `
 uniform float uEnergy;
 uniform float uDetail;
+// Rocks standing in the water (x, z, radius; radius 0 for none), which the sea foams round.
+uniform vec3 uRocks[${WATERLINE_ROCKS}];
 
 const float TAU = 6.2831853;
 const vec2 SWELL_DIR = vec2(0.7596, 0.6504);
@@ -192,14 +195,38 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // foam and outlast it.
   float churned = clamp(broken * exp(-cycle / (0.2 + 0.45 * waveSize)) * (0.35 + 0.65 * swath) * 0.8 + density * 0.5, 0.0, 1.0);
 
-  // Light through the water: deep blue-teal, turquoise over the sand, milky in the churned surf.
-  vec3 body = mix(vec3(0.02, 0.16, 0.33), vec3(0.03, 0.27, 0.43), exp(-depth / 14.0));
-  body = mix(body, vec3(0.07, 0.5, 0.52), exp(-depth / 3.0));
-  body = mix(body, vec3(0.46, 0.6, 0.52), exp(-depth / 0.7) * 0.5);
-  body = mix(body, vec3(0.3, 0.6, 0.64), inner * 0.35);
+  // Light through the water. Clear water over sand: the bottom shows
+  // through the shallows, its sand paled and greened by the water over it
+  // (red light is lost first, then green; blue goes farthest), so the bay
+  // runs from pale sand at the water's edge through emerald and turquoise
+  // to the deep blue of open water.
+  vec3 water = mix(vec3(0.03, 0.16, 0.44), vec3(0.02, 0.37, 0.45), exp(-depth / 7.0));
+  vec3 body = water;
+  if (depth < 14.0) {
+    // The bottom, seen through the waves (bent a little by their slopes):
+    // rippled sand, darker in patches where weed grows.
+    vec2 floorAt = p + n.xz * depth * 0.6;
+    float ripples = 0.5 + 0.5 * sin(dot(floorAt, vec2(0.52, 0.85)) * 2.4 + 2.0 * vnoise(floorAt * 0.3));
+    vec3 sand = vec3(0.66, 0.64, 0.5) * (0.9 + 0.12 * ripples) * (0.9 + 0.2 * fbm3(floorAt * 0.05 + 2.0));
+    float weed = smoothstep(0.62, 0.74, fbm3(floorAt * 0.03 + 11.0)) * smoothstep(1.5, 4.0, depth);
+    sand = mix(sand, vec3(0.2, 0.3, 0.2), weed * 0.7);
+    // Sunlight focused by the ripples plays over it, where it is shallow and near enough to see.
+    float lively = exp(-depth / 2.5) * smoothstep(1.2, 0.3, fade);
+    if (lively > 0.01) {
+      vec2 cq = floorAt * 1.1;
+      float caustic = pow(1.0 - abs(vnoise(cq + vec2(uTime * 0.4, uTime * 0.1)) - vnoise(cq * 1.37 + vec2(-uTime * 0.3, uTime * 0.25) + 7.0)), 8.0);
+      sand *= 1.0 + 0.5 * caustic * lively;
+    }
+    body = mix(water, sand, exp(-depth * vec3(0.8, 0.22, 0.1)));
+  }
+  body = mix(body, vec3(0.3, 0.6, 0.64), inner * 0.15);
   // Patches of rougher, darker water where gusts touch down.
   float streak = fbm3(vec2(dot(p, across) * 0.006, dot(p, SWELL_DIR) * 0.012) + vec2(0.0, uTime * 0.02));
   body *= 0.86 + 0.28 * streak;
+  // Turquoise where the water is shoaler or stirred, ultramarine where it runs deep and still.
+  float tide = fbm3(vec2(dot(p, across) * 0.0035, dot(p, SWELL_DIR) * 0.0055) + 13.0);
+  body = mix(body, body * vec3(0.7, 1.2, 1.06) + vec3(0.0, 0.025, 0.02), smoothstep(0.52, 0.72, tide) * 0.55);
+  body = mix(body, body * vec3(1.1, 0.95, 1.14), smoothstep(0.48, 0.28, tide) * 0.45);
   // Crests lit through by the sun glow turquoise, in stretches; troughs are deep.
   float backlit = pow(max(dot(-v, uSunDir) * 0.5 + 0.5, 0.0), 2.0);
   float glow = smoothstep(-0.4, 0.9, crest) * (0.45 + 0.55 * vnoise(vec2(dot(p, across) * 0.004, dot(p, SWELL_DIR) * 0.002 + 3.0)));
@@ -217,6 +244,11 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // Under a cloud's shadow less light comes up out of the water, and none glitters.
   float shadow = cloudShadow(world);
   body *= 1.0 - 0.3 * shadow;
+  // The waves' relief: faces turned towards the sun are lit and those turned
+  // away lie in shade, so every swell and ripple has a light side and a dark
+  // one (surf and foam have their own light).
+  float towardSun = dot(n, uSunDir) - uSunDir.y;
+  body *= 1.0 + 2.6 * clamp(towardSun, -0.25, 0.25) * (1.0 - 0.7 * churned);
 
   // The sky mirrored in the swell; the ripples no sample resolves tilt it up.
   // Churned water is rough and matte, and gives back less of it.
@@ -246,6 +278,31 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   glitter *= smoothstep(0.3, 0.72, dab) * 1.7 * (1.0 - shadow);
   col += vec3(1.0, 0.98, 0.9) * (1.0 - exp(-glitter * 1.3)) * 1.1 + vec3(1.0, 0.98, 0.94) * max(glitter - 2.5, 0.0) * 0.04;
 
+  // Sparkle (윤슬). With the sun behind the viewer the sea gives back no mirror
+  // image of it, but the little faces of the waves that lean towards it still
+  // flash: dashes of light a few pixels across however far off, coming and
+  // going as the water moves, strongest where the slope leans most to the sun.
+  float sunSlope = dot(n.xz, normalize(uSunDir.xz));
+  float catchLight = smoothstep(0.01, 0.07, sunSlope);
+  if (catchLight > 0.0) {
+    // Cells that stay a constant size on the screen (azimuth across, the
+    // inverse of the distance down), in rows each shifted along its own way.
+    vec2 sparkAt = vec2(atan(rel.x, -rel.y) * 70.0, 9500.0 / max(length(rel), 1.0));
+    float row = floor(sparkAt.y);
+    sparkAt.x += hash12(vec2(row, 4.0)) * 11.0 + uTime * 0.12 * (hash12(vec2(row, 9.0)) - 0.5);
+    vec2 sparkCell = vec2(floor(sparkAt.x), row);
+    float sparkId = hash12(sparkCell + 31.0);
+    // Flashes gather in patches, and are dashes of different lengths.
+    float cluster = smoothstep(0.3, 0.7, fbm3(sparkAt * vec2(0.07, 0.11) + vec2(uTime * 0.015, 3.0)));
+    float reach = 0.4 + 0.6 * hash12(sparkCell + 2.3);
+    float inCell = fract(sparkAt.x);
+    float alongDash = smoothstep(0.0, 0.1, inCell) * smoothstep(reach, reach - 0.15, inCell);
+    float thin = smoothstep(0.5, 0.18, abs(fract(sparkAt.y) - 0.5) * 1.6);
+    float blink = 0.5 + 0.5 * sin(uTime * (0.5 + 1.2 * hash12(sparkCell + 5.7)) + 6.2832 * sparkId);
+    float spark = step(1.0 - 0.55 * cluster, sparkId) * smoothstep(0.5, 0.85, blink) * alongDash * thin * catchLight * smoothstep(40.0, 4.0, fade);
+    col += vec3(1.0, 0.97, 0.86) * spark * 1.9 * (1.0 - shadow);
+  }
+
   // Where the foam lies. It is carried in with the waves and drifts along
   // the shore, stretched along the crests and swirled: sparse, it keeps only
   // scraps of thin threads; denser, the threads widen and close up into
@@ -269,6 +326,20 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   foam = max(foam, broken * smoothstep(0.3, 0.9, lip) * smoothstep(0.0, 0.4, swath));
   // The swash on the sand, and the lip of each whitecap.
   foam = max(foam, swash * (0.55 + 0.45 * threads(q * 2.0 + 3.0, 0.07, aa * 2.0)));
+  // The sea washing round the rocks at the headland's foot: a collar of
+  // foam that surges and ebbs with the waves, trailing off to leeward.
+  if (d < 30.0) {
+    float collar = 0.0;
+    for (int i = 0; i < ${WATERLINE_ROCKS}; i++) {
+      vec3 rock = uRocks[i];
+      if (rock.z == 0.0) continue;
+      float gap = distance(p, rock.xy) - rock.z;
+      float surge = 0.55 + 0.45 * sin(uTime * 1.4 + rock.x * 0.7 + rock.y * 0.3);
+      collar = max(collar, smoothstep(1.6 + 1.2 * surge, 0.0, gap) * (0.5 + 0.5 * surge));
+    }
+    collar *= 0.5 + 0.5 * threads(q * 2.4 + 5.0, 0.09, aa * 2.4);
+    foam = max(foam, collar * 0.9);
+  }
   foam = max(foam, caps * smoothstep(0.35, 0.65, crest));
   // Lit on top and on the lumps that face the sun; in blue shadow in the
   // hollows, on the curl's face and in the troughs.
@@ -282,6 +353,17 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   vec3 foamColour = mix(vec3(0.56, 0.68, 0.82), vec3(1.05, 1.04, 1.0), lit) * mix(vec3(1.0), vec3(0.72, 0.78, 0.9), shadow);
   // Thin foam is a film the water shows through.
   foamColour = mix(foamColour, mix(col, vec3(0.92, 0.96, 0.98), 0.55), (1.0 - sheet) * 0.3 * smoothstep(14.0, 3.0, fade));
+  // Close to, the foam is froth: fine bubbles, and small holes the water
+  // shows through. Its grain is kept a few pixels across, however near.
+  float nearness = smoothstep(1.2, 0.3, fade);
+  if (nearness > 0.0 && foam > 0.01) {
+    float frothScale = min(3.0, 0.33 / max(fade, 0.05));
+    vec2 drift = vec2(uTime * 0.3, uTime * 0.2);
+    float froth = vnoise(p * frothScale + drift) * 0.6 + vnoise(p * frothScale * 2.1 + 9.0 - drift) * 0.4;
+    float holes = smoothstep(0.75, 0.88, vnoise(p * frothScale * 1.3 + 23.0 + drift * 0.7));
+    foamColour *= 1.0 + (froth - 0.45) * 0.2 * nearness;
+    foam *= 1.0 - 0.55 * holes * (1.0 - sheet) * nearness;
+  }
   return mix(col, foamColour, foam);
 }
 `;
@@ -294,6 +376,7 @@ export function createOcean(sunDirection: THREE.Vector3) {
       uEnergy: { value: 1 },
       uDetail: { value: 0.002 },
       uHaze: { value: 1 },
+      uRocks: { value: Array.from({ length: WATERLINE_ROCKS }, () => new THREE.Vector3()) },
     },
     vertexShader: /* glsl */ `
       varying vec3 vWorld;
@@ -327,5 +410,10 @@ export function createOcean(sunDirection: THREE.Vector3) {
   geometry.rotateX(-Math.PI / 2);
   const mesh = new THREE.Mesh(geometry, material);
   mesh.frustumCulled = false;
-  return { mesh, material };
+  /** Tell the sea which rocks stand in it. */
+  const setRocks = (rocks: WaterlineRock[]) => {
+    const slots = material.uniforms.uRocks.value as THREE.Vector3[];
+    slots.forEach((slot, i) => (i < rocks.length ? slot.set(rocks[i].x, rocks[i].z, rocks[i].radius) : slot.set(0, 0, 0)));
+  };
+  return { mesh, material, setRocks };
 }

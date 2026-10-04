@@ -5,94 +5,149 @@ import { NOISE_GLSL, SKY_GLSL } from './sky';
 import { LIGHT_GLSL } from './terrain';
 import { CAMERA, coastDistance, fbm2, headlandFall, terrainHeight } from './world';
 
+/** How many kinds of tuft the atlas holds (each plain, and in flower beside it). */
+const TUFT_KINDS = 3;
+
 /**
- * A tuft of long grass drawn once on a canvas: blades rising from dark
- * roots and bending over to the left under the wind, deep green low down,
- * fresh yellow-green towards their tips. Beside it the same tuft in flower:
- * small heads on the taller stems, each a ring of petals round its centre,
- * tipped towards the viewer or seen edge on. The petals are drawn in white
- * and the centres in magenta, for the shader to colour as daisies,
- * buttercups, poppies, cornflowers or thrift (grass never has much blue in
- * it, so the blue channel tells flower from blade, even blurred at a
- * distance, and blue over green tells a centre from its petals).
+ * Tufts of long grass drawn once on a canvas, side by side: blades rising
+ * from dark roots and bending over to the left under the wind, deep green
+ * low down, fresh yellow-green towards their tips. Three kinds of tuft:
+ * fine blades; broad blades arching over, each with a paler midrib; and
+ * fine blades with tall stems gone to seed, their heads nodding. Beside
+ * each tuft the same one in flower: small heads on the taller stems, each
+ * a ring of petals round its centre, tipped towards the viewer or seen
+ * edge on. The petals are drawn in white and the centres in magenta, for
+ * the shader to colour as daisies, buttercups, poppies, cornflowers or
+ * thrift (grass never has much blue in it, so the blue channel tells flower
+ * from blade, even blurred at a distance, and blue over green tells a
+ * centre from its petals).
  */
-function drawTuft(size: number, seed: number) {
+function drawTufts(size: number) {
+  const tiles = TUFT_KINDS * 2;
   const canvas = document.createElement('canvas');
-  canvas.width = size * 2;
+  canvas.width = size * tiles;
   canvas.height = size;
   const g = canvas.getContext('2d', { willReadFrequently: true });
   if (!g) throw new Error('2D canvas unavailable');
-  let s = seed;
+  let s = 7;
   const rand = () => {
     s = (s * 1664525 + 1013904223) >>> 0;
     return s / 4294967296;
   };
-  const tips: { x: number; y: number }[] = [];
-  for (let i = 0; i < 120; i++) {
-    const x0 = size * (0.3 + 0.62 * rand());
-    const height = size * (0.4 + 0.58 * Math.pow(rand(), 0.6));
-    const lean = size * (0.1 + 0.3 * rand()) * (height / size);
-    const width = size * (0.007 + 0.012 * rand());
-    const warm = rand();
-    const green = rand() < 0.3 ? 1 : 0;
-    const gradient = g.createLinearGradient(0, size, 0, size - height);
-    gradient.addColorStop(0, `rgb(${18 + warm * 10}, ${34 + warm * 10}, 14)`);
-    gradient.addColorStop(0.45, `rgb(${Math.round(58 + warm * 30 - green * 16)}, ${Math.round(92 + warm * 24 + green * 8)}, ${Math.round(34 + warm * 10 + green * 10)})`);
-    gradient.addColorStop(1, `rgb(${Math.round(136 + warm * 54 - green * 40)}, ${Math.round(164 + warm * 30)}, ${Math.round(78 + warm * 24 + green * 12)})`);
-    g.fillStyle = gradient;
-    // A tapering blade that bends over to the left, in both tiles.
-    const tipX = x0 - lean;
-    const tipY = size - height;
-    for (const offset of [0, size]) {
-      g.beginPath();
-      g.moveTo(offset + x0 - width, size);
-      g.quadraticCurveTo(offset + x0 - width * 0.6, size - height * 0.62, offset + tipX, tipY);
-      g.quadraticCurveTo(offset + x0 + width * 0.4, size - height * 0.62, offset + x0 + width, size);
-      g.closePath();
-      g.fill();
+  for (let kind = 0; kind < TUFT_KINDS; kind++) {
+    const left = kind * 2 * size;
+    const broad = kind === 1;
+    const seeding = kind === 2;
+    const tips: { x: number; y: number }[] = [];
+    const count = broad ? 96 : 130;
+    for (let i = 0; i < count; i++) {
+      const x0 = size * (0.3 + 0.62 * rand());
+      const height = size * (0.4 + 0.56 * Math.pow(rand(), 0.6));
+      const lean = size * (broad ? 0.16 + 0.34 * rand() : 0.1 + 0.3 * rand()) * (height / size);
+      const width = size * (broad ? 0.009 + 0.011 * rand() : 0.005 + 0.008 * rand());
+      // Each blade its own green: yellow-green where the sun has it (warm), emerald
+      // (fresh), now and then a cool blue-green; dark at the root, bright at the tip.
+      const warm = rand() < 0.4 ? rand() : 0;
+      const cool = rand() < 0.22 ? 1 : 0;
+      const root = 22 + 6 * rand();
+      const gradient = g.createLinearGradient(0, size, 0, size - height);
+      gradient.addColorStop(0, `rgb(${root}, ${root + 22}, ${root + 6})`);
+      gradient.addColorStop(0.45, `rgb(${Math.round(44 + warm * 34 - cool * 14)}, ${Math.round(110 + warm * 18 + cool * 4)}, ${Math.round(44 - warm * 8 + cool * 22)})`);
+      gradient.addColorStop(1, `rgb(${Math.round(140 + warm * 70 - cool * 56)}, ${Math.round(190 + warm * 26 - cool * 4)}, ${Math.round(76 - warm * 14 + cool * 44)})`);
+      // A tapering blade that bends over to the left, in both tiles.
+      const tipX = x0 - lean;
+      const tipY = size - height;
+      for (const offset of [left, left + size]) {
+        g.fillStyle = gradient;
+        g.beginPath();
+        g.moveTo(offset + x0 - width, size);
+        g.quadraticCurveTo(offset + x0 - width * 0.6, size - height * 0.62, offset + tipX, tipY);
+        g.quadraticCurveTo(offset + x0 + width * 0.4, size - height * 0.62, offset + x0 + width, size);
+        g.closePath();
+        g.fill();
+        if (broad && width > size * 0.013) {
+          // The pale midrib of a broad blade, catching the light.
+          g.strokeStyle = `rgba(${Math.round(170 + warm * 40)}, ${Math.round(190 + warm * 20)}, ${Math.round(100 + warm * 20)}, 0.55)`;
+          g.lineWidth = width * 0.25;
+          g.beginPath();
+          g.moveTo(offset + x0, size - height * 0.15);
+          g.quadraticCurveTo(offset + x0 - width * 0.1, size - height * 0.62, offset + tipX, tipY);
+          g.stroke();
+        }
+      }
+      if (height > size * 0.55) tips.push({ x: tipX, y: tipY });
     }
-    if (height > size * 0.55) tips.push({ x: tipX, y: tipY });
-  }
-  // Flower heads on the taller stems, a few of them still in bud.
-  for (const tip of tips.slice(0, 12)) {
-    const r = size * (0.024 + 0.016 * rand());
-    const cx = size + Math.max(r * 2, tip.x);
-    const cy = Math.max(r * 2, tip.y + r * 0.2);
-    if (rand() < 0.2) {
+    if (seeding) {
+      // Tall stems gone to seed: a loose, nodding head of spikelets on each, in both tiles.
+      for (let i = 0; i < 14; i++) {
+        const x0 = size * (0.32 + 0.56 * rand());
+        const height = size * (0.84 + 0.14 * rand());
+        const lean = size * (0.14 + 0.2 * rand());
+        const tipX = x0 - lean;
+        const tipY = size - height;
+        const straw = rand();
+        for (const offset of [left, left + size]) {
+          g.strokeStyle = `rgb(${Math.round(150 + straw * 40)}, ${Math.round(150 + straw * 30)}, ${Math.round(70 + straw * 20)})`;
+          g.lineWidth = size * 0.004;
+          g.beginPath();
+          g.moveTo(offset + x0, size);
+          g.quadraticCurveTo(offset + x0 - lean * 0.2, size - height * 0.6, offset + tipX, tipY);
+          g.stroke();
+          g.fillStyle = `rgb(${Math.round(180 + straw * 30)}, ${Math.round(176 + straw * 24)}, ${Math.round(92 + straw * 14)})`;
+          const spikelets = 7 + Math.floor(rand() * 5);
+          for (let k = 0; k < spikelets; k++) {
+            const t = k / spikelets;
+            const sx = offset + tipX + (t - 0.2) * lean * 0.5 - size * 0.012 * t;
+            const sy = tipY + t * size * 0.1 + size * 0.004 * Math.sin(k * 2.1);
+            g.beginPath();
+            g.ellipse(sx + (rand() - 0.5) * size * 0.01, sy, size * (0.006 + 0.004 * rand()), size * 0.0035, (rand() - 0.5) * 1.2, 0, Math.PI * 2);
+            g.fill();
+          }
+        }
+      }
+    }
+    // Flower heads on the taller stems of the flowering tile, a few of them still in bud.
+    for (const tip of tips.slice(0, 12)) {
+      const r = size * (0.024 + 0.016 * rand());
+      const cx = left + size + Math.max(r * 2, tip.x);
+      const cy = Math.max(r * 2, tip.y + r * 0.2);
+      if (rand() < 0.2) {
+        g.fillStyle = 'rgb(255, 255, 255)';
+        g.beginPath();
+        g.ellipse(cx, cy, r * 0.45, r * 0.6, 0, 0, Math.PI * 2);
+        g.fill();
+        continue;
+      }
+      // Tipped towards the viewer (1) or seen nearly edge on, and turned a little.
+      const tilt = 0.3 + 0.7 * rand();
+      const turn = (rand() - 0.5) * 0.9;
+      const cos = Math.cos(turn);
+      const sin = Math.sin(turn);
+      const petals = 11 + Math.floor(rand() * 5);
       g.fillStyle = 'rgb(255, 255, 255)';
+      for (let k = 0; k < petals; k++) {
+        const a = ((k + 0.3 * rand()) / petals) * Math.PI * 2;
+        const px = Math.cos(a) * r * 0.55;
+        const py = Math.sin(a) * r * 0.55 * tilt;
+        g.beginPath();
+        g.ellipse(cx + px * cos - py * sin, cy + px * sin + py * cos, r * 0.5, r * 0.2, Math.atan2(Math.sin(a) * tilt, Math.cos(a)) + turn, 0, Math.PI * 2);
+        g.fill();
+      }
+      g.fillStyle = 'rgb(255, 0, 255)';
       g.beginPath();
-      g.ellipse(cx, cy, r * 0.45, r * 0.6, 0, 0, Math.PI * 2);
-      g.fill();
-      continue;
-    }
-    // Tipped towards the viewer (1) or seen nearly edge on, and turned a little.
-    const tilt = 0.3 + 0.7 * rand();
-    const turn = (rand() - 0.5) * 0.9;
-    const cos = Math.cos(turn);
-    const sin = Math.sin(turn);
-    const petals = 11 + Math.floor(rand() * 5);
-    g.fillStyle = 'rgb(255, 255, 255)';
-    for (let k = 0; k < petals; k++) {
-      const a = ((k + 0.3 * rand()) / petals) * Math.PI * 2;
-      const px = Math.cos(a) * r * 0.55;
-      const py = Math.sin(a) * r * 0.55 * tilt;
-      g.beginPath();
-      g.ellipse(cx + px * cos - py * sin, cy + px * sin + py * cos, r * 0.5, r * 0.2, Math.atan2(Math.sin(a) * tilt, Math.cos(a)) + turn, 0, Math.PI * 2);
+      g.ellipse(cx, cy, r * 0.32, r * 0.32 * Math.max(0.5, tilt), turn, 0, Math.PI * 2);
       g.fill();
     }
-    g.fillStyle = 'rgb(255, 0, 255)';
-    g.beginPath();
-    g.ellipse(cx, cy, r * 0.32, r * 0.32 * Math.max(0.5, tilt), turn, 0, Math.PI * 2);
-    g.fill();
   }
   // Give the empty pixels the colour beside them, so the blades and flowers
   // keep their colour when the texture is shrunk instead of darkening.
-  const data = new Uint8Array(g.getImageData(0, 0, size * 2, size).data.buffer);
+  const width = size * tiles;
+  const data = new Uint8Array(g.getImageData(0, 0, width, size).data.buffer);
   const flipped = new Uint8Array(data.length);
-  const row = size * 2 * 4;
+  const row = width * 4;
   for (let y = 0; y < size; y++) flipped.set(data.subarray(y * row, (y + 1) * row), (size - 1 - y) * row);
-  bleed(flipped, size * 2, size);
-  const texture = new THREE.DataTexture(flipped, size * 2, size, THREE.RGBAFormat);
+  bleed(flipped, width, size);
+  const texture = new THREE.DataTexture(flipped, width, size, THREE.RGBAFormat);
   texture.colorSpace = THREE.NoColorSpace;
   texture.magFilter = THREE.LinearFilter;
   texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -122,7 +177,7 @@ float gustAt(vec2 p, vec3 right) {
  * drifts of wild flowers. The sun shines through the tips.
  */
 export function createGrass(sunDirection: THREE.Vector3, count: number) {
-  const texture = drawTuft(384, 7);
+  const texture = drawTufts(512);
   const card = new THREE.PlaneGeometry(1, 1, 1, 3);
   card.translate(0, 0.5, 0);
   const material = new THREE.ShaderMaterial({
@@ -149,7 +204,7 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
       ${CLOUD_SHADOW_GLSL}
       ${GUST_GLSL}
       void main() {
-        vUv = vec2((aBloom.y + uv.x) * 0.5, uv.y);
+        vUv = vec2((aBloom.y + uv.x) / ${(TUFT_KINDS * 2).toFixed(1)}, uv.y);
         vKind = aBloom.x;
         vec4 world = modelMatrix * instanceMatrix * vec4(position, 1.0);
         vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
@@ -235,10 +290,10 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
   const scale = new THREE.Vector3();
   const up = new THREE.Vector3(0, 1, 0);
   const palette = [
-    [1.0, 1.0, 0.95], // fresh green
-    [1.14, 1.1, 0.8], // sunny yellow-green
-    [0.8, 0.92, 0.82], // deep green
-    [0.64, 0.72, 0.62], // dark, in shadow
+    [1.0, 1.02, 0.96], // fresh green
+    [1.18, 1.1, 0.74], // sunny yellow-green
+    [0.84, 1.0, 0.92], // deep green
+    [0.78, 0.9, 0.9], // in shadow: cool blue-green, not dark olive
   ];
   let s = 12345;
   const rand = () => {
@@ -265,7 +320,10 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
     // Pockets in the shade of the slope and the scrub.
     const pocket = fbm2(cx * 0.035 + 7.0, cz * 0.035, 3) < 0.37;
     const tint = pocket ? palette[3] : kind < 0.33 ? palette[2] : kind < 0.56 ? palette[0] : kind < 0.66 ? palette[1] : palette[rand() < 0.7 ? 0 : 3];
-    const cards = 3 + Math.floor(rand() * 4);
+    // Near the viewer every blade shows, so the clumps are fuller there.
+    const cards = 3 + Math.floor(rand() * 4) + Math.round(3 * near);
+    const roll = rand();
+    const kindOfTuft = roll < 0.45 ? 0 : roll < 0.8 ? 1 : 2;
     // Drifts of wild flowers, one kind to a drift.
     const bloom = fbm2(cx * 0.09 + 21.0, cz * 0.09, 3);
     const flowering = rand() < (bloom - 0.36) * 3.5;
@@ -285,9 +343,9 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
       scale.set(height * (1.1 + 0.5 * rand()), height, 1);
       matrix.compose(position, quaternion, scale);
       mesh.setMatrixAt(placed, matrix);
-      const shade = (pocket ? 0.72 : 0.84) + 0.28 * rand();
+      const shade = (pocket ? 0.74 : 0.86) + 0.3 * rand();
       tints.set([tint[0] * shade, tint[1] * shade, tint[2] * shade, height], placed * 4);
-      blooms.set([flower, (flowering || edge) && rand() < (edge ? 0.85 : 0.6) ? 1 : 0], placed * 2);
+      blooms.set([flower, kindOfTuft * 2 + ((flowering || edge) && rand() < (edge ? 0.85 : 0.6) ? 1 : 0)], placed * 2);
       placed++;
     }
   }

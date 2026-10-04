@@ -1,0 +1,28 @@
+Testing temple
+Loaded temple; waiting for scene ready
+Ready temple
+Captured temple-desktop.png (1236780 bytes)
+Captured temple-chrome.png (1236285 bytes)
+Captured temple-portrait.png (287657 bytes)
+Captured temple-fold.png (705103 bytes)
+Lifecycle temple: motion endpoints at 683x450
+Lifecycle temple: visible chrome pointer and UI controls
+Lifecycle temple: cooldown real frame 1/11 flushed
+Lifecycle temple: cooldown real frame 2/11 flushed
+Lifecycle temple: cooldown real frame 3/11 flushed
+Lifecycle temple: cooldown real frame 4/11 flushed
+Lifecycle temple: cooldown real frame 5/11 flushed
+Lifecycle temple: cooldown real frame 6/11 flushed
+Lifecycle temple: cooldown real frame 7/11 flushed
+Lifecycle temple: cooldown real frame 8/11 flushed
+Lifecycle temple: cooldown real frame 9/11 flushed
+Lifecycle temple: cooldown real frame 10/11 flushed
+Lifecycle temple: cooldown real frame 11/11 flushed
+Lifecycle temple: trusted browser touch
+Lifecycle temple: three holder transports
+Lifecycle temple: reduced/static/hidden policies
+FAILED: Error: Chromium composited screenshot exceeded 60000ms; possible software GPU backpressure
+    at Timeout._onTimeout (file:///workspace/scratch/86dc58dce2fc/brainwave/components/immersiveWorlds/koreanPlaces/qa/verify.mjs:132:43)
+    at listOnTimeout (node:internal/timers:635:17)
+    at process.processTimers (node:internal/timers:571:7)
+Evidence: components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-temple.json; pass=false

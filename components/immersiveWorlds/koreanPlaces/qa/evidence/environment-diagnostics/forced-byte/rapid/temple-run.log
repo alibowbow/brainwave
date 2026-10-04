@@ -1,0 +1,6 @@
+Testing temple
+Loaded temple; waiting for scene ready
+Ready temple
+Lifecycle temple: rapid cleanup diagnostic cycle 1/2
+Lifecycle temple: rapid cleanup diagnostic cycle 2/2
+Evidence: components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/cleanup-rapid-temple.json; pass=true

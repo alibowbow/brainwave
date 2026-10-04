@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { SceneContent, WorldInteraction } from '../types';
+import { createCheckedEnvironment } from '../environment';
 
 /** Original, procedural Korean mountain bell pavilion. No fetched or copied assets. */
-export function createTempleScene(): SceneContent {
+export function createTempleScene(renderer: THREE.WebGLRenderer): SceneContent {
   const scene = new THREE.Scene();
   scene.name = 'Temple dawn — seated bell pavilion';
   scene.background = new THREE.Color('#b4cbd0');
@@ -42,12 +43,57 @@ export function createTempleScene(): SceneContent {
     return result;
   };
   const woodMap = texture('wood'), bronzeMap = texture('bronze'), stoneMap = texture('stone'), tileMap = texture('tile');
+  // Keep the scene's original PRNG sequence above: bell surface detail has its own
+  // deterministic field, so this material correction cannot rearrange the garden.
+  const castSize = 512;
+  const castCanvases = Array.from({ length: 5 }, () => {
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = castSize; return canvas;
+  });
+  const castContexts = castCanvases.map(canvas => canvas.getContext('2d')!);
+  const castPixels = castContexts.map(ctx => ctx.createImageData(castSize, castSize));
+  const grainHash = (x: number, y: number) => {
+    let h = Math.imul(x ^ 72831, 374761393) ^ Math.imul(y ^ 9127, 668265263);
+    h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  };
+  const castNoise = (x: number, y: number, period: number) => {
+    const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+    const u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+    const h = (dx: number, dy: number) => grainHash(((ix + dx) % period + period) % period, iy + dy);
+    return THREE.MathUtils.lerp(THREE.MathUtils.lerp(h(0, 0), h(1, 0), u), THREE.MathUtils.lerp(h(0, 1), h(1, 1), u), v);
+  };
+  for (let y = 0; y < castSize; y++) for (let x = 0; x < castSize; x++) {
+    const u = x / castSize, v = y / castSize;
+    const broad = castNoise(u * 10, v * 17, 10), medium = castNoise(u * 32, v * 51, 32);
+    const fine = castNoise(u * 96, v * 137, 96), pore = grainHash(x, y);
+    const patina = THREE.MathUtils.smoothstep(broad * .59 + medium * .3 + fine * .11, .43, .69);
+    const worn = THREE.MathUtils.smoothstep(medium, .6, .87) * (1 - patina);
+    const grain = (fine - .5) * 10 + (pore - .5) * 5;
+    const agedBronze = [123 + worn * 30, 103 + worn * 25, 70 + worn * 17];
+    const verdigris = [64, 93, 78];
+    const offset = (y * castSize + x) * 4;
+    for (let channel = 0; channel < 3; channel++) {
+      castPixels[0].data[offset + channel] = THREE.MathUtils.lerp(agedBronze[channel], verdigris[channel], patina * .86) + grain;
+      castPixels[4].data[offset + channel] = THREE.MathUtils.lerp(agedBronze[channel], verdigris[channel], patina * .12) + grain * .45;
+      // Rough porous oxides interrupt the smoother exposed casting. These maps
+      // stay linear; only the colour map below uses sRGB.
+      castPixels[1].data[offset + channel] = (0.57 + patina * .34 - worn * .13) * 255;
+      castPixels[2].data[offset + channel] = 123 + (fine - .5) * 31 + (pore - .5) * 15 + patina * 17;
+      castPixels[3].data[offset + channel] = (0.9 - patina * .56) * 255;
+    }
+    for (const pixels of castPixels) pixels.data[offset + 3] = 255;
+  }
+  castContexts.forEach((ctx, i) => ctx.putImageData(castPixels[i], 0, 0));
+  const [castColor, castRoughness, castBump, castMetalness, wornBronzeColor] = castCanvases.map((canvas, i) => {
+    const map = new THREE.CanvasTexture(canvas); map.wrapS = map.wrapT = THREE.RepeatWrapping;
+    map.anisotropy = 4; if (i === 0 || i === 4) map.colorSpace = THREE.SRGBColorSpace; return map;
+  });
   // A broad, soft sky/ground reflection is essential to readable cast bronze in the shaded pavilion.
   const envCanvas=document.createElement('canvas');envCanvas.width=512;envCanvas.height=256;
   const ec=envCanvas.getContext('2d')!,eg=ec.createLinearGradient(0,0,0,256);
   eg.addColorStop(0,'#b3cfda');eg.addColorStop(.42,'#dde1cc');eg.addColorStop(.54,'#b3b7a1');eg.addColorStop(1,'#4f5142');ec.fillStyle=eg;ec.fillRect(0,0,512,256);
   const glow=ec.createRadialGradient(325,106,1,325,106,90);glow.addColorStop(0,'rgba(255,235,193,.86)');glow.addColorStop(1,'rgba(255,235,193,0)');ec.fillStyle=glow;ec.fillRect(0,0,512,256);
-  const environment=new THREE.CanvasTexture(envCanvas);environment.colorSpace=THREE.SRGBColorSpace;environment.mapping=THREE.EquirectangularReflectionMapping;scene.environment=environment;scene.environmentIntensity=.7;
+  const environment=new THREE.CanvasTexture(envCanvas);environment.colorSpace=THREE.SRGBColorSpace;environment.mapping=THREE.EquirectangularReflectionMapping;
+  const checkedEnvironment=createCheckedEnvironment(renderer,environment,'temple');scene.environment=checkedEnvironment.texture;scene.environmentIntensity=.7;
 
   const wood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .84, color: '#c0b499' });
   const oldWood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .93, color: '#806d58' });
@@ -61,9 +107,14 @@ export function createTempleScene(): SceneContent {
   const tileEdge = new THREE.MeshStandardMaterial({ color: '#414d4c', roughness: .84 });
   const plaster = new THREE.MeshStandardMaterial({ color: '#d4c8ac', roughness: .98 });
   const stone = new THREE.MeshStandardMaterial({ map: stoneMap, color: '#b8b6a7', roughness: .98 });
-  const bronze = new THREE.MeshStandardMaterial({ map: bronzeMap, color: '#b9b28a', roughness: .67, metalness: .57 });
-  const bronzeEdge = new THREE.MeshStandardMaterial({ color: '#776d43', roughness: .58, metalness: .75 });
-  const bronzeDark = new THREE.MeshStandardMaterial({ color: '#34483b', roughness: .7, metalness: .62 });
+  const bronze = new THREE.MeshStandardMaterial({ map: castColor, roughnessMap: castRoughness,
+    bumpMap: castBump, bumpScale: .009, metalnessMap: castMetalness, roughness: .88, metalness: .92, envMapIntensity: 1.05 });
+  const bronzeEdge = new THREE.MeshStandardMaterial({ map: wornBronzeColor, color: '#e6dcc5', roughnessMap: castRoughness,
+    bumpMap: castBump, bumpScale: .0014, roughness: .74, metalness: .65, envMapIntensity: 1.05 });
+  const bronzeDark = new THREE.MeshStandardMaterial({ map: bronzeMap, color: '#526151', roughness: .81, metalness: .42 });
+  const bronzeRelief = new THREE.MeshStandardMaterial({ map: wornBronzeColor, color: '#ddd3b7', roughnessMap: castRoughness,
+    bumpMap: castBump, bumpScale: .0008, roughness: .79, metalness: .58 });
+  const bronzeEngraving = new THREE.MeshStandardMaterial({ map: wornBronzeColor, color: '#c3b89c', roughness: .86, metalness: .42 });
   const ropeMaterial = new THREE.MeshStandardMaterial({ color: '#b5a080', roughness: 1 });
   const bark = new THREE.MeshStandardMaterial({ map: woodMap, color: '#6f7160', roughness: .96 });
   const moss = new THREE.MeshStandardMaterial({ color: '#738363', roughness: 1 });
@@ -169,10 +220,56 @@ export function createTempleScene(): SceneContent {
     box([9.7, .065, .42], [0, 4.8, z], paintedCream);
     for (let i = 0; i < 23; i++) {
       const x = -4.5 + i * .405;
+      if (z < 0 && [-2.43, 0, 2.43].some(center => Math.abs(x - center) < .88)) continue;
       const ornament = create(new THREE.CircleGeometry(.084, 8), paintedCream); ornament.position.set(x, 4.565, z + (z > 0 ? -.196 : .196));
       ornament.rotation.y = z > 0 ? Math.PI : 0;
       const center = create(new THREE.CircleGeometry(.035, 12), cinnabar); center.position.copy(ornament.position); center.position.z += z > 0 ? -.002 : .002; center.rotation.copy(ornament.rotation);
     }
+  }
+  // Three near beam panels: original lotus / scrolling-leaf painting on aged
+  // timber, with tiny raised paint ridges and recessed borders rather than dots.
+  const paintCanvas = document.createElement('canvas'); paintCanvas.width = 1024; paintCanvas.height = 160;
+  const pc = paintCanvas.getContext('2d')!;
+  pc.fillStyle = '#284f45'; pc.fillRect(0, 0, 1024, 160);
+  pc.strokeStyle = '#608273'; pc.lineWidth = 3; pc.strokeRect(8, 9, 1008, 142);
+  pc.strokeStyle = '#b19a69'; pc.lineWidth = 1.7; pc.strokeRect(14, 15, 996, 130);
+  const leafStroke = (points: number[], color: string, width: number) => {
+    pc.beginPath(); pc.moveTo(points[0], points[1]); pc.bezierCurveTo(...points.slice(2) as [number, number, number, number, number, number]);
+    pc.strokeStyle = color; pc.lineWidth = width; pc.stroke();
+  };
+  for (const side of [-1, 1]) {
+    const tx = (x: number) => 512 + side * x;
+    for (const tier of [-1, 1]) {
+      leafStroke([tx(64), 80, tx(183), 80 + tier * 78, tx(342), 80 - tier * 63, tx(458), 80 + tier * 4], '#162f2b', 10);
+      leafStroke([tx(64), 78, tx(183), 78 + tier * 78, tx(342), 78 - tier * 63, tx(458), 78 + tier * 4], '#88a087', 5.5);
+      for (const step of [0, 1, 2, 3]) {
+        const x = 139 + step * 83, y = 80 + tier * Math.sin(step * 1.48 + .1) * 23;
+        pc.beginPath(); pc.moveTo(tx(x), y); pc.bezierCurveTo(tx(x + 10), y + tier * 34, tx(x + 49), y + tier * 30, tx(x + 42), y + tier * 9);
+        pc.bezierCurveTo(tx(x + 28), y + tier * 17, tx(x + 18), y + tier * 5, tx(x), y);
+        pc.fillStyle = step % 2 ? '#ac684f' : '#577d70'; pc.fill(); pc.strokeStyle = '#c2ac7e'; pc.lineWidth = 2; pc.stroke();
+      }
+    }
+  }
+  for (let ring = 0; ring < 2; ring++) for (let petal = 0; petal < 8; petal++) {
+    const angle = petal * Math.PI / 4 + ring * Math.PI / 8, radius = ring ? 25 : 36;
+    pc.save(); pc.translate(512 + Math.cos(angle) * radius, 80 + Math.sin(angle) * radius); pc.rotate(angle);
+    pc.beginPath(); pc.ellipse(0, 0, ring ? 22 : 28, ring ? 9 : 11, 0, 0, Math.PI * 2);
+    pc.fillStyle = ring ? '#b57b61' : '#bfb28c'; pc.fill(); pc.strokeStyle = '#345750'; pc.lineWidth = 2; pc.stroke(); pc.restore();
+  }
+  pc.beginPath(); pc.arc(512, 80, 13, 0, Math.PI * 2); pc.fillStyle = '#c5ad77'; pc.fill();
+  pc.beginPath(); pc.arc(512, 80, 5, 0, Math.PI * 2); pc.fillStyle = '#647f75'; pc.fill();
+  // Fine age marks vary paint thickness but do not consume the landscape seed.
+  for (let i = 0; i < 900; i++) {
+    const x = grainHash(i, 101) * 1024, y = grainHash(i, 202) * 160;
+    pc.strokeStyle = `rgba(32,27,17,${.035 + grainHash(i, 404) * .12})`; pc.lineWidth = .4 + grainHash(i, 303) * .65;
+    pc.beginPath(); pc.moveTo(x, y); pc.lineTo(x + 4 + grainHash(i, 505) * 17, y + grainHash(i, 606) * .8); pc.stroke();
+  }
+  const paintMap = new THREE.CanvasTexture(paintCanvas); paintMap.colorSpace = THREE.SRGBColorSpace; paintMap.anisotropy = 8;
+  const paintHeight = new THREE.CanvasTexture(paintCanvas); paintHeight.anisotropy = 8;
+  const paintedPanel = new THREE.MeshStandardMaterial({ map: paintMap, bumpMap: paintHeight, bumpScale: .0028, roughness: .86 });
+  for (const x of [-2.43, 0, 2.43]) {
+    const panel = create(new THREE.PlaneGeometry(1.75, .275), paintedPanel); panel.position.set(x, 4.56, -2.496);
+    for (const y of [4.407, 4.713]) box([1.76, .014, .012], [x, y, -2.503], oldWood);
   }
   for (const x of [-4.35, 4.35]) box([.36, .29, 8.1], [x, 4.61, .8], jade);
   // Ceiling rafters are exposed in deep perspective, with colored end caps at the eave.
@@ -219,7 +316,7 @@ export function createTempleScene(): SceneContent {
   const bellPivot = new THREE.Group(); bellPivot.position.set(-2.28, 4.38, -.75); scene.add(bellPivot);
   const bellShape = [new THREE.Vector2(.32, -.45), new THREE.Vector2(.48, -.52), new THREE.Vector2(.56, -.64), new THREE.Vector2(.61, -.9), new THREE.Vector2(.68, -1.35), new THREE.Vector2(.78, -1.95), new THREE.Vector2(.9, -2.36), new THREE.Vector2(.94, -2.43), new THREE.Vector2(.94, -2.54), new THREE.Vector2(.85, -2.55), new THREE.Vector2(.82, -2.4), new THREE.Vector2(.69, -1.93), new THREE.Vector2(.59, -1.33), new THREE.Vector2(.51, -.73), new THREE.Vector2(.3, -.6)];
   const bellMesh = create(new THREE.LatheGeometry(bellShape.reverse(), 80), bronze, bellPivot); bellMesh.name = 'Tactile bronze temple bell';
-  for (const [r, y] of [[.94, -2.46], [.91, -2.36], [.85, -2.18], [.62, -.95], [.59, -.76]]) torus(r, .025, [0, y, 0], bronzeEdge, bellPivot);
+  for (const [r, y] of [[.94, -2.46], [.91, -2.36], [.85, -2.18], [.62, -.95], [.59, -.76]]) torus(r, .019, [0, y, 0], bronzeEdge, bellPivot);
   // Repeated yudoo bosses in four plaques, each physically raised from the cast bronze body.
   for (let side = 0; side < 4; side++) {
     const angle = side * Math.PI / 2 + Math.PI / 4;
@@ -238,6 +335,44 @@ export function createTempleScene(): SceneContent {
   // Cast striking medallion, oriented into the visitor's view.
   const strikingDisk = create(new THREE.CylinderGeometry(.16, .16, .03, 32), bronzeEdge, bellPivot); strikingDisk.position.set(.26, -1.79, .716); strikingDisk.rotation.x = Math.PI / 2; strikingDisk.rotation.z = -.34;
   const diskRing = create(new THREE.TorusGeometry(.135, .008, 5, 32), bronzeDark, bellPivot); diskRing.position.set(.26, -1.79, .737);
+  // Low cast lotus-scroll panels conform to the bell wall. Dark hairline
+  // grooves sit beside a worn raised edge, never a bright gold decal or outline.
+  const bellRadiusAt = (y: number) => {
+    const profile = [[-2.36, .9], [-1.95, .78], [-1.35, .68], [-.9, .61]];
+    for (let i = 0; i < profile.length - 1; i++) {
+      const [low, r0] = profile[i], [high, r1] = profile[i + 1];
+      if (y <= high) return THREE.MathUtils.lerp(r0, r1, (y - low) / (high - low));
+    }
+    return .61;
+  };
+  const castingLine = (coords: number[][], angle: number, raised: boolean) => {
+    const points = coords.map(([a, y]) => {
+      const radius = bellRadiusAt(y) + (raised ? .0025 : -.0006);
+      return new THREE.Vector3(Math.sin(angle + a) * radius, y, Math.cos(angle + a) * radius);
+    });
+    curveRod(points, raised ? .0032 : .0018, raised ? bronzeRelief : bronzeEngraving, bellPivot);
+  };
+  for (let panel = 0; panel < 4; panel++) {
+    const angle = panel * Math.PI / 2 + Math.PI / 4;
+    for (const side of [-1, 1]) {
+      castingLine([[0,-1.99],[side*.16,-1.85],[side*.30,-1.81],[side*.31,-1.65],[side*.19,-1.63],[side*.17,-1.75],[side*.23,-1.76]], angle, true);
+      castingLine([[side*.035,-1.985],[side*.17,-1.88],[side*.32,-1.835],[side*.34,-1.66],[side*.20,-1.605]], angle, false);
+      castingLine([[0,-1.94],[side*.10,-1.78],[side*.11,-1.62],[side*.055,-1.52],[0,-1.69],[0,-1.94]], angle, true);
+      castingLine([[0,-2.035],[side*.13,-1.99],[side*.25,-2.00],[side*.16,-2.07],[0,-2.035]], angle, true);
+    }
+    castingLine([[0,-1.94],[0,-1.79],[0,-1.59],[0,-1.48]], angle, false);
+    // Fine incised transverse lines remain quiet between the existing borders.
+    castingLine([[-.38,-2.12],[-.19,-2.125],[0,-2.128],[.19,-2.125],[.38,-2.12]], angle, false);
+  }
+  // Existing strike plate remains in place; radial worn relief reveals its depth.
+  for (let petal = 0; petal < 12; petal++) {
+    const angle = petal * Math.PI / 6;
+    const relief = create(new THREE.SphereGeometry(.021, 8, 5), bronzeRelief, bellPivot);
+    relief.position.set(.26 + Math.cos(angle) * .103, -1.79 + Math.sin(angle) * .103, .741);
+    relief.scale.set(1.25, .7, .16); relief.rotation.z = angle;
+  }
+  const strikeCenter = create(new THREE.SphereGeometry(.072, 24, 12), bronzeEdge, bellPivot);
+  strikeCenter.position.set(.26, -1.79, .74); strikeCenter.scale.z = .07;
   const loop = create(new THREE.TorusGeometry(.19, .055, 8, 30, Math.PI * 1.8), bronzeEdge, bellPivot); loop.position.y = -.24; loop.rotation.z = .24;
   curveRod([new THREE.Vector3(-.19, -.46, .02), new THREE.Vector3(-.24, -.24, 0), new THREE.Vector3(-.11, -.08, .01), new THREE.Vector3(.03, -.23, .02), new THREE.Vector3(.16, -.44, .03)], .048, bronze, bellPivot);
   cylinder(.055, .068, .42, [-2.28, 4.43, -.75], bronzeDark);
@@ -457,7 +592,7 @@ export function createTempleScene(): SceneContent {
   };
   resize(16 / 9);
   return {
-    scene, camera, resize,
+    scene, camera, resize, dispose: checkedEnvironment.dispose,
     update(time, dt) {
       bellImpulse *= Math.exp(-dt * .7); chimeImpulse *= Math.exp(-dt * 1.1);
       bellPivot.rotation.z = Math.sin(time * 1.74) * .008 + Math.sin(time * 2.7) * bellImpulse * .018;

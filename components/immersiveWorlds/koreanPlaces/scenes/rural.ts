@@ -321,19 +321,51 @@ export function createRuralScene(): SceneContent {
       float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
       void main(){vec3 viewDirection=normalize(cameraPosition-vWorld);float facing=abs(dot(normalize(vNormalWorld),viewDirection));float edge=smoothstep(.04,.40,facing);float n=noise(vWorld*.6)*.65+noise(vWorld*1.9)*.35;float top=smoothstep(15.,39.,vWorld.y);vec3 color=mix(vec3(.24,.34,.46),vec3(.39,.51,.62),top);color+=(n-.5)*.036;gl_FragColor=vec4(color,edge*.82);}`,
   });
-  const cloudLobes: {x:number;y:number;z:number;sx:number;sy:number;sz:number;color:THREE.Color}[]=[];
+  const cloudLobes: {x:number;y:number;z:number;sx:number;sy:number;sz:number;large:boolean;color:THREE.Color}[]=[];
   const cloudBanks=[[-44,23,-82,18,21],[-21,16,-90,19,3],[37,20,-84,22,17],[4,31,-96,18,2],[65,15,-98,21,7]];
   for(const [cx,cy,cz,cw,ch] of cloudBanks) {
     for(let i=0;i<32;i++) {
       const t=-1+2*i/31,arch=Math.pow(Math.max(0,1-t*t),1.4);
       const x=cx+t*cw*.86+(random()-.5)*1.2;
       const y=cy+arch*ch*.44+(random()-.5)*ch*.14;
-      cloudLobes.push({x,y,z:cz+(random()-.5)*3,sx:2.7+random()*3.2,sy:ch<4?.4+random()*.7:1.9+random()*2.6,sz:1.6+random()*1.5,color:new THREE.Color('#ffffff')});
+      cloudLobes.push({x,y,z:cz+(random()-.5)*3,sx:2.7+random()*3.2,sy:ch<4?.4+random()*.7:1.9+random()*2.6,sz:1.6+random()*1.5,large:ch>15,color:new THREE.Color('#ffffff')});
     }
   }
-  const cloudMesh = new THREE.InstancedMesh(cloudGeometry,cloudMaterial,cloudLobes.length);
-  cloudLobes.forEach((c,i)=>{dummy.position.set(c.x,c.y,c.z);dummy.scale.set(c.sx,c.sy,c.sz);dummy.rotation.set(random()*.3,random()*6.28,random()*.35);dummy.updateMatrix();cloudMesh.setMatrixAt(i,dummy.matrix);cloudMesh.setColorAt(i,c.color);});
+  const cloudMesh = new THREE.InstancedMesh(cloudGeometry,cloudMaterial,cloudLobes.filter(c=>!c.large).length);
+  let thinCloudIndex=0;
+  // Retain the original random stream and transforms for the thin, distant bands
+  // and subsequent stars. Only the two tall banks receive new authored volumes.
+  cloudLobes.forEach(c=>{dummy.position.set(c.x,c.y,c.z);dummy.scale.set(c.sx,c.sy,c.sz);dummy.rotation.set(random()*.3,random()*6.28,random()*.35);dummy.updateMatrix();if(!c.large){cloudMesh.setMatrixAt(thinCloudIndex,dummy.matrix);cloudMesh.setColorAt(thinCloudIndex++,c.color);}});
   clouds.add(cloudMesh);
+  const billowMaterial = new THREE.ShaderMaterial({
+    vertexShader:`varying vec3 vWorld; varying vec3 vNormalWorld;
+      void main(){vWorld=(modelMatrix*vec4(position,1.)).xyz;vNormalWorld=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*viewMatrix*vec4(vWorld,1.);}`,
+    fragmentShader:`varying vec3 vWorld; varying vec3 vNormalWorld;
+      void main(){
+        vec3 normal=normalize(vNormalWorld);
+        // Broad cool undersides and softly lit upper shoulders give the cloud its
+        // volume; there are no bright rims, outlines or translucent lobe seams.
+        float light=dot(normal,normalize(vec3(-.38,.79,.47)))*.5+.5;
+        float tier=smoothstep(.28,.69,light)*.64+smoothstep(.69,.94,light)*.36;
+        float height=smoothstep(17.,36.,vWorld.y);
+        float grain=sin(vWorld.x*.77+vWorld.y*.36)*sin(vWorld.y*.69-vWorld.z*.53);
+        vec3 shadow=vec3(.225,.335,.445),lit=vec3(.405,.525,.63);
+        vec3 color=mix(shadow,lit,clamp(tier*.73+height*.20+grain*.026,0.,1.));
+        gl_FragColor=vec4(color,1.);
+      }`,
+  });
+  const leftBillows:CloudBillow[]=[
+    [-14,-.5,-.1,6.8,3.0,3.1],[-6,-.7,0,8.3,3.6,3.6],[4,-.8,.2,8.1,3.4,3.8],[12,-1,.1,6.3,2.8,3],
+    [-11,3.1,0,5.4,4.8,3.7],[-6.8,7.9,-.8,4.8,5.0,3.4],[-.6,4.7,.3,5.8,4.5,3.9],[7.6,3.2,-.4,5.7,3.8,3.4],
+    [-16.5,1.9,.1,3.1,2.3,2.4],[-9.3,10.5,-.7,2.7,2.8,2.4],[-3.8,9.9,-.5,2.2,2.6,2.2],[3.5,7.2,-.4,2.9,2.6,2.5],[12.2,2.9,-.3,3.2,2.3,2.6],
+  ];
+  const rightBillows:CloudBillow[]=[
+    [-16,-1.1,0,6.5,2.7,3.2],[-7,-.8,.2,8.1,3.6,3.8],[3,-.4,0,8.7,3.7,4.1],[13,-1.2,.2,7.6,3.0,3.3],
+    [-10,3.1,-.4,4.8,4.0,3.4],[-3.6,6.3,-.6,5.0,4.9,3.6],[4.7,4.0,.3,6.1,4.3,3.9],[12,1.8,-.1,5.2,3.5,3.4],
+    [-14.5,3.6,-.4,2.7,2.2,2.4],[-5.7,9.0,-.8,2.6,2.8,2.4],[.2,8.2,-.6,2.4,2.7,2.2],[8.2,6.0,-.2,3.0,2.4,2.6],[17.9,1.1,.2,3.0,2.3,2.4],
+  ];
+  mesh(cloudBankGeometry(leftBillows),billowMaterial,-44,23,-82,clouds);
+  mesh(cloudBankGeometry(rightBillows),billowMaterial,37,20,-84,clouds);
   // Sparse, dim stars leave the same restful cloud-and-moon identity as the image.
   const stars=new GeometryBuilder();
   for(let i=0;i<54;i++){const x=(random()-.5)*150,y=18+random()*56,z=-113;stars.quad([x-.035,y-.035,z],[x+.035,y-.035,z],[x+.035,y+.035,z],[x-.035,y+.035,z],new THREE.Color('#8da7b7'));}
@@ -493,6 +525,59 @@ function cloudLobeGeometry(random:()=>number){
     const c=new THREE.Color().setScalar(shade);colors.push(c.r,c.g,c.b);
   }
   g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.computeVertexNormals();return g;
+}
+
+type CloudBillow = [x:number,y:number,z:number,sx:number,sy:number,sz:number];
+
+// A smooth union keeps each bank one continuous 3D surface instead of a string
+// of overlapping transparent spheres. The unequal shoulders and small billows
+// are intentionally different in the two masses. This is generated once; cloud
+// animation still only moves their shared parent by the original quiet amount.
+function cloudBankGeometry(billows:CloudBillow[]){
+  const nx=68,ny=34,nz=20,minX=-24,minY=-6,minZ=-7,dx=48/nx,dy=23/ny,dz=14/nz;
+  const field=(x:number,y:number,z:number)=>{
+    let distance=100;
+    for(const [cx,cy,cz,sx,sy,sz] of billows){
+      const d=(Math.hypot((x-cx)/sx,(y-cy)/sy,(z-cz)/sz)-1)*Math.min(sx,sy,sz);
+      const blend=Math.max(0,1-Math.abs(distance-d)/.82);
+      distance=Math.min(distance,d)-blend*blend*.82*.25;
+    }
+    // Low-amplitude unevenness breaks polished balloon contours without pointed
+    // noise, repeated scallops or high-contrast surface speckles.
+    return distance+.16*Math.sin(x*1.27+y*.61)*Math.sin(y*1.49-z*.93)+.065*Math.sin(x*2.71+z*1.83)*Math.cos(y*2.36);
+  };
+  const width=nx+1,height=ny+1,count=width*height*(nz+1);
+  const samples=new Float32Array(count);
+  const index=(x:number,y:number,z:number)=>(z*height+y)*width+x;
+  for(let z=0;z<=nz;z++)for(let y=0;y<=ny;y++)for(let x=0;x<=nx;x++)samples[index(x,y,z)]=field(minX+x*dx,minY+y*dy,minZ+z*dz);
+  const positions:number[]=[],normals:number[]=[],indices:number[]=[],vertices=new Map<number,number>();
+  const point=(i:number)=>[minX+(i%width)*dx,minY+(Math.floor(i/width)%height)*dy,minZ+Math.floor(i/(width*height))*dz];
+  const edge=(ia:number,ib:number)=>{
+    const a=Math.min(ia,ib),b=Math.max(ia,ib),key=a*count+b,cached=vertices.get(key);
+    if(cached!==undefined)return cached;
+    const pa=point(a),pb=point(b),t=samples[a]/(samples[a]-samples[b]);
+    const x=pa[0]+(pb[0]-pa[0])*t,y=pa[1]+(pb[1]-pa[1])*t,z=pa[2]+(pb[2]-pa[2])*t,e=.045;
+    const normal=new THREE.Vector3(field(x+e,y,z)-field(x-e,y,z),field(x,y+e,z)-field(x,y-e,z),field(x,y,z+e)-field(x,y,z-e)).normalize();
+    const result=positions.length/3;positions.push(x,y,z);normals.push(normal.x,normal.y,normal.z);vertices.set(key,result);return result;
+  };
+  const triangle=(a:number,b:number,c:number)=>{
+    const ax=positions[b*3]-positions[a*3],ay=positions[b*3+1]-positions[a*3+1],az=positions[b*3+2]-positions[a*3+2];
+    const bx=positions[c*3]-positions[a*3],by=positions[c*3+1]-positions[a*3+1],bz=positions[c*3+2]-positions[a*3+2];
+    const outward=(ay*bz-az*by)*normals[a*3]+(az*bx-ax*bz)*normals[a*3+1]+(ax*by-ay*bx)*normals[a*3+2];
+    if(outward<0)indices.push(a,c,b);else indices.push(a,b,c);
+  };
+  const tetrahedra=[[0,5,1,6],[0,1,2,6],[0,2,3,6],[0,3,7,6],[0,7,4,6],[0,4,5,6]];
+  for(let z=0;z<nz;z++)for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){
+    const corners=[index(x,y,z),index(x+1,y,z),index(x+1,y+1,z),index(x,y+1,z),index(x,y,z+1),index(x+1,y,z+1),index(x+1,y+1,z+1),index(x,y+1,z+1)];
+    if(corners.every(i=>samples[i]>=0)||corners.every(i=>samples[i]<0))continue;
+    for(const tetra of tetrahedra){
+      const inside=tetra.map(i=>corners[i]).filter(i=>samples[i]<0),outside=tetra.map(i=>corners[i]).filter(i=>samples[i]>=0);
+      if(inside.length===1)triangle(edge(inside[0],outside[0]),edge(inside[0],outside[1]),edge(inside[0],outside[2]));
+      else if(inside.length===3)triangle(edge(outside[0],inside[0]),edge(outside[0],inside[1]),edge(outside[0],inside[2]));
+      else if(inside.length===2){const a=edge(inside[0],outside[0]),b=edge(inside[0],outside[1]),c=edge(inside[1],outside[0]),d=edge(inside[1],outside[1]);triangle(a,b,c);triangle(b,d,c);}
+    }
+  }
+  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));geometry.setIndex(indices);return geometry;
 }
 
 function roof(parent:THREE.Object3D,cx:number,y:number,cz:number,width:number,depth:number,rise:number,mat:THREE.Material,trim:THREE.Material,

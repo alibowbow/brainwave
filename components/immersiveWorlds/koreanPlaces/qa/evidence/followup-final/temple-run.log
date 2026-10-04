@@ -1,0 +1,32 @@
+Testing temple
+Loaded temple; waiting for scene ready
+Ready temple
+Captured temple-desktop.png (1236780 bytes)
+Captured temple-portrait.png (287657 bytes)
+Captured temple-fold.png (705103 bytes)
+Lifecycle temple: motion endpoints at 683x450
+Lifecycle temple: visible chrome pointer and UI controls
+Lifecycle temple: cooldown real frame 1/11 flushed
+Lifecycle temple: cooldown real frame 2/11 flushed
+Lifecycle temple: cooldown real frame 3/11 flushed
+Lifecycle temple: cooldown real frame 4/11 flushed
+Lifecycle temple: cooldown real frame 5/11 flushed
+Lifecycle temple: cooldown real frame 6/11 flushed
+Lifecycle temple: cooldown real frame 7/11 flushed
+Lifecycle temple: cooldown real frame 8/11 flushed
+Lifecycle temple: cooldown real frame 9/11 flushed
+Lifecycle temple: cooldown real frame 10/11 flushed
+Lifecycle temple: cooldown real frame 11/11 flushed
+Lifecycle temple: trusted browser touch
+Lifecycle temple: full-size paused chrome screenshot
+FAILED: page.screenshot: Timeout 45000ms exceeded.
+Call log:
+[2m  - taking page screenshot[22m
+[2m  - waiting for fonts to load...[22m
+[2m  - fonts loaded[22m
+
+    at canvasImage (/workspace/scratch/86dc58dce2fc/brainwave/components/immersiveWorlds/koreanPlaces/qa/verify.mjs:146:21)
+    at async capture (/workspace/scratch/86dc58dce2fc/brainwave/components/immersiveWorlds/koreanPlaces/qa/verify.mjs:172:17)
+    at async lifecycle (/workspace/scratch/86dc58dce2fc/brainwave/components/immersiveWorlds/koreanPlaces/qa/verify.mjs:354:3)
+    at async file:///workspace/scratch/86dc58dce2fc/brainwave/components/immersiveWorlds/koreanPlaces/qa/verify.mjs:451:79
+Evidence: components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/verification-temple.json; pass=false

@@ -37,6 +37,7 @@ interface PlayerProps {
   timeLeft: number;
   totalSeconds?: number;
   isPlaying: boolean;
+  playbackHint?: 'starting' | 'blocked' | 'error' | null;
   onPlay: () => void;
   onPause: () => void;
   onStop: () => void;
@@ -78,6 +79,7 @@ export const Player: React.FC<PlayerProps> = ({
   timeLeft,
   totalSeconds = timeLeft,
   isPlaying,
+  playbackHint,
   onPlay,
   onPause,
   onStop,
@@ -197,14 +199,24 @@ export const Player: React.FC<PlayerProps> = ({
               {linkCopied ? <Check size={15} className="text-emerald-300" /> : <Link2 size={15} />}<span className="hidden sm:inline">{linkCopied ? '복사됨' : '링크 복사'}</span>
             </button>
           ) : null}
-          <button type="button" onClick={onImmersive} aria-label="전체 화면 보기" className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
+          <button type="button" onClick={onImmersive} disabled={playbackHint === 'starting'} aria-label="전체 화면 보기" className="flex items-center gap-2 rounded-full bg-white/7 px-3 py-2.5 text-xs font-black text-white/64 transition-colors hover:bg-white/11 hover:text-white">
             <Maximize2 size={15} /><span className="hidden sm:inline">전체 화면</span>
           </button>
         </div>
         <span className="sr-only" role="status" aria-live="polite">{linkCopied ? '링크를 복사했어요' : ''}</span>
       </header>
 
-      <main className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>
+      {playbackHint && (
+        <div className="relative z-30 flex flex-wrap items-center justify-center gap-3 border-b border-white/10 bg-slate-900 px-4 py-3 text-center text-sm text-white" data-playback-hint={playbackHint}>
+          <div role="status" aria-live="polite">
+            <p>{playbackHint === 'starting' ? '소리를 시작하고 있어요' : playbackHint === 'blocked' ? '브라우저가 자동재생을 막았어요. 한 번 눌러 시작하세요.' : '소리를 시작하지 못했어요. 다시 눌러 주세요.'}</p>
+            <p className="mt-1 text-xs text-white/60">편안한 낮은 볼륨으로 시작하세요{brainwaveEnabled && toneMode === 'binaural' ? ' · 바이노럴 리듬은 헤드폰을 권장해요' : ''}</p>
+          </div>
+          {playbackHint !== 'starting' && <button type="button" onClick={onPlay} className="rounded-full bg-white px-5 py-3 font-bold text-slate-950">눌러서 재생</button>}
+        </div>
+      )}
+
+      <main inert={playbackHint === 'starting' ? true : undefined} aria-busy={playbackHint === 'starting'} className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>
         <section
           data-scene-surface
           onPointerMove={visualMode === 'nature' ? revealSceneChrome : undefined}

@@ -113,6 +113,14 @@ export default function App() {
     try { return JSON.parse(localStorage.getItem('mc_brain_last') ?? 'null'); } catch { return null; }
   });
 
+  const [linkedPlaybackHint, setLinkedPlaybackHint] = useState<'starting' | 'blocked' | 'error' | null>(null);
+  const linkedStartRef = useRef<AbortController | null>(null);
+  const cancelLinkedStart = useCallback(() => {
+    linkedStartRef.current?.abort();
+    linkedStartRef.current = null;
+    setLinkedPlaybackHint(null);
+  }, []);
+
   const [playbackStatus, setPlaybackStatus] = useState<'idle' | 'running' | 'paused'>('idle');
   const [viewMode, setViewMode] = useState<AppViewMode>('list');
   const [selectedPreset, setSelectedPreset] = useState<SessionPreset | null>(null);
@@ -204,6 +212,7 @@ export default function App() {
   });
 
   const navigate = useCallback((location: AppLocation, behavior: 'push' | 'replace' = 'push') => {
+    if (location.viewMode !== 'player') cancelLinkedStart();
     const current = navigationRef.current;
     if (behavior === 'push' && sameLocation(current, location)) return;
     const entry: AppHistoryEntry = {
@@ -408,19 +417,60 @@ export default function App() {
     }
   };
 
-  /** Play from the player; a routine opened from a link starts after the headphone notice when it applies. */
+  const startLinkedSession = (snapshot: LastSession, seconds: number) => {
+    cancelLinkedStart();
+    const controller = new AbortController();
+    linkedStartRef.current = controller;
+    setLinkedPlaybackHint('starting');
+    const frequencies = WAVE_FREQS[snapshot.brainWaveType];
+    void engine.tryStart({
+      base: frequencies.base,
+      beat: frequencies.beat,
+      mode: snapshot.toneMode,
+      masterVol: snapshot.mix?.master ?? volumes.master,
+      binauralVol: snapshot.brainwaveEnabled ? snapshot.mix?.binaural ?? volumes.binaural : 0,
+      bgVol: snapshot.mix?.bg ?? volumes.bg,
+      sounds: snapshot.layers.map((layer) => ({ ...layer, volume: layer.muted ? 0 : layer.volume })),
+    }, controller.signal).then((result) => {
+      if (linkedStartRef.current !== controller) return;
+      linkedStartRef.current = null;
+      if (result !== 'started') {
+        setLinkedPlaybackHint(result === 'cancelled' ? null : result);
+        return;
+      }
+      readySnapshotRef.current = null;
+      setLinkedPlaybackHint(null);
+      sessionStartedAtRef.current = new Date().toISOString();
+      beginRun(seconds);
+      setPlaybackStatus('running');
+      persistLastSession({ ...snapshot, mix: snapshot.mix ?? { ...volumes } });
+    });
+  };
+
+  /** A blocked deep link retries directly in the tap, with no second dialog. */
   const playSession = () => {
-    if (readySnapshotRef.current) runAfterHeadphoneNotice(resumeSession);
+    if (readySnapshotRef.current) startLinkedSession({
+      ...readySnapshotRef.current,
+      brainWaveType: currentBrainWave,
+      toneMode,
+      brainwaveEnabled,
+      layers: activeLayers,
+      mix: { ...volumes },
+      sleepMode,
+    }, timeLeft);
     else resumeSession();
   };
 
   /**
-   * A routine opened from a link waits on the player, ready to play: browsers
-   * only let sound start after a tap.
+   * A linked routine attempts playback immediately. A blocked browser leaves
+   * it ready on the player, with its timer untouched and a one-tap fallback.
    */
   const prepareSession = (selected: SessionPreset, snapshot: LastSession, behavior: 'push' | 'replace') => {
+    cancelLinkedStart();
+    pendingStartRef.current = null;
+    setNoticeOpen(false);
     if (natureStatus === 'running') stopNature();
-    if (playbackStatus !== 'idle') engine.stop();
+    engine.stop();
     const seconds = snapshot.durationMinutes * 60;
     endTimeRef.current = null;
     runStartRef.current = null;
@@ -441,12 +491,18 @@ export default function App() {
     setPlaybackStatus('paused');
     readySnapshotRef.current = snapshot;
     navigate({ activeView: 'home', viewMode: 'player', immersive: false }, behavior);
+    startLinkedSession(snapshot, seconds);
   };
 
   /** Show the page or routine an address names; false when this device has no such routine. */
   const applyRoute = (route: AppRoute, behavior: 'push' | 'replace') => {
     if (route.kind === 'view') {
       navigate({ activeView: route.view, viewMode: 'list', immersive: false }, behavior);
+      return true;
+    }
+    if (selectedPreset?.id === route.sessionId && playbackStatus !== 'idle') {
+      navigate({ activeView: 'home', viewMode: 'player', immersive: false }, behavior);
+      if (readySnapshotRef.current && !linkedStartRef.current) playSession();
       return true;
     }
     const target = resolveSessionLink(route.sessionId, { userPresets, lastSession });
@@ -459,6 +515,7 @@ export default function App() {
   applyRouteRef.current = applyRoute;
 
   const stopSession = ({ reflect = false, goHome = false }: { reflect?: boolean; goHome?: boolean } = {}) => {
+    cancelLinkedStart();
     readySnapshotRef.current = null;
     accumulateRun();
     endTimeRef.current = null;
@@ -980,6 +1037,12 @@ export default function App() {
       const entry = readAppHistoryEntry(event.state);
       if (!entry) return;
       navigationRef.current = entry;
+      const route = readAppRoute(window.location.href);
+      if (route?.kind === 'play' && !entry.immersive) {
+        applyRouteRef.current(route, 'replace');
+        return;
+      }
+      if (entry.viewMode !== 'player') cancelLinkedStart();
       setActiveView(entry.activeView);
       setViewMode(entry.viewMode);
       setImmersive(entry.immersive);
@@ -1005,16 +1068,23 @@ export default function App() {
   const routePendingRef = useRef(initialRouteRef.current !== null);
 
   useEffect(() => {
-    const route = initialRouteRef.current;
-    initialRouteRef.current = null;
-    if (!route) return;
-    if (route.kind === 'view') {
-      applyRouteRef.current(route, 'replace');
-      return;
-    }
-    // Keep home underneath a linked routine so Back returns to the app.
-    window.history.replaceState(window.history.state, '', withAppRoute(window.location.href, null));
-    if (!applyRouteRef.current(route, 'push')) routePendingRef.current = false;
+    // Defer past StrictMode's setup/cleanup probe so it cannot consume the
+    // initial link and then dispose the only autoplay attempt.
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      const route = initialRouteRef.current;
+      initialRouteRef.current = null;
+      if (!route) return;
+      if (route.kind === 'view') {
+        applyRouteRef.current(route, 'replace');
+        return;
+      }
+      // Keep home underneath a linked routine so Back returns to the app.
+      window.history.replaceState(window.history.state, '', withAppRoute(window.location.href, null));
+      if (!applyRouteRef.current(route, 'push')) routePendingRef.current = false;
+    });
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -1039,7 +1109,17 @@ export default function App() {
       if (!route) return;
       navigationRef.current = { ...navigationRef.current, index: navigationRef.current.index + 1 };
       if (applyRouteRef.current(route, 'replace')) return;
-      window.history.replaceState(withAppHistoryEntry(window.history.state, navigationRef.current), '', withAppRoute(window.location.href, null));
+      // Invalid links must not leave the previous routine playing under a home URL.
+      cancelLinkedStart();
+      engine.stop();
+      setNatureStatus('idle');
+      natureEndRef.current = null;
+      readySnapshotRef.current = null;
+      endTimeRef.current = null;
+      runStartRef.current = null;
+      setPlaybackStatus('idle');
+      navigate({ activeView: 'home', viewMode: 'list', immersive: false }, 'replace');
+      window.history.replaceState(window.history.state, '', withAppRoute(window.location.href, null));
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -1153,7 +1233,11 @@ export default function App() {
     return () => { setHandler('play', null); setHandler('pause', null); setHandler('stop', null); };
   }, [natureStatus, natureMixId, playbackStatus, selectedPreset, brainwaveEnabled, currentBrainWave]);
 
-  useEffect(() => () => engine.dispose(), [engine]);
+  useEffect(() => () => {
+    linkedStartRef.current?.abort();
+    linkedStartRef.current = null;
+    engine.dispose();
+  }, [engine]);
 
   const favoriteSet = useMemo(() => new Set(favoriteIds), [favoriteIds]);
   const lastSessionSummary = lastSession ? {
@@ -1322,6 +1406,7 @@ export default function App() {
         {viewMode === 'player' && selectedPreset && (
           <Suspense fallback={<LoadingPanel />}>
             <Player
+              playbackHint={linkedPlaybackHint}
               shareUrl={appRouteHash({ kind: 'play', sessionId: selectedPreset.id }) ? sessionShareUrl(window.location.href, selectedPreset.id) : undefined}
               subscribeEvents={subscribeNatureEvents}
               sessionName={selectedPreset.name.replace(/\s*\([^)]*\)/, '')}

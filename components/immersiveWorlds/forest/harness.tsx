@@ -1,6 +1,7 @@
 import { StrictMode, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createRoot } from 'react-dom/client';
 import ForestWorld, { type ForestInteraction } from './ForestWorld';
+import { forestHost } from './forestHost';
 
 const harnessStyle = `
   html, body, #forest-harness-root { margin: 0; width: 100%; height: 100%; overflow: hidden; }
@@ -96,6 +97,20 @@ function ForestHarness() {
   const [visibilitySamples, setVisibilitySamples] = useState<VisibilitySample[]>([]);
   const visibilityRef = useRef<VisibilitySample[]>([]);
   const [osReduced, setOSReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  useEffect(() => {
+    const root = document.querySelector('.forest-harness');
+    // Diagnostic image readback only. Interaction/lifecycle assertions below
+    // continue to exercise the component through its public DOM handlers.
+    const captureFrame = (event: Event) => {
+      const detail = (event as CustomEvent<{result?: ReturnType<typeof forestHost.captureFrame>; error?: string}>).detail;
+      if (!detail) return;
+      try { detail.result = forestHost.captureFrame(); }
+      catch (error) { detail.error = error instanceof Error ? error.message : String(error); }
+    };
+    root?.addEventListener('forest:diagnostic-capture', captureFrame);
+    return () => root?.removeEventListener('forest:diagnostic-capture', captureFrame);
+  }, []);
 
   useEffect(() => {
     const wasReduced = document.documentElement.classList.contains('reduce-motion');

@@ -424,6 +424,14 @@ export class ForestEngine implements LiveSceneEngine {
   stop(){this.running=false;cancelAnimationFrame(this.request);this.request=0;this.canvas.dataset.running='false';this.look.release();}
   drag(dx:number,dy:number){if(this.running)this.look.drag(dx,dy);}
   releaseDrag(){this.look.release();}
+  /** Owned QA harness only: a native-size frame from the same real renderer.
+   * Read in this call stack, before the browser clears its drawing buffer.
+   * This does not advance simulation or change render quality. */
+  captureFrame(){
+    if(!this.ready||this.disposed)throw new Error('Forest renderer is not ready.');
+    this.renderFrame(0);
+    return {dataUrl:this.canvas.toDataURL('image/jpeg',.9),width:this.canvas.width,height:this.canvas.height,time:this.time};
+  }
   setOnInteraction(callback:((event:ForestInteraction)=>void)|undefined){this.onInteraction=callback;}
   touch(x:number,y:number){
     if(!this.running||this.disposed)return;

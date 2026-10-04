@@ -1,0 +1,28 @@
+Testing scops
+Loaded scops; waiting for scene ready
+Ready scops
+Captured scops-desktop.png (1105181 bytes)
+Captured scops-chrome.png (1105804 bytes)
+Captured scops-portrait.png (259654 bytes)
+Captured scops-fold.png (640608 bytes)
+Lifecycle scops: motion endpoints at 683x450
+Lifecycle scops: visible chrome pointer and UI controls
+Lifecycle scops: cooldown real frame 1/11 flushed
+Lifecycle scops: cooldown real frame 2/11 flushed
+Lifecycle scops: cooldown real frame 3/11 flushed
+Lifecycle scops: cooldown real frame 4/11 flushed
+Lifecycle scops: cooldown real frame 5/11 flushed
+Lifecycle scops: cooldown real frame 6/11 flushed
+Lifecycle scops: cooldown real frame 7/11 flushed
+Lifecycle scops: cooldown real frame 8/11 flushed
+Lifecycle scops: cooldown real frame 9/11 flushed
+Lifecycle scops: cooldown real frame 10/11 flushed
+Lifecycle scops: cooldown real frame 11/11 flushed
+Lifecycle scops: trusted browser touch
+Lifecycle scops: three holder transports
+Lifecycle scops: reduced/static/hidden policies
+Lifecycle scops: mount reuse and delayed disposal
+Lifecycle scops: static first frame
+Loaded scops; waiting for scene ready
+Ready scops
+Evidence: components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-scops.json; pass=true

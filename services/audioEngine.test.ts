@@ -155,6 +155,30 @@ describe('BinauralEngine multi-voice', () => {
     e = new BinauralEngine();
   });
 
+  it('starts only when ready and does not start a request invalidated by stop', async () => {
+    const controller = new AbortController();
+    const pending = e.tryStart(cfg([]), controller.signal);
+    e.stop();
+    expect(await pending).toBe('cancelled');
+    expect(oscillatorNodes).toHaveLength(0);
+    expect(await e.tryStart(cfg([]), new AbortController().signal)).toBe('started');
+    expect(oscillatorNodes.length).toBeGreaterThan(0);
+    e.dispose();
+  });
+
+  it('cleans up partially started audio and reports an error if graph creation fails', async () => {
+    const originalStart = e.start.bind(e);
+    vi.spyOn(e, 'start').mockImplementation((config) => {
+      originalStart(config);
+      throw new Error('node creation failed');
+    });
+    expect(await e.tryStart(cfg([]), new AbortController().signal)).toBe('error');
+    expect(oscillatorNodes.length).toBeGreaterThan(0);
+    expect(oscillatorNodes.every((node) => node.stopped)).toBe(true);
+    expect(e.getAnalyser()).toBeNull();
+    e.dispose();
+  });
+
   it('starts with the configured layers and clears them on stop', () => {
     e.start(cfg([{ type: 'rain', volume: 0.8 }, { type: 'fire', volume: 0.6 }]));
     expect(e.activeSoundTypes().sort()).toEqual(['fire', 'rain']);

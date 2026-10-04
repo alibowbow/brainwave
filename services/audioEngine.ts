@@ -1,3 +1,4 @@
+import { resumeAudioContext } from './audioPlaybackGate';
 import { BackgroundSoundType } from '../types';
 import { TONE_MODE_TRIM, clampLayerVolume, clampUnit, layerGain, levelToGain, natureBusGain, natureMixLoad } from '../audioLevels';
 import {
@@ -244,7 +245,9 @@ export class BinauralEngine {
     this.sampleCache = sampleCache;
   }
 
-  init() {
+  private playbackStartGeneration = 0;
+
+  private ensureContext() {
     if (!this.ctx) {
       const Context: typeof AudioContext = window.AudioContext || (window as any).webkitAudioContext;
       // Ambient playback never needs low latency. A larger output buffer rides
@@ -256,9 +259,35 @@ export class BinauralEngine {
       }
       this.ctx.onstatechange = () => this.notifyPlayback();
     }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    return this.ctx;
+  }
+
+  /** Try normal browser autoplay; blocked links remain silent until a tap. */
+  async tryStart(config: StartConfig, signal: AbortSignal): Promise<'started' | 'blocked' | 'cancelled' | 'error'> {
+    const generation = this.playbackStartGeneration;
+    try {
+      const result = await resumeAudioContext(this.ensureContext(), signal);
+      if (signal.aborted || generation !== this.playbackStartGeneration) return 'cancelled';
+      if (result !== 'running') return result;
+      try {
+        this.start(config);
+        return 'started';
+      } catch {
+        // start() itself calls stop(), so its generation change is expected.
+        // Always clean up a partially constructed graph on synchronous failure.
+        this.stop();
+        return 'error';
+      }
+    } catch {
+      if (signal.aborted || generation !== this.playbackStartGeneration) return 'cancelled';
+      this.stop();
+      return 'error';
     }
+  }
+
+  init() {
+    this.ensureContext();
+    this.resume();
     if (!this.pinkNoiseBuffer) this.pinkNoiseBuffer = this.createPinkNoiseBuffer();
     if (!this.brownNoiseBuffer) this.brownNoiseBuffer = this.createBrownNoiseBuffer();
     if (!this.whiteNoiseBuffer) this.whiteNoiseBuffer = this.createWhiteNoiseBuffer();
@@ -3378,7 +3407,9 @@ export class BinauralEngine {
   }
 
   resume() {
-    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    if (this.ctx && this.ctx.state === 'suspended') {
+      void Promise.resolve(this.ctx.resume()).catch(() => undefined);
+    }
   }
 
   // Gradually fade the whole mix to silence over `seconds`, then tear down.
@@ -3414,6 +3445,7 @@ export class BinauralEngine {
   }
 
   stop() {
+    this.playbackStartGeneration += 1;
     this.modeSwitchGeneration += 1;
     this.teardownTone();
     this.voices.forEach((v) => this.disposeVoice(v));

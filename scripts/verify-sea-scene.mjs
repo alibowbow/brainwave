@@ -9,7 +9,7 @@ const BASE = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:4173').replace(/\/
 const browser = await chromium.launch({
   executablePath: process.env.SCENE_BROWSER_PATH || undefined,
   headless: true,
-  args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'],
+  args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
 });
 const page = await browser.newPage({ viewport: { width: 1024, height: 700 }, serviceWorkers: 'block' });
 // Software WebGL is slow on shared runners; give every step room.
@@ -34,11 +34,16 @@ try {
     catch (error) { if (attempt === 19) throw error; await new Promise((resolve) => setTimeout(resolve, 250)); }
   }
 
-  // Opened from a link the routine waits for a tap, showing the finished painting.
+  // Linked routines autoplay when permitted, or offer one tap under normal policy.
   await page.waitForSelector('h1:has-text("파도 해변")');
   await page.waitForSelector('.oil-sea[data-state="ready"]', { timeout: 240_000 });
   assert.equal(await page.locator('.landscape').count(), 0, 'the illustrated coast is gone');
   assert.equal(await page.locator('.oil-sea-canvas').count(), 1, 'one shared canvas');
+  const fallback = page.getByRole('button', { name: '눌러서 재생', exact: true });
+  if (await fallback.isVisible().catch(() => false)) await fallback.click();
+  await page.waitForFunction(() => document.querySelector('.oil-sea')?.getAttribute('data-motion') === 'running');
+  await press('일시정지');
+  await page.waitForFunction(() => document.querySelector('.oil-sea')?.getAttribute('data-motion') === 'paused');
   assert.equal(await motion(), 'paused');
   // A painted seascape compresses poorly; a blank or flat canvas would be tiny.
   await page.waitForTimeout(1500);
@@ -108,7 +113,7 @@ try {
   await page.waitForFunction(() => !document.querySelector('.oil-sea-canvas'));
 
   assert.deepEqual(errors, []);
-  console.log('PASS: the ocean shore plays in front of the sea painted in oils (no illustration), shows the finished painting until played, moves while playing, moves across a little under a drag, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
+  console.log('PASS: the ocean shore plays in front of the sea painted in oils (no illustration), starts from its link with a policy-safe fallback, shows the finished painting when paused, moves while playing, moves across a little under a drag, freezes on pause, shares one canvas with fullscreen, resumes, honours reduced motion, and releases on stop.');
 } finally {
   await browser.close();
 }

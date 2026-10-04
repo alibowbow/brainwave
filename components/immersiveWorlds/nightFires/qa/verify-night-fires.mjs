@@ -6,6 +6,8 @@
  * SCENE_BASE_URL, SCENE_BROWSER_PATH, SCENE_SCREENSHOT_DIR are optional.
  * --serve starts/stops the built-harness Vite preview at the intended :4190
  * inside this process's execution environment (useful on isolated runners).
+ * --world=mountain|deep|lakeside selects one complete world suite; omission
+ * verifies all three. Every report explicitly records its selected scope.
  * Measurements describe this browser/viewport only, never physical Fold
  * hardware, device FPS, audio quality, or real browser-tab visibility changes.
  */
@@ -22,6 +24,13 @@ const repo = fileURLToPath(new URL('../../../../', import.meta.url));
 const owned = path.join(repo, 'components/immersiveWorlds/nightFires');
 const output = process.env.SCENE_SCREENSHOT_DIR || path.join(owned, 'qa/evidence');
 const serveOwn = process.argv.includes('--serve');
+const allowedWorlds = ['mountain', 'deep', 'lakeside'];
+const worldArguments = process.argv.slice(2).filter((argument) => argument.startsWith('--world='));
+assert.ok(worldArguments.length <= 1, 'Use at most one --world=mountain|deep|lakeside option');
+assert.ok(!process.argv.includes('--world'), 'Use --world=deep syntax');
+const worldChoice = worldArguments[0]?.slice('--world='.length);
+assert.ok(worldChoice === undefined || allowedWorlds.includes(worldChoice), 'World must be mountain, deep, or lakeside');
+const selectedWorlds = worldChoice === undefined ? [...allowedWorlds] : [worldChoice];
 const base = process.env.SCENE_BASE_URL || `http://127.0.0.1:${serveOwn ? 4190 : 4189}/components/immersiveWorlds/nightFires/qa/index.html`;
 const browserPath = process.env.SCENE_BROWSER_PATH || '/tmp/cosmic-browser-bin/chromium';
 const sha = (data) => createHash('sha256').update(data).digest('hex');
@@ -141,6 +150,7 @@ function pixelDifference(first, second) {
 
 const report = {
   suite: 'night-fires-real-webgl', startedAt: new Date().toISOString(),
+  selectedWorlds,
   revision: { gitHead: git(['rev-parse', 'HEAD']), gitBranch: git(['branch', '--show-current']), ...(await sourceSnapshot()) },
   isolatedBuild: await bundleSnapshot(),
   delivery: 'Isolated harness only; exact owned source and available isolated build manifests are recorded. Each world records actual loaded script URLs. This is not an integrated production route claim.',
@@ -568,7 +578,7 @@ async function verifyWorld(world) {
 }
 
 try {
-  for (const world of ['mountain', 'deep', 'lakeside']) await verifyWorld(world);
+  for (const world of selectedWorlds) await verifyWorld(world);
   const after = await sourceSnapshot();
   report.sourceUnchangedDuringVerification = after.sourceTreeSha256 === report.revision.sourceTreeSha256;
   report.finalSourceTreeSha256 = after.sourceTreeSha256;

@@ -313,9 +313,18 @@ export function buildDeepNightWorld(): WorldRecipe {
   let bounceChanged = false;
   return {
     scene,
-    view: aspect => aspect < .8
-      ? { position: [.08, 1.39, 4.42], target: [.2, 2.4, -30], fov: 62 }
-      : { position: [0, 1.38, 3.62], target: [.3, 2.6, -32], fov: 53 },
+    view: aspect => {
+      // Step the narrow view forward so the near armrest cannot hide the lamp.
+      // Restore all three objects on widening; the desktop/Fold layout is fixed.
+      const portrait = aspect < .8;
+      const lampX = portrait ? .65 : .93;
+      shelf.position.x = lampX;
+      lamp.group.position.x = lampX;
+      lanternBounce.position.x = lampX;
+      return portrait
+        ? { position: [.15, 1.39, 3.12], target: [.2, 2.4, -30], fov: 62 }
+        : { position: [0, 1.38, 3.62], target: [.3, 2.6, -32], fov: 53 };
+    },
     targets: [{ object: lamp.target, kind: 'lantern-brightness' }],
     interact: () => {
       const level = lamp.toggle();

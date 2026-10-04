@@ -89,6 +89,7 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     // Keep the already presented canvas across unchanged holder/observer calls.
     // Animated frames, actual resizes and successful interactions still render.
     if (step === 0 && !this.frameDirty) return;
+    this.frameDirty = true;
     this.time += step;
     this.look.lerp(this.targetLook, step ? 1 - Math.exp(-step * 5) : 0);
     this.world.update(this.time, step);

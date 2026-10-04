@@ -238,8 +238,21 @@ export function createScopsScene(): SceneContent {
     addLeafCluster(new THREE.Vector3(x,h,z),1.8+random()*.8,240,.46);
     addLeafCluster(new THREE.Vector3(x+.6,h-1.4,z-.3),1.9,200,.42);
   }
-  const canopy=new THREE.InstancedMesh(leafGeo,leafMat,leafMatrices.length);
-  leafMatrices.forEach((matrix,i)=>{canopy.setMatrixAt(i,matrix);canopy.setColorAt(i,leafColors[i]);});canopy.castShadow=true;canopy.receiveShadow=true;scene.add(canopy);
+  // A small natural opening around the perch preserves the owl's silhouette in both compositions.
+  // Prune after seeded generation so every other tree, stone and material stays unchanged.
+  const owlSightlines=[new THREE.Vector3(0,1.33,4.05),new THREE.Vector3(.22,1.22,3.6)];
+  const visibleLeafIndices:number[]=[];
+  leafMatrices.forEach((matrix,i)=>{
+    const e=matrix.elements,x=e[12],y=e[13],z=e[14],size=Math.hypot(e[0],e[1],e[2]);
+    const occludesPerch=owlSightlines.some(eye=>{
+      const t=(z-eye.z)/(-4.84-eye.z);if(t<=0||t>1.4)return false;
+      const dx=x-THREE.MathUtils.lerp(eye.x,-1.28,t),dy=y-THREE.MathUtils.lerp(eye.y,2.60,t);
+      const rx=.25*t+size*.55,ry=.37*t+size*.30;return dx*dx/(rx*rx)+dy*dy/(ry*ry)<1;
+    });
+    if(!occludesPerch)visibleLeafIndices.push(i);
+  });
+  const canopy=new THREE.InstancedMesh(leafGeo,leafMat,visibleLeafIndices.length);
+  visibleLeafIndices.forEach((sourceIndex,i)=>{canopy.setMatrixAt(i,leafMatrices[sourceIndex]);canopy.setColorAt(i,leafColors[sourceIndex]);});canopy.castShadow=true;canopy.receiveShadow=true;scene.add(canopy);
   const twigs=new THREE.InstancedMesh(new THREE.CylinderGeometry(.3,1,1,5),bark,twigMatrices.length);twigMatrices.forEach((m,i)=>twigs.setMatrixAt(i,m));scene.add(twigs);
 
   // Individual near blades and compound ferns frame the view below the decking.

@@ -93,12 +93,23 @@ await context.addInitScript(() => {
 });
 const page = await context.newPage();
 const cdp = await context.newCDPSession(page);
-page.setDefaultTimeout(120000);
+page.setDefaultTimeout(30000);
 page.on('pageerror', error => { results.errors.push({ type: 'pageerror', text: error.message }); process.stdout.write(`PAGE ERROR ${error.message}\n`); });
 page.on('console', message => { if (message.type() === 'error') { results.errors.push({ type: 'console', text: message.text() }); process.stdout.write(`CONSOLE ERROR ${message.text()}\n`); } });
 page.on('requestfailed', request => results.errors.push({ type: 'requestfailed', url: request.url(), text: request.failure()?.errorText }));
-const snap = () => page.evaluate(() => window.koreanQA.snapshot());
-const api = (method, value) => page.evaluate(({ method, value }) => window.koreanQA[method](value), { method, value });
+function bounded(promise, label, timeout = 30000) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} exceeded ${timeout}ms; possible software GPU backpressure`)), timeout);
+    promise.then(value => { clearTimeout(timer); resolve(value); }, error => { clearTimeout(timer); reject(error); });
+  });
+}
+const evaluate = (callback, argument) => bounded(page.evaluate(callback, argument), 'page.evaluate');
+const lifecycleViewport = { width: 683, height: 450 };
+results.lifecycleViewport = lifecycleViewport;
+results.lifecycleRendering = 'Reduced test viewport only; real native RAF and unchanged production rendering/DPR. Full-size scene screenshots remain 1365x900/390x844/960x700.';
+const phase = (scene, label) => process.stdout.write(`Lifecycle ${scene}: ${label}\n`);
+const snap = () => evaluate(() => window.koreanQA.snapshot());
+const api = (method, value) => evaluate(({ method, value }) => window.koreanQA[method](value), { method, value });
 const ready = async () => {
   await page.waitForFunction(() => document.querySelector('.korean-world[data-state="ready"],.korean-world[data-state="failed"]'));
   const state = await snap();
@@ -107,7 +118,7 @@ const ready = async () => {
 };
 const running = async () => page.waitForFunction(() => document.querySelector('canvas')?.dataset.running === 'true');
 const stopped = async () => page.waitForFunction(() => document.querySelector('canvas')?.dataset.running === 'false');
-const pixelHash = async () => hash(await page.locator('canvas').screenshot({ timeout: 120000 }));
+const pixelHash = async () => hash(await page.locator('canvas').screenshot({ timeout: 45000 }));
 function assert(check, message) { if (!check) throw new Error(message); }
 async function stable(label) {
   await stopped();
@@ -119,7 +130,7 @@ async function stable(label) {
   return result;
 }
 async function navigate(scene, extra = '') {
-  await page.goto(`${base}/components/immersiveWorlds/koreanPlaces/qa/index.html?scene=${scene}&capture=1${extra}`, { waitUntil: 'networkidle', timeout: 120000 });
+  await page.goto(`${base}/components/immersiveWorlds/koreanPlaces/qa/index.html?scene=${scene}&capture=1${extra}`, { waitUntil: 'networkidle', timeout: 45000 });
   process.stdout.write(`Loaded ${scene}; waiting for scene ready\n`);
   await ready();
   process.stdout.write(`Ready ${scene}\n`);
@@ -129,12 +140,13 @@ async function capture(scene, name, viewport) {
   await ready();
   await page.waitForTimeout(150);
   const file = path.join(evidence, `${scene}-${name}.png`);
-  const bytes = await page.locator('canvas').screenshot({ path: file, timeout: 120000 });
+  const bytes = await page.locator('canvas').screenshot({ path: file, timeout: 45000 });
   const entry = { scene, viewport: name, width: viewport.width, height: viewport.height, path: relative(file), sha256: hash(bytes), bytes: bytes.length, state: await snap() };
   results.screenshots.push(entry);
   process.stdout.write(`Captured ${scene}-${name}.png (${bytes.length} bytes)\n`);
 }
 async function testInteraction(scene) {
+  const viewport = page.viewportSize();
   await api('setChrome', true);
   await page.waitForSelector('[data-qa-chrome]');
   await api('clearEvents');
@@ -145,14 +157,14 @@ async function testInteraction(scene) {
   for (const y of [.3, .4, .5, .6, .7, .8, .9]) for (const x of [.1, .2, .3, .4, .5, .6, .7, .8, .9]) candidates.push([x, y]);
   let hit = null;
   for (const [x, y] of candidates) {
-    await page.mouse.click(Math.round(x * 1365), Math.round(y * 900));
+    await page.mouse.click(Math.round(x * viewport.width), Math.round(y * viewport.height));
     const state = await snap();
-    if (state.events.length) { hit = { x: Math.round(x * 1365), y: Math.round(y * 900), event: state.events[0] }; break; }
+    if (state.events.length) { hit = { x: Math.round(x * viewport.width), y: Math.round(y * viewport.height), event: state.events[0] }; break; }
   }
   assert(hit, `${scene}: no tactile object reacted to the raycast tap search`);
   assert(hit.event.strength >= 0 && hit.event.strength <= 1, `${scene}: event strength is not bounded [0,1]`);
   assert(hit.event.position.length === 3 && hit.event.position.every(Number.isFinite), `${scene}: invalid event position`);
-  const hitLayer = await page.evaluate(({ x, y }) => document.elementFromPoint(x, y)?.hasAttribute('data-scene-drag'), hit);
+  const hitLayer = await evaluate(({ x, y }) => document.elementFromPoint(x, y)?.hasAttribute('data-scene-drag'), hit);
   assert(hitLayer, `${scene}: successful tap did not land on the full-cover sibling chrome`);
   await page.mouse.click(hit.x, hit.y);
   const duplicate = await snap();
@@ -161,7 +173,7 @@ async function testInteraction(scene) {
   // Otherwise a gesture over empty space could appear to pass despite broken cancellation.
   await page.waitForFunction(time => Number(document.querySelector('canvas')?.dataset.time) > time + .8, Number(duplicate.canvas.time));
   await api('clearEvents');
-  await page.evaluate(({ x, y }) => {
+  await evaluate(({ x, y }) => {
     const surface = document.querySelector('[data-holder="primary"] [data-scene-drag]');
     surface.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 42, isPrimary: true, button: 0, clientX: x, clientY: y }));
     window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 42, isPrimary: true, button: 0, clientX: x, clientY: y }));
@@ -169,7 +181,7 @@ async function testInteraction(scene) {
   }, hit);
   const cancel = await snap();
   assert(cancel.events.length === 0, `${scene}: cancelled pointer generated a tap event over a known tactile target`);
-  await page.evaluate(({ x, y }) => {
+  await evaluate(({ x, y }) => {
     const surface = document.querySelector('[data-holder="primary"] [data-scene-drag]');
     surface.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 43, isPrimary: true, button: 0, clientX: x, clientY: y }));
     window.dispatchEvent(new Event('blur'));
@@ -178,7 +190,7 @@ async function testInteraction(scene) {
   const blur = await snap();
   assert(blur.events.length === 0, `${scene}: window blur did not cancel gesture over a known tactile target`);
   await page.mouse.move(hit.x, hit.y); await page.mouse.down();
-  await page.mouse.move(hit.x + 110, hit.y - 35, { steps: 5 });
+  await page.mouse.move(hit.x + viewport.width * .08, hit.y - viewport.height * .04, { steps: 5 });
   const duringDrag = await snap();
   assert(duringDrag.surfaces.some(surface => surface.look === 'drag'), `${scene}: visible sibling chrome drag never reached the world look handler`);
   await page.mouse.move(hit.x, hit.y, { steps: 5 }); await page.mouse.up();
@@ -204,7 +216,8 @@ async function testInteraction(scene) {
   return { pass: true, fixture: 'Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves', chromeVisible: before.chromeVisible, raycastTapHitSiblingChrome: hitLayer, cancellationTarget: 'Previously verified raycast target, after cooldown expired', dragReachedLookHandler: true, dragNotTap: drag.events.length === 0, syntheticPointerCancelNotTap: cancel.events.length === 0, syntheticBlurNotTap: blur.events.length === 0, interactiveChromeExclusions: exclusions, tap: hit, immediateTapBounded: duplicate.events.length === 1, initialCanvas: before.canvasIdentity };
 }
 async function testBrowserTouch(scene, hit) {
-  const policy = await page.evaluate(() => {
+  const viewport = page.viewportSize();
+  const policy = await evaluate(() => {
     const surface = document.querySelector('[data-holder="primary"][data-scene-surface]');
     const normal = getComputedStyle(surface).touchAction;
     const original = surface.style.touchAction;
@@ -215,25 +228,26 @@ async function testBrowserTouch(scene, hit) {
   });
   assert(policy.normal === 'none' && policy.inlinePanY === 'pan-y' && policy.restored === 'none', `${scene}: ancestor touch policy or inline override is wrong`);
   await api('clearEvents');
-  await page.evaluate(() => {
+  await evaluate(() => {
     window.__qaTrustedTouchCancels = [];
     window.addEventListener('pointercancel', event => { if (event.isTrusted && event.pointerType === 'touch') window.__qaTrustedTouchCancels.push({ type: event.pointerType, trusted: event.isTrusted }); }, { once: true });
   });
   const point = (x, y) => ({ x, y, id: 71, radiusX: 5, radiusY: 5, force: 1 });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point(hit.x, hit.y)] });
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point(hit.x + 32, hit.y - 14)] });
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point(hit.x + 88, hit.y - 28)] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point(hit.x + viewport.width * .024, hit.y - viewport.height * .016)] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point(hit.x + viewport.width * .065, hit.y - viewport.height * .031)] });
   const moving = await snap();
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   const ended = await snap();
-  const canceled = await page.evaluate(() => window.__qaTrustedTouchCancels);
+  const canceled = await evaluate(() => window.__qaTrustedTouchCancels);
   const pass = moving.surfaces.some(surface => surface.look === 'drag') && ended.events.length === 0 && canceled.length === 0;
   assert(pass, `${scene}: browser touch drag failed to reach look, emitted a tap, or triggered native pointercancel`);
   return { pass, method: 'Chromium CDP Input.dispatchTouchEvent; trusted browser touch input, not synthetic DOM dispatch and not physical-device hardware', chromeVisible: true, policy, dragReachedLookHandler: true, worldEvents: ended.events.length, trustedPointerCancels: canceled.length };
 }
 async function lifecycle(scene) {
-  const record = {};
-  await page.setViewportSize({ width: 1365, height: 900 });
+  const record = { viewport: lifecycleViewport };
+  phase(scene, 'motion endpoints at 683x450');
+  await page.setViewportSize(lifecycleViewport);
   await api('setActive', false); await stopped();
   const first = await snap(), firstPixels = await pixelHash();
   await api('setActive', true); await running();
@@ -247,12 +261,17 @@ async function lifecycle(scene) {
   assert(record.motion.pass, `${scene}: motion did not advance time and pixels`);
   await api('setActive', false); record.pause = await stable(`${scene} pause`);
   await api('setActive', true); await running();
+  phase(scene, 'visible chrome pointer and UI controls');
   record.interaction = await testInteraction(scene);
+  phase(scene, 'trusted browser touch');
   record.browserTouch = await testBrowserTouch(scene, record.interaction.tap);
   await api('setActive', false); await stopped();
+  phase(scene, 'full-size paused chrome screenshot');
   await capture(scene, 'chrome', { width: 1365, height: 900 });
+  await page.setViewportSize(lifecycleViewport);
   await api('setActive', true); await running();
   const identity = (await snap()).canvasIdentity;
+  phase(scene, 'three holder transports');
   const transports = [];
   for (let cycle = 0; cycle < 3; cycle++) {
     await api('clearEvents');
@@ -260,9 +279,9 @@ async function lifecycle(scene) {
     await page.waitForFunction(() => window.koreanQA.snapshot().canvasHolder === 'secondary');
     const secondary = await snap();
     assert(secondary.canvasCount === 1 && secondary.canvasIdentity === identity, `${scene}: second holder did not reuse canvas`);
-    const listeners = await page.evaluate(() => window.__qaPointerCounts());
+    const listeners = await evaluate(() => window.__qaPointerCounts());
     assert(listeners.length === 2 && listeners.every(item => item.pointerdown === 1), `${scene}: missing or duplicate scene-surface pointerdown listeners during transport`);
-    await page.evaluate(({ x, y }) => {
+    await evaluate(({ x, y }) => {
       const covered = document.querySelector('[data-holder="primary"] [data-scene-drag]');
       covered.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 89, isPrimary: true, button: 0, clientX: x, clientY: y }));
       window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 89, isPrimary: true, button: 0, clientX: x, clientY: y }));
@@ -271,28 +290,30 @@ async function lifecycle(scene) {
     await api('setSecond', false);
     await page.waitForFunction(() => window.koreanQA.snapshot().canvasHolder === 'primary');
     const returned = await snap();
-    const returnedListeners = await page.evaluate(() => window.__qaPointerCounts());
+    const returnedListeners = await evaluate(() => window.__qaPointerCounts());
     const passed = returned.canvasIdentity === identity && returned.canvasCount === 1 && returnedListeners.length === 1 && returnedListeners[0].pointerdown === 1;
     assert(passed, `${scene}: repeated transport failed canvas reuse or pointer handler cleanup`);
     transports.push({ cycle: cycle + 1, secondaryIdentity: secondary.canvasIdentity, returnedIdentity: returned.canvasIdentity, listeners, returnedListeners, coveredHolderInert: true, pass: passed });
   }
   record.secondHolder = { pass: true, originalIdentity: identity, cycles: transports };
+  phase(scene, 'reduced/static/hidden policies');
   await page.emulateMedia({ reducedMotion: 'reduce' }); record.reducedMotion = await stable(`${scene} reduced motion`);
   await page.emulateMedia({ reducedMotion: 'no-preference' }); await running();
   await api('setStatic', true); record.static3D = await stable(`${scene} static3D`);
   await api('setStatic', false); await running();
-  await page.evaluate(() => {
+  await evaluate(() => {
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' });
     document.dispatchEvent(new Event('visibilitychange'));
   });
   record.syntheticHidden = { method: 'Own-property overrides of document.hidden/visibilityState plus visibilitychange, not actual tab hiding', ...await stable(`${scene} synthetic hidden`) };
-  await page.evaluate(() => { delete document.hidden; delete document.visibilityState; document.dispatchEvent(new Event('visibilitychange')); }); await running();
+  await evaluate(() => { delete document.hidden; delete document.visibilityState; document.dispatchEvent(new Event('visibilitychange')); }); await running();
   if (scene === 'scops') {
     const beforeCall = await snap(); await api('dispatchScops'); await page.waitForTimeout(150); const afterCall = await snap();
     record.externalAudioEvent = { pass: beforeCall.subscribers === 1 && afterCall.audioDispatches === beforeCall.audioDispatches + 1, event: 'scops', subscribers: beforeCall.subscribers, dispatches: afterCall.audioDispatches, limitation: 'Checks existing-engine event subscription and dispatch. It does not claim actual sound playback quality or visually classify the tiny owl animation.' };
     assert(record.externalAudioEvent.pass, 'scops event subscription missing');
   }
+  phase(scene, 'mount reuse and delayed disposal');
   const rapidIds = [];
   for (let index = 0; index < 3; index++) {
     await api('setMounted', false); await page.waitForFunction(() => !document.querySelector('canvas')); await page.waitForTimeout(90);
@@ -303,8 +324,9 @@ async function lifecycle(scene) {
   await api('setMounted', true); await ready(); const rebuilt = await snap();
   record.mountUnmount = { pass: rebuilt.canvasCount === 1 && rebuilt.canvasIdentity !== identity, rapidRemountCount: rapidIds.length, rapidIdentities: rapidIds, graceWindowWaitMs: 5400, rebuiltIdentity: rebuilt.canvasIdentity, newCanvasAfterDisposal: rebuilt.canvasIdentity !== identity, limitation: 'Observed detach/reuse/new canvas after the host disposal timer; no direct GPU memory profiler was available.' };
   assert(record.mountUnmount.pass, `${scene}: delayed remount did not rebuild a unique canvas`);
-  record.createdAudioContexts = await page.evaluate(() => window.__qaAudioContexts);
+  record.createdAudioContexts = await evaluate(() => window.__qaAudioContexts);
   assert(record.createdAudioContexts === 0, `${scene}: created an independent audio context`);
+  phase(scene, 'static first frame');
   await navigate(scene, '&static=1');
   record.staticFirstFrame = await stable(`${scene} initial static3D`);
   record.metrics = (await snap()).canvas;
@@ -324,7 +346,7 @@ try {
   }
   if (!screenshotsOnly) {
     const other = await context.newPage(); await other.goto('about:blank'); await other.bringToFront(); await page.waitForTimeout(150);
-    const observed = await page.evaluate(() => ({ hidden: document.hidden, visibilityState: document.visibilityState }));
+    const observed = await evaluate(() => ({ hidden: document.hidden, visibilityState: document.visibilityState }));
     results.actualTabVisibility = { ...observed, tested: observed.hidden, note: observed.hidden ? 'Original page became hidden after a separate page was brought forward.' : 'Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified.' };
     await other.close();
   }
@@ -332,7 +354,10 @@ try {
 } catch (error) {
   results.pass = false;
   results.failure = error.stack;
-  try { await page.screenshot({ path: path.join(evidence, 'debug-failure.png') }); results.failureState = await snap(); } catch {}
+  process.stdout.write(`FAILED: ${error.stack}\n`);
+  try { await bounded(evaluate(() => window.koreanQA?.setActive(false)), 'failure pause', 5000); } catch {}
+  try { await page.screenshot({ path: path.join(evidence, 'debug-failure.png'), timeout: 5000 }); } catch {}
+  try { results.failureState = await bounded(snap(), 'failure snapshot', 5000); } catch {}
   process.exitCode = 1;
 } finally {
   const sourceAfter = await manifest(sourceFiles);

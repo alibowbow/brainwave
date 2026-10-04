@@ -199,9 +199,23 @@ export function createScopsScene(): SceneContent {
     const h=index===0?5.8:6+random()*4, r=index===0?.34:.24+random()*.18;
     const a=new THREE.Vector3(x,-1.05,z),b=new THREE.Vector3(x+.25,y+h*.56,z+.18),c=new THREE.Vector3(x-.08,y+h,z-.23);
     limb(a,b,r,r*.72);limb(b,c,r*.72,.10);
+    if(index<4){
+      // A bark-covered collar joins the differently oriented rings. Continue the
+      // exposed leaders into narrow forks instead of leaving open, sawn-off ends.
+      const collar=mesh(new THREE.SphereGeometry(r*.73,12,10),bark,b.toArray() as [number,number,number]);
+      collar.scale.set(1,.98,1);
+      const savedSeed=seed;
+      const leader=c.clone().add(new THREE.Vector3(index%2?-.26:.31,.88,-.19));
+      limb(c.clone().add(new THREE.Vector3(0,-.06,0)),leader,.102,0);
+      limb(c.clone().add(new THREE.Vector3(.02,.19,-.02)),c.clone().add(new THREE.Vector3(index%2?.49:-.47,.64,.21)),.051,0);
+      seed=savedSeed; // Preserve every existing leaf, rock and subsequent tree.
+    }
     for(let k=0;k<7;k++){
       const level=.36+k*.075;const start=new THREE.Vector3(x+.12,y+h*level,z);const angle=k*2.36+index;
       const end=new THREE.Vector3(x+Math.cos(angle)*(1.7+random()*1.4),y+h*level+1.1,z+Math.sin(angle)*2);
+      // This single foreground limb crossed the face in both seated views.
+      // Lower its distal end only; the owl and its separate perch stay fixed.
+      if(index===0&&k===0){end.y-=.36;end.z-=.18;}
       limb(start,end,r*.24,.025);addLeafCluster(end,1.2+random()*.7,320,.28+index*.008);
     }
   });

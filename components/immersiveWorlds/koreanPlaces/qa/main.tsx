@@ -7,6 +7,7 @@ import type { WorldInteraction, WorldId } from '../types';
 import type { BackgroundSoundType } from '../../../../types';
 import './qa.css';
 import { installSceneTestScheduler } from './sceneScheduler';
+import { WorldEngine } from '../WorldEngine';
 
 installSceneTestScheduler();
 
@@ -20,7 +21,25 @@ const identities = new WeakMap<HTMLCanvasElement, number>();
 let nextIdentity = 0;
 let audioDispatches = 0;
 const chromeActions: string[] = [];
-type Probe = { x: number; y: number; kind: 'button' | 'input' | 'rolebutton' } | null;
+type ProbeKind = 'button' | 'input' | 'link' | 'rolebutton' | 'roleslider' | 'roleswitch' | 'rolecheckbox' | 'roletextbox';
+type Probe = { x: number; y: number; kind: ProbeKind } | null;
+const disposalObservations: Array<{ canvasIdentity: number | undefined; startedAtMs: number; completedAtMs?: number; contextLostAtMs?: number; error?: string }> = [];
+// QA-only observation around the real synchronous cleanup, without altering
+// its timing, resource calls, or the shared host's five-second grace timer.
+const nativeDispose = WorldEngine.prototype.dispose;
+WorldEngine.prototype.dispose = function () {
+  const canvas = (this as unknown as { canvas: HTMLCanvasElement }).canvas;
+  const observation: (typeof disposalObservations)[number] = { canvasIdentity: identities.get(canvas), startedAtMs: performance.now() };
+  disposalObservations.push(observation);
+  canvas.addEventListener('webglcontextlost', () => { observation.contextLostAtMs = performance.now(); }, { once: true });
+  try {
+    nativeDispose.call(this);
+    observation.completedAtMs = performance.now();
+  } catch (error) {
+    observation.error = String(error);
+    throw error;
+  }
+};
 
 function Chrome({ probe }: { probe: Probe }) {
   return <div data-scene-drag data-qa-chrome className="qa-scene-chrome">
@@ -29,7 +48,8 @@ function Chrome({ probe }: { probe: Probe }) {
     {probe && <div className="qa-control-probe" style={{ left: probe.x, top: probe.y }}>
       {probe.kind === 'button' && <button data-qa-probe="button" onClick={() => chromeActions.push('probe-button')}>UI</button>}
       {probe.kind === 'input' && <input data-qa-probe="input" aria-label="Exclusion probe volume" type="range" defaultValue={50} onChange={() => chromeActions.push('probe-input')} />}
-      {probe.kind === 'rolebutton' && <span data-qa-probe="rolebutton" role="button" tabIndex={0} onClick={() => chromeActions.push('probe-rolebutton')}>UI</span>}
+      {probe.kind === 'link' && <a data-qa-probe="link" href="#qa-link" onClick={event => { event.preventDefault(); chromeActions.push('probe-link'); }}>UI link</a>}
+      {probe.kind.startsWith('role') && <span data-qa-probe={probe.kind} role={probe.kind.slice(4)} tabIndex={0} onClick={() => chromeActions.push(`probe-${probe.kind}`)}>UI</span>}
     </div>}
   </div>;
 }
@@ -50,6 +70,7 @@ function snapshot() {
     surfaces: Array.from(document.querySelectorAll<HTMLElement>('.korean-world')).map(e => ({ ...e.dataset })),
     events: events.map(event => ({ ...event, position: [...event.position] })),
     subscribers: subscribers.size, audioDispatches, chromeActions: [...chromeActions], chromeVisible: !!document.querySelector('[data-qa-chrome]'), visibility: document.visibilityState, hidden: document.hidden,
+    disposalObservations: disposalObservations.map(observation => ({ ...observation })),
   };
 }
 

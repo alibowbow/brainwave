@@ -13,6 +13,16 @@ describe('canonical immersive world mapping', () => {
     expect(new Set(planned).size).toBe(30);
     expect(planned.sort()).toEqual(WORLD_IDS.filter(id => !isProtectedWorldId(id)).sort());
   });
+
+  it('maps all 30 balanced Opus/Sonnet reference rows to the upgrade catalog exactly once', () => {
+    const addendum = readFileSync(new URL('../../docs/immersive-worlds/opus-balanced-benchmark-addendum.md', import.meta.url), 'utf8');
+    const mapping = addendum.split('## Balanced mapping across all 30 IDs')[1]?.split('## Rights and quality guardrails')[0];
+    expect(mapping).toBeDefined();
+    const ids = [...mapping!.matchAll(/^\| ([a-z_:]+) \|/gm)].map(match => match[1]);
+    expect(ids).toHaveLength(30);
+    expect(new Set(ids).size).toBe(30);
+    expect(ids.sort()).toEqual(WORLD_IDS.filter(id => !isProtectedWorldId(id)).sort());
+  });
   it('covers all 32 actual home cards exactly once, with 30 upgrade candidates', () => {
     const mapped = HOME_CATALOG.map(({ id }) => worldIdForCard(id));
     expect(mapped).toHaveLength(32);

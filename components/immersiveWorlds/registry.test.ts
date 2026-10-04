@@ -6,8 +6,10 @@ import { createWorldRegistry, immersiveWorldRegistry, type WorldLoaders } from '
 import { WORLD_IDS } from './worldCatalog';
 
 describe('reviewed world registration', () => {
-  it('leaves all 32 existing scenes alone until a real reviewed module is registered', () => {
+  it('registers only the real forest pilot admitted for draft QA, with no placeholders', () => {
+    expect(WORLD_IDS.filter(id => immersiveWorldRegistry.has(id))).toEqual(['amb:morning_forest']);
     for (const id of WORLD_IDS) {
+      if (id === 'amb:morning_forest') continue;
       expect(immersiveWorldRegistry.has(id)).toBe(false);
       expect(immersiveWorldRegistry.get(id)).toBeUndefined();
     }

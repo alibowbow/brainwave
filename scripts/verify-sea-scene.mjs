@@ -26,7 +26,7 @@ const motion = () => scene.getAttribute('data-motion');
 // Player controls fade out after a few seconds; under software WebGL a normal
 // click can outlast that, so trigger them directly.
 const press = (name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first().dispatchEvent('click');
-const shoot = async () => page.screenshot({ clip: await scene.boundingBox() });
+const shoot = async () => page.screenshot({ animations: 'disabled', clip: await scene.boundingBox() });
 
 try {
   for (let attempt = 0; attempt < 20; attempt++) {
@@ -49,7 +49,7 @@ try {
   await page.waitForTimeout(1500);
   const still = await shoot();
   assert.ok(still.length > 150_000, `the painting renders detail (${still.length} bytes)`);
-  if (output) await page.screenshot({ path: `${output}/sea-player.png` });
+  if (output) await page.screenshot({ animations: 'disabled', path: `${output}/sea-player.png` });
 
   // Playing sets the sea moving: the surf rolls on between two looks.
   await press('재생');
@@ -98,7 +98,7 @@ try {
   await press('전체 화면 보기');
   await page.waitForFunction(() => !!document.querySelector('[aria-label="몰입 화면"] .oil-sea-canvas'));
   assert.equal(await page.locator('.oil-sea-canvas').count(), 1, 'fullscreen reuses the canvas');
-  if (output) await page.screenshot({ path: `${output}/sea-fullscreen.png` });
+  if (output) await page.screenshot({ animations: 'disabled', path: `${output}/sea-fullscreen.png` });
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !document.querySelector('[aria-label="몰입 화면"]') && !!document.querySelector('.oil-sea .oil-sea-canvas'));
 

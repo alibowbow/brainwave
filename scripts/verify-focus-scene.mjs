@@ -46,9 +46,9 @@ try {
   // Page screenshots skip element-stability waits, which crawl under software WebGL.
   await page.waitForTimeout(2500);
   const box = await scene.boundingBox();
-  const shot = await page.screenshot({ clip: box });
+  const shot = await page.screenshot({ animations: 'disabled', clip: box });
   assert.ok(shot.length > 90_000, `scene renders detail (${shot.length} bytes)`);
-  if (output) await page.screenshot({ path: `${output}/focus-player.png` });
+  if (output) await page.screenshot({ animations: 'disabled', path: `${output}/focus-player.png` });
 
   // Dragging over the view turns it a little and letting go eases it back;
   // a press on the controls never starts a drag.
@@ -78,7 +78,7 @@ try {
   await press('전체 화면 보기');
   await page.waitForFunction(() => !!document.querySelector('[aria-label="몰입 화면"] .rainy-window-canvas'));
   assert.equal(await page.locator('.rainy-window-canvas').count(), 1, 'fullscreen reuses the canvas');
-  if (output) await page.screenshot({ path: `${output}/focus-fullscreen.png` });
+  if (output) await page.screenshot({ animations: 'disabled', path: `${output}/focus-fullscreen.png` });
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !document.querySelector('[aria-label="몰입 화면"]') && !!document.querySelector('.rainy-window .rainy-window-canvas'));
 

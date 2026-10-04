@@ -5,9 +5,11 @@ import { isProtectedWorldId, isWorldId, type UpgradeableWorldId } from './worldC
 export type WorldLoaders = Partial<Record<UpgradeableWorldId, ImmersiveWorldLoader>>;
 
 /** Explicit reviewed imports only. Never glob/eager-import an unfinished pilot.
- * Integration example after review: 'amb:focus_cafe': () => import('./cafe/…')
- * An empty registry preserves every existing scene; it is not 30 placeholders. */
-const approvedLoaders: WorldLoaders = {};
+ * The forest is admitted for draft integration QA only (PR #49, 531ecb2).
+ * This is not a visual-quality approval. Other worlds keep their existing view. */
+const approvedLoaders: WorldLoaders = {
+  'amb:morning_forest': () => import('./forest/ForestWorld'),
+};
 
 export function createWorldRegistry(loaders: WorldLoaders) {
   const entries = new Map(Object.entries(loaders));

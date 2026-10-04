@@ -1,5 +1,20 @@
 # Isolated deep-water QA
 
+## Bounded correction verification
+
+The original `verify.mjs`/77-effective-check evidence remains as the historical PR56 baseline. For the follow-up, run:
+
+```sh
+DEEP_WATER_QA_DIST=/tmp/deepwater-followup-dist ./node_modules/.bin/vite build --config components/immersiveWorlds/deepWater/qa/vite.config.ts
+DEEP_WATER_QA_DIST=/tmp/deepwater-followup-dist SCENE_BROWSER_PATH=/path/to/chromium node components/immersiveWorlds/deepWater/qa/verify-followup.mjs
+```
+
+Default output is `qa/evidence/followup/`. The harness adds hidden-by-default sibling `[data-scene-drag]` chrome under `[data-scene-surface]`, native and ARIA controls, a nested foreign surface, `setChrome`, input-observer counters, and `waitGPUIdle`. `reflection=byte` applies a real conservative texture preference before the host engine's first render; it never spoofs extensions or patches GL methods. Only the QA harness interprets this query parameter.
+
+The follow-up suite runs all three worlds through the original lifecycle checks, final desktop/portrait/Fold-inner/landscape captures, native visible/hidden-overlay taps and look, controls, cancellations, holder transfer and disposal, plus real byte-reflection renders for waterfall/cave. No renderer method or raycast is bypassed for scene interactions. Guard-only dispatched PointerEvent cases are labelled separately from native mouse cases. Every screenshot follows actual native GPU fence completion and a successful compositor screenshot; a stopped JS frame count alone is not accepted as GPU completion. Completion fences do not themselves prove compositor presentation.
+
+The waterfall has both a wall-clock engine limit and a scene-clock ripple limit. QA waits for real simulation time as well as wall time before testing a repeat callback. This is necessary on software GPUs; no clock is manually advanced. The preliminary failed wall-time-only attempt is retained as diagnostic history and is not counted as passing final evidence.
+
 This directory is development evidence and is not part of the application router or production public assets. It imports the three exact default entry components with only `active` required. No shared application or package files are changed.
 
 From the repository root, use existing dependencies:

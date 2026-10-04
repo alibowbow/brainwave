@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "expectedOriginalHead": "33aff89945cb6911279073e4156eca24ab4842b8",
+  "sourceHead": "30e5cc5b4d563f9eed159ba191a5f68523611963",
+  "sourcesVerified": 28,
+  "bundlesVerified": 7,
+  "imagesVerified": 21,
+  "browserChecksPassed": 219,
+  "sourceUnchangedDuringRun": true,
+  "existingEvidenceFilesPreserved": 15,
+  "existingPNGCount": 12,
+  "protectedGitObjects": {
+    "components/rainyWindow": "2624b583bef4e7caee84bb8b87c0a044fa1f4832",
+    "components/oilSea": "70876f0d9d8bdef465bd8c308c5ecb0630487b42",
+    "package.json": "140861235ad112c49ffb7f5c64d61352636396eb",
+    "package-lock.json": "41d01ce2b12c710e02bcfb4f739df8cbc80da6a6",
+    ".github": "f36193cc4ea17921446c398a0ed4ad1579404413"
+  },
+  "allChangedPathsOwned": true,
+  "baselineMainAncestor": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+  "resultsSHA256": "1e50521f86deb0a756429091f3d535518363c26f474eae2168e875f666573180"
+}

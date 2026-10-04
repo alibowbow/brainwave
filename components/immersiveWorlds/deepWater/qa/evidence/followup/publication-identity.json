@@ -1,0 +1,10 @@
+{
+  "expectedOriginalHead": "33aff89945cb6911279073e4156eca24ab4842b8",
+  "localTestedSourceHead": "30e5cc5b4d563f9eed159ba191a5f68523611963",
+  "remoteEquivalentSourceHead": "0a3c8f17e87abe4592f0148dd5c8a787d5928e15",
+  "identicalSourceTree": "8ea1e6c0756e093020ff22f74d9ce03af6e96ac5",
+  "publicationMethod": "Connected GitHub Git-data API; CLI push had no authentication. Exact blob/tree identity verified; no force push.",
+  "branch": "codex/deep-water-followup-33aff899",
+  "targetBranch": "codex/deep-water-worlds",
+  "originalBranchModified": false
+}

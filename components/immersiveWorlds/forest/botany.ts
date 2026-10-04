@@ -172,6 +172,117 @@ export function createForestMaterials(): ForestMaterials {
   };
 }
 
+/** Near-only material detail. The rest of the forest keeps its existing textures. */
+export function createForegroundMaterials(materials: ForestMaterials): ForestMaterials {
+  const paintVeins = (ctx: CanvasRenderingContext2D, relief = false) => {
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = relief ? '#bababa' : 'rgba(182,201,128,.55)';
+    ctx.lineWidth = relief ? 3.3 : 2.8;
+    ctx.beginPath(); ctx.moveTo(256, 512); ctx.quadraticCurveTo(250, 252, 256, 0); ctx.stroke();
+    for (let row = 48; row < 488; row += 47) for (const side of [-1, 1]) {
+      const offset = side > 0 ? 8 : 0;
+      ctx.strokeStyle = relief ? '#929292' : 'rgba(160,181,107,.34)'; ctx.lineWidth = relief ? 1.8 : 1.25;
+      ctx.beginPath(); ctx.moveTo(255, row + 41 + offset);
+      ctx.bezierCurveTo(256 + side * 61, row + 22, 256 + side * 147, row - 2, 256 + side * 235, row - 37); ctx.stroke();
+      for (let branch = 1; branch <= 3; branch++) {
+        const x = 256 + side * branch * 53, y = row + 32 - branch * 16;
+        ctx.strokeStyle = relief ? '#818181' : 'rgba(148,175,105,.18)'; ctx.lineWidth = .7;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + side * 11, y - 18, x + side * 20, y - 37); ctx.stroke();
+      }
+    }
+  };
+  const map = surface(512, (ctx, rng) => {
+    const wash = ctx.createLinearGradient(0, 512, 330, 0);
+    wash.addColorStop(0, '#4b733d'); wash.addColorStop(.55, '#709249'); wash.addColorStop(1, '#8da65a');
+    ctx.fillStyle = wash; ctx.fillRect(0, 0, 512, 512);
+    // Broad, low-contrast lamina variation; no mottled photograph or flat leaf card.
+    for (let i = 0; i < 32; i++) {
+      const x = rng() * 512, y = rng() * 512, radius = 25 + rng() * 70;
+      const variation = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      variation.addColorStop(0, i % 2 ? 'rgba(143,168,87,.10)' : 'rgba(38,74,37,.08)');
+      variation.addColorStop(1, 'rgba(80,116,54,0)');
+      ctx.fillStyle = variation; ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+    }
+    grain(ctx, rng, 5500, .65, '#adc077', '#547442');
+    paintVeins(ctx);
+  }, 19481);
+  const bumpMap = surface(512, (ctx, rng) => {
+    ctx.fillStyle = '#747474'; ctx.fillRect(0, 0, 512, 512);
+    grain(ctx, rng, 5000, .7, '#838383', '#6c6c6c'); paintVeins(ctx, true);
+  }, 19482);
+  const roughnessMap = surface(256, (ctx, rng) => {
+    ctx.fillStyle = '#cecece'; ctx.fillRect(0, 0, 256, 256);
+    grain(ctx, rng, 4200, 1.3, '#ededed', '#a4a4a4');
+    // Small wax/wetness variations soften the broad plastic highlight.
+    for (let i = 0; i < 14; i++) {
+      const x = rng() * 256, y = rng() * 256;
+      const patch = ctx.createRadialGradient(x, y, 0, x, y, 18 + rng() * 27);
+      patch.addColorStop(0, 'rgba(96,96,96,.25)'); patch.addColorStop(1, 'rgba(140,140,140,0)');
+      ctx.fillStyle = patch; ctx.fillRect(x - 48, y - 48, 96, 96);
+    }
+  }, 19483);
+  bumpMap.colorSpace = roughnessMap.colorSpace = THREE.NoColorSpace;
+  for (const texture of [map, bumpMap, roughnessMap]) texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
+  const leaf = materials.leaf.clone();
+  leaf.map = map; leaf.bumpMap = bumpMap; leaf.bumpScale = .007;
+  leaf.roughnessMap = roughnessMap; leaf.roughness = .55;
+  leaf.clearcoat = .28; leaf.clearcoatRoughness = .3;
+  // clone() does not preserve shader callbacks. Retain the engine's thin-leaf
+  // lighting and group motion; dew must never gain a separate vertex wind.
+  leaf.onBeforeCompile = materials.leaf.onBeforeCompile;
+  leaf.customProgramCacheKey = () => `${materials.leaf.customProgramCacheKey()}-foreground-v1`;
+
+  const dew = materials.dew.clone();
+  dew.color.set('#e3ecd9'); dew.metalness = 0; dew.roughness = .075;
+  dew.ior = 1.333; dew.clearcoat = 0; dew.opacity = 1;
+  dew.transmission = 0; dew.transparent = true; dew.depthWrite = false;
+  dew.onBeforeCompile = (shader) => {
+    // Analytic water-surface transparency: retain a clear centre, a small
+    // Fresnel rim and the real lights/environment's specular reflections.
+    // No transmission pass, screen texture, extra light, bloom or glint sprite.
+    shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', `
+      float dewFacing = clamp(dot(normal, normalize(vViewPosition)), 0., 1.);
+      float dewFresnel = .0204 + .9796 * pow(1. - dewFacing, 5.);
+      float dewSpecular = max(max(totalSpecular.r, totalSpecular.g), totalSpecular.b);
+      diffuseColor.a = .075 + .38 * dewFresnel + clamp(dewSpecular * .65, 0., .48);
+      outgoingLight = diffuseColor.rgb * .055 + totalSpecular / max(diffuseColor.a, .075);
+      #include <opaque_fragment>`);
+  };
+  dew.customProgramCacheKey = () => 'forest-foreground-dew-fresnel-v1';
+  return { ...materials, leaf, dew };
+}
+
+// A smooth surface only for the four plants within arm's reach. Preserve the
+// original outline/length while rounding the fold and giving the tip a little weight.
+function foregroundLeafPoint(t: number, side: number): THREE.Vector3 {
+  const wave = Math.sin(Math.PI * t);
+  const halfWidth = Math.pow(wave, .78) * .3 + .001;
+  const tipCurl = THREE.MathUtils.smoothstep(t, .72, 1) * .032;
+  const midrib = .004 * Math.exp(-side * side * 48) * wave;
+  const crossCurve = -.057 * side * side * wave;
+  const fineFold = .0035 * Math.sin(t * Math.PI * 16 + Math.abs(side) * 1.6) * Math.abs(side) * wave;
+  const twist = .014 * side * wave * Math.sin(t * Math.PI * .8);
+  return new THREE.Vector3(side * halfWidth, t, wave * .085 + t * t * .07 - tipCurl + crossCurve + fineFold + twist + midrib);
+}
+
+function foregroundLeafGeometry(): THREE.BufferGeometry {
+  const rows = 24, columns = 12;
+  const positions: number[] = [], uvs: number[] = [], indices: number[] = [];
+  for (let row = 0; row <= rows; row++) for (let col = 0; col <= columns; col++) {
+    const t = row / rows, side = col / columns * 2 - 1;
+    positions.push(...foregroundLeafPoint(t, side).toArray()); uvs.push(col / columns, t);
+  }
+  for (let row = 0; row < rows; row++) for (let col = 0; col < columns; col++) {
+    const a = row * (columns + 1) + col, b = a + columns + 1;
+    indices.push(a, a + 1, b, a + 1, b + 1, b);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices); geometry.computeVertexNormals();
+  return geometry;
+}
+
 /** A solid curved blade. Geometry, rather than a rectangular transparent card, defines the outline. */
 function leafGeometry(sections = 9, narrow = 1): THREE.BufferGeometry {
   const positions: number[] = [], uvs: number[] = [], indices: number[] = [];
@@ -337,7 +448,7 @@ export function createFern(materials: ForestMaterials, rng: Random, scale = 1): 
   return group;
 }
 
-export function createBroadleafPlant(materials: ForestMaterials, rng: Random, scale = 1): THREE.Group {
+export function createBroadleafPlant(materials: ForestMaterials, rng: Random, scale = 1, foreground = false): THREE.Group {
   const group = new THREE.Group(); group.name = 'forest-broadleaf';
   const count = 5 + Math.floor(rng() * 3), stems: THREE.BufferGeometry[] = [], transforms: THREE.Matrix4[] = [], dewTransforms: THREE.Matrix4[] = [];
   for (let leaf = 0; leaf < count; leaf++) {
@@ -351,16 +462,31 @@ export function createBroadleafPlant(materials: ForestMaterials, rng: Random, sc
     // A few discrete droplets; never a screen-wide sparkle/particle layer.
     for (let d = 0; d < 2; d++) {
       const t = 0.28 + rng() * 0.47, side = (rng() - 0.5) * 0.26;
-      const p = new THREE.Vector3(side, t, Math.sin(t * Math.PI) * 0.085 - Math.abs(side) * 0.19 + t * t * 0.07 + 0.011).applyMatrix4(matrix);
       const size = scale * (0.009 + rng() * 0.007);
-      dewTransforms.push(new THREE.Matrix4().compose(p, new THREE.Quaternion(), new THREE.Vector3(size, size * 0.72, size)));
+      if (foreground) {
+        const halfWidth = Math.pow(Math.sin(Math.PI * t), .78) * .3 + .001;
+        const bladeSide = side / halfWidth;
+        const p = foregroundLeafPoint(t, bladeSide).applyMatrix4(matrix);
+        const across = foregroundLeafPoint(t, bladeSide + .001).sub(foregroundLeafPoint(t, bladeSide - .001));
+        const along = foregroundLeafPoint(t + .001, bladeSide).sub(foregroundLeafPoint(t - .001, bladeSide));
+        const normal = across.cross(along).normalize().applyMatrix3(new THREE.Matrix3().getNormalMatrix(matrix)).normalize();
+        const radius = size * .66;
+        p.addScaledVector(normal, radius * .49);
+        const rotation = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+        // Slightly flattened spherical caps seat into the blade and follow its
+        // local normal, rather than floating as uniformly upright white balls.
+        dewTransforms.push(new THREE.Matrix4().compose(p, rotation, new THREE.Vector3(radius, radius, radius * .66)));
+      } else {
+        const p = new THREE.Vector3(side, t, Math.sin(t * Math.PI) * .085 - Math.abs(side) * .19 + t * t * .07 + .011).applyMatrix4(matrix);
+        dewTransforms.push(new THREE.Matrix4().compose(p, new THREE.Quaternion(), new THREE.Vector3(size, size * .72, size)));
+      }
     }
   }
   const stemMesh = new THREE.Mesh(merge(stems), materials.twig); stemMesh.castShadow = true; group.add(stemMesh);
-  const leaves = new THREE.InstancedMesh(leafGeometry(12), materials.leaf, count); leaves.name = 'forest-broadleaf-leaves';
+  const leaves = new THREE.InstancedMesh(foreground ? foregroundLeafGeometry() : leafGeometry(12), materials.leaf, count); leaves.name = 'forest-broadleaf-leaves';
   transforms.forEach((matrix, i) => { leaves.setMatrixAt(i, matrix); leaves.setColorAt(i, colorLeaf(rng, true)); });
   leaves.instanceMatrix.needsUpdate = true; leaves.castShadow = true; leaves.receiveShadow = true; leaves.computeBoundingSphere(); group.add(leaves);
-  const dew = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 8, 5), materials.dew, dewTransforms.length); dew.name = 'forest-leaf-dew';
+  const dew = new THREE.InstancedMesh(new THREE.SphereGeometry(1, foreground ? 16 : 8, foreground ? 10 : 5), materials.dew, dewTransforms.length); dew.name = 'forest-leaf-dew';
   dewTransforms.forEach((matrix, i) => dew.setMatrixAt(i, matrix)); dew.instanceMatrix.needsUpdate = true; dew.computeBoundingSphere(); group.add(dew);
   group.userData.foliage = leaves; group.userData.swaySeed = rng() * TAU;
   return group;

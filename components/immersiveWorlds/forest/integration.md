@@ -17,15 +17,43 @@ The shared `LiveSceneHost` moves one canvas to the most recently mounted holder,
 The existing `useSceneMotion` policy disables continuous rendering and interaction while inactive, hidden, under OS reduced motion, or while the app's `reduce-motion` class is present. A static 3D frame remains visible. Existing `useLookDrag` provides slight view rotation and engine-controlled slow return. Taps travel no more than six CSS pixels; drags do not also trigger touch effects. Coordinates sent to the engine are NDC in `[-1, 1]`, with positive Y upward. The engine raycasts actual scene surfaces.
 
 Rendering follows display RAF without a fixed FPS cap. Nonblocking WebGL2 fences
-keep at most two live animation submissions queued ahead of the GPU; a busy GPU
-delays new submissions instead of accumulating stale frames. Pixel count, scene
+keep at most two live submission batches queued ahead of the GPU across animation,
+paused resize, holder transfer and diagnostic capture. Initialization is tracked
+as one separate batch. A busy GPU delays submissions and coalesces static requests
+to the latest requested size/holder; it does not accumulate stale frames. Pixel count, scene
 geometry, material response, 2048px shadows and 1024px planar reflection are
-preserved. Fences are released on completion/disposal. The shared analytic camera
+preserved. Only ALREADY_SIGNALED/CONDITION_SATISFIED retire completed work;
+WAIT_FAILED, null fences and context loss stop submission and fail the owned
+renderer. Disposal clears retained handles without calling abandoned work complete.
+The shared analytic camera
 spring follows elapsed time (bounded at one second after a long frame); ambient
 wind advances conservatively after long stalls. Inactive/hidden time is discarded
 when the existing host resumes the engine.
 
-`data-state="ready"` means the engine initialized and rendered; `failed` shows a clearly labeled fallback. The fallback is not a substitute for 3D visual verification.
+`data-state="ready"` means initialization completed; the bounded first draw follows
+on RAF. `data-frames > 0` verifies an actual submitted scene frame, while
+`data-gpu-completed` records fence-confirmed batches. `failed` shows a clearly
+labeled fallback. A submitted frame or fallback is not proof of GPU completion.
+
+## Render-target compatibility refinement
+
+RGBA16F targets require the real `EXT_color_buffer_float` or applicable
+`EXT_color_buffer_half_float`, followed by actual FBO checks. Reflector's target
+type is chosen before its first allocation. PMREM's full-size scene/filter
+attachment preflights run before generation, and its actual output/filter targets
+are checked afterward. The byte path never calls GPU PMREM: an independently
+generated, prefiltered byte CubeUV sky avoids Three's implicit cube/equirectangular
+PMREM conversion. Full-size live water reflection, geometry and lighting remain.
+The atlas prefilter is an approximation, and byte reflections have less HDR range.
+
+Directional PCF shadows use the existing 2048px byte color/unsigned-int depth
+target, checked after Three allocates it. Dew keeps transmission=0 and uses thin
+Fresnel alpha/specular transparency, so it introduces no transmission render target.
+All framebuffer probes restore renderer target, cube face and mip level.
+
+The owned harness supports `?paused=1&byte=1` to choose byte targets before
+construction. It retains truthful extension reports and does not patch WebGL.
+This is a diagnostic switch, not a required component prop or quality default.
 
 ```ts
 interface ForestInteraction {

@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "bundleSHA256": "503b5400075a16a2562d8177e90159980553e5113b1ca47ccec7e62901d50d90",
+  "sourceSHA256": "86c8383a3720ffa60cecbfd022d5234945af17bf88ad8edb14741202b3ee645c",
+  "browser": "153.0.8010.0",
+  "method": "Same viewport, frozen frames before/after at least12 actual animation frames; no camera input or UI focus changes.",
+  "results": [
+    {
+      "world": "relax",
+      "beforeSHA256": "d3a071a6f84ad9601dbc6d6ecb8db711e14d1324330404a9ffeabf4d6b307ca5",
+      "afterSHA256": "d9050dfad588f35b6b4bdf35c50f2e134f8cbf3cd2b7ff46ca248dfe0fddb905",
+      "framesAdvanced": 12,
+      "sceneTimeAdvanced": 0.18540000000297852
+    },
+    {
+      "world": "sleep_prep",
+      "beforeSHA256": "b28e57e20c585c00311d0106435f3324b68a588645a0372e084ccbebe3682be0",
+      "afterSHA256": "d9bb0d5c17262f59ee80184417d23bc66a776d55fb54a05ddd96a1d2243ecf17",
+      "framesAdvanced": 15,
+      "sceneTimeAdvanced": 0.23420000000074026
+    },
+    {
+      "world": "power_nap",
+      "beforeSHA256": "45e8481d96d2a347295a5c877f47740ed3de301661449c096ba94f726a49d1ec",
+      "afterSHA256": "79d6fd1f53b2508391a3d4e63b46e8d52c3d9dd6777abd85057489851d8ea6ff",
+      "framesAdvanced": 12,
+      "sceneTimeAdvanced": 0.18331199999999903
+    },
+    {
+      "world": "nature:winter_lodge",
+      "beforeSHA256": "7c9ff7ec4e108bb13f5df54dae3fe30a45b9feee2bf40b645ecc904564479dd1",
+      "afterSHA256": "b4636fc0b234adce2165e70f46579935785bac3f1a8e55cd2ad904d5b77cf47d",
+      "framesAdvanced": 12,
+      "sceneTimeAdvanced": 0.1884999999992516
+    }
+  ],
+  "errors": []
+}

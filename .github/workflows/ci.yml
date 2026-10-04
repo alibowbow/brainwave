@@ -41,7 +41,9 @@ jobs:
         id: preview
         run: |
           npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/brainwave-preview.log 2>&1 &
+          ./node_modules/.bin/vite --config components/immersiveWorlds/forest/harness.vite.config.ts > /tmp/brainwave-forest-harness.log 2>&1 &
           curl --fail --silent --output /dev/null --retry 20 --retry-delay 1 --retry-connrefused http://127.0.0.1:4173
+          curl --fail --silent --output /dev/null --retry 20 --retry-delay 1 --retry-connrefused http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
 
       - name: Verify scene experience
         env:
@@ -52,15 +54,18 @@ jobs:
           npm run verify:sea
           npm run verify:links
 
+      - name: Verify audio failures and recovery
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: npm run verify:audio
+
       - name: Verify admitted immersive worlds
         if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
         env:
           SCENE_SCREENSHOT_DIR: qa/screenshots
+          SCENE_FOREST_HARNESS_URL: http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
         run: npm run verify:worlds
-
-      - name: Verify forest owner source harness
-        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
-        run: npm run verify:forest:isolated
 
       - name: Preserve scene screenshots and results
         if: always()

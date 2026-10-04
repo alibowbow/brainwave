@@ -6,6 +6,7 @@ import path from 'node:path';
 // Real pilot only: the standalone bundle and its reviewed application route.
 // SwiftShader is a correctness runner, never evidence of device performance.
 const BASE = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:4173').replace(/\/?$/, '/');
+const HARNESS = process.env.SCENE_FOREST_HARNESS_URL || `${BASE}immersive-worlds/forest/qa/`;
 const output = path.join(process.env.SCENE_SCREENSHOT_DIR || 'artifacts', 'worlds');
 const viewports = [
   { name: 'desktop', width: 1440, height: 1000 },
@@ -18,11 +19,14 @@ const report = {
   baseUrl: BASE,
   renderer: 'Chromium headless with SwiftShader',
   applicationPilotHead: '531ecb22b31a4b098eec155b08f3f5af4f24c04e',
-  standaloneBundlePilotHead: '989186c396e9b15641d8ef31d43c5dee7df5b49a',
+  standalonePilotHead: process.env.SCENE_FOREST_HARNESS_URL ? '531ecb22b31a4b098eec155b08f3f5af4f24c04e' : '989186c396e9b15641d8ef31d43c5dee7df5b49a',
+  standaloneUrl: HARNESS,
   deviceScope: 'Desktop and Fold-like CSS viewport checks; no physical Fold or FPS measurement.',
   visibilityScope: 'Simulated document.hidden getter and visibilitychange event; not a real background-tab test.',
   fullscreenScope: 'One canvas across the harness second holder and application CSS immersive overlay; not browser Fullscreen API.',
-  sourceScope: 'The standalone public QA bundle is still the older 989186c visual/harness snapshot. Application checks use reviewed 531ecb2 source and current integration helpers. The separate owner-source harness gate validates latest standalone source; never label old bundle PNGs as latest-head evidence.',
+  sourceScope: process.env.SCENE_FOREST_HARNESS_URL
+    ? 'Both the source standalone harness and production-built application use reviewed 531ecb2 source and current integration helpers. The older public QA bundle is not used in this run.'
+    : 'Public standalone QA is the older 989186c snapshot; application checks use reviewed 531ecb2 source. Never label old bundle PNGs as latest-head evidence.',
   visualReview: 'PNG artifacts require human visual inspection; this script does not grade artistic quality.',
   checks: [],
   errors: [],
@@ -207,7 +211,7 @@ try {
   currentPage = harness;
   watch(harness, 'standalone harness');
   await check('standalone harness initializes the real forest and advances frames', async () => {
-    await harness.goto(`${BASE}immersive-worlds/forest/qa/`);
+    await harness.goto(HARNESS);
     await ready(harness);
     return running(harness);
   });

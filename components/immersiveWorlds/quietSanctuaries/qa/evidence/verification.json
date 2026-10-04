@@ -1,0 +1,1670 @@
+{
+  "generatedAt": "2026-10-04T19:30:38.261Z",
+  "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+  "gitBranch": "codex/quiet-sanctuaries-3d-20261004",
+  "ownedGitStatus": "?? components/immersiveWorlds/quietSanctuaries/qa/evidence/",
+  "sourceManifest": {
+    "sha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/.gitignore",
+        "sha256": "3f6c8c458d86bb8dd9eebdcf89b8f3019f76ce4abb54b72dc1d188134d0959e7"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/INTEGRATION.md",
+        "sha256": "2eec2176b2f52a3b440ceb7131cedc34ecdfb699e1a8fa78e436677e32c25108"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/meditation.ts",
+        "sha256": "65930d56d5dd03560c070848caa46b52817bb0de30fedb214ba521026ef72811"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/MeditationCourtWorld.tsx",
+        "sha256": "f8b8275259d899af60b40af3ce0fb4013de926df8def6b8228db5b2f4754b673"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/PROVENANCE.md",
+        "sha256": "7b511a00b8e854355b1a62c1ac0d42f8df2bcc8b1ad665d2a43e2d1d753abc98"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/index.html",
+        "sha256": "cad3936a7ffd64734ac709427df2e6942cce06b193e879aed9459207130ec94e"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/main.tsx",
+        "sha256": "7b031b400635d4ba7fa42f10bd76935931a759d60ede4cc9ef63b7d0a0723c58"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/README.md",
+        "sha256": "2e57e8a7409b5c3bd12756854961e6b52ed6c79b708854041133bcbd25fcb4cc"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/verify.mjs",
+        "sha256": "14a00fb2e87a1fea4c50303db60a88718ae75d4d8b02f087e939be5651bef15e"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/vite.config.ts",
+        "sha256": "410bedeee3ae9c190b81f39027c2186776996e720d7294089c472cf7f804ebca"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/sanctuaries.css",
+        "sha256": "c4fb0aad98944929f7246300b47a7a1b23df61092b5b373933c35779bdc1dcc5"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SanctuaryEngine.ts",
+        "sha256": "0b228983ad0e4fe7152be3d7755f2e6a43b1be3d71205f1d2c047109bbc7b9ed"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SanctuaryView.tsx",
+        "sha256": "5b736fd5c8f4fc1528b2c0fe585912d7cf0727f44abc2d6fffeb931967b2a27c"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/snowVillage.ts",
+        "sha256": "dd0bedac365de6a5b0e4c2d5dd40ca3727a5abd51ca248ec801cd86a55de5ddf"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SnowVillageWorld.tsx",
+        "sha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/warmHeart.ts",
+        "sha256": "d612ff3988ff33ba25bf7c627273d1114873452fe056b9553590e6ec60ae4d02"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/WarmHeartWorld.tsx",
+        "sha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/worldTypes.ts",
+        "sha256": "5ed80797cd8e368dec21dc50cd578d76cd68247c4b56589feabfa5034f47d63b"
+      }
+    ]
+  },
+  "bundleManifest": {
+    "sha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+    "files": [
+      {
+        "path": "assets/index-CHx_i1Lt.js",
+        "sha256": "a809698b6118a78c052ea57e885117a86fbe568ae2c91b93a508515f49089318"
+      },
+      {
+        "path": "assets/index-Dfoe_3zm.css",
+        "sha256": "a1918380bdb0ad8b4808d6fb19075a57250366449ad8fd83d3d3a82893a3b143"
+      },
+      {
+        "path": "assets/three-BBLDrRl4.js",
+        "sha256": "a7aa56cc8e076e3d7923f1025d4902003b2b9f8839d107e295c37b05d34b56e5"
+      },
+      {
+        "path": "index.html",
+        "sha256": "e6a6dbd371c863df757912c1717b62c42b8d846ae3289d851357d8105b3b3436"
+      }
+    ]
+  },
+  "servedBundleVerified": true,
+  "base": "http://127.0.0.1:4175/",
+  "mode": "full-lifecycle-and-visual",
+  "scope": "Isolated owned components; no shared player integration is claimed.",
+  "environment": {
+    "browser": "153.0.8010.0",
+    "headless": true,
+    "graphics": "Chromium launched with ANGLE SwiftShader; no real-device performance claim.",
+    "viewportChecks": "Static visual captures: desktop 1280×800; narrow portrait 390×844; Fold-inner-like 900×650. Motion/interaction/lifecycle: native 640×480 browser viewport to limit software-GPU test contention. The production renderer settings are unchanged. Viewports only, not physical Fold hardware.",
+    "hiddenCheck": "Synthetic own-property document.hidden/document.visibilityState override plus visibilitychange; not real OS/browser-tab switching."
+  },
+  "screenshots": [
+    {
+      "file": "meditation-desktop.png",
+      "sha256": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6",
+      "bytes": 879479,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "world": "meditation",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 1280,
+        "height": 800,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "108",
+          "triangles": "81920",
+          "geometries": "124",
+          "textures": "11"
+        }
+      }
+    },
+    {
+      "file": "meditation-portrait.png",
+      "sha256": "c2200432b93168bca6e266e8bcfe79527ebafe1bc392fea02d2bb3545ca045ed",
+      "bytes": 250330,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "world": "meditation",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 390,
+        "height": 844,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "57",
+          "triangles": "72812",
+          "geometries": "122",
+          "textures": "11"
+        }
+      }
+    },
+    {
+      "file": "warm-heart-desktop.png",
+      "sha256": "143f7c9d94244a35dfa656fdde56d88d8cc9c09a5658b5a2e4bf167e320a5497",
+      "bytes": 662991,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "world": "warm-heart",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 1280,
+        "height": 800,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "59",
+          "triangles": "313656",
+          "geometries": "47",
+          "textures": "5"
+        }
+      }
+    },
+    {
+      "file": "warm-heart-portrait.png",
+      "sha256": "240f984ba78a14011c76a0d234c5e38bdd5c015afae2b4164701b1109aaf87d0",
+      "bytes": 213613,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "world": "warm-heart",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 390,
+        "height": 844,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "59",
+          "triangles": "313656",
+          "geometries": "47",
+          "textures": "5"
+        }
+      }
+    },
+    {
+      "file": "snow-village-desktop.png",
+      "sha256": "2c28718f4a9c3fb938a9f3bd38aaf98743982956bd314406a5fab9559f256c2b",
+      "bytes": 560349,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "world": "snow-village",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 1280,
+        "height": 800,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "71",
+          "triangles": "345846",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    },
+    {
+      "file": "snow-village-portrait.png",
+      "sha256": "6e5e28f44be3aeba18546dc24b05da06c52f30700867f6107c747b944da313ca",
+      "bytes": 183589,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "world": "snow-village",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 390,
+        "height": 844,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "67",
+          "triangles": "345798",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    },
+    {
+      "file": "snow-village-fold-inner-viewport.png",
+      "sha256": "179b95bc80049b9f514a3638b840b73910f39b9a78a543148fbd8d171d86a82e",
+      "bytes": 353050,
+      "viewport": {
+        "width": 900,
+        "height": 650
+      },
+      "world": "snow-village",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 900,
+        "height": 650,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "71",
+          "triangles": "345846",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    },
+    {
+      "file": "meditation-motion.png",
+      "sha256": "33101f280a2b97ef545cb546a9878c67b89dc825671cb3987dc9a05e6048af23",
+      "bytes": 295875,
+      "viewport": {
+        "width": 640,
+        "height": 480
+      },
+      "world": "meditation",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 40,
+        "elapsed": 0.6208,
+        "interactions": 0,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "40",
+          "elapsed": "0.6208",
+          "drawCalls": "108",
+          "triangles": "81920",
+          "geometries": "124",
+          "textures": "11"
+        }
+      }
+    },
+    {
+      "file": "meditation-interaction.png",
+      "sha256": "2a5a33d7c6ea03a79df60d872fc00489d6f8cbd3e6829e0a9cca762da8bfe1ba",
+      "bytes": 296661,
+      "viewport": {
+        "width": 640,
+        "height": 480
+      },
+      "world": "meditation",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 53,
+        "elapsed": 0.8208,
+        "interactions": 1,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "1",
+          "frame": "53",
+          "elapsed": "0.8208",
+          "drawCalls": "108",
+          "triangles": "81920",
+          "geometries": "124",
+          "textures": "11"
+        }
+      }
+    },
+    {
+      "file": "warm-heart-motion.png",
+      "sha256": "35b3c2047dff8414ba8a676caadae15fda226348213c50e1722dbc87e3d83df5",
+      "bytes": 232837,
+      "viewport": {
+        "width": 640,
+        "height": 480
+      },
+      "world": "warm-heart",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 45,
+        "elapsed": 0.7136,
+        "interactions": 0,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "45",
+          "elapsed": "0.7136",
+          "drawCalls": "59",
+          "triangles": "313656",
+          "geometries": "47",
+          "textures": "5"
+        }
+      }
+    },
+    {
+      "file": "warm-heart-interaction.png",
+      "sha256": "d054826873e16e4e326d167b0da34c9ef54082eaa39cfc6a934a4f05fc033f3c",
+      "bytes": 232897,
+      "viewport": {
+        "width": 640,
+        "height": 480
+      },
+      "world": "warm-heart",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 60,
+        "elapsed": 0.9641,
+        "interactions": 1,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "1",
+          "frame": "60",
+          "elapsed": "0.9641",
+          "drawCalls": "59",
+          "triangles": "313656",
+          "geometries": "47",
+          "textures": "5"
+        }
+      }
+    },
+    {
+      "file": "snow-village-motion.png",
+      "sha256": "ac9474fa118d8a642405ec87d9e65dd503fa3bf5442cbf0370fcdc32636a496a",
+      "bytes": 204903,
+      "viewport": {
+        "width": 640,
+        "height": 480
+      },
+      "world": "snow-village",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 37,
+        "elapsed": 0.5703,
+        "interactions": 0,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "37",
+          "elapsed": "0.5703",
+          "drawCalls": "71",
+          "triangles": "345846",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    },
+    {
+      "file": "snow-village-interaction.png",
+      "sha256": "1e81dde51aefa828e420a597d3290564d0c54e4e92b9d877803dcf85e713913d",
+      "bytes": 206389,
+      "viewport": {
+        "width": 640,
+        "height": 480
+      },
+      "world": "snow-village",
+      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 58,
+        "elapsed": 0.9036,
+        "interactions": 1,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "1",
+          "frame": "58",
+          "elapsed": "0.9036",
+          "drawCalls": "71",
+          "triangles": "345846",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    }
+  ],
+  "worlds": [
+    {
+      "world": "meditation",
+      "checks": [
+        {
+          "reason": "desktop 1280×800 initial active=false first frame",
+          "before": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 1280,
+            "height": 800,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 1280,
+            "height": 800,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          }
+        },
+        {
+          "reason": "portrait 390×844 initial active=false first frame",
+          "before": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 390,
+            "height": 844,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "57",
+              "triangles": "72812",
+              "geometries": "122",
+              "textures": "11"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 390,
+            "height": 844,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "57",
+              "triangles": "72812",
+              "geometries": "122",
+              "textures": "11"
+            }
+          }
+        },
+        {
+          "active": {
+            "before": {
+              "engineId": "1",
+              "frame": 8,
+              "elapsed": 0.0887,
+              "interactions": 0,
+              "width": 640,
+              "height": 480,
+              "diagnostics": {
+                "engine": "three.js r186",
+                "engineId": "1",
+                "interactions": "0",
+                "frame": "8",
+                "elapsed": "0.0887",
+                "drawCalls": "108",
+                "triangles": "81920",
+                "geometries": "124",
+                "textures": "11"
+              }
+            },
+            "after": {
+              "engineId": "1",
+              "frame": 12,
+              "elapsed": 0.1553,
+              "interactions": 0,
+              "width": 640,
+              "height": 480,
+              "diagnostics": {
+                "engine": "three.js r186",
+                "engineId": "1",
+                "interactions": "0",
+                "frame": "12",
+                "elapsed": "0.1553",
+                "drawCalls": "108",
+                "triangles": "81920",
+                "geometries": "124",
+                "textures": "11"
+              }
+            }
+          }
+        },
+        "active rendered pixels change (two captured frames; no FPS inference)",
+        {
+          "reason": "active=false",
+          "before": {
+            "engineId": "1",
+            "frame": 40,
+            "elapsed": 0.6208,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "40",
+              "elapsed": "0.6208",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 40,
+            "elapsed": 0.6208,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "40",
+              "elapsed": "0.6208",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          }
+        },
+        "real pointer drag does not emit tap",
+        "out-and-back drag preserves the moved flag and emits no tap",
+        "pointer cancellation does not emit tap (synthetic cancel after real down)",
+        {
+          "reason": "prefers-reduced-motion",
+          "before": {
+            "engineId": "1",
+            "frame": 102,
+            "elapsed": 2.3029,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "102",
+              "elapsed": "2.3029",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 102,
+            "elapsed": 2.3029,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "102",
+              "elapsed": "2.3029",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          }
+        },
+        {
+          "reason": "static3D",
+          "before": {
+            "engineId": "1",
+            "frame": 106,
+            "elapsed": 2.4529,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "106",
+              "elapsed": "2.4529",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 106,
+            "elapsed": 2.4529,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "106",
+              "elapsed": "2.4529",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          }
+        },
+        {
+          "reason": "synthetic hidden=true (not real tab switching)",
+          "before": {
+            "engineId": "1",
+            "frame": 109,
+            "elapsed": 2.6029,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "109",
+              "elapsed": "2.6029",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 109,
+            "elapsed": 2.6029,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "109",
+              "elapsed": "2.6029",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          }
+        },
+        "second holder and return both reuse the exact canvas DOM object and engine",
+        {
+          "reason": "static3D first mount",
+          "before": {
+            "engineId": "2",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "2",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          },
+          "after": {
+            "engineId": "2",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "2",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "108",
+              "triangles": "81920",
+              "geometries": "124",
+              "textures": "11"
+            }
+          }
+        },
+        "three quick unmount/remount cycles: one canvas and same engine within shared disposal grace",
+        "last release removes canvas; remount after 5.3 seconds creates fresh engine"
+      ],
+      "tap": {
+        "x": 320,
+        "y": 345.59999999999997,
+        "normalizedX": 0.5,
+        "normalizedY": 0.72,
+        "event": {
+          "kind": "water",
+          "strength": 0.24,
+          "x": 0,
+          "world": "meditation"
+        }
+      },
+      "diagnostics": {
+        "engineId": "3",
+        "frame": 6,
+        "elapsed": 0.05,
+        "interactions": 0,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "3",
+          "interactions": "0",
+          "frame": "6",
+          "elapsed": "0.0500",
+          "drawCalls": "108",
+          "triangles": "81920",
+          "geometries": "124",
+          "textures": "11"
+        }
+      },
+      "lifecycleViewport": {
+        "width": 640,
+        "height": 480
+      }
+    },
+    {
+      "world": "warm-heart",
+      "checks": [
+        {
+          "reason": "desktop 1280×800 initial active=false first frame",
+          "before": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 1280,
+            "height": 800,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 1280,
+            "height": 800,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          }
+        },
+        {
+          "reason": "portrait 390×844 initial active=false first frame",
+          "before": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 390,
+            "height": 844,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 390,
+            "height": 844,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          }
+        },
+        {
+          "active": {
+            "before": {
+              "engineId": "1",
+              "frame": 13,
+              "elapsed": 0.1862,
+              "interactions": 0,
+              "width": 640,
+              "height": 480,
+              "diagnostics": {
+                "engine": "three.js r186",
+                "engineId": "1",
+                "interactions": "0",
+                "frame": "13",
+                "elapsed": "0.1862",
+                "drawCalls": "59",
+                "triangles": "313656",
+                "geometries": "47",
+                "textures": "5"
+              }
+            },
+            "after": {
+              "engineId": "1",
+              "frame": 18,
+              "elapsed": 0.2695,
+              "interactions": 0,
+              "width": 640,
+              "height": 480,
+              "diagnostics": {
+                "engine": "three.js r186",
+                "engineId": "1",
+                "interactions": "0",
+                "frame": "18",
+                "elapsed": "0.2695",
+                "drawCalls": "59",
+                "triangles": "313656",
+                "geometries": "47",
+                "textures": "5"
+              }
+            }
+          }
+        },
+        "active rendered pixels change (two captured frames; no FPS inference)",
+        {
+          "reason": "active=false",
+          "before": {
+            "engineId": "1",
+            "frame": 45,
+            "elapsed": 0.7136,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "45",
+              "elapsed": "0.7136",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 45,
+            "elapsed": 0.7136,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "45",
+              "elapsed": "0.7136",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          }
+        },
+        "real pointer drag does not emit tap",
+        "out-and-back drag preserves the moved flag and emits no tap",
+        "pointer cancellation does not emit tap (synthetic cancel after real down)",
+        {
+          "reason": "prefers-reduced-motion",
+          "before": {
+            "engineId": "1",
+            "frame": 107,
+            "elapsed": 2.3646,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "107",
+              "elapsed": "2.3646",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 107,
+            "elapsed": 2.3646,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "107",
+              "elapsed": "2.3646",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          }
+        },
+        {
+          "reason": "static3D",
+          "before": {
+            "engineId": "1",
+            "frame": 111,
+            "elapsed": 2.4813,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "111",
+              "elapsed": "2.4813",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 111,
+            "elapsed": 2.4813,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "111",
+              "elapsed": "2.4813",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          }
+        },
+        {
+          "reason": "synthetic hidden=true (not real tab switching)",
+          "before": {
+            "engineId": "1",
+            "frame": 114,
+            "elapsed": 2.5479,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "114",
+              "elapsed": "2.5479",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 114,
+            "elapsed": 2.5479,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "114",
+              "elapsed": "2.5479",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          }
+        },
+        "second holder and return both reuse the exact canvas DOM object and engine",
+        {
+          "reason": "static3D first mount",
+          "before": {
+            "engineId": "2",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "2",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          },
+          "after": {
+            "engineId": "2",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "2",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "59",
+              "triangles": "313656",
+              "geometries": "47",
+              "textures": "5"
+            }
+          }
+        },
+        "three quick unmount/remount cycles: one canvas and same engine within shared disposal grace",
+        "last release removes canvas; remount after 5.3 seconds creates fresh engine"
+      ],
+      "tap": {
+        "x": 320,
+        "y": 345.59999999999997,
+        "normalizedX": 0.5,
+        "normalizedY": 0.72,
+        "event": {
+          "kind": "warmth",
+          "strength": 0.27,
+          "x": 0,
+          "world": "warm-heart"
+        }
+      },
+      "diagnostics": {
+        "engineId": "3",
+        "frame": 7,
+        "elapsed": 0.0762,
+        "interactions": 0,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "3",
+          "interactions": "0",
+          "frame": "7",
+          "elapsed": "0.0762",
+          "drawCalls": "59",
+          "triangles": "313656",
+          "geometries": "47",
+          "textures": "5"
+        }
+      },
+      "lifecycleViewport": {
+        "width": 640,
+        "height": 480
+      }
+    },
+    {
+      "world": "snow-village",
+      "checks": [
+        {
+          "reason": "desktop 1280×800 initial active=false first frame",
+          "before": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 1280,
+            "height": 800,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 1280,
+            "height": 800,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          }
+        },
+        {
+          "reason": "portrait 390×844 initial active=false first frame",
+          "before": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 390,
+            "height": 844,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "67",
+              "triangles": "345798",
+              "geometries": "38",
+              "textures": "9"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 390,
+            "height": 844,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "67",
+              "triangles": "345798",
+              "geometries": "38",
+              "textures": "9"
+            }
+          }
+        },
+        {
+          "active": {
+            "before": {
+              "engineId": "1",
+              "frame": 6,
+              "elapsed": 0.0554,
+              "interactions": 0,
+              "width": 640,
+              "height": 480,
+              "diagnostics": {
+                "engine": "three.js r186",
+                "engineId": "1",
+                "interactions": "0",
+                "frame": "6",
+                "elapsed": "0.0554",
+                "drawCalls": "71",
+                "triangles": "345846",
+                "geometries": "38",
+                "textures": "9"
+              }
+            },
+            "after": {
+              "engineId": "1",
+              "frame": 11,
+              "elapsed": 0.1388,
+              "interactions": 0,
+              "width": 640,
+              "height": 480,
+              "diagnostics": {
+                "engine": "three.js r186",
+                "engineId": "1",
+                "interactions": "0",
+                "frame": "11",
+                "elapsed": "0.1388",
+                "drawCalls": "71",
+                "triangles": "345846",
+                "geometries": "38",
+                "textures": "9"
+              }
+            }
+          }
+        },
+        "active rendered pixels change (two captured frames; no FPS inference)",
+        {
+          "reason": "active=false",
+          "before": {
+            "engineId": "1",
+            "frame": 37,
+            "elapsed": 0.5703,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "37",
+              "elapsed": "0.5703",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 37,
+            "elapsed": 0.5703,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "0",
+              "frame": "37",
+              "elapsed": "0.5703",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          }
+        },
+        "real pointer drag does not emit tap",
+        "out-and-back drag preserves the moved flag and emits no tap",
+        "pointer cancellation does not emit tap (synthetic cancel after real down)",
+        {
+          "reason": "prefers-reduced-motion",
+          "before": {
+            "engineId": "1",
+            "frame": 105,
+            "elapsed": 2.3067,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "105",
+              "elapsed": "2.3067",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 105,
+            "elapsed": 2.3067,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "105",
+              "elapsed": "2.3067",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          }
+        },
+        {
+          "reason": "static3D",
+          "before": {
+            "engineId": "1",
+            "frame": 109,
+            "elapsed": 2.4233,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "109",
+              "elapsed": "2.4233",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 109,
+            "elapsed": 2.4233,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "109",
+              "elapsed": "2.4233",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          }
+        },
+        {
+          "reason": "synthetic hidden=true (not real tab switching)",
+          "before": {
+            "engineId": "1",
+            "frame": 113,
+            "elapsed": 2.5899,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "113",
+              "elapsed": "2.5899",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          },
+          "after": {
+            "engineId": "1",
+            "frame": 113,
+            "elapsed": 2.5899,
+            "interactions": 1,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "interactions": "1",
+              "frame": "113",
+              "elapsed": "2.5899",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          }
+        },
+        "second holder and return both reuse the exact canvas DOM object and engine",
+        {
+          "reason": "static3D first mount",
+          "before": {
+            "engineId": "2",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "2",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          },
+          "after": {
+            "engineId": "2",
+            "frame": 2,
+            "elapsed": 0,
+            "interactions": 0,
+            "width": 640,
+            "height": 480,
+            "diagnostics": {
+              "engine": "three.js r186",
+              "engineId": "2",
+              "interactions": "0",
+              "frame": "2",
+              "elapsed": "0.0000",
+              "drawCalls": "71",
+              "triangles": "345846",
+              "geometries": "38",
+              "textures": "9"
+            }
+          }
+        },
+        "three quick unmount/remount cycles: one canvas and same engine within shared disposal grace",
+        "last release removes canvas; remount after 5.3 seconds creates fresh engine"
+      ],
+      "tap": {
+        "x": 460.79999999999995,
+        "y": 374.40000000000003,
+        "normalizedX": 0.72,
+        "normalizedY": 0.78,
+        "event": {
+          "kind": "snow",
+          "strength": 0.28,
+          "x": 0.1845769462910834,
+          "world": "snow-village"
+        }
+      },
+      "diagnostics": {
+        "engineId": "3",
+        "frame": 7,
+        "elapsed": 0.0667,
+        "interactions": 0,
+        "width": 640,
+        "height": 480,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "3",
+          "interactions": "0",
+          "frame": "7",
+          "elapsed": "0.0667",
+          "drawCalls": "71",
+          "triangles": "345846",
+          "geometries": "38",
+          "textures": "9"
+        }
+      },
+      "lifecycleViewport": {
+        "width": 640,
+        "height": 480
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "lastCompletedCheckpoint": {
+    "label": "snow-village complete lifecycle including static first mount and disposal grace",
+    "at": "2026-10-04T19:40:51.038Z"
+  },
+  "finishedAt": "2026-10-04T19:41:01.481Z"
+}

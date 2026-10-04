@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { type BackgroundSoundType, type BrainWaveType, type VisualMode, getBrainWaveLabel } from '../types';
 import { WAVE_ORDER, getSoundLabel, getWaveShortLabel, getWaveColor } from '../audioOptions';
-import type { SoundLayer, ToneMode } from '../services/audioEngine';
+import type { SoundLayer, SoundPlaybackSnapshot, ToneMode } from '../services/audioEngine';
 import type { MixVolumes } from '../audioLevels';
 import { Toggle } from './Toggle';
 import { SoundLayerPicker } from './SoundLayerPicker';
@@ -30,6 +30,8 @@ import { AuraVisualizer } from './AuraVisualizer';
 import { SessionBackdrop } from './SessionBackdrop';
 import type { SessionBackdropVariant } from './session/sessionBackdrop';
 import { VisualModeSwitch } from './VisualModeSwitch';
+import { immersiveWorldRegistry } from './immersiveWorlds/registry';
+import { SoundFailureNotice } from './session/SoundFailureNotice';
 
 interface PlayerProps {
   sessionName: string;
@@ -46,6 +48,8 @@ interface PlayerProps {
   currentBrainWave: BrainWaveType;
   onWaveChange: (val: BrainWaveType) => void;
   activeLayers: SoundLayer[];
+  playbackStates?: SoundPlaybackSnapshot;
+  onRetrySound?: (type: BackgroundSoundType) => void;
   onToggleLayer: (type: BackgroundSoundType) => void;
   onLayerVolume: (type: BackgroundSoundType, vol: number) => void;
   onBalanceLayers: () => void;
@@ -60,6 +64,7 @@ interface PlayerProps {
   getAnalyser: () => AnalyserNode | null;
   onImmersive: () => void;
   backgroundVariant?: SessionBackdropVariant;
+  worldId?: string;
   /** The fullscreen view covers the player; its scene can rest meanwhile. */
   sceneCovered?: boolean;
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
@@ -88,6 +93,8 @@ export const Player: React.FC<PlayerProps> = ({
   currentBrainWave,
   onWaveChange,
   activeLayers,
+  playbackStates = {},
+  onRetrySound,
   onToggleLayer,
   onLayerVolume,
   onBalanceLayers,
@@ -101,7 +108,7 @@ export const Player: React.FC<PlayerProps> = ({
   onVisualModeChange,
   getAnalyser,
   onImmersive,
-  backgroundVariant, sceneCovered = false, subscribeEvents, shareUrl,
+  backgroundVariant, worldId, sceneCovered = false, subscribeEvents, shareUrl,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
   const [panel, setPanel] = useState<'controls' | 'sounds'>('sounds');
@@ -114,7 +121,7 @@ export const Player: React.FC<PlayerProps> = ({
   const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#7886ff';
   // The rainy study and the painted sea are live 3D scenes: their lower third
   // stays visible under the controls, and a drag moves their view a little.
-  const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea';
+  const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea' || immersiveWorldRegistry.has(worldId);
   const minutesLeft = Math.max(1, Math.ceil(timeLeft / 60));
   const progress = totalSeconds > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / totalSeconds)) : 0;
 
@@ -216,6 +223,8 @@ export const Player: React.FC<PlayerProps> = ({
         </div>
       )}
 
+      <SoundFailureNotice active={isPlaying && !sceneCovered} layers={activeLayers} playbackStates={playbackStates} onRetrySound={onRetrySound} />
+
       <main inert={playbackHint === 'starting' ? true : undefined} aria-busy={playbackHint === 'starting'} className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>
         <section
           data-scene-surface
@@ -226,7 +235,7 @@ export const Player: React.FC<PlayerProps> = ({
           className={`relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] ${visualMode === 'nature' ? 'min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]' : 'min-h-[540px] rounded-[30px] border sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]'}`}
         >
           <div className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
-            <SessionBackdrop variant={backgroundVariant} layers={activeLayers} active={isPlaying && !sceneCovered} subscribeEvents={subscribeEvents} />
+            <SessionBackdrop variant={backgroundVariant} worldId={worldId} layers={activeLayers} active={isPlaying && !sceneCovered} subscribeEvents={subscribeEvents} />
           </div>
           <div className={`pointer-events-none absolute inset-0 transition-colors duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? (liveScene ? 'bg-gradient-to-b from-transparent via-transparent via-70% to-[#02050b]/55' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/82') : 'bg-gradient-to-b from-[#050914]/42 via-[#050914]/46 to-[#050914]/92'}`} />
           {visualMode === 'graphics' ? <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(3,6,14,0.32)_72%,rgba(3,6,14,0.72)_100%)]" /> : null}

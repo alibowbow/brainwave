@@ -24,6 +24,8 @@ export interface LiveSceneEngine {
 export interface LiveSceneHostOptions<E extends LiveSceneEngine> {
   /** Class given to the shared canvas (styles fade it in once ready). */
   canvasClass: string;
+  /** Idle retention after the last view closes. New worlds can use 0 to release GPU resources immediately. */
+  disposeDelayMs?: number;
   isSupported(): boolean;
   create(canvas: HTMLCanvasElement, onContextLost: () => void): E;
 }
@@ -86,7 +88,9 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
     this.engine?.stop();
     this.observe(null);
     this.canvas?.remove();
-    this.disposeTimer = window.setTimeout(() => this.teardown(), 5000);
+    const delay = this.options.disposeDelayMs ?? 5000;
+    if (delay <= 0) this.teardown();
+    else this.disposeTimer = window.setTimeout(() => this.teardown(), delay);
   }
 
   private setStatus(status: LiveSceneStatus) {
@@ -105,22 +109,39 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
     canvas.className = this.options.canvasClass;
     canvas.setAttribute('aria-hidden', 'true');
     this.canvas = canvas;
+    let engine: E;
     try {
-      this.engine = this.options.create(canvas, () => this.fail());
+      engine = this.options.create(canvas, () => {
+        // A disposed engine can report context loss after its replacement
+        // has mounted. Only the canvas from this creation owns the failure.
+        if (this.canvas === canvas) this.fail();
+      });
     } catch {
-      this.fail();
+      if (this.canvas === canvas) this.fail();
       return;
     }
-    const engine = this.engine;
-    this.setStatus('loading');
-    this.configure(engine);
-    this.resize();
-    engine.init().then(() => {
-      if (this.engine !== engine) return;
-      engine.renderFrame(0);
-      this.setStatus('ready');
-      this.applyRunning();
-    }).catch(() => this.fail());
+    // Context loss may be reported synchronously inside create(), before
+    // the host can store the new engine. Do not revive that failed instance.
+    if (this.canvas !== canvas) {
+      engine.dispose();
+      return;
+    }
+    this.engine = engine;
+    try {
+      this.setStatus('loading');
+      this.configure(engine);
+      this.resize();
+      engine.init().then(() => {
+        if (this.engine !== engine) return;
+        engine.renderFrame(0);
+        this.setStatus('ready');
+        this.applyRunning();
+      }).catch(() => {
+        if (this.engine === engine) this.fail();
+      });
+    } catch {
+      if (this.engine === engine) this.fail();
+    }
   }
 
   private attachTop() {
@@ -167,10 +188,13 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
   private teardown() {
     window.clearTimeout(this.disposeTimer);
     this.observe(null);
-    this.engine?.dispose();
+    const engine = this.engine;
+    const canvas = this.canvas;
     this.engine = null;
-    this.canvas?.remove();
     this.canvas = null;
+    canvas?.remove();
+    // Clear ownership first: dispose() can itself report context loss.
+    engine?.dispose();
     if (this.status !== 'failed') this.status = 'loading';
   }
 }

@@ -1,5 +1,6 @@
 import { MAX_LAYER_VOLUME, type MixVolumes } from './audioLevels';
 import { SOUND_ORDER } from './audioOptions';
+import { isWorldId } from './components/immersiveWorlds/worldCatalog';
 import type { SoundLayer, ToneMode } from './services/audioEngine';
 import {
   type BrainWaveType,
@@ -9,6 +10,7 @@ import {
 export interface UserPreset {
   id: string;
   name: string;
+  worldId?: string;
   brainWaveType: BrainWaveType;
   toneMode: ToneMode;
   brainwaveEnabled: boolean;
@@ -19,6 +21,7 @@ export interface UserPreset {
 
 export interface LastSession {
   name: string;
+  worldId?: string;
   brainWaveType: BrainWaveType;
   toneMode: ToneMode;
   brainwaveEnabled: boolean;
@@ -130,11 +133,18 @@ export const parseBackupPayload = (value: unknown): BackupPayload | null => {
       && (session.intention == null || typeof session.intention === 'string');
   };
 
+  // An unknown optional scene must not erase otherwise valid saved audio.
+  const sanitizeWorldId = <T extends { worldId?: string }>(record: T): T => {
+    if (record.worldId === undefined || isWorldId(record.worldId)) return record;
+    const { worldId: _invalidWorldId, ...rest } = record;
+    return rest as T;
+  };
+
   return {
     version: 1,
     exportedAt: typeof candidate.exportedAt === 'string' ? candidate.exportedAt : new Date().toISOString(),
     logs: candidate.logs.slice(0, 5_000).filter(isLog),
-    presets: candidate.presets.slice(0, 500).filter(isPreset),
-    lastSession: isLastSession(candidate.lastSession) ? candidate.lastSession : null,
+    presets: candidate.presets.slice(0, 500).filter(isPreset).map(sanitizeWorldId),
+    lastSession: isLastSession(candidate.lastSession) ? sanitizeWorldId(candidate.lastSession) : null,
   };
 };

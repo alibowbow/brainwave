@@ -2,11 +2,13 @@ import type { BackgroundSoundType } from '../types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Play, Pause, Square, Minimize2 } from 'lucide-react';
 import type { VisualMode } from '../types';
-import type { SoundLayer } from '../services/audioEngine';
+import type { SoundLayer, SoundPlaybackSnapshot } from '../services/audioEngine';
 import { AuraVisualizer } from './AuraVisualizer';
 import { SessionBackdrop } from './SessionBackdrop';
 import type { SessionBackdropVariant } from './session/sessionBackdrop';
 import { VisualModeSwitch } from './VisualModeSwitch';
+import { immersiveWorldRegistry } from './immersiveWorlds/registry';
+import { SoundFailureNotice } from './session/SoundFailureNotice';
 
 interface Props {
   timeLeft: number;
@@ -22,6 +24,9 @@ interface Props {
   onStop: () => void;
   onExit: () => void;
   backgroundVariant?: SessionBackdropVariant;
+  worldId?: string;
+  playbackStates?: SoundPlaybackSnapshot;
+  onRetrySound?: (type: BackgroundSoundType) => void;
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
@@ -31,7 +36,7 @@ const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${
 // explicit alternative selected with the same control used in the player.
 export const ImmersiveMode: React.FC<Props> = ({
   timeLeft, isPlaying, sessionName, color, visualMode, activeLayers, getAnalyser,
-  onVisualModeChange, onPlay, onPause, onStop, onExit, backgroundVariant, subscribeEvents,
+  onVisualModeChange, onPlay, onPause, onStop, onExit, backgroundVariant, worldId, subscribeEvents, playbackStates, onRetrySound,
 }) => {
   const [controlsVisible, setControlsVisible] = useState(true);
   const controlsTimerRef = useRef<number | null>(null);
@@ -64,12 +69,13 @@ export const ImmersiveMode: React.FC<Props> = ({
   }, [holdControls, revealControls, visualMode]);
 
   const chromeVisible = visualMode === 'graphics' || controlsVisible;
+  const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea' || immersiveWorldRegistry.has(worldId);
 
   return (
     <div
       className="fixed inset-0 z-[100] flex h-[100dvh] flex-col items-center justify-center overflow-hidden bg-slate-950 text-white animate-fade-in"
       data-scene-surface
-      style={visualMode === 'nature' && (backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea') ? { touchAction: 'none' } : undefined}
+      style={visualMode === 'nature' && liveScene ? { touchAction: 'none' } : undefined}
       onPointerMove={visualMode === 'nature' ? revealControls : undefined}
       onPointerDown={visualMode === 'nature' ? revealControls : undefined}
       role="dialog"
@@ -78,12 +84,14 @@ export const ImmersiveMode: React.FC<Props> = ({
     >
       {visualMode === 'nature' ? (
         <div className="absolute inset-0">
-          <SessionBackdrop variant={backgroundVariant} layers={activeLayers} active={isPlaying} subscribeEvents={subscribeEvents} />
-          <div className={`pointer-events-none absolute inset-0 ${backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea' ? 'bg-gradient-to-b from-transparent via-transparent via-75% to-[#02050b]/45' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60'}`} />
+          <SessionBackdrop variant={backgroundVariant} worldId={worldId} layers={activeLayers} active={isPlaying} subscribeEvents={subscribeEvents} />
+          <div className={`pointer-events-none absolute inset-0 ${liveScene ? 'bg-gradient-to-b from-transparent via-transparent via-75% to-[#02050b]/45' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60'}`} />
         </div>
       ) : (
         <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={color} className="absolute inset-0 h-full w-full" />
       )}
+
+      <SoundFailureNotice active={isPlaying} layers={activeLayers} playbackStates={playbackStates} onRetrySound={onRetrySound} className="absolute inset-x-3 top-16 max-h-[35dvh] overflow-auto rounded-xl" />
 
       <div
         data-scene-drag

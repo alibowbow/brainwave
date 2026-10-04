@@ -38,9 +38,20 @@ jobs:
         run: npx playwright-core install --with-deps chromium
 
       - name: Verify scene experience
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
         run: |
           npm run preview -- --host 127.0.0.1 --port 4173 &
           npm run verify:scenes
           npm run verify:focus
           npm run verify:sea
           npm run verify:links
+
+      - name: Preserve scene screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-screenshots
+          path: qa/screenshots
+          if-no-files-found: ignore
+          retention-days: 14

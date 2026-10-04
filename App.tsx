@@ -26,6 +26,7 @@ import {
 } from './types';
 import { AppShell, type AppView } from './components/app/AppShell';
 import { sessionBackdropFor } from './components/session/sessionBackdrop';
+import { worldIdForSession } from './components/immersiveWorlds/worldCatalog';
 import { HomeDashboard } from './components/app/HomeDashboard';
 import { NowPlayingBar } from './components/app/NowPlayingBar';
 import {
@@ -148,6 +149,7 @@ export default function App() {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [appUpdateStatus, setAppUpdateStatus] = useState<AppUpdateStatus>('idle');
   const sessionBackgroundVariant = sessionBackdropFor(selectedPreset);
+  const sessionWorldId = worldIdForSession(selectedPreset);
 
   const [natureLayers, setNatureLayers] = useState<SoundLayer[]>(() => {
     try {
@@ -301,6 +303,7 @@ export default function App() {
     setSessionTotalSeconds(timeLeft);
     const snapshot: LastSession = {
       name: selectedPreset.name,
+      worldId: sessionWorldId,
       brainWaveType: currentBrainWave,
       toneMode,
       brainwaveEnabled,
@@ -337,6 +340,7 @@ export default function App() {
     sessionStartedAtRef.current = new Date().toISOString();
     playEngineSession(seconds, {
       name: preset.name,
+      worldId: worldIdForSession(preset),
       brainWaveType: preset.brainWaveType,
       toneMode: 'binaural',
       brainwaveEnabled: true,
@@ -376,6 +380,7 @@ export default function App() {
     sessionStartedAtRef.current = new Date().toISOString();
     playEngineSession(seconds, {
       name: preset.name,
+      worldId: worldIdForSession(selected),
       brainWaveType: preset.brainWaveType,
       toneMode: 'binaural',
       brainwaveEnabled: true,
@@ -637,6 +642,7 @@ export default function App() {
     setSelectedPreset({
       id: `user:${preset.id}`,
       name: preset.name,
+      worldId: worldIdForSession({ id: `user:${preset.id}`, worldId: preset.worldId }),
       description: '내가 저장한 리듬과 사운드 조합',
       defaultDurationMinutes: preset.durationMinutes,
       brainWaveType: preset.brainWaveType,
@@ -658,12 +664,14 @@ export default function App() {
 
   const resumeLastSession = () => {
     if (!lastSession) return;
+    const worldId = worldIdForSession({ id: 'last', name: lastSession.name, worldId: lastSession.worldId });
     if (natureStatus === 'running') stopNature();
     if (playbackStatus !== 'idle') engine.stop();
     const seconds = lastSession.durationMinutes * 60;
     setSelectedPreset({
       id: 'last',
       name: lastSession.name,
+      worldId,
       description: '최근 사용한 리듬과 사운드 조합',
       defaultDurationMinutes: lastSession.durationMinutes,
       brainWaveType: lastSession.brainWaveType,
@@ -683,6 +691,7 @@ export default function App() {
     sessionStartedAtRef.current = new Date().toISOString();
     playEngineSession(seconds, {
       ...lastSession,
+      worldId,
       layers: lastSession.layers.map((layer) => ({ ...layer })),
       mix: lastSession.mix ? { ...lastSession.mix } : { ...volumes },
     });
@@ -697,6 +706,7 @@ export default function App() {
     const preset: UserPreset = {
       id: `${Date.now()}`,
       name: presetNameDraft.trim() || selectedPreset?.name || '내 프리셋',
+      worldId: sessionWorldId,
       brainWaveType: currentBrainWave,
       toneMode,
       brainwaveEnabled,
@@ -1407,6 +1417,8 @@ export default function App() {
           <Suspense fallback={<LoadingPanel />}>
             <Player
               playbackHint={linkedPlaybackHint}
+              playbackStates={soundPlayback}
+              onRetrySound={(type) => engine.retrySound(type)}
               shareUrl={appRouteHash({ kind: 'play', sessionId: selectedPreset.id }) ? sessionShareUrl(window.location.href, selectedPreset.id) : undefined}
               subscribeEvents={subscribeNatureEvents}
               sessionName={selectedPreset.name.replace(/\s*\([^)]*\)/, '')}
@@ -1436,6 +1448,7 @@ export default function App() {
               getAnalyser={() => engine.getAnalyser()}
               onImmersive={() => navigate({ activeView: 'home', viewMode: 'player', immersive: true })}
               backgroundVariant={sessionBackgroundVariant}
+              worldId={sessionWorldId}
               sceneCovered={immersive}
             />
           </Suspense>
@@ -1542,6 +1555,9 @@ export default function App() {
             onStop={() => stopSession({ reflect: true, goHome: true })}
             onExit={() => navigateBack({ activeView: 'home', viewMode: 'player', immersive: false })}
             backgroundVariant={sessionBackgroundVariant}
+            worldId={sessionWorldId}
+            playbackStates={soundPlayback}
+            onRetrySound={(type) => engine.retrySound(type)}
           />
         </Suspense>
       )}
@@ -1575,4 +1591,3 @@ export default function App() {
     </>
   );
 }
-

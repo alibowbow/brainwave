@@ -48,8 +48,19 @@ export default defineConfig(({ mode }) => {
             // Nature plates and cutouts are loaded per scene. Keeping them out
             // of the initial precache prevents the first visit from downloading
             // the entire illustration library.
-            globIgnores: ['**/images/nature/**', '**/assets/RainyWindowScene-*.js', '**/assets/OilSeaScene-*.js', '**/assets/three-*.js'],
+            globIgnores: ['**/images/nature/**', '**/immersive-worlds/**', '**/assets/world-*.js', '**/assets/RainyWindowScene-*.js', '**/assets/OilSeaScene-*.js', '**/assets/three-*.js'],
             runtimeCaching: [
+              {
+                // Approved world chunks/assets are fetched on entry, never
+                // all thirty worlds at PWA installation time.
+                urlPattern: /\/(?:assets\/world-[\w-]+\.js|immersive-worlds\/.*\.(?:webp|png|jpe?g|avif|ktx2|glb|gltf|bin))$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'immersive-worlds-v1',
+                  expiration: { maxEntries: 96, maxAgeSeconds: 60 * 60 * 24 * 90 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
               {
                 // The real-time scenes (the rainy study, the painted seaside) and
                 // three.js are fetched only when their routine plays, then kept
@@ -107,12 +118,17 @@ export default defineConfig(({ mode }) => {
         }),
       ],
       build: {
+        manifest: true,
         rollupOptions: {
           output: {
             // three.js is shared by the real-time scenes and split into a chunk
             // of its own; name it so the service worker can leave it to load
             // with the first scene that needs it.
-            chunkFileNames: (chunk) => (!chunk.isDynamicEntry && chunk.moduleIds.some((id) => id.includes('/node_modules/three/')) ? 'assets/three-[hash].js' : 'assets/[name]-[hash].js'),
+            chunkFileNames: (chunk) => {
+              if (!chunk.isDynamicEntry && chunk.moduleIds.some((id) => id.includes('/node_modules/three/'))) return 'assets/three-[hash].js';
+              if (chunk.moduleIds.some((id) => /\/components\/immersiveWorlds\/[^/]+\//.test(id))) return 'assets/world-[name]-[hash].js';
+              return 'assets/[name]-[hash].js';
+            },
           },
         },
       },

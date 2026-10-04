@@ -5,6 +5,7 @@ import { NatureScene } from './NatureScene';
 import { OilSeaFallback, OilSeaPaper } from './oilSea/OilSeaPoster';
 import { RainyWindowFallback } from './rainyWindow/RainyWindowPoster';
 import { rainIntensityFor, waveEnergyFor, type SessionBackdropVariant } from './session/sessionBackdrop';
+import { ImmersiveWorldSlot } from './immersiveWorlds/ImmersiveWorldSlot';
 
 // three.js stays out of every other session: only this routine loads it.
 const RainyWindowScene = lazy(() => import('./rainyWindow/RainyWindowScene'));
@@ -26,13 +27,14 @@ class SceneBoundary extends Component<{ fallback: ReactNode; children: ReactNode
 
 interface Props {
   variant?: SessionBackdropVariant;
+  worldId?: string;
   layers: SoundLayer[];
   active: boolean;
   subscribeEvents?: (callback: (type: BackgroundSoundType) => void) => () => void;
 }
 
 /** The place a session plays in: a live scene (the rainy study, the painted sea) or an illustrated landscape. */
-export const SessionBackdrop: React.FC<Props> = ({ variant, layers, active, subscribeEvents }) => {
+export const SessionBackdrop: React.FC<Props> = ({ variant, worldId, layers, active, subscribeEvents }) => {
   const types = useMemo(() => layers.map((layer) => layer.type), [layers]);
   if (variant === 'rainy-window') {
     return (
@@ -52,5 +54,6 @@ export const SessionBackdrop: React.FC<Props> = ({ variant, layers, active, subs
       </SceneBoundary>
     );
   }
-  return <NatureScene types={types} backgroundVariant={variant === 'campfire' ? 'campfire' : undefined} active={active} subscribeEvents={subscribeEvents} fill />;
+  return <ImmersiveWorldSlot worldId={worldId} active={active} layers={layers} subscribeEvents={subscribeEvents}
+    fallback={<NatureScene types={types} backgroundVariant={variant === 'campfire' ? 'campfire' : undefined} active={active} subscribeEvents={subscribeEvents} fill />} />;
 };

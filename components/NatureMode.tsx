@@ -12,6 +12,8 @@ import { SoundLayerPicker } from './SoundLayerPicker';
 import { TransportControls, ActiveSoundList, RecommendChips, MixRail } from './nature/controls';
 import { getRecommendations } from './nature/recommend';
 import { hasNatureSceneHistory, withNatureSceneHistory } from '../appNavigation';
+import { ImmersiveWorldSlot } from './immersiveWorlds/ImmersiveWorldSlot';
+import { immersiveWorldRegistry } from './immersiveWorlds/registry';
 
 interface Props {
   layers: SoundLayer[];
@@ -72,6 +74,7 @@ export const NatureMode: React.FC<Props> = ({
   const sceneHistoryActiveRef = useRef(false);
 
   const mixName = NATURE_SCENES[sceneId].name;
+  const worldId = `nature:${sceneId}`;
   const recommendations = useMemo(() => getRecommendations(layers), [layers]);
   const selectedValid = selected != null && layers.some((l) => l.type === selected) ? selected : null;
   const visibleTypes = useMemo(
@@ -220,8 +223,9 @@ export const NatureMode: React.FC<Props> = ({
   return (
     <div ref={viewerRootRef} className={`sound-studio ${sceneOnly ? 'nature-viewer-root' : ''}`} role={sceneOnly ? 'dialog' : undefined} aria-modal={sceneOnly || undefined} aria-label={sceneOnly ? '자연 장면만 보기' : undefined} data-controls={sceneOnly && !viewerControlsVisible && !selectedLayer ? 'hidden' : 'visible'}>
       <div className="sound-experience" onPointerMove={sceneOnly ? revealViewerControls : undefined} onPointerDown={sceneOnly ? revealViewerControls : undefined}>
-        <div className="sound-stage">
-          <NatureScene types={visibleTypes} quietTypes={quietTypes} sceneId={sceneId} fill active={isPlaying} interactive selectedType={selectedValid} onSelectType={handleSceneSelect} subscribeEvents={subscribeEvents} onPositionsChange={onPositionsChange} />
+        <div className="sound-stage" data-scene-surface style={immersiveWorldRegistry.has(worldId) ? { touchAction: 'none' } : undefined}>
+          <ImmersiveWorldSlot worldId={worldId} active={isPlaying} layers={layers} subscribeEvents={subscribeEvents}
+            fallback={<NatureScene types={visibleTypes} quietTypes={quietTypes} sceneId={sceneId} fill active={isPlaying} interactive selectedType={selectedValid} onSelectType={handleSceneSelect} subscribeEvents={subscribeEvents} onPositionsChange={onPositionsChange} />} />
           <header className="scene-heading">
             <div><h1>{mixName}</h1><p>{isPlaying ? '재생 중' : '재생 대기'} · {layers.length}개 소리{isPlaying && timerMin != null ? ` · ${fmt(timeLeft)}` : ''}</p></div>
             <button type="button" className="scene-button" onClick={sceneOnly ? exitSceneOnly : enterSceneOnly}><Eye size={18} />{sceneOnly ? '전체화면 나가기' : '장면만 보기'}</button>

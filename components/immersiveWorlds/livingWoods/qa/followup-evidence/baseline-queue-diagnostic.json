@@ -1,0 +1,45 @@
+{
+  "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+  "expectedBundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+  "baseline": "original frozen bundle",
+  "events": [
+    {
+      "label": "cold",
+      "engine": "three.js r186",
+      "engineId": "1",
+      "frames": "2",
+      "time": "0.0000",
+      "drawCalls": "201",
+      "triangles": "788400",
+      "geometries": "102",
+      "textures": "9",
+      "targets": "[{\"x\":0.5378379156168337,\"y\":0.7639532990464675,\"visible\":true},{\"x\":0.5379277193004783,\"y\":0.6937293755639652,\"visible\":true},{\"x\":0.6321039887417979,\"y\":0.749239160347356,\"visible\":true}]",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "label": "paused",
+      "engine": "three.js r186",
+      "engineId": "1",
+      "frames": "13",
+      "time": "0.1667",
+      "drawCalls": "103",
+      "triangles": "395028",
+      "geometries": "102",
+      "textures": "9",
+      "targets": "[{\"x\":0.5378379156168337,\"y\":0.7639532990464675,\"visible\":true},{\"x\":0.5379277193004783,\"y\":0.6937293755639652,\"visible\":true},{\"x\":0.6321039887417979,\"y\":0.749239160347356,\"visible\":true}]",
+      "width": 1280,
+      "height": 800
+    }
+  ],
+  "errors": [],
+  "passed": false,
+  "browser": "153.0.8010.0",
+  "completion": {
+    "status": 37147,
+    "signaled": false,
+    "elapsedMs": 30022.5,
+    "frames": "13",
+    "time": "0.1667"
+  }
+}

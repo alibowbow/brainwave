@@ -1,0 +1,2021 @@
+{
+  "generatedAt": "2026-10-04T21:05:48.186325+00:00",
+  "selectedAcceptancePassed": true,
+  "selectedJobCount": 17,
+  "selectedPngCount": 29,
+  "runtimeSourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f",
+  "note": "Selected acceptance jobs from separate retained runs; this does not relabel historical failures or unrun checks as passes. Runtime source is identical across all selected reports. Later changes are QA output protection/documentation/evidence only.",
+  "reports": [
+    {
+      "path": "first-pass-evidence/report.json",
+      "sha256": "e6e5d1f6f439f3c695dfb1254db993959c84809be3890de4bc5124d190c27fe2",
+      "revision": "f18a579b94013d0b071a9d57f96f59ec58385fba",
+      "bundleHash": "1a8165fc9bc889338170cd50cb22858c85bd6ca37678972b41ce91fdbf10c98a",
+      "passedJobBodies": 13,
+      "failed": [
+        "morning/native-interaction: hidden chrome exposes the real scene in native hit testing",
+        "rainy/native-interaction: hidden chrome exposes the real scene in native hit testing",
+        "ancient/native-interaction: hidden chrome exposes the real scene in native hit testing",
+        "bamboo/native-interaction: hidden chrome exposes the real scene in native hit testing"
+      ],
+      "notRunJobs": []
+    },
+    {
+      "path": "cold-timeout-evidence/report.json",
+      "sha256": "3b973dadfc857ff8f4ad97717e7015edc52ecf2a3c72661d42356558686fad85",
+      "revision": "d842d29cc957b127388b46721e2fb1ae8fc9a13f",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "passedJobBodies": 0,
+      "failed": [
+        "morning/scene: page.waitForFunction: Timeout 15000ms exceeded.",
+        "morning/scene: browser did not close within bound; remaining jobs are unrun"
+      ],
+      "notRunJobs": [
+        "morning/wrapper/normal",
+        "morning/native-interaction/normal",
+        "morning/clean-lifecycle/normal",
+        "rainy/scene/normal",
+        "rainy/wrapper/normal",
+        "rainy/native-interaction/normal",
+        "rainy/clean-lifecycle/normal",
+        "ancient/scene/normal",
+        "ancient/wrapper/normal",
+        "ancient/native-interaction/normal",
+        "ancient/clean-lifecycle/normal",
+        "bamboo/scene/normal",
+        "bamboo/wrapper/normal",
+        "bamboo/scene/forced-byte",
+        "bamboo/native-interaction/normal",
+        "bamboo/clean-lifecycle/normal"
+      ]
+    },
+    {
+      "path": "evidence/report.json",
+      "sha256": "c0c99d5099ce713c1b7a15aedee98c1a9691711fee750189b474cbd46a686ee1",
+      "revision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "passedJobBodies": 12,
+      "failed": [
+        "morning/scene: page.waitForFunction: Timeout 15000ms exceeded.",
+        "morning/wrapper: page.waitForFunction: Timeout 15000ms exceeded.",
+        "morning/native-interaction: page.waitForFunction: Timeout 15000ms exceeded.",
+        "morning/clean-lifecycle: page.waitForFunction: Timeout 15000ms exceeded.",
+        "bamboo/native-interaction: portraitNativeTap: trusted native tap hits an owned object"
+      ],
+      "notRunJobs": []
+    },
+    {
+      "path": "morning-final-evidence/report.json",
+      "sha256": "4f29c47ac54f4660c7020d9a8c5ad88dca058bc6aff6c8279c44133d74bfaa9b",
+      "revision": "2da658d7ffff1a11106d666366439c2aafe399dc",
+      "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+      "passedJobBodies": 3,
+      "failed": [
+        "morning/native-interaction: world is not defined"
+      ],
+      "notRunJobs": []
+    },
+    {
+      "path": "interaction-final-evidence/report.json",
+      "sha256": "ca14a2816464c8fd38e466c43319d4a0d33cf8e2736d922519f1f2df50dcee3d",
+      "revision": "8c182cdcbf63834ff3e26aeb8e2843872855451f",
+      "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+      "passedJobBodies": 2,
+      "failed": [],
+      "notRunJobs": []
+    }
+  ],
+  "selectedJobs": [
+    {
+      "world": "rainy",
+      "kind": "scene",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 4,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/rainy-scene-desktop.png",
+          "sha256": "dffbe1a2d260643cf2dae267d0de5e3270d9a73631fe8d14c6469b26a0c5d88b",
+          "bytes": 1206121,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 10873.89999999851,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "103",
+              "triangles": "1642094",
+              "geometries": "57",
+              "textures": "9",
+              "targets": "[{\"x\":0.18666532539042863,\"y\":0.14209486096594148,\"visible\":true},{\"x\":0.7368943332050543,\"y\":0.14893584899121642,\"visible\":true},{\"x\":0.46724202010962906,\"y\":0.1216327833646344,\"visible\":true},{\"x\":0.6630715572120619,\"y\":0.6119324506329425,\"visible\":true},{\"x\":0.2819027232434454,\"y\":0.7500447547947313,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1280,
+            "height": 800,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.299999997019768,
+            "polls": 1,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 396,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/rainy-scene-portrait.png",
+          "sha256": "ff2d2bec61be834b87fe251f55d52b7b99df62302c87fdb58393c7b9b37ee248",
+          "bytes": 363156,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 14815.89999999851,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "92",
+              "triangles": "1639770",
+              "geometries": "57",
+              "textures": "9",
+              "targets": "[{\"x\":-0.46128322016786794,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.2267709765815948,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.399501399152687,\"y\":0.16475787759334298,\"visible\":true},{\"x\":1.0002891934316773,\"y\":0.5991747452383765,\"visible\":false},{\"x\":-0.16910326082365634,\"y\":0.7215454474080955,\"visible\":false}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 844,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.299999997019768,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 279,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/rainy-scene-fold-inner-viewport.png",
+          "sha256": "b00e5500d59b2e97c0d940a4a80b03d332863ad012dbe8820b39259144227cc5",
+          "bytes": 807259,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 20167.29999999702,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "101",
+              "triangles": "1641702",
+              "geometries": "57",
+              "textures": "9",
+              "targets": "[{\"x\":0.0634629839453047,\"y\":0.14209486096594148,\"visible\":true},{\"x\":0.8300405404108511,\"y\":0.14893584899121642,\"visible\":true},{\"x\":0.45436167155409546,\"y\":0.1216327833646344,\"visible\":true},{\"x\":0.7271908497757161,\"y\":0.6119324506329425,\"visible\":true},{\"x\":0.1961474674847457,\"y\":0.7500447547947313,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 882,
+            "height": 768,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 882,
+              "height": 768
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.399999998509884,
+            "polls": 1,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 301,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "rainy",
+      "kind": "wrapper",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 5,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/rainy-wrapper-desktop.png",
+          "sha256": "2a22eb3fe10757498c6859033dce7b91b6d2e2c00c956c9615852280c9de5592",
+          "bytes": 1056004,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 12615.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "103",
+              "triangles": "1642094",
+              "geometries": "57",
+              "textures": "9",
+              "targets": "[{\"x\":0.21674143059372297,\"y\":0.14209486096594148,\"visible\":true},{\"x\":0.7141555191991759,\"y\":0.14893584899121642,\"visible\":true},{\"x\":0.4703863655308878,\"y\":0.1216327833646344,\"visible\":true},{\"x\":0.64741878173649,\"y\":0.6119324506329425,\"visible\":true},{\"x\":0.30283726120498944,\"y\":0.7500447547947313,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 538.1999999992549,
+            "polls": 32,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 951,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/rainy-wrapper-portrait.png",
+          "sha256": "403cedbde97e3221c5e56c8eed97b541255c59d7a76a5605279dfecdc257fdeb",
+          "bytes": 350811,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 16634.60000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "92",
+              "triangles": "1639770",
+              "geometries": "57",
+              "textures": "9",
+              "targets": "[{\"x\":-0.38383386119699703,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.168215968989713,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.4075984428228497,\"y\":0.16475787759334298,\"visible\":true},{\"x\":0.9599815332973716,\"y\":0.5991747452383765,\"visible\":true},{\"x\":-0.11519446729757965,\"y\":0.7215454474080955,\"visible\":false}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.199999999254942,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 157,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/rainy-wrapper-fold-inner-viewport.png",
+          "sha256": "b36f9cab0f692dbf3ded853ec8a59653e5b1bc1774d45cea22ee72d66456ec08",
+          "bytes": 738468,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 25980.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "102",
+              "triangles": "1641898",
+              "geometries": "57",
+              "textures": "9",
+              "targets": "[{\"x\":0.09822880975296078,\"y\":0.14209486096594148,\"visible\":true},{\"x\":0.8037560982778826,\"y\":0.14893584899121642,\"visible\":true},{\"x\":0.45799630989758044,\"y\":0.1216327833646344,\"visible\":true},{\"x\":0.7090973612102327,\"y\":0.6119324506329425,\"visible\":true},{\"x\":0.2203462955981374,\"y\":0.7500447547947313,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 856,
+            "height": 686,
+            "css": {
+              "x": 13,
+              "y": 69,
+              "width": 856,
+              "height": 686
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 685.8999999985099,
+            "polls": 41,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 1089,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "rainy",
+      "kind": "native-interaction",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 6,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/rainy-native-interaction-post-native-interaction-paused.png",
+          "sha256": "3f5964f3a17d6de2512681f5a36c5a81e9726632992d60d58da895194b015982",
+          "bytes": 1055908,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 32598,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "6",
+              "time": "0.0606",
+              "drawCalls": "62",
+              "triangles": "1175256",
+              "geometries": "57",
+              "textures": "9",
+              "targets": "[{\"x\":0.2169196422169627,\"y\":0.14805807924350156,\"visible\":true},{\"x\":0.7141556840530436,\"y\":0.1489226227644292,\"visible\":true},{\"x\":0.4703863191616015,\"y\":0.12155939556750728,\"visible\":true},{\"x\":0.6474190166592544,\"y\":0.6119272054384017,\"visible\":true},{\"x\":0.30283643783421965,\"y\":0.7500473602498522,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "6",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 6,
+            "time": 0.0606,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.300000000745058,
+            "polls": 1,
+            "frames": "6",
+            "time": "0.0606",
+            "result": 37148
+          },
+          "durationMs": 372,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "rainy",
+      "kind": "clean-lifecycle",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 7,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": []
+    },
+    {
+      "world": "ancient",
+      "kind": "scene",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 8,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/ancient-scene-desktop.png",
+          "sha256": "188f369bef1c6efe2659f861e7394b2d1d181cbd16fbd34cbd42ca122f74ff3d",
+          "bytes": 1110156,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 11075.199999999255,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "42",
+              "triangles": "1036376",
+              "geometries": "21",
+              "textures": "7",
+              "targets": "[{\"x\":0.6623657266808718,\"y\":0.824412395562947,\"visible\":true},{\"x\":0.6026958977219088,\"y\":0.8008795812883649,\"visible\":true},{\"x\":0.6598894722550982,\"y\":0.7631978558856962,\"visible\":true},{\"x\":0.5949554579046341,\"y\":0.756307323022082,\"visible\":true},{\"x\":0.645738874899708,\"y\":0.7192454451509236,\"visible\":true},{\"x\":0.570649211713542,\"y\":0.6996031162365945,\"visible\":true},{\"x\":0.628510670947067,\"y\":0.6747830805861543,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1280,
+            "height": 800,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.400000002235174,
+            "polls": 1,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 414,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/ancient-scene-portrait.png",
+          "sha256": "1c83e99230307e26d8ac581d40fa5a089e971491cc24fa6b3c2bfdddc781f73c",
+          "bytes": 378544,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 14313.199999999255,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "42",
+              "triangles": "1036376",
+              "geometries": "21",
+              "textures": "7",
+              "targets": "[{\"x\":0.9368345030833792,\"y\":0.7732596226039448,\"visible\":true},{\"x\":0.7544303375234485,\"y\":0.7518639298940903,\"visible\":true},{\"x\":0.9323467881837131,\"y\":0.7195648178316241,\"visible\":true},{\"x\":0.7313856273348234,\"y\":0.7127290096543407,\"visible\":true},{\"x\":0.8895449218951849,\"y\":0.6806862054220406,\"visible\":true},{\"x\":0.6594938414089417,\"y\":0.662834181623708,\"visible\":true},{\"x\":0.8373424321731788,\"y\":0.6413168235056259,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 844,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.300000000745058,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 322,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/ancient-scene-fold-inner-viewport.png",
+          "sha256": "ef0490ff104d3816e2652e5e91d1c59670ccb874477980e13afb5cc1ebf4bd05",
+          "bytes": 798362,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 19512.699999999255,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "42",
+              "triangles": "1036376",
+              "geometries": "21",
+              "textures": "7",
+              "targets": "[{\"x\":0.7262074886002894,\"y\":0.824412395562947,\"visible\":true},{\"x\":0.6430756452615437,\"y\":0.8008795812883649,\"visible\":true},{\"x\":0.7227575776724089,\"y\":0.7631978558856962,\"visible\":true},{\"x\":0.6322916855705379,\"y\":0.756307323022082,\"visible\":true},{\"x\":0.7030430039419062,\"y\":0.7192454451509236,\"visible\":true},{\"x\":0.5984282895165538,\"y\":0.6996031162365945,\"visible\":true},{\"x\":0.6790407170745532,\"y\":0.6747830805861543,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 882,
+            "height": 768,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 882,
+              "height": 768
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 26.399999998509884,
+            "polls": 1,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 388,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "ancient",
+      "kind": "wrapper",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 9,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/ancient-wrapper-desktop.png",
+          "sha256": "2848f6217ba683e3753b3a38fc1e9d2c6b0723bc3e24c093f125ca9318d9be84",
+          "bytes": 951205,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 11593.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "42",
+              "triangles": "1036376",
+              "geometries": "21",
+              "textures": "7",
+              "targets": "[{\"x\":0.6467807018726597,\"y\":0.824412395562947,\"visible\":true},{\"x\":0.5928384102680242,\"y\":0.8008795812883649,\"visible\":true},{\"x\":0.6445421360739507,\"y\":0.7631978558856962,\"visible\":true},{\"x\":0.585840953277512,\"y\":0.756307323022082,\"visible\":true},{\"x\":0.6317498143555628,\"y\":0.7192454451509236,\"visible\":true},{\"x\":0.5638677946020335,\"y\":0.6996031162365945,\"visible\":true},{\"x\":0.6161752967534321,\"y\":0.6747830805861543,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 394.19999999925494,
+            "polls": 24,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 731,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/ancient-wrapper-portrait.png",
+          "sha256": "029af06810e19762cd3a963a5037047a7bbf41fe7f4500c720c4dc183487c696",
+          "bytes": 352686,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 15090.20000000298,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "42",
+              "triangles": "1036376",
+              "geometries": "21",
+              "textures": "7",
+              "targets": "[{\"x\":0.901639306152491,\"y\":0.7732596226039448,\"visible\":true},{\"x\":0.7339312108035498,\"y\":0.7518639298940903,\"visible\":true},{\"x\":0.8975131606997173,\"y\":0.7195648178316241,\"visible\":true},{\"x\":0.7127431834263306,\"y\":0.7127290096543407,\"visible\":true},{\"x\":0.8581597860078951,\"y\":0.6806862054220406,\"visible\":true},{\"x\":0.6466436266982688,\"y\":0.662834181623708,\"visible\":true},{\"x\":0.8101631840833967,\"y\":0.6413168235056259,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.299999997019768,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 210,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/ancient-wrapper-fold-inner-viewport.png",
+          "sha256": "af9fbd7dceb95688e7c96c3c4e27f8f904431c823e6da98df2d8c72157c28185",
+          "bytes": 709800,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 19167.70000000298,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "42",
+              "triangles": "1036376",
+              "geometries": "21",
+              "textures": "7",
+              "targets": "[{\"x\":0.7081923149590243,\"y\":0.824412395562947,\"visible\":true},{\"x\":0.6316810950228587,\"y\":0.8008795812883649,\"visible\":true},{\"x\":0.7050171550784997,\"y\":0.7631978558856962,\"visible\":true},{\"x\":0.6217559703225777,\"y\":0.756307323022082,\"visible\":true},{\"x\":0.6868726508059808,\"y\":0.7192454451509236,\"visible\":true},{\"x\":0.5905894565149342,\"y\":0.6996031162365945,\"visible\":true},{\"x\":0.6647819070461457,\"y\":0.6747830805861543,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 856,
+            "height": 686,
+            "css": {
+              "x": 13,
+              "y": 69,
+              "width": 856,
+              "height": 686
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 24.199999999254942,
+            "polls": 1,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 273,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "ancient",
+      "kind": "native-interaction",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 10,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/ancient-native-interaction-post-native-interaction-paused.png",
+          "sha256": "f89055bf604348fab2820004620d17fd6522f82d0f506de5212bfaade4e81b21",
+          "bytes": 951174,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 29625.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "7",
+              "time": "0.0763",
+              "drawCalls": "30",
+              "triangles": "764586",
+              "geometries": "21",
+              "textures": "7",
+              "targets": "[{\"x\":0.6454845062738396,\"y\":0.8238281690134028,\"visible\":true},{\"x\":0.591297663055634,\"y\":0.8026443429308086,\"visible\":true},{\"x\":0.6424895790738441,\"y\":0.7626235717112502,\"visible\":true},{\"x\":0.583713409838514,\"y\":0.7583564872506281,\"visible\":true},{\"x\":0.6291293972211521,\"y\":0.7192153186016546,\"visible\":true},{\"x\":0.5610564716673653,\"y\":0.7025106586202376,\"visible\":true},{\"x\":0.6129851055936091,\"y\":0.6754094470887257,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "7",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 7,
+            "time": 0.0763,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.199999999254942,
+            "polls": 1,
+            "frames": "7",
+            "time": "0.0763",
+            "result": 37148
+          },
+          "durationMs": 309,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "ancient",
+      "kind": "clean-lifecycle",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 11,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": []
+    },
+    {
+      "world": "bamboo",
+      "kind": "scene",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 12,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/bamboo-scene-desktop.png",
+          "sha256": "e2dc1911a6fa20fbf1f9d9bc3958ceb4d63e3a4053c30d702c4adf7ddafe0919",
+          "bytes": 1051040,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 9812.60000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6788045539638463,\"y\":0.45095330550437207,\"visible\":true},{\"x\":0.6683517900538835,\"y\":0.5948079855302333,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1280,
+            "height": 800,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.399999998509884,
+            "polls": 1,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 446,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/bamboo-scene-portrait.png",
+          "sha256": "25b36aaf752563bf348006617ead10ebca20ff1e3a16798cc8ff7d1774007449",
+          "bytes": 386342,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 15686.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.5501679392590462,\"y\":0.43784361688702866,\"visible\":true},{\"x\":0.513290359328497,\"y\":0.5722036032236297,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 844,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.299999997019768,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 195,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/bamboo-scene-fold-inner-viewport.png",
+          "sha256": "b25545e8b2b66ec8008c97fdc12694a196798be299b5000ebd26e4ecb2ea681c",
+          "bytes": 754707,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 24086.60000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.7491100180394267,\"y\":0.45095330550437207,\"visible\":true},{\"x\":0.7345472558029614,\"y\":0.5948079855302333,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 882,
+            "height": 768,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 882,
+              "height": 768
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.600000001490116,
+            "polls": 1,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 385,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "bamboo",
+      "kind": "wrapper",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 13,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/bamboo-wrapper-desktop.png",
+          "sha256": "6eaa77405ccf078519d76a995cb1c9e9cde113efab3ee9edb566857fe0546ef1",
+          "bytes": 908394,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 10701.89999999851,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6616416128289538,\"y\":0.45095330550437207,\"visible\":true},{\"x\":0.6521921800294497,\"y\":0.5948079855302333,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 863.6999999992549,
+            "polls": 51,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 1286,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/bamboo-wrapper-portrait.png",
+          "sha256": "ba3fc491e17cf4b295877b69bbc498b2a7f985b20e4a77c904c2f7bdbdeaa6c6",
+          "bytes": 369340,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 17023,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.5461259725888861,\"y\":0.43784361688702866,\"visible\":true},{\"x\":0.5122195720840209,\"y\":0.5722036032236297,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.099999997764826,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 183,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "evidence/bamboo-wrapper-fold-inner-viewport.png",
+          "sha256": "9f16dd5191f9c47d0a23cb1a3f11ccb81f7a1bae3f2b41485f1e531a9e6923c2",
+          "bytes": 685886,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 25037.39999999851,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.7292708860171935,\"y\":0.45095330550437207,\"visible\":true},{\"x\":0.7158679027606805,\"y\":0.5948079855302333,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 856,
+            "height": 686,
+            "css": {
+              "x": 13,
+              "y": 69,
+              "width": 856,
+              "height": 686
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 50.19999999925494,
+            "polls": 3,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 386,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "bamboo",
+      "kind": "scene",
+      "forceByte": true,
+      "report": "evidence/report.json",
+      "jobIndex": 14,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": [
+        {
+          "file": "evidence/bamboo-scene-desktop-forced-byte.png",
+          "sha256": "6d8c0dbf2c38becf469071d010e201819ea3881d4ad152d4285539347f376f84",
+          "bytes": 1051507,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 9212.5,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"UnsignedByteType\",\"internalFormat\":\"RGBA8\",\"forcedByte\":true,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"UnsignedByteType\",\"framebufferStatus\":36053}]}",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6788045539638463,\"y\":0.45095330550437207,\"visible\":true},{\"x\":0.6683517900538835,\"y\":0.5948079855302333,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1280,
+            "height": 800,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.199999999254942,
+            "polls": 1,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 360,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "bamboo",
+      "kind": "clean-lifecycle",
+      "forceByte": false,
+      "report": "evidence/report.json",
+      "jobIndex": 16,
+      "renderRevision": "814fefd1e8ae80daf979d03b1f3783e0b08e06d3",
+      "runnerHash": "e4a011e3eb1add38a3109f13aaae7dacf3ffca17926a0bfe065f3931ba5a09f6",
+      "bundleHash": "c13edb83709474a14341f797fe05bbf6a06bd6b581579768a91cb0bc48ebbb51",
+      "screenshots": []
+    },
+    {
+      "world": "morning",
+      "kind": "scene",
+      "forceByte": false,
+      "report": "morning-final-evidence/report.json",
+      "jobIndex": 0,
+      "renderRevision": "2da658d7ffff1a11106d666366439c2aafe399dc",
+      "runnerHash": "dadc8e102949bc3ecd16cbeb025423ea9f82227b035b3af4a3c267d99a93d9c5",
+      "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+      "screenshots": [
+        {
+          "file": "morning-final-evidence/morning-scene-desktop.png",
+          "sha256": "d8f21ced3440e4fd5ce5a4860b08dd516b03ba687cfc93fdba7a5695a2aabbe0",
+          "bytes": 1119286,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 7278.5,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5378107440834875,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5379004186839571,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.6320090772851434,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1280,
+            "height": 800,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.299999997019768,
+            "polls": 1,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 352,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "morning-final-evidence/morning-scene-portrait.png",
+          "sha256": "5b546c375316e2cf4288f78d1f5186a073d66f6fb60931838810b90377fef494",
+          "bytes": 286199,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 9914.800000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "187",
+              "triangles": "790226",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.4655442990130739,\"y\":0.6471171191719515,\"visible\":true},{\"x\":0.4653246378302355,\"y\":0.5914204296655599,\"visible\":true},{\"x\":0.7266325500266066,\"y\":0.6353906275569563,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 844,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.300000000745058,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 121,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "morning-final-evidence/morning-scene-fold-inner-viewport.png",
+          "sha256": "c9e463f1cb3e3a69a7479191e836f9b92d2e85e0efe82fe498108b87f530ce17",
+          "bytes": 752507,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 14432.699999999255,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "205",
+              "triangles": "790442",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5526778257707363,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.552802760180098,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.6839146872652884,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 882,
+            "height": 768,
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 882,
+              "height": 768
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.199999999254942,
+            "polls": 1,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 235,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "morning",
+      "kind": "wrapper",
+      "forceByte": false,
+      "report": "morning-final-evidence/report.json",
+      "jobIndex": 1,
+      "renderRevision": "2da658d7ffff1a11106d666366439c2aafe399dc",
+      "runnerHash": "dadc8e102949bc3ecd16cbeb025423ea9f82227b035b3af4a3c267d99a93d9c5",
+      "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+      "screenshots": [
+        {
+          "file": "morning-final-evidence/morning-wrapper-desktop.png",
+          "sha256": "aaaef4fb8883f38be9505daabe594dd3b5f8b470e241a27a71291e389c160511",
+          "bytes": 1002385,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 8451.5,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 1,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.300000000745058,
+            "polls": 1,
+            "frames": "1",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 281,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "morning-final-evidence/morning-wrapper-portrait.png",
+          "sha256": "520e7a62b84af00c989520ecfa2d9f6a5e3c42378ad9d3316cf62287c4b5d46b",
+          "bytes": 300539,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "state": {
+            "nowMs": 10828.89999999851,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "2",
+              "time": "0.0000",
+              "drawCalls": "189",
+              "triangles": "790250",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.4683203507513571,\"y\":0.6471171191719515,\"visible\":true},{\"x\":0.46811838738893685,\"y\":0.5914204296655599,\"visible\":true},{\"x\":0.7083730554747,\"y\":0.6353906275569563,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 2,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.100000001490116,
+            "polls": 1,
+            "frames": "2",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 96,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        },
+        {
+          "file": "morning-final-evidence/morning-wrapper-fold-inner-viewport.png",
+          "sha256": "0f6a590dddbdfe080bc0d539f69f5b0ee1455d92dd4a0bda190f5737920e3137",
+          "bytes": 716090,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "state": {
+            "nowMs": 13680.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0000",
+              "drawCalls": "205",
+              "triangles": "790442",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5484825615724719,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5485975462003636,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.6692677140516045,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "3",
+              "pendingStaticFrame": "false"
+            },
+            "width": 856,
+            "height": 686,
+            "css": {
+              "x": 13,
+              "y": 69,
+              "width": 856,
+              "height": 686
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 3,
+            "time": 0,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 1,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.300000000745058,
+            "polls": 1,
+            "frames": "3",
+            "time": "0.0000",
+            "result": 37148
+          },
+          "durationMs": 180,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "morning",
+      "kind": "clean-lifecycle",
+      "forceByte": false,
+      "report": "morning-final-evidence/report.json",
+      "jobIndex": 3,
+      "renderRevision": "2da658d7ffff1a11106d666366439c2aafe399dc",
+      "runnerHash": "dadc8e102949bc3ecd16cbeb025423ea9f82227b035b3af4a3c267d99a93d9c5",
+      "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+      "screenshots": []
+    },
+    {
+      "world": "morning",
+      "kind": "native-interaction",
+      "forceByte": false,
+      "report": "interaction-final-evidence/report.json",
+      "jobIndex": 0,
+      "renderRevision": "8c182cdcbf63834ff3e26aeb8e2843872855451f",
+      "runnerHash": "970ff4d8b663f792bd0b5849d041cae0e082559977063e03fe571fc0c4eb4677",
+      "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+      "screenshots": [
+        {
+          "file": "interaction-final-evidence/morning-native-interaction-post-native-interaction-paused.png",
+          "sha256": "7ec0367110e640a85309dd8f98ab171dad7078f8b4facf2dc5824bf8e6c652d8",
+          "bytes": 1002930,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 24087.10000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "8",
+              "time": "0.0983",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "8",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 8,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.199999999254942,
+            "polls": 1,
+            "frames": "8",
+            "time": "0.0983",
+            "result": 37148
+          },
+          "durationMs": 294,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    },
+    {
+      "world": "bamboo",
+      "kind": "native-interaction",
+      "forceByte": false,
+      "report": "interaction-final-evidence/report.json",
+      "jobIndex": 1,
+      "renderRevision": "8c182cdcbf63834ff3e26aeb8e2843872855451f",
+      "runnerHash": "970ff4d8b663f792bd0b5849d041cae0e082559977063e03fe571fc0c4eb4677",
+      "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+      "screenshots": [
+        {
+          "file": "interaction-final-evidence/bamboo-native-interaction-post-native-interaction-paused.png",
+          "sha256": "77a7b09caf05b872ba4a94e2e400d527f50ab026b232ef0c5c0cf03ea00524f6",
+          "bytes": 907823,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 18442.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "12",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "12",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 12,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.300000000745058,
+            "polls": 1,
+            "frames": "12",
+            "time": "0.1646",
+            "result": 37148
+          },
+          "durationMs": 315,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ]
+    }
+  ],
+  "gates": {
+    "path": "gates/results.json",
+    "sha256": "a7e7cb780a1e5f9e4930702ef1a8d997e229ad75644afd2ada4524998ed15aa8"
+  },
+  "unrun": [
+    "Actual App/catalog, production audio/autoplay and Back/history routing integration.",
+    "Native background-tab hiding: this headless browser kept pages visible; synthetic visibility checks passed separately.",
+    "Physical mobile/Fold touch, hardware FPS/thermals and half-float-only/unsupported hardware.",
+    "OS/driver GPU-memory reclamation duration; synchronous dispose and actual context-loss event measured separately."
+  ],
+  "originalHead": "a3ec0ca45fc9e545fbee3791a72e1d90a56c7249",
+  "publication": "Render revision fields identify local validation commits. Existing authenticated GitHub Git-data tools mirror the final local tree exactly into a new commit whose sole parent is the guarded original head. The PR identifies the actual published commit and verified tree SHA."
+}

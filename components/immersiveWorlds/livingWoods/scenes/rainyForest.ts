@@ -68,8 +68,8 @@ function leafMap() {
   });
 }
 
-function barkMap() {
-  const random = rng(72929);
+function barkMap(seed = 72929) {
+  const random = rng(seed);
   const map = texture(512, (ctx, s) => {
     ctx.fillStyle = '#757971'; ctx.fillRect(0, 0, s, s);
     for (let i = 0; i < 1650; i++) {
@@ -79,6 +79,18 @@ function barkMap() {
       ctx.beginPath(); ctx.moveTo(x, y);
       ctx.bezierCurveTo(x - 5 + random() * 10, y + length * 0.3, x - 5 + random() * 10, y + length * 0.7, x + random() * 5 - 2.5, y + length);
       ctx.stroke();
+    }
+    // Long, broken fissures connect the fine wet bark flakes without a uniform
+    // printed stripe pattern; each trunk family receives an independent map.
+    for (let i = 0; i < 92; i++) {
+      const x = random() * s, y = random() * s, length = 38 + random() * 230;
+      const drift = random() * 21 - 10.5;
+      ctx.strokeStyle = `rgba(27,34,29,${0.15 + random() * 0.22})`;
+      ctx.lineWidth = 0.65 + random() * 2.1;
+      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.bezierCurveTo(x + drift, y + length * 0.28, x - drift * 0.5, y + length * 0.75, x + drift * 0.7, y + length); ctx.stroke();
+      ctx.strokeStyle = 'rgba(167,174,154,0.14)'; ctx.lineWidth = 0.6;
+      ctx.beginPath(); ctx.moveTo(x + 1.6, y + 2); ctx.lineTo(x + drift + 1.6, y + length * 0.28); ctx.stroke();
     }
     for (let i = 0; i < 5500; i++) {
       const x = random() * s, y = random() * s;
@@ -150,7 +162,8 @@ function trunkShape(seed: number) {
   const sides = 15, rings = 27;
   for (let j = 0; j <= rings; j++) {
     const y = j / rings;
-    const flare = 0.8 + 0.30 * Math.pow(1 - y, 3) + 0.3 * Math.exp(-y * 22);
+    const taper = 1 - 0.31 * y - 0.39 * Math.pow(Math.max(0, (y - 0.80) / 0.20), 1.35);
+    const flare = (0.8 + 0.30 * Math.pow(1 - y, 3) + 0.3 * Math.exp(-y * 22)) * taper;
     for (let i = 0; i <= sides; i++) {
       const a = (i / sides) * Math.PI * 2;
       const r = flare * (1 + 0.12 * Math.sin(a * 5 + seed) + 0.055 * Math.sin(a * 9 + y * 21 + seed));
@@ -173,7 +186,7 @@ function trunkShape(seed: number) {
 function fernCrown(seed: number) {
   const random = rng(seed);
   const positions: number[] = [], colors: number[] = [], indices: number[] = [];
-  const fronds = 7;
+  const fronds = 5 + seed % 4;
   const color = new THREE.Color();
   const vertex = (p: THREE.Vector3, shade: number) => {
     positions.push(p.x, p.y, p.z);
@@ -183,11 +196,16 @@ function fernCrown(seed: number) {
   };
   for (let f = 0; f < fronds; f++) {
     const theta = f / fronds * Math.PI * 2 + random() * 0.35;
-    const length = 0.7 + random() * 0.47;
-    const height = 0.44 + random() * 0.23;
+    const length = 0.63 + random() * 0.66;
+    const height = 0.32 + random() * 0.48;
+    const curl = 1.7 + random() * 0.7;
+    const lateralCurve = (random() - 0.5) * 0.32;
+    const frondShade = 0.72 + random() * 0.37;
+    const pinnaWidth = 0.78 + random() * 0.38;
     const forward = new THREE.Vector3(Math.sin(theta), 0, Math.cos(theta));
     const lateral = new THREE.Vector3(Math.cos(theta), 0, -Math.sin(theta));
-    const center = (t: number) => forward.clone().multiplyScalar(length * Math.pow(t, 0.88)).setY(height * Math.sin(t * 2.08));
+    const center = (t: number) => forward.clone().multiplyScalar(length * Math.pow(t, 0.88))
+      .addScaledVector(lateral, lateralCurve * t * t).setY(height * Math.sin(t * curl));
     for (let row = 0; row < 20; row++) {
       const t = 0.11 + row * 0.044;
       const a = center(t), b = center(t + 0.048);
@@ -197,17 +215,17 @@ function fernCrown(seed: number) {
       const id = vertex(b.clone().addScaledVector(lateral, -0.006), 1.05);
       indices.push(ia, ib, ic, ib, id, ic);
       for (const side of [-1, 1]) {
-        const pinna = 0.18 * Math.pow(Math.sin(Math.PI * t), 0.76) * (1.08 - t * 0.42);
+        const pinna = 0.18 * pinnaWidth * Math.pow(Math.sin(Math.PI * t), 0.76) * (1.08 - t * 0.42);
         const tip = a.clone().addScaledVector(lateral, side * pinna).addScaledVector(forward, 0.046).add(new THREE.Vector3(0, 0.032, 0));
         const ridge = a.clone().lerp(tip, 0.46).add(new THREE.Vector3(0, 0.012, 0));
-        const v0 = vertex(a, 0.75 + t * 0.22), vm = vertex(ridge, 1.13), vt = vertex(tip, 1.25);
+        const v0 = vertex(a, (0.75 + t * 0.22) * frondShade), vm = vertex(ridge, 1.13 * frondShade), vt = vertex(tip, 1.25 * frondShade);
         let lastLeft = v0, lastRight = v0;
         for (let edge = 1; edge <= 4; edge++) {
           const s = edge / 5;
           const w = Math.sin(s * Math.PI) * 0.022 * (1 - t * 0.18);
           const midpoint = a.clone().lerp(tip, s);
-          const vl = vertex(midpoint.clone().addScaledVector(forward, w), 0.96);
-          const vr = vertex(midpoint.clone().addScaledVector(forward, -w), 0.82);
+          const vl = vertex(midpoint.clone().addScaledVector(forward, w), 0.96 * frondShade);
+          const vr = vertex(midpoint.clone().addScaledVector(forward, -w), 0.82 * frondShade);
           indices.push(lastLeft, vl, vm, vm, vr, lastRight);
           lastLeft = vl; lastRight = vr;
         }
@@ -255,7 +273,7 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
   skyLight.shadow.radius = 3;
   scene.add(skyLight);
   const understoryLight = new THREE.PointLight('#bdd5b4', 4, 12, 1.2);
-  understoryLight.position.set(0, 3.5, 3.5); scene.add(understoryLight);
+  understoryLight.position.set(-1.6, 3.5, 2.5); scene.add(understoryLight);
 
   const soil = soilMap(), bark = barkMap(), leaf = leafMap();
   const groundMaterial = new THREE.MeshStandardMaterial({ map: soil, bumpMap: soil, bumpScale: 0.015, roughness: 0.91, vertexColors: true });
@@ -276,9 +294,16 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
   const ground = new THREE.Mesh(terrain, groundMaterial); ground.receiveShadow = true; scene.add(ground);
 
   const barkMaterial = new THREE.MeshStandardMaterial({ color: '#d2d2c4', map: bark, bumpMap: bark, bumpScale: 0.085, roughness: 0.96 });
-  const trunkGroups = [trunkShape(0.2), trunkShape(2.1), trunkShape(4.7)].map(g => new THREE.InstancedMesh(g, barkMaterial, 33));
+  const barkVariants = [barkMaterial, ...[92817, 33149].map((seed, i) => {
+    const map = barkMap(seed);
+    map.offset.set(0.13 * (i + 1), 0.19 * (i + 1));
+    map.repeat.set(0.85 + i * 0.2, 0.88 + i * 0.21);
+    return new THREE.MeshStandardMaterial({ color: i ? '#b4c1ae' : '#c7beb0', map, bumpMap: map, bumpScale: i ? 0.07 : 0.10, roughness: 0.91 + i * 0.06 });
+  })];
+  const shapeSeeds = [0.2, 2.1, 4.7];
+  const trunkGroups = shapeSeeds.map((seed, i) => new THREE.InstancedMesh(trunkShape(seed), barkVariants[i], 33));
   const dummy = new THREE.Object3D();
-  const trunkPositions: Array<{ x: number; z: number; radius: number; height: number }> = [];
+  const trunkPositions: Array<{ x: number; z: number; radius: number; height: number; top: THREE.Vector3 }> = [];
   const fixed = [
     [-3.2, 1.5, 0.7, 12], [3.8, 0.0, 0.6, 13], [-4.3, -6.5, 0.55, 15],
     [4.1, -9, 0.44, 14], [-1.9, -12, 0.42, 14], [1.7, -17, 0.37, 15],
@@ -297,7 +322,8 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
       dummy.scale.set(radius, height, radius * (0.85 + random() * 0.3)); dummy.updateMatrix();
       batch.setMatrixAt(i, dummy.matrix);
       batch.setColorAt(i, new THREE.Color().setHSL(0.23 + random() * 0.08, 0.09 + random() * 0.13, 0.59 + random() * 0.16));
-      trunkPositions.push({ x, z, radius, height });
+      const top = new THREE.Vector3(Math.sin(2.4 + shapeSeeds[g]) * 0.25, 1, Math.sin(3 + shapeSeeds[g]) * 0.16).applyMatrix4(dummy.matrix);
+      trunkPositions.push({ x, z, radius, height, top });
     }
     batch.castShadow = true; batch.receiveShadow = true; scene.add(batch);
   }
@@ -317,7 +343,7 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
     }
   }
 
-  const fernMaterial = new THREE.MeshStandardMaterial({ color: '#a4c587', roughness: 0.55, metalness: 0.0, side: THREE.DoubleSide, vertexColors: true });
+  const fernMaterial = new THREE.MeshStandardMaterial({ color: '#a4b98b', roughness: 0.67, metalness: 0.0, side: THREE.DoubleSide, vertexColors: true });
   const fernBatches: THREE.InstancedMesh[] = [];
   const fernBases: THREE.Matrix4[][] = [];
   for (let group = 0; group < 3; group++) {
@@ -331,12 +357,15 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
       // Six tactile fronds frame the lower view without walling off the opening.
       if (i < 2) { x = (group === 1 ? -1 : 1) * (1.25 + group * 0.37); z = 2.0 + i * 1.1; }
       if (i === 2) { x = group === 0 ? -0.86 : 1.20; z = group === 0 ? 4.05 : 4.35; }
-      const s = i === 2 ? 0.82 : 0.6 + random() * 0.8;
+      const s = i === 2 ? [0.69, 0.93, 0.78][group] : 0.46 + random() * 0.98;
       dummy.position.set(x, 0.04 + Math.max(0, Math.abs(x) - 1.5) * 0.022, z);
       dummy.rotation.set((random() - 0.5) * 0.1, random() * 6.28, (random() - 0.5) * 0.1);
-      dummy.scale.setScalar(s); dummy.updateMatrix();
+      // Aspect and leaning vary per plant without disturbing the established
+      // open wet path or its six framing crowns.
+      const aspect = 0.80 + 0.18 * Math.sin(i * 2.7 + group);
+      dummy.scale.set(s * (1.05 + group * 0.07), s * aspect, s * (0.88 + (i % 4) * 0.08)); dummy.updateMatrix();
       batch.setMatrixAt(i, dummy.matrix); bases.push(dummy.matrix.clone());
-      batch.setColorAt(i, new THREE.Color().setHSL(0.22 + random() * 0.08, 0.23 + random() * 0.13, 0.45 + random() * 0.15));
+      batch.setColorAt(i, new THREE.Color().setHSL(0.20 + random() * 0.095, 0.19 + random() * 0.15, 0.39 + random() * 0.19));
     }
     batch.castShadow = false; batch.receiveShadow = true;
     scene.add(batch); fernBatches.push(batch); fernBases.push(bases);
@@ -369,6 +398,32 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
       geo.computeVertexNormals(); boughParts.push(geo);
     }
   }
+  // The original low boughs left the upper trunk rings exposed in portrait.
+  // A separate deterministic canopy stream extends each top into asymmetric,
+  // tapered leaders; leaf sprays overlap those junctions in actual 3D.
+  const crownRandom = rng(428871);
+  const crownTips: THREE.Vector3[] = [];
+  for (const tree of trunkPositions) {
+    for (let fork = 0; fork < 3; fork++) {
+      const angle = crownRandom() * Math.PI * 2;
+      const reach = 1.3 + crownRandom() * 2.9;
+      const start = tree.top.clone().add(new THREE.Vector3(0, -0.9 - fork * 0.38, 0));
+      const elbow = tree.top.clone().add(new THREE.Vector3(Math.cos(angle) * reach * 0.37, 0.75 + crownRandom() * 0.85, Math.sin(angle) * reach * 0.37));
+      const tip = tree.top.clone().add(new THREE.Vector3(Math.cos(angle) * reach, 1.3 + crownRandom() * 1.6, Math.sin(angle) * reach));
+      const curve = new THREE.CatmullRomCurve3([start, elbow, tip]);
+      const geo = new THREE.TubeGeometry(curve, 12, tree.radius * (0.32 - fork * 0.055), 6, false);
+      const positions = geo.attributes.position;
+      for (let ring = 0; ring <= 12; ring++) {
+        const t = ring / 12, center = curve.getPointAt(t), taper = 0.045 + Math.pow(1 - t, 0.86) * 0.955;
+        for (let side = 0; side <= 6; side++) {
+          const index = ring * 7 + side;
+          positions.setXYZ(index, center.x + (positions.getX(index) - center.x) * taper, center.y + (positions.getY(index) - center.y) * taper, center.z + (positions.getZ(index) - center.z) * taper);
+        }
+      }
+      geo.computeVertexNormals(); boughParts.push(geo);
+      crownTips.push(elbow, tip);
+    }
+  }
   const boughGeometry = mergeGeometries(boughParts);
   boughParts.forEach(g => g.dispose());
   if (boughGeometry) {
@@ -389,6 +444,17 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
     canopy.setColorAt(i, new THREE.Color().setHSL(0.25 + random() * 0.06, 0.24, 0.53 + random() * 0.15));
   }
   canopy.castShadow = true; canopy.receiveShadow = true; scene.add(canopy);
+  const crownLeaves = new THREE.InstancedMesh(broadLeaf(0.74, 1.45, 0.15, 8, 4), canopyMaterial, crownTips.length * 5);
+  for (let i = 0; i < crownLeaves.count; i++) {
+    const tip = crownTips[Math.floor(i / 5)], angle = (i % 5) * 1.2566 + crownRandom() * 0.65;
+    dummy.position.copy(tip).add(new THREE.Vector3(Math.sin(angle) * 0.32, crownRandom() * 0.28 - 0.1, Math.cos(angle) * 0.32));
+    dummy.rotation.set(-0.3 + crownRandom() * 0.8, angle, (crownRandom() - 0.5) * 0.65);
+    const scale = 0.82 + crownRandom() * 0.75;
+    dummy.scale.set(scale, scale, scale * (0.8 + crownRandom() * 0.4)); dummy.updateMatrix();
+    crownLeaves.setMatrixAt(i, dummy.matrix);
+    crownLeaves.setColorAt(i, new THREE.Color().setHSL(0.23 + crownRandom() * 0.07, 0.19 + crownRandom() * 0.13, 0.41 + crownRandom() * 0.17));
+  }
+  crownLeaves.castShadow = true; crownLeaves.receiveShadow = true; scene.add(crownLeaves);
 
   // Closest broad leaves share the user's shelter; each has an actual curved stalk.
   const shelter = new THREE.Group(); scene.add(shelter);

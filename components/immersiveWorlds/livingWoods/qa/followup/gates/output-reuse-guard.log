@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: QA output already contains evidence; set SCENE_SCREENSHOT_DIR to a new empty directory.
+    at runFollowupQA (file:///workspace/scratch/8e4ccef6af68/brainwave-livingwoods-followup/components/immersiveWorlds/livingWoods/qa/followup/run.mjs:58:10)
+    at async file:///workspace/scratch/8e4ccef6af68/brainwave-livingwoods-followup/components/immersiveWorlds/livingWoods/qa/followup/run.mjs:419:90 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

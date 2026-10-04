@@ -6,6 +6,9 @@ import { createMorningPorch } from './scenes/morningPorch';
 import { createRainyForest } from './scenes/rainyForest';
 import { createAncientForest } from './scenes/ancientForest';
 import { createBamboo } from './scenes/bamboo';
+import { configureReflectorTarget } from './reflectorCompatibility';
+import type { Reflector } from 'three/examples/jsm/objects/Reflector.js';
+import { SubmissionGate } from './submissionGate';
 
 const builders = { morning: createMorningPorch, rainy: createRainyForest, ancient: createAncientForest, bamboo: createBamboo };
 let engineSerial = 0;
@@ -28,6 +31,10 @@ export class WoodsEngine implements LiveSceneEngine {
   private disposed = false;
   private lastInteraction = -Infinity;
   private aspect = 1;
+  private gate: SubmissionGate;
+  private requestedSize: { width: number; height: number; dpr: number } | null = null;
+  private appliedSize = '';
+  private staticDirty = true;
   private contextLost = (event: Event) => { event.preventDefault(); this.onContextLost(); };
 
   constructor(private canvas: HTMLCanvasElement, private world: LivingWorld, private onContextLost: () => void) {
@@ -38,20 +45,41 @@ export class WoodsEngine implements LiveSceneEngine {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
+    this.gate = new SubmissionGate(this.renderer.getContext() as WebGL2RenderingContext);
     canvas.dataset.engineId = String(++engineSerial);
     canvas.addEventListener('webglcontextlost', this.contextLost);
   }
   async init() {
     this.content = builders[this.world](this.scene, this.camera);
+    // Reflector's constructor has not allocated its GPU target yet. Select and
+    // validate its actual color-renderable format before the first scene draw.
+    const forceByte = (window as Window & { __livingWoodsQAForceByte?: boolean }).__livingWoodsQAForceByte === true;
+    this.scene.traverse(object => {
+      if ((object as Reflector).isReflector) {
+        this.canvas.dataset.reflectorCompatibility = JSON.stringify(configureReflectorTarget(object as Reflector, this.renderer, { forceByte }));
+      }
+    });
     this.content.resize?.(this.aspect);
     this.baseRotation.copy(this.camera.quaternion);
     this.renderer.shadowMap.needsUpdate = true;
   }
   setSize(width: number, height: number, dpr: number) {
     if (this.disposed) return;
-    this.aspect = Math.max(1, width) / Math.max(1, height);
-    this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)));
-    this.renderer.setSize(Math.max(1, width), Math.max(1, height), false);
+    const size = { width: Math.max(1, width), height: Math.max(1, height), dpr: Math.min(2, Math.max(1, dpr)) };
+    const key = `${size.width}/${size.height}/${size.dpr}`;
+    this.requestedSize = key === this.appliedSize ? null : size;
+    if (this.requestedSize) this.staticDirty = true;
+    // Do not clear/reallocate a paused canvas while both GPU slots are full.
+    // The latest holder size replaces earlier requests and is drawn once free.
+  }
+  private applySize() {
+    const size = this.requestedSize;
+    if (!size) return;
+    this.requestedSize = null;
+    this.appliedSize = `${size.width}/${size.height}/${size.dpr}`;
+    this.aspect = size.width / size.height;
+    this.renderer.setPixelRatio(size.dpr);
+    this.renderer.setSize(size.width, size.height, false);
     this.camera.aspect = this.aspect;
     if (this.content) {
       this.camera.quaternion.copy(this.baseRotation);
@@ -63,6 +91,17 @@ export class WoodsEngine implements LiveSceneEngine {
   }
   renderFrame(dt: number) {
     if (!this.content || this.disposed) return;
+    if (dt === 0 && !this.staticDirty) return;
+    try {
+      this.gate.submit(() => this.draw(dt));
+      this.updateSubmissionEvidence();
+      this.schedule();
+    } catch (error) { this.failSubmission(error); }
+  }
+  private draw(dt: number) {
+    if (!this.content) return;
+    this.applySize();
+    this.staticDirty = false;
     const step = Math.min(0.05, Math.max(0, dt));
     this.time += step;
     this.look.lerp(this.lookTarget, step ? 1 - Math.exp(-step * 5) : 1);
@@ -81,6 +120,41 @@ export class WoodsEngine implements LiveSceneEngine {
     this.canvas.dataset.textures = String(this.renderer.info.memory.textures);
     if (this.frame % 12 === 1 || step === 0) this.updateTargetEvidence();
   }
+  /** QA supplemental readback only; native compositor PNGs remain primary. */
+  captureFrame() {
+    if (this.disposed || !this.content || this.gate.pending !== 0) throw new Error('Living Woods capture requires a drained, mounted renderer');
+    this.staticDirty = true;
+    this.renderFrame(0);
+    if (this.disposed) throw new Error('Living Woods renderer failed during capture');
+    return this.canvas.toDataURL('image/png');
+  }
+  private updateSubmissionEvidence() {
+    this.canvas.dataset.pendingSubmissions = String(this.gate.pending);
+    this.canvas.dataset.completedSubmissions = String(this.gate.completed);
+    this.canvas.dataset.pendingStaticFrame = String(this.staticDirty);
+  }
+  private failSubmission(error: unknown) {
+    this.canvas.dataset.renderFault = error instanceof Error ? error.message : String(error);
+    this.stop();
+    this.onContextLost();
+  }
+  private schedule() {
+    if (!this.raf && this.content && !this.disposed && (this.running || this.staticDirty || this.gate.pending > 0)) this.raf = requestAnimationFrame(this.tick);
+  }
+  private tick = (now: number) => {
+    this.raf = 0;
+    if (this.disposed) return;
+    try {
+      // Only a later task may observe completion of a WebGL fence. A paused
+      // engine retires work here without animation or repeated static draws.
+      this.gate.poll();
+      const dt = this.running ? (now - this.previous) / 1000 : 0;
+      this.previous = now;
+      if (this.running || this.staticDirty) this.gate.submit(() => this.draw(dt));
+      this.updateSubmissionEvidence();
+      this.schedule();
+    } catch (error) { this.failSubmission(error); }
+  };
   private updateTargetEvidence() {
     const targets = this.content?.interactionTargets.map(object => {
       const point = new THREE.Box3().setFromObject(object).getCenter(new THREE.Vector3()).project(this.camera);
@@ -92,17 +166,19 @@ export class WoodsEngine implements LiveSceneEngine {
     if (this.running || this.disposed) return;
     this.running = true;
     this.previous = performance.now();
-    const tick = (now: number) => {
-      if (!this.running || this.disposed) return;
-      const dt = (now - this.previous) / 1000; this.previous = now;
-      this.renderFrame(dt);
-      this.raf = requestAnimationFrame(tick);
-    };
-    this.raf = requestAnimationFrame(tick);
+    this.schedule();
   }
-  stop() { this.running = false; cancelAnimationFrame(this.raf); this.raf = 0; }
+  stop() {
+    this.running = false; cancelAnimationFrame(this.raf); this.raf = 0;
+    // Retire pending fences and finish only a requested resized/static frame.
+    this.schedule();
+  }
   drag(dx: number, dy: number) { this.lookTarget.set(THREE.MathUtils.clamp(-dx * 0.24, -0.14, 0.14), THREE.MathUtils.clamp(-dy * 0.16, -0.08, 0.08)); }
-  releaseDrag() { this.lookTarget.set(0, 0); }
+  releaseDrag() {
+    const changed = this.look.lengthSq() > 0 || this.lookTarget.lengthSq() > 0;
+    this.lookTarget.set(0, 0);
+    if (changed) { this.staticDirty = true; this.schedule(); }
+  }
   tap(x: number, y: number): LivingWoodsInteraction | null {
     if (!this.running || !this.content || performance.now() - this.lastInteraction < 650) return null;
     this.raycaster.setFromCamera(new THREE.Vector2(x * 2 - 1, 1 - y * 2), this.camera);
@@ -114,7 +190,11 @@ export class WoodsEngine implements LiveSceneEngine {
   }
   dispose() {
     if (this.disposed) return;
+    this.canvas.dataset.disposeStartMs = String(performance.now());
     this.disposed = true; this.canvas.dataset.disposed = 'true'; this.stop();
+    this.staticDirty = false; this.requestedSize = null;
+    this.gate.dispose();
+    this.updateSubmissionEvidence();
     this.canvas.removeEventListener('webglcontextlost', this.contextLost);
     this.content?.dispose?.();
     const geometries = new Set<THREE.BufferGeometry>(), materials = new Set<THREE.Material>(), textures = new Set<THREE.Texture>();
@@ -133,5 +213,6 @@ export class WoodsEngine implements LiveSceneEngine {
     geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose());
     this.scene.clear(); this.content = null;
     this.renderer.dispose(); this.renderer.forceContextLoss();
+    this.canvas.dataset.disposeEndMs = String(performance.now());
   }
 }

@@ -1,0 +1,45 @@
+{
+  "sourceCommit": "9f7cad297ee27b57c75da19c245f79bfb6dd85d4",
+  "sourceTree": "c81ee7ccc06794057508e025010917a1124a7dd6",
+  "uncommitted": false,
+  "status": "passed",
+  "bundle": "cafe-pilot-DUYsDNTQ.mjs",
+  "bundleSha256": "60b203d397980271a36c869c188b8705be07a445a0b765e03161ecdbb21fd8ac",
+  "environmentSha256": "43bb5410f1ede07802bf3371ee2a9c3054abeaba1fb87eefb7bc992b1cac5d92",
+  "totalBrowserChecks": 56,
+  "runs": [
+    {
+      "path": "forced-byte/results.json",
+      "sha256": "c8cee46039d3a8134d9c18e001caae12cac0dac5d06780c164a38843302b0e99",
+      "verificationId": "220bc18a-58f5-4419-b312-a40dc083ca2e",
+      "targetPreference": "byte",
+      "status": "passed",
+      "checksPassed": 28,
+      "startedAt": "2026-10-04T20:14:15.748Z",
+      "finishedAt": "2026-10-04T20:15:54.884Z"
+    },
+    {
+      "path": "supported/results.json",
+      "sha256": "3712c858ad6ff32aec670b21a2d12e3e4259f8fa469e84a22e60adb658eb4d9d",
+      "verificationId": "8887d3b8-2971-4878-a961-bee2b4e0d977",
+      "targetPreference": "auto",
+      "status": "passed",
+      "checksPassed": 28,
+      "startedAt": "2026-10-04T20:15:57.856Z",
+      "finishedAt": "2026-10-04T20:18:19.602Z"
+    }
+  ],
+  "unitTests": {
+    "files": 24,
+    "tests": 160,
+    "status": "passed"
+  },
+  "commands": {
+    "npm run typecheck": "passed",
+    "npm test": "passed",
+    "npm run build": "passed",
+    "npm run check:bundle": "passed",
+    "node components/immersiveWorlds/cafe/qa/build.mjs": "passed"
+  },
+  "supersedes": "Removed c0de-era source-unbound lifecycle report. Both linked reports were freshly executed on the exact committed source above. Root-level PNGs and manifest.json remain the approved historical visual baseline, not new-source evidence."
+}

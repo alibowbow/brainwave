@@ -1,53 +1,76 @@
-> Historical visual baseline at 215c50ff / 8b9383b8. Its source-unbound lifecycle JSON has been removed. The compatibility correction will publish newly executed source-bound reports for both target policies; this historical report is not evidence for the new code.
+# Café compatibility verification — 2026-10-04
 
-# Café pilot verification — 2026-10-04 visual revision
+## Exact source and fresh evidence
 
-## Exact code and images
+**Render source: `9f7cad297ee27b57c75da19c245f79bfb6dd85d4`**
+Source tree: `c81ee7ccc06794057508e025010917a1124a7dd6`.
+Both browser runs started after this source was committed and pushed. Their reports record `uncommitted: false`, unique run IDs/timestamps, the source commit/tree and hashes of the actual compiled bundle, environment and captures. The following evidence-only commit does not change scene source or compiled output.
 
-The four PNGs in `qa/screenshots/` render **code commit `215c50ff7bafd7e52a1593022a75a7a032cc3c4c`**. They replace the images reviewed at `c0de2c42bd803545cc1675587eda6ffc84aef9aa`. The later evidence commit changes only this report, PNGs, results and manifest; renderer source and compiled code remain identical.
+- Pilot: `cafe-pilot-DUYsDNTQ.mjs`; SHA-256 `60b203d397980271a36c869c188b8705be07a445a0b765e03161ecdbb21fd8ac`.
+- Environment: `room-environment.hdr`; SHA-256 `43bb5410f1ede07802bf3371ee2a9c3054abeaba1fb87eefb7bc992b1cac5d92`.
+- Fresh aggregate: `screenshots/results.json`.
+- Full lifecycle/GPU reports: `screenshots/forced-byte/results.json` and `screenshots/supported/results.json`.
+- Eight new PNGs, dimensions, byte counts and SHA-256: `screenshots/compatibility-manifest.json`.
+- Supported-path comparison with the approved baseline: `screenshots/compatibility-pixels.json`.
 
-Compiled pilot: `cafe-pilot-B1N9rsFn.mjs`, 820,441 bytes (approximately 226.70 kB gzip).
-SHA-256: `6d64f3cf2b3771625edeeba4583dbeba8fa2c65a85dbd99351d7bd6172f2db3c`.
-`screenshots/manifest.json` records the code SHA and each PNG's byte count and SHA-256.
+The old c0de-era source-unbound lifecycle JSON was removed. None of its checks are presented as current evidence. The four root-level PNGs and `manifest.json` remain the historical, user-reviewed baseline: source `215c50ff7bafd7e52a1593022a75a7a032cc3c4c`, evidence head `8b9383b8086b99bec04eb2273a68ec9d2bd76f43`.
 
-| PNG | Native viewport |
+## Complete target audit and correction
+
+Exact installed Three.js is **0.186.1**. Inspected local `Reflector.js`, `PMREMGenerator.js`, `WebGLTextures.js`, `WebGLEnvironments.js`, `WebGLShadowMap.js` and `WebGLRenderer.js`. r186 Reflector constructs a HalfFloat target but GPU allocation is lazy. PMREM allocates HalfFloat output and ping-pong targets and renders during generation; mutating its returned texture afterward cannot make that operation safe.
+
+| Target / texture | Actual format and handling |
 | --- | --- |
-| desktop.png | 1280 × 850 |
-| fold-portrait.png | 412 × 915 |
-| fold-inner-portrait.png | 673 × 841 |
-| fold-landscape.png | 915 × 412 |
+| Capability probe | 4 × 4, RGBA16F/HalfFloat with depth renderbuffer only when either genuine color-buffer extension is enabled; otherwise RGBA8/UnsignedByte. Check real framebuffer completeness, dispose probe. |
+| Window refraction | Full native viewport × DPR, selected RGBA16F or RGBA8 before allocation; real-size completeness checked after every size change. |
+| Planar reflection | 65% viewport × DPR, Reflector target configured before its first GPU allocation; same selected type and completeness checks. |
+| PCF shadow | Up to 2048 × 2048 RGBA8 plus UnsignedInt depth texture, checked before the first shadow draw. No VSM target. r186's removed PCFSoft was already converted to PCF; use PCF directly. |
+| Environment | 768 × 1024 prefiltered CubeUV atlas, sample-only RGBA16F texture. Never attached to a framebuffer. No runtime PMREM output or ping-pong targets. |
+| Final canvas | Renderer default UnsignedByte output; no HDR output-buffer target. Scene physical materials have transmission 0, so no internal transmission target. |
+| QA state probe only | Byte cube target, 16 × 16, active cube face 4 and mip 1; completeness checked, used for real state-restoration rendering, then disposed. |
 
-All images are actual WebGL2 framebuffer captures from the **compiled** review page, Chromium 153 / SwiftShader, DPR 1. Initial simulation is paused for repeatable stills; the suite then resumes and exercises real moving frames. No image replacement, compositor edits, painting filter or low-resolution rendering. The English QA caption accommodates the bare browser's fonts; public card identity remains `amb:focus_cafe`, 카페 집중, 40 minutes.
+`EXT_color_buffer_float OR EXT_color_buffer_half_float` enables the candidate RGBA16F probe; WebGL2 alone is not used as evidence of RGBA16F color renderability. Explicit `internalFormat` matches the tested attachment. If HDR fails at the actual scene dimensions, both scene targets are disposed and reconfigured as RGBA8 before new allocation. RGBA8 completeness is required too. There are no GL monkeypatches or fabricated extension claims. The QA byte preference changes only owner policy, leaving the actual reported extensions intact.
 
-## Response to the four visual findings
+Probes, both scene passes and Reflector's callback restore renderer target, active cube face and mip level with `finally`. Reflector additionally restores its XR/shadow-auto-update/visibility state. A paused QA render began with an actual cube target on face 4/mip 1, invoked the real Reflector and scene rendering, then verified all three values unchanged and `gl.getError() === 0` in both policies. Unit cases cover exceptional exits and changes to face/mip while retaining the same target object.
 
-1. **Quiet occupants:** move the two guests farther back, reduce scale and contrast, use different clothing/hair silhouettes, obscure them with plants/tables. A small side silhouette remains visible in desktop; landscape reveals the second partly behind a plant. Narrow portrait deliberately prioritizes the near window seat rather than forcing distant guests into view.
-2. **Seated framing:** closer 43–50° aspect-dependent camera, responsive cup/saucer/steam/lamp positions, portrait aim toward the street. Portrait no longer dedicates large areas to ceiling and bare floor. Desktop retains the café room to the right.
-3. **Street and shelf detail:** six receding addresses with varied façades, bays, curtains, blinds, unlit rooms, shop fronts and awnings; soft lamp halos and irregular converging wet-paving light strips. Asymmetrical shelf still life uses pitchers, grouped cups, jars, bags/books, muted glazing and gaps. Corrected the back wall protruding beyond the café envelope into the outside view.
-4. **Material/light depth:** muted rough oak with finer grain/pores, subdued woven linen, smoother fine-speckle ceramic, lower ambient fill, local warm spotlights, darker floor and soft contact occlusion. Corrected tabletop item contact heights and cloth surface overlap. Real planar indoor reflections remain visible.
+A failed reflection framebuffer can break reflection rendering; it does not necessarily black the whole canvas.
 
-All four final images were opened and inspected after these fixes. These are implementation/inspection results, **not user approval**. PR #50 remains draft and is not merged.
+## Capability-safe environment, unchanged art direction
 
-## Executed checks
+The runtime now loads a locally baked version of the **same** MIT-licensed Three RoomEnvironment, same sigma .035 and face size 256, same environment intensity .27. Both target policies use it. Direct `CubeUVReflectionMapping` bypasses Three's automatic equirectangular/cube PMREM conversion. WebGL2 supports the sample-only RGBA16F texture without requiring floating-point color-attachment support. The texture is never used as a render target.
 
-- Starting remote main: `1bb79ac572e8568676881bbc7b4404f1bac443e8`. No AGENTS.md or .agents/skills in checkout; README verification instructions followed.
-- `npm run typecheck`: pass.
-- `npm test`: **23 files, 147 tests passed**.
-- `npm run build` and `npm run check:bundle`: pass; initial JS 402.6 KiB / 410 KiB, CSS 99.5 KiB / 135 KiB. Shared app entry remains unchanged. Existing large-chunk warning.
-- `node components/immersiveWorlds/cafe/qa/build.mjs`: pass; final compiled pilot above. The optional .mjs renderer is excluded from the existing PWA .js precache; main build has 44 precache entries / 844.09 KiB.
-- `qa/verify.mjs` against that compiled pilot: **23 checks passed, zero runtime/shader errors**. Machine-readable result: `screenshots/results.json`.
+The owner-local offline bake checks genuine capabilities and framebuffer completeness before PMREM generation, preserves target/face/mip state, reads back HDR values, and independently encodes a Radiance RGBE file. Two bakes produced the same hash. Actual r186 HDRLoader/HalfFloat decode retained source radiance up to 43 with maximum relative quantization error 0.3922%; provenance and measured errors are in the adjacent asset JSON. No runtime PMREM call, post-generation type mutation, paid service or downloaded third-party media is involved.
 
-The browser checks cover real WebGL geometry (>30,000 rendered triangles), four native viewports, pause/resume, changed rain/steam pixels, drag and eased release, cup/lamp/window pointer callbacks, ignored paused taps, OS/app reduced motion, injected hidden/visible signals, same-canvas fullscreen-holder transfer, delayed dispose and fresh remount. New shelf InstancedMesh resources receive explicit disposal in addition to geometry/material/texture/renderer cleanup.
+Camera framing, customers, geometry, lighting parameters and material appearance are preserved. `world.ts`, `materials.ts`, `plant.ts`, `exterior.ts` and `shelves.ts` are byte-identical to the approved render source. Supported-path PNGs compared with the approved source have mean absolute RGB channel differences **0.0395–0.0495 out of 255**, and zero channels differ by more than 8. All eight final native-resolution PNGs were inspected: café seating, cup/steam, glass reflection, wet exterior and readable materials remain visible. The byte path has less offscreen HDR highlight range, visible mainly at the brightest exterior lights, while preserving real 3D and the approved composition.
 
-## Test synchronization and limits
+## Executed verification
 
-The initial mixed dev-harness run's 20-second disposal timeout was investigated with a fresh focused check: after 7 seconds, canvas disposed, 0 holders and no engine. Final verification uses the built artifact without source hot reload, interval polling and a 120-second software-renderer allowance; disposal and remount pass.
+| Check | Result |
+| --- | --- |
+| `npm run typecheck` | Pass |
+| `npm test` | 24 files, 160 tests passed, including 13 target-policy/state unit cases |
+| `npm run build` | Pass; existing large-chunk warning |
+| `npm run check:bundle` | Pass; JS 402.6 / 410 KiB, CSS 99.5 / 135 KiB |
+| `node components/immersiveWorlds/cafe/qa/build.mjs` | Pass; compiled review bundle hash above |
+| Forced byte, fresh browser run | **28/28 pass**, zero runtime/shader errors |
+| Supported HalfFloat, fresh browser run | **28/28 pass**, zero runtime/shader errors |
 
-One visual-revision run timed out taking a screenshot during continuous software rendering. The final verifier advances real frames, pauses only while sampling their pixels, advances again, then captures a second paused sample. Both captures have identical paused UI, so the comparison tests actual changing scene pixels. The renderer itself has no frame cap or reduced-quality test mode.
+Both actual browser runs checked reflection, refraction and shadow framebuffer status **36053 / FRAMEBUFFER_COMPLETE** at desktop 1280 × 850, Fold-like portrait 412 × 915, inner portrait 673 × 841, landscape 915 × 412, and fresh remount. Forced byte captured reflection/refraction type 1009 / RGBA8; supported captured type 1016 / RGBA16F. Both report the same sample-only prefiltered environment and `runtimePmrem: false`.
 
-- Emulated viewport sizes are **not physical Fold hardware**; no phone GPU/frame-rate claim. SwiftShader rendering can be slow.
-- Hidden verification injects document.hidden/visibilitychange, not actual OS backgrounding.
-- Fullscreen verification transfers the canvas between the application's holder pattern, not an OS/browser fullscreen request.
-- Integrated card routing, real app overlays/audio and target-device performance belong to the parallel integration owner. The main app does not yet import this component; the separate pilot build does.
-- Code deployment `215c50ff…` is Vercel READY: https://brainwave-gmc1qfm9h-alibowbows-projects.vercel.app/immersive-worlds/cafe/pilot/index.html . Screenshots are local renderer evidence. Earlier cloud-browser navigation was rejected by automatic approval after a Vercel authentication/account redirect; no login, share/bypass token or protection change was attempted.
-- Original procedural people/buildings and shader rain remain approximations. Window reflection is planar rendering; street light strips approximate wet reflection, not ray tracing. Droplets do not perform fluid collision/merging. All assets remain original procedural output; no generated or third-party images were added.
+The preserved 23 lifecycle/visual checks plus five compatibility checks cover actual WebGL geometry, native canvas sizes, active/pause, changing rain/steam pixels, look drag and eased return, cup/lamp/window callbacks, ignored paused taps, OS/app reduced motion, hidden/visible signals, same-canvas fullscreen-holder transfer and return, grace-period disposal, fresh remount, target choice/completeness and absence of runtime/shader errors. The verifier serves committed public bytes directly with a static server; there is no Vite/HMR transformation during verification.
+
+The source deployment is Vercel READY: https://brainwave-k0rzg9hu0-alibowbows-projects.vercel.app/immersive-worlds/cafe/pilot/index.html . Add `?targets=byte` to inspect the forced path. PNG evidence comes from the local actual renderer. No share/bypass token, account access or protection change was created. PR #50 remains draft; this owner does not merge.
+
+## Reproduction and limits
+
+```bash
+SCENE_BROWSER_PATH=/path/to/chromium CAFE_TARGETS=byte CAFE_OUTPUT=/tmp/cafe-byte node components/immersiveWorlds/cafe/qa/verify.mjs
+SCENE_BROWSER_PATH=/path/to/chromium CAFE_TARGETS=auto CAFE_OUTPUT=/tmp/cafe-supported node components/immersiveWorlds/cafe/qa/verify.mjs
+```
+
+- Browser: Chromium 153, SwiftShader software WebGL2, DPR 1. Both genuine extensions are present on this test device; the byte run forces the legitimate byte policy without hiding them. Half-float-only, float-only, neither-extension and incomplete-FBO selection cases are unit-tested, not claimed as separately tested physical GPUs.
+- The supported regression expects HalfFloat on this capable test device. Viewport emulation is not physical Fold testing; no mobile GPU/frame-rate claim.
+- Hidden testing injects document.hidden/visibilitychange. Fullscreen testing moves the real canvas between holders; it does not request OS/browser fullscreen.
+- Simulation is paused for reproducible initial stills. The motion test advances real frames and pauses only for pixel readback; renderer quality and requestAnimationFrame timing remain unchanged, without a fixed frame cap.
+- Shared app routing, full app overlays/audio and target-device performance remain the integration owner's checks. No shared/protected file or dependency is changed.
+- Procedural customers/buildings, layered droplet fields and approximate wet street reflection remain the prior known limitations. Interior window reflection is an actual planar render.

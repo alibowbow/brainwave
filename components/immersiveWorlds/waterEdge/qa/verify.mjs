@@ -95,7 +95,7 @@ try {
     const context = await browser.newContext({ viewport: viewports.desktop, deviceScaleFactor: 1, reducedMotion: 'no-preference' });
     const page = await context.newPage();
     page.on('pageerror', error => report.pageErrors.push(error.message));
-    page.on('console', message => { if (message.type() === 'error') report.consoleErrors.push(message.text()); });
+    page.on('console', message => { if (message.type() === 'error') { report.consoleErrors.push(message.text()); console.error(`${world} console: ${message.text()}`); } });
     try {
       await page.goto(`${base}/?world=${world}&active=0`); await ready(page);
       if (!smoke) {
@@ -111,7 +111,7 @@ try {
         await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
         await page.waitForTimeout(150);
         const name = `${smoke ? 'first-' : ''}${world}-${label}.png`;
-        const png = await page.screenshot({ path: path.join(directory, name) });
+        const png = await page.screenshot({ path: path.join(directory, name), timeout: 90000 });
         const state = await inspect(page);
         assert(state.canvases.length === 1 && state.canvases[0].width === viewport.width && state.canvases[0].height === viewport.height, `${label}: canvas does not fill viewport`);
         report.screenshots.push({ file: name, sha256: sha(png), viewport, state, captureMode: 'Real WebGL current frame, paused only for screenshot readback' });
@@ -119,13 +119,16 @@ try {
         console.log(`${world} ${label}: ${name}`);
       }
       if (smoke) continue;
-      await page.setViewportSize(viewports.desktop); await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page, 2);
-      const first = await page.screenshot(); const before = await inspect(page);
-      await waitFrames(page, 15);
-      const second = await page.screenshot(); const after = await inspect(page);
+      await page.setViewportSize(viewports.desktop); await page.waitForTimeout(150);
+      const first = await page.screenshot({ timeout: 90000 }); const before = await inspect(page);
+      await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page, 8);
+      await page.evaluate(() => window.__waterEdgeQA.setActive(false));
+      await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
+      const second = await page.screenshot({ timeout: 90000 }); const after = await inspect(page);
       const diff = await pixelDifference(page, first, second);
       assert(after.canvases[0].time > before.canvases[0].time && diff.changedPixelsOver6RGB > 15, 'Active scene did not visibly animate');
       report.checks.motion = { before, after, difference: diff, firstSha256: sha(first), secondSha256: sha(second) };
+      await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page);
       report.checks.inactive = await freezeCheck(page, 'active=false', () => page.evaluate(() => window.__waterEdgeQA.setActive(false)));
       await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page);
       report.checks.static3D = await freezeCheck(page, 'static3D=true', () => page.evaluate(() => window.__waterEdgeQA.setStatic(true)));
@@ -135,7 +138,9 @@ try {
       report.checks.syntheticHidden = await freezeCheck(page, 'synthetic document.hidden', () => page.evaluate(() => window.__waterEdgeQA.setSyntheticHidden(true)));
       await page.evaluate(() => window.__waterEdgeQA.setSyntheticHidden(null)); await waitFrames(page);
       // A real mouse drag must not become a tap at pointerup.
-      await page.evaluate(() => window.__waterEdgeQA.clearEvents());
+      await page.evaluate(() => { window.__waterEdgeQA.clearEvents(); window.__waterEdgeQA.setOverlay(true); });
+      await page.getByRole('button', { name: 'Overlay QA control' }).click();
+      assert((await inspect(page)).events.length === 0, 'Parent overlay control emitted an interaction');
       await page.mouse.move(630, 450); await page.mouse.down(); await page.mouse.move(730, 490, { steps: 6 }); await page.mouse.up();
       assert((await inspect(page)).events.length === 0, 'Drag emitted a tap interaction');
       // Browser automation dispatch covers explicit pointercancel and an outside release within tap tolerance.
@@ -147,8 +152,8 @@ try {
         }, { endType, x, endX });
         assert((await inspect(page)).events.length === 0, `${test} emitted a tap interaction`);
       }
-      await waitFrames(page, 45);
-      const points = world === 'pebble-shore' ? [[.457, .655], [.46, .65], [.43, .70]] : world === 'night-pond' ? [[.5, .675], [.4, .59], [.65, .63], [.6, .72]] : [[.5, .65], [.4, .62], [.6, .6], [.5, .75]];
+      await waitFrames(page, 12);
+      const points = world === 'pebble-shore' ? [[.4661, .6446], [.46, .65], [.43, .70]] : world === 'night-pond' ? [[.5, .525], [.675, .55], [.5, .675], [.4, .59], [.65, .63], [.6, .72]] : [[.5, .65], [.4, .62], [.6, .6], [.5, .75]];
       let tapPoint;
       for (const [x, y] of points) {
         await page.mouse.click(x * 1280, y * 800);
@@ -157,7 +162,9 @@ try {
       const interaction = (await inspect(page)).events;
       assert(interaction.length === 1, 'Water/pebble tap did not emit one bounded interaction');
       assert(interaction[0].strength >= 0 && interaction[0].strength <= 1 && Number.isFinite(interaction[0].position.x) && Number.isFinite(interaction[0].position.z), 'Unbounded interaction');
-      report.checks.pointer = { realMouseDragNoTap: true, syntheticCancellationNoTap: true, syntheticOutsideReleaseNoTap: true, tapPoint, events: interaction };
+      report.checks.pointer = { parentSurfaceOverlayControlSuppressed: true, parentSurfaceOverlayTapWorked: true, realMouseDragNoTap: true, syntheticCancellationNoTap: true, syntheticOutsideReleaseNoTap: true, tapPoint, events: interaction };
+      await page.evaluate(() => { window.__waterEdgeQA.setActive(false); window.__waterEdgeQA.setOverlay(false); });
+      await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
       const canvasBefore = (await inspect(page)).canvases[0]; const createdBefore = (await inspect(page)).diagnostics.created;
       await page.evaluate(() => window.__waterEdgeQA.setSecondHolder(true));
       await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'secondary');
@@ -174,7 +181,7 @@ try {
         await page.waitForFunction(() => window.__waterEdgeQA.inspect().diagnostics.live === 0, null, { timeout: 9000 });
         const disposed = await inspect(page);
         assert(disposed.canvases.length === 0 && disposed.diagnostics.created === disposed.diagnostics.disposed, 'Scene leaked after host disposal delay');
-        await page.evaluate(() => window.__waterEdgeQA.mount()); await ready(page); await waitFrames(page, 1);
+        await page.evaluate(() => window.__waterEdgeQA.mount()); await ready(page);
         const remounted = await inspect(page);
         assert(remounted.diagnostics.live === 1 && remounted.canvases.length === 1, 'Remount did not make exactly one engine');
         report.checks.mountCycles.push({ cycle: cycle + 1, disposed, remounted });

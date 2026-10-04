@@ -7,7 +7,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
   const camera = new THREE.PerspectiveCamera(56, 1, 0.035, 210);
   const raycaster = new THREE.Raycaster();
   const clock = { value: 0 };
-  const palette = [0x555951, 0x424b49, 0x696960, 0x393f40, 0x626364, 0x79796d, 0x3b4146, 0x6b6a61];
+  const palette = [0x555951, 0x424b49, 0x696960, 0x393f40, 0x626364, 0x5e625c, 0x3b4146, 0x6b6a61];
   const random = seeded(731923);
   const scaleMatrix = new THREE.Object3D();
   scene.fog = new THREE.FogExp2(0xa7b9ba, 0.0085);
@@ -22,6 +22,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
       varying vec3 vD;
       float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
       float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+      float rnCloud(vec2 p){return noise(p)*.7+noise(p*2.7)*.3;}
       void main(){
         vec3 d=normalize(vD);float h=max(d.y,0.);
         vec3 c=mix(vec3(.67,.76,.77),vec3(.32,.46,.54),pow(h,.55));
@@ -29,7 +30,9 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
         c+=vec3(.26,.17,.075)*glow;
         vec2 q=d.xz/max(d.y+.22,.1)*1.8;
         float clouds=noise(q*.7)*.56+noise(q*1.8)*.28+noise(q*4.3)*.16;
-        c=mix(c,vec3(.76,.8,.79),smoothstep(.4,.69,clouds)*smoothstep(.02,.32,h)*.38);
+        float band=rnCloud(vec2(d.x*4.2+d.z*1.7,d.y*24.+d.z*2.));
+        c=mix(c,vec3(.77,.8,.8),smoothstep(.32,.7,clouds)*smoothstep(.005,.2,h)*.34);
+        c-=vec3(.055,.047,.035)*smoothstep(.48,.78,band)*(1.-smoothstep(.13,.58,h));
         c+=vec3(.045,.041,.028)*pow(1.-abs(d.y),7.);
         gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
@@ -49,8 +52,8 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
   environmentSky.geometry.dispose();
   pmrem.dispose();
 
-  scene.add(new THREE.HemisphereLight(0xd1e8eb, 0x5a5144, 2.2));
-  const morning = new THREE.DirectionalLight(0xffe6c1, 3.25);
+  scene.add(new THREE.HemisphereLight(0xd1e8eb, 0x5a5144, 1.85));
+  const morning = new THREE.DirectionalLight(0xffe6c1, 2.65);
   morning.position.set(8, 12, -13);
   morning.castShadow = true;
   morning.shadow.mapSize.set(2048, 2048);
@@ -74,7 +77,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
     bedPositions.setY(i, bedHeight(x, z));
   }
   bedGeometry.computeVertexNormals();
-  const bedMaterial = new THREE.MeshStandardMaterial({ color: 0x535851, roughness: 0.92 });
+  const bedMaterial = new THREE.MeshStandardMaterial({ color: 0x414944, roughness: 0.92 });
   bedMaterial.onBeforeCompile = shader => {
     shader.vertexShader = `varying vec3 vBed;\n${shader.vertexShader}`.replace('#include <begin_vertex>', '#include <begin_vertex>\nvBed=position;');
     shader.fragmentShader = `varying vec3 vBed;\n${noiseGLSL}\n${shader.fragmentShader}`.replace('#include <color_fragment>', `#include <color_fragment>
@@ -111,7 +114,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         float wetR=1.-smoothstep(.26,2.65,vStoneWorld.z+sin(vStoneWorld.x*.7)*.3);
         wetR=max(wetR,(1.-smoothstep(.025,.16,vStoneWorld.y))*.85);
-        roughnessFactor=mix(.76,.16,wetR)+rn(vStoneLocal.xz*39.)*.055;`);
+        roughnessFactor=mix(.76,.23,wetR)+rn(vStoneLocal.xz*39.)*.055;`);
   };
   stoneMaterial.customProgramCacheKey = () => 'water-edge-basalt-v3';
 
@@ -128,6 +131,8 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
       const pz = z + (random() - .5) * .17;
       if (Math.abs(x + .18) < .29 && Math.abs(pz - 1.36) < .21) continue;
       if (random() < .13 || (pz < -1 && random() < .15)) continue;
+      const swashOpening = Math.exp(-Math.pow((x + .35) * .64, 2));
+      if (pz < 1.32 && pz > -3.1 && random() < swashOpening * .78) continue;
       const size = .075 + random() * .11;
       const sx = size * (1. + random() * .8), sy = size * (.47 + random() * .4), sz = size * (.8 + random() * .6);
       const y = bedHeight(x, pz) + sy * .53;
@@ -175,13 +180,13 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
 
   const targetGeometry = wornStoneGeometry(108, 36, 26);
   const targetColors = new Float32Array(targetGeometry.getAttribute('position').count * 3);
-  const targetColor = new THREE.Color(0x737367);
+  const targetColor = new THREE.Color(0x484e49);
   for (let i = 0; i < targetColors.length; i += 3) { targetColors[i] = targetColor.r; targetColors[i + 1] = targetColor.g; targetColors[i + 2] = targetColor.b; }
   targetGeometry.setAttribute('color', new THREE.BufferAttribute(targetColors, 3));
   const rollPebble = new THREE.Mesh(targetGeometry, stoneMaterial);
   rollPebble.name = 'touch-to-roll-near-pebble';
-  rollPebblePosition.y = bedHeight(rollPebblePosition.x, rollPebblePosition.z) + .093;
-  rollPebble.position.copy(rollPebblePosition); rollPebble.scale.set(.235, .137, .189);
+  rollPebblePosition.y = bedHeight(rollPebblePosition.x, rollPebblePosition.z) + .076;
+  rollPebble.position.copy(rollPebblePosition); rollPebble.scale.set(.195, .112, .165);
   rollPebble.rotation.set(.1, .44, .06);
   rollPebble.castShadow = true; rollPebble.receiveShadow = true;
   scene.add(rollPebble);
@@ -197,9 +202,9 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
     uniforms: { uTime: clock, uCamera: { value: camera.position } },
     vertexShader: `
       uniform float uTime;varying vec3 vWorld;varying float vDepth;
-      float bed(float x,float z){return .055*(z+1.7)+.018*sin(x*.67)+.012*sin(z*1.3+x*.2);}
+      float bed(float x,float z){return .038*(z+1.7)+.018*sin(x*.67)+.009*sin(z*1.3+x*.2)-.09*exp(-pow((x+.4)*.6,2.))*exp(-pow((z-.2)*.35,2.));}
       void main(){vec3 p=position;
-        float tide=.026+sin(uTime*.29-.9)*.063+sin(uTime*.14)*.014;
+        float tide=.076+sin(uTime*.29-.7)*.042+sin(uTime*.14)*.009;
         float depth=tide-bed(p.x,p.z);
         p.y=tide+(sin(p.x*.94+p.z*1.57+uTime*.72)*.014+sin(p.z*4.1-p.x*1.3+uTime*.88)*.006)*smoothstep(0.,.8,depth);
         vDepth=p.y-bed(p.x,p.z);vWorld=p;
@@ -209,10 +214,11 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
       uniform float uTime;uniform vec3 uCamera;varying vec3 vWorld;varying float vDepth;
       ${noiseGLSL}
       void main(){
-        if(vDepth<.0005)discard;
         vec2 p=vWorld.xz;
+        float depth=vWorld.y-(.038*(p.y+1.7)+.018*sin(p.x*.67)+.009*sin(p.y*1.3+p.x*.2)-.09*exp(-pow((p.x+.4)*.6,2.))*exp(-pow((p.y-.2)*.35,2.)));
+        if(depth<.0005)discard;
         float tideNoise=(rn(vec2(p.x*2.7+uTime*.06,p.y*.5))-.5)*.012;
-        float edge=vDepth+tideNoise;
+        float edge=depth+tideNoise;
         vec2 wav=vec2(sin(p.x*1.32+p.y*2.1+uTime*.8)*.045+sin(p.y*5.6+uTime*.98)*.022,
           cos(p.x*.91-p.y*1.45+uTime*.52)*.07+sin(p.x*6.1+p.y*3.6+uTime*.83)*.021);
         float detail=rn(p*22.+vec2(uTime*.024,uTime*.053));
@@ -224,7 +230,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
         vec3 skyColor=mix(vec3(.53,.65,.66),vec3(.25,.4,.49),pow(rh,.45));
         float warm=pow(max(dot(reflected,normalize(vec3(.62,.14,-.78))),0.),20.);
         skyColor+=vec3(.28,.19,.085)*warm;
-        vec3 body=mix(vec3(.22,.32,.29),vec3(.16,.29,.31),smoothstep(0.,3.,vDepth));
+        vec3 body=mix(vec3(.22,.32,.29),vec3(.16,.29,.31),smoothstep(0.,3.,depth));
         vec3 c=mix(body,skyColor,.29+fresnel*.63);
         float glimmer=pow(max(dot(reflect(-normalize(vec3(.48,.65,-.59)),normal),viewDir),0.),85.);
         c+=vec3(.77,.62,.35)*glimmer*.2;
@@ -234,7 +240,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
         lace*=smoothstep(.48,.69,rn(p*vec2(13.,21.)+uTime*.06))*.41;
         float foam=clamp(lip*.64+lace,0.,.82);
         c=mix(c,vec3(.78,.85,.79),foam);
-        float alpha=(.25+fresnel*.56+smoothstep(.0,.65,vDepth)*.21)*smoothstep(.0,.014,vDepth);
+        float alpha=(.25+fresnel*.56+smoothstep(.0,.65,depth)*.21)*smoothstep(.0,.014,depth);
         alpha=max(alpha,foam*.8);
         // Distance mist blends the far water naturally into a luminous silver horizon.
         c=mix(c,vec3(.57,.67,.67),1.-exp(-length(p)*.008));
@@ -247,7 +253,16 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
   water.name = 'advancing-shallow-swash'; water.renderOrder = 2; water.frustumCulled = false; scene.add(water);
 
   // A low, asymmetric basalt headland defines this small cove; it is not the open oil-sea panorama.
-  const coastMaterial = new THREE.MeshStandardMaterial({ color: 0x4b5450, roughness: .95, vertexColors: true, envMapIntensity: .18 });
+  const coastMaterial = new THREE.MeshStandardMaterial({ color: 0xb3b7af, roughness: .96, vertexColors: true, envMapIntensity: .15 });
+  coastMaterial.onBeforeCompile = shader => {
+    shader.vertexShader = `varying vec3 vCrag;\n${shader.vertexShader}`.replace('#include <begin_vertex>', '#include <begin_vertex>\nvCrag=(modelMatrix*vec4(position,1.)).xyz;');
+    shader.fragmentShader = `varying vec3 vCrag;\n${noiseGLSL}\n${shader.fragmentShader}`.replace('#include <color_fragment>', `#include <color_fragment>
+      float strata=abs(sin(vCrag.y*5.5+rn(vCrag.xz*.65)*1.1));
+      float cleft=1.-smoothstep(.035,.18,strata);
+      float fissure=1.-smoothstep(.028,.1,abs(sin(vCrag.x*3.7+vCrag.z*2.2+rn(vCrag.xy*.9)*2.)));
+      diffuseColor.rgb*=.64+rn(vCrag.xz*3.2+vCrag.y*.6)*.37;
+      diffuseColor.rgb*=1.-cleft*.2-fissure*.15;`);
+  };
   const coastSpecs = [
     [-28, -33, 13, 5.8, 8, 53], [-19, -37, 9, 4.5, 7, 39], [-13, -37, 7, 2.8, 6, 91],
     [-8.8, -38, 4.8, 1.7, 3.5, 13], [-33, -27, 10, 5.6, 7, 84],
@@ -260,7 +275,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
     for (let j = 0; j < positions.count; j++) {
       const y = positions.getY(j);
       const top = THREE.MathUtils.smoothstep(y, .31, .8);
-      const c = new THREE.Color(0x777d76).lerp(new THREE.Color(0x616948), top * .65);
+      const c = new THREE.Color(0x646b67).lerp(new THREE.Color(0x676d50), top * .48);
       c.multiplyScalar(.9 + .1 * Math.sin(positions.getX(j) * 21 + positions.getZ(j) * 13));
       colors[j * 3] = c.r; colors[j * 3 + 1] = c.g; colors[j * 3 + 2] = c.b;
     }
@@ -298,10 +313,10 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
     const portrait = width / height < .8;
     camera.aspect = width / height;
     camera.fov = portrait ? 58 : 55;
-    camera.position.set(portrait ? -.05 : .05, portrait ? .71 : .76, portrait ? 3.35 : 3.25);
+    camera.position.set(portrait ? -.05 : .05, portrait ? .67 : .72, portrait ? 3.35 : 3.25);
     // Portrait deliberately tilts toward the reachable waterline, retaining the horizon and
     // substantial tactile stones rather than spending the narrow frame on an empty sky.
-    camera.lookAt(portrait ? -.2 : -.32, portrait ? -.11 : .05, portrait ? -2.9 : -4.4);
+    camera.lookAt(portrait ? -.2 : -.32, portrait ? -.43 : -.2, portrait ? -1.25 : -2.65);
     camera.updateProjectionMatrix(); camera.updateMatrixWorld();
   }
   function update(time: number, _dt: number) {
@@ -312,7 +327,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
       const ease = 1 - Math.pow(1 - t, 3);
       const rocking = Math.sin(t * Math.PI * 5) * (1 - t) * .035;
       rollPebble.position.x = rollBaseX + rollDirection * .19 * ease;
-      rollPebble.position.y = bedHeight(rollPebble.position.x, rollPebble.position.z) + .093 + Math.sin(t * Math.PI) * .027;
+      rollPebble.position.y = bedHeight(rollPebble.position.x, rollPebble.position.z) + .076 + Math.sin(t * Math.PI) * .027;
       rollPebble.rotation.z = .06 - rollDirection * ease * .62 + rocking;
     }
   }
@@ -331,7 +346,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
 }
 
 function seeded(seed: number) { return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
-function bedHeight(x: number, z: number) { return .055 * (z + 1.7) + .018 * Math.sin(x * .67) + .012 * Math.sin(z * 1.3 + x * .2); }
+function bedHeight(x: number, z: number) { return .038 * (z + 1.7) + .018 * Math.sin(x * .67) + .009 * Math.sin(z * 1.3 + x * .2) - .09 * Math.exp(-Math.pow((x + .4) * .6, 2)) * Math.exp(-Math.pow((z - .2) * .35, 2)); }
 function wornStoneGeometry(seed: number, width: number, height: number) {
   const g = new THREE.SphereGeometry(1, width, height);
   const p = g.getAttribute('position');
@@ -348,7 +363,8 @@ function cragGeometry(seed: number, width: number, height: number) {
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
     const ridges = Math.sin(x * 8 + seed) * Math.sin(z * 9 + seed * .5) * .12 + Math.sin(x * 19 + z * 12) * .035;
-    const r = 1 + ridges + Math.sin(y * 9 + x * 5) * .08;
+    const terrace = Math.sin(y * 27. + x * 2.4 + seed) * .034;
+    const r = 1 + ridges + Math.sin(y * 9 + x * 5) * .11 + terrace;
     p.setXYZ(i, x * r, y < -.05 ? -.04 : Math.pow(Math.max(0, y), .73) * r, z * r);
   }
   g.computeVertexNormals(); return g;

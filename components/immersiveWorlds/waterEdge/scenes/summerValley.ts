@@ -40,7 +40,7 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
       return mix(mix(mix(hash31(i), hash31(i+vec3(1,0,0)), f.x), mix(hash31(i+vec3(0,1,0)), hash31(i+vec3(1,1,0)), f.x), f.y),
         mix(mix(hash31(i+vec3(0,0,1)), hash31(i+vec3(1,0,1)), f.x), mix(hash31(i+vec3(0,1,1)), hash31(i+vec3(1,1,1)), f.x), f.y), f.z);
     }
-    float stoneFbm(vec3 p) { return noise3(p)*.55 + noise3(p*2.07)*.28 + noise3(p*4.13)*.12 + noise3(p*8.21)*.05; }
+    float stoneFbm(vec3 p) { return noise3(p)*.72 + noise3(p*2.07)*.28; }
     float caustic(vec2 p, float t) {
       p *= 3.3;
       p += vec2(sin(p.y * .7 + t*.35), cos(p.x*.8-t*.27))*.45;
@@ -66,8 +66,8 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
         uniform float uValleyTime; varying vec3 vValleyWorld; varying vec3 vValleyNormal;
         ${noiseGLSL}`);
       const stone = `
-        float grit = stoneFbm(vValleyWorld*17.);
-        float broad = stoneFbm(vValleyWorld*3.1);
+        float grit = noise3(vValleyWorld*17.);
+        float broad = noise3(vValleyWorld*3.1);
         float grain = noise3(vValleyWorld*137.);
         float vein = smoothstep(.68,.71,noise3(vValleyWorld*vec3(4.,13.,4.))+sin(vValleyWorld.y*19.+broad*9.)*.13);
         diffuseColor.rgb *= .68 + grit*.46 + grain*.17;
@@ -89,7 +89,7 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
         float grain = stoneFbm(vValleyWorld*vec3(12.,.7,12.));
         float seams = smoothstep(.39,.46,noise3(vValleyWorld*vec3(23.,1.1,23.)));
         diffuseColor.rgb *= .51 + grain*.84 + seams*.17;
-        float moss = smoothstep(.49,.66,stoneFbm(vValleyWorld*2.7))*(1.-smoothstep(.3,2.,vValleyWorld.y));
+        float moss = smoothstep(.49,.66,noise3(vValleyWorld*2.7))*(1.-smoothstep(.3,2.,vValleyWorld.y));
         diffuseColor.rgb = mix(diffuseColor.rgb,vec3(.10,.16,.045),moss*.72);
       `;
       shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>\n${mode === 'stone' ? stone : mode === 'soil' ? soil : wood}`);
@@ -189,14 +189,16 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
     const lower = start.clone().lerp(end, .24); lower.z -= bend * .52;
     const upper = start.clone().lerp(end, .80); upper.x -= bend * .35;
     const curve = new THREE.CatmullRomCurve3([start, lower, mid, upper, end]);
-    const geometry = new THREE.TubeGeometry(curve, 7, radius, 7, false);
+    const segments = radius > .14 ? 7 : 4;
+    const sides = radius > .14 ? 7 : 5;
+    const geometry = new THREE.TubeGeometry(curve, segments, radius, sides, false);
     const p = geometry.attributes.position;
     // Taper each generated longitudinal ring towards the twig.
-    for (let ring = 0; ring <= 7; ring++) {
-      const center = curve.getPointAt(ring / 7);
-      const taper = 1 - ring / 7 * .71;
-      for (let j = 0; j < 8; j++) {
-        const k = ring * 8 + j;
+    for (let ring = 0; ring <= segments; ring++) {
+      const center = curve.getPointAt(ring / segments);
+      const taper = 1 - ring / segments * .71;
+      for (let j = 0; j <= sides; j++) {
+        const k = ring * (sides + 1) + j;
         p.setXYZ(k, center.x + (p.getX(k)-center.x)*taper, center.y + (p.getY(k)-center.y)*taper, center.z + (p.getZ(k)-center.z)*taper);
       }
     }
@@ -223,7 +225,7 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
         const twigStart = start.clone().lerp(end,.46+twig*.16);
         const twigEnd = twigStart.clone().add(new THREE.Vector3((random()-.5)*2.8, .7+random()*.9, (random()-.5)*2.8));
         addBranch(twigStart, twigEnd, radius * .10, .07);
-        const number = i < 24 ? 36 : 20;
+        const number = i < 24 ? 28 : 16;
         for (let j = 0; j < number; j++) {
           const p = twigStart.clone().lerp(twigEnd, .22+random()*.92);
           p.add(new THREE.Vector3((random()-.5)*1.3,(random()-.5)*.65,(random()-.5)*1.3));
@@ -239,7 +241,7 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
   }
   // Asymmetric midstory closes the forest's empty horizon and layers real leaves
   // between the ground ferns and tall canopy rather than floating canopy masses.
-  for (let i = 0; i < 94; i++) {
+  for (let i = 0; i < 72; i++) {
     const z = i < 26 ? -40 - random() * 13 : 3 - random() * 42;
     const side = i % 2 ? 1 : -1;
     const x = streamCenter(z) + side * (streamWidth(z) + .9 + random() * 12);
@@ -252,7 +254,7 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
       addBranch(base, end, .026 + random() * .024, .12);
       for (let cluster = 0; cluster < 3; cluster++) {
         const center = base.clone().lerp(end, .48 + cluster * .25);
-        for (let j = 0; j < 16; j++) {
+        for (let j = 0; j < 11; j++) {
           const p = center.clone().add(new THREE.Vector3((random()-.5)*1.15,(random()-.5)*.65,(random()-.5)*1.15));
           leafPlacements.push({ p, scale:.29+random()*.28, angle:random()*Math.PI*2 });
         }
@@ -372,15 +374,20 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
 
   // Clear surface: Fresnel forest reflection, directional micro-ripples and a local impulse.
   // Reflected foliage is captured once from the actual 3D environment, not a sky image.
-  const reflectionTarget = new THREE.WebGLCubeRenderTarget(256,{generateMipmaps:true,minFilter:THREE.LinearMipmapLinearFilter,type:THREE.HalfFloatType});
+  const reflectionTarget = new THREE.WebGLCubeRenderTarget(128,{generateMipmaps:true,minFilter:THREE.LinearMipmapLinearFilter,type:THREE.HalfFloatType});
   const reflectionCamera = new THREE.CubeCamera(.1,100,reflectionTarget);
   reflectionCamera.position.set(0,.22,-5);
+  const captureAutoUpdate = renderer.shadowMap.autoUpdate;
+  const captureNeedsUpdate = renderer.shadowMap.needsUpdate;
+  renderer.shadowMap.autoUpdate=false; renderer.shadowMap.needsUpdate=false;
   reflectionCamera.update(renderer,scene);
-  const refractionTarget = new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter});
+  renderer.shadowMap.autoUpdate=captureAutoUpdate; renderer.shadowMap.needsUpdate=captureNeedsUpdate;
+  const refractionTarget = new THREE.WebGLRenderTarget(1,1,{type:THREE.UnsignedByteType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter});
+  refractionTarget.depthTexture = new THREE.DepthTexture(1,1,THREE.UnsignedIntType);
   const refractionSize = new THREE.Vector2(1,1);
   const waterMat = new THREE.ShaderMaterial({
     depthWrite:true,side:THREE.DoubleSide,
-    uniforms:{uValleyTime:clock,uImpulse:ripple,uReflection:{value:reflectionTarget.texture},uRefraction:{value:refractionTarget.texture},uResolution:{value:refractionSize}},
+    uniforms:{uValleyTime:clock,uImpulse:ripple,uReflection:{value:reflectionTarget.texture},uRefraction:{value:refractionTarget.texture},uSceneDepth:{value:refractionTarget.depthTexture},uResolution:{value:refractionSize}},
     vertexShader:`
       uniform float uValleyTime; uniform vec4 uImpulse; varying vec3 vWaterWorld;
       float impulse(vec2 p) {
@@ -398,7 +405,7 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
     `,
     fragmentShader:`
       uniform float uValleyTime; uniform vec4 uImpulse; uniform samplerCube uReflection;
-      uniform sampler2D uRefraction; uniform vec2 uResolution;
+      uniform sampler2D uRefraction; uniform sampler2D uSceneDepth; uniform vec2 uResolution;
       varying vec3 vWaterWorld;
       float heightAt(vec2 p) {
         float a=sin(p.y*3.1+uValleyTime*.47+sin(p.x*1.4))*.014;
@@ -417,7 +424,11 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
         vec3 reflected=textureCube(uReflection,reflect(-eye,n)).rgb;
         vec2 uv=gl_FragCoord.xy/uResolution;
         vec2 offset=n.xz*.011*min(1.,2.5/length(cameraPosition-vWaterWorld));
-        vec3 bedColor=texture2D(uRefraction,clamp(uv+offset,vec2(.001),vec2(.999))).rgb;
+        vec2 refractedUv=clamp(uv+offset,vec2(.001),vec2(.999));
+        // Reject a shifted sample when it pulls a foreground rock/fern into
+        // the water. Only fragments genuinely behind this water may refract.
+        if(texture2D(uSceneDepth,refractedUv).r<gl_FragCoord.z-.00005)refractedUv=uv;
+        vec3 bedColor=texture2D(uRefraction,refractedUv).rgb;
         bedColor*=vec3(.92,.98,.94);
         vec3 col=mix(bedColor,reflected,.035+fresnel*.55);
         float sunlight=pow(max(dot(reflect(-normalize(vec3(-8.,16.,-8.)),n),eye),0.),210.);
@@ -469,9 +480,13 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
   // Full native-size scene-color refraction. This is invoked after the shared
   // runtime applies bounded camera look, so refraction and the main view agree.
   // The shadow map is reused; refraction never doubles the static forest shadow pass.
+  const capturedCamera=new THREE.Matrix4();
+  let capturedTime=-1;
   water.onBeforeRender=()=>{
     renderer.getDrawingBufferSize(refractionSize);
-    if(refractionTarget.width!==refractionSize.x||refractionTarget.height!==refractionSize.y)refractionTarget.setSize(refractionSize.x,refractionSize.y);
+    const resized=refractionTarget.width!==refractionSize.x||refractionTarget.height!==refractionSize.y;
+    if(!resized&&capturedTime===clock.value&&capturedCamera.equals(camera.matrixWorld))return;
+    if(resized)refractionTarget.setSize(refractionSize.x,refractionSize.y);
     const oldTarget=renderer.getRenderTarget();
     const oldAutoUpdate=renderer.shadowMap.autoUpdate;
     const oldNeedsUpdate=renderer.shadowMap.needsUpdate;
@@ -482,6 +497,7 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
     renderer.setRenderTarget(oldTarget);
     renderer.shadowMap.autoUpdate=oldAutoUpdate; renderer.shadowMap.needsUpdate=oldNeedsUpdate;
     water.visible=true; glintPoints.visible=true;
+    capturedTime=clock.value; capturedCamera.copy(camera.matrixWorld);
   };
   const raycaster=new THREE.Raycaster();
   const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-waterY);

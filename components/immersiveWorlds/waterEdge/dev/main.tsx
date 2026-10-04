@@ -50,9 +50,10 @@ function Harness() {
   const [static3D, setStatic] = useState(query.get('static') === '1');
   const [mounted, setMounted] = useState(true);
   const [second, setSecondHolder] = useState(false);
+  const [overlay, setOverlay] = useState(false);
   useEffect(() => {
     window.__waterEdgeQA = {
-      setActive, setStatic, setSecondHolder, setWorld: setKind,
+      setActive, setStatic, setSecondHolder, setOverlay, setWorld: setKind,
       mount: () => setMounted(true), unmount: () => { setSecondHolder(false); setMounted(false); },
       inspect, events, clearEvents: () => { events.length = 0; }, setSyntheticHidden,
     };
@@ -61,7 +62,7 @@ function Harness() {
   const World = worlds[kind];
   const onInteraction = (event: WaterEdgeInteraction) => { events.push(event); };
   return <>
-    <main className="qa-holder" data-holder="primary" data-scene-surface>{mounted && <World active={active} static3D={static3D} onInteraction={onInteraction} />}</main>
+    <main className="qa-holder" data-holder="primary" data-scene-surface>{mounted && <World active={active} static3D={static3D} onInteraction={onInteraction} />}{overlay && <div className="qa-drag-overlay" data-scene-drag><button type="button">Overlay QA control</button></div>}</main>
     {mounted && second && <section className="qa-holder qa-secondary" data-holder="secondary" data-scene-surface><World active={active} static3D={static3D} onInteraction={onInteraction} /></section>}
     {query.get('controls') === '1' && <aside className="qa-controls">
       <select aria-label="World" value={kind} onChange={(event) => setKind(event.target.value as WaterEdgeKind)}>{Object.keys(worlds).map((id) => <option key={id}>{id}</option>)}</select>
@@ -73,7 +74,7 @@ function Harness() {
   </>;
 }
 interface WaterEdgeQA {
-  setActive(value: boolean): void; setStatic(value: boolean): void; setSecondHolder(value: boolean): void;
+  setActive(value: boolean): void; setStatic(value: boolean): void; setSecondHolder(value: boolean): void; setOverlay(value: boolean): void;
   setWorld(value: WaterEdgeKind): void; mount(): void; unmount(): void; inspect: typeof inspect;
   events: WaterEdgeInteraction[]; clearEvents(): void; setSyntheticHidden(value: boolean | null): void;
 }

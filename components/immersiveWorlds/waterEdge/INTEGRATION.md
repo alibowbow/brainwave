@@ -8,11 +8,11 @@ This worker owns only `components/immersiveWorlds/waterEdge/` and `public/immers
 | `nature:summer_valley` | `components/immersiveWorlds/waterEdge/SummerValleyWorld.tsx` |
 | `nature:pebble_shore` | `components/immersiveWorlds/waterEdge/PebbleShoreWorld.tsx` |
 
-Each entry accepts `{ active: boolean; static3D?: boolean; onInteraction?: (event: WaterEdgeInteraction) => void }`. Only `active` is required. Lazy-import entries from the shared core. Supply a positioned parent with a nonzero height; the world fills it. No extra audio context, media element, fetch dependency or external asset service is created. All geometry, textures and shaders are procedural original work. Public asset directory is intentionally empty of runtime assets.
+Each entry accepts `{ active: boolean; static3D?: boolean; onInteraction?: (event: WaterEdgeInteraction) => void }`. Only `active` is required. Lazy-import entries from the shared core. Supply a positioned parent with a nonzero height; the world fills it. Keep existing `data-scene-surface` / `data-scene-drag` hooks for chrome-overlay look/taps, and classify these IDs as live 3D centrally so shared overlays and touch-action follow the existing live-scene path. No extra audio context, media element, fetch dependency or external asset service is created. All geometry, textures and shaders are procedural original work. Public asset directory is intentionally empty of runtime assets.
 
 ## Rendering and lifecycle
 
-Each world has its own Three scene and camera; each same-world player/fullscreen holder shares one `LiveSceneHost` and one canvas. The newest holder wins, and release returns the canvas to the previous holder. Different worlds have independent hosts. All holders released => animation stops immediately, then the standard host disposes after 5 seconds. Geometry, instance buffers, material textures, shadow maps, environment targets and renderer are released. No package changes.
+Each world has its own Three scene and camera; each same-world player/fullscreen holder shares one `LiveSceneHost` and one canvas. The newest holder wins, and release returns the canvas to the previous holder. Different worlds have independent hosts. All holders released => animation stops immediately, then the standard host disposes after 5 seconds. Geometry, instance buffers, material textures, shadow maps, environment targets and renderer are released. Static shadow maps are cached; the rolling pebble explicitly invalidates its map while moving. No package changes.
 
 Normal view uses antialiasing, DPR up to 2, and requestAnimationFrame without an artificial frame cap. Reduced-motion media query, existing `.reduce-motion` app setting, hidden document, `active=false` or `static3D=true` preserve a rendered first/current 3D frame and stop animation/interaction. Resize re-renders the still view. WebGL failure displays a truthful localized unavailable state; it never claims a poster is live 3D.
 
@@ -50,8 +50,8 @@ npm run build
 npm run check:bundle
 npx vite build --config components/immersiveWorlds/waterEdge/dev/vite.config.ts
 npx vite preview --config components/immersiveWorlds/waterEdge/dev/vite.config.ts --host 127.0.0.1 --port 4187
-# In another terminal:
-SCENE_BASE_URL=http://127.0.0.1:4187 SCENE_BROWSER_PATH=/path/to/chromium node components/immersiveWorlds/waterEdge/qa/verify.mjs
+# The verifier can start its own server, useful for isolated execution environments:
+CHROMIUM_PATH=/path/to/chromium node components/immersiveWorlds/waterEdge/qa/verify.mjs --serve
 ```
 
 Open `/?world=night-pond`, `/?world=summer-valley`, or `/?world=pebble-shore`; add `&controls=1` for QA controls. See QA report for exact executed commands, browser/runtime, code/bundle digests and limitations. Root production build passing does not by itself prove the unintegrated scenes render: the separate harness build and actual WebGL checks provide that evidence.

@@ -130,7 +130,7 @@ export function createNightPond(_renderer: THREE.WebGLRenderer): WorldScene {
     }g.computeVertexNormals();return g;
   };
   const stoneGeos=[makeStoneGeo(0),makeStoneGeo(2),makeStoneGeo(4)];
-  const rockPositions=[[-.84,-.09,3.61,.61,.28,.56],[-1.70,-.03,3.30,1.04,.34,.71],[1.83,-.03,3.95,.9,.37,.74],[-2.63,.01,2.7,.82,.32,.56],[2.69,.01,2.4,.86,.35,.58],[-3.6,.03,.0,.94,.30,.74]];
+  const rockPositions=[[-.61,-.09,3.61,.48,.25,.56],[-1.70,-.03,3.30,1.04,.34,.71],[1.83,-.03,3.95,.9,.37,.74],[-2.63,.01,2.7,.82,.32,.56],[2.69,.01,2.4,.86,.35,.58],[-3.6,.03,.0,.94,.30,.74]];
   rockPositions.forEach((r,i)=>{const m=new THREE.Mesh(stoneGeos[i%3],rockMat);m.position.set(r[0],r[1],r[2]);m.scale.set(r[3],r[4],r[5]);m.rotation.y=between(0,6);scene.add(m);});
   const smallStones=new THREE.InstancedMesh(stoneGeos[0],rockMat,145);const dummy=new THREE.Object3D();
   for(let i=0;i<145;i++){
@@ -145,8 +145,8 @@ export function createNightPond(_renderer: THREE.WebGLRenderer): WorldScene {
       void main(){vec2 q=vUv*2.-1.;float r=length(q);float a=atan(q.y,q.x);float vein=pow(abs(cos(a*9.+sin(r*14.)*.11)),95.)*(1.-smoothstep(.75,1.,r));
         float fine=sin(r*127.+sin(a*17.)*2.)*.01;vec3 c=mix(vec3(.016,.044,.035),vec3(.048,.085,.051),r*.5+.2);
         c+=vec3(.007,.015,.007)*vein;c+=fine*vec3(.16,.24,.1);c=mix(c,vec3(.052,.083,.040),smoothstep(.94,1.,r)*.20);
-        vec3 v=normalize(cameraPosition-vWorld);float spec=pow(max(dot(normalize(v+vec3(.1,.4,-1.)),normalize(vNormal)),0.),85.);
-        c+=vec3(.27,.41,.40)*spec*.45;gl_FragColor=vec4(c,1.);
+        vec3 v=normalize(cameraPosition-vWorld);float spec=pow(max(dot(normalize(v+vec3(.1,.4,-1.)),normalize(vNormal)),0.),45.);
+        c+=vec3(.18,.24,.20)*spec*.12;gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`});
@@ -162,7 +162,7 @@ export function createNightPond(_renderer: THREE.WebGLRenderer): WorldScene {
     const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g;
   }
   const lilies: {mesh:THREE.Mesh,phase:number}[]=[];
-  const padLocations=[[-.68,2.30,.44],[.63,2.70,.34],[1.64,1.33,.51],[-2.02,1.08,.45],[-.22,.67,.33],[2.27,-.08,.37],[-2.9,-.4,.37],[1.26,-.73,.26],[-3.15,-2,.32],[2.71,-2.1,.31],[-1.73,-3.2,.23]];
+  const padLocations=[[-.28,2.93,.32],[.63,2.70,.34],[1.64,1.33,.51],[-2.02,1.08,.45],[-.22,.67,.33],[2.27,-.08,.37],[-2.9,-.4,.37],[1.26,-.73,.26],[-3.15,-2,.32],[2.71,-2.1,.31],[-1.73,-3.2,.23]];
   for(let i=0;i<30;i++)if(i>=padLocations.length)padLocations.push([between(-5,5),between(-14,-3),between(.16,.31)]);
   padLocations.forEach((p,i)=>{const m=new THREE.Mesh(lilyGeometry(p[2],i),lilyMat);m.position.set(p[0],.012,p[1]);m.rotation.y=between(-3,3);scene.add(m);lilies.push({mesh:m,phase:random()*6});});
 
@@ -181,7 +181,7 @@ export function createNightPond(_renderer: THREE.WebGLRenderer): WorldScene {
     const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:'#c4d7c3',roughness:.53,side:THREE.DoubleSide}));m.position.set(x,.055,z);scene.add(m);
     const core=new THREE.Mesh(new THREE.SphereGeometry(size*.17,10,6),new THREE.MeshStandardMaterial({color:'#b8ab5d',roughness:.78}));core.scale.y=.55;core.position.set(x,.13,z);scene.add(core);
   }
-  flower(-.61,2.11,.14);flower(2.14,-1.3,.16);
+  flower(-.27,2.82,.105);flower(2.14,-1.3,.16);
 
   // Curved blade meshes include a centre ridge and actual tapered tips.
   const blades:THREE.BufferGeometry[]=[],stems:THREE.BufferGeometry[]=[],heads:THREE.BufferGeometry[]=[];
@@ -207,7 +207,7 @@ export function createNightPond(_renderer: THREE.WebGLRenderer): WorldScene {
     }
   }
   reeds(-2.9,2.2,78,.65,true);reeds(3.8,2,68,.66,true);
-  for(let i=0;i<26;i++)blade(between(-.98,-.55),between(3.3,3.7),between(.35,.72),between(.025,.06),between(-.7,.4),between(.1,.3));
+  for(let i=0;i<26;i++)blade(between(-.69,-.48),between(3.3,3.7),between(.30,.62),between(.025,.06),between(-.7,.4),between(.1,.3));
   for(let i=0;i<12;i++)blade(between(1.05,1.25),between(2.6,3.1),between(.45,.9),between(.035,.07),between(2.4,3.5),between(.1,.25));reeds(-3.9,-1.9,68,.8,false);reeds(4.9,-5.5,65,1.4,false);
   reeds(-6.3,-10.3,100,1.8,false);reeds(7.1,-13.7,105,2,false);
   const reedGroup=new THREE.Group();
@@ -242,6 +242,8 @@ export function createNightPond(_renderer: THREE.WebGLRenderer): WorldScene {
     }
   });
   const branches=new THREE.Mesh(mergeGeometries(branchGeos)!,bark);branchGeos.forEach(g=>g.dispose());scene.add(branches);
+  // Uneven low understory hides the bare bank rim without a second heavy forest.
+  for(let i=0;i<31;i++){const x=-21+i*1.4+between(-.4,.4);crownTips.push({p:new THREE.Vector3(x,between(.35,.9),-21.8-Math.cos(x*.18)*3.8+between(-.4,.3)),r:between(.65,1.15)});}
   const leafCount=crownTips.length*100;
   const leaves=new THREE.InstancedMesh(leafGeometry,new THREE.MeshStandardMaterial({color:'#adbcab',roughness:.87,side:THREE.DoubleSide}),leafCount);
   let li=0;
@@ -256,7 +258,7 @@ export function createNightPond(_renderer: THREE.WebGLRenderer): WorldScene {
   // Curving opposite bank has real raised terrain with reeds and low shrubs.
   const rearGeo=new THREE.PlaneGeometry(45,10,70,12);rearGeo.rotateX(-Math.PI/2);
   const rp=rearGeo.attributes.position,rc:number[]=[];
-  for(let i=0;i<rp.count;i++){const x=rp.getX(i),v=rp.getZ(i)+5;rp.setXYZ(i,x,-.08+Math.min(v*.14,.65)+Math.sin(x*.63)*.035,-21.5-Math.cos(x*.18)*3.8-v);const c=new THREE.Color('#49624c').multiplyScalar(between(.8,1.1));rc.push(c.r,c.g,c.b);}
+  for(let i=0;i<rp.count;i++){const x=rp.getX(i),v=rp.getZ(i)+5;rp.setXYZ(i,x,-.08+Math.min(v*.14,.55)+Math.sin(x*.43+v*.5)*.13+Math.sin(x*.91)*.05,-21.5-Math.cos(x*.18)*3.8-v);const c=new THREE.Color('#49624c').multiplyScalar(between(.8,1.1));rc.push(c.r,c.g,c.b);}
   // z decreases as the original z increases; restore front-facing winding.
   if(rearGeo.index)for(let i=0;i<rearGeo.index.count;i+=3){const b=rearGeo.index.getX(i+1);rearGeo.index.setX(i+1,rearGeo.index.getX(i+2));rearGeo.index.setX(i+2,b);}
   rearGeo.setAttribute('color',new THREE.Float32BufferAttribute(rc,3));rearGeo.computeVertexNormals();scene.add(new THREE.Mesh(rearGeo,earthMat));

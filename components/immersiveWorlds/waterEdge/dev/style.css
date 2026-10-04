@@ -4,3 +4,6 @@ body { font-family: system-ui, sans-serif; }
 .qa-secondary { z-index: 2; }
 .qa-controls { position: fixed; z-index: 5; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 12px; padding: 12px; background: #12202be8; color: #eee; font-size: 13px; border-radius: 8px; }
 .qa-controls label { display: flex; gap: 4px; align-items: center; }
+
+.qa-drag-overlay { position: absolute; inset: 0; }
+.qa-drag-overlay button { position: absolute; top: 10px; right: 10px; }

@@ -21,6 +21,7 @@ export class ForestEngine implements LiveSceneEngine {
   private time = 0;
   private frame = 0;
   private request = 0;
+  private pendingGPUFrames: WebGLSync[] = [];
   private last = 0;
   private running = false;
   private disposed = false;
@@ -430,7 +431,9 @@ export class ForestEngine implements LiveSceneEngine {
   renderFrame(dt:number){
     if(!this.ready||this.disposed)return;
     const step=Math.max(0,Math.min(dt,.05));this.time+=step;this.clock.value=this.time;
-    this.look.update(step);
+    // The analytic camera spring follows elapsed time even on a slow GPU.
+    // Ambient wind remains conservatively clamped after unusually long frames.
+    this.look.update(Math.max(0,Math.min(dt,1)));
     this.camera.lookAt(Math.sin(this.look.yaw)*14,1.65+this.look.pitch*14,-9);
     this.waterUniforms.time.value=this.time;
     for(let i=0;i<this.plants.length;i++){
@@ -440,12 +443,34 @@ export class ForestEngine implements LiveSceneEngine {
     }
     for(let i=0;i<this.birds.length;i++)this.birds[i].rotation.y=.65+Math.sin(this.time*.21+i*2.1)*.09;
     this.renderer.info.reset();this.renderer.render(this.scene,this.camera);this.frame++;
+    const gl=this.renderer.getContext() as WebGL2RenderingContext;
+    const fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
+    if(fence)this.pendingGPUFrames.push(fence);gl.flush();
     Object.assign(this.canvas.dataset,{frames:String(this.frame),time:this.time.toFixed(4),lookYaw:this.look.yaw.toFixed(5),lookPitch:this.look.pitch.toFixed(5),drawCalls:String(this.renderer.info.render.calls),triangles:String(this.renderer.info.render.triangles)});
+  }
+
+  private retireGPUFrames(){
+    const gl=this.renderer.getContext() as WebGL2RenderingContext;
+    while(this.pendingGPUFrames.length){
+      const fence=this.pendingGPUFrames[0],status=gl.clientWaitSync(fence,0,0);
+      if(status===gl.TIMEOUT_EXPIRED)break;
+      gl.deleteSync(fence);this.pendingGPUFrames.shift();
+    }
   }
 
   start(){
     if(this.running||this.disposed)return;this.running=true;this.canvas.dataset.running='true';this.last=performance.now();
-    const tick=(now:number)=>{if(!this.running)return;const dt=(now-this.last)/1000;this.last=now;this.renderFrame(dt);this.request=requestAnimationFrame(tick);};
+    const tick=(now:number)=>{
+      if(!this.running)return;
+      this.retireGPUFrames();
+      // Keep at most two live GPU submissions in flight. This preserves normal
+      // display-rate RAF rendering without queuing seconds of stale frames on
+      // a busy GPU. It neither fixes FPS nor reduces pixels/material quality.
+      if(this.pendingGPUFrames.length<2){
+        const dt=(now-this.last)/1000;this.last=now;this.renderFrame(dt);
+      }
+      this.request=requestAnimationFrame(tick);
+    };
     this.request=requestAnimationFrame(tick);
   }
   stop(){this.running=false;cancelAnimationFrame(this.request);this.request=0;this.canvas.dataset.running='false';this.look.release();}
@@ -457,7 +482,8 @@ export class ForestEngine implements LiveSceneEngine {
   captureFrame(){
     if(!this.ready||this.disposed)throw new Error('Forest renderer is not ready.');
     this.renderFrame(0);
-    return {dataUrl:this.canvas.toDataURL('image/jpeg',.9),width:this.canvas.width,height:this.canvas.height,time:this.time};
+    const result={dataUrl:this.canvas.toDataURL('image/jpeg',.9),width:this.canvas.width,height:this.canvas.height,time:this.time};
+    this.retireGPUFrames();return result;
   }
   setOnInteraction(callback:((event:ForestInteraction)=>void)|undefined){this.onInteraction=callback;}
   touch(x:number,y:number){
@@ -482,6 +508,8 @@ export class ForestEngine implements LiveSceneEngine {
 
   dispose(){
     if(this.disposed)return;this.stop();this.disposed=true;this.ready=false;this.onInteraction=undefined;
+    const gl=this.renderer.getContext() as WebGL2RenderingContext;
+    this.pendingGPUFrames.forEach(fence=>gl.deleteSync(fence));this.pendingGPUFrames=[];
     this.canvas.removeEventListener('webglcontextlost',this.onLost);
     const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>(),textures=new Set<THREE.Texture>();
     this.scene.traverse(object=>{

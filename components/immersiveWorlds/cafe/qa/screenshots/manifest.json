@@ -1,28 +1,27 @@
 {
-  "code_base": "051c5249e9531172db37124106e03c272a7864f6",
-  "code_changes": [
-    "CafeWorld: maximum drag-distance tap guard",
-    "qa/main.tsx: English review caption"
-  ],
-  "bundle": "cafe-pilot-C5hLuGho.mjs",
-  "bundle_sha256": "7596e57bedad17f0fd5c1f9e71cfcb48fb41eb097089654a23a137d86fccbe6c",
+  "code_commit": "215c50ff7bafd7e52a1593022a75a7a032cc3c4c",
+  "previous_reviewed_code": "c0de2c42bd803545cc1675587eda6ffc84aef9aa",
+  "bundle": "cafe-pilot-B1N9rsFn.mjs",
+  "bundle_bytes": 820441,
+  "bundle_sha256": "6d64f3cf2b3771625edeeba4583dbeba8fa2c65a85dbd99351d7bd6172f2db3c",
   "renderer": "Chromium 153 / SwiftShader WebGL2 / DPR 1",
+  "capture": "qa/verify.mjs: compiled pilot; paused initial simulation; unchanged native-resolution framebuffer",
   "files": {
     "desktop.png": {
-      "bytes": 806745,
-      "sha256": "bb8cef7e4c5f7e81c68b09fea343162605750e57554ae54c969ad6b84098dd7e"
-    },
-    "fold-landscape.png": {
-      "bytes": 338036,
-      "sha256": "257f07236aa1249e2824a152c8e5d975b571aec1bb65d6958feea7eb015c5abd"
-    },
-    "fold-portrait.png": {
-      "bytes": 338746,
-      "sha256": "500e7a07e00147b5869e9db9a98789d6e7c505cd7d1c6efdc7ec5cb864ca71cd"
+      "bytes": 785232,
+      "sha256": "cb01e40cf5483078c10cfaa164484e894a56613a3e211d43538929cd7fbb916f"
     },
     "fold-inner-portrait.png": {
-      "bytes": 489356,
-      "sha256": "ac29d6d0549c2d662dfd3c98120ec055d12b297a74dfa14fa930aba3cfbe502c"
+      "bytes": 385335,
+      "sha256": "6949d8e81157f5deafb59be9aa660222e0782863c7f89791ff6f5a7aa43070fb"
+    },
+    "fold-landscape.png": {
+      "bytes": 348626,
+      "sha256": "a9a15beaa37e5112fa94427e895d3439948ff85aadf39c71852c52347345b20a"
+    },
+    "fold-portrait.png": {
+      "bytes": 273891,
+      "sha256": "f7ef88bb84d45a2880d6715840015899235c99efdb5687df59247abfe1cc83e4"
     }
   }
 }

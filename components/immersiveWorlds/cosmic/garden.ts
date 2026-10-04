@@ -219,7 +219,6 @@ export function createGarden() {
       for(const p of plants){const base=p.group.userData.nearPosition;if(base)p.group.position.x=base.x*(narrow?.40:1);}
       for(const island of islands)island.object.position.x=island.x*(narrow?.58:1);
     },
-    setReflectionSize(size:number){water.getRenderTarget().setSize(size,size);},
     dispose(){if(disposed)return;disposed=true;plants.forEach(p=>p.dispose());geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();water.dispose();group.clear();}
   };
 }

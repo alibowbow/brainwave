@@ -13,4 +13,7 @@ function Harness(){
  {!clean&&<nav aria-label="Validation controls"><span>공중정원 · 우주 명상</span><button onClick={()=>setActive(v=>!v)}>{active?'Pause':'Resume'}</button><button onClick={()=>{setMounted(v=>!v);setSecond(false);}}>{mounted?'Unmount':'Mount'}</button><button onClick={()=>setSecond(v=>!v)}>Second holder</button><button onClick={()=>listeners.forEach(cb=>cb('bowl'))}>Bowl event</button><output data-testid="interaction-count">{events}</output></nav>}
  </main>;
 }
-createRoot(document.getElementById('root')!).render(<React.StrictMode><Harness/></React.StrictMode>);
+const compatibility=new URLSearchParams(location.search).get('compatibility');
+if(compatibility){
+ void import('./compatibility').then(({mountCompatibilityHarness})=>mountCompatibilityHarness(document.getElementById('root')!,compatibility==='byte'?'byte':'auto'));
+}else createRoot(document.getElementById('root')!).render(<React.StrictMode><Harness/></React.StrictMode>);

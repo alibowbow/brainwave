@@ -1,5 +1,11 @@
 # Cosmic pilot verification · 2026-10-04
 
+The bounded follow-up **COSMIC-CORRECTION-20261004** supersedes the original
+counts below with 170 tests, 20 lifecycle checks, 7 compatibility/capture checks,
+new normal/byte PNGs and exact source/bundle/image hashes. See
+[the correction report](correction-20261004/README.md). The original pilot record
+below is retained as history.
+
 ## Scope and baseline
 
 Started from the verified remote main

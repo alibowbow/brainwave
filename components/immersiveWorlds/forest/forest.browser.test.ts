@@ -244,17 +244,19 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
     page.on('console', (message) => {
       if (message.type() === 'error' && /three|webgl|shader|program/i.test(message.text())) report.errors.push(message.text());
     });
-    await page.goto(harnessURL, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${harnessURL}?paused=1`, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => ['ready', 'failed'].includes(document.querySelector<HTMLElement>('.forest-world')?.dataset.state ?? ''), undefined, { timeout: 90000 });
     const state = await page.locator('.forest-world').getAttribute('data-state');
     check('Engine ready instead of fallback', state === 'ready', { state });
-    await waitForRunning(page, true);
-    await page.waitForFunction(() => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.frames) > 2);
+    await waitForRunning(page, false);
+    await page.waitForFunction(() => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.frames) > 0);
     const initial = await diagnostic(page);
+    check('Initial active=false mount draws a static 3D frame', initial.running === 'false' && Number(initial.frames) > 0 && Number(initial.time) === 0, initial);
     check('Nonzero rendered geometry and full desktop buffer', Number(initial.triangles) > 1000 && Number(initial.drawCalls) > 0 && initial.cssWidth === 1280 && initial.cssHeight === 800 && initial.width === 1280 && initial.height === 800, initial);
 
-    // Capture all three layouts before interaction tests so a failure still
-    // leaves real-renderer visual evidence for review in the CI log.
+    // Capture all three layouts while the scene remains initially inactive.
+    // Resizing and same-render readback draw real static frames without filling
+    // the GPU queue with animation before native visual evidence is available.
     await page.evaluate(() => { document.querySelector<HTMLElement>('.forest-harness')!.dataset.capture = 'true'; });
     await page.waitForTimeout(900);
     await screenshot(page, 'forest-desktop.jpg', report);
@@ -266,8 +268,6 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
         const canvas = document.querySelector<HTMLCanvasElement>('.forest-world-canvas');
         return canvas?.clientWidth === width && canvas.clientHeight === height && canvas.width === width && canvas.height === height;
       }, size);
-      const before = await diagnostic(page);
-      await page.waitForFunction((frames) => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.frames) > frames + 1, Number(before.frames));
       const view = await screenshot(page, size.filename, report);
       if (size.filename === 'forest-fold-landscape.jpg') landscape = view;
       check(`Actual ${size.width}×${size.height} layout renders`, Number((await diagnostic(page)).triangles) > 1000, await diagnostic(page));
@@ -276,6 +276,9 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
     // Compare motion at the same requested native landscape dimensions and run
     // lifecycle there. This changes the test viewport, not scene quality/DPR.
     const movementBefore = await diagnostic(page);
+    check('Static layout captures preserve the initial inactive simulation', movementBefore.running === 'false' && movementBefore.time === initial.time, { initial, afterThreeLayouts: movementBefore });
+    await page.getByTestId('active-toggle').dispatchEvent('click');
+    await waitForRunning(page, true);
     await page.waitForFunction((time) => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.time) > time + .25, Number(movementBefore.time));
     const motion = await screenshot(page, 'forest-motion.jpg', report);
     const movementAfter = await diagnostic(page);

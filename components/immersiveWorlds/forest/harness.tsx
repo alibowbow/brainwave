@@ -79,14 +79,14 @@ function tap(target: HTMLElement, xFraction: number, yFraction: number) {
 }
 
 function ForestHarness() {
-  const [active, setActive] = useState(true);
+  const query = new URLSearchParams(window.location.search);
+  const [active, setActive] = useState(() => query.get('paused') !== '1');
   const [mounted, setMounted] = useState(true);
   const [second, setSecond] = useState(false);
   const [reduced, setReduced] = useState(false);
   const [counts, setCounts] = useState({ main: 0, second: 0 });
   const countsRef = useRef({ main: 0, second: 0 });
   const [last, setLast] = useState<{ holder: string; event: ForestInteraction } | null>(null);
-  const query = new URLSearchParams(window.location.search);
   const capture = query.get('capture') === '1';
   const initialViewport = query.get('viewport');
   const [viewport, setViewport] = useState<Viewport>(initialViewport === 'portrait' || initialViewport === 'landscape' ? initialViewport : 'desktop');

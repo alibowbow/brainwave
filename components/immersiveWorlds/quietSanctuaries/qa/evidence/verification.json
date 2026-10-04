@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-04T19:30:38.261Z",
-  "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+  "generatedAt": "2026-10-04T20:17:34.061Z",
+  "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
   "gitBranch": "codex/quiet-sanctuaries-3d-20261004",
-  "ownedGitStatus": "?? components/immersiveWorlds/quietSanctuaries/qa/evidence/",
+  "ownedGitStatus": "M components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-interaction.png\n M components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-motion.png\n M components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-desktop.png\n M components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-fold-inner-viewport.png\n M components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-portrait.png\n M components/immersiveWorlds/quietSanctuaries/qa/evidence/verification.json\n M components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-desktop.png\n M components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-portrait.png\n?? components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-byte-fallback-desktop.png",
   "sourceManifest": {
-    "sha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
+    "sha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
     "files": [
       {
         "path": "components/immersiveWorlds/quietSanctuaries/.gitignore",
@@ -12,11 +12,11 @@
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/INTEGRATION.md",
-        "sha256": "2eec2176b2f52a3b440ceb7131cedc34ecdfb699e1a8fa78e436677e32c25108"
+        "sha256": "0f9f77a7db2ad7110295bec0b432d45f6bd2c7c90ec330932fb07af736ddfed2"
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/meditation.ts",
-        "sha256": "65930d56d5dd03560c070848caa46b52817bb0de30fedb214ba521026ef72811"
+        "sha256": "0389f8c49a83dec839f9b0b0530a030e2686032b176ddbb6e3987ac34b5be6aa"
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/MeditationCourtWorld.tsx",
@@ -36,11 +36,11 @@
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/qa/README.md",
-        "sha256": "2e57e8a7409b5c3bd12756854961e6b52ed6c79b708854041133bcbd25fcb4cc"
+        "sha256": "e26fa74fc89c385348fd756a3d1a99c4a794382311fbc2a1acaf012fa6d3aed4"
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/qa/verify.mjs",
-        "sha256": "14a00fb2e87a1fea4c50303db60a88718ae75d4d8b02f087e939be5651bef15e"
+        "sha256": "2d4382fa6eb4781d821903b0f1799fe8d07a52c427b2aa628b478edba15156d0"
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/qa/vite.config.ts",
@@ -60,7 +60,7 @@
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/snowVillage.ts",
-        "sha256": "dd0bedac365de6a5b0e4c2d5dd40ca3727a5abd51ca248ec801cd86a55de5ddf"
+        "sha256": "66ab8c3832b95480a9bff43884d61ad6b11b35a50393e8a5855544c8ffbe179b"
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/SnowVillageWorld.tsx",
@@ -68,7 +68,7 @@
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/warmHeart.ts",
-        "sha256": "d612ff3988ff33ba25bf7c627273d1114873452fe056b9553590e6ec60ae4d02"
+        "sha256": "8fe947130fdfb07a7a5d17b516f551ae4a069c5c15a9d0e902409fcaa01fc7ab"
       },
       {
         "path": "components/immersiveWorlds/quietSanctuaries/WarmHeartWorld.tsx",
@@ -81,23 +81,23 @@
     ]
   },
   "bundleManifest": {
-    "sha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
+    "sha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
     "files": [
-      {
-        "path": "assets/index-CHx_i1Lt.js",
-        "sha256": "a809698b6118a78c052ea57e885117a86fbe568ae2c91b93a508515f49089318"
-      },
       {
         "path": "assets/index-Dfoe_3zm.css",
         "sha256": "a1918380bdb0ad8b4808d6fb19075a57250366449ad8fd83d3d3a82893a3b143"
       },
       {
-        "path": "assets/three-BBLDrRl4.js",
-        "sha256": "a7aa56cc8e076e3d7923f1025d4902003b2b9f8839d107e295c37b05d34b56e5"
+        "path": "assets/index-q7IZrNLo.js",
+        "sha256": "444438a8fbd4a051c7a82aa9982dcceb313d04e8d3134e14b59a81aa1a6b6021"
+      },
+      {
+        "path": "assets/three-btSYp2g7.js",
+        "sha256": "6464ad994f88e52dd52616b957a83b1b59c9731a5f614501eef7f609861d6f69"
       },
       {
         "path": "index.html",
-        "sha256": "e6a6dbd371c863df757912c1717b62c42b8d846ae3289d851357d8105b3b3436"
+        "sha256": "7ad76ab77ccee41013ac84f891262a32b94c5e0052e1fab19e50e2af9d6d69af"
       }
     ]
   },
@@ -122,9 +122,10 @@
         "height": 800
       },
       "world": "meditation",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
         "frame": 2,
@@ -136,6 +137,9 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "0",
+          "reflectionTargetType": "half-float",
+          "reflectionFloatExtension": "true",
+          "reflectionHalfFloatExtension": "true",
           "frame": "2",
           "elapsed": "0.0000",
           "drawCalls": "108",
@@ -154,9 +158,10 @@
         "height": 844
       },
       "world": "meditation",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
         "frame": 2,
@@ -168,6 +173,9 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "0",
+          "reflectionTargetType": "half-float",
+          "reflectionFloatExtension": "true",
+          "reflectionHalfFloatExtension": "true",
           "frame": "2",
           "elapsed": "0.0000",
           "drawCalls": "57",
@@ -179,16 +187,17 @@
     },
     {
       "file": "warm-heart-desktop.png",
-      "sha256": "143f7c9d94244a35dfa656fdde56d88d8cc9c09a5658b5a2e4bf167e320a5497",
-      "bytes": 662991,
+      "sha256": "a3bb87cb77e6172a7213baa71a89ebdbc329d90faf90d1f3c8f099124e66ceaf",
+      "bytes": 869603,
       "viewport": {
         "width": 1280,
         "height": 800
       },
       "world": "warm-heart",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
         "frame": 2,
@@ -202,25 +211,26 @@
           "interactions": "0",
           "frame": "2",
           "elapsed": "0.0000",
-          "drawCalls": "59",
-          "triangles": "313656",
-          "geometries": "47",
-          "textures": "5"
+          "drawCalls": "41",
+          "triangles": "568168",
+          "geometries": "11",
+          "textures": "7"
         }
       }
     },
     {
       "file": "warm-heart-portrait.png",
-      "sha256": "240f984ba78a14011c76a0d234c5e38bdd5c015afae2b4164701b1109aaf87d0",
-      "bytes": 213613,
+      "sha256": "ac75d8d628759a4df5dcab94623f91bf56ab1a928bcf53f9162e7739004fd473",
+      "bytes": 245186,
       "viewport": {
         "width": 390,
         "height": 844
       },
       "world": "warm-heart",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
         "frame": 2,
@@ -234,25 +244,26 @@
           "interactions": "0",
           "frame": "2",
           "elapsed": "0.0000",
-          "drawCalls": "59",
-          "triangles": "313656",
-          "geometries": "47",
-          "textures": "5"
+          "drawCalls": "41",
+          "triangles": "568168",
+          "geometries": "11",
+          "textures": "7"
         }
       }
     },
     {
       "file": "snow-village-desktop.png",
-      "sha256": "2c28718f4a9c3fb938a9f3bd38aaf98743982956bd314406a5fab9559f256c2b",
-      "bytes": 560349,
+      "sha256": "1af71ec65656784312f7783b5dc1911631c82d2b64ac923f14c1c0d869784cc9",
+      "bytes": 579349,
       "viewport": {
         "width": 1280,
         "height": 800
       },
       "world": "snow-village",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
         "frame": 2,
@@ -266,25 +277,26 @@
           "interactions": "0",
           "frame": "2",
           "elapsed": "0.0000",
-          "drawCalls": "71",
-          "triangles": "345846",
-          "geometries": "38",
-          "textures": "9"
+          "drawCalls": "120",
+          "triangles": "1103926",
+          "geometries": "70",
+          "textures": "10"
         }
       }
     },
     {
       "file": "snow-village-portrait.png",
-      "sha256": "6e5e28f44be3aeba18546dc24b05da06c52f30700867f6107c747b944da313ca",
-      "bytes": 183589,
+      "sha256": "5b83656a10edd219e3225bfd8fc608157b506ba07dcb57c96c721111c8a7dec4",
+      "bytes": 178160,
       "viewport": {
         "width": 390,
         "height": 844
       },
       "world": "snow-village",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
         "frame": 2,
@@ -298,25 +310,26 @@
           "interactions": "0",
           "frame": "2",
           "elapsed": "0.0000",
-          "drawCalls": "67",
-          "triangles": "345798",
-          "geometries": "38",
-          "textures": "9"
+          "drawCalls": "107",
+          "triangles": "1103510",
+          "geometries": "66",
+          "textures": "10"
         }
       }
     },
     {
       "file": "snow-village-fold-inner-viewport.png",
-      "sha256": "179b95bc80049b9f514a3638b840b73910f39b9a78a543148fbd8d171d86a82e",
-      "bytes": 353050,
+      "sha256": "2aba671001b43b4dfa2cf1e76825d441309c5015dd493a764db25e56334cffef",
+      "bytes": 370944,
       "viewport": {
         "width": 900,
         "height": 650
       },
       "world": "snow-village",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
         "frame": 2,
@@ -330,29 +343,66 @@
           "interactions": "0",
           "frame": "2",
           "elapsed": "0.0000",
-          "drawCalls": "71",
-          "triangles": "345846",
-          "geometries": "38",
-          "textures": "9"
+          "drawCalls": "120",
+          "triangles": "1103926",
+          "geometries": "70",
+          "textures": "10"
+        }
+      }
+    },
+    {
+      "file": "meditation-byte-fallback-desktop.png",
+      "sha256": "82d387e3a455d771e031d485741ec73acb25811a6e3fd5884df5eb1e04b29d75",
+      "bytes": 898356,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "world": "meditation",
+      "scenario": "forced-missing-color-buffer-extensions",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 1280,
+        "height": 800,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "reflectionTargetType": "unsigned-byte",
+          "reflectionFloatExtension": "false",
+          "reflectionHalfFloatExtension": "false",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "108",
+          "triangles": "81920",
+          "geometries": "115",
+          "textures": "8"
         }
       }
     },
     {
       "file": "meditation-motion.png",
-      "sha256": "33101f280a2b97ef545cb546a9878c67b89dc825671cb3987dc9a05e6048af23",
-      "bytes": 295875,
+      "sha256": "f42838d0ec106bfbca44659c2626a4bbbfe92f3da83b7a4e9d1f6b3e96d901ea",
+      "bytes": 295770,
       "viewport": {
         "width": 640,
         "height": 480
       },
       "world": "meditation",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
-        "frame": 40,
-        "elapsed": 0.6208,
+        "frame": 42,
+        "elapsed": 0.6786,
         "interactions": 0,
         "width": 640,
         "height": 480,
@@ -360,8 +410,11 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "0",
-          "frame": "40",
-          "elapsed": "0.6208",
+          "reflectionTargetType": "half-float",
+          "reflectionFloatExtension": "true",
+          "reflectionHalfFloatExtension": "true",
+          "frame": "42",
+          "elapsed": "0.6786",
           "drawCalls": "108",
           "triangles": "81920",
           "geometries": "124",
@@ -371,20 +424,21 @@
     },
     {
       "file": "meditation-interaction.png",
-      "sha256": "2a5a33d7c6ea03a79df60d872fc00489d6f8cbd3e6829e0a9cca762da8bfe1ba",
-      "bytes": 296661,
+      "sha256": "70a7ef114ef45ecfa7ae025dabcc2eecbe3d5c1bd5a9a9085e487524bc8f56fb",
+      "bytes": 296419,
       "viewport": {
         "width": 640,
         "height": 480
       },
       "world": "meditation",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
-        "frame": 53,
-        "elapsed": 0.8208,
+        "frame": 49,
+        "elapsed": 0.7851,
         "interactions": 1,
         "width": 640,
         "height": 480,
@@ -392,8 +446,11 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "1",
-          "frame": "53",
-          "elapsed": "0.8208",
+          "reflectionTargetType": "half-float",
+          "reflectionFloatExtension": "true",
+          "reflectionHalfFloatExtension": "true",
+          "frame": "49",
+          "elapsed": "0.7851",
           "drawCalls": "108",
           "triangles": "81920",
           "geometries": "124",
@@ -403,20 +460,21 @@
     },
     {
       "file": "warm-heart-motion.png",
-      "sha256": "35b3c2047dff8414ba8a676caadae15fda226348213c50e1722dbc87e3d83df5",
-      "bytes": 232837,
+      "sha256": "ad483740dfc40759fd052744275a51ac3ba04c8342f1bef4eaf80ff5d2c5c5d5",
+      "bytes": 270383,
       "viewport": {
         "width": 640,
         "height": 480
       },
       "world": "warm-heart",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
-        "frame": 45,
-        "elapsed": 0.7136,
+        "frame": 41,
+        "elapsed": 0.6311,
         "interactions": 0,
         "width": 640,
         "height": 480,
@@ -424,31 +482,32 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "0",
-          "frame": "45",
-          "elapsed": "0.7136",
-          "drawCalls": "59",
-          "triangles": "313656",
-          "geometries": "47",
-          "textures": "5"
+          "frame": "41",
+          "elapsed": "0.6311",
+          "drawCalls": "41",
+          "triangles": "568168",
+          "geometries": "11",
+          "textures": "7"
         }
       }
     },
     {
       "file": "warm-heart-interaction.png",
-      "sha256": "d054826873e16e4e326d167b0da34c9ef54082eaa39cfc6a934a4f05fc033f3c",
-      "bytes": 232897,
+      "sha256": "5187f9dbcb921a60d5f2384ac49d8f4b52ea1fe5c197a2ae0d82dc23361cdb29",
+      "bytes": 270673,
       "viewport": {
         "width": 640,
         "height": 480
       },
       "world": "warm-heart",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
-        "frame": 60,
-        "elapsed": 0.9641,
+        "frame": 51,
+        "elapsed": 0.781,
         "interactions": 1,
         "width": 640,
         "height": 480,
@@ -456,31 +515,32 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "1",
-          "frame": "60",
-          "elapsed": "0.9641",
-          "drawCalls": "59",
-          "triangles": "313656",
-          "geometries": "47",
-          "textures": "5"
+          "frame": "51",
+          "elapsed": "0.7810",
+          "drawCalls": "41",
+          "triangles": "568168",
+          "geometries": "11",
+          "textures": "7"
         }
       }
     },
     {
       "file": "snow-village-motion.png",
-      "sha256": "ac9474fa118d8a642405ec87d9e65dd503fa3bf5442cbf0370fcdc32636a496a",
-      "bytes": 204903,
+      "sha256": "4dc17746672ac2bb427a4627fac67425c9b746ea68c1b75e8dc2e619b93a89ad",
+      "bytes": 216977,
       "viewport": {
         "width": 640,
         "height": 480
       },
       "world": "snow-village",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
-        "frame": 37,
-        "elapsed": 0.5703,
+        "frame": 34,
+        "elapsed": 0.5078,
         "interactions": 0,
         "width": 640,
         "height": 480,
@@ -488,31 +548,32 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "0",
-          "frame": "37",
-          "elapsed": "0.5703",
-          "drawCalls": "71",
-          "triangles": "345846",
-          "geometries": "38",
-          "textures": "9"
+          "frame": "34",
+          "elapsed": "0.5078",
+          "drawCalls": "120",
+          "triangles": "1103926",
+          "geometries": "70",
+          "textures": "10"
         }
       }
     },
     {
       "file": "snow-village-interaction.png",
-      "sha256": "1e81dde51aefa828e420a597d3290564d0c54e4e92b9d877803dcf85e713913d",
-      "bytes": 206389,
+      "sha256": "8de448937e1f21981e9ad7c99e5823b5e93635f4064068c4b6c7c0b2772f5132",
+      "bytes": 217952,
       "viewport": {
         "width": 640,
         "height": 480
       },
       "world": "snow-village",
-      "sourceSha256": "56970583af62c56028bde9bc419b2990e9fdf210afe6d5173b89b486601266f5",
-      "bundleSha256": "d54facd3ff6d10530b0c5849dd1181573ca7a34e132d48372f93eb4255ecb52b",
-      "gitHead": "b1a26133d7273f8b17ab0f5e2ee5e0c4295999f8",
+      "scenario": "normal-capabilities",
+      "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+      "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+      "gitHead": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
       "diagnostics": {
         "engineId": "1",
-        "frame": 58,
-        "elapsed": 0.9036,
+        "frame": 46,
+        "elapsed": 0.6984,
         "interactions": 1,
         "width": 640,
         "height": 480,
@@ -520,12 +581,12 @@
           "engine": "three.js r186",
           "engineId": "1",
           "interactions": "1",
-          "frame": "58",
-          "elapsed": "0.9036",
-          "drawCalls": "71",
-          "triangles": "345846",
-          "geometries": "38",
-          "textures": "9"
+          "frame": "46",
+          "elapsed": "0.6984",
+          "drawCalls": "120",
+          "triangles": "1103926",
+          "geometries": "70",
+          "textures": "10"
         }
       }
     }
@@ -547,6 +608,9 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
               "frame": "2",
               "elapsed": "0.0000",
               "drawCalls": "108",
@@ -566,6 +630,9 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
               "frame": "2",
               "elapsed": "0.0000",
               "drawCalls": "108",
@@ -588,6 +655,9 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
               "frame": "2",
               "elapsed": "0.0000",
               "drawCalls": "57",
@@ -607,6 +677,9 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
               "frame": "2",
               "elapsed": "0.0000",
               "drawCalls": "57",
@@ -620,8 +693,8 @@
           "active": {
             "before": {
               "engineId": "1",
-              "frame": 8,
-              "elapsed": 0.0887,
+              "frame": 10,
+              "elapsed": 0.1212,
               "interactions": 0,
               "width": 640,
               "height": 480,
@@ -629,8 +702,11 @@
                 "engine": "three.js r186",
                 "engineId": "1",
                 "interactions": "0",
-                "frame": "8",
-                "elapsed": "0.0887",
+                "reflectionTargetType": "half-float",
+                "reflectionFloatExtension": "true",
+                "reflectionHalfFloatExtension": "true",
+                "frame": "10",
+                "elapsed": "0.1212",
                 "drawCalls": "108",
                 "triangles": "81920",
                 "geometries": "124",
@@ -639,8 +715,8 @@
             },
             "after": {
               "engineId": "1",
-              "frame": 12,
-              "elapsed": 0.1553,
+              "frame": 14,
+              "elapsed": 0.1879,
               "interactions": 0,
               "width": 640,
               "height": 480,
@@ -648,8 +724,11 @@
                 "engine": "three.js r186",
                 "engineId": "1",
                 "interactions": "0",
-                "frame": "12",
-                "elapsed": "0.1553",
+                "reflectionTargetType": "half-float",
+                "reflectionFloatExtension": "true",
+                "reflectionHalfFloatExtension": "true",
+                "frame": "14",
+                "elapsed": "0.1879",
                 "drawCalls": "108",
                 "triangles": "81920",
                 "geometries": "124",
@@ -663,8 +742,8 @@
           "reason": "active=false",
           "before": {
             "engineId": "1",
-            "frame": 40,
-            "elapsed": 0.6208,
+            "frame": 42,
+            "elapsed": 0.6786,
             "interactions": 0,
             "width": 640,
             "height": 480,
@@ -672,8 +751,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
-              "frame": "40",
-              "elapsed": "0.6208",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "42",
+              "elapsed": "0.6786",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -682,8 +764,8 @@
           },
           "after": {
             "engineId": "1",
-            "frame": 40,
-            "elapsed": 0.6208,
+            "frame": 42,
+            "elapsed": 0.6786,
             "interactions": 0,
             "width": 640,
             "height": 480,
@@ -691,8 +773,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
-              "frame": "40",
-              "elapsed": "0.6208",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "42",
+              "elapsed": "0.6786",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -707,8 +792,8 @@
           "reason": "prefers-reduced-motion",
           "before": {
             "engineId": "1",
-            "frame": 102,
-            "elapsed": 2.3029,
+            "frame": 98,
+            "elapsed": 2.289,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -716,8 +801,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "102",
-              "elapsed": "2.3029",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "98",
+              "elapsed": "2.2890",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -726,8 +814,8 @@
           },
           "after": {
             "engineId": "1",
-            "frame": 102,
-            "elapsed": 2.3029,
+            "frame": 98,
+            "elapsed": 2.289,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -735,8 +823,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "102",
-              "elapsed": "2.3029",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "98",
+              "elapsed": "2.2890",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -748,8 +839,8 @@
           "reason": "static3D",
           "before": {
             "engineId": "1",
-            "frame": 106,
-            "elapsed": 2.4529,
+            "frame": 102,
+            "elapsed": 2.3389,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -757,8 +848,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "106",
-              "elapsed": "2.4529",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "102",
+              "elapsed": "2.3389",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -767,8 +861,8 @@
           },
           "after": {
             "engineId": "1",
-            "frame": 106,
-            "elapsed": 2.4529,
+            "frame": 102,
+            "elapsed": 2.3389,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -776,8 +870,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "106",
-              "elapsed": "2.4529",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "102",
+              "elapsed": "2.3389",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -789,8 +886,8 @@
           "reason": "synthetic hidden=true (not real tab switching)",
           "before": {
             "engineId": "1",
-            "frame": 109,
-            "elapsed": 2.6029,
+            "frame": 105,
+            "elapsed": 2.4555,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -798,8 +895,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "109",
-              "elapsed": "2.6029",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "105",
+              "elapsed": "2.4555",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -808,8 +908,8 @@
           },
           "after": {
             "engineId": "1",
-            "frame": 109,
-            "elapsed": 2.6029,
+            "frame": 105,
+            "elapsed": 2.4555,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -817,8 +917,11 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "109",
-              "elapsed": "2.6029",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
+              "frame": "105",
+              "elapsed": "2.4555",
               "drawCalls": "108",
               "triangles": "81920",
               "geometries": "124",
@@ -840,6 +943,9 @@
               "engine": "three.js r186",
               "engineId": "2",
               "interactions": "0",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
               "frame": "2",
               "elapsed": "0.0000",
               "drawCalls": "108",
@@ -859,6 +965,9 @@
               "engine": "three.js r186",
               "engineId": "2",
               "interactions": "0",
+              "reflectionTargetType": "half-float",
+              "reflectionFloatExtension": "true",
+              "reflectionHalfFloatExtension": "true",
               "frame": "2",
               "elapsed": "0.0000",
               "drawCalls": "108",
@@ -869,7 +978,7 @@
           }
         },
         "three quick unmount/remount cycles: one canvas and same engine within shared disposal grace",
-        "last release removes canvas; remount after 5.3 seconds creates fresh engine"
+        "last release removes canvas and loses its actual GPU context after grace; later remount creates fresh engine"
       ],
       "tap": {
         "x": 320,
@@ -885,8 +994,8 @@
       },
       "diagnostics": {
         "engineId": "3",
-        "frame": 6,
-        "elapsed": 0.05,
+        "frame": 7,
+        "elapsed": 0.0804,
         "interactions": 0,
         "width": 640,
         "height": 480,
@@ -894,8 +1003,11 @@
           "engine": "three.js r186",
           "engineId": "3",
           "interactions": "0",
-          "frame": "6",
-          "elapsed": "0.0500",
+          "reflectionTargetType": "half-float",
+          "reflectionFloatExtension": "true",
+          "reflectionHalfFloatExtension": "true",
+          "frame": "7",
+          "elapsed": "0.0804",
           "drawCalls": "108",
           "triangles": "81920",
           "geometries": "124",
@@ -905,6 +1017,11 @@
       "lifecycleViewport": {
         "width": 640,
         "height": 480
+      },
+      "disposal": {
+        "engineId": "2",
+        "minimumGraceWaitMs": 5300,
+        "releasedContextLost": true
       }
     },
     {
@@ -925,10 +1042,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           },
           "after": {
@@ -944,10 +1061,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           }
         },
@@ -966,10 +1083,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           },
           "after": {
@@ -985,10 +1102,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           }
         },
@@ -996,8 +1113,27 @@
           "active": {
             "before": {
               "engineId": "1",
+              "frame": 10,
+              "elapsed": 0.1239,
+              "interactions": 0,
+              "width": 640,
+              "height": 480,
+              "diagnostics": {
+                "engine": "three.js r186",
+                "engineId": "1",
+                "interactions": "0",
+                "frame": "10",
+                "elapsed": "0.1239",
+                "drawCalls": "41",
+                "triangles": "568168",
+                "geometries": "11",
+                "textures": "7"
+              }
+            },
+            "after": {
+              "engineId": "1",
               "frame": 13,
-              "elapsed": 0.1862,
+              "elapsed": 0.1739,
               "interactions": 0,
               "width": 640,
               "height": 480,
@@ -1006,30 +1142,11 @@
                 "engineId": "1",
                 "interactions": "0",
                 "frame": "13",
-                "elapsed": "0.1862",
-                "drawCalls": "59",
-                "triangles": "313656",
-                "geometries": "47",
-                "textures": "5"
-              }
-            },
-            "after": {
-              "engineId": "1",
-              "frame": 18,
-              "elapsed": 0.2695,
-              "interactions": 0,
-              "width": 640,
-              "height": 480,
-              "diagnostics": {
-                "engine": "three.js r186",
-                "engineId": "1",
-                "interactions": "0",
-                "frame": "18",
-                "elapsed": "0.2695",
-                "drawCalls": "59",
-                "triangles": "313656",
-                "geometries": "47",
-                "textures": "5"
+                "elapsed": "0.1739",
+                "drawCalls": "41",
+                "triangles": "568168",
+                "geometries": "11",
+                "textures": "7"
               }
             }
           }
@@ -1039,8 +1156,8 @@
           "reason": "active=false",
           "before": {
             "engineId": "1",
-            "frame": 45,
-            "elapsed": 0.7136,
+            "frame": 41,
+            "elapsed": 0.6311,
             "interactions": 0,
             "width": 640,
             "height": 480,
@@ -1048,18 +1165,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
-              "frame": "45",
-              "elapsed": "0.7136",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "41",
+              "elapsed": "0.6311",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 45,
-            "elapsed": 0.7136,
+            "frame": 41,
+            "elapsed": 0.6311,
             "interactions": 0,
             "width": 640,
             "height": 480,
@@ -1067,12 +1184,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
-              "frame": "45",
-              "elapsed": "0.7136",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "41",
+              "elapsed": "0.6311",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           }
         },
@@ -1083,8 +1200,8 @@
           "reason": "prefers-reduced-motion",
           "before": {
             "engineId": "1",
-            "frame": 107,
-            "elapsed": 2.3646,
+            "frame": 101,
+            "elapsed": 2.2978,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1092,18 +1209,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "107",
-              "elapsed": "2.3646",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "101",
+              "elapsed": "2.2978",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 107,
-            "elapsed": 2.3646,
+            "frame": 101,
+            "elapsed": 2.2978,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1111,12 +1228,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "107",
-              "elapsed": "2.3646",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "101",
+              "elapsed": "2.2978",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           }
         },
@@ -1124,8 +1241,8 @@
           "reason": "static3D",
           "before": {
             "engineId": "1",
-            "frame": 111,
-            "elapsed": 2.4813,
+            "frame": 106,
+            "elapsed": 2.4311,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1133,18 +1250,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "111",
-              "elapsed": "2.4813",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "106",
+              "elapsed": "2.4311",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 111,
-            "elapsed": 2.4813,
+            "frame": 106,
+            "elapsed": 2.4311,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1152,12 +1269,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "111",
-              "elapsed": "2.4813",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "106",
+              "elapsed": "2.4311",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           }
         },
@@ -1165,8 +1282,8 @@
           "reason": "synthetic hidden=true (not real tab switching)",
           "before": {
             "engineId": "1",
-            "frame": 114,
-            "elapsed": 2.5479,
+            "frame": 109,
+            "elapsed": 2.5811,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1174,18 +1291,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "114",
-              "elapsed": "2.5479",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "109",
+              "elapsed": "2.5811",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 114,
-            "elapsed": 2.5479,
+            "frame": 109,
+            "elapsed": 2.5811,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1193,12 +1310,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "114",
-              "elapsed": "2.5479",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "frame": "109",
+              "elapsed": "2.5811",
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           }
         },
@@ -1218,10 +1335,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           },
           "after": {
@@ -1237,15 +1354,15 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "59",
-              "triangles": "313656",
-              "geometries": "47",
-              "textures": "5"
+              "drawCalls": "41",
+              "triangles": "568168",
+              "geometries": "11",
+              "textures": "7"
             }
           }
         },
         "three quick unmount/remount cycles: one canvas and same engine within shared disposal grace",
-        "last release removes canvas; remount after 5.3 seconds creates fresh engine"
+        "last release removes canvas and loses its actual GPU context after grace; later remount creates fresh engine"
       ],
       "tap": {
         "x": 320,
@@ -1261,8 +1378,8 @@
       },
       "diagnostics": {
         "engineId": "3",
-        "frame": 7,
-        "elapsed": 0.0762,
+        "frame": 3,
+        "elapsed": 0.0073,
         "interactions": 0,
         "width": 640,
         "height": 480,
@@ -1270,17 +1387,22 @@
           "engine": "three.js r186",
           "engineId": "3",
           "interactions": "0",
-          "frame": "7",
-          "elapsed": "0.0762",
-          "drawCalls": "59",
-          "triangles": "313656",
-          "geometries": "47",
-          "textures": "5"
+          "frame": "3",
+          "elapsed": "0.0073",
+          "drawCalls": "41",
+          "triangles": "568168",
+          "geometries": "11",
+          "textures": "7"
         }
       },
       "lifecycleViewport": {
         "width": 640,
         "height": 480
+      },
+      "disposal": {
+        "engineId": "2",
+        "minimumGraceWaitMs": 5300,
+        "releasedContextLost": true
       }
     },
     {
@@ -1301,10 +1423,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           },
           "after": {
@@ -1320,10 +1442,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           }
         },
@@ -1342,10 +1464,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "67",
-              "triangles": "345798",
-              "geometries": "38",
-              "textures": "9"
+              "drawCalls": "107",
+              "triangles": "1103510",
+              "geometries": "66",
+              "textures": "10"
             }
           },
           "after": {
@@ -1361,10 +1483,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "67",
-              "triangles": "345798",
-              "geometries": "38",
-              "textures": "9"
+              "drawCalls": "107",
+              "triangles": "1103510",
+              "geometries": "66",
+              "textures": "10"
             }
           }
         },
@@ -1372,8 +1494,8 @@
           "active": {
             "before": {
               "engineId": "1",
-              "frame": 6,
-              "elapsed": 0.0554,
+              "frame": 4,
+              "elapsed": 0.0181,
               "interactions": 0,
               "width": 640,
               "height": 480,
@@ -1381,18 +1503,18 @@
                 "engine": "three.js r186",
                 "engineId": "1",
                 "interactions": "0",
-                "frame": "6",
-                "elapsed": "0.0554",
-                "drawCalls": "71",
-                "triangles": "345846",
-                "geometries": "38",
-                "textures": "9"
+                "frame": "4",
+                "elapsed": "0.0181",
+                "drawCalls": "120",
+                "triangles": "1103926",
+                "geometries": "70",
+                "textures": "10"
               }
             },
             "after": {
               "engineId": "1",
-              "frame": 11,
-              "elapsed": 0.1388,
+              "frame": 7,
+              "elapsed": 0.0681,
               "interactions": 0,
               "width": 640,
               "height": 480,
@@ -1400,12 +1522,12 @@
                 "engine": "three.js r186",
                 "engineId": "1",
                 "interactions": "0",
-                "frame": "11",
-                "elapsed": "0.1388",
-                "drawCalls": "71",
-                "triangles": "345846",
-                "geometries": "38",
-                "textures": "9"
+                "frame": "7",
+                "elapsed": "0.0681",
+                "drawCalls": "120",
+                "triangles": "1103926",
+                "geometries": "70",
+                "textures": "10"
               }
             }
           }
@@ -1415,8 +1537,8 @@
           "reason": "active=false",
           "before": {
             "engineId": "1",
-            "frame": 37,
-            "elapsed": 0.5703,
+            "frame": 34,
+            "elapsed": 0.5078,
             "interactions": 0,
             "width": 640,
             "height": 480,
@@ -1424,18 +1546,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
-              "frame": "37",
-              "elapsed": "0.5703",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "34",
+              "elapsed": "0.5078",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 37,
-            "elapsed": 0.5703,
+            "frame": 34,
+            "elapsed": 0.5078,
             "interactions": 0,
             "width": 640,
             "height": 480,
@@ -1443,12 +1565,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "0",
-              "frame": "37",
-              "elapsed": "0.5703",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "34",
+              "elapsed": "0.5078",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           }
         },
@@ -1459,8 +1581,8 @@
           "reason": "prefers-reduced-motion",
           "before": {
             "engineId": "1",
-            "frame": 105,
-            "elapsed": 2.3067,
+            "frame": 94,
+            "elapsed": 2.1491,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1468,18 +1590,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "105",
-              "elapsed": "2.3067",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "94",
+              "elapsed": "2.1491",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 105,
-            "elapsed": 2.3067,
+            "frame": 94,
+            "elapsed": 2.1491,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1487,12 +1609,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "105",
-              "elapsed": "2.3067",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "94",
+              "elapsed": "2.1491",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           }
         },
@@ -1500,8 +1622,8 @@
           "reason": "static3D",
           "before": {
             "engineId": "1",
-            "frame": 109,
-            "elapsed": 2.4233,
+            "frame": 98,
+            "elapsed": 2.2991,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1509,18 +1631,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "109",
-              "elapsed": "2.4233",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "98",
+              "elapsed": "2.2991",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 109,
-            "elapsed": 2.4233,
+            "frame": 98,
+            "elapsed": 2.2991,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1528,12 +1650,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "109",
-              "elapsed": "2.4233",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "98",
+              "elapsed": "2.2991",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           }
         },
@@ -1541,8 +1663,8 @@
           "reason": "synthetic hidden=true (not real tab switching)",
           "before": {
             "engineId": "1",
-            "frame": 113,
-            "elapsed": 2.5899,
+            "frame": 101,
+            "elapsed": 2.4491,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1550,18 +1672,18 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "113",
-              "elapsed": "2.5899",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "101",
+              "elapsed": "2.4491",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           },
           "after": {
             "engineId": "1",
-            "frame": 113,
-            "elapsed": 2.5899,
+            "frame": 101,
+            "elapsed": 2.4491,
             "interactions": 1,
             "width": 640,
             "height": 480,
@@ -1569,12 +1691,12 @@
               "engine": "three.js r186",
               "engineId": "1",
               "interactions": "1",
-              "frame": "113",
-              "elapsed": "2.5899",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "frame": "101",
+              "elapsed": "2.4491",
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           }
         },
@@ -1594,10 +1716,10 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           },
           "after": {
@@ -1613,15 +1735,15 @@
               "interactions": "0",
               "frame": "2",
               "elapsed": "0.0000",
-              "drawCalls": "71",
-              "triangles": "345846",
-              "geometries": "38",
-              "textures": "9"
+              "drawCalls": "120",
+              "triangles": "1103926",
+              "geometries": "70",
+              "textures": "10"
             }
           }
         },
         "three quick unmount/remount cycles: one canvas and same engine within shared disposal grace",
-        "last release removes canvas; remount after 5.3 seconds creates fresh engine"
+        "last release removes canvas and loses its actual GPU context after grace; later remount creates fresh engine"
       ],
       "tap": {
         "x": 460.79999999999995,
@@ -1637,8 +1759,8 @@
       },
       "diagnostics": {
         "engineId": "3",
-        "frame": 7,
-        "elapsed": 0.0667,
+        "frame": 4,
+        "elapsed": 0.0283,
         "interactions": 0,
         "width": 640,
         "height": 480,
@@ -1646,25 +1768,130 @@
           "engine": "three.js r186",
           "engineId": "3",
           "interactions": "0",
-          "frame": "7",
-          "elapsed": "0.0667",
-          "drawCalls": "71",
-          "triangles": "345846",
-          "geometries": "38",
-          "textures": "9"
+          "frame": "4",
+          "elapsed": "0.0283",
+          "drawCalls": "120",
+          "triangles": "1103926",
+          "geometries": "70",
+          "textures": "10"
         }
       },
       "lifecycleViewport": {
         "width": 640,
         "height": 480
+      },
+      "disposal": {
+        "engineId": "2",
+        "minimumGraceWaitMs": 5300,
+        "releasedContextLost": true
       }
     }
   ],
+  "reflectionCapabilities": {
+    "normal": {
+      "forced": false,
+      "expectedType": "half-float",
+      "context": {
+        "frame": 2,
+        "type": "half-float",
+        "reportedFloatExtension": "true",
+        "reportedHalfFloatExtension": "true",
+        "floatExtension": true,
+        "halfFloatExtension": true,
+        "advertisedExtensions": [
+          "EXT_color_buffer_float",
+          "EXT_color_buffer_half_float"
+        ],
+        "contextLost": false,
+        "errors": [],
+        "maskBeforeProbe": null
+      },
+      "basinPixels": {
+        "normalizedRegion": {
+          "left": 0.28,
+          "top": 0.635,
+          "right": 0.68,
+          "bottom": 0.735
+        },
+        "pixelRegion": {
+          "x": 358,
+          "y": 508,
+          "width": 512,
+          "height": 80
+        },
+        "samples": 4617,
+        "uniqueColors": 748,
+        "minimum": 70.917,
+        "maximum": 211.86079999999998,
+        "mean": 174.85794273337683,
+        "standardDeviation": 34.43218957770483
+      },
+      "screenshotSha256": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6"
+    },
+    "forcedMissingExtensions": {
+      "forced": true,
+      "expectedType": "unsigned-byte",
+      "context": {
+        "frame": 2,
+        "type": "unsigned-byte",
+        "reportedFloatExtension": "false",
+        "reportedHalfFloatExtension": "false",
+        "floatExtension": false,
+        "halfFloatExtension": false,
+        "advertisedExtensions": [
+          "EXT_color_buffer_float",
+          "EXT_color_buffer_half_float"
+        ],
+        "contextLost": false,
+        "errors": [],
+        "maskBeforeProbe": {
+          "installedBeforeApplication": true,
+          "installedAt": 11.699999999254942,
+          "blockedRequests": [
+            {
+              "name": "EXT_color_buffer_float",
+              "context": "WebGL2RenderingContext",
+              "at": 147,
+              "observedSceneFrame": 0
+            },
+            {
+              "name": "EXT_color_buffer_half_float",
+              "context": "WebGL2RenderingContext",
+              "at": 149.10000000149012,
+              "observedSceneFrame": 0
+            }
+          ]
+        }
+      },
+      "basinPixels": {
+        "normalizedRegion": {
+          "left": 0.28,
+          "top": 0.635,
+          "right": 0.68,
+          "bottom": 0.735
+        },
+        "pixelRegion": {
+          "x": 358,
+          "y": 508,
+          "width": 512,
+          "height": 80
+        },
+        "samples": 4617,
+        "uniqueColors": 868,
+        "minimum": 61.43279999999999,
+        "maximum": 211.86079999999998,
+        "mean": 157.76684314490004,
+        "standardDeviation": 45.226191461074755
+      },
+      "screenshotSha256": "82d387e3a455d771e031d485741ec73acb25811a6e3fd5884df5eb1e04b29d75"
+    },
+    "limitation": "The byte path masks two color-buffer extension queries before application startup in a separate browser context; it is capability simulation, not evidence from physically unsupported hardware. No pixel equality between the two material-lighting paths is claimed."
+  },
   "errors": [],
   "passed": true,
   "lastCompletedCheckpoint": {
     "label": "snow-village complete lifecycle including static first mount and disposal grace",
-    "at": "2026-10-04T19:40:51.038Z"
+    "at": "2026-10-04T20:24:59.882Z"
   },
-  "finishedAt": "2026-10-04T19:41:01.481Z"
+  "finishedAt": "2026-10-04T20:25:04.221Z"
 }

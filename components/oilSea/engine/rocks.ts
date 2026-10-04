@@ -105,7 +105,7 @@ export function createRocks(sunDirection: THREE.Vector3, count: number) {
         float e = 0.04;
         vec2 slope = vec2(relief(w.xz + vec2(e, 0.0), w.y) - grain, relief(w.xz + vec2(0.0, e), w.y) - grain) / e;
         n = normalize(n - vec3(slope.x, 0.0, slope.y) * 0.12);
-        vec3 stone = mix(vec3(0.42, 0.41, 0.4), vec3(0.52, 0.49, 0.45), vSeed);
+        vec3 stone = mix(vec3(0.43, 0.42, 0.41), vec3(0.54, 0.5, 0.45), vSeed);
         vec3 albedo = stone * (0.78 + 0.3 * grain);
         // Its beds: faint bands across the rock, and a few cracks.
         float bed = vLocal.y * 14.0 + vLocal.x * 3.0 + vnoise(w.xz * 0.6) * 1.5;

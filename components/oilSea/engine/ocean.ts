@@ -200,7 +200,7 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // (red light is lost first, then green; blue goes farthest), so the bay
   // runs from pale sand at the water's edge through emerald and turquoise
   // to the deep blue of open water.
-  vec3 water = mix(vec3(0.015, 0.1, 0.3), vec3(0.02, 0.34, 0.42), exp(-depth / 7.0));
+  vec3 water = mix(vec3(0.03, 0.16, 0.44), vec3(0.02, 0.37, 0.45), exp(-depth / 7.0));
   vec3 body = water;
   if (depth < 14.0) {
     // The bottom, seen through the waves (bent a little by their slopes):
@@ -223,6 +223,10 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // Patches of rougher, darker water where gusts touch down.
   float streak = fbm3(vec2(dot(p, across) * 0.006, dot(p, SWELL_DIR) * 0.012) + vec2(0.0, uTime * 0.02));
   body *= 0.86 + 0.28 * streak;
+  // Turquoise where the water is shoaler or stirred, ultramarine where it runs deep and still.
+  float tide = fbm3(vec2(dot(p, across) * 0.0035, dot(p, SWELL_DIR) * 0.0055) + 13.0);
+  body = mix(body, body * vec3(0.7, 1.2, 1.06) + vec3(0.0, 0.025, 0.02), smoothstep(0.52, 0.72, tide) * 0.55);
+  body = mix(body, body * vec3(1.1, 0.95, 1.14), smoothstep(0.48, 0.28, tide) * 0.45);
   // Crests lit through by the sun glow turquoise, in stretches; troughs are deep.
   float backlit = pow(max(dot(-v, uSunDir) * 0.5 + 0.5, 0.0), 2.0);
   float glow = smoothstep(-0.4, 0.9, crest) * (0.45 + 0.55 * vnoise(vec2(dot(p, across) * 0.004, dot(p, SWELL_DIR) * 0.002 + 3.0)));
@@ -240,6 +244,11 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // Under a cloud's shadow less light comes up out of the water, and none glitters.
   float shadow = cloudShadow(world);
   body *= 1.0 - 0.3 * shadow;
+  // The waves' relief: faces turned towards the sun are lit and those turned
+  // away lie in shade, so every swell and ripple has a light side and a dark
+  // one (surf and foam have their own light).
+  float towardSun = dot(n, uSunDir) - uSunDir.y;
+  body *= 1.0 + 2.6 * clamp(towardSun, -0.25, 0.25) * (1.0 - 0.7 * churned);
 
   // The sky mirrored in the swell; the ripples no sample resolves tilt it up.
   // Churned water is rough and matte, and gives back less of it.
@@ -268,6 +277,31 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float dab = vnoise(dabAt) * 0.65 + vnoise(dabAt * 2.3 + 5.0) * 0.35;
   glitter *= smoothstep(0.3, 0.72, dab) * 1.7 * (1.0 - shadow);
   col += vec3(1.0, 0.98, 0.9) * (1.0 - exp(-glitter * 1.3)) * 1.1 + vec3(1.0, 0.98, 0.94) * max(glitter - 2.5, 0.0) * 0.04;
+
+  // Sparkle (윤슬). With the sun behind the viewer the sea gives back no mirror
+  // image of it, but the little faces of the waves that lean towards it still
+  // flash: dashes of light a few pixels across however far off, coming and
+  // going as the water moves, strongest where the slope leans most to the sun.
+  float sunSlope = dot(n.xz, normalize(uSunDir.xz));
+  float catchLight = smoothstep(0.01, 0.07, sunSlope);
+  if (catchLight > 0.0) {
+    // Cells that stay a constant size on the screen (azimuth across, the
+    // inverse of the distance down), in rows each shifted along its own way.
+    vec2 sparkAt = vec2(atan(rel.x, -rel.y) * 70.0, 9500.0 / max(length(rel), 1.0));
+    float row = floor(sparkAt.y);
+    sparkAt.x += hash12(vec2(row, 4.0)) * 11.0 + uTime * 0.12 * (hash12(vec2(row, 9.0)) - 0.5);
+    vec2 sparkCell = vec2(floor(sparkAt.x), row);
+    float sparkId = hash12(sparkCell + 31.0);
+    // Flashes gather in patches, and are dashes of different lengths.
+    float cluster = smoothstep(0.3, 0.7, fbm3(sparkAt * vec2(0.07, 0.11) + vec2(uTime * 0.015, 3.0)));
+    float reach = 0.4 + 0.6 * hash12(sparkCell + 2.3);
+    float inCell = fract(sparkAt.x);
+    float alongDash = smoothstep(0.0, 0.1, inCell) * smoothstep(reach, reach - 0.15, inCell);
+    float thin = smoothstep(0.5, 0.18, abs(fract(sparkAt.y) - 0.5) * 1.6);
+    float blink = 0.5 + 0.5 * sin(uTime * (0.5 + 1.2 * hash12(sparkCell + 5.7)) + 6.2832 * sparkId);
+    float spark = step(1.0 - 0.55 * cluster, sparkId) * smoothstep(0.5, 0.85, blink) * alongDash * thin * catchLight * smoothstep(40.0, 4.0, fade);
+    col += vec3(1.0, 0.97, 0.86) * spark * 1.9 * (1.0 - shadow);
+  }
 
   // Where the foam lies. It is carried in with the waves and drifts along
   // the shore, stretched along the crests and swirled: sparse, it keeps only

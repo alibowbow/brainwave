@@ -24,7 +24,7 @@ void main() {
   float grey = dot(c, vec3(0.3, 0.55, 0.15));
   c = mix(vec3(grey), c, 1.02);
   // A gentle S-curve: deeper darks, fuller lights.
-  c = mix(c, c * c * (3.0 - 2.0 * c), 0.25);
+  c = mix(c, c * c * (3.0 - 2.0 * c), 0.16);
   gl_FragColor = vec4(clamp(c, 0.0, 1.0), 1.0);
 }
 `;
@@ -297,6 +297,20 @@ vec2 flowAt(vec2 uv) {
   along = along.x < 0.0 ? -along : along;
   return normalize(mix(vec2(1.0, 0.0), along, strength) + vec2(1e-4, 0.0));
 }
+// The painter's colour. Dull colours are enriched most and strong ones hardly
+// at all (so the picture is richer, never garish); light and shade take colours
+// of their own, warm cream in the lights and blue-violet in the shade; the
+// mid-tones are opened up for a brighter, sunnier picture.
+vec3 painterColour(vec3 col) {
+  float l = dot(col, vec3(0.299, 0.587, 0.114));
+  float chroma = max(col.r, max(col.g, col.b)) - min(col.r, min(col.g, col.b));
+  col = mix(vec3(l), col, 1.0 + 0.55 * (1.0 - smoothstep(0.05, 0.7, chroma)));
+  float shade = 1.0 - smoothstep(0.06, 0.5, l);
+  float light = smoothstep(0.42, 0.9, l);
+  col += shade * vec3(0.012, 0.004, 0.06) + light * vec3(0.04, 0.032, -0.016);
+  col = pow(max(col, 0.0), vec3(0.9));
+  return col;
+}
 float bristles(vec2 px, float brush) {
   return vnoise(px / (brush * 1.4)) * 0.65 + vnoise(px / (brush * 0.6) + 7.0) * 0.35;
 }
@@ -335,6 +349,12 @@ void main() {
     vec2 slope = vec2(dFdx(stroke), dFdy(stroke));
     col *= 1.0 + ((stroke - 0.5) * 0.16 + dot(slope, vec2(-0.7, 0.7)) * 0.55) * body;
   }
+  // Clarity: the fine structure the brush smoothed, given back a little, more where the brush is fine (near things).
+  vec2 texel = 1.0 / uResolution;
+  float fineness = 1.0 - clamp(texture2D(tScale, vUv).r, 0.0, 1.0) * 0.8;
+  vec3 around = (texture2D(tPaint, vUv + vec2(2.0, 0.0) * texel).rgb + texture2D(tPaint, vUv - vec2(2.0, 0.0) * texel).rgb + texture2D(tPaint, vUv + vec2(0.0, 2.0) * texel).rgb + texture2D(tPaint, vUv - vec2(0.0, 2.0) * texel).rgb) * 0.25;
+  col += (col - around) * (0.25 + 0.55 * fineness);
+  col = painterColour(col);
   float cloth = weave(gl_FragCoord.xy);
   col *= 0.985 + 0.025 * cloth;
   col *= vec3(1.015, 1.0, 0.97);

@@ -178,10 +178,13 @@ describe('checked native PMREM generation', () => {
       expect(audit.stateBefore).toEqual({ target: b.saved.target.texture.uuid, cubeFace: 3, mip: 2 });
       expect(audit.stateAfter).toEqual(audit.stateBefore);
     }
-    expect(b.sourceDispose).toHaveBeenCalledOnce();
-    expect(b.records.map(record => record.disposals)).toEqual([0, 1]);
+    // A successful generation retains its source and both targets until the
+    // returned owner disposes; only failed attempts are retired immediately.
+    expect(b.sourceDispose).not.toHaveBeenCalled();
+    expect(b.records.map(record => record.disposals)).toEqual([0, 0]);
     result.dispose(); result.dispose();
     expect(b.records.map(record => record.disposals)).toEqual([1, 1]);
+    expect(b.sourceDispose).toHaveBeenCalledOnce();
     expect(b.events.map(event => event.phase)).toEqual(['generation', 'dispose']);
     expect(b.events[1].disposed).toBe(true);
   });
@@ -196,7 +199,7 @@ describe('checked native PMREM generation', () => {
       THREE.HalfFloatType, THREE.HalfFloatType, THREE.UnsignedByteType, THREE.UnsignedByteType,
     ]);
     expect(new Set(b.records.map(record => record.target)).size).toBe(4);
-    expect(b.records.map(record => record.disposals)).toEqual([1, 1, 0, 1]);
+    expect(b.records.map(record => record.disposals)).toEqual([1, 1, 0, 0]);
     const firstByteAllocation = b.trace.findIndex(event => event.kind === 'allocate' && event.target === b.records[2].target);
     for (const record of b.records.slice(0, 2)) {
       expect(b.trace.findIndex(event => event.kind === 'dispose' && event.target === record.target)).toBeLessThan(firstByteAllocation);
@@ -206,8 +209,10 @@ describe('checked native PMREM generation', () => {
     expect(b.events[0].attempts.map(attempt => ({ type: attempt.type, success: attempt.success, discarded: attempt.discarded })))
       .toEqual([{ type: 'half-float', success: false, discarded: true }, { type: 'unsigned-byte', success: true, discarded: false }]);
     expect(b.events[0].attempts.every(attempt => attempt.targets.length === 2)).toBe(true);
-    expect(b.snapshot()).toEqual(b.saved); expect(b.sourceDispose).toHaveBeenCalledOnce();
-    result.dispose(); expect(b.records.every(record => record.disposals === 1)).toBe(true);
+    expect(b.snapshot()).toEqual(b.saved); expect(b.sourceDispose).not.toHaveBeenCalled();
+    result.dispose(); result.dispose();
+    expect(b.records.every(record => record.disposals === 1)).toBe(true);
+    expect(b.sourceDispose).toHaveBeenCalledOnce();
   });
 
   it('throws when final byte allocation is incomplete, cleans both attempts, and restores all state', () => {

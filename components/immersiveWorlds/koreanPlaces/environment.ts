@@ -135,6 +135,7 @@ export function createCheckedEnvironment(renderer: THREE.WebGLRenderer, source: 
     attempts: [], selectedType: null, environmentMapping: null, glErrorsBefore: errors(gl), generationErrors: [],
     stateBefore: before, stateAfter: before, restored: true, success: false, disposed: false };
   let result: THREE.WebGLRenderTarget | null = null;
+  let retainedGenerator: CheckedPMREM | null = null;
   let lastError: unknown = new Error('No color-renderable Korean environment target');
   try {
     if (audit.glErrorsBefore.length) throw new Error('WebGL already reports an error before environment preparation');
@@ -150,14 +151,15 @@ export function createCheckedEnvironment(renderer: THREE.WebGLRenderer, source: 
         if (target !== generator.output || target.texture.mapping !== THREE.CubeUVReflectionMapping) {
           throw new Error('Unexpected PMREM output');
         }
-        result = target; attempt.success = true; audit.selectedType = type;
+        result = target; retainedGenerator = generator; attempt.success = true; audit.selectedType = type;
         audit.environmentMapping = target.texture.mapping;
       } catch (error) {
         lastError = error; attempt.reason = error instanceof Error ? error.message : String(error);
         generator.output?.dispose(); attempt.discarded = true;
       } finally {
-        // Includes the ping-pong framebuffer, blur/GGX materials and LOD geometry.
-        generator.dispose();
+        // Failed stores are destroyed before any retry. Keep successful native
+        // PMREM resources until scene disposal, matching the original lifetime.
+        if (!attempt.success) generator.dispose();
         restore(renderer, saved);
       }
       if (result) break;
@@ -167,7 +169,7 @@ export function createCheckedEnvironment(renderer: THREE.WebGLRenderer, source: 
   } finally {
     // Native PMREM has no exception-safe state guard; own both success/failure.
     restore(renderer, saved);
-    source.dispose();
+    if (!result) source.dispose();
     audit.stateAfter = state(renderer); audit.restored = sameState(before, audit.stateAfter);
     options.onEvent?.(audit);
   }
@@ -175,7 +177,7 @@ export function createCheckedEnvironment(renderer: THREE.WebGLRenderer, source: 
   let disposed = false;
   return { texture: target.texture, dispose() {
     if (disposed) return;
-    disposed = true; target.dispose();
+    disposed = true; target.dispose(); retainedGenerator?.dispose(); source.dispose();
     options.onEvent?.({ ...audit, phase: 'dispose', disposed: true });
   } };
 }

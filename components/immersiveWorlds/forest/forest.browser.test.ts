@@ -238,7 +238,9 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
       headless: true,
       args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
     });
-    page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
+    // An explicit context permits a second real tab for visibility observation.
+    const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
+    page = await context.newPage();
     page.setDefaultTimeout(45000);
     page.on('pageerror', (error) => report.errors.push(error.message));
     page.on('console', (message) => {

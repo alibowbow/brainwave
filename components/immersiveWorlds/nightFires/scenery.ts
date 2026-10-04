@@ -316,47 +316,172 @@ export function ridge(scene: THREE.Scene, z: number, height: number, color: stri
   scene.add(mesh(terrain, new THREE.MeshStandardMaterial({ color: '#ffffff', vertexColors: true, roughness: 1 })));
 }
 
-/** Charred endgrain is radial; it does not reuse lengthwise bark on the cut face. */
-function charredEndMaterial(): THREE.MeshStandardMaterial {
-  const result = new THREE.MeshStandardMaterial({ color: '#6a6258', roughness: 1 });
-  if (typeof document === 'undefined') return result;
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = 256;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return result;
-  const random = seeded(85021);
-  const image = ctx.createImageData(256, 256);
-  for (let y = 0; y < 256; y++) {
-    for (let x = 0; x < 256; x++) {
-      const dx = (x - 131) / 128, dy = (y - 122) / 128;
-      const r = Math.sqrt(dx * dx + dy * dy), angle = Math.atan2(dy, dx);
-      const growth = Math.sin(r * 102 + Math.sin(angle * 5) * 0.55 + Math.sin(r * 17) * 1.3);
-      const ash = Math.sin(angle * 7 + r * 13) * Math.sin(angle * 3 - r * 8);
-      const shade = THREE.MathUtils.clamp(113 + growth * 15 + ash * 22 + (random() - 0.5) * 26 - Math.max(0, r - 0.82) * 150, 33, 163);
-      const i = (y * 256 + x) * 4;
-      image.data[i] = shade; image.data[i + 1] = shade * 0.98; image.data[i + 2] = shade * 0.92;
-      image.data[i + 3] = 255;
-    }
+/** Fire-only textures: physical charcoal, ash and recessed hot fissures. */
+function fireSurface(kind: 'bark' | 'end' | 'coal', seed: number): THREE.MeshStandardMaterial {
+  // Map colours are already the intended albedo. A second dark tint would crush
+  // the shadow-facing cut faces and erase their grey ash midtones.
+  const result = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.97 });
+  if (typeof document === 'undefined') {
+    result.color.set(kind === 'end' ? '#6c6a63' : '#4a4945');
+    return result;
   }
-  ctx.putImageData(image, 0, 0);
-  ctx.lineCap = 'round';
-  for (let crack = 0; crack < 11; crack++) {
-    const angle = crack * 2.39 + random() * 0.2;
-    const start = 0.23 + random() * 0.48;
-    ctx.beginPath();
-    for (let step = 0; step <= 8; step++) {
-      const r = start + step / 8 * (1 - start);
-      const theta = angle + Math.sin(step * 1.8 + crack) * 0.045;
-      const x = 131 + Math.cos(theta) * r * 128, y = 122 + Math.sin(theta) * r * 128;
-      if (step === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  const width = kind === 'bark' ? 512 : 256, height = 256;
+  const random = seeded(seed);
+  const field = Float32Array.from({ length: 64 * 64 }, () => random());
+  const noise = (x: number, y: number) => {
+    const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+    const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+    const at = (a: number, b: number) => field[((b % 64 + 64) % 64) * 64 + (a % 64 + 64) % 64];
+    return THREE.MathUtils.lerp(THREE.MathUtils.lerp(at(ix, iy), at(ix + 1, iy), sx),
+      THREE.MathUtils.lerp(at(ix, iy + 1), at(ix + 1, iy + 1), sx), sy) - 0.5;
+  };
+  const canvases = Array.from({ length: 3 }, () => {
+    const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height; return canvas;
+  });
+  const contexts = canvases.map(canvas => canvas.getContext('2d'));
+  if (contexts.some(context => !context)) return result;
+  const images = contexts.map(context => context!.createImageData(width, height));
+  const radialSplits = Array.from({ length: 9 }, (_, i) => ({ angle: i * 2.399 + random() * 0.14, start: 0.15 + random() * 0.42 }));
+  const longSplits = Array.from({ length: 17 }, (_, i) => ({
+    u: i / 17 + (random() - 0.5) * 0.024, phase: random() * tau,
+    start: i % 3 ? random() * 0.30 : -0.05, end: i % 4 ? 0.67 + random() * 0.38 : 1.05,
+    width: 0.0017 + random() * 0.0034, wander: 0.008 + random() * 0.011,
+  }));
+  const crossSplits = Array.from({ length: 21 }, () => ({
+    u: random(), v: random(), span: 0.025 + random() * 0.060, phase: random() * tau,
+  }));
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    const u = x / width, v = y / height;
+    const broad = kind === 'bark' ? noise(u * 9.7 + 2.3, v * 2.1 + 0.8) : noise(u * 5.1 + 2.3, v * 5.7 + 0.8);
+    const small = noise(u * 31.7, v * 29.1);
+    const ash = THREE.MathUtils.smoothstep(broad * 0.72 + small * 0.26, 0.005, 0.24);
+    let fissure = 0, grain = 0;
+    if (kind === 'end') {
+      const dx = (u - 0.511) * 2, dy = (v - 0.477) * 2;
+      const radius = Math.hypot(dx, dy), angle = Math.atan2(dy, dx);
+      grain = Math.sin(radius * 109 + Math.sin(angle * 4) * 0.68 + broad * 1.2) * 0.5;
+      for (const split of radialSplits) {
+        const a = angle - split.angle + Math.sin(radius * 20 + split.angle) * 0.025;
+        const distance = Math.abs(Math.sin(a)) * radius;
+        if (Math.cos(a) > 0 && radius > split.start) {
+          fissure = Math.max(fissure, 1 - THREE.MathUtils.smoothstep(distance, 0.003, 0.016));
+        }
+      }
+      // Short circumferential separations connect the larger radial splits.
+      fissure = Math.max(fissure, Math.pow(Math.max(0, -grain * 2), 15) * 0.36);
+    } else if (kind === 'bark') {
+      // Carbonised fibres split mainly along the log. The few transverse cracks
+      // end within individual strips instead of forming a regular checker grid.
+      for (const split of longSplits) {
+        const path = split.u + Math.sin(v * 9 + split.phase) * split.wander
+          + Math.sin(v * 27 + split.phase * 0.71) * 0.003;
+        const delta = Math.abs(u - path);
+        const distance = Math.min(delta, Math.abs(1 - delta));
+        const extent = THREE.MathUtils.smoothstep(v, split.start, split.start + 0.055) *
+          (1 - THREE.MathUtils.smoothstep(v, split.end - 0.06, split.end));
+        fissure = Math.max(fissure, (1 - THREE.MathUtils.smoothstep(distance, split.width * 0.23, split.width)) * extent);
+      }
+      for (const split of crossSplits) {
+        const dx = ((u - split.u + 1.5) % 1) - 0.5;
+        const path = split.v + Math.sin(dx / split.span * 2 + split.phase) * 0.006 + dx * 0.08;
+        const extent = 1 - THREE.MathUtils.smoothstep(Math.abs(dx), split.span * 0.64, split.span);
+        fissure = Math.max(fissure, (1 - THREE.MathUtils.smoothstep(Math.abs(v - path), 0.0014, 0.0045)) * extent * 0.88);
+      }
+      grain = Math.sin(u * 285 + noise(u * 13, v * 3) * 4) * 0.22 + noise(u * 36, v * 2.5) * 0.65;
+    } else {
+      const gx = u * 5.6 + noise(u * 4, v * 7) * 0.31;
+      const gy = v * 5.1 + noise(u * 9 + 7, v * 4) * 0.29;
+      const fx = gx - Math.floor(gx), fy = gy - Math.floor(gy);
+      const edgeX = Math.min(fx, 1 - fx), edgeY = Math.min(fy, 1 - fy);
+      fissure = Math.max(1 - THREE.MathUtils.smoothstep(edgeX, 0.017, 0.062),
+        (1 - THREE.MathUtils.smoothstep(edgeY, 0.012, 0.048)) * 0.86);
+      grain = Math.sin(u * 285 + broad * 4) * 0.25 + small * 0.6;
     }
-    ctx.strokeStyle = '#151411'; ctx.lineWidth = 1.6 + random() * 2.7; ctx.stroke();
+    const mottledAsh = ash * (0.60 + small * 0.38);
+    const charcoal = kind === 'bark' ? 42 + broad * 14 + grain * 8 :
+      (kind === 'end' ? 88 : 56) + broad * 23 + grain * 16;
+    const shade = THREE.MathUtils.lerp(charcoal + mottledAsh * (kind === 'bark' ? 30 : 110), 19 + broad * 9, fissure);
+    const relief = 137 + grain * 14 + mottledAsh * 15 - fissure * 67;
+    const heat = kind === 'end' ? 0 : fissure * (kind === 'coal' ? 231 : 48) *
+      THREE.MathUtils.smoothstep(broad + small * 0.38, -0.28, 0.02) * (1 - ash * 0.85);
+    const i = (y * width + x) * 4;
+    images[0].data[i] = shade; images[0].data[i + 1] = shade * 0.988; images[0].data[i + 2] = shade * 0.946;
+    for (let channel = 0; channel < 3; channel++) {
+      images[1].data[i + channel] = relief;
+      images[2].data[i + channel] = heat;
+    }
+    for (const img of images) img.data[i + 3] = 255;
   }
-  result.map = new THREE.CanvasTexture(canvas);
+  contexts.forEach((context, i) => context!.putImageData(images[i], 0, 0));
+  result.map = new THREE.CanvasTexture(canvases[0]);
   result.map.colorSpace = THREE.SRGBColorSpace;
-  result.bumpMap = new THREE.CanvasTexture(canvas);
-  result.bumpScale = 0.017;
+  result.bumpMap = new THREE.CanvasTexture(canvases[1]);
+  result.bumpScale = kind === 'end' ? 0.0035 : 0.006;
+  if (kind !== 'end') {
+    result.emissiveMap = new THREE.CanvasTexture(canvases[2]);
+    result.emissiveMap.colorSpace = THREE.SRGBColorSpace;
+    result.emissive.set(kind === 'coal' ? '#ff5908' : '#a93208');
+    result.emissiveIntensity = kind === 'coal' ? 0.9 : 0.18;
+  }
+  for (const map of [result.map, result.bumpMap, result.emissiveMap]) {
+    if (map) { map.anisotropy = 4; map.wrapS = THREE.RepeatWrapping; }
+  }
   return result;
+}
+
+/** Rounded split wood with recessed, uneven cut faces rather than polygon disks. */
+function charredLogGeometry(length: number, radius: number, variation: number): THREE.BufferGeometry {
+  const vertices: number[] = [], uvs: number[] = [], indices: number[] = [];
+  const segments = 40, axial = 10, rings = 6;
+  const geometry = new THREE.BufferGeometry();
+  const radiusAt = (angle: number, t: number) => {
+    const fracture = 1 + Math.sin(angle * 3 + variation * 2.3) * 0.062 + Math.cos(angle * 7 - variation) * 0.036;
+    const groove = Math.pow(Math.max(0, Math.cos(angle * 11 + Math.sin(t * 7 + variation) * 0.1)), 20) * 0.022;
+    return radius * THREE.MathUtils.lerp(1, 0.86, t) * (fracture - groove);
+  };
+  const add = (x: number, y: number, z: number, u: number, v: number) => {
+    vertices.push(x, y, z); uvs.push(u, v); return vertices.length / 3 - 1;
+  };
+  for (let row = 0; row <= axial; row++) for (let col = 0; col <= segments; col++) {
+    const t = row / axial, angle = col / segments * tau;
+    const r = radiusAt(angle, t);
+    const edge = Math.pow(Math.abs(t * 2 - 1), 8);
+    const y = (t - 0.5) * length + Math.sin(angle * 5 + variation) * 0.009 * edge;
+    add(Math.cos(angle) * r, y, Math.sin(angle) * r, col / segments, t);
+  }
+  for (let row = 0; row < axial; row++) for (let col = 0; col < segments; col++) {
+    const a = row * (segments + 1) + col, b = a + 1, c = a + segments + 1, d = c + 1;
+    indices.push(a, c, b, b, c, d);
+  }
+  geometry.addGroup(0, indices.length, 0);
+  for (let end = 0; end < 2; end++) {
+    const sign = end ? 1 : -1, t = end;
+    const firstIndex = indices.length;
+    const centre = add(0, sign * (length * 0.5 - 0.016), 0, 0.5, 0.5);
+    const start = vertices.length / 3;
+    for (let ring = 1; ring <= rings; ring++) for (let col = 0; col <= segments; col++) {
+      const q = ring / rings, angle = col / segments * tau;
+      const r = radiusAt(angle, t) * q;
+      const chips = Math.sin(angle * 5 + variation) * 0.009 * Math.pow(q, 3);
+      const scoop = 0.016 * (1 - q * q) + Math.sin(q * 23 + angle * 2) * 0.0018 * q * (1 - q);
+      add(Math.cos(angle) * r, sign * (length * 0.5 - scoop) + chips, Math.sin(angle) * r,
+        0.5 + Math.cos(angle) * q * 0.5, 0.5 + Math.sin(angle) * q * 0.5);
+    }
+    for (let col = 0; col < segments; col++) {
+      const current = start + col, next = current + 1;
+      if (end) indices.push(centre, next, current); else indices.push(centre, current, next);
+    }
+    for (let ring = 0; ring < rings - 1; ring++) for (let col = 0; col < segments; col++) {
+      const a = start + ring * (segments + 1) + col, b = a + 1, c = a + segments + 1, d = c + 1;
+      if (end) indices.push(a, b, c, b, d, c); else indices.push(a, c, b, b, c, d);
+    }
+    geometry.addGroup(firstIndex, indices.length - firstIndex, end + 1);
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
 }
 
 function flameGeometry(height: number, width: number): THREE.BufferGeometry {
@@ -378,8 +503,8 @@ export function fire(position: [number, number, number], scale = 1): {
   group.position.set(...position);
   group.scale.setScalar(scale);
   const stone = material('stone', '#858784');
-  const char = material('bark', '#211b18');
-  const cut = charredEndMaterial();
+  const char = fireSurface('bark', 85023);
+  const cut = fireSurface('end', 85021);
   const ash = material('earth', '#333130');
   group.add(mesh(new THREE.CylinderGeometry(0.74, 0.78, 0.025, 40), ash, [0, 0.02, 0]));
   const random = seeded(73217);
@@ -393,24 +518,15 @@ export function fire(position: [number, number, number], scale = 1): {
     const angle = i * 1.31 + 0.18;
     const radius = 0.15 + random() * 0.035;
     const length = 1.05 - i * 0.06;
-    const logGeometry = new THREE.CylinderGeometry(radius * 0.86, radius, length, 19, 5);
-    const logPosition = logGeometry.getAttribute('position');
-    for (let vertex = 0; vertex < logPosition.count; vertex++) {
-      const x = logPosition.getX(vertex), y = logPosition.getY(vertex), z = logPosition.getZ(vertex);
-      const angle = Math.atan2(z, x), r = Math.hypot(x, z);
-      const fracture = 1 + Math.sin(angle * 3 + i * 2.3) * 0.075 + Math.cos(angle * 7 - i) * 0.044;
-      const end = Math.abs(y) > length * 0.49;
-      logPosition.setXYZ(vertex, x * fracture, y + (end ? Math.sin(angle * 5 + i) * 0.017 * Math.min(1, r / radius) : 0), z * fracture);
-    }
-    logGeometry.computeVertexNormals();
+    const logGeometry = charredLogGeometry(length, radius, i);
     const log = mesh(logGeometry, [char, cut, cut]);
     const mid = new THREE.Vector3((random() - 0.5) * 0.19, 0.16 + (i % 2) * 0.11, (random() - 0.5) * 0.17);
     log.position.copy(mid);
     log.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(Math.cos(angle), 0.12 * (i % 2), Math.sin(angle)).normalize());
     logs.add(log);
     for (let scar = 0; scar < 3; scar++) {
-      const glowing = new THREE.MeshStandardMaterial({ color: '#3c1003', emissive: '#e95007', emissiveIntensity: 0.25 + random() * 0.36, roughness: 1 });
-      const seam = mesh(new THREE.CylinderGeometry(0.004, 0.007, 0.24 + random() * 0.19, 4), glowing);
+      const glowing = new THREE.MeshStandardMaterial({ color: '#3c1003', emissive: '#e95007', emissiveIntensity: 0.12 + random() * 0.19, roughness: 1 });
+      const seam = mesh(new THREE.CylinderGeometry(0.0025, 0.0045, 0.24 + random() * 0.19, 5), glowing);
       seam.position.copy(mid).add(new THREE.Vector3(Math.cos(angle) * (scar - 1) * 0.16, radius * 0.87, Math.sin(angle) * (scar - 1) * 0.16));
       seam.quaternion.copy(log.quaternion);
       logs.add(seam);
@@ -432,11 +548,26 @@ export function fire(position: [number, number, number], scale = 1): {
   flakes.setAttribute('color', new THREE.Float32BufferAttribute(ashColors, 3));
   flakes.computeVertexNormals();
   group.add(mesh(flakes, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, side: THREE.DoubleSide })));
-  const emberSurface = new THREE.MeshStandardMaterial({ color: '#3c1205', emissive: '#ff5908', emissiveIntensity: 0.9, roughness: 0.98 });
+  const emberSurface = fireSurface('coal', 85027);
   for (let i = 0; i < 31; i++) {
     const angle = random() * tau, r = Math.sqrt(random()) * 0.48;
     group.add(rock([Math.cos(angle) * r, 0.064, Math.sin(angle) * r], [0.032 + random() * 0.044, 0.02, 0.033], i * 33, emberSurface));
   }
+  // Cooled crust partly overlaps the lower glowing coals. Its separate seed
+  // preserves the established flame placement and interaction spark sequence.
+  const coalRandom = seeded(790019);
+  const crustGeometries: THREE.BufferGeometry[] = [];
+  for (let chip = 0; chip < 23; chip++) {
+    const angle = coalRandom() * tau, r = Math.sqrt(coalRandom()) * 0.62;
+    const fragment = rock([Math.cos(angle) * r, 0.047 + coalRandom() * 0.028, Math.sin(angle) * r],
+      [0.039 + coalRandom() * 0.046, 0.011 + coalRandom() * 0.016, 0.031 + coalRandom() * 0.050], chip * 113 + 7, char);
+    fragment.updateMatrix();
+    fragment.geometry.applyMatrix4(fragment.matrix);
+    crustGeometries.push(fragment.geometry);
+  }
+  const crust = mesh(joinGeometry(crustGeometries), char);
+  crust.name = 'Overlapping cooled charcoal and ash above ember fissures';
+  group.add(crust);
   const uniforms = { clock: { value: 0 }, boost: { value: 0 } };
   for (let i = 0; i < 7; i++) {
     const surface = new THREE.ShaderMaterial({

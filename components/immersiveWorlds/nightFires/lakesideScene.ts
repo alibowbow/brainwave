@@ -79,30 +79,45 @@ export function buildLakesideWorld(): WorldRecipe {
         gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,
     fragmentShader: `precision highp float;
       varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uWarmth;
-      float wave(vec2 p){ return sin(p.x*.64+p.y*.48+uTime*.24)*.012+sin(p.x*1.71-p.y*.88+uTime*.31)*.006+sin(p.x*3.8+p.y*2.5+uTime*.4)*.0018; }
+      // Broad, gently phase-warped slopes avoid parallel reflection stripes.
+      // Subpixel detail fades by the actual world-space pixel footprint.
+      float wave(vec2 p,float footprint){
+        float warp=sin(p.x*.095+p.y*.071)*.65+sin(p.x*.04-p.y*.13)*.37;
+        float broad=sin(p.x*.42+p.y*.60+uTime*.11+warp)*.0105;
+        float crossWave=sin(-p.x*.85+p.y*.37-uTime*.09+cos(p.y*.063)*.73)*.0038;
+        float middle=sin(p.x*.74+p.y*.47+uTime*.16+warp)*.0009/(1.+footprint*footprint*.8);
+        float fine=sin(p.x*1.3-p.y*.82+uTime*.19+warp)*.00025/(1.+footprint*footprint*2.7);
+        return broad+crossWave+middle+fine;
+      }
       float hill(float a){return .033+pow(max(0.,sin(a*5.8+.2)),2.)*.041+pow(max(0.,sin(a*13.7+1.8)),4.)*.018;}
       void main(){
-        vec2 p=vWorld.xz; float e=.08;
-        vec3 n=normalize(vec3((wave(p-vec2(e,0.))-wave(p+vec2(e,0.)))/(2.*e),1.,(wave(p-vec2(0.,e))-wave(p+vec2(0.,e)))/(2.*e)));
+        vec2 p=vWorld.xz;
+        float footprint=max(length(dFdx(p)),length(dFdy(p)));
+        float e=clamp(footprint*.7,.12,2.8);
+        float normalFade=1./(1.+footprint*.14);
+        vec3 n=normalize(vec3(
+          (wave(p-vec2(e,0.),footprint)-wave(p+vec2(e,0.),footprint))*normalFade/(2.*e),
+          1.,
+          (wave(p-vec2(0.,e),footprint)-wave(p+vec2(0.,e),footprint))*normalFade/(2.*e)));
         vec3 viewDir=normalize(cameraPosition-vWorld); vec3 r=reflect(-viewDir,n);
-        float fresnel=.18+.82*pow(1.-max(0.,dot(viewDir,n)),3.6);
+        float fresnel=.16+.76*pow(1.-max(0.,dot(viewDir,n)),3.6);
         float h=clamp(r.y,0.,1.);
-        vec3 reflected=mix(vec3(.225,.18,.275),vec3(.045,.069,.13),smoothstep(0.,.65,h));
+        vec3 reflected=mix(vec3(.205,.17,.245),vec3(.045,.069,.13),smoothstep(0.,.65,h));
         reflected+=vec3(.035,.015,.033)*exp(-pow((h-.105)*7.5,2.));
         float a=atan(r.x,-r.z); float silhouette=hill(a);
-        float soften=.016+abs(vWorld.z)*.00008;
+        float soften=.022+min(footprint*.007,.032)+abs(vWorld.z)*.000055;
         reflected=mix(vec3(.064,.080,.125),reflected,smoothstep(silhouette-soften,silhouette+soften,h));
         reflected=mix(vec3(.042,.068,.085),reflected,smoothstep(silhouette*.57-soften,silhouette*.57+soften,h));
-        float ripples=sin(p.y*17.+sin(p.x*3.2)+uTime*.3)*.5+.5;
+        float ripples=.5+.5*sin(p.y*.63+p.x*.17+sin(p.x*.11-p.y*.08)*.7+uTime*.16);
         float cloud=(sin(a*16.+h*35.)*.5+.5)*exp(-pow((h-.16)*14.,2.));
         reflected+=cloud*vec3(.025,.013,.019);
         vec3 base=vec3(.025,.052,.067)+vec3(.022,.027,.039)*clamp(-vWorld.z/100.,0.,1.);
         vec3 color=mix(base,reflected,fresnel);
         vec3 moonDir=normalize(vec3(.34,.31,-1.));
-        float moon=pow(max(dot(r,moonDir),0.),560.)*.43;
-        color+=moon*vec3(.83,.79,.66)*(ripples*.55+.45);
+        float moon=pow(max(dot(r,moonDir),0.),230.)*.09;
+        color+=moon*vec3(.83,.79,.66)*(ripples*.1+.9);
         float warm=exp(-abs(p.x+.7)*2.8)*exp(-max(0.,-p.y-5.)*.55)*uWarmth;
-        color+=vec3(.21,.084,.022)*warm*pow(ripples,5.);
+        color+=vec3(.055,.021,.006)*warm*(.8+ripples*.2);
         gl_FragColor=vec4(color,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>

@@ -272,6 +272,21 @@ async function verifyWorld(world) {
     await shot('desktop', { width: 1440, height: 900 });
     mark('paused first frame / full-resolution real WebGL', first);
 
+    // Material comparisons use the same untouched, paused time-zero state in
+    // both aspect ratios. Keep the later post-interaction portrait as well.
+    assert.equal(first.time, 0, 'initial material comparison starts at simulation time zero');
+    await page.setViewportSize({ width: 390, height: 844 }); await ready(); await waitMotion('paused');
+    await page.waitForTimeout(350);
+    await shot('portrait-initial', { width: 390, height: 844 });
+    const initialPortrait = await canvasState();
+    assert.equal(initialPortrait.time, 0, 'initial narrow portrait stays at simulation time zero');
+    assert.ok(initialPortrait.width >= 390 && initialPortrait.height >= 844, 'initial portrait renders at full viewport resolution');
+    await page.setViewportSize({ width: 1440, height: 900 }); await ready(); await waitMotion('paused');
+    await page.waitForTimeout(350);
+    const desktopRestored = await canvasState();
+    assert.equal(desktopRestored.time, 0, 'desktop composition returns before any active motion or interaction');
+    mark('initial narrow portrait at frozen time zero and desktop restoration', { initialPortrait, desktopRestored });
+
     await page.waitForTimeout(200);
     const pausedBefore = await canvasState(); await page.waitForTimeout(650); const pausedAfter = await canvasState();
     assert.equal(pausedAfter.time, pausedBefore.time, 'pause must freeze simulation time');

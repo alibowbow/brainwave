@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { assertFramebufferComplete, createCheckedCubeTarget, withRenderTargetState } from '../renderTargets';
 import { mergeGeometries, mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type { WorldScene } from '../contracts';
 
@@ -375,14 +376,19 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
 
   // Clear surface: Fresnel forest reflection, directional micro-ripples and a local impulse.
   // Reflected foliage is captured once from the actual 3D environment, not a sky image.
-  const reflectionTarget = new THREE.WebGLCubeRenderTarget(128,{generateMipmaps:true,minFilter:THREE.LinearMipmapLinearFilter,type:THREE.HalfFloatType});
+  const reflectionTarget = createCheckedCubeTarget(renderer, 'valley-reflection-cube', 128, {
+    generateMipmaps:true,minFilter:THREE.LinearMipmapLinearFilter,
+  });
   const reflectionCamera = new THREE.CubeCamera(.1,100,reflectionTarget);
   reflectionCamera.position.set(0,.22,-5);
   const captureAutoUpdate = renderer.shadowMap.autoUpdate;
   const captureNeedsUpdate = renderer.shadowMap.needsUpdate;
-  renderer.shadowMap.autoUpdate=false; renderer.shadowMap.needsUpdate=false;
-  reflectionCamera.update(renderer,scene);
-  renderer.shadowMap.autoUpdate=captureAutoUpdate; renderer.shadowMap.needsUpdate=captureNeedsUpdate;
+  try {
+    renderer.shadowMap.autoUpdate=false; renderer.shadowMap.needsUpdate=false;
+    withRenderTargetState(renderer, () => reflectionCamera.update(renderer,scene));
+  } finally {
+    renderer.shadowMap.autoUpdate=captureAutoUpdate; renderer.shadowMap.needsUpdate=captureNeedsUpdate;
+  }
   const refractionTarget = new THREE.WebGLRenderTarget(1,1,{type:THREE.UnsignedByteType,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter});
   refractionTarget.depthTexture = new THREE.DepthTexture(1,1,THREE.UnsignedIntType);
   const refractionSize = new THREE.Vector2(1,1);
@@ -483,21 +489,27 @@ export function createSummerValley(renderer: THREE.WebGLRenderer): WorldScene {
   // The shadow map is reused; refraction never doubles the static forest shadow pass.
   const capturedCamera=new THREE.Matrix4();
   let capturedTime=-1;
+  let refractionChecked=false;
   water.onBeforeRender=()=>{
     renderer.getDrawingBufferSize(refractionSize);
     const resized=refractionTarget.width!==refractionSize.x||refractionTarget.height!==refractionSize.y;
     if(!resized&&capturedTime===clock.value&&capturedCamera.equals(camera.matrixWorld))return;
-    if(resized)refractionTarget.setSize(refractionSize.x,refractionSize.y);
-    const oldTarget=renderer.getRenderTarget();
+    if(resized){refractionTarget.setSize(refractionSize.x,refractionSize.y);refractionChecked=false;}
+    if(!refractionChecked){assertFramebufferComplete(renderer,refractionTarget,'valley-refraction-depth');refractionChecked=true;}
     const oldAutoUpdate=renderer.shadowMap.autoUpdate;
     const oldNeedsUpdate=renderer.shadowMap.needsUpdate;
-    water.visible=false; glintPoints.visible=false;
-    renderer.shadowMap.autoUpdate=false; renderer.shadowMap.needsUpdate=false;
-    renderer.setRenderTarget(refractionTarget);
-    renderer.render(scene,camera);
-    renderer.setRenderTarget(oldTarget);
-    renderer.shadowMap.autoUpdate=oldAutoUpdate; renderer.shadowMap.needsUpdate=oldNeedsUpdate;
-    water.visible=true; glintPoints.visible=true;
+    const oldWaterVisible=water.visible, oldGlintsVisible=glintPoints.visible;
+    try {
+      water.visible=false; glintPoints.visible=false;
+      renderer.shadowMap.autoUpdate=false; renderer.shadowMap.needsUpdate=false;
+      withRenderTargetState(renderer, () => {
+        renderer.setRenderTarget(refractionTarget);
+        renderer.render(scene,camera);
+      });
+    } finally {
+      renderer.shadowMap.autoUpdate=oldAutoUpdate; renderer.shadowMap.needsUpdate=oldNeedsUpdate;
+      water.visible=oldWaterVisible; glintPoints.visible=oldGlintsVisible;
+    }
     capturedTime=clock.value; capturedCamera.copy(camera.matrixWorld);
   };
   const raycaster=new THREE.Raycaster();

@@ -6,7 +6,7 @@ This continuation starts from original draft PR #58 at exact head `299a18911b2b7
 
 The only production delta is four WaterEdge files: stone material and environment selection in `scenes/pebbleShore.ts`, target handling in `scenes/summerValley.ts`, and two owned compatibility helpers. Geometry, topology, instance transforms, cameras, lighting, water animation and other scene source remain unchanged. Shared runtime, wrappers, routing, audio, packages, core and protected scenes are untouched. Baseline main `14940149cc5c0fccb778b58d4d755a04aea55e53`, including the user's sea PR #51, remains in ancestry; no newer main was merged into this continuation.
 
-- Production commit: `9420bd71def5f8ec6de13006f6132e0ee09ff621`.
+- Local capture-source commit: `9420bd71def5f8ec6de13006f6132e0ee09ff621`; published source commit: `8b906c4e23f18984804659e9213292b84204500b` (identical tree).
 - Production source SHA-256: `33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a`.
 - Harness source SHA-256: `9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d`.
 - Built harness tree SHA-256: `ae74b16d8207d48f7f03cf61ff9295aa8e4db7578bd34a379552cb4e884a998b`.
@@ -14,6 +14,17 @@ The only production delta is four WaterEdge files: stone material and environmen
 - Browser: Chromium `153.0.8010.0`, ANGLE Vulkan SwiftShader, DPR 1. Desktop 1280×800 and portrait 390×844, with the same native drawing-buffer size. Main production still supports DPR up to 2 and unrestricted requestAnimationFrame; no quality/downsampling/frame-rate shortcut was added.
 
 No AGENTS.md or `.agents/skills` exists in this pinned checkout or its applicable parents. Both uploaded briefs, original PR body, source, references/provenance, validation and all ten original PNGs were reviewed. Original evidence remains intact. No JEV source/assets or new image assets were imported; no paid service, new login/permission/token or independent audio context was used.
+
+### Publication identity
+
+CLI push had no write credentials; publication used the existing authorized GitHub connector. Its commit metadata differs, while Git tree identity verifies the exact file bytes. Raw reports and the manifest retain the actual local checkout IDs under which checks ran; those IDs are provenance, not promises of remotely available commits. Use the published commits for integration.
+
+| Layer | Local commit | Published commit | Identical Git tree |
+| --- | --- | --- | --- |
+| Production source | `9420bd71def5f8ec6de13006f6132e0ee09ff621` | `8b906c4e23f18984804659e9213292b84204500b` | `11a95cf56da6011ecc42d9d6ba243e90b0de54ee` |
+| Source + complete evidence | `eaf921291ec867338d06c5bd2476aa5a42dbb0cb` | `bb0324892a185dc21a82842f6db10fb7bc3c16c2` | `ca0166417a892c8c3ab729cb3b2ca97a4ffc2258` |
+
+The subsequent handoff-only commit adds this mapping and clarifies disposal scheduling. It changes no production source, harness source, report or PNG. Capture checkout `b01c44978684833983cf80360e4a07c6ed796b2c` is an earlier local QA checkpoint; its production/harness hashes match those above.
 
 ## Material and compatibility
 
@@ -98,4 +109,4 @@ Set `CHROMIUM_PATH` if the installed executable is not `/tmp/cosmic-browser-bin/
 
 ## Integration handoff
 
-All three default entry paths and the active-only required prop contract remain unchanged; see [INTEGRATION.md](../INTEGRATION.md). No extra audio/player/global-setting contract is introduced. The integrator should first include original PR58 exact head `299a18911b2b7818149e4997dc2101b9c760bef5`, then this follow-up's bounded delta. Production change is isolated in commit `9420bd71def5f8ec6de13006f6132e0ee09ff621`; subsequent commits contain QA/handoff. Preserve all current main and user sea changes, route/catalog/PWA/audio work through the sole core owner, and rerun final integrated CI plus actual Player/ImmersiveMode chrome/native fullscreen checks on the exact integrated head. This worker does not merge or deploy.
+All three default entry paths and the active-only required prop contract remain unchanged; see [INTEGRATION.md](../INTEGRATION.md). No extra audio/player/global-setting contract is introduced. The integrator should first include original PR58 exact head `299a18911b2b7818149e4997dc2101b9c760bef5`, then this follow-up's bounded delta. Published production change is isolated in commit `8b906c4e23f18984804659e9213292b84204500b` (the exact tree of local `9420bd71def5f8ec6de13006f6132e0ee09ff621`); subsequent commits contain QA/handoff. Preserve all current main and user sea changes, route/catalog/PWA/audio work through the sole core owner, and rerun final integrated CI plus actual Player/ImmersiveMode chrome/native fullscreen checks on the exact integrated head. The two clean valley lifecycle failures above remain integration blockers. This worker does not merge or deploy.

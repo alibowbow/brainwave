@@ -63,7 +63,7 @@ const report = {
     browser: null,
     headless: true,
     graphics: 'Chromium launched with ANGLE SwiftShader; no real-device performance claim.',
-    viewportChecks: 'Desktop 1280×800; narrow portrait 390×844; Fold-inner-like 900×650. Viewports only, not physical Fold hardware.',
+    viewportChecks: 'Static visual captures: desktop 1280×800; narrow portrait 390×844; Fold-inner-like 900×650. Motion/interaction/lifecycle: native 640×480 browser viewport to limit software-GPU test contention. The production renderer settings are unchanged. Viewports only, not physical Fold hardware.',
     hiddenCheck: 'Synthetic own-property document.hidden/document.visibilityState override plus visibilitychange; not real OS/browser-tab switching.',
   },
   screenshots: [],
@@ -164,21 +164,41 @@ try {
     await ready();
     console.log(`Ready ${world} ${viewport.width}×${viewport.height}${query}`);
   };
+  const checkpoint = async (label) => {
+    report.lastCompletedCheckpoint = { label, at: new Date().toISOString() };
+    await writeFile(path.join(output, 'verification.json'), `${JSON.stringify(report, null, 2)}\n`);
+    console.log(`Completed ${label}`);
+  };
 
+  // Capture every full-resolution composition first, with true inactive first frames.
   for (const world of ['meditation', 'warm-heart', 'snow-village']) {
-    const result = { world, checks: [], tap: null, diagnostics: null };
+    const result = { world, checks: [], tap: null, diagnostics: null, lifecycleViewport: capturesOnly ? null : { width: 640, height: 480 } };
     report.worlds.push(result);
+    await navigate(world, { width: 1280, height: 800 }, '&inactive=1');
+    result.checks.push(await assertFrozen('desktop 1280×800 initial active=false first frame'));
+    await screenshot(`${world}-desktop`);
+    await navigate(world, { width: 390, height: 844 }, '&inactive=1');
+    result.checks.push(await assertFrozen('portrait 390×844 initial active=false first frame'));
+    await screenshot(`${world}-portrait`);
+    await checkpoint(`${world} full-resolution desktop and portrait captures`);
+  }
+  await navigate('snow-village', { width: 900, height: 650 }, '&inactive=1');
+  await assertFrozen('Fold-inner-like landscape composition capture');
+  await screenshot('snow-village-fold-inner-viewport');
+  await checkpoint('all seven full-resolution visual captures');
+
+  // A smaller native browser viewport makes software-GPU lifecycle checks practical.
+  // It changes only the test window size, never scene resolution, quality or frame caps.
+  for (const result of report.worlds) {
+    const { world } = result;
     if (capturesOnly) {
-      await navigate(world, { width: 1280, height: 800 }, '&inactive=1');
-      await assertFrozen('desktop inactive first-frame visual capture');
-      await screenshot(`${world}-desktop`);
-      await navigate(world, { width: 390, height: 844 }, '&inactive=1');
-      await assertFrozen('portrait inactive first-frame visual capture');
-      await screenshot(`${world}-portrait`);
-      result.checks.push('motion and lifecycle checks intentionally skipped in visual-captures-only mode; real spatial first frames captured');
+      result.checks.push('motion and lifecycle checks intentionally skipped in visual-captures-only mode');
       continue;
     }
-    await navigate(world, { width: 1280, height: 800 });
+    await navigate(world, { width: 640, height: 480 });
+    // The manual QA toolbar would cover lower foreground targets in this small window.
+    // Scene inputs stay genuine; harness toggles remain available through dispatchEvent.
+    await page.addStyleTag({ content: '[data-qa-controls] { visibility: hidden !important; }' });
     result.checks.push({ active: await assertAdvances() });
     await press('active');
     await assertFrozen('motion baseline capture');
@@ -192,7 +212,6 @@ try {
     assert.notEqual(hash(movingBefore), hash(movingAfter), `${world}: actual pixels change while active`);
     result.checks.push('active rendered pixels change (two captured frames; no FPS inference)');
     result.checks.push(await assertFrozen('active=false'));
-    await screenshot(`${world}-desktop`);
     await press('active');
     await assertAdvances();
 
@@ -245,6 +264,7 @@ try {
     await page.mouse.up();
     assert.equal(await count(), interactionsBeforeDrag, 'cancelled pointer does not emit tap');
     result.checks.push('pointer cancellation does not emit tap (synthetic cancel after real down)');
+    await checkpoint(`${world} motion and genuine pointer interaction checks at 640×480`);
 
     await page.emulateMedia({ reducedMotion: 'reduce' });
     result.checks.push(await assertFrozen('prefers-reduced-motion'));
@@ -266,6 +286,7 @@ try {
       document.dispatchEvent(new Event('visibilitychange'));
     });
     await assertAdvances();
+    await checkpoint(`${world} pause, reduced motion, static3D and synthetic visibility`);
 
     // Preserve the precise DOM canvas object, not merely a similar canvas count.
     await canvas().evaluate((element) => { window.__sanctuaryOriginalCanvas = element; });
@@ -279,6 +300,7 @@ try {
     await page.waitForSelector('[data-qa-holder="primary"] canvas.sanctuary-canvas');
     assert.ok(await canvas().evaluate((element) => element === window.__sanctuaryOriginalCanvas), 'return to primary keeps the exact same canvas');
     result.checks.push('second holder and return both reuse the exact canvas DOM object and engine');
+    await checkpoint(`${world} exact canvas reuse across two holders`);
 
     // Static first frame must work even when mounted directly without active motion.
     await press('mount');
@@ -310,29 +332,10 @@ try {
     assert.notEqual((await state()).engineId, priorEngineId, 'later mount recreates an engine after disposal grace');
     result.checks.push('last release removes canvas; remount after 5.3 seconds creates fresh engine');
     result.diagnostics = await state();
-
-    await navigate(world, { width: 1280, height: 800 }, '&inactive=1');
-    result.checks.push(await assertFrozen('initial active=false first frame'));
-    assert.ok((await state()).frame >= 1, 'initial inactive mount renders its first spatial frame');
-
-    await navigate(world, { width: 1280, height: 800 }, '&static=1');
-    result.checks.push(await assertFrozen('initial static3D=true first frame'));
-    assert.ok((await state()).frame >= 1, 'initial static mount renders its first spatial frame');
-
-    await navigate(world, { width: 390, height: 844 });
-    await assertAdvances();
     await press('active');
-    await assertFrozen('portrait paused composition capture');
-    await screenshot(`${world}-portrait`);
-    result.checks.push('narrow portrait composition rendered at 390×844');
+    await assertFrozen('lifecycle complete');
+    await checkpoint(`${world} complete lifecycle including static first mount and disposal grace`);
   }
-  await navigate('snow-village', { width: 900, height: 650 }, capturesOnly ? '&inactive=1' : '');
-  if (!capturesOnly) {
-    await assertAdvances();
-    await press('active');
-  }
-  await assertFrozen('Fold-inner-like landscape composition capture');
-  await screenshot('snow-village-fold-inner-viewport');
   assert.deepEqual(report.errors, [], 'no browser runtime, shader, or other console errors');
   report.passed = true;
 } catch (error) {

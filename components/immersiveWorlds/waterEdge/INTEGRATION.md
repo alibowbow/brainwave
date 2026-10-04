@@ -61,3 +61,9 @@ Open `/?world=night-pond`, `/?world=summer-valley`, or `/?world=pebble-shore`; a
 ## Scope limits
 
 No real Fold hardware, mobile thermal or device FPS guarantee. Fold-inner coverage means viewport emulation. Hidden-state synthetic tests are labeled separately from real tab switching. Reflection/refraction techniques and approximations are documented in REFERENCES.md. No swimmer, underwater camera, free-roaming camera or fast viewpoint motion is exposed. No main merge or live production deployment is performed by this worker.
+
+## Bounded follow-up to PR58
+
+The follow-up branch `codex/water-edge-material-compat` starts at original final head `299a18911b2b7818149e4997dc2101b9c760bef5` and targets the original branch as a separate draft PR. Production commit `9420bd71def5f8ec6de13006f6132e0ee09ff621` changes only shore stone material and owned render-target/environment compatibility. Entry paths, props, motion/input/audio contracts and geometry/composition are unchanged. Normal and real forced-byte renders are documented in [qa/FOLLOWUP.md](qa/FOLLOWUP.md), with raw source/bundle/image hashes and input/lifecycle reports.
+
+Integrate PR58's exact original head first, then the bounded follow-up commits, preserving all newer main/user changes and the entire sea PR51. The integrator still owns actual Player/ImmersiveMode route/chrome/native-fullscreen validation and exact integrated-head CI. Shared-host five-second retention is not a promise of five-second GPU reclamation; the follow-up measures dispose entry/exit/context-loss separately. Do not treat trusted browser touch emulation as physical touchscreen certification, or the finite SwiftShader bursts as a sustained-performance/queue-bound pass. No merge or deployment is performed by this worker.

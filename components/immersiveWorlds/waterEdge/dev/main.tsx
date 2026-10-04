@@ -4,6 +4,8 @@ import NightPondWorld from '../NightPondWorld';
 import SummerValleyWorld from '../SummerValleyWorld';
 import PebbleShoreWorld from '../PebbleShoreWorld';
 import { diagnostics } from '../runtime';
+import { configureWaterEdgeRenderTargets } from '../renderTargets';
+import { drainGpu, graphicsInfo, inspectTelemetry, markTelemetry } from './followupTelemetry';
 import type { WaterEdgeInteraction, WaterEdgeKind } from '../contracts';
 import './style.css';
 
@@ -11,6 +13,7 @@ declare const __WATER_EDGE_SOURCE_SHA__: string;
 declare const __WATER_EDGE_HARNESS_SHA__: string;
 const worlds = { 'night-pond': NightPondWorld, 'summer-valley': SummerValleyWorld, 'pebble-shore': PebbleShoreWorld };
 const query = new URLSearchParams(location.search);
+configureWaterEdgeRenderTargets({ forceByte: query.get('targets') === 'byte' });
 const initialKind = query.get('world') as WaterEdgeKind;
 const events: WaterEdgeInteraction[] = [];
 const canvasIds = new WeakMap<HTMLCanvasElement, number>();
@@ -39,7 +42,8 @@ function inspect() {
       if (!canvasIds.has(canvas)) canvasIds.set(canvas, nextCanvasId++);
       return { id: canvasIds.get(canvas), holder: canvas.closest<HTMLElement>('[data-holder]')?.dataset.holder,
         width: canvas.width, height: canvas.height, frames: Number(canvas.dataset.frames),
-        time: Number(canvas.dataset.time), drawCalls: Number(canvas.dataset.drawCalls), triangles: Number(canvas.dataset.triangles) };
+        time: Number(canvas.dataset.time), drawCalls: Number(canvas.dataset.drawCalls), triangles: Number(canvas.dataset.triangles),
+        targets: canvas.dataset.waterEdgeRenderTargets ? JSON.parse(canvas.dataset.waterEdgeRenderTargets) : null };
     }),
     events: events.map((event) => ({ ...event, position: { ...event.position } })),
   };
@@ -54,8 +58,10 @@ function Harness() {
   useEffect(() => {
     window.__waterEdgeQA = {
       setActive, setStatic, setSecondHolder, setOverlay, setWorld: setKind,
-      mount: () => setMounted(true), unmount: () => { setSecondHolder(false); setMounted(false); },
+      mount: () => { markTelemetry('mount-request'); setMounted(true); }, unmount: () => { markTelemetry('unmount-request'); setSecondHolder(false); setMounted(false); },
       inspect, events, clearEvents: () => { events.length = 0; }, setSyntheticHidden,
+      drainGpu, graphicsInfo, inspectTelemetry,
+      pauseAfterNextPointerUp: () => window.addEventListener('pointerup', () => queueMicrotask(() => setActive(false)), { once: true }),
     };
     return () => { setSyntheticHidden(null); delete window.__waterEdgeQA; };
   }, []);
@@ -69,7 +75,8 @@ function Harness() {
       <label><input type="checkbox" checked={active} onChange={(event) => setActive(event.target.checked)} />Active</label>
       <label><input type="checkbox" checked={static3D} onChange={(event) => setStatic(event.target.checked)} />Static 3D</label>
       <label><input type="checkbox" checked={second} onChange={(event) => setSecondHolder(event.target.checked)} />Second holder</label>
-      <button onClick={() => setMounted(!mounted)}>{mounted ? 'Unmount' : 'Mount'}</button>
+      <button onClick={() => { markTelemetry(mounted ? 'unmount-request' : 'mount-request'); setMounted(!mounted); }}>{mounted ? 'Unmount' : 'Mount'}</button>
+      <button onClick={() => setActive(!active)}>{active ? 'Pause' : 'Play'}</button>
     </aside>}
   </>;
 }
@@ -77,6 +84,8 @@ interface WaterEdgeQA {
   setActive(value: boolean): void; setStatic(value: boolean): void; setSecondHolder(value: boolean): void; setOverlay(value: boolean): void;
   setWorld(value: WaterEdgeKind): void; mount(): void; unmount(): void; inspect: typeof inspect;
   events: WaterEdgeInteraction[]; clearEvents(): void; setSyntheticHidden(value: boolean | null): void;
+  drainGpu: typeof drainGpu; graphicsInfo: typeof graphicsInfo; inspectTelemetry: typeof inspectTelemetry;
+  pauseAfterNextPointerUp(): void;
 }
 declare global { interface Window { __waterEdgeQA?: WaterEdgeQA } }
 createRoot(document.getElementById('root')!).render(<Harness />);

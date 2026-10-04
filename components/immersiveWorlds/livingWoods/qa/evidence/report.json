@@ -1,0 +1,2100 @@
+{
+  "generatedAt": "2026-10-04T19:40:06.717Z",
+  "sourceRevision": "e29bcf6bb17c5852178a3060584195121543c109",
+  "sourceHash": "446d3952662a8e81e86ad7d594e528e04f9c45a81aba4441938f3978b3648cff",
+  "sourceFiles": [
+    {
+      "path": "AncientForestWorld.tsx",
+      "sha256": "8e3c0fa0d8732511952bc680d37dfc6b74ef63da90ad3709d750a2c672553932"
+    },
+    {
+      "path": "BambooWorld.tsx",
+      "sha256": "f3c26503fef49fb4db89160c221dd26ca76282650c0f8ad49496ec5294c8cbd8"
+    },
+    {
+      "path": "engine.ts",
+      "sha256": "45dd85181680f207155153b9684cd109791f023e3961d12a16473405170a971e"
+    },
+    {
+      "path": "gesture.test.ts",
+      "sha256": "8f6294a4cf17ee1b6604f2fb16b3d9bb3857ac393880d06fe25ac7d892deabd2"
+    },
+    {
+      "path": "gesture.ts",
+      "sha256": "67a90fae02e72a2233c68191386f0178bfbd764df9c64429592897e2e7b30f3e"
+    },
+    {
+      "path": "host.ts",
+      "sha256": "95f11c971c0b2a8acf93e72cf41120aba9d227c5c22a3074c6f3b58c03cd425d"
+    },
+    {
+      "path": "INTEGRATION.md",
+      "sha256": "d4f365153fd30d3e34808afe87e86ecc6bf352eaaaa96564f83b49e11b61ad8a"
+    },
+    {
+      "path": "livingWoods.browser.test.ts",
+      "sha256": "1a1fea8f3471eaaacd503b99bcdc0356b3a85ffb636450677b7cd4447ee3df35"
+    },
+    {
+      "path": "livingWoods.css",
+      "sha256": "95d99e6d793ba920789ffcf5bb49133f2d36cb3085884cdfbe7cbc5cde134622"
+    },
+    {
+      "path": "MorningPorchWorld.tsx",
+      "sha256": "68b13118c86592bd94d417e77e34dad7bef0b3a72e90040b4f9ed17c212e203e"
+    },
+    {
+      "path": "qa/.gitignore",
+      "sha256": "6af9dc8dfbf1e0cfd82fbf37edcd545f7c1f11a270a8737431419c80dd972326"
+    },
+    {
+      "path": "qa/diagnose-motion.mjs",
+      "sha256": "7c9ad95cbc73eebd0a2ff503fd6a31331d81bb0e846d4528bbb1f309bdea95cd"
+    },
+    {
+      "path": "qa/harness.tsx",
+      "sha256": "93de9b9a402bd20ce58272e8ee281f0d0c73d74ebc59c0113fbdc7981203adba"
+    },
+    {
+      "path": "qa/index.html",
+      "sha256": "d8c616bfb5aa84950607bad8e8568bb27236d6d530b808a94761fae9ea8afefc"
+    },
+    {
+      "path": "qa/README.md",
+      "sha256": "b04786359106aa8e04fa1d994782344f3f573de01343544da867f87484a01c02"
+    },
+    {
+      "path": "qa/run.mjs",
+      "sha256": "760c9482e888b896a7933828620a8ce9b2269a85f10f38fc3d150aa960bc4a06"
+    },
+    {
+      "path": "RainyForestWorld.tsx",
+      "sha256": "b73a6c1116ca61f1655e6d19857814be4ef9378f1c3d4179b981e71fbe802fc4"
+    },
+    {
+      "path": "REFERENCE_REVIEW.md",
+      "sha256": "0392023fdb283a1e4eddadb85841886df93a3c5afc6dfe8e65a4cee0d08a7ef5"
+    },
+    {
+      "path": "scenes/ancientForest.ts",
+      "sha256": "3054bd4ec99808dec8f9667888544cee74e4417e925d66166a8e048281fd4e4c"
+    },
+    {
+      "path": "scenes/bamboo.ts",
+      "sha256": "a968e376237b617b1142b9d5ea0b60000f4253da6aa56f3f1f4f810e0ae799c3"
+    },
+    {
+      "path": "scenes/morningPorch.ts",
+      "sha256": "45307f82aa77cf965018884e6bdd251c04e43ed64cd331fc0b57773daa6bebdd"
+    },
+    {
+      "path": "scenes/rainyForest.ts",
+      "sha256": "8bc124258dad7625ff675e868e74f74bfd2cf7029ebb4f6f28a79ffcefe429f0"
+    },
+    {
+      "path": "types.ts",
+      "sha256": "56ef46fb22db1f85a332e52830972355ef1d33fda0a145a7fff1b39fccb98375"
+    },
+    {
+      "path": "WorldSurface.tsx",
+      "sha256": "948bd36fb0fe6a1b383cd492a2e5cb8ed6045ded9d6597e4d8b6921bf036a51f"
+    }
+  ],
+  "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+  "bundleFiles": [
+    {
+      "path": "assets/index-C-tstfzs.css",
+      "sha256": "ccad5e0dce9e1c2d63f1d25a40c1de0db14cb438ca160355e53b7ce9ceecfb63"
+    },
+    {
+      "path": "assets/index-zYZuNyqS.js",
+      "sha256": "7bcd25f0b1ad2c1feae9e544fee0ac6dde40b3a2a572eab516015c0184166711"
+    },
+    {
+      "path": "index.html",
+      "sha256": "c65f6e774a4ee423bee96cdf651d872ca5d841af678fcf88a2a48e41e2905979"
+    }
+  ],
+  "environment": {
+    "renderer": "Chromium software WebGL (SwiftShader)",
+    "captureMethod": "Real WebGL canvas PNG readback: QA-only synchronous renderFrame(0) + canvas.toDataURL in one browser task. Not a browser UI compositor screenshot.",
+    "captureReason": "Standard and single-process Chromium both reproduced a post-motion compositor screenshot timeout despite stable paused frame/time counters; bounded evidence is preserved in motion-diagnostic and failed-f74745f-post-motion.json.",
+    "hardwareClaim": "Viewport checks only; no physical phone/Fold or device FPS/thermal claim.",
+    "hiddenTest": "Synthetic visibilitychange with document.hidden/visibilityState override, not real tab switching.",
+    "browserExecutable": "/tmp/cosmic-browser-bin/chromium",
+    "browserVersion": "153.0.8010.0"
+  },
+  "verificationRunnerSha256": "d3b22a063fbb3bc208a5c4441b667293ddfdb2f5afa6e77d71c25f683311cecb",
+  "scenes": [
+    {
+      "world": "morning",
+      "screenshots": [
+        {
+          "file": "morning-desktop.png",
+          "sha256": "fe146afacc04c5c5055d39aa2865429636e59970dbd6b9b33ff6367e13c621ac",
+          "bytes": 1669375,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "morning-portrait.png",
+          "sha256": "35d6939745c8493a510b4ba52d11d5d970f4f2895cf8d8583d80dd999f454570",
+          "bytes": 452143,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "morning-fold-inner-viewport.png",
+          "sha256": "11f467e300d2caed18232fdb9964bd1de8e3d41b10d09a5c7ab2d0d3b3b9f192",
+          "bytes": 1106836,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "coldNativeFirstFrame": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 103,
+          "triangles": 395028,
+          "geometries": 102,
+          "textures": 9,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused",
+          "pngSha256": "fe146afacc04c5c5055d39aa2865429636e59970dbd6b9b33ff6367e13c621ac",
+          "matchesDesktopPng": true,
+          "image": "morning-desktop.png"
+        },
+        "motionCounters": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 17,
+            "time": 0.1012,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        "actualMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 18,
+            "time": 0.1012,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "differentPixels": true
+        },
+        "inactiveAfterMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 18,
+            "time": 0.1012,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 18,
+            "time": 0.1012,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "reducedMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 20,
+            "time": 0.1179,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 20,
+            "time": 0.1179,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "appReducedMotionClass": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.1346,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.1346,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "static3D": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 24,
+            "time": 0.1512,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 24,
+            "time": 0.1512,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "syntheticHidden": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.1512,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.1512,
+            "drawCalls": 103,
+            "triangles": 395028,
+            "geometries": 102,
+            "textures": 9,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "raycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "target": {
+            "x": 0.5378379156168337,
+            "y": 0.7639532990464675,
+            "clientX": 344.21626599477355,
+            "clientY": 305.581319618587
+          },
+          "events": [
+            {
+              "world": "morning",
+              "sceneId": "country_morning",
+              "kind": "tea-ripple",
+              "strength": 0.24
+            }
+          ]
+        },
+        "dragNotTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          }
+        },
+        "pointerCancellation": {
+          "passed": true,
+          "eventType": "synthetic PointerEvent cancel sequence"
+        },
+        "portraitRaycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "target": {
+            "x": 0.4654779261289317,
+            "y": 0.6302877919692728,
+            "clientX": 181.53639119028335,
+            "clientY": 531.9628964220663
+          },
+          "events": [
+            {
+              "world": "morning",
+              "sceneId": "country_morning",
+              "kind": "tea-ripple",
+              "strength": 0.24
+            }
+          ]
+        },
+        "secondHolderReuse": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "engineId": "1",
+          "identicalCanvasObject": true,
+          "scope": "Same-scene second holder overlay; app fullscreen integration is owned by the integrator."
+        },
+        "repeatedMount": {
+          "passed": true,
+          "cycles": 3
+        },
+        "delayedDisposal": {
+          "passed": true,
+          "gracePeriodWaitMs": 5500,
+          "detachedFramesStable": true,
+          "explicitDisposeFlag": true
+        },
+        "coldInactiveFirstFrame": {
+          "passed": true,
+          "canvasCount": 1,
+          "engine": "2",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 201,
+          "triangles": 788400,
+          "geometries": 102,
+          "textures": 9,
+          "width": 640,
+          "height": 400,
+          "status": "ready",
+          "motion": "paused",
+          "resourceCountsMatchInitial": true
+        }
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 103,
+          "triangles": 395028,
+          "geometries": 102,
+          "textures": 9,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 6,
+          "time": 0,
+          "drawCalls": 84,
+          "triangles": 394800,
+          "geometries": 102,
+          "textures": 9,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 8,
+          "time": 0,
+          "drawCalls": 102,
+          "triangles": 395016,
+          "geometries": 102,
+          "textures": 9,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "world": "rainy",
+      "screenshots": [
+        {
+          "file": "rainy-desktop.png",
+          "sha256": "aadb0d8c209d2fe4497a044674b3b4bd9b9c717a61b58220e6608ee85b1749e2",
+          "bytes": 1782890,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "rainy-portrait.png",
+          "sha256": "96f551777077dc8580304e8a99578ea6a429cf7c59509b2d204d3400120afe1f",
+          "bytes": 539616,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "rainy-fold-inner-viewport.png",
+          "sha256": "df9ea0ac3822d0babaec7b2e27b2631233e96eedafc2ebe84184aeb3971499ac",
+          "bytes": 1198292,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "coldNativeFirstFrame": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 61,
+          "triangles": 942408,
+          "geometries": 56,
+          "textures": 7,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused",
+          "pngSha256": "aadb0d8c209d2fe4497a044674b3b4bd9b9c717a61b58220e6608ee85b1749e2",
+          "matchesDesktopPng": true,
+          "image": "rainy-desktop.png"
+        },
+        "motionCounters": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 20,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        "actualMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 21,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "differentPixels": true
+        },
+        "inactiveAfterMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 21,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 21,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "reducedMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "appReducedMotionClass": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 23,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 23,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "static3D": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 24,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 24,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "syntheticHidden": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.15,
+            "drawCalls": 61,
+            "triangles": 942408,
+            "geometries": 56,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "raycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "target": {
+            "x": 0.18667360042530406,
+            "y": 0.14236300668307172,
+            "clientX": 119.4711042721946,
+            "clientY": 56.94520267322869
+          },
+          "events": [
+            {
+              "world": "rainy",
+              "sceneId": "amb:rainy_forest",
+              "kind": "leaf-drip",
+              "strength": 0.24
+            }
+          ]
+        },
+        "dragNotTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          }
+        },
+        "pointerCancellation": {
+          "passed": true,
+          "eventType": "synthetic PointerEvent cancel sequence"
+        },
+        "portraitRaycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "target": {
+            "x": 0.39949942922095616,
+            "y": 0.16388291586596815,
+            "clientX": 155.8047773961729,
+            "clientY": 138.31718099087712
+          },
+          "events": [
+            {
+              "world": "rainy",
+              "sceneId": "amb:rainy_forest",
+              "kind": "leaf-drip",
+              "strength": 0.24
+            }
+          ]
+        },
+        "secondHolderReuse": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "engineId": "1",
+          "identicalCanvasObject": true,
+          "scope": "Same-scene second holder overlay; app fullscreen integration is owned by the integrator."
+        },
+        "repeatedMount": {
+          "passed": true,
+          "cycles": 3
+        },
+        "delayedDisposal": {
+          "passed": true,
+          "gracePeriodWaitMs": 5500,
+          "detachedFramesStable": true,
+          "explicitDisposeFlag": true
+        },
+        "coldInactiveFirstFrame": {
+          "passed": true,
+          "canvasCount": 1,
+          "engine": "2",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 101,
+          "triangles": 1176398,
+          "geometries": 56,
+          "textures": 7,
+          "width": 640,
+          "height": 400,
+          "status": "ready",
+          "motion": "paused",
+          "resourceCountsMatchInitial": true
+        }
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 61,
+          "triangles": 942408,
+          "geometries": 56,
+          "textures": 7,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 6,
+          "time": 0,
+          "drawCalls": 50,
+          "triangles": 940084,
+          "geometries": 56,
+          "textures": 7,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 8,
+          "time": 0,
+          "drawCalls": 59,
+          "triangles": 942016,
+          "geometries": 56,
+          "textures": 7,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "world": "ancient",
+      "screenshots": [
+        {
+          "file": "ancient-desktop.png",
+          "sha256": "a533ca2a9d9a4c26365134247054dcefbff782f0df9c556518958c4075aad511",
+          "bytes": 1624276,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "ancient-portrait.png",
+          "sha256": "0e71f7e1e547bec48c84d3d045484ce67122924b14e12c0485df7944daa943fa",
+          "bytes": 559867,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "ancient-fold-inner-viewport.png",
+          "sha256": "183cc824fc99d5214041b53c59553563bd5d8fd21653e6063e9e27e0edf2e049",
+          "bytes": 1164269,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "coldNativeFirstFrame": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 30,
+          "triangles": 756412,
+          "geometries": 21,
+          "textures": 7,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused",
+          "pngSha256": "a533ca2a9d9a4c26365134247054dcefbff782f0df9c556518958c4075aad511",
+          "matchesDesktopPng": true,
+          "image": "ancient-desktop.png"
+        },
+        "motionCounters": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 19,
+            "time": 0.1333,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        "actualMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 20,
+            "time": 0.1333,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "differentPixels": true
+        },
+        "inactiveAfterMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 20,
+            "time": 0.1333,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 20,
+            "time": 0.1333,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "reducedMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.1667,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.1667,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "appReducedMotionClass": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 23,
+            "time": 0.1667,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 23,
+            "time": 0.1667,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "static3D": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.1834,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.1834,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "syntheticHidden": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 27,
+            "time": 0.2001,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 27,
+            "time": 0.2001,
+            "drawCalls": 30,
+            "triangles": 756412,
+            "geometries": 21,
+            "textures": 7,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "raycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "target": {
+            "x": 0.6623278016205412,
+            "y": 0.8243942861190265,
+            "clientX": 423.8897930371463,
+            "clientY": 329.7577144476106
+          },
+          "events": [
+            {
+              "world": "ancient",
+              "sceneId": "amb:deep_forest",
+              "kind": "leaf-rustle",
+              "strength": 0.24
+            }
+          ]
+        },
+        "dragNotTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          }
+        },
+        "pointerCancellation": {
+          "passed": true,
+          "eventType": "synthetic PointerEvent cancel sequence"
+        },
+        "portraitRaycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "target": {
+            "x": 0.9296484233283888,
+            "y": 0.7724136749819945,
+            "clientX": 362.56288509807166,
+            "clientY": 651.9171416848034
+          },
+          "events": [
+            {
+              "world": "ancient",
+              "sceneId": "amb:deep_forest",
+              "kind": "leaf-rustle",
+              "strength": 0.24
+            }
+          ]
+        },
+        "secondHolderReuse": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "engineId": "1",
+          "identicalCanvasObject": true,
+          "scope": "Same-scene second holder overlay; app fullscreen integration is owned by the integrator."
+        },
+        "repeatedMount": {
+          "passed": true,
+          "cycles": 3
+        },
+        "delayedDisposal": {
+          "passed": true,
+          "gracePeriodWaitMs": 5500,
+          "detachedFramesStable": true,
+          "explicitDisposeFlag": true
+        },
+        "coldInactiveFirstFrame": {
+          "passed": true,
+          "canvasCount": 1,
+          "engine": "2",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 42,
+          "triangles": 1026762,
+          "geometries": 21,
+          "textures": 7,
+          "width": 640,
+          "height": 400,
+          "status": "ready",
+          "motion": "paused",
+          "resourceCountsMatchInitial": true
+        }
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 30,
+          "triangles": 756412,
+          "geometries": 21,
+          "textures": 7,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 6,
+          "time": 0,
+          "drawCalls": 30,
+          "triangles": 756412,
+          "geometries": 21,
+          "textures": 7,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 8,
+          "time": 0,
+          "drawCalls": 30,
+          "triangles": 756412,
+          "geometries": 21,
+          "textures": 7,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "world": "bamboo",
+      "screenshots": [
+        {
+          "file": "bamboo-desktop.png",
+          "sha256": "27925f36b7e3a76870e337d794b840ba15b79b34d2ed260d8ee21dd20b4cd7ff",
+          "bytes": 1689304,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "bamboo-portrait.png",
+          "sha256": "900414f759a8950bbe8295d2b27487fbe2b70a2160dee537e3197fc9541352f8",
+          "bytes": 553114,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        },
+        {
+          "file": "bamboo-fold-inner-viewport.png",
+          "sha256": "f95c5dabb8eff8395841213a6cfece85a9598f047ef8c77632aabdcef436d85d",
+          "bytes": 1206870,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "6ae6a8f3f184102e8ac49bfa2595480c77bc85cb3cdf9765bbc66be49947e9d0",
+          "captureMethod": "actual WebGL canvas readback"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "coldNativeFirstFrame": {
+          "passed": true,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 934154,
+          "geometries": 13,
+          "textures": 6,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused",
+          "pngSha256": "27925f36b7e3a76870e337d794b840ba15b79b34d2ed260d8ee21dd20b4cd7ff",
+          "matchesDesktopPng": true,
+          "image": "bamboo-desktop.png"
+        },
+        "motionCounters": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 20,
+            "time": 0.15,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        "actualMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 10,
+            "time": 0,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 21,
+            "time": 0.15,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "differentPixels": true
+        },
+        "inactiveAfterMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 21,
+            "time": 0.15,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 21,
+            "time": 0.15,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "reducedMotion": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.15,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 22,
+            "time": 0.15,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "appReducedMotionClass": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 24,
+            "time": 0.1667,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 24,
+            "time": 0.1667,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "static3D": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.1667,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 25,
+            "time": 0.1667,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "syntheticHidden": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 26,
+            "time": 0.1667,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 26,
+            "time": 0.1667,
+            "drawCalls": 22,
+            "triangles": 934154,
+            "geometries": 13,
+            "textures": 6,
+            "width": 640,
+            "height": 400,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": "not repeated; frame/time stability checked",
+          "qaRedrawExcludedFromCounterInterval": true
+        },
+        "raycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "target": {
+            "x": 0.6786191686132811,
+            "y": 0.4512908731325184,
+            "clientX": 434.3162679124999,
+            "clientY": 180.51634925300738
+          },
+          "events": [
+            {
+              "world": "bamboo",
+              "sceneId": "nature:bamboo_grove",
+              "kind": "bamboo-leaf",
+              "strength": 0.24
+            }
+          ]
+        },
+        "dragNotTap": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          }
+        },
+        "pointerCancellation": {
+          "passed": true,
+          "eventType": "synthetic PointerEvent cancel sequence"
+        },
+        "portraitRaycastTap": {
+          "passed": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "target": {
+            "x": 0.5667391674413965,
+            "y": 0.43243906350345995,
+            "clientX": 221.02827530214464,
+            "clientY": 364.9785695969202
+          },
+          "events": [
+            {
+              "world": "bamboo",
+              "sceneId": "nature:bamboo_grove",
+              "kind": "bamboo-leaf",
+              "strength": 0.24
+            }
+          ]
+        },
+        "secondHolderReuse": {
+          "passed": true,
+          "viewport": {
+            "width": 640,
+            "height": 400
+          },
+          "engineId": "1",
+          "identicalCanvasObject": true,
+          "scope": "Same-scene second holder overlay; app fullscreen integration is owned by the integrator."
+        },
+        "repeatedMount": {
+          "passed": true,
+          "cycles": 3
+        },
+        "delayedDisposal": {
+          "passed": true,
+          "gracePeriodWaitMs": 5500,
+          "detachedFramesStable": true,
+          "explicitDisposeFlag": true
+        },
+        "coldInactiveFirstFrame": {
+          "passed": true,
+          "canvasCount": 1,
+          "engine": "2",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 934154,
+          "geometries": 13,
+          "textures": 6,
+          "width": 640,
+          "height": 400,
+          "status": "ready",
+          "motion": "paused",
+          "resourceCountsMatchInitial": true
+        }
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 934154,
+          "geometries": 13,
+          "textures": 6,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 6,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 934154,
+          "geometries": 13,
+          "textures": 6,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 8,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 934154,
+          "geometries": 13,
+          "textures": 6,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

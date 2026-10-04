@@ -60,7 +60,7 @@ function Harness() {
       setActive, setStatic, setSecondHolder, setOverlay, setWorld: setKind,
       mount: () => { markTelemetry('mount-request'); setMounted(true); }, unmount: () => { markTelemetry('unmount-request'); setSecondHolder(false); setMounted(false); },
       inspect, events, clearEvents: () => { events.length = 0; }, setSyntheticHidden,
-      drainGpu, graphicsInfo, inspectTelemetry,
+      drainGpu, graphicsInfo, inspectTelemetry, markTelemetry,
       pauseAfterNextPointerUp: () => window.addEventListener('pointerup', () => queueMicrotask(() => setActive(false)), { once: true }),
     };
     return () => { setSyntheticHidden(null); delete window.__waterEdgeQA; };
@@ -85,6 +85,7 @@ interface WaterEdgeQA {
   setWorld(value: WaterEdgeKind): void; mount(): void; unmount(): void; inspect: typeof inspect;
   events: WaterEdgeInteraction[]; clearEvents(): void; setSyntheticHidden(value: boolean | null): void;
   drainGpu: typeof drainGpu; graphicsInfo: typeof graphicsInfo; inspectTelemetry: typeof inspectTelemetry;
+  markTelemetry: typeof markTelemetry;
   pauseAfterNextPointerUp(): void;
 }
 declare global { interface Window { __waterEdgeQA?: WaterEdgeQA } }

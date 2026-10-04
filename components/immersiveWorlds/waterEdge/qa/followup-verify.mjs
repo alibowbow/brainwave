@@ -10,15 +10,22 @@ import { execFileSync } from 'node:child_process';
 import { readFile, readdir, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateTargetAudit } from './followup-target-assertions.mjs';
 
 const qa = path.dirname(fileURLToPath(import.meta.url)), owned = path.dirname(qa);
 const args = process.argv.slice(2), arg = (name, fallback) => args.find(x => x.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const stage = arg('stage', 'visual'), world = arg('world', 'pebble-shore'), mode = arg('mode', 'normal'), viewportName = arg('viewport', 'desktop');
 const viewport = ({ desktop: { width: 1280, height: 800 }, portrait: { width: 390, height: 844 } })[viewportName];
-if (!viewport || !['visual', 'behavior', 'lifecycle'].includes(stage) || !['normal', 'byte'].includes(mode)) throw new Error('Invalid stage/mode/viewport');
+if (!viewport || !['visual', 'behavior', 'lifecycle', 'diagnostic'].includes(stage) || !['normal', 'byte'].includes(mode)) throw new Error('Invalid stage/mode/viewport');
+const tag = arg('tag', 'final');
+if (!/^[a-z0-9-]+$/.test(tag)) throw new Error('Invalid evidence tag');
+const drainBeforeDispose = args.includes('--drain-before-dispose');
+if (drainBeforeDispose && stage !== 'diagnostic') throw new Error('GPU-drained lifecycle must be a separately labelled diagnostic stage');
 const base = process.env.WATER_EDGE_URL || 'http://127.0.0.1:4188';
-const output = path.join(qa, 'followup-evidence'); await mkdir(output, { recursive: true });
-const stem = `${world}-${mode}-${viewportName}-${stage}`;
+const evidenceName = arg('evidence', 'followup-lifecycle-evidence');
+if (!/^[a-z0-9-]+$/.test(evidenceName) || evidenceName === 'followup-evidence') throw new Error('Use a new owned evidence directory; original followup-evidence is immutable');
+const output = path.join(qa, evidenceName); await mkdir(output, { recursive: true });
+const stem = `${tag}-${world}-${mode}-${viewportName}-${stage}`;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 async function treeHash(root, keep = () => true, sourceOnly = false) {
   const digest = createHash('sha256');
@@ -33,7 +40,7 @@ async function treeHash(root, keep = () => true, sourceOnly = false) {
   await walk(root); return digest.digest('hex');
 }
 const report = {
-  schema: 2, world, mode, stage, viewportName, viewport, dpr: 1, generatedAt: new Date().toISOString(),
+  schema: 3, world, mode, stage, tag, drainBeforeDispose, viewportName, viewport, dpr: 1, generatedAt: new Date().toISOString(),
   scope: 'Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.',
   limitations: ['SwiftShader software GPU; no physical touch device or sustained hardware performance certification.',
     'Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.',
@@ -121,17 +128,7 @@ try {
   assert(report.errors.length === 0, 'Initial console/shader/page errors');
   if (world !== 'night-pond') {
     const audit = report.graphics.targetAudit;
-    assert(audit && audit.forcedByte === (mode === 'byte') && audit.checks.length > 0, 'Missing/mismatched render-target mode audit');
-    assert(audit.checks.every(check => check.complete && check.faces.length >= 1 && check.faces.every(status => status === 36053)), 'An actual target framebuffer check failed');
-    if (mode === 'byte') {
-      assert(audit.checks.every(check => check.type === 'unsigned-byte'), 'Forced-byte path allocated a checked half-float target');
-      if (world === 'pebble-shore') assert(audit.environment === 'byte-ggx-cube-uv', 'Byte shore did not select the pre-generation GGX environment alternative');
-    } else if (audit.colorBufferFloat || audit.colorBufferHalfFloat) {
-      const expected = world === 'summer-valley' ? 'valley-reflection-cube' : 'pebble-pmrem-output';
-      assert(audit.checks.some(check => check.label === expected && check.type === 'half-float'), 'Supported normal path did not regress a real half-float output');
-      if (world === 'pebble-shore') assert(audit.environment === 'three-pmrem-half-float', 'Normal shore failed to exercise supported Three PMREM');
-    }
-    report.checks.targetCompatibility = { status: 'passed', audit, note: mode === 'byte' ? 'Legitimate format selection was forced before initialization; reported extensions remained genuine.' : 'Normal capability-selected target path and actual framebuffer checks.' };
+    report.checks.targetCompatibility = { ...validateTargetAudit(audit, { world, mode }), audit };
   }
   if (stage === 'visual') {
     await capture('initial');
@@ -237,17 +234,21 @@ try {
   } else {
     // Clean no-capture run: no screenshots, toDataURL, readPixels or diagnostic fence before/after teardown.
     const before = await inspect();
-    await page.evaluate(() => window.__waterEdgeQA.setSecondHolder(true));
+    await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('holder-transfer-secondary'); window.__waterEdgeQA.setSecondHolder(true); });
     await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'secondary');
     const second = await inspect();
-    await page.evaluate(() => window.__waterEdgeQA.setSecondHolder(false));
+    await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('holder-transfer-primary'); window.__waterEdgeQA.setSecondHolder(false); });
     await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'primary');
     const returned = await inspect();
     assert(before.canvases[0].id === second.canvases[0].id && before.canvases[0].id === returned.canvases[0].id && before.diagnostics.created === returned.diagnostics.created && returned.canvases.length === 1, 'Holder transfer created/replaced engine/canvas');
     report.checks.holderTransfer = { status: 'passed', before, second, returned, method: 'Actual production shared-host transfer in harness; native fullscreen/app Escape unrun' };
     report.checks.disposalCycles = [];
-    for (let cycle = 1; cycle <= 2; cycle++) {
+    const cycleCount = stage === 'diagnostic' ? 1 : 2;
+    for (let cycle = 1; cycle <= cycleCount; cycle++) {
+      if (drainBeforeDispose) await drain(`diagnostic-pre-disposal-${cycle}-gpuDrain`);
       const prior = await inspect();
+      report.beforeDisposalTelemetry = await page.evaluate(() => window.__waterEdgeQA.inspectTelemetry());
+      await save();
       const cycleStart = await page.evaluate(() => performance.now());
       await page.evaluate(() => window.__waterEdgeQA.unmount());
       await page.waitForFunction(() => window.__waterEdgeQA.inspect().diagnostics.live === 0, null, { timeout: 20000, polling: 100 });
@@ -260,6 +261,12 @@ try {
         removalToDisposeEntryMs: entry.atMs - removal.atMs, disposeSynchronousDurationMs: exit.atMs - entry.atMs,
         removalToContextLossObservationMs: lost.atMs - removal.atMs,
         claim: 'Clean no-capture cycle reached zero engine/canvas counters and observed context loss within recorded elapsed time; not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.', disposed };
+      disposal.removalToContextLossObservationMs = lost.atMs - removal.atMs;
+      disposal.heartbeat = { samples: telemetry.heartbeats.filter(item => item.atMs >= removal.atMs && item.atMs <= lost.atMs + 100),
+        note: 'Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.' };
+      disposal.heartbeat.maxLagMs = Math.max(0, ...disposal.heartbeat.samples.map(item => item.lagMs));
+      assert(disposal.heartbeat.samples.length > 0 && Number.isFinite(disposal.heartbeat.maxLagMs), 'Missing event-loop responsiveness measurements during removal/disposal');
+      assert(disposal.removalToContextLossObservationMs <= 20000, 'Actual recorded removal-to-context-loss duration exceeded the fixed20s gate');
       await page.evaluate(() => window.__waterEdgeQA.mount()); await ready();
       const remounted = await inspect(); assert(remounted.canvases.length === 1 && remounted.diagnostics.live === 1 && remounted.canvases[0].id !== prior.canvases[0].id, 'Remount failed to create exactly one fresh engine');
       report.checks.disposalCycles.push({ ...disposal, remounted }); await save();

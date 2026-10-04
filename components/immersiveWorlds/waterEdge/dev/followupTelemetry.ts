@@ -1,5 +1,6 @@
 /** Dev-only observation. None of these hooks is imported by a production entry. */
 import { WaterEdgeEngine } from '../runtime';
+import type * as THREE from 'three';
 
 type Entry = { kind: string; atMs: number; [key: string]: unknown };
 const timeline: Entry[] = [];
@@ -9,6 +10,17 @@ const ids = new WeakMap<HTMLCanvasElement, number>();
 let sequence = 0;
 let maxHeartbeatLagMs = 0;
 let heartbeatAt = performance.now();
+const heartbeats: { atMs: number; lagMs: number }[] = [];
+type DrawInfo = { calls: number; submittedElements: number };
+type EngineObserved = { canvas: HTMLCanvasElement; renderer: THREE.WebGLRenderer; world: { dispose?: () => void } | null };
+type RendererObserved = { update(count: number, mode: number, instances: number): void };
+type RenderCall = { draws: DrawInfo; targets: Record<string, DrawInfo> };
+const instrumented = new WeakSet<THREE.WebGLRenderer>();
+const totals = new WeakMap<THREE.WebGLRenderer, DrawInfo>();
+const scopes = new WeakMap<THREE.WebGLRenderer, string>();
+const renderStacks = new WeakMap<THREE.WebGLRenderer, RenderCall[]>();
+const lastSizes = new WeakMap<WaterEdgeEngine, { width: number; height: number; dpr: number; atMs: number; same: boolean }>();
+let lastAction = 'initial-mount';
 const record = (kind: string, detail: Record<string, unknown> = {}) => {
   timeline.push({ kind, atMs: performance.now(), ...detail });
   if (timeline.length > 4000) timeline.shift();
@@ -20,14 +32,94 @@ function track(canvas: HTMLCanvasElement) {
   }
   return ids.get(canvas)!;
 }
-function canvasOf(engine: WaterEdgeEngine) { return (engine as unknown as { canvas: HTMLCanvasElement }).canvas; }
+function observed(engine: WaterEdgeEngine) { return engine as unknown as EngineObserved; }
+function canvasOf(engine: WaterEdgeEngine) { return observed(engine).canvas; }
+function phase<T>(renderer: THREE.WebGLRenderer, name: string, call: () => T): T {
+  const id = track(renderer.domElement), at = performance.now();
+  const bookkeeping = () => ({ ...renderer.info.memory, programs: renderer.info.programs?.length ?? null });
+  record(`${name}-entry`, { canvasId: id, jsResourceBookkeeping: bookkeeping() });
+  try { return call(); }
+  finally { record(`${name}-exit`, { canvasId: id, elapsedMs: performance.now() - at, jsResourceBookkeeping: bookkeeping() }); }
+}
+function rendererHooks(renderer: THREE.WebGLRenderer) {
+  if (instrumented.has(renderer)) return;
+  instrumented.add(renderer);
+  const aggregate = { calls: 0, submittedElements: 0 }; totals.set(renderer, aggregate);
+  const stack: RenderCall[] = []; renderStacks.set(renderer, stack);
+  const info = renderer.info as unknown as RendererObserved;
+  const originalUpdate = info.update;
+  const previousAutoReset = renderer.info.autoReset;
+  renderer.info.autoReset = false;
+  // Observe Three's own post-draw accounting, without changing GL methods/state.
+  // The active innermost renderer call gets exclusive counts; global deltas include children.
+  info.update = function (count, mode, instances) {
+    aggregate.calls++; aggregate.submittedElements += count * instances;
+    const current = stack.at(-1);
+    if (current) {
+      current.draws.calls++; current.draws.submittedElements += count * instances;
+      const target = renderer.getRenderTarget();
+      const key = target ? `${target.texture.uuid}:${target.width}x${target.height}:type${target.texture.type}:face${renderer.getActiveCubeFace()}:mip${renderer.getActiveMipmapLevel()}` : 'canvas';
+      const item = current.targets[key] ??= { calls: 0, submittedElements: 0 };
+      item.calls++; item.submittedElements += count * instances;
+    }
+    return originalUpdate.call(this, count, mode, instances);
+  };
+  const original = renderer.render;
+  renderer.render = function (scene, camera) {
+    const begin = performance.now(), before = { ...aggregate }, target = renderer.getRenderTarget();
+    const current: RenderCall = { draws: { calls: 0, submittedElements: 0 }, targets: {} }; stack.push(current);
+    const scope = scopes.get(renderer) || 'outside-engine-scope';
+    try { return original.call(this, scene, camera); }
+    finally {
+      stack.pop();
+      record('renderer-render-return', { canvasId: track(renderer.domElement), scope, action: lastAction, nestedDepth: stack.length,
+        startMs: begin, elapsedMs: performance.now() - begin, exclusiveDrawCalls: current.draws.calls,
+        inclusiveDrawCalls: aggregate.calls - before.calls, cumulativeDrawCalls: aggregate.calls,
+        drawTargets: current.targets, sceneName: scene.name || scene.type, cameraType: camera.type,
+        destination: target ? { width: target.width, height: target.height, type: target.texture.type, cube: Boolean((target as unknown as { isWebGLCubeRenderTarget?: boolean }).isWebGLCubeRenderTarget) } : 'canvas' });
+    }
+  };
+  const listsDispose = renderer.renderLists.dispose;
+  renderer.renderLists.dispose = () => phase(renderer, 'render-lists-dispose', () => listsDispose.call(renderer.renderLists));
+  const rendererDispose = renderer.dispose;
+  renderer.dispose = () => phase(renderer, 'renderer-dispose', () => rendererDispose.call(renderer));
+  const forceLoss = renderer.forceContextLoss;
+  renderer.forceContextLoss = () => {
+    try { return phase(renderer, 'force-context-loss', () => forceLoss.call(renderer)); }
+    finally { renderer.info.autoReset = previousAutoReset; }
+  };
+}
+const originalInit = WaterEdgeEngine.prototype.init;
+WaterEdgeEngine.prototype.init = function () {
+  const { renderer } = observed(this); rendererHooks(renderer);
+  scopes.set(renderer, 'engine-init-environment'); const began = performance.now();
+  record('engine-init-entry', { canvasId: track(renderer.domElement) });
+  let result: Promise<void>;
+  try {
+    result = originalInit.call(this);
+    const world = observed(this).world;
+    if (world?.dispose) { const dispose = world.dispose; world.dispose = () => phase(renderer, 'world-dispose', () => dispose.call(world)); }
+  } finally { scopes.delete(renderer); }
+  return result.finally(() => record('engine-init-exit', { canvasId: track(renderer.domElement), elapsedMs: performance.now() - began, drawCalls: totals.get(renderer)?.calls }));
+};
+const originalSetSize = WaterEdgeEngine.prototype.setSize;
+WaterEdgeEngine.prototype.setSize = function (width, height, dpr) {
+  const prior = lastSizes.get(this);
+  const detail = { width, height, dpr, atMs: performance.now(), same: Boolean(prior && prior.width === width && prior.height === height && prior.dpr === dpr) };
+  lastSizes.set(this, detail); record('set-size-request', { canvasId: track(canvasOf(this)), action: lastAction, ...detail });
+  return originalSetSize.call(this, width, height, dpr);
+};
 const originalRender = WaterEdgeEngine.prototype.renderFrame;
 WaterEdgeEngine.prototype.renderFrame = function (dt: number) {
   const canvas = canvasOf(this), id = track(canvas), start = performance.now();
+  const renderer = observed(this).renderer, beforeDraws = totals.get(renderer)?.calls || 0;
+  const reason = dt > 0 ? 'raf' : Number(canvas.dataset.frames || 0) === 0 ? 'initial-static' : 'static-redraw';
+  scopes.set(renderer, reason);
   const before = Number(canvas.dataset.frames || 0);
   try { return originalRender.call(this, dt); }
   finally {
-    record('render-js-return', { canvasId: id, dt, startMs: start, elapsedMs: performance.now() - start,
+    scopes.delete(renderer);
+    record('render-js-return', { canvasId: id, dt, reason, action: lastAction, lastSize: lastSizes.get(this), drawCalls: (totals.get(renderer)?.calls || 0) - beforeDraws, startMs: start, elapsedMs: performance.now() - start,
       submitted: Number(canvas.dataset.frames || 0) > before, frame: Number(canvas.dataset.frames || 0), time: canvas.dataset.time });
   }
 };
@@ -47,7 +139,9 @@ new MutationObserver((mutations) => {
 }).observe(document.documentElement, { childList: true, subtree: true });
 window.setInterval(() => {
   const now = performance.now();
-  maxHeartbeatLagMs = Math.max(maxHeartbeatLagMs, now - heartbeatAt - 50);
+  const lagMs = now - heartbeatAt - 50;
+  maxHeartbeatLagMs = Math.max(maxHeartbeatLagMs, lagMs);
+  heartbeats.push({ atMs: now, lagMs }); if (heartbeats.length > 4000) heartbeats.shift();
   heartbeatAt = now;
 }, 50);
 for (const kind of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'click', 'blur', 'visibilitychange']) {
@@ -62,8 +156,9 @@ for (const kind of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 
 function state(canvas: HTMLCanvasElement) {
   return { canvasId: track(canvas), width: canvas.width, height: canvas.height, frames: canvas.dataset.frames, time: canvas.dataset.time };
 }
-export function inspectTelemetry() { return { timeline: [...timeline], input: [...input], maxHeartbeatLagMs }; }
-export function markTelemetry(kind: string) { record(kind); }
+export function inspectTelemetry() { return { timeline: [...timeline], input: [...input], maxHeartbeatLagMs, heartbeats: [...heartbeats],
+  countingMethod: 'Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls.' }; }
+export function markTelemetry(kind: string) { lastAction = kind; record(kind); }
 export function graphicsInfo() {
   const canvas = document.querySelector<HTMLCanvasElement>('.water-edge-canvas');
   const gl = canvas?.getContext('webgl2');

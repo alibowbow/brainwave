@@ -45,8 +45,12 @@ void main() {
   float n = uNearFar.x;
   float f = uNearFar.y;
   float dist = 2.0 * n * f / (f + n - z * (f - n));
-  // Fine within about 30 m, the full brush beyond about 500 m, eased in between.
-  float scale = mix(uFine, 1.0, smoothstep(3.4, 6.2, log(max(dist, 1.0))));
+  // Fine within about 30 m; still fairly fine through the middle distance (the
+  // bay's waters and the hills, out to a few hundred metres), where there is
+  // detail to keep; the full, broad brush only for the far headlands and the sky.
+  float far = log(max(dist, 1.0));
+  float scale = mix(uFine, 0.7, smoothstep(3.4, 5.7, far));
+  scale = mix(scale, 1.0, smoothstep(6.6, 9.0, far));
   gl_FragColor = vec4(scale, scale, scale, 1.0);
 }
 `;
@@ -209,15 +213,15 @@ vec4 dabs(vec2 px, vec3 base, float uCell) {
       float strength = smoothstep(0.0003, 0.003, t.x + t.z);
       vec2 along = normalize(mix(vec2(1.0, 0.0), dot(v, v) > 1e-12 ? normalize(v) * sign(v.x + 1e-6) : vec2(1.0, 0.0), strength) + vec2(1e-4, 0.0));
       // Where there is no form to follow, the brush wanders a little.
-      float wander = (jitter.y - 0.5) * 1.1 * (1.0 - strength);
+      float wander = (jitter.y - 0.5) * 0.5 * (1.0 - strength);
       along = vec2(along.x * cos(wander) - along.y * sin(wander), along.x * sin(wander) + along.y * cos(wander));
       float detail = smoothstep(0.002, 0.02, t.x + t.z);
-      float halfLength = uCell * (1.45 - 0.75 * detail) * (0.8 + 0.4 * jitter.x);
-      float halfWidth = uCell * (0.6 - 0.2 * detail);
+      float halfLength = uCell * (1.6 - 0.8 * detail) * (0.8 + 0.4 * jitter.x);
+      float halfWidth = uCell * (0.5 - 0.2 * detail);
       vec2 d = px - centre;
       vec2 local = vec2(dot(d, along), dot(d, vec2(-along.y, along.x)));
       float e = length(local / vec2(halfLength, halfWidth));
-      float cover = 1.0 - smoothstep(0.75, 1.0, e);
+      float cover = 1.0 - smoothstep(0.55, 1.0, e);
       if (cover <= 0.0) continue;
       vec3 colour = texture2D(tPaint, at).rgb;
       // Paint keeps within the forms: no dab across a strong edge.
@@ -226,6 +230,9 @@ vec4 dabs(vec2 px, vec3 base, float uCell) {
       float priority = hash12(c + 17.0);
       if (cover > 0.02 && priority > best) {
         best = priority;
+        // Where the picture is smooth the dab follows the paint under it, so a
+        // gradient (water, sky) stays a gradient instead of breaking into tiles.
+        colour = mix(colour, base, 0.5 * (1.0 - strength));
         // Each dab a slightly different mix, streaked by its bristles.
         float mixing = (hash12(c + 3.1) - 0.5) * (0.3 + 0.7 * strength);
         colour *= 1.0 + 0.12 * mixing;
@@ -269,6 +276,8 @@ uniform vec2 uResolution;
 uniform vec2 uSun;
 uniform float uSunVisible;
 uniform float uBrush;
+// How much to sharpen: more when the picture is stretched over many more screen pixels than it has.
+uniform float uSharpen;
 const int STROKE_STEPS = STROKE_STEP_COUNT;
 // How much of the painting's width the view shows (the rest is painted for the view to slide over).
 uniform float uView;
@@ -353,7 +362,7 @@ void main() {
   vec2 texel = 1.0 / uResolution;
   float fineness = 1.0 - clamp(texture2D(tScale, vUv).r, 0.0, 1.0) * 0.8;
   vec3 around = (texture2D(tPaint, vUv + vec2(2.0, 0.0) * texel).rgb + texture2D(tPaint, vUv - vec2(2.0, 0.0) * texel).rgb + texture2D(tPaint, vUv + vec2(0.0, 2.0) * texel).rgb + texture2D(tPaint, vUv - vec2(0.0, 2.0) * texel).rgb) * 0.25;
-  col += (col - around) * (0.25 + 0.55 * fineness);
+  col += (col - around) * (0.25 + 0.55 * fineness + uSharpen);
   col = painterColour(col);
   float cloth = weave(gl_FragCoord.xy);
   col *= 0.985 + 0.025 * cloth;
@@ -389,7 +398,7 @@ export interface PaintSettings {
 }
 
 /** The brush for the nearest things, as a fraction of the full one. */
-const FINE_BRUSH = 0.42;
+const FINE_BRUSH = 0.4;
 
 /** Turns the rendered frame into the painting. */
 export class OilPaintPost {
@@ -416,6 +425,7 @@ export class OilPaintPost {
     uSun: { value: new THREE.Vector2(0.1, 0.8) },
     uSunVisible: { value: 1 },
     uView: { value: 1 },
+    uSharpen: { value: 0 },
   };
   /** The full brush everywhere, for a frame rendered without depth. */
   private readonly fullBrush = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
@@ -450,8 +460,11 @@ export class OilPaintPost {
    * Size of the painting, the brush for it (at most the radius it was made
    * for), and how much of its width the view shows.
    */
-  setSize(width: number, height: number, radius = this.settings.radius, view = 1) {
+  setSize(width: number, height: number, radius = this.settings.radius, view = 1, upscale = 1) {
     this.finish.material.uniforms.uView.value = view;
+    // Stretched over more screen pixels than it has, the picture is softened by the
+    // browser; a little sharpening here (more the more it is stretched) gives it back.
+    this.finish.material.uniforms.uSharpen.value = Math.min(0.55, Math.max(0, 0.2 * (upscale - 1)));
     this.width = width;
     this.height = height;
     this.radius = Math.min(this.settings.radius, Math.max(1.5, radius));

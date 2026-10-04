@@ -4,6 +4,9 @@ import type { SanctuaryBuilder } from './worldTypes';
 
 /** Original geometry and deterministic material maps. No downloaded artwork. */
 export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
+  const floatColorBuffer = renderer.extensions.has('EXT_color_buffer_float');
+  const halfFloatColorBuffer = renderer.extensions.has('EXT_color_buffer_half_float');
+  const supportsHalfFloatColor = floatColorBuffer || halfFloatColorBuffer;
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#bdd1d4');
   scene.fog = new THREE.Fog('#c8d1c5', 23, 70);
@@ -26,7 +29,10 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     return canvas;
   });
   const environment = new THREE.CubeTexture(faces); environment.colorSpace = THREE.SRGBColorSpace; environment.needsUpdate = true;
-  scene.environment = environment; scene.environmentIntensity = .42; textures.push(environment);
+  // Three's automatic PMREM also allocates half-float color targets. On the byte
+  // compatibility path retain direct/hemisphere lighting without invoking PMREM.
+  scene.environment = supportsHalfFloatColor ? environment : null;
+  scene.environmentIntensity = .42; textures.push(environment);
 
   function texture(kind: 'stone' | 'wood' | 'bronze' | 'soil', size = 256) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
@@ -215,6 +221,16 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
         }`,
     },
   });
+  // Reflector r186 constructs an RGBA HalfFloat target, but WebGL2 alone does
+  // not guarantee that RGBA16F is color-renderable. Enable the advertised
+  // color-buffer extension and choose the target type before its first use.
+  // The target is still unallocated here, so no stale GPU attachment survives.
+  const reflectionTarget = water.getRenderTarget();
+  reflectionTarget.texture.type = supportsHalfFloatColor
+    ? THREE.HalfFloatType : THREE.UnsignedByteType;
+  renderer.domElement.dataset.reflectionTargetType = reflectionTarget.texture.type === THREE.HalfFloatType ? 'half-float' : 'unsigned-byte';
+  renderer.domElement.dataset.reflectionFloatExtension = String(floatColorBuffer);
+  renderer.domElement.dataset.reflectionHalfFloatExtension = String(halfFloatColorBuffer);
   water.rotation.x = -Math.PI / 2; water.position.set(.05, .392, -2.1); water.name = 'bounded-reflective-water'; scene.add(water);
   const waterMaterial = water.material as THREE.ShaderMaterial;
   // One tiny carved spout, with a barely moving thread of water.

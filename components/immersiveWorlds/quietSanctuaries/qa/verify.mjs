@@ -68,6 +68,11 @@ const report = {
   },
   screenshots: [],
   worlds: [],
+  reflectionCapabilities: {
+    normal: null,
+    forcedMissingExtensions: null,
+    limitation: 'The byte path masks two color-buffer extension queries before application startup in a separate browser context; it is capability simulation, not evidence from physically unsupported hardware. No pixel equality between the two material-lighting paths is claimed.',
+  },
   errors: [],
   passed: false,
 };
@@ -98,13 +103,20 @@ try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
   page.setDefaultTimeout(90_000);
   let currentWorld = '';
-  page.on('pageerror', (error) => report.errors.push({ world: currentWorld, type: 'pageerror', message: error.message }));
-  page.on('console', (message) => {
-    if (message.type() === 'error') report.errors.push({ world: currentWorld, type: 'console', message: message.text() });
-  });
+  const observeErrors = (targetPage, world, scenario) => {
+    targetPage.on('pageerror', (error) => report.errors.push({ world: world(), scenario, type: 'pageerror', message: error.message }));
+    targetPage.on('console', (message) => {
+      const text = message.text();
+      if (message.type() === 'error') report.errors.push({ world: world(), scenario, type: 'console', message: text });
+      else if (message.type() === 'warning' && /INVALID_|FRAMEBUFFER_(?:UNSUPPORTED|INCOMPLETE)|GL_OUT_OF_MEMORY|CONTEXT_LOST_WEBGL|WebGL.*(?:error|incomplete|invalid)/i.test(text)) {
+        report.errors.push({ world: world(), scenario, type: 'gl-warning', message: text });
+      }
+    });
+  };
+  observeErrors(page, () => currentWorld, 'normal-capabilities');
   const canvas = () => page.locator('canvas.sanctuary-canvas');
   const press = (action) => page.locator(`[data-qa="${action}"]`).dispatchEvent('click');
-  const state = () => canvas().evaluate((element) => ({
+  const state = (targetPage = page) => targetPage.locator('canvas.sanctuary-canvas').evaluate((element) => ({
     engineId: element.dataset.engineId,
     frame: Number(element.dataset.frame),
     elapsed: Number(element.dataset.elapsed),
@@ -118,11 +130,11 @@ try {
     const element = document.querySelector('canvas.sanctuary-canvas');
     return element?.closest('.sanctuary-world')?.getAttribute('data-motion') === expected;
   }, wanted);
-  const ready = async () => {
-    await page.waitForSelector('.sanctuary-world[data-state="ready"] canvas.sanctuary-canvas', { timeout: 180_000 });
-    assert.equal(await canvas().count(), 1, 'one scene canvas');
-    await page.waitForFunction(() => Number(document.querySelector('canvas.sanctuary-canvas')?.dataset.frame) >= 1);
-    const value = await state();
+  const ready = async (targetPage = page) => {
+    await targetPage.waitForSelector('.sanctuary-world[data-state="ready"] canvas.sanctuary-canvas', { timeout: 180_000 });
+    assert.equal(await targetPage.locator('canvas.sanctuary-canvas').count(), 1, 'one scene canvas');
+    await targetPage.waitForFunction(() => Number(document.querySelector('canvas.sanctuary-canvas')?.dataset.frame) >= 1);
+    const value = await state(targetPage);
     assert.ok(value.width > 0 && value.height > 0 && value.engineId, 'real nonzero renderer with stable identity');
     return value;
   };
@@ -145,13 +157,13 @@ try {
     return { before, after };
   };
   const imageOptions = { style: '[data-qa-controls] { visibility: hidden !important; }', animations: 'disabled' };
-  const pixels = async (extra = {}) => page.screenshot({ ...imageOptions, clip: await page.locator('[data-qa-stage]').boundingBox(), ...extra });
-  const screenshot = async (name) => {
+  const pixels = async (extra = {}, targetPage = page) => targetPage.screenshot({ ...imageOptions, clip: await targetPage.locator('[data-qa-stage]').boundingBox(), ...extra });
+  const screenshot = async (name, targetPage = page, world = currentWorld, scenario = 'normal-capabilities') => {
     const file = `${name}.png`;
-    const buffer = await pixels({ path: path.join(output, file) });
-    const diagnostics = await state();
+    const buffer = await pixels({ path: path.join(output, file) }, targetPage);
+    const diagnostics = await state(targetPage);
     assert.ok(buffer.length > 5000, 'actual scene screenshot has nontrivial pixel data');
-    const evidence = { file, sha256: hash(buffer), bytes: buffer.length, viewport: page.viewportSize(), world: currentWorld, sourceSha256: sources.sha256, bundleSha256: bundle.sha256, gitHead: report.gitHead, diagnostics };
+    const evidence = { file, sha256: hash(buffer), bytes: buffer.length, viewport: targetPage.viewportSize(), world, scenario, sourceSha256: sources.sha256, bundleSha256: bundle.sha256, gitHead: report.gitHead, diagnostics };
     report.screenshots.push(evidence);
     console.log(`Captured ${file} (${buffer.length} bytes; frame ${diagnostics.frame})`);
     return buffer;
@@ -169,6 +181,76 @@ try {
     await writeFile(path.join(output, 'verification.json'), `${JSON.stringify(report, null, 2)}\n`);
     console.log(`Completed ${label}`);
   };
+  const reflectionProbe = async (targetPage, buffer, forced) => {
+    const context = await targetPage.locator('canvas.sanctuary-canvas').evaluate((element) => {
+      // This retrieves the renderer's existing WebGL2 context, never a competing one.
+      const gl = element.getContext('webgl2');
+      if (!gl) return null;
+      const maskBeforeProbe = window.__sanctuaryExtensionMask ? JSON.parse(JSON.stringify(window.__sanctuaryExtensionMask)) : null;
+      const errors = [];
+      for (let index = 0; index < 16; index++) {
+        const code = gl.getError();
+        if (code === gl.NO_ERROR) break;
+        errors.push(code);
+      }
+      return {
+        frame: Number(element.dataset.frame),
+        type: element.dataset.reflectionTargetType,
+        reportedFloatExtension: element.dataset.reflectionFloatExtension,
+        reportedHalfFloatExtension: element.dataset.reflectionHalfFloatExtension,
+        floatExtension: !!gl.getExtension('EXT_color_buffer_float'),
+        halfFloatExtension: !!gl.getExtension('EXT_color_buffer_half_float'),
+        advertisedExtensions: gl.getSupportedExtensions()?.filter((name) => /EXT_color_buffer_(?:half_)?float/.test(name)) ?? [],
+        contextLost: gl.isContextLost(),
+        errors,
+        maskBeforeProbe,
+      };
+    });
+    assert.ok(context && !context.contextLost, 'reflection uses a live existing WebGL2 context');
+    assert.deepEqual(context.errors, [], 'reflection render leaves no WebGL errors');
+    assert.equal(context.reportedFloatExtension, String(context.floatExtension), 'float capability diagnostics match the actual context');
+    assert.equal(context.reportedHalfFloatExtension, String(context.halfFloatExtension), 'half-float capability diagnostics match the actual context');
+    const expectedType = context.floatExtension || context.halfFloatExtension ? 'half-float' : 'unsigned-byte';
+    assert.equal(context.type, expectedType, 'reflection target type matches available color-buffer capabilities');
+    if (forced) {
+      assert.equal(context.floatExtension, false, 'float color buffers are unavailable to the app');
+      assert.equal(context.halfFloatExtension, false, 'half-float color buffers are unavailable to the app');
+      assert.equal(context.type, 'unsigned-byte', 'the missing-extension renderer selects the byte target');
+      assert.ok(context.maskBeforeProbe?.installedBeforeApplication, 'extension mask is installed before application scripts');
+      for (const extension of ['EXT_color_buffer_float', 'EXT_color_buffer_half_float']) {
+        assert.ok(context.maskBeforeProbe.blockedRequests.some((request) => request.name === extension && request.observedSceneFrame === 0), `${extension} was masked during renderer startup before its first scene frame`);
+      }
+    }
+    // Decode the captured PNG only for measurement, without changing the WebGL scene.
+    // This interior rectangle excludes the rim and bowl in the fixed desktop composition.
+    const basinPixels = await targetPage.evaluate(async (base64) => {
+      const image = new Image();
+      image.src = `data:image/png;base64,${base64}`;
+      await image.decode();
+      const sample = document.createElement('canvas');
+      sample.width = image.naturalWidth; sample.height = image.naturalHeight;
+      const ctx = sample.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(image, 0, 0);
+      const region = { left: .28, top: .635, right: .68, bottom: .735 };
+      const x = Math.round(sample.width * region.left), y = Math.round(sample.height * region.top);
+      const width = Math.round(sample.width * (region.right - region.left));
+      const height = Math.round(sample.height * (region.bottom - region.top));
+      const data = ctx.getImageData(x, y, width, height).data;
+      let minimum = Infinity, maximum = -Infinity, sum = 0, sumSquares = 0, samples = 0;
+      const colors = new Set();
+      for (let row = 0; row < height; row += 3) for (let column = 0; column < width; column += 3) {
+        const i = (row * width + column) * 4;
+        const luminance = .2126 * data[i] + .7152 * data[i + 1] + .0722 * data[i + 2];
+        minimum = Math.min(minimum, luminance); maximum = Math.max(maximum, luminance);
+        sum += luminance; sumSquares += luminance * luminance; samples++;
+        colors.add((data[i] << 16) | (data[i + 1] << 8) | data[i + 2]);
+      }
+      const mean = sum / samples;
+      return { normalizedRegion: region, pixelRegion: { x, y, width, height }, samples, uniqueColors: colors.size, minimum, maximum, mean, standardDeviation: Math.sqrt(Math.max(0, sumSquares / samples - mean * mean)) };
+    }, buffer.toString('base64'));
+    assert.ok(basinPixels.uniqueColors >= 16 && basinPixels.maximum - basinPixels.minimum >= 8, 'the rendered basin contains usable nonuniform pixels, not a black/flat failed target');
+    return { forced, expectedType, context, basinPixels, screenshotSha256: hash(buffer) };
+  };
 
   // Capture every full-resolution composition first, with true inactive first frames.
   for (const world of ['meditation', 'warm-heart', 'snow-village']) {
@@ -176,7 +258,8 @@ try {
     report.worlds.push(result);
     await navigate(world, { width: 1280, height: 800 }, '&inactive=1');
     result.checks.push(await assertFrozen('desktop 1280×800 initial active=false first frame'));
-    await screenshot(`${world}-desktop`);
+    const desktop = await screenshot(`${world}-desktop`);
+    if (world === 'meditation') report.reflectionCapabilities.normal = await reflectionProbe(page, desktop, false);
     await navigate(world, { width: 390, height: 844 }, '&inactive=1');
     result.checks.push(await assertFrozen('portrait 390×844 initial active=false first frame'));
     await screenshot(`${world}-portrait`);
@@ -186,6 +269,39 @@ try {
   await assertFrozen('Fold-inner-like landscape composition capture');
   await screenshot('snow-village-fold-inner-viewport');
   await checkpoint('all seven full-resolution visual captures');
+
+  // A fresh isolated context masks capability discovery before the real app initializes.
+  // There is no production URL flag, altered shader, alternative renderer, or fallback poster.
+  const byteContext = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
+  try {
+    await byteContext.addInitScript(() => {
+      const blocked = new Set(['EXT_color_buffer_float', 'EXT_color_buffer_half_float']);
+      const diagnostics = { installedBeforeApplication: true, installedAt: performance.now(), blockedRequests: [] };
+      window.__sanctuaryExtensionMask = diagnostics;
+      for (const Context of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) {
+        if (!Context) continue;
+        const original = Context.prototype.getExtension;
+        Context.prototype.getExtension = function (name) {
+          if (blocked.has(name)) {
+            diagnostics.blockedRequests.push({ name, context: Context.name, at: performance.now(), observedSceneFrame: Number(document.querySelector('canvas.sanctuary-canvas')?.dataset.frame ?? 0) });
+            return null;
+          }
+          return original.call(this, name);
+        };
+      }
+    });
+    const bytePage = await byteContext.newPage();
+    bytePage.setDefaultTimeout(90_000);
+    observeErrors(bytePage, () => 'meditation', 'forced-missing-color-buffer-extensions');
+    await bytePage.goto(`${base}?world=meditation&inactive=1`, { waitUntil: 'networkidle' });
+    await ready(bytePage);
+    assert.equal(await bytePage.locator('.sanctuary-world').getAttribute('data-motion'), 'paused', 'byte capability case renders its complete inactive first frame');
+    const bytePixels = await screenshot('meditation-byte-fallback-desktop', bytePage, 'meditation', 'forced-missing-color-buffer-extensions');
+    report.reflectionCapabilities.forcedMissingExtensions = await reflectionProbe(bytePage, bytePixels, true);
+    await checkpoint('normal reflection capability path and forced missing-extension byte first frame');
+  } finally {
+    await byteContext.close();
+  }
 
   // A smaller native browser viewport makes software-GPU lifecycle checks practical.
   // It changes only the test window size, never scene resolution, quality or frame caps.
@@ -324,13 +440,21 @@ try {
     }
     result.checks.push('three quick unmount/remount cycles: one canvas and same engine within shared disposal grace');
     const priorEngineId = (await state()).engineId;
+    await canvas().evaluate((element) => {
+      window.__sanctuaryReleasedCanvas = element;
+      window.__sanctuaryReleasedContext = element.getContext('webgl2');
+    });
     await press('mount');
     await page.waitForFunction(() => document.querySelectorAll('canvas.sanctuary-canvas').length === 0);
     await page.waitForTimeout(5300);
+    await page.waitForFunction(() => window.__sanctuaryReleasedContext?.isContextLost() === true);
+    assert.ok(await page.evaluate(() => window.__sanctuaryReleasedContext?.isContextLost()), 'the released renderer actually loses its GPU context after disposal grace');
+    result.disposal = { engineId: priorEngineId, minimumGraceWaitMs: 5300, releasedContextLost: true };
+    await page.evaluate(() => { delete window.__sanctuaryReleasedCanvas; delete window.__sanctuaryReleasedContext; });
     await press('mount');
     await ready();
     assert.notEqual((await state()).engineId, priorEngineId, 'later mount recreates an engine after disposal grace');
-    result.checks.push('last release removes canvas; remount after 5.3 seconds creates fresh engine');
+    result.checks.push('last release removes canvas and loses its actual GPU context after grace; later remount creates fresh engine');
     result.diagnostics = await state();
     await press('active');
     await assertFrozen('lifecycle complete');

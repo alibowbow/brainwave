@@ -1,0 +1,126 @@
+{
+  "assemble-report.py": {
+    "bytes": 11633,
+    "sha256": "6ec2f34d3cc6d477de94fcece612cda47d8bb9390dcf742be3f8457351e1a19a"
+  },
+  "detached-context-diagnostic.json": {
+    "bytes": 4079,
+    "sha256": "cf1dcbe4c1d4c73ae63661f467abe90558ad94fea7f642b7069756319c35a555"
+  },
+  "full-run-b0a4e5d.json": {
+    "bytes": 20347,
+    "sha256": "4f85fb97d7364f0f2bf485dce5f0557e7cade6b8b0b6c06a274fb93676ee0bcc"
+  },
+  "porch-desktop.png": {
+    "bytes": 1409340,
+    "sha256": "11761994f130f2a4511464330dcf8f0c441594e275919f65d76dad5dcef030ce"
+  },
+  "porch-fold-inner.png": {
+    "bytes": 731943,
+    "sha256": "f6f24c998c6bac7c38562f9804c6f11ec47d168cb073f9ad8d363b51d17527d5"
+  },
+  "porch-fresh-static.json": {
+    "bytes": 1491,
+    "sha256": "df1c242748c495d2effffe508f84441b3e34b639702fe69a8363def120f7c4ca"
+  },
+  "porch-interaction.png": {
+    "bytes": 950314,
+    "sha256": "4691b510c1e52cccdf82ad4ee3677f54dbe86568ed6b8e576421ed0d66f87046"
+  },
+  "porch-original-segment.json": {
+    "bytes": 8565,
+    "sha256": "b1d448598cc9bcdd4c4726852fc8ee048dec77a3383357103dc243dd7bc74e9c"
+  },
+  "porch-portrait.png": {
+    "bytes": 328296,
+    "sha256": "d8d253ec97c2bcd8be8af7cfe88864f0f9166443a2722a56f7d1bfbf58709278"
+  },
+  "porch-static-after.png": {
+    "bytes": 328865,
+    "sha256": "4c58be87672c3a84bff8f8c14f5e39ff7d07bb15eb218a94fa286c8a8b0761e9"
+  },
+  "porch-static-before.png": {
+    "bytes": 328278,
+    "sha256": "65fcfe7f27811a9c6abd1050e68a463f0942c093597ca1c076d4a8f0fd8cf36a"
+  },
+  "porch-supplement-report.json": {
+    "bytes": 6506,
+    "sha256": "1d3a582b3b98339a940ba5d5c2289d4cc09ce771f7a2b5796fb6a8d50f193dca"
+  },
+  "porch-supplement-runner.mjs": {
+    "bytes": 15176,
+    "sha256": "c1eb62db172108b0e0339d3ff3a553a06cf2130fa2775cd0d987e18bc9353153"
+  },
+  "report.json": {
+    "bytes": 54214,
+    "sha256": "a2aad9b897bb542e95615140c53a2d9eb35a79ebc272fc9ca0cd10e571d77e98"
+  },
+  "reproduce-inline-protocols.mjs": {
+    "bytes": 5279,
+    "sha256": "0a9985bb030f93d8f1289ed7b55e2cf4fa8db787c411799d9c4156699ee83e08"
+  },
+  "storm-desktop.png": {
+    "bytes": 1179294,
+    "sha256": "b9dfe6ce05b2cdfd67036cdca0403926b563dfd00ba00c168922ead86bcd9f26"
+  },
+  "storm-interaction.png": {
+    "bytes": 801740,
+    "sha256": "f789dacdf3ba091cf7e6d6c12705bc60d2391aa783c4a5dd360ec824096ffc2e"
+  },
+  "storm-portrait.png": {
+    "bytes": 306804,
+    "sha256": "ac46a3b1af04265e203793b3c8667aec7c41a9c9a8ac8a8a2eeac33500d7537a"
+  },
+  "tent-desktop.png": {
+    "bytes": 1286071,
+    "sha256": "4a372c44a587ba65606ef685256498b2d00c8b758d936c01fb0cebecad1b2c34"
+  },
+  "tent-interaction.png": {
+    "bytes": 794191,
+    "sha256": "eb2cd5b6f445a4062c956d893b8743f00dd2cf680afbc63e435bfc786280c7a8"
+  },
+  "tent-original-segment.json": {
+    "bytes": 9421,
+    "sha256": "57caafa9c25e6f4165b52c38572b6177eee487f4fc8121cff0446d9ae92921fc"
+  },
+  "tent-player-chrome.png": {
+    "bytes": 782742,
+    "sha256": "773d1340c9554d691a2e35e682114d0a7b2e52b105b4149b55c8c417be7c2a52"
+  },
+  "tent-portrait.png": {
+    "bytes": 307876,
+    "sha256": "699206ceeccd5b688044a40d929898c1d03b2c98232341fd895e9dd5e200f102"
+  },
+  "tent-static-first.png": {
+    "bytes": 307400,
+    "sha256": "f3ee50afe97b0e094c559b00df9d44758cd4117b99a0c10a2f5010fbfd081413"
+  },
+  "tent-supplement.json": {
+    "bytes": 1211,
+    "sha256": "57f21496946614d94b93d8990651119731b32651c972c7970737d45cb2e7a75f"
+  },
+  "window-desktop.png": {
+    "bytes": 1120472,
+    "sha256": "4c4bd0668dc30ad0a5822b624a6204961716118e829fd0d55ac694c9272a9d53"
+  },
+  "window-interaction.png": {
+    "bytes": 251759,
+    "sha256": "959d86159184b92bfdacf4e2bdd754f221df6d9314c942b41e290723ed84ca25"
+  },
+  "window-original-segment.json": {
+    "bytes": 7016,
+    "sha256": "3553240db261bcaafbe88f6f5eea9d387a2909a52bf1e1f47c0761721b864bec"
+  },
+  "window-portrait.png": {
+    "bytes": 250362,
+    "sha256": "de3d11532e91f17677ae60d1548cd4b8eb0fce6658df5b7e478980d52bc4c344"
+  },
+  "window-supplement-report.json": {
+    "bytes": 8476,
+    "sha256": "46019323f312c632b40120dbc6feda4e50c82bd033e792846935f4efde338ead"
+  },
+  "window-supplement-runner.mjs": {
+    "bytes": 23657,
+    "sha256": "7a01642be4bc52400ac15066fc467b537e7e9c547a733cb3224611c4c7ef9e91"
+  }
+}

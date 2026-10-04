@@ -1,0 +1,55 @@
+{
+  "schema": "rain-shelters-porch-fresh-static-v1",
+  "observedAt": "2026-10-04T19:54:53.654Z",
+  "gitHead": "b0a4e5d668791a9bc826bf54a0890c4b78cc8bba",
+  "bundleSHA256": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "method": "Fresh static3D page, no prior touches, real native overlay tap, gl.finish while paused",
+  "checks": [
+    {
+      "name": "fresh static3D water touch visibly redraws exactly once without RAF",
+      "pass": true,
+      "beforeFrame": {
+        "frame": 2,
+        "time": 0
+      },
+      "afterFrame": {
+        "frame": 3,
+        "time": 0
+      },
+      "beforeSHA256": "65fcfe7f27811a9c6abd1050e68a463f0942c093597ca1c076d4a8f0fd8cf36a",
+      "afterSHA256": "4c58be87672c3a84bff8f8c14f5e39ff7d07bb15eb218a94fa286c8a8b0761e9",
+      "event": [
+        {
+          "world": "porch",
+          "action": "basin-ripple",
+          "value": 0.55
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "porch-static-before.png",
+      "bytes": 328278,
+      "sha256": "65fcfe7f27811a9c6abd1050e68a463f0942c093597ca1c076d4a8f0fd8cf36a",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "file": "porch-static-after.png",
+      "bytes": 328865,
+      "sha256": "4c58be87672c3a84bff8f8c14f5e39ff7d07bb15eb218a94fa286c8a8b0761e9",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    }
+  ],
+  "pass": true
+}

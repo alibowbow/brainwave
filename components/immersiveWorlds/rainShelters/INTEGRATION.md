@@ -37,7 +37,7 @@ type ShelterInteraction = {
 };
 ```
 
-Events are emitted only for a successful explicit scene interaction. The small accessible button performs the same local action as touching its object. No component creates an AudioContext, HTML audio element, timer-based sound or player. No sound has been synthesized or auditioned by this worker. The integrator can connect the callback to the single existing engine; opening state is session-local until central persistence is wired.
+Events are emitted only for a successful explicit scene interaction. The small accessible button performs the same local action as touching its object. Its semantic callback is tested independently; a sibling full-cover drag layer can cover this local button. The integration owner should place the accessible action in reachable shared controls or arrange its hit area when wiring the worlds. Native object taps through the transparent layer are separately verified. No component creates an AudioContext, HTML audio element, timer-based sound or player. No sound has been synthesized or auditioned by this worker. The integrator can connect the callback to the single existing engine; opening state is session-local until central persistence is wired.
 
 | Scene | Existing sound IDs verified in `types.ts` / engine | Recommended response in shared engine (not implemented here) |
 | --- | --- | --- |

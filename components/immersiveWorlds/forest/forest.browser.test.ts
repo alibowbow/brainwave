@@ -41,7 +41,15 @@ async function waitForRunning(page: Page, running: boolean) {
 }
 
 async function screenshot(page: Page, filename: string, report: BrowserReport) {
-  const buffer = await page.screenshot({ type: 'jpeg', quality: 86, animations: 'allow' });
+  // SwiftShader can saturate the compositor while a full-quality reflected
+  // scene continuously draws. Freeze via the real session prop for capture;
+  // keep the exact last 3D frame and native-resolution buffer, then resume.
+  const wasRunning = await page.locator('.forest-world-canvas').getAttribute('data-running') === 'true';
+  if (wasRunning) {
+    await page.getByTestId('active-toggle').dispatchEvent('click');
+    await waitForRunning(page, false);
+  }
+  const buffer = await page.screenshot({ type: 'jpeg', quality: 86, animations: 'allow', timeout: 90000 });
   const viewport = page.viewportSize()!;
   const evidence: Screenshot = {
     filename, bytes: buffer.length, sha256: createHash('sha256').update(buffer).digest('hex'),
@@ -55,6 +63,10 @@ async function screenshot(page: Page, filename: string, report: BrowserReport) {
   const count = Math.ceil(encoded.length / chunkSize);
   for (let index = 0; index < count; index++) {
     console.log(`FOREST_SCREENSHOT ${filename} ${index + 1}/${count} ${encoded.slice(index * chunkSize, (index + 1) * chunkSize)}`);
+  }
+  if (wasRunning) {
+    await page.getByTestId('active-toggle').dispatchEvent('click');
+    await waitForRunning(page, true);
   }
   return evidence;
 }

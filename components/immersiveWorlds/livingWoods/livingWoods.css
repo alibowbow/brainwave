@@ -1,0 +1,9 @@
+.living-woods { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 1px; overflow: hidden; background: #273c30; isolation: isolate; touch-action: pan-y; }
+.living-woods-morning { background: #a8bbaa; }
+.living-woods-rainy { background: #344d49; }
+.living-woods-ancient { background: #283b2c; }
+.living-woods-bamboo { background: #789481; }
+.living-woods-mount, .living-woods-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.living-woods-message { position: absolute; inset: 0; display: grid; place-items: center; color: #ecf2e7; font-size: 13px; font-family: sans-serif; letter-spacing: .025em; background: rgba(27,45,33,.3); }
+.living-woods[data-status="ready"] { cursor: grab; }
+.living-woods[data-look="drag"] { cursor: grabbing; }

@@ -6,6 +6,9 @@ import RuralSummerNightWorld from '../RuralSummerNightWorld';
 import type { WorldInteraction, WorldId } from '../types';
 import type { BackgroundSoundType } from '../../../../types';
 import './qa.css';
+import { installSceneTestScheduler } from './sceneScheduler';
+
+installSceneTestScheduler();
 
 const params = new URLSearchParams(location.search);
 const requested = params.get('scene');

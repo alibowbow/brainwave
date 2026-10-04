@@ -12,7 +12,7 @@ const evidence = path.join(qa, 'evidence');
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.find(a => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=') ?? fallback;
 const sceneOption = option('scene', 'all');
-const scenes = sceneOption === 'all' ? ['temple', 'scops', 'rural'] : [sceneOption];
+const scenes = sceneOption === 'all' ? ['scops', 'temple', 'rural'] : [sceneOption];
 const screenshotsOnly = args.includes('--screenshots-only');
 let base = option('url', null);
 const executablePath = option('browser', process.env.CHROMIUM_PATH || '/tmp/cosmic-browser-bin/chromium');
@@ -106,7 +106,7 @@ function bounded(promise, label, timeout = 30000) {
 const evaluate = (callback, argument) => bounded(page.evaluate(callback, argument), 'page.evaluate');
 const lifecycleViewport = { width: 683, height: 450 };
 results.lifecycleViewport = lifecycleViewport;
-results.lifecycleRendering = 'Reduced test viewport only; real native RAF and unchanged production rendering/DPR. Full-size scene screenshots remain 1365x900/390x844/960x700.';
+results.lifecycleRendering = '683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.';
 const phase = (scene, label) => process.stdout.write(`Lifecycle ${scene}: ${label}\n`);
 const snap = () => evaluate(() => window.koreanQA.snapshot());
 const api = (method, value) => evaluate(({ method, value }) => window.koreanQA[method](value), { method, value });
@@ -122,10 +122,12 @@ const pixelHash = async () => hash(await page.locator('canvas').screenshot({ tim
 function assert(check, message) { if (!check) throw new Error(message); }
 async function stable(label) {
   await stopped();
+  const scheduler = await evaluate(() => window.sceneQAScheduler.snapshot());
+  assert(scheduler.pendingCallbacks === 0, `${label}: stopped engine retained a scheduled RAF callback`);
   const before = await snap(), first = await pixelHash();
   await page.waitForTimeout(280);
   const after = await snap(), second = await pixelHash();
-  const result = { beforeTime: before.canvas?.time, afterTime: after.canvas?.time, beforeFrames: before.canvas?.frames, afterFrames: after.canvas?.frames, pixelsIdentical: first === second, pass: before.canvas?.time === after.canvas?.time && before.canvas?.frames === after.canvas?.frames && first === second };
+  const result = { beforeTime: before.canvas?.time, afterTime: after.canvas?.time, beforeFrames: before.canvas?.frames, afterFrames: after.canvas?.frames, pendingSceneRAF: scheduler.pendingCallbacks, pixelsIdentical: first === second, pass: before.canvas?.time === after.canvas?.time && before.canvas?.frames === after.canvas?.frames && first === second };
   assert(result.pass, `${label}: time, render frames, or pixels changed while stopped`);
   return result;
 }
@@ -144,6 +146,14 @@ async function capture(scene, name, viewport) {
   const entry = { scene, viewport: name, width: viewport.width, height: viewport.height, path: relative(file), sha256: hash(bytes), bytes: bytes.length, state: await snap() };
   results.screenshots.push(entry);
   process.stdout.write(`Captured ${scene}-${name}.png (${bytes.length} bytes)\n`);
+}
+async function stepSceneFrame() {
+  const before = await snap();
+  const scheduler = await evaluate(() => window.sceneQAScheduler.stepFrame());
+  await evaluate(() => window.sceneQAScheduler.flush());
+  const after = await snap();
+  assert(scheduler.callbacks === 1 && Number(after.canvas.frames) === Number(before.canvas.frames) + 1, 'Controlled step did not render exactly one real scene frame');
+  return { nativeTimestamp: scheduler.timestamp, callbacks: scheduler.callbacks, beforeTime: before.canvas.time, afterTime: after.canvas.time, beforeFrames: before.canvas.frames, afterFrames: after.canvas.frames };
 }
 async function testInteraction(scene) {
   const viewport = page.viewportSize();
@@ -171,7 +181,12 @@ async function testInteraction(scene) {
   assert(duplicate.events.length === 1, `${scene}: immediate repeated tap bypassed cooldown`);
   // Let the real scene cooldown expire, then test cancellation over the KNOWN hit target.
   // Otherwise a gesture over empty space could appear to pass despite broken cancellation.
-  await page.waitForFunction(time => Number(document.querySelector('canvas')?.dataset.time) > time + .8, Number(duplicate.canvas.time));
+  const cooldownSteps = [];
+  for (let index = 0; index < 11; index++) {
+    cooldownSteps.push(await stepSceneFrame());
+    phase(scene, `cooldown real frame ${index + 1}/11 flushed`);
+  }
+  assert(Number((await snap()).canvas.time) > Number(duplicate.canvas.time) + .8, `${scene}: eleven real frame steps did not advance scene time beyond cooldown`);
   await api('clearEvents');
   await evaluate(({ x, y }) => {
     const surface = document.querySelector('[data-holder="primary"] [data-scene-drag]');
@@ -191,6 +206,7 @@ async function testInteraction(scene) {
   assert(blur.events.length === 0, `${scene}: window blur did not cancel gesture over a known tactile target`);
   await page.mouse.move(hit.x, hit.y); await page.mouse.down();
   await page.mouse.move(hit.x + viewport.width * .08, hit.y - viewport.height * .04, { steps: 5 });
+  const mouseDragFrame = await stepSceneFrame();
   const duringDrag = await snap();
   assert(duringDrag.surfaces.some(surface => surface.look === 'drag'), `${scene}: visible sibling chrome drag never reached the world look handler`);
   await page.mouse.move(hit.x, hit.y, { steps: 5 }); await page.mouse.up();
@@ -213,7 +229,7 @@ async function testInteraction(scene) {
     exclusions.push({ kind, worldEvents: end.events.length, uiActions: end.chromeActions.length - start.chromeActions.length, pass: passed });
   }
   await api('setProbe', null); await page.waitForFunction(() => !document.querySelector('[data-qa-probe]'));
-  return { pass: true, fixture: 'Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves', chromeVisible: before.chromeVisible, raycastTapHitSiblingChrome: hitLayer, cancellationTarget: 'Previously verified raycast target, after cooldown expired', dragReachedLookHandler: true, dragNotTap: drag.events.length === 0, syntheticPointerCancelNotTap: cancel.events.length === 0, syntheticBlurNotTap: blur.events.length === 0, interactiveChromeExclusions: exclusions, tap: hit, immediateTapBounded: duplicate.events.length === 1, initialCanvas: before.canvasIdentity };
+  return { pass: true, fixture: 'Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves', chromeVisible: before.chromeVisible, raycastTapHitSiblingChrome: hitLayer, cancellationTarget: 'Previously verified raycast target, after cooldown expired', cooldownSteps, mouseDragFrame, dragReachedLookHandler: true, dragNotTap: drag.events.length === 0, syntheticPointerCancelNotTap: cancel.events.length === 0, syntheticBlurNotTap: blur.events.length === 0, interactiveChromeExclusions: exclusions, tap: hit, immediateTapBounded: duplicate.events.length === 1, initialCanvas: before.canvasIdentity };
 }
 async function testBrowserTouch(scene, hit) {
   const viewport = page.viewportSize();
@@ -236,19 +252,23 @@ async function testBrowserTouch(scene, hit) {
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point(hit.x, hit.y)] });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point(hit.x + viewport.width * .024, hit.y - viewport.height * .016)] });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point(hit.x + viewport.width * .065, hit.y - viewport.height * .031)] });
+  const touchDragFrame = await stepSceneFrame();
   const moving = await snap();
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   const ended = await snap();
   const canceled = await evaluate(() => window.__qaTrustedTouchCancels);
   const pass = moving.surfaces.some(surface => surface.look === 'drag') && ended.events.length === 0 && canceled.length === 0;
   assert(pass, `${scene}: browser touch drag failed to reach look, emitted a tap, or triggered native pointercancel`);
-  return { pass, method: 'Chromium CDP Input.dispatchTouchEvent; trusted browser touch input, not synthetic DOM dispatch and not physical-device hardware', chromeVisible: true, policy, dragReachedLookHandler: true, worldEvents: ended.events.length, trustedPointerCancels: canceled.length };
+  return { pass, method: 'Chromium CDP Input.dispatchTouchEvent; trusted browser touch input, not synthetic DOM dispatch and not physical-device hardware', chromeVisible: true, policy, touchDragFrame, dragReachedLookHandler: true, worldEvents: ended.events.length, trustedPointerCancels: canceled.length };
 }
 async function lifecycle(scene) {
   const record = { viewport: lifecycleViewport };
+  results.worlds[scene] = record;
   phase(scene, 'motion endpoints at 683x450');
   await page.setViewportSize(lifecycleViewport);
   await api('setActive', false); await stopped();
+  const nativeScheduler = await evaluate(() => window.sceneQAScheduler.snapshot());
+  assert(!nativeScheduler.held, `${scene}: native motion probe was incorrectly gated`);
   const first = await snap(), firstPixels = await pixelHash();
   await api('setActive', true); await running();
   await page.waitForFunction(({ frames, time }) => {
@@ -257,9 +277,11 @@ async function lifecycle(scene) {
   }, { frames: Number(first.canvas.frames), time: Number(first.canvas.time) });
   await api('setActive', false); await stopped();
   const second = await snap(), secondPixels = await pixelHash();
-  record.motion = { method: 'Compare two paused screenshot endpoints separated by at least three genuine animated frames', pass: Number(second.canvas.time) > Number(first.canvas.time) && secondPixels !== firstPixels, beforeTime: first.canvas.time, afterTime: second.canvas.time, beforeFrames: first.canvas.frames, afterFrames: second.canvas.frames, pixelsChanged: firstPixels !== secondPixels };
+  record.motion = { method: 'Compare two paused screenshot endpoints separated by at least three genuine native RAF animated frames; scheduler held=false', pass: Number(second.canvas.time) > Number(first.canvas.time) && secondPixels !== firstPixels, beforeTime: first.canvas.time, afterTime: second.canvas.time, beforeFrames: first.canvas.frames, afterFrames: second.canvas.frames, pixelsChanged: firstPixels !== secondPixels, scheduler: nativeScheduler };
   assert(record.motion.pass, `${scene}: motion did not advance time and pixels`);
   await api('setActive', false); record.pause = await stable(`${scene} pause`);
+  await evaluate(() => window.sceneQAScheduler.setHeld(true));
+  record.inputScheduler = 'Scene RAF held between explicitly stepped real renders; input events remain trusted/native. Other browser RAF is unchanged.';
   await api('setActive', true); await running();
   phase(scene, 'visible chrome pointer and UI controls');
   record.interaction = await testInteraction(scene);
@@ -277,6 +299,7 @@ async function lifecycle(scene) {
     await api('clearEvents');
     await api('setSecond', true);
     await page.waitForFunction(() => window.koreanQA.snapshot().canvasHolder === 'secondary');
+    await evaluate(() => window.sceneQAScheduler.flush());
     const secondary = await snap();
     assert(secondary.canvasCount === 1 && secondary.canvasIdentity === identity, `${scene}: second holder did not reuse canvas`);
     const listeners = await evaluate(() => window.__qaPointerCounts());
@@ -289,6 +312,7 @@ async function lifecycle(scene) {
     assert((await snap()).events.length === 0, `${scene}: covered primary holder handled a tap`);
     await api('setSecond', false);
     await page.waitForFunction(() => window.koreanQA.snapshot().canvasHolder === 'primary');
+    await evaluate(() => window.sceneQAScheduler.flush());
     const returned = await snap();
     const returnedListeners = await evaluate(() => window.__qaPointerCounts());
     const passed = returned.canvasIdentity === identity && returned.canvasCount === 1 && returnedListeners.length === 1 && returnedListeners[0].pointerdown === 1;
@@ -326,6 +350,7 @@ async function lifecycle(scene) {
   assert(record.mountUnmount.pass, `${scene}: delayed remount did not rebuild a unique canvas`);
   record.createdAudioContexts = await evaluate(() => window.__qaAudioContexts);
   assert(record.createdAudioContexts === 0, `${scene}: created an independent audio context`);
+  record.finalInputScheduler = await evaluate(() => window.sceneQAScheduler.snapshot());
   phase(scene, 'static first frame');
   await navigate(scene, '&static=1');
   record.staticFirstFrame = await stable(`${scene} initial static3D`);

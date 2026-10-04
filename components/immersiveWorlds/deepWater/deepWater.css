@@ -1,0 +1,6 @@
+.deepwater-world{position:relative;width:100%;height:100%;min-height:1px;overflow:hidden;isolation:isolate;background:#153039;touch-action:none}
+.deepwater-cave{background:#20363a}.deepwater-sea{background:#063146}
+.deepwater-mount{position:absolute;inset:0;overflow:hidden}
+.deepwater-canvas{display:block;width:100%;height:100%;outline:none}
+.deepwater-status{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#d3e1df;font:14px/1.6 system-ui,sans-serif;text-align:center}
+.deepwater-world[data-state=ready]{cursor:grab}.deepwater-world[data-look=drag]{cursor:grabbing}

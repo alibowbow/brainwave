@@ -117,11 +117,23 @@ function bakeAtlas() {
   return texture;
 }
 
-/** How far the clouds drift across the view, in metres per second at any distance. */
-const DRIFT_SPEED = 6;
+/**
+ * The wind on the headland blows to the left of the view, the way the grass
+ * is laid over; it carries the clouds and their shadows with it.
+ */
+const WIND = { x: -Math.cos(CAMERA.yaw), z: -Math.sin(CAMERA.yaw) };
 
-/** Which way they drift over the ground (across the view, to the right). */
-const DRIFT = { x: Math.cos(CAMERA.yaw) * DRIFT_SPEED, z: Math.sin(CAMERA.yaw) * DRIFT_SPEED };
+/** How fast the clouds' shadows slide over the ground, in metres per second. */
+const SHADOW_SPEED = 7;
+
+/**
+ * How fast the clouds themselves cross the sky, in radians per second as
+ * seen from the headland: the near ones a little faster than the far ones,
+ * as a layer of clouds in perspective moves. On a wide screen that is about
+ * 10 to 15 pixels a second: clearly drifting, never rushing.
+ */
+const DRIFT_FAR = 0.0045;
+const DRIFT_NEAR = 0.0068;
 
 /**
  * The clouds' shadows, drifting over land and sea as the clouds do: soft
@@ -133,7 +145,7 @@ const DRIFT = { x: Math.cos(CAMERA.yaw) * DRIFT_SPEED, z: Math.sin(CAMERA.yaw) *
  */
 export const CLOUD_SHADOW_GLSL = /* glsl */ `
 float cloudShadow(vec3 world) {
-  vec2 q = (world.xz - vec2(${DRIFT.x.toFixed(3)}, ${DRIFT.z.toFixed(3)}) * uTime) * 0.0017;
+  vec2 q = (world.xz - vec2(${(WIND.x * SHADOW_SPEED).toFixed(3)}, ${(WIND.z * SHADOW_SPEED).toFixed(3)}) * uTime) * 0.0017;
   float cover = fbm3(q + vec2(0.3, 7.7)) + 0.3 * vnoise(q * 3.7 + 7.0);
   return smoothstep(0.665, 0.735, cover) * mix(0.3, 1.0, smoothstep(60.0, 450.0, distance(world.xz, cameraPosition.xz)));
 }
@@ -200,6 +212,20 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
   });
   // Far to near, so nearer clouds are drawn over farther ones.
   shown.sort((a, b) => b.depth - a.depth);
+  // Each cloud's own pace and phase: the near ones cross the sky a little
+  // faster than the far ones, and none at quite the same rate. (Their own
+  // draw keeps the layout of the sky as it was.)
+  let motionSeed = 505;
+  const pace = () => {
+    motionSeed = (motionSeed * 1664525 + 1013904223) >>> 0;
+    return motionSeed / 4294967296;
+  };
+  const motion = new Float32Array(shown.length * 2);
+  shown.forEach((cloud, i) => {
+    const near = 1 - Math.min(1, Math.max(0, (Math.log(cloud.depth) - Math.log(3000)) / (Math.log(55000) - Math.log(3000))));
+    motion[i * 2] = -(DRIFT_FAR + (DRIFT_NEAR - DRIFT_FAR) * near) * (0.85 + 0.3 * pace());
+    motion[i * 2 + 1] = pace() * 20;
+  });
 
   const quad = new THREE.PlaneGeometry(1, 1);
   quad.translate(0, 0.5, 0);
@@ -217,6 +243,7 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
   });
   geometry.setAttribute('aPlace', new THREE.InstancedBufferAttribute(place, 4));
   geometry.setAttribute('aSize', new THREE.InstancedBufferAttribute(size, 4));
+  geometry.setAttribute('aMotion', new THREE.InstancedBufferAttribute(motion, 2));
   geometry.instanceCount = shown.length;
 
   const material = new THREE.ShaderMaterial({
@@ -233,15 +260,18 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
       uniform vec3 uLateral;
       attribute vec4 aPlace;
       attribute vec4 aSize;
+      attribute vec2 aMotion;
       varying vec2 vUv;
       varying vec3 vWorld;
       varying vec3 vRight;
       varying float vFlip;
       varying float vFade;
+      varying float vPhase;
       void main() {
-        // Drifting sideways, round and round a band wider than any view.
+        // Drifting sideways with the wind, round and round a band wider than any view.
         float span = aPlace.w;
-        float side = mod(aPlace.y + uTime * ${DRIFT_SPEED.toFixed(1)} + span, 2.0 * span) - span;
+        float side = mod(aPlace.y + uTime * aMotion.x * span + span, 2.0 * span) - span;
+        vPhase = aMotion.y;
         vFade = smoothstep(span, span * 0.8, abs(side));
         vec3 centre = vec3(cameraPosition.x, 0.0, cameraPosition.z) + uForward * aPlace.x + uLateral * side + vec3(0.0, aPlace.z, 0.0);
         vec3 toCamera = cameraPosition - centre;
@@ -266,10 +296,13 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
       varying vec3 vRight;
       varying float vFlip;
       varying float vFade;
+      varying float vPhase;
       ${NOISE_GLSL}
       ${SKY_GLSL}
       void main() {
-        vec4 cloud = texture2D(tClouds, vUv);
+        // The billows churn slowly as the cloud goes: its edges and folds shift a little.
+        vec2 churn = vec2(vnoise(vUv * vec2(48.0, 24.0) + vec2(uTime * 0.05 + vPhase, 3.0)), vnoise(vUv * vec2(48.0, 24.0) + vec2(9.0, vPhase - uTime * 0.04))) - 0.5;
+        vec4 cloud = texture2D(tClouds, vUv + churn * vec2(0.0035, 0.012));
         float alpha = cloud.a * vFade;
         if (alpha < 0.004) discard;
         vec3 toCamera = normalize(cameraPosition - vWorld);

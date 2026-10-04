@@ -8,12 +8,14 @@ import type { BackgroundSoundType } from '../../../../types';
 import './qa.css';
 import { installSceneTestScheduler } from './sceneScheduler';
 import { WorldEngine } from '../WorldEngine';
+import { installEnvironmentQA } from './environmentQA';
 
 installSceneTestScheduler();
 
 const params = new URLSearchParams(location.search);
 const requested = params.get('scene');
 const scene: WorldId = requested === 'scops' || requested === 'rural' ? requested : 'temple';
+const environmentQA = installEnvironmentQA(scene, params.get('environment') === 'forced-byte' ? 'forced-byte' : 'normal');
 const World = { temple: TempleWorld, scops: ScopsNightWorld, rural: RuralSummerNightWorld }[scene];
 const events: WorldInteraction[] = [];
 const subscribers = new Set<(type: BackgroundSoundType) => void>();
@@ -71,6 +73,7 @@ function snapshot() {
     events: events.map(event => ({ ...event, position: [...event.position] })),
     subscribers: subscribers.size, audioDispatches, chromeActions: [...chromeActions], chromeVisible: !!document.querySelector('[data-qa-chrome]'), visibility: document.visibilityState, hidden: document.hidden,
     disposalObservations: disposalObservations.map(observation => ({ ...observation })),
+    environment: environmentQA.snapshot(),
   };
 }
 
@@ -86,6 +89,7 @@ function Harness() {
   const dispatchScops = useCallback(() => { audioDispatches++; for (const callback of subscribers) callback('scops'); }, []);
   const api = {
     setActive, setStatic, setMounted, setSecond, setChrome, setProbe, snapshot, dispatchScops,
+    inspectEnvironment: environmentQA.inspect, probeEnvironmentRestoration: environmentQA.sentinel,
     clearEvents: () => { events.length = 0; refresh(x => x + 1); },
   };
   (window as typeof window & { koreanQA: typeof api }).koreanQA = api;

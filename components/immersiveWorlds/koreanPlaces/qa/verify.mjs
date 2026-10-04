@@ -10,16 +10,30 @@ const qa = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(qa, '../../../..');
 const args = process.argv.slice(2);
 const option = (name, fallback) => args.find(a => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=') ?? fallback;
-const evidence = path.resolve(qa, option('output', 'evidence/followup'));
+const environmentMode = option('environment', 'normal');
+if (!['normal', 'forced-byte'].includes(environmentMode)) throw new Error('Environment mode must be normal or forced-byte.');
+const evidence = path.resolve(qa, option('output', `evidence/environment-${environmentMode}`));
 if (!evidence.startsWith(`${path.join(qa, 'evidence')}${path.sep}`)) throw new Error('Follow-up output must be a subdirectory of qa/evidence, preserving original evidence.');
 const sceneOption = option('scene', 'all');
-const scenes = sceneOption === 'all' ? ['scops', 'temple', 'rural'] : [sceneOption];
+const scenes = sceneOption === 'all' ? ['scops', 'temple'] : [sceneOption];
+if (scenes.some(scene => !['temple', 'scops', 'rural'].includes(scene))) throw new Error('Unknown scene option.');
 const screenshotsOnly = args.includes('--screenshots-only');
 let base = option('url', null);
 const executablePath = option('browser', process.env.CHROMIUM_PATH || '/tmp/cosmic-browser-bin/chromium');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const relative = file => path.relative(repo, file).split(path.sep).join('/');
 const results = { generatedAt: new Date().toISOString(), mode: screenshotsOnly ? 'screenshots-only' : 'full', renderer: 'Chromium headless; ANGLE SwiftShader software WebGL', hardwareClaim: 'Viewport tests only. No physical Fold, device FPS, battery, or thermal claims.', visibilityScope: 'The mandatory hidden-state test uses a labelled synthetic visibilitychange; actual tab visibility is separately reported if observable.', browserExecutable: executablePath, repositoryHead: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).trim(), source: {}, bundle: {}, screenshots: [], worlds: {}, errors: [] };
+results.environmentMode = environmentMode;
+
+const ruralBaseline = '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600';
+const ruralPreservationPaths = ['scenes/rural.ts', 'RuralSummerNightWorld.tsx', ...['desktop', 'portrait', 'fold', 'chrome'].map(view => `qa/evidence/final/rural-${view}.png`)].map(file => `components/immersiveWorlds/koreanPlaces/${file}`);
+results.ruralPreservation = { baseline: ruralBaseline, method: 'Exact git-baseline/current file bytes; this record is not a new rural render or a performance claim.', files: await Promise.all(ruralPreservationPaths.map(async file => {
+  const baselineSha256 = hash(execFileSync('git', ['show', `${ruralBaseline}:${file}`], { cwd: repo, maxBuffer: 8 * 1024 * 1024 }));
+  const currentSha256 = hash(await fs.readFile(path.join(repo, file)));
+  return { path: file, baselineSha256, currentSha256, unchanged: baselineSha256 === currentSha256 };
+})) };
+results.ruralPreservation.pass = results.ruralPreservation.files.every(file => file.unchanged);
+if (!results.ruralPreservation.pass) throw new Error('Approved rural source or PNG bytes have changed.');
 
 async function filesUnder(directory) {
   let entries;
@@ -47,6 +61,10 @@ await fs.mkdir(evidence, { recursive: true });
 const sourceFiles = (await filesUnder(path.dirname(qa))).filter(file => /\.(tsx?|css|mjs|html)$/.test(file));
 sourceFiles.push(...['components/useSceneMotion.ts', 'components/liveScene/liveSceneHost.ts', 'components/liveScene/look.ts'].map(file => path.join(repo, file)));
 results.source = await manifest(sourceFiles);
+const dependencySourceFiles = ['node_modules/three/package.json', 'node_modules/three/src/extras/PMREMGenerator.js', 'node_modules/three/src/renderers/webgl/WebGLEnvironments.js'].map(file => path.join(repo, file));
+const threePackage = JSON.parse(await fs.readFile(dependencySourceFiles[0], 'utf8'));
+results.dependencySource = { package: threePackage.name, version: threePackage.version, ...await manifest(dependencySourceFiles) };
+if (results.dependencySource.package !== 'three' || results.dependencySource.version !== '0.186.1') throw new Error('Environment QA requires the reviewed installed Three 0.186.1 allocation contract.');
 try { results.bundle = await manifest(await distFiles(path.join(qa, 'dist'))); } catch { results.bundle = { error: 'No built QA bundle. Run vite build with the owned qa/vite.config.ts first.' }; }
 // Keep the standard static server and browser in the same executor network namespace.
 // A separately launched preview may be unreachable across isolated exec invocations.
@@ -159,6 +177,32 @@ async function canvasImage(options = {}) {
 }
 const pixelHash = async () => hash(await canvasImage());
 function assert(check, message) { if (!check) throw new Error(message); }
+async function checkEnvironment(scene, label) {
+  const observation = await api('inspectEnvironment', label);
+  assert(!observation.contextLost && observation.framebufferStatus === 36053 && observation.errors.length === 0, `${scene} ${label}: real rendered context has an incomplete framebuffer or GL errors`);
+  const environment = (await snap()).environment;
+  if (scene === 'rural') {
+    assert(environment.audits.length === 0, 'Rural unexpectedly used the new environment helper');
+    return { pass: true, observation, untouchedEnvironment: true };
+  }
+  const generations = environment.audits.filter(audit => audit.scope === 'scene' && audit.event.phase === 'generation');
+  assert(generations.length > 0, `${scene} ${label}: no real scene environment generation audit was recorded`);
+  const audit = generations[generations.length - 1].event;
+  assert(audit.success && audit.restored && JSON.stringify(audit.stateBefore) === JSON.stringify(audit.stateAfter), `${scene} ${label}: generation failed or did not restore renderer state`);
+  assert(audit.glErrorsBefore.length === 0 && audit.generationErrors.length === 0, `${scene} ${label}: environment generation reported GL errors`);
+  assert(audit.forceByte === (environmentMode === 'forced-byte'), `${scene} ${label}: requested environment policy did not reach generation`);
+  const chosen = audit.attempts.find(attempt => attempt.success && !attempt.discarded && attempt.type === audit.selectedType);
+  assert(chosen && chosen.targets.length >= 2 && chosen.targets.some(target => target.role === 'output') && chosen.targets.some(target => target.role === 'ping-pong'), `${scene} ${label}: output and ping-pong target evidence is incomplete`);
+  for (const target of chosen.targets) {
+    assert(target.status === 36053 && target.errors.length === 0 && target.restored && JSON.stringify(target.stateBefore) === JSON.stringify(target.stateAfter), `${scene} ${label}: ${target.role} target is incomplete, erroneous or not restored`);
+    assert(target.type === audit.selectedType && target.format === 'RGBA' && target.internalFormat === (audit.selectedType === 'half-float' ? 'RGBA16F' : 'RGBA8'), `${scene} ${label}: actual selected target type/format mismatch`);
+  }
+  if (environmentMode === 'forced-byte') assert(audit.selectedType === 'unsigned-byte' && audit.attempts.every(attempt => attempt.type === 'unsigned-byte'), `${scene} ${label}: forced byte mode allocated a half-float attempt`);
+  else if (audit.extensions.colorBufferFloat || audit.extensions.colorBufferHalfFloat) assert(audit.attempts[0].type === 'half-float', `${scene} ${label}: normal supported path skipped its half-float FBO check`);
+  else assert(audit.selectedType === 'unsigned-byte' && audit.attempts.every(attempt => attempt.type === 'unsigned-byte'), `${scene} ${label}: unsupported half-float allocation was attempted`);
+  assert(observation.sceneEnvironmentType === (audit.selectedType === 'half-float' ? 1016 : 1009) && observation.sceneEnvironmentMapping === 306 && audit.environmentMapping === 306, `${scene} ${label}: actual scene environment texture is not the checked CubeUV result`);
+  return { pass: true, observation, generationCount: generations.length, audit };
+}
 async function stable(label) {
   await stopped();
   const scheduler = await evaluate(() => window.sceneQAScheduler.snapshot());
@@ -171,7 +215,7 @@ async function stable(label) {
   return result;
 }
 async function navigate(scene, extra = '') {
-  await page.goto(`${base}/components/immersiveWorlds/koreanPlaces/qa/index.html?scene=${scene}&capture=1${extra}`, { waitUntil: 'networkidle', timeout: 45000 });
+  await page.goto(`${base}/components/immersiveWorlds/koreanPlaces/qa/index.html?scene=${scene}&environment=${environmentMode}&capture=1${extra}`, { waitUntil: 'networkidle', timeout: 45000 });
   process.stdout.write(`Loaded ${scene}; waiting for scene ready\n`);
   await ready();
   process.stdout.write(`Ready ${scene}\n`);
@@ -338,6 +382,7 @@ async function testBrowserTouch(scene, hit) {
 async function lifecycle(scene) {
   const record = { viewport: lifecycleViewport };
   results.worlds[scene] = record;
+  record.initialEnvironment = await checkEnvironment(scene, 'before lifecycle');
   phase(scene, 'motion endpoints at 683x450');
   await page.setViewportSize(lifecycleViewport);
   await api('setActive', false); await stopped();
@@ -417,6 +462,7 @@ async function lifecycle(scene) {
     record.externalAudioEvent = { pass: beforeCall.subscribers === 1 && afterCall.audioDispatches === beforeCall.audioDispatches + 1, event: 'scops', subscribers: beforeCall.subscribers, dispatches: afterCall.audioDispatches, limitation: 'Checks existing-engine event subscription and dispatch. It does not claim actual sound playback quality or visually classify the tiny owl animation.' };
     assert(record.externalAudioEvent.pass, 'scops event subscription missing');
   }
+  record.afterInputEnvironment = await checkEnvironment(scene, 'after real input, motion and pause policies');
   phase(scene, 'mount reuse and delayed disposal');
   const rapidIds = [];
   for (let index = 0; index < 3; index++) {
@@ -437,6 +483,13 @@ async function lifecycle(scene) {
   assert(detachedScheduler.pendingCallbacks === 0, `${scene}: disposal retained a scene RAF callback`);
   assert((await snap()).subscribers === 0, `${scene}: disposal retained an existing-engine audio subscription`);
   await api('setMounted', true); await ready(); const rebuilt = await snap();
+  record.rebuiltEnvironment = await checkEnvironment(scene, 'after disposal and remount');
+  if (scene !== 'rural') {
+    assert(record.rebuiltEnvironment.generationCount === record.initialEnvironment.generationCount + 1, `${scene}: true disposal/remount did not generate exactly one new checked environment`);
+    const disposals = rebuilt.environment.audits.filter(audit => audit.scope === 'scene' && audit.event.phase === 'dispose');
+    assert(disposals.length === 1, `${scene}: scene environment did not report exactly one actual disposal before rebuilding`);
+    record.environmentDisposal = disposals;
+  }
   record.mountUnmount = { pass: rebuilt.canvasCount === 1 && rebuilt.canvasIdentity !== identity, rapidRemountCount: rapidIds.length, rapidIdentities: rapidIds, hostGraceMsFromSource: 5000, unmountRequestedAtMs, detachedObservedAtMs, cleanup, cleanupStartAfterUnmountRequestMs: cleanup.startedAtMs - unmountRequestedAtMs, synchronousCleanupDurationMs: cleanup.completedAtMs - cleanup.startedAtMs, contextLostAfterUnmountRequestMs: cleanup.contextLostAtMs - unmountRequestedAtMs, detachedListeners, detachedScheduler, rebuiltIdentity: rebuilt.canvasIdentity, newCanvasAfterDisposal: rebuilt.canvasIdentity !== identity, method: 'QA-only wrapper observes real synchronous WorldEngine.dispose entry/return; real webglcontextlost event is observed on the retained detached canvas. Host timer and resource methods are unchanged.', limitation: 'Synchronous cleanup return and browser context loss are distinct from the 5000 ms host grace. No physical GPU driver memory profiler or reclamation latency measurement was available.' };
   assert(record.mountUnmount.pass, `${scene}: delayed remount did not rebuild a unique canvas`);
   record.createdAudioContexts = await evaluate(() => window.__qaAudioContexts);
@@ -445,6 +498,7 @@ async function lifecycle(scene) {
   phase(scene, 'static first frame');
   await navigate(scene, '&static=1');
   record.staticFirstFrame = await stable(`${scene} initial static3D`);
+  record.staticEnvironment = await checkEnvironment(scene, 'static first frame');
   record.metrics = (await snap()).canvas;
   return record;
 }
@@ -466,7 +520,15 @@ try {
     }
     await capture(scene, 'portrait', { width: 390, height: 844 });
     await capture(scene, 'fold', { width: 960, height: 700 });
-    results.worlds[scene] = screenshotsOnly ? { screenshotsCaptured: true } : await lifecycle(scene);
+    const initialEnvironment = await checkEnvironment(scene, 'after initial desktop/portrait/Fold captures');
+    let sentinelProbe;
+    if (!screenshotsOnly && scene !== 'rural') {
+      sentinelProbe = await api('probeEnvironmentRestoration');
+      assert(sentinelProbe.restored && sentinelProbe.callerRestored && sentinelProbe.before.cubeFace === 2 && sentinelProbe.before.mip === 1 && sentinelProbe.statusBefore === 36053 && sentinelProbe.statusAfter === 36053 && ['errorsBefore', 'bindingErrors', 'errorsAfter', 'finalErrors'].every(key => sentinelProbe[key].length === 0), `${scene}: nonzero cube-face/mip restoration probe failed`);
+      sentinelProbe.audits = (await snap()).environment.audits.filter(audit => audit.scope === 'sentinel');
+    }
+    results.worlds[scene] = screenshotsOnly ? { screenshotsCaptured: true, initialEnvironment } : await lifecycle(scene);
+    if (sentinelProbe) results.worlds[scene].sentinelProbe = sentinelProbe;
   }
   if (!screenshotsOnly) {
     const other = await context.newPage(); await other.goto('about:blank'); await other.bringToFront(); await page.waitForTimeout(150);
@@ -486,11 +548,12 @@ try {
   process.exitCode = 1;
 } finally {
   const sourceAfter = await manifest(sourceFiles);
+  const dependencySourceAfter = await manifest(dependencySourceFiles);
   const bundleAfter = await manifest(await distFiles(path.join(qa, 'dist')));
-  results.integrity = { sourceUnchangedDuringRun: sourceAfter.sha256 === results.source.sha256, bundleUnchangedDuringRun: bundleAfter.sha256 === results.bundle.sha256 };
-  if (!results.integrity.sourceUnchangedDuringRun || !results.integrity.bundleUnchangedDuringRun) {
+  results.integrity = { sourceUnchangedDuringRun: sourceAfter.sha256 === results.source.sha256, dependencySourceUnchangedDuringRun: dependencySourceAfter.sha256 === results.dependencySource.sha256, bundleUnchangedDuringRun: bundleAfter.sha256 === results.bundle.sha256 };
+  if (!results.integrity.sourceUnchangedDuringRun || !results.integrity.dependencySourceUnchangedDuringRun || !results.integrity.bundleUnchangedDuringRun) {
     results.pass = false;
-    results.errors.push({ type: 'integrity', text: 'Source or built harness changed during capture; rebuild and repeat for final evidence.' });
+    results.errors.push({ type: 'integrity', text: 'Scene source, reviewed dependency source or built harness changed during capture; rebuild and repeat for final evidence.' });
   }
   if (!results.pass) process.exitCode = 1;
   results.finishedAt = new Date().toISOString();

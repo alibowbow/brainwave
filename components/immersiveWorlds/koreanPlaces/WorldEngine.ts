@@ -3,7 +3,7 @@ import { LiveSceneHost, type LiveSceneEngine, type LiveSceneHolder } from '../..
 import { LookSpring } from '../../liveScene/look';
 import type { SceneContent, WorldId, WorldInteraction } from './types';
 
-type Factory = () => SceneContent;
+type Factory = (renderer: THREE.WebGLRenderer) => SceneContent;
 const factories: Record<WorldId, () => Promise<Factory>> = {
   temple: () => import('./scenes/temple').then(m => m.createTempleScene),
   scops: () => import('./scenes/scops').then(m => m.createScopsScene),
@@ -42,7 +42,7 @@ export class WorldEngine implements LiveSceneEngine {
     try {
       const factory = await factories[this.id]();
       if (this.disposed) return;
-      this.content = factory();
+      this.content = factory(this.renderer);
       this.renderer.toneMappingExposure = this.content.scene.userData.exposure ?? 1;
       this.content.resize(this.width / this.height);
       this.cameraBase.copy(this.content.camera.quaternion);

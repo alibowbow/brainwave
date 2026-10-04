@@ -1,7 +1,7 @@
 /** Bounded follow-up evidence, never overwrites PR58 evidence.
  * npx vite build --config components/immersiveWorlds/waterEdge/dev/vite.config.ts
  * node components/immersiveWorlds/waterEdge/qa/followup-verify.mjs --serve --stage=visual --world=pebble-shore --mode=normal --viewport=desktop
- * Stages run in independent browser processes. lifecycle never invokes screenshot/readPixels/fence.
+ * Stages run in independent browser processes. lifecycle never adds screenshot/readPixels/diagnostic fence.
  */
 import { chromium } from 'playwright-core';
 import { createHash } from 'node:crypto';
@@ -25,10 +25,15 @@ if (drainBeforeDispose && stage !== 'diagnostic') throw new Error('GPU-drained l
 const activeFrames = Number(arg('active-frames', '0'));
 if (![0, 2].includes(activeFrames) || (activeFrames && (stage !== 'diagnostic' || drainBeforeDispose))) throw new Error('The bounded two-frame diagnostic requires stage=diagnostic with no GPU drain');
 const base = process.env.WATER_EDGE_URL || 'http://127.0.0.1:4188';
-const evidenceName = arg('evidence', 'followup-lifecycle-evidence');
+const evidenceName = arg('evidence', 'submission-evidence');
 if (!/^[a-z0-9-]+$/.test(evidenceName) || evidenceName === 'followup-evidence') throw new Error('Use a new owned evidence directory; original followup-evidence is immutable');
 const output = path.join(qa, evidenceName); await mkdir(output, { recursive: true });
 const stem = `${tag}-${world}-${mode}-${viewportName}-${stage}`;
+const reportAlreadyExists = await readFile(path.join(output, `${stem}.json`)).then(() => true, error => {
+  if (error.code === 'ENOENT') return false;
+  throw error;
+});
+if (reportAlreadyExists) throw new Error(`Evidence ${stem}.json already exists; choose a fresh tag or evidence directory. Prior results are immutable.`);
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 async function treeHash(root, keep = () => true, sourceOnly = false) {
   const digest = createHash('sha256');
@@ -72,12 +77,32 @@ if (server) await new Promise((resolve, reject) => { server.once('error', reject
 let browser, context, page, tainted = false;
 const inspect = () => page.evaluate(() => window.__waterEdgeQA.inspect());
 const paused = () => page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
-async function ready() { await page.waitForFunction(() => window.__waterEdgeQA?.inspect().roots.some(root => root.state === 'ready'), null, { timeout: 60000 }); }
+async function ready() { await page.waitForFunction(() => {
+  const state = window.__waterEdgeQA?.inspect();
+  return state?.roots.some(root => root.state === 'ready') && state.canvases[0]?.frames > 0;
+}, null, { timeout: 60000 }); }
+async function settlePendingStatic(budgetMs = 30000) {
+  const before = await inspect(), began = Date.now(), time = before.canvases[0]?.time;
+  assert(before.roots.every(root => root.motion === 'paused'), 'Static settling requires paused motion');
+  await page.waitForFunction(time => {
+    const canvas = window.__waterEdgeQA.inspect().canvases[0];
+    if (!canvas || canvas.time !== time) throw new Error('Paused simulation time changed while its genuine final static frame settled');
+    if (!canvas.submission) throw new Error('Missing production submission-state diagnostics');
+    if (typeof canvas.submission.dirty !== 'boolean') throw new Error('Missing boolean production dirty-state diagnostic');
+    if (canvas.submission.fault) throw new Error(`Production submission fault: ${canvas.submission.fault}`);
+    // This deliberately does NOT await pending GPU completion. Only a genuine
+    // deferred static redraw must be submitted before the no-submission window.
+    return !canvas.submission.dirty;
+  }, time, { timeout: budgetMs, polling: 25 });
+  const after = await inspect();
+  assert(after.canvases[0].time === time, 'Paused time advanced during static settling');
+  return { before, after, elapsedMs: Date.now() - began, method: 'Read-only production dirty-state observation; no added fence, flush, readback or draw' };
+}
 async function freeze(label, operation) {
-  await operation(); await paused(); await page.waitForTimeout(150);
+  await operation(); await paused(); const staticSettling = await settlePendingStatic(); await page.waitForTimeout(150);
   const before = await inspect(); await page.waitForTimeout(500); const after = await inspect();
   assert(before.canvases[0].frames === after.canvases[0].frames && before.canvases[0].time === after.canvases[0].time, `${label}: paused submissions or time advanced`);
-  report.checks[label] = { status: 'passed', before, after }; await save();
+  report.checks[label] = { status: 'passed', staticSettling, before, after }; await save();
 }
 async function drain(label, budgetMs = 60000) {
   const start = Date.now();
@@ -90,7 +115,10 @@ async function capture(label) {
   // One combined bounded budget. Never launch another capture on a contaminated page.
   assert(!tainted, 'Page is tainted by an earlier GPU/capture failure');
   const began = Date.now(), budget = 90000;
-  const fence = await drain(`${label}-gpuDrain`, 60000);
+  const staticSettling = await settlePendingStatic(Math.min(30000, budget));
+  const fenceBudget = Math.min(60000, budget - (Date.now() - began) - 1000);
+  assert(fenceBudget > 0, 'Capture budget consumed while a pending static view settled');
+  const fence = await drain(`${label}-gpuDrain`, fenceBudget);
   const before = await inspect(); const remaining = budget - (Date.now() - began);
   if (remaining < 1000) { tainted = true; throw new Error(`${label}: capture budget consumed by GPU drain`); }
   const file = `${stem}-${label}.png`, screenshotStart = Date.now();
@@ -102,7 +130,7 @@ async function capture(label) {
   assert(png.readUInt32BE(16) === capturedViewport.width && png.readUInt32BE(20) === capturedViewport.height, 'Native PNG dimensions do not match viewport');
   assert(before.canvases[0].frames === after.canvases[0].frames && before.canvases[0].time === after.canvases[0].time, 'Frame/time changed during paused capture');
   report.captures.push({ file, sha256: sha(png), bytes: png.length, captureMethod: 'Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition',
-    viewport: capturedViewport, screenshotElapsedMs, combinedElapsedMs: Date.now() - began, fence, before, after }); await save();
+    viewport: capturedViewport, screenshotElapsedMs, combinedElapsedMs: Date.now() - began, staticSettling, fence, before, after }); await save();
   console.log(`${stem}: ${label} PNG; GPU drain ${fence.elapsedMs.toFixed(0)} ms; screenshot ${screenshotElapsedMs} ms`);
   return png;
 }
@@ -295,7 +323,8 @@ try {
     await page.evaluate(() => { window.__waterEdgeQA.setActive(false); window.__waterEdgeQA.setSyntheticHidden(null); }); await paused();
     report.unrun.push('Physical hardware touch; true operating-system background/foreground; sustained GPU throughput; full-app production chrome.');
   } else {
-    // Clean no-capture run: no screenshots, toDataURL, readPixels or diagnostic fence before/after teardown.
+    // Clean no-capture run: no added screenshots, toDataURL, readPixels or diagnostic fence.
+    // Production completion fences are intrinsic runtime behavior and remain active.
     const before = await inspect();
     await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('holder-transfer-secondary'); window.__waterEdgeQA.setSecondHolder(true); });
     await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'secondary');
@@ -324,7 +353,7 @@ try {
         const afterBurst = await inspect();
         assert(afterBurst.canvases[0].frames >= beforeBurst.canvases[0].frames + activeFrames && afterBurst.canvases[0].time > beforeBurst.canvases[0].time, 'Diagnostic active burst did not submit real advancing frames');
         report.checks.noDrainActiveBurst = { status: 'passed', beforeBurst, afterBurst, requestedMinimumFrames: activeFrames,
-          method: 'Harness active toggle through real production motion policy/RAF, then pause and immediate unmount. No screenshot, readback, diagnostic GPU fence or post-burst settling wait. Trusted native input is independently exercised by the behavior stage.' };
+          method: 'Harness active toggle through real production motion policy/RAF, then pause and immediate unmount. No added screenshot, readback, diagnostic GPU fence or post-burst settling wait. Production completion fences remain intrinsic. Trusted native input is independently exercised by the behavior stage.' };
       }
       const prior = await inspect();
       report.beforeDisposalTelemetry = await page.evaluate(() => window.__waterEdgeQA.inspectTelemetry());
@@ -343,7 +372,7 @@ try {
       const disposal = { cycle, status: 'passed', configuredRetentionMs: 5000, eventualObservationDeadlineMs: 20000, removal, entry, exit, lost,
         removalToDisposeEntryMs: entry.atMs - removal.atMs, disposeSynchronousDurationMs: exit.atMs - entry.atMs,
         removalToContextLossObservationMs: lost.atMs - removal.atMs,
-        claim: `${drainBeforeDispose ? 'GPU-drained no-capture diagnostic' : 'Clean no-capture cycle'} reached zero engine/canvas counters and observed context loss within recorded elapsed time; not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.`, disposed };
+        claim: `${drainBeforeDispose ? 'GPU-drained no-capture diagnostic' : 'Clean cycle with no added capture or diagnostic fence'} reached zero engine/canvas counters and observed context loss within recorded elapsed time; production completion fences remain active. Not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.`, disposed };
       disposal.removalToContextLossObservationMs = lost.atMs - removal.atMs;
       disposal.heartbeat = { samples: telemetry.heartbeats.filter(item => item.atMs >= removal.atMs && item.atMs <= lost.atMs + 100),
         note: 'Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.' };

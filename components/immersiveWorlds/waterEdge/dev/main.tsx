@@ -43,7 +43,8 @@ function inspect() {
       return { id: canvasIds.get(canvas), holder: canvas.closest<HTMLElement>('[data-holder]')?.dataset.holder,
         width: canvas.width, height: canvas.height, frames: Number(canvas.dataset.frames),
         time: Number(canvas.dataset.time), drawCalls: Number(canvas.dataset.drawCalls), triangles: Number(canvas.dataset.triangles),
-        targets: canvas.dataset.waterEdgeRenderTargets ? JSON.parse(canvas.dataset.waterEdgeRenderTargets) : null };
+        targets: canvas.dataset.waterEdgeRenderTargets ? JSON.parse(canvas.dataset.waterEdgeRenderTargets) : null,
+        submission: canvas.dataset.waterEdgeSubmission ? JSON.parse(canvas.dataset.waterEdgeSubmission) : null };
     }),
     events: events.map((event) => ({ ...event, position: { ...event.position } })),
   };

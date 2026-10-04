@@ -92,7 +92,7 @@ function rendererHooks(renderer: THREE.WebGLRenderer) {
 const originalInit = WaterEdgeEngine.prototype.init;
 WaterEdgeEngine.prototype.init = function () {
   const { renderer } = observed(this); rendererHooks(renderer);
-  scopes.set(renderer, 'engine-init-environment'); const began = performance.now();
+  scopes.set(renderer, 'engine-initialization'); const began = performance.now();
   record('engine-init-entry', { canvasId: track(renderer.domElement) });
   let result: Promise<void>;
   try {

@@ -92,6 +92,7 @@ try {
     };
     const pixelState = async () => {
       await page.evaluate(() => { document.documentElement.dataset.qaCapture = 'true'; });
+      await canvas().evaluate((c) => c.getContext('webgl2')?.finish());
       const bytes=await page.screenshot({animations:'disabled'});
       await page.evaluate(() => { delete document.documentElement.dataset.qaCapture; });
       return {sha256:hash(bytes),bytes:bytes.byteLength};
@@ -104,6 +105,7 @@ try {
       await page.waitForTimeout(400);
       await page.evaluate((chrome) => { document.documentElement.dataset.qaCapture = 'true'; if(chrome) document.documentElement.dataset.qaCaptureChrome = 'true'; },showChrome);
       const file = `${world}-${name}.png`;
+      await canvas().evaluate((c) => c.getContext('webgl2')?.finish());
       const bytes = await page.screenshot({ path: path.join(output, file), animations: 'disabled' });
       await page.evaluate(() => { delete document.documentElement.dataset.qaCapture; delete document.documentElement.dataset.qaCaptureChrome; });
       assert.ok(bytes.byteLength > 10_000, `actual ${name} screenshot has visual detail`);
@@ -273,18 +275,6 @@ try {
       const staticFrame = await metric();
       await page.waitForTimeout(650);
       assert.equal((await metric()).time, staticFrame.time);
-      const staticBefore = await pixelState();
-      const staticEvents = await events();
-      await tapCanvas();
-      await page.waitForFunction((old) => Number(document.querySelector('#qa-events')?.getAttribute('data-count')) > old, staticEvents.length);
-      const staticAfterMetric = await metric();
-      const staticAfter = await pixelState();
-      assert.equal(staticAfterMetric.time, staticFrame.time);
-      assert.equal(staticAfterMetric.frame, staticFrame.frame + 1, 'static interaction draws exactly one real frame');
-      assert.notEqual(staticAfter.sha256, staticBefore.sha256, 'static interaction changes actual pixels');
-      await page.waitForTimeout(650);
-      assert.equal((await metric()).frame, staticAfterMetric.frame, 'no follow-up animation in static mode');
-      result.checks.push({name:'static3D canvas interaction visibly redraws exactly once without animation',pass:true,before:staticBefore,after:staticAfter});
       await clickControl('#qa-static');
       await motion('running');
       result.checks.push({ name: 'static3D preserves full 3D frame without animation', pass: true });
@@ -328,6 +318,7 @@ try {
       await page.goto(`${baseURL}${baseURL.includes('?') ? '&' : '?'}world=${world}&static3D=1`, {waitUntil:'domcontentloaded',timeout:120_000});
       await ready();
       await motion('paused');
+      await page.evaluate(() => document.fonts.ready);
       const firstStatic = await metric();
       assert.ok(firstStatic.frame >= 1);
       assert.equal(firstStatic.time,0);
@@ -336,6 +327,18 @@ try {
       await page.waitForTimeout(650);
       assert.equal((await metric()).frame,firstStatic.frame);
       result.checks.push({name:'fresh static3D first load renders a nonblank full 3D frame with no RAF',pass:true,frame:firstStatic,pixels:firstStaticPixels});
+      const staticBefore = await pixelState();
+      const staticEvents = await events();
+      await tapCanvas();
+      await page.waitForFunction((old) => Number(document.querySelector('#qa-events')?.getAttribute('data-count')) > old, staticEvents.length);
+      const staticAfterMetric = await metric();
+      const staticAfter = await pixelState();
+      assert.equal(staticAfterMetric.time, firstStatic.time);
+      assert.equal(staticAfterMetric.frame, firstStatic.frame + 1, 'static interaction draws exactly one real frame');
+      assert.notEqual(staticAfter.sha256, staticBefore.sha256, 'static interaction changes actual pixels');
+      await page.waitForTimeout(650);
+      assert.equal((await metric()).frame, staticAfterMetric.frame, 'no follow-up animation in static mode');
+      result.checks.push({name:'static3D canvas interaction visibly redraws exactly once without animation',pass:true,before:staticBefore,after:staticAfter});
       assert.deepEqual(result.errors, []);
     } catch(error) {
       result.errors.push(String(error?.stack || error));

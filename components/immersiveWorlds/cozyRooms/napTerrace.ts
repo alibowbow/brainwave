@@ -37,6 +37,45 @@ function leafGeometry() {
   return g;
 }
 
+/** Narrow, cupped foliage for the four trees close enough to resolve a leaf. */
+function nearLeafGeometry() {
+  const vertices: number[] = [], indices: number[] = [];
+  for (let row = 0; row <= 7; row++) {
+    const t = row / 7, width = Math.pow(Math.sin(t * Math.PI), 0.85) * 0.025;
+    for (let col = 0; col < 3; col++) {
+      const side = col - 1;
+      // The ridge, rolled margins and curved tip produce changing normals across
+      // the blade. Its silhouette remains lanceolate when seen from either side.
+      vertices.push(side * width + Math.sin(t * Math.PI) * 0.006, t * 0.17,
+        Math.sin(t * Math.PI) * (0.015 - Math.abs(side) * 0.013) + side * width * (t - 0.35) * 0.65 - t * t * 0.016);
+    }
+  }
+  for (let row = 0; row < 7; row++) for (let col = 0; col < 2; col++) {
+    const i = row * 3 + col; indices.push(i, i + 1, i + 3, i + 1, i + 4, i + 3);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setIndex(indices); geometry.computeVertexNormals();
+  return geometry;
+}
+
+type NearOliveForm = {
+  leader: [number, number, number][];
+  // Each limb starts at a different height along the continuing leader. The
+  // final coordinate controls its bend, rather than making a radial fork.
+  limbs: [number, number, number, number, number][];
+};
+const nearOliveForms: NearOliveForm[] = [
+  { leader: [[0, 0, 0], [0.07, 0.72, 0.02], [-0.14, 1.48, 0.11], [-0.35, 2.30, 0.03], [-0.18, 3.30, -0.14]],
+    limbs: [[0.29, -1.63, 2.13, 0.22, -0.11], [0.42, 1.40, 2.67, -0.54, 0.17], [0.49, -0.92, 2.70, -1.19, 0.13], [0.60, 0.76, 3.00, 1.03, -0.12], [0.72, -1.45, 3.25, -0.15, 0.03], [0.81, 0.43, 3.55, -0.74, 0.13]] },
+  { leader: [[0, 0, 0], [-0.08, 0.80, 0.05], [0.12, 1.48, -0.02], [0.33, 2.30, -0.13], [0.16, 3.43, 0.03]],
+    limbs: [[0.33, 1.71, 2.36, 0.33, -0.15], [0.47, -1.54, 2.78, -0.31, 0.02], [0.55, 0.75, 2.79, -1.22, 0.10], [0.65, -0.69, 3.03, 0.99, -0.13], [0.75, 1.27, 3.49, -0.35, 0.08], [0.84, -0.67, 3.62, -0.61, 0.04]] },
+  { leader: [[0, 0, 0], [0.02, 0.69, -0.08], [0.22, 1.43, -0.03], [0.03, 2.35, 0.16], [0.38, 3.23, 0.08]],
+    limbs: [[0.32, -1.65, 2.13, -0.24, -0.10], [0.43, 1.32, 2.57, 0.64, 0.06], [0.54, -0.65, 2.68, 1.04, -0.12], [0.64, 0.87, 2.97, -1.09, 0.07], [0.72, -1.27, 3.19, -0.27, 0.10], [0.83, 1.07, 3.44, 0.36, 0.08]] },
+  { leader: [[0, 0, 0], [-0.12, 0.72, 0.03], [-0.04, 1.54, 0.12], [0.20, 2.26, -0.10], [0.06, 3.30, -0.24]],
+    limbs: [[0.31, 1.63, 2.06, 0.38, -0.18], [0.45, -1.50, 2.76, -0.18, 0.11], [0.52, 0.52, 2.63, -1.10, -0.10], [0.63, -0.80, 2.97, 1.00, 0.05], [0.73, 1.20, 3.24, -0.43, -0.01], [0.84, -0.46, 3.55, 0.45, 0.07]] },
+];
+
 export function createNapTerraceWorld(): WorldBuild {
   const rng = randomSeed(48203);
   const scene = new THREE.Scene();
@@ -208,8 +247,10 @@ export function createNapTerraceWorld(): WorldBuild {
   // geometry. The branching silhouette has gaps, age and asymmetry.
   const leaves = leafGeometry();
   const leafMaterials = ['#64764b', '#829260', '#566f48', '#a0a978'].map(color => new THREE.MeshStandardMaterial({ color, roughness: 0.89, side: THREE.DoubleSide }));
+  const nearLeaves = nearLeafGeometry();
+  const nearLeafMaterials = ['#637b4d', '#798b59', '#536c45', '#929e6e'].map(color => new THREE.MeshStandardMaterial({ color, roughness: 0.83, side: THREE.DoubleSide }));
   const wind = { value: 0 };
-  for (const material of leafMaterials) {
+  for (const material of [...leafMaterials, ...nearLeafMaterials]) {
     material.onBeforeCompile = shader => {
       shader.uniforms.cozyLeafTime = wind;
       shader.vertexShader = 'uniform float cozyLeafTime;\n' + shader.vertexShader;
@@ -222,7 +263,7 @@ export function createNapTerraceWorld(): WorldBuild {
     material.customProgramCacheKey = () => 'cozy-nap-curved-leaf-v1';
   }
   const trees: Array<{ group: THREE.Group; phase: number; base: number }> = [];
-  function olive(x: number, z: number, scale: number, seed: number) {
+  function olive(x: number, z: number, scale: number, seed: number, nearForm?: NearOliveForm) {
     const rand = randomSeed(seed), group = new THREE.Group();
     const groundY = -0.40 + Math.sin(x * 0.15 + z * 0.10) * 0.25 + Math.sin(z * 0.12) * 0.35 + Math.max(0, -z - 18) * (0.13 + Math.sin(x * 0.07) * 0.045);
     group.position.set(x, groundY - 0.03, z); group.scale.setScalar(scale); scene.add(group);
@@ -256,14 +297,86 @@ export function createNapTerraceWorld(): WorldBuild {
         }
       }
     }
-    branch(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-0.12, 1.65, 0.07), 0.115, 0);
+    if (nearForm) {
+      const up = new THREE.Vector3(0, 1, 0), leaf = new THREE.Object3D();
+      // Tapered bent wood stays one indexed mesh per tree, including the fine
+      // twigs. Unequal longitudinal ridges break the round extrusion silhouette.
+      const woodCurve = (curve: THREE.Curve<THREE.Vector3>, rootRadius: number, tipRadius: number, sections = 8) => {
+        const sides = rootRadius > 0.035 ? 9 : 5;
+        const frames = curve.computeFrenetFrames(sections, false), offset = branchVertices.length / 3;
+        for (let j = 0; j <= sections; j++) {
+          const t = j / sections, point = curve.getPoint(t), radius = THREE.MathUtils.lerp(rootRadius, tipRadius, t);
+          for (let k = 0; k < sides; k++) {
+            const angle = k / sides * Math.PI * 2;
+            const ridge = 1 + Math.sin(angle * 3 + seed * 0.11 + t * 1.7) * 0.12 + Math.sin(angle * 5 - t) * 0.055;
+            const vertex = point.clone().addScaledVector(frames.normals[j], Math.cos(angle) * radius * ridge).addScaledVector(frames.binormals[j], Math.sin(angle) * radius * ridge);
+            branchVertices.push(vertex.x, vertex.y, vertex.z);
+          }
+        }
+        for (let j = 0; j < sections; j++) for (let k = 0; k < sides; k++) {
+          const a = offset + j * sides + k, b = offset + j * sides + (k + 1) % sides;
+          branchIndices.push(a, b, a + sides, b, b + sides, a + sides);
+        }
+      };
+      const leader = new THREE.CatmullRomCurve3(nearForm.leader.map(point => new THREE.Vector3(...point)));
+      woodCurve(leader, 0.145, 0.016, 19);
+      const limbs: THREE.Curve<THREE.Vector3>[] = nearForm.limbs.map(([height, tx, ty, tz, bend], index) => {
+        const root = leader.getPoint(height), tip = new THREE.Vector3(tx, ty, tz);
+        const elbow = root.clone().lerp(tip, 0.43);
+        elbow.y += bend - 0.15; elbow.z += Math.sin(index * 1.7 + seed) * 0.19;
+        const curve = new THREE.QuadraticBezierCurve3(root, elbow, tip);
+        woodCurve(curve, 0.060 - height * 0.034, 0.008, 9);
+        return curve;
+      });
+      // The retained leader has its own higher, offset spray, not a matching arm.
+      limbs.push(new THREE.QuadraticBezierCurve3(leader.getPoint(0.78), leader.getPoint(0.91), leader.getPoint(1)));
+      limbs.forEach((limb, limbIndex) => {
+        const twigCount = limbIndex === limbs.length - 1 ? 4 : 5;
+        for (let twigIndex = 0; twigIndex < twigCount; twigIndex++) {
+          const t = 0.36 + twigIndex * 0.14 + rand() * 0.055;
+          const root = limb.getPoint(Math.min(t, 0.98));
+          const tangent = limb.getTangent(Math.min(t, 0.98));
+          const angle = limbIndex * 2.13 + twigIndex * 2.4 + rand() * 0.8;
+          const tip = root.clone().addScaledVector(tangent, 0.25 + rand() * 0.20)
+            .add(new THREE.Vector3(Math.cos(angle) * (0.35 + rand() * 0.27), 0.14 + rand() * 0.35, Math.sin(angle) * (0.43 + rand() * 0.32)));
+          const bend = root.clone().lerp(tip, 0.5); bend.y += 0.12;
+          const twig = new THREE.QuadraticBezierCurve3(root, bend, tip);
+          woodCurve(twig, 0.009, 0.0028, 5);
+          for (let shootIndex = 0; shootIndex < 4; shootIndex++) {
+            const start = twig.getPoint(0.23 + shootIndex * 0.21);
+            const spread = angle + shootIndex * 2.21 + rand() * 0.6;
+            const end = start.clone().add(new THREE.Vector3(Math.cos(spread) * (0.20 + rand() * 0.24), 0.10 + rand() * 0.23 - (shootIndex === 3 ? 0.18 : 0), Math.sin(spread) * (0.25 + rand() * 0.26)));
+            const arc = start.clone().lerp(end, 0.58); arc.y += 0.045;
+            const shoot = new THREE.QuadraticBezierCurve3(start, arc, end);
+            woodCurve(shoot, 0.0032, 0.0009, 3);
+            for (let node = 0; node < 11; node++) for (const side of [-1, 1]) {
+              const along = 0.10 + node * 0.081 + rand() * 0.019;
+              leaf.position.copy(shoot.getPoint(along));
+              const facing = spread + side * (0.70 + rand() * 0.45);
+              const direction = new THREE.Vector3(Math.cos(facing), 0.12 + rand() * 0.70 - along * 0.28, Math.sin(facing)).normalize();
+              leaf.quaternion.setFromUnitVectors(up, direction);
+              leaf.rotateY(side * 0.45 + (rand() - 0.5) * 1.5);
+              leaf.scale.set(0.78 + rand() * 0.38, 0.77 + rand() * 0.39, 1); leaf.updateMatrix();
+              // Inner/rear sprays stay cooler and darker; sunward tips reveal a
+              // few silver-green undersides. The shade is coherent within each
+              // crown volume instead of alternating every four floating leaves.
+              const inner = along < 0.40 || leaf.position.z < -0.55;
+              const shade = inner ? (rand() < 0.62 ? 2 : 0) : (rand() < 0.23 ? 3 : 1);
+              leafMatrices[shade].push(leaf.matrix.clone());
+            }
+          }
+        }
+      });
+    } else {
+      branch(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-0.12, 1.65, 0.07), 0.115, 0);
+    }
     const bg = new THREE.BufferGeometry(); bg.setAttribute('position', new THREE.Float32BufferAttribute(branchVertices, 3)); bg.setIndex(branchIndices); bg.computeVertexNormals();
     const bm = new THREE.Mesh(bg, bark); bm.castShadow = true; bm.receiveShadow = true; group.add(bm);
-    leafMatrices.forEach((matrices, i) => { const mesh = new THREE.InstancedMesh(leaves, leafMaterials[i], matrices.length); matrices.forEach((matrix, j) => mesh.setMatrixAt(j, matrix)); mesh.castShadow = true; mesh.receiveShadow = true; group.add(mesh); });
+    leafMatrices.forEach((matrices, i) => { const mesh = new THREE.InstancedMesh(nearForm ? nearLeaves : leaves, (nearForm ? nearLeafMaterials : leafMaterials)[i], matrices.length); matrices.forEach((matrix, j) => mesh.setMatrixAt(j, matrix)); mesh.castShadow = true; mesh.receiveShadow = true; group.add(mesh); });
     trees.push({ group, phase: seed * 0.73, base: (rand() - 0.5) * 0.09 });
   }
-  olive(-3.8, -4.9, 1.65, 81); olive(4.4, -7.8, 1.6, 832); olive(-6.7, -10.6, 1.35, 11);
-  olive(0.0, -16.3, 1.7, 279); olive(6.8, -18, 1.45, 737); olive(-9.8, -24, 1.85, 933);
+  olive(-3.8, -4.9, 1.65, 81, nearOliveForms[0]); olive(4.4, -7.8, 1.6, 832, nearOliveForms[1]); olive(-6.7, -10.6, 1.35, 11, nearOliveForms[2]);
+  olive(0.0, -16.3, 1.7, 279, nearOliveForms[3]); olive(6.8, -18, 1.45, 737); olive(-9.8, -24, 1.85, 933);
   olive(-2.1, -29, 1.75, 622); olive(11.9, -28.6, 1.9, 19); olive(-13.5, -14, 1.4, 674);
 
   // Loose rosemary and meadow edges: tapered curved blades, no billboard shrubs.

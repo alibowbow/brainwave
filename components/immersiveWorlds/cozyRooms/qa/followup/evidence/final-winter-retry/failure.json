@@ -1,0 +1,16 @@
+{
+  "passed": false,
+  "attempt": "Second unchanged isolated winter verification run",
+  "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+  "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0",
+  "completedWorlds": [],
+  "completedReportedChecks": 0,
+  "failedWorld": "nature:winter_lodge",
+  "failure": "page.waitForSelector: Timeout 120000ms exceeded waiting for .cozy-world[data-state=ready] canvas to be visible, at unchanged qa/verify.mjs line 75, after final disposal and on recreation",
+  "previousAssertions": "The immediately preceding disposed=true wait within 30000ms and lifetime.disposed===lifetime.created assertion completed before execution reached the failing recreation wait.",
+  "rawReport": "verification.json",
+  "log": "execution.log",
+  "reportingCaveat": "The unchanged runner's errors array only captures page and console errors. Its empty errors array does not negate the thrown test exception. Results append only after a whole world passes; no unsupported count is assigned to winter's partial assertions.",
+  "cause": "Undetermined: no post-timeout DOM/state snapshot was retained by the original runner. The original qa/VALIDATION.md also recorded a winter recreation timeout. This recurrence is neither proof of a new production regression nor proof of a driver-only cause.",
+  "retryPolicy": "No further retry. Both failed attempts are retained and fresh-engine recreation remains an unresolved integration check."
+}

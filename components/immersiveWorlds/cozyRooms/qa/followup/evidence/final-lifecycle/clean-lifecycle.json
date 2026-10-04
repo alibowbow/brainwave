@@ -1,0 +1,3935 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-04T20:55:19.731Z",
+  "gitHead": "eff612d8ea6ba63d2cc41a11d834e5fa11518461",
+  "source": {
+    "sha256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "60ff86a05ac3a31074cc8fea9452c91b31c3a00023a91a06d2426f765be98f7f",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "bundle": {
+    "sha256": "77b568410b8e9b7d580f123f7fb021d7355baaf81874ac9196a829470846f831",
+    "files": [
+      "assets/CozyWorld-8a-G8kln.js",
+      "assets/CozyWorld-8a-G8kln.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-BSMm22by.js",
+      "assets/HearthWorld-BSMm22by.js.map",
+      "assets/NapTerraceWorld-BlWl-odt.js",
+      "assets/NapTerraceWorld-BlWl-odt.js.map",
+      "assets/SleepRoomWorld-BVfRk5es.js",
+      "assets/SleepRoomWorld-BVfRk5es.js.map",
+      "assets/WinterLodgeWorld-DSNvF0Yk.js",
+      "assets/WinterLodgeWorld-DSNvF0Yk.js.map",
+      "assets/fireDetail-DQabgJrC.js",
+      "assets/fireDetail-DQabgJrC.js.map",
+      "assets/index-CRoUHBQw.js",
+      "assets/index-CRoUHBQw.js.map",
+      "assets/main-B5pMDdHb.js",
+      "assets/main-B5pMDdHb.js.map",
+      "assets/materials-D9shTL0S.js",
+      "assets/materials-D9shTL0S.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-8a-G8kln.js": "4e02e183a9739e06dc983303f201c3cb94ff7be7d1787897bad996fad8ea5e48",
+      "assets/CozyWorld-8a-G8kln.js.map": "e38bedcf5b42743c400595f86d9bbc5f4276ef3fe74c2ae70803edd0e75abf90",
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/HearthWorld-BSMm22by.js": "27034f3f2c3873f6a8f4b17f5ebcacce04be08dbb2648d3fa8657e3cbcf83335",
+      "assets/HearthWorld-BSMm22by.js.map": "b81b0acaecdb95fbaf6feb08f3033dd9ca7d736720bd2d3f8a654460d1303d3f",
+      "assets/NapTerraceWorld-BlWl-odt.js": "da5e6bcaa6cba59e0959791b6fb0a36da581ad79bca5f48787131c6979b5178e",
+      "assets/NapTerraceWorld-BlWl-odt.js.map": "ddb2e43b642649ff615a2333c0a4a9f44e07274d01205f4a2cb744313d696af6",
+      "assets/SleepRoomWorld-BVfRk5es.js": "b3f601facb0b812b7d20dfd5b9070ee72a3085f2755c92c108388af5c99c5f52",
+      "assets/SleepRoomWorld-BVfRk5es.js.map": "b3a98e95a54696a3f1094d11bca9e5c38d106e898e4adfb91716af0e408f8420",
+      "assets/WinterLodgeWorld-DSNvF0Yk.js": "ebee24c623a9eb1e9da3e761734dae0dce1356b0ecb7ca6a3978fdf3c7609fee",
+      "assets/WinterLodgeWorld-DSNvF0Yk.js.map": "906b1b0d87f9563a28e91e4ad832a057492a5a65f6f11afb9fcfd2dff43b3e1b",
+      "assets/fireDetail-DQabgJrC.js": "089f8d974053d5631515304dd1cf5c949b31db85e05cc6e1d7233dae0b7c9dfb",
+      "assets/fireDetail-DQabgJrC.js.map": "2e20e891344cd2d75c477e7ae4bfde1a00ed4b08bfcfa7b1078dfa37c818d89a",
+      "assets/index-CRoUHBQw.js": "da8a3a2d7f38178ad8e8979ceb2845516d4874e9bab298d2ca7be4b8ed2ee9db",
+      "assets/index-CRoUHBQw.js.map": "bb9d02782cdb05aba6f1ee0ac3f915c333a404676ea607bd86d8f909bbcaa274",
+      "assets/main-B5pMDdHb.js": "ce96516bd5fa6c2c265fcbd79edb8338ab5f7c7c354ab393b24243b6b9c4a6dd",
+      "assets/main-B5pMDdHb.js.map": "c9e5d77975bc85d4bc6634e49a2c0cdfc2159ea8e26c71792927b8850f4b7b57",
+      "assets/materials-D9shTL0S.js": "30018810ec6c147512cb4c1a0b18bb2c37e4ae7b1472c549f42eb5c2fc2584be",
+      "assets/materials-D9shTL0S.js.map": "68f0c67b20ef6981ae232c9ac94794d9e1e2a5f402e5573b16f407352e6f9c66",
+      "index.html": "4d5ddd8c54009200275503ce9befd074b069e5d806256156c7d91000c7fefb03"
+    }
+  },
+  "method": "Separate clean browser per world; at least 3 actual animated submissions then pause and holder roundtrip. No screenshots, GPU fences, canvas readback, forced context loss, or other capture work. QA-only wrappers record original host 5000 ms timer, connected canvas or ancestor detachment after delegated Node.removeChild/Element.remove returns, CozyEngine.dispose entry/exit, context-loss events and heartbeat.",
+  "results": [
+    {
+      "world": "relax",
+      "browser": "153.0.8010.0",
+      "passed": true,
+      "states": {
+        "initial": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "targets": [
+              {
+                "action": "log",
+                "x": 0.47543731860430916,
+                "y": 0.6448388090234305,
+                "z": 0.9832925097298689
+              },
+              {
+                "action": "log",
+                "x": 0.48358727472100177,
+                "y": 0.6488665787006445,
+                "z": 0.9826187484157978
+              },
+              {
+                "action": "log",
+                "x": 0.4923066805762586,
+                "y": 0.6204402355554253,
+                "z": 0.9819132816200882
+              },
+              {
+                "action": "log",
+                "x": 0.5048888310675657,
+                "y": 0.6143833234763021,
+                "z": 0.9832709619032328
+              },
+              {
+                "action": "log",
+                "x": 0.5140340594559922,
+                "y": 0.6173956641776923,
+                "z": 0.9825957340770789
+              }
+            ],
+            "drawCalls": 222,
+            "triangles": 298348,
+            "memory": {
+              "geometries": 95,
+              "textures": 32
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "moving": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 3,
+            "time": 8,
+            "running": true,
+            "targets": [
+              {
+                "action": "log",
+                "x": 0.47543731860430916,
+                "y": 0.6448388090234305,
+                "z": 0.9832925097298689
+              },
+              {
+                "action": "log",
+                "x": 0.48358727472100177,
+                "y": 0.6488665787006445,
+                "z": 0.9826187484157978
+              },
+              {
+                "action": "log",
+                "x": 0.4923066805762586,
+                "y": 0.6204402355554253,
+                "z": 0.9819132816200882
+              },
+              {
+                "action": "log",
+                "x": 0.5048888310675657,
+                "y": 0.6143833234763021,
+                "z": 0.9832709619032328
+              },
+              {
+                "action": "log",
+                "x": 0.5140340594559922,
+                "y": 0.6173956641776923,
+                "z": 0.9825957340770789
+              }
+            ],
+            "drawCalls": 222,
+            "triangles": 298348,
+            "memory": {
+              "geometries": 95,
+              "textures": 32
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 6,
+            "time": 8.05,
+            "running": false,
+            "targets": [
+              {
+                "action": "log",
+                "x": 0.47543731860430916,
+                "y": 0.6448388090234305,
+                "z": 0.9832925097298689
+              },
+              {
+                "action": "log",
+                "x": 0.48358727472100177,
+                "y": 0.6488665787006445,
+                "z": 0.9826187484157978
+              },
+              {
+                "action": "log",
+                "x": 0.4923066805762586,
+                "y": 0.6204402355554253,
+                "z": 0.9819132816200882
+              },
+              {
+                "action": "log",
+                "x": 0.5048888310675657,
+                "y": 0.6143833234763021,
+                "z": 0.9832709619032328
+              },
+              {
+                "action": "log",
+                "x": 0.5140340594559922,
+                "y": 0.6173956641776923,
+                "z": 0.9825957340770789
+              }
+            ],
+            "drawCalls": 222,
+            "triangles": 298348,
+            "memory": {
+              "geometries": 95,
+              "textures": 32
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused-after-180ms": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 6,
+            "time": 8.05,
+            "running": false,
+            "targets": [
+              {
+                "action": "log",
+                "x": 0.47543731860430916,
+                "y": 0.6448388090234305,
+                "z": 0.9832925097298689
+              },
+              {
+                "action": "log",
+                "x": 0.48358727472100177,
+                "y": 0.6488665787006445,
+                "z": 0.9826187484157978
+              },
+              {
+                "action": "log",
+                "x": 0.4923066805762586,
+                "y": 0.6204402355554253,
+                "z": 0.9819132816200882
+              },
+              {
+                "action": "log",
+                "x": 0.5048888310675657,
+                "y": 0.6143833234763021,
+                "z": 0.9832709619032328
+              },
+              {
+                "action": "log",
+                "x": 0.5140340594559922,
+                "y": 0.6173956641776923,
+                "z": 0.9825957340770789
+              }
+            ],
+            "drawCalls": 222,
+            "triangles": 298348,
+            "memory": {
+              "geometries": 95,
+              "textures": 32
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "second-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 8,
+            "time": 8.05,
+            "running": false,
+            "targets": [
+              {
+                "action": "log",
+                "x": 0.47543731860430916,
+                "y": 0.6448388090234305,
+                "z": 0.9832925097298689
+              },
+              {
+                "action": "log",
+                "x": 0.48358727472100177,
+                "y": 0.6488665787006445,
+                "z": 0.9826187484157978
+              },
+              {
+                "action": "log",
+                "x": 0.4923066805762586,
+                "y": 0.6204402355554253,
+                "z": 0.9819132816200882
+              },
+              {
+                "action": "log",
+                "x": 0.5048888310675657,
+                "y": 0.6143833234763021,
+                "z": 0.9832709619032328
+              },
+              {
+                "action": "log",
+                "x": 0.5140340594559922,
+                "y": 0.6173956641776923,
+                "z": 0.9825957340770789
+              }
+            ],
+            "drawCalls": 222,
+            "triangles": 298348,
+            "memory": {
+              "geometries": 95,
+              "textures": 32
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "restored-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 10,
+            "time": 8.05,
+            "running": false,
+            "targets": [
+              {
+                "action": "log",
+                "x": 0.47543731860430916,
+                "y": 0.6448388090234305,
+                "z": 0.9832925097298689
+              },
+              {
+                "action": "log",
+                "x": 0.48358727472100177,
+                "y": 0.6488665787006445,
+                "z": 0.9826187484157978
+              },
+              {
+                "action": "log",
+                "x": 0.4923066805762586,
+                "y": 0.6204402355554253,
+                "z": 0.9819132816200882
+              },
+              {
+                "action": "log",
+                "x": 0.5048888310675657,
+                "y": 0.6143833234763021,
+                "z": 0.9832709619032328
+              },
+              {
+                "action": "log",
+                "x": 0.5140340594559922,
+                "y": 0.6173956641776923,
+                "z": 0.9825957340770789
+              }
+            ],
+            "drawCalls": 222,
+            "triangles": 298348,
+            "memory": {
+              "geometries": 95,
+              "textures": 32
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "disposed": {
+          "state": {
+            "lifetime": {
+              "created": 1,
+              "disposed": 1
+            },
+            "disposed": true
+          },
+          "canvasCount": 0
+        }
+      },
+      "events": [
+        {
+          "type": "heartbeat",
+          "at": 142.19999999925494,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 242.19999999925494,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 342.0999999977648,
+          "lagMs": 0
+        },
+        {
+          "type": "context-created",
+          "at": 421.29999999701977
+        },
+        {
+          "type": "heartbeat",
+          "at": 1837.7999999970198,
+          "lagMs": 1395.699999999255
+        },
+        {
+          "type": "heartbeat",
+          "at": 1942.199999999255,
+          "lagMs": 4.400000002235174
+        },
+        {
+          "type": "heartbeat",
+          "at": 2042.5,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 2142.2999999970198,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2242.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2342.699999999255,
+          "lagMs": 0.6000000014901161
+        },
+        {
+          "type": "heartbeat",
+          "at": 2443.39999999851,
+          "lagMs": 0.6999999992549419
+        },
+        {
+          "type": "heartbeat",
+          "at": 2542.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2642.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2689.199999999255,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "ASIDE",
+          "operationEntryAt": 2689.199999999255,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "final-unmount-request",
+          "at": 2703.2999999970198
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2705.199999999255,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2705,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "retention-timer-scheduled",
+          "at": 2705.199999999255,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        {
+          "type": "heartbeat",
+          "at": 2742.39999999851,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 2842.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2942.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3042.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3142.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3242.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3342.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3442.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3542.199999999255,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 3642.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3742.199999999255,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 3842.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3943.5,
+          "lagMs": 1.4000000022351742
+        },
+        {
+          "type": "heartbeat",
+          "at": 4042.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4142.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4243.599999997765,
+          "lagMs": 1.300000000745058
+        },
+        {
+          "type": "heartbeat",
+          "at": 4343.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4443.599999997765,
+          "lagMs": 0.5
+        },
+        {
+          "type": "heartbeat",
+          "at": 4542.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4642.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4742.29999999702,
+          "lagMs": 0.19999999925494194
+        },
+        {
+          "type": "heartbeat",
+          "at": 4842.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4942.39999999851,
+          "lagMs": 0.19999999925494194
+        },
+        {
+          "type": "heartbeat",
+          "at": 5042.29999999702,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5142.79999999702,
+          "lagMs": 0.5
+        },
+        {
+          "type": "heartbeat",
+          "at": 5242.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5342.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5442.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5543.099999997765,
+          "lagMs": 1
+        },
+        {
+          "type": "heartbeat",
+          "at": 5642.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5743.099999997765,
+          "lagMs": 1
+        },
+        {
+          "type": "heartbeat",
+          "at": 5843.5,
+          "lagMs": 0.4000000022351742
+        },
+        {
+          "type": "heartbeat",
+          "at": 5942.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6042.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6142.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6242.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6343.5,
+          "lagMs": 1.4000000022351742
+        },
+        {
+          "type": "heartbeat",
+          "at": 6442.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6542.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6642,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6743.099999997765,
+          "lagMs": 1.0999999977648258
+        },
+        {
+          "type": "heartbeat",
+          "at": 6842.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6942.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7042.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7143.39999999851,
+          "lagMs": 1.300000000745058
+        },
+        {
+          "type": "heartbeat",
+          "at": 7242.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7342.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7442.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7542.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7642.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "retention-timer-fire",
+          "at": 7705.699999999255,
+          "id": 4
+        },
+        {
+          "type": "dispose-entry",
+          "at": 7705.79999999702,
+          "instance": 1
+        },
+        {
+          "type": "dispose-exit",
+          "at": 7709.29999999702,
+          "instance": 1
+        },
+        {
+          "type": "heartbeat",
+          "at": 7742.099999997765,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7842.199999999255,
+          "lagMs": 0.10000000149011612
+        }
+      ],
+      "errors": [],
+      "initial": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "targets": [
+          {
+            "action": "log",
+            "x": 0.47543731860430916,
+            "y": 0.6448388090234305,
+            "z": 0.9832925097298689
+          },
+          {
+            "action": "log",
+            "x": 0.48358727472100177,
+            "y": 0.6488665787006445,
+            "z": 0.9826187484157978
+          },
+          {
+            "action": "log",
+            "x": 0.4923066805762586,
+            "y": 0.6204402355554253,
+            "z": 0.9819132816200882
+          },
+          {
+            "action": "log",
+            "x": 0.5048888310675657,
+            "y": 0.6143833234763021,
+            "z": 0.9832709619032328
+          },
+          {
+            "action": "log",
+            "x": 0.5140340594559922,
+            "y": 0.6173956641776923,
+            "z": 0.9825957340770789
+          }
+        ],
+        "drawCalls": 222,
+        "triangles": 298348,
+        "memory": {
+          "geometries": 95,
+          "textures": 32
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "moving": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 3,
+        "time": 8,
+        "running": true,
+        "targets": [
+          {
+            "action": "log",
+            "x": 0.47543731860430916,
+            "y": 0.6448388090234305,
+            "z": 0.9832925097298689
+          },
+          {
+            "action": "log",
+            "x": 0.48358727472100177,
+            "y": 0.6488665787006445,
+            "z": 0.9826187484157978
+          },
+          {
+            "action": "log",
+            "x": 0.4923066805762586,
+            "y": 0.6204402355554253,
+            "z": 0.9819132816200882
+          },
+          {
+            "action": "log",
+            "x": 0.5048888310675657,
+            "y": 0.6143833234763021,
+            "z": 0.9832709619032328
+          },
+          {
+            "action": "log",
+            "x": 0.5140340594559922,
+            "y": 0.6173956641776923,
+            "z": 0.9825957340770789
+          }
+        ],
+        "drawCalls": 222,
+        "triangles": 298348,
+        "memory": {
+          "geometries": 95,
+          "textures": 32
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "paused": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 6,
+        "time": 8.05,
+        "running": false,
+        "targets": [
+          {
+            "action": "log",
+            "x": 0.47543731860430916,
+            "y": 0.6448388090234305,
+            "z": 0.9832925097298689
+          },
+          {
+            "action": "log",
+            "x": 0.48358727472100177,
+            "y": 0.6488665787006445,
+            "z": 0.9826187484157978
+          },
+          {
+            "action": "log",
+            "x": 0.4923066805762586,
+            "y": 0.6204402355554253,
+            "z": 0.9819132816200882
+          },
+          {
+            "action": "log",
+            "x": 0.5048888310675657,
+            "y": 0.6143833234763021,
+            "z": 0.9832709619032328
+          },
+          {
+            "action": "log",
+            "x": 0.5140340594559922,
+            "y": 0.6173956641776923,
+            "z": 0.9825957340770789
+          }
+        ],
+        "drawCalls": 222,
+        "triangles": 298348,
+        "memory": {
+          "geometries": 95,
+          "textures": 32
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "retainedCanvas": true,
+      "disposed": {
+        "lifetime": {
+          "created": 1,
+          "disposed": 1
+        },
+        "disposed": true
+      },
+      "phases": {
+        "request": {
+          "type": "final-unmount-request",
+          "at": 2703.2999999970198
+        },
+        "removal": {
+          "type": "canvas-removal",
+          "at": 2705.199999999255,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2705,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        "scheduled": {
+          "type": "retention-timer-scheduled",
+          "at": 2705.199999999255,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        "fired": {
+          "type": "retention-timer-fire",
+          "at": 7705.699999999255,
+          "id": 4
+        },
+        "entry": {
+          "type": "dispose-entry",
+          "at": 7705.79999999702,
+          "instance": 1
+        },
+        "exit": {
+          "type": "dispose-exit",
+          "at": 7709.29999999702,
+          "instance": 1
+        }
+      },
+      "metrics": {
+        "configuredRetentionMs": 5000,
+        "removalToTimerFireMs": 5000.5,
+        "timerDelayMs": 5000.5,
+        "removalToDisposeEntryMs": 5000.599999997765,
+        "disposeDurationMs": 3.5,
+        "removalToDisposeExitMs": 5004.099999997765,
+        "contextLoss": {
+          "observed": false,
+          "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+        },
+        "maxHeartbeatLagMs": 1395.699999999255
+      }
+    },
+    {
+      "world": "sleep_prep",
+      "browser": "153.0.8010.0",
+      "passed": true,
+      "states": {
+        "initial": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "targets": [
+              {
+                "action": "curtain",
+                "x": 0.340423600934045,
+                "y": 0.37635926394155983,
+                "z": 0.9829028480465697
+              },
+              {
+                "action": "curtain",
+                "x": 0.6948417730434866,
+                "y": 0.37963368035621176,
+                "z": 0.9832490750740214
+              },
+              {
+                "action": "lamp",
+                "x": 0.8748090372918853,
+                "y": 0.7033900466709939,
+                "z": 0.9708437318614971
+              },
+              {
+                "action": "lamp",
+                "x": 0.871975462016278,
+                "y": 0.49102810286960036,
+                "z": 0.9710755033103184
+              }
+            ],
+            "drawCalls": 520,
+            "triangles": 239398,
+            "memory": {
+              "geometries": 252,
+              "textures": 13
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "moving": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 3,
+            "time": 8.002899999999254,
+            "running": true,
+            "targets": [
+              {
+                "action": "curtain",
+                "x": 0.340423600934045,
+                "y": 0.37635926394155983,
+                "z": 0.9829028480465697
+              },
+              {
+                "action": "curtain",
+                "x": 0.6948417730434866,
+                "y": 0.37963368035621176,
+                "z": 0.9832490750740214
+              },
+              {
+                "action": "lamp",
+                "x": 0.8748090372918853,
+                "y": 0.7033900466709939,
+                "z": 0.9708437318614971
+              },
+              {
+                "action": "lamp",
+                "x": 0.871975462016278,
+                "y": 0.49102810286960036,
+                "z": 0.9710755033103184
+              }
+            ],
+            "drawCalls": 520,
+            "triangles": 239398,
+            "memory": {
+              "geometries": 252,
+              "textures": 13
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 6,
+            "time": 8.052899999999255,
+            "running": false,
+            "targets": [
+              {
+                "action": "curtain",
+                "x": 0.340423600934045,
+                "y": 0.37635926394155983,
+                "z": 0.9829028480465697
+              },
+              {
+                "action": "curtain",
+                "x": 0.6948417730434866,
+                "y": 0.37963368035621176,
+                "z": 0.9832490750740214
+              },
+              {
+                "action": "lamp",
+                "x": 0.8748090372918853,
+                "y": 0.7033900466709939,
+                "z": 0.9708437318614971
+              },
+              {
+                "action": "lamp",
+                "x": 0.871975462016278,
+                "y": 0.49102810286960036,
+                "z": 0.9710755033103184
+              }
+            ],
+            "drawCalls": 520,
+            "triangles": 239398,
+            "memory": {
+              "geometries": 252,
+              "textures": 13
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused-after-180ms": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 6,
+            "time": 8.052899999999255,
+            "running": false,
+            "targets": [
+              {
+                "action": "curtain",
+                "x": 0.340423600934045,
+                "y": 0.37635926394155983,
+                "z": 0.9829028480465697
+              },
+              {
+                "action": "curtain",
+                "x": 0.6948417730434866,
+                "y": 0.37963368035621176,
+                "z": 0.9832490750740214
+              },
+              {
+                "action": "lamp",
+                "x": 0.8748090372918853,
+                "y": 0.7033900466709939,
+                "z": 0.9708437318614971
+              },
+              {
+                "action": "lamp",
+                "x": 0.871975462016278,
+                "y": 0.49102810286960036,
+                "z": 0.9710755033103184
+              }
+            ],
+            "drawCalls": 520,
+            "triangles": 239398,
+            "memory": {
+              "geometries": 252,
+              "textures": 13
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "second-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 8,
+            "time": 8.052899999999255,
+            "running": false,
+            "targets": [
+              {
+                "action": "curtain",
+                "x": 0.340423600934045,
+                "y": 0.37635926394155983,
+                "z": 0.9829028480465697
+              },
+              {
+                "action": "curtain",
+                "x": 0.6948417730434866,
+                "y": 0.37963368035621176,
+                "z": 0.9832490750740214
+              },
+              {
+                "action": "lamp",
+                "x": 0.8748090372918853,
+                "y": 0.7033900466709939,
+                "z": 0.9708437318614971
+              },
+              {
+                "action": "lamp",
+                "x": 0.871975462016278,
+                "y": 0.49102810286960036,
+                "z": 0.9710755033103184
+              }
+            ],
+            "drawCalls": 520,
+            "triangles": 239398,
+            "memory": {
+              "geometries": 252,
+              "textures": 13
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "restored-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 10,
+            "time": 8.052899999999255,
+            "running": false,
+            "targets": [
+              {
+                "action": "curtain",
+                "x": 0.340423600934045,
+                "y": 0.37635926394155983,
+                "z": 0.9829028480465697
+              },
+              {
+                "action": "curtain",
+                "x": 0.6948417730434866,
+                "y": 0.37963368035621176,
+                "z": 0.9832490750740214
+              },
+              {
+                "action": "lamp",
+                "x": 0.8748090372918853,
+                "y": 0.7033900466709939,
+                "z": 0.9708437318614971
+              },
+              {
+                "action": "lamp",
+                "x": 0.871975462016278,
+                "y": 0.49102810286960036,
+                "z": 0.9710755033103184
+              }
+            ],
+            "drawCalls": 520,
+            "triangles": 239398,
+            "memory": {
+              "geometries": 252,
+              "textures": 13
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "disposed": {
+          "state": {
+            "lifetime": {
+              "created": 1,
+              "disposed": 1
+            },
+            "disposed": true
+          },
+          "canvasCount": 0
+        }
+      },
+      "events": [
+        {
+          "type": "heartbeat",
+          "at": 139.30000000074506,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 239.10000000149012,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 339.1000000014901,
+          "lagMs": 0
+        },
+        {
+          "type": "context-created",
+          "at": 373.80000000074506
+        },
+        {
+          "type": "heartbeat",
+          "at": 1195.800000000745,
+          "lagMs": 756.6999999992549
+        },
+        {
+          "type": "heartbeat",
+          "at": 1239,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 1339.2000000029802,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 1439.2000000029802,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 1539.1000000014901,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 1639.1000000014901,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 1745.2000000029802,
+          "lagMs": 6.200000002980232
+        },
+        {
+          "type": "heartbeat",
+          "at": 1839,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 1939.1000000014901,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 2039,
+          "lagMs": 0
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2040.5,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "ASIDE",
+          "operationEntryAt": 2040.4000000022352,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "final-unmount-request",
+          "at": 2079.800000000745
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2084.800000000745,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2084.5,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "retention-timer-scheduled",
+          "at": 2084.900000002235,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        {
+          "type": "heartbeat",
+          "at": 2139,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2239.10000000149,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 2339.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2439.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2539.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2639.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2739.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2839.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2940.7000000029802,
+          "lagMs": 1.6000000014901161
+        },
+        {
+          "type": "heartbeat",
+          "at": 3039,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3139.10000000149,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 3239.300000000745,
+          "lagMs": 0.19999999925494194
+        },
+        {
+          "type": "heartbeat",
+          "at": 3339.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3439.400000002235,
+          "lagMs": 0.19999999925494194
+        },
+        {
+          "type": "heartbeat",
+          "at": 3539.2000000029802,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3639.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3739.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3839.2000000029802,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 3939.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4039.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4139.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4239.10000000149,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 4339.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4439,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4539.10000000149,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 4639.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4739,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4839,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4939.300000000745,
+          "lagMs": 0.20000000298023224
+        },
+        {
+          "type": "heartbeat",
+          "at": 5039,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5139.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5239,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5339.300000000745,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 5439.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5539.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5639.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5739.300000000745,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 5839.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5939.20000000298,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6039.20000000298,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 6139.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6239.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6339.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6439,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6539.5,
+          "lagMs": 0.5
+        },
+        {
+          "type": "heartbeat",
+          "at": 6640.10000000149,
+          "lagMs": 0.6000000014901161
+        },
+        {
+          "type": "heartbeat",
+          "at": 6739.400000002235,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6839.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6939,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7039,
+          "lagMs": 0
+        },
+        {
+          "type": "retention-timer-fire",
+          "at": 7085.10000000149,
+          "id": 4
+        },
+        {
+          "type": "dispose-entry",
+          "at": 7085.300000000745,
+          "instance": 1
+        },
+        {
+          "type": "dispose-exit",
+          "at": 7089.5,
+          "instance": 1
+        },
+        {
+          "type": "heartbeat",
+          "at": 7139,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7239.10000000149,
+          "lagMs": 0.10000000149011612
+        }
+      ],
+      "errors": [],
+      "initial": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "moving": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 3,
+        "time": 8.002899999999254,
+        "running": true,
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "paused": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 6,
+        "time": 8.052899999999255,
+        "running": false,
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "retainedCanvas": true,
+      "disposed": {
+        "lifetime": {
+          "created": 1,
+          "disposed": 1
+        },
+        "disposed": true
+      },
+      "phases": {
+        "request": {
+          "type": "final-unmount-request",
+          "at": 2079.800000000745
+        },
+        "removal": {
+          "type": "canvas-removal",
+          "at": 2084.800000000745,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2084.5,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        "scheduled": {
+          "type": "retention-timer-scheduled",
+          "at": 2084.900000002235,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        "fired": {
+          "type": "retention-timer-fire",
+          "at": 7085.10000000149,
+          "id": 4
+        },
+        "entry": {
+          "type": "dispose-entry",
+          "at": 7085.300000000745,
+          "instance": 1
+        },
+        "exit": {
+          "type": "dispose-exit",
+          "at": 7089.5,
+          "instance": 1
+        }
+      },
+      "metrics": {
+        "configuredRetentionMs": 5000,
+        "removalToTimerFireMs": 5000.300000000745,
+        "timerDelayMs": 5000.199999999255,
+        "removalToDisposeEntryMs": 5000.5,
+        "disposeDurationMs": 4.199999999254942,
+        "removalToDisposeExitMs": 5004.699999999255,
+        "contextLoss": {
+          "observed": false,
+          "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+        },
+        "maxHeartbeatLagMs": 756.6999999992549
+      }
+    },
+    {
+      "world": "power_nap",
+      "browser": "153.0.8010.0",
+      "passed": true,
+      "states": {
+        "initial": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "targets": [
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.7517556104296906,
+                "y": 0.254163962668259,
+                "z": 0.9764287515672567
+              },
+              {
+                "action": "canopy",
+                "x": 0.7519757939146029,
+                "y": 0.41690773245268375,
+                "z": 0.976407261308326
+              }
+            ],
+            "drawCalls": 405,
+            "triangles": 1649238,
+            "memory": {
+              "geometries": 207,
+              "textures": 19
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "moving": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 3,
+            "time": 8.006799999997765,
+            "running": true,
+            "targets": [
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.7517556104296906,
+                "y": 0.254163962668259,
+                "z": 0.9764287515672567
+              },
+              {
+                "action": "canopy",
+                "x": 0.7519757939146029,
+                "y": 0.41690773245268375,
+                "z": 0.976407261308326
+              }
+            ],
+            "drawCalls": 405,
+            "triangles": 1649238,
+            "memory": {
+              "geometries": 207,
+              "textures": 19
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 6,
+            "time": 8.056699999997766,
+            "running": false,
+            "targets": [
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.7517556104296906,
+                "y": 0.254163962668259,
+                "z": 0.9764287515672567
+              },
+              {
+                "action": "canopy",
+                "x": 0.7519757939146029,
+                "y": 0.41690773245268375,
+                "z": 0.976407261308326
+              }
+            ],
+            "drawCalls": 405,
+            "triangles": 1649238,
+            "memory": {
+              "geometries": 207,
+              "textures": 19
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused-after-180ms": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 6,
+            "time": 8.056699999997766,
+            "running": false,
+            "targets": [
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.7517556104296906,
+                "y": 0.254163962668259,
+                "z": 0.9764287515672567
+              },
+              {
+                "action": "canopy",
+                "x": 0.7519757939146029,
+                "y": 0.41690773245268375,
+                "z": 0.976407261308326
+              }
+            ],
+            "drawCalls": 405,
+            "triangles": 1649238,
+            "memory": {
+              "geometries": 207,
+              "textures": 19
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "second-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 8,
+            "time": 8.056699999997766,
+            "running": false,
+            "targets": [
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.7517556104296906,
+                "y": 0.254163962668259,
+                "z": 0.9764287515672567
+              },
+              {
+                "action": "canopy",
+                "x": 0.7519757939146029,
+                "y": 0.41690773245268375,
+                "z": 0.976407261308326
+              }
+            ],
+            "drawCalls": 405,
+            "triangles": 1649238,
+            "memory": {
+              "geometries": 207,
+              "textures": 19
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "restored-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 10,
+            "time": 8.056699999997766,
+            "running": false,
+            "targets": [
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.49571977026192016,
+                "y": 0.9166821626148216,
+                "z": 0.9641707234121167
+              },
+              {
+                "action": "canopy",
+                "x": 0.7517556104296906,
+                "y": 0.254163962668259,
+                "z": 0.9764287515672567
+              },
+              {
+                "action": "canopy",
+                "x": 0.7519757939146029,
+                "y": 0.41690773245268375,
+                "z": 0.976407261308326
+              }
+            ],
+            "drawCalls": 405,
+            "triangles": 1649238,
+            "memory": {
+              "geometries": 207,
+              "textures": 19
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "disposed": {
+          "state": {
+            "lifetime": {
+              "created": 1,
+              "disposed": 1
+            },
+            "disposed": true
+          },
+          "canvasCount": 0
+        }
+      },
+      "events": [
+        {
+          "type": "heartbeat",
+          "at": 141.40000000223517,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 241.30000000074506,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 341.30000000074506,
+          "lagMs": 0
+        },
+        {
+          "type": "context-created",
+          "at": 376.30000000074506
+        },
+        {
+          "type": "heartbeat",
+          "at": 1376.300000000745,
+          "lagMs": 935
+        },
+        {
+          "type": "heartbeat",
+          "at": 1441.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 1541.300000000745,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 1641.4000000022352,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 1741.800000000745,
+          "lagMs": 0.29999999701976776
+        },
+        {
+          "type": "heartbeat",
+          "at": 1842,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 1941.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2041.4000000022352,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 2141.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2198.5,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "ASIDE",
+          "operationEntryAt": 2198.5,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "final-unmount-request",
+          "at": 2238.10000000149
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2240.10000000149,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2239.900000002235,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "retention-timer-scheduled",
+          "at": 2247.5,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        {
+          "type": "heartbeat",
+          "at": 2247.60000000149,
+          "lagMs": 6.300000000745058
+        },
+        {
+          "type": "heartbeat",
+          "at": 2341.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2441.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2542.400000002235,
+          "lagMs": 1.2000000029802322
+        },
+        {
+          "type": "heartbeat",
+          "at": 2641.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2741.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2841.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2941.300000000745,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 3041.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3141.400000002235,
+          "lagMs": 0.20000000298023224
+        },
+        {
+          "type": "heartbeat",
+          "at": 3241.400000002235,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3341.5,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 3441.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3541.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3641.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3741.300000000745,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 3841.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3941.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4041.400000002235,
+          "lagMs": 0.20000000298023224
+        },
+        {
+          "type": "heartbeat",
+          "at": 4141.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4257.800000000745,
+          "lagMs": 16.5
+        },
+        {
+          "type": "heartbeat",
+          "at": 4341.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4441.400000002235,
+          "lagMs": 0.20000000298023224
+        },
+        {
+          "type": "heartbeat",
+          "at": 4543.5,
+          "lagMs": 2.099999997764826
+        },
+        {
+          "type": "heartbeat",
+          "at": 4641.400000002235,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4741.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4841.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4941.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5041.5,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 5141.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5241.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5341.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5441.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5541.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5642.300000000745,
+          "lagMs": 1
+        },
+        {
+          "type": "heartbeat",
+          "at": 5741.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5841.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5941.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6041.699999999255,
+          "lagMs": 0.3999999985098839
+        },
+        {
+          "type": "heartbeat",
+          "at": 6142.5,
+          "lagMs": 0.8000000007450581
+        },
+        {
+          "type": "heartbeat",
+          "at": 6243.400000002235,
+          "lagMs": 0.9000000022351742
+        },
+        {
+          "type": "heartbeat",
+          "at": 6341.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6441.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6541.300000000745,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 6641.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6741.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6841.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6941.699999999255,
+          "lagMs": 0.3999999985098839
+        },
+        {
+          "type": "heartbeat",
+          "at": 7041.400000002235,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7141.300000000745,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7241.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "retention-timer-fire",
+          "at": 7247.900000002235,
+          "id": 4
+        },
+        {
+          "type": "dispose-entry",
+          "at": 7248,
+          "instance": 1
+        },
+        {
+          "type": "dispose-exit",
+          "at": 7252.400000002235,
+          "instance": 1
+        },
+        {
+          "type": "heartbeat",
+          "at": 7341.300000000745,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 7441.199999999255,
+          "lagMs": 0
+        }
+      ],
+      "errors": [],
+      "initial": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "targets": [
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.7517556104296906,
+            "y": 0.254163962668259,
+            "z": 0.9764287515672567
+          },
+          {
+            "action": "canopy",
+            "x": 0.7519757939146029,
+            "y": 0.41690773245268375,
+            "z": 0.976407261308326
+          }
+        ],
+        "drawCalls": 405,
+        "triangles": 1649238,
+        "memory": {
+          "geometries": 207,
+          "textures": 19
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "moving": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 3,
+        "time": 8.006799999997765,
+        "running": true,
+        "targets": [
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.7517556104296906,
+            "y": 0.254163962668259,
+            "z": 0.9764287515672567
+          },
+          {
+            "action": "canopy",
+            "x": 0.7519757939146029,
+            "y": 0.41690773245268375,
+            "z": 0.976407261308326
+          }
+        ],
+        "drawCalls": 405,
+        "triangles": 1649238,
+        "memory": {
+          "geometries": 207,
+          "textures": 19
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "paused": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 6,
+        "time": 8.056699999997766,
+        "running": false,
+        "targets": [
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.7517556104296906,
+            "y": 0.254163962668259,
+            "z": 0.9764287515672567
+          },
+          {
+            "action": "canopy",
+            "x": 0.7519757939146029,
+            "y": 0.41690773245268375,
+            "z": 0.976407261308326
+          }
+        ],
+        "drawCalls": 405,
+        "triangles": 1649238,
+        "memory": {
+          "geometries": 207,
+          "textures": 19
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "retainedCanvas": true,
+      "disposed": {
+        "lifetime": {
+          "created": 1,
+          "disposed": 1
+        },
+        "disposed": true
+      },
+      "phases": {
+        "request": {
+          "type": "final-unmount-request",
+          "at": 2238.10000000149
+        },
+        "removal": {
+          "type": "canvas-removal",
+          "at": 2240.10000000149,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2239.900000002235,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        "scheduled": {
+          "type": "retention-timer-scheduled",
+          "at": 2247.5,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        "fired": {
+          "type": "retention-timer-fire",
+          "at": 7247.900000002235,
+          "id": 4
+        },
+        "entry": {
+          "type": "dispose-entry",
+          "at": 7248,
+          "instance": 1
+        },
+        "exit": {
+          "type": "dispose-exit",
+          "at": 7252.400000002235,
+          "instance": 1
+        }
+      },
+      "metrics": {
+        "configuredRetentionMs": 5000,
+        "removalToTimerFireMs": 5007.800000000745,
+        "timerDelayMs": 5000.400000002235,
+        "removalToDisposeEntryMs": 5007.89999999851,
+        "disposeDurationMs": 4.400000002235174,
+        "removalToDisposeExitMs": 5012.300000000745,
+        "contextLoss": {
+          "observed": false,
+          "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+        },
+        "maxHeartbeatLagMs": 935
+      }
+    },
+    {
+      "world": "nature:winter_lodge",
+      "browser": "153.0.8010.0",
+      "passed": true,
+      "states": {
+        "initial": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "targets": [
+              {
+                "action": "cup",
+                "x": 0.10181518315902666,
+                "y": 0.8125590954840582,
+                "z": 0.9569004896133495
+              },
+              {
+                "action": "cup",
+                "x": 0.05333203807554232,
+                "y": 0.7656469701435584,
+                "z": 0.9568973537142805
+              },
+              {
+                "action": "lamp",
+                "x": 0.10734110039703582,
+                "y": 0.45051655710232014,
+                "z": 0.9673495917121584
+              },
+              {
+                "action": "lamp",
+                "x": 0.11272193902631739,
+                "y": 0.6027171884734851,
+                "z": 0.9672611221954316
+              },
+              {
+                "action": "log",
+                "x": 0.9014166310301769,
+                "y": 0.7447993194139689,
+                "z": 0.9780888288779535
+              },
+              {
+                "action": "log",
+                "x": 0.9300013682115167,
+                "y": 0.7279177483067474,
+                "z": 0.9777985014716816
+              },
+              {
+                "action": "log",
+                "x": 0.958808828231569,
+                "y": 0.7516784546944905,
+                "z": 0.9775269365320773
+              },
+              {
+                "action": "log",
+                "x": 0.9888709268073961,
+                "y": 0.7344619072992344,
+                "z": 0.9772218811362687
+              },
+              {
+                "action": "log",
+                "x": 1.0191305303951814,
+                "y": 0.7589087258771514,
+                "z": 0.9769363631721307
+              }
+            ],
+            "drawCalls": 632,
+            "triangles": 2675962,
+            "memory": {
+              "geometries": 343,
+              "textures": 31
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "moving": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 3,
+            "time": 8.000899999999255,
+            "running": true,
+            "targets": [
+              {
+                "action": "cup",
+                "x": 0.10181518315902666,
+                "y": 0.8125590954840582,
+                "z": 0.9569004896133495
+              },
+              {
+                "action": "cup",
+                "x": 0.05333203807554232,
+                "y": 0.7656469701435584,
+                "z": 0.9568973537142805
+              },
+              {
+                "action": "lamp",
+                "x": 0.10734110039703582,
+                "y": 0.45051655710232014,
+                "z": 0.9673495917121584
+              },
+              {
+                "action": "lamp",
+                "x": 0.11272193902631739,
+                "y": 0.6027171884734851,
+                "z": 0.9672611221954316
+              },
+              {
+                "action": "log",
+                "x": 0.9014166310301769,
+                "y": 0.7447993194139689,
+                "z": 0.9780888288779535
+              },
+              {
+                "action": "log",
+                "x": 0.9300013682115167,
+                "y": 0.7279177483067474,
+                "z": 0.9777985014716816
+              },
+              {
+                "action": "log",
+                "x": 0.958808828231569,
+                "y": 0.7516784546944905,
+                "z": 0.9775269365320773
+              },
+              {
+                "action": "log",
+                "x": 0.9888709268073961,
+                "y": 0.7344619072992344,
+                "z": 0.9772218811362687
+              },
+              {
+                "action": "log",
+                "x": 1.0191305303951814,
+                "y": 0.7589087258771514,
+                "z": 0.9769363631721307
+              }
+            ],
+            "drawCalls": 632,
+            "triangles": 2675962,
+            "memory": {
+              "geometries": 343,
+              "textures": 31
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 7,
+            "time": 8.067599999999256,
+            "running": false,
+            "targets": [
+              {
+                "action": "cup",
+                "x": 0.10181518315902666,
+                "y": 0.8125590954840582,
+                "z": 0.9569004896133495
+              },
+              {
+                "action": "cup",
+                "x": 0.05333203807554232,
+                "y": 0.7656469701435584,
+                "z": 0.9568973537142805
+              },
+              {
+                "action": "lamp",
+                "x": 0.10734110039703582,
+                "y": 0.45051655710232014,
+                "z": 0.9673495917121584
+              },
+              {
+                "action": "lamp",
+                "x": 0.11272193902631739,
+                "y": 0.6027171884734851,
+                "z": 0.9672611221954316
+              },
+              {
+                "action": "log",
+                "x": 0.9014166310301769,
+                "y": 0.7447993194139689,
+                "z": 0.9780888288779535
+              },
+              {
+                "action": "log",
+                "x": 0.9300013682115167,
+                "y": 0.7279177483067474,
+                "z": 0.9777985014716816
+              },
+              {
+                "action": "log",
+                "x": 0.958808828231569,
+                "y": 0.7516784546944905,
+                "z": 0.9775269365320773
+              },
+              {
+                "action": "log",
+                "x": 0.9888709268073961,
+                "y": 0.7344619072992344,
+                "z": 0.9772218811362687
+              },
+              {
+                "action": "log",
+                "x": 1.0191305303951814,
+                "y": 0.7589087258771514,
+                "z": 0.9769363631721307
+              }
+            ],
+            "drawCalls": 632,
+            "triangles": 2675962,
+            "memory": {
+              "geometries": 343,
+              "textures": 31
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "paused-after-180ms": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 7,
+            "time": 8.067599999999256,
+            "running": false,
+            "targets": [
+              {
+                "action": "cup",
+                "x": 0.10181518315902666,
+                "y": 0.8125590954840582,
+                "z": 0.9569004896133495
+              },
+              {
+                "action": "cup",
+                "x": 0.05333203807554232,
+                "y": 0.7656469701435584,
+                "z": 0.9568973537142805
+              },
+              {
+                "action": "lamp",
+                "x": 0.10734110039703582,
+                "y": 0.45051655710232014,
+                "z": 0.9673495917121584
+              },
+              {
+                "action": "lamp",
+                "x": 0.11272193902631739,
+                "y": 0.6027171884734851,
+                "z": 0.9672611221954316
+              },
+              {
+                "action": "log",
+                "x": 0.9014166310301769,
+                "y": 0.7447993194139689,
+                "z": 0.9780888288779535
+              },
+              {
+                "action": "log",
+                "x": 0.9300013682115167,
+                "y": 0.7279177483067474,
+                "z": 0.9777985014716816
+              },
+              {
+                "action": "log",
+                "x": 0.958808828231569,
+                "y": 0.7516784546944905,
+                "z": 0.9775269365320773
+              },
+              {
+                "action": "log",
+                "x": 0.9888709268073961,
+                "y": 0.7344619072992344,
+                "z": 0.9772218811362687
+              },
+              {
+                "action": "log",
+                "x": 1.0191305303951814,
+                "y": 0.7589087258771514,
+                "z": 0.9769363631721307
+              }
+            ],
+            "drawCalls": 632,
+            "triangles": 2675962,
+            "memory": {
+              "geometries": 343,
+              "textures": 31
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "second-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 9,
+            "time": 8.067599999999256,
+            "running": false,
+            "targets": [
+              {
+                "action": "cup",
+                "x": 0.10181518315902666,
+                "y": 0.8125590954840582,
+                "z": 0.9569004896133495
+              },
+              {
+                "action": "cup",
+                "x": 0.05333203807554232,
+                "y": 0.7656469701435584,
+                "z": 0.9568973537142805
+              },
+              {
+                "action": "lamp",
+                "x": 0.10734110039703582,
+                "y": 0.45051655710232014,
+                "z": 0.9673495917121584
+              },
+              {
+                "action": "lamp",
+                "x": 0.11272193902631739,
+                "y": 0.6027171884734851,
+                "z": 0.9672611221954316
+              },
+              {
+                "action": "log",
+                "x": 0.9014166310301769,
+                "y": 0.7447993194139689,
+                "z": 0.9780888288779535
+              },
+              {
+                "action": "log",
+                "x": 0.9300013682115167,
+                "y": 0.7279177483067474,
+                "z": 0.9777985014716816
+              },
+              {
+                "action": "log",
+                "x": 0.958808828231569,
+                "y": 0.7516784546944905,
+                "z": 0.9775269365320773
+              },
+              {
+                "action": "log",
+                "x": 0.9888709268073961,
+                "y": 0.7344619072992344,
+                "z": 0.9772218811362687
+              },
+              {
+                "action": "log",
+                "x": 1.0191305303951814,
+                "y": 0.7589087258771514,
+                "z": 0.9769363631721307
+              }
+            ],
+            "drawCalls": 632,
+            "triangles": 2675962,
+            "memory": {
+              "geometries": 343,
+              "textures": 31
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "restored-holder": {
+          "state": {
+            "instance": 1,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 10,
+            "time": 8.067599999999256,
+            "running": false,
+            "targets": [
+              {
+                "action": "cup",
+                "x": 0.10181518315902666,
+                "y": 0.8125590954840582,
+                "z": 0.9569004896133495
+              },
+              {
+                "action": "cup",
+                "x": 0.05333203807554232,
+                "y": 0.7656469701435584,
+                "z": 0.9568973537142805
+              },
+              {
+                "action": "lamp",
+                "x": 0.10734110039703582,
+                "y": 0.45051655710232014,
+                "z": 0.9673495917121584
+              },
+              {
+                "action": "lamp",
+                "x": 0.11272193902631739,
+                "y": 0.6027171884734851,
+                "z": 0.9672611221954316
+              },
+              {
+                "action": "log",
+                "x": 0.9014166310301769,
+                "y": 0.7447993194139689,
+                "z": 0.9780888288779535
+              },
+              {
+                "action": "log",
+                "x": 0.9300013682115167,
+                "y": 0.7279177483067474,
+                "z": 0.9777985014716816
+              },
+              {
+                "action": "log",
+                "x": 0.958808828231569,
+                "y": 0.7516784546944905,
+                "z": 0.9775269365320773
+              },
+              {
+                "action": "log",
+                "x": 0.9888709268073961,
+                "y": 0.7344619072992344,
+                "z": 0.9772218811362687
+              },
+              {
+                "action": "log",
+                "x": 1.0191305303951814,
+                "y": 0.7589087258771514,
+                "z": 0.9769363631721307
+              }
+            ],
+            "drawCalls": 632,
+            "triangles": 2675962,
+            "memory": {
+              "geometries": 343,
+              "textures": 31
+            },
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvasCount": 1
+        },
+        "disposed": {
+          "state": {
+            "lifetime": {
+              "created": 1,
+              "disposed": 1
+            },
+            "disposed": true
+          },
+          "canvasCount": 0
+        }
+      },
+      "events": [
+        {
+          "type": "heartbeat",
+          "at": 134.19999999925494,
+          "lagMs": 0.29999999701976776
+        },
+        {
+          "type": "heartbeat",
+          "at": 234.19999999925494,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 334.19999999925494,
+          "lagMs": 0
+        },
+        {
+          "type": "context-created",
+          "at": 364.19999999925494
+        },
+        {
+          "type": "heartbeat",
+          "at": 1939.6000000014901,
+          "lagMs": 1505.5
+        },
+        {
+          "type": "heartbeat",
+          "at": 2034.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2134.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2234.300000000745,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 2337.400000002235,
+          "lagMs": 3
+        },
+        {
+          "type": "heartbeat",
+          "at": 2434.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2534.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2634.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2734.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2771.300000000745,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "ASIDE",
+          "operationEntryAt": 2771.300000000745,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "final-unmount-request",
+          "at": 2784.10000000149
+        },
+        {
+          "type": "canvas-removal",
+          "at": 2786.400000002235,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2786.400000002235,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        {
+          "type": "retention-timer-scheduled",
+          "at": 2786.60000000149,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        {
+          "type": "heartbeat",
+          "at": 2834.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 2934.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3034.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 3138.5,
+          "lagMs": 4.300000000745058
+        },
+        {
+          "type": "heartbeat",
+          "at": 3234.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3334.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3434.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3534.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3634.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3734.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3834.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 3934.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4034.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 4134.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4234.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4334.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4434.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 4534.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4634.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4734.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 4834.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 4934.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5034.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 5134.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5234.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5334.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5434.300000000745,
+          "lagMs": 0.19999999925494194
+        },
+        {
+          "type": "heartbeat",
+          "at": 5534.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5634.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5734.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 5834.400000002235,
+          "lagMs": 0.30000000074505806
+        },
+        {
+          "type": "heartbeat",
+          "at": 5934.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6034.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6134.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 6234.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6334.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6434.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 6534.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6634.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6734.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 6834.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 6934.199999999255,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7034.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7134.199999999255,
+          "lagMs": 0.09999999776482582
+        },
+        {
+          "type": "heartbeat",
+          "at": 7234.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7334.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7434,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7534.10000000149,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 7634,
+          "lagMs": 0
+        },
+        {
+          "type": "heartbeat",
+          "at": 7734.10000000149,
+          "lagMs": 0
+        },
+        {
+          "type": "retention-timer-fire",
+          "at": 7786.900000002235,
+          "id": 4
+        },
+        {
+          "type": "dispose-entry",
+          "at": 7787,
+          "instance": 1
+        },
+        {
+          "type": "dispose-exit",
+          "at": 7793.699999999255,
+          "instance": 1
+        },
+        {
+          "type": "heartbeat",
+          "at": 7834.10000000149,
+          "lagMs": 0.10000000149011612
+        },
+        {
+          "type": "heartbeat",
+          "at": 7934.199999999255,
+          "lagMs": 0.09999999776482582
+        }
+      ],
+      "errors": [],
+      "initial": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 343,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "moving": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 3,
+        "time": 8.000899999999255,
+        "running": true,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 343,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "paused": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 7,
+        "time": 8.067599999999256,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 343,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "retainedCanvas": true,
+      "disposed": {
+        "lifetime": {
+          "created": 1,
+          "disposed": 1
+        },
+        "disposed": true
+      },
+      "phases": {
+        "request": {
+          "type": "final-unmount-request",
+          "at": 2784.10000000149
+        },
+        "removal": {
+          "type": "canvas-removal",
+          "at": 2786.400000002235,
+          "instance": "1",
+          "method": "Node.removeChild",
+          "detachedNode": "ancestor",
+          "detachedTag": "DIV",
+          "operationEntryAt": 2786.400000002235,
+          "wasConnected": true,
+          "isConnected": false
+        },
+        "scheduled": {
+          "type": "retention-timer-scheduled",
+          "at": 2786.60000000149,
+          "id": 4,
+          "configuredDelayMs": 5000
+        },
+        "fired": {
+          "type": "retention-timer-fire",
+          "at": 7786.900000002235,
+          "id": 4
+        },
+        "entry": {
+          "type": "dispose-entry",
+          "at": 7787,
+          "instance": 1
+        },
+        "exit": {
+          "type": "dispose-exit",
+          "at": 7793.699999999255,
+          "instance": 1
+        }
+      },
+      "metrics": {
+        "configuredRetentionMs": 5000,
+        "removalToTimerFireMs": 5000.5,
+        "timerDelayMs": 5000.300000000745,
+        "removalToDisposeEntryMs": 5000.599999997765,
+        "disposeDurationMs": 6.699999999254942,
+        "removalToDisposeExitMs": 5007.29999999702,
+        "contextLoss": {
+          "observed": false,
+          "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+        },
+        "maxHeartbeatLagMs": 1505.5
+      }
+    }
+  ],
+  "errors": []
+}

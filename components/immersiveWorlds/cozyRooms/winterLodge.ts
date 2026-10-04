@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { WorldBuild } from './contracts';
 import { wood, stone, fabric, rough, rounded } from './materials';
+import { createFireDetail } from './fireDetail';
 
 // Original procedural geometry. The window is a real opening into layered 3D
 // terrain; no landscape image, outside village or snow-globe camera is used.
@@ -170,11 +171,32 @@ export function createWinterLodgeWorld(): WorldBuild {
   const foliage=new THREE.InstancedMesh(boughGeo,new THREE.MeshStandardMaterial({color:'#315b60',roughness:1,side:THREE.DoubleSide}),boughCount);
   const snowBoughs=new THREE.InstancedMesh(snowGeo,snowMat,boughCount);
   const trunks=new THREE.InstancedMesh(new THREE.CylinderGeometry(.045,.11,1,8),rough('#50625d',1),treeCount);
+  // Only the four near crowns receive individual snow envelopes. Their loads
+  // follow the supporting limbs, but have flatter settled tops, broken margins
+  // and differing windward coverage instead of repeating the same swollen cap.
+  const nearCrowns = Array.from({length:4},(_,index)=>{
+    const phase=1.37+index*1.91;
+    const geo=new THREE.SphereGeometry(1,16,10),p=geo.attributes.position;
+    for(let j=0;j<p.count;j++){
+      const x=p.getX(j),y=p.getY(j),z=p.getZ(j);
+      const t=.11+(z+1)*(.335+index*.012);
+      const edge=.84+.13*Math.sin(t*29+phase)+.075*Math.cos(t*47+x*4);
+      const width=branchRadius(t)*edge;
+      const settled=.056+.016*Math.sin(t*23+phase)+.009*Math.cos(t*39-x*3);
+      p.setXYZ(j,x*width+.017*Math.sin(t*12+phase)*(1-z*z),
+        droop(t)+branchRadius(t)*.47+.034+(y>0?Math.pow(y,.64)*settled:y*.037),t);
+    }
+    geo.computeVertexNormals();
+    const snow=new THREE.InstancedMesh(geo,snowMat,boughsPerTree);
+    scene.add(snow);
+    return {snow,phase,random:seeded(4821+index*571),depth:[-.35,.25,-.65,.4][index]};
+  });
   const dummy=new THREE.Object3D();let bi=0;
   for(let i=0;i<treeCount;i++){
     const row=Math.floor(i/16), x=-37+(i%16)*4.9+(random()-.5)*3.4;
     const z=-18-row*13-random()*9,h=3.8+random()*4.8,lean=(random()-.5)*.11,spread=.255+random()*.068;
-    dummy.position.set(x,h*.48,z);dummy.rotation.set(lean*.2,0,lean);dummy.scale.set(1,h*.98,1);dummy.updateMatrix();trunks.setMatrixAt(i,dummy.matrix);
+    const crown=i>=6&&i<=9?nearCrowns[i-6]:null;
+    dummy.position.set(x,h*.48,z+(crown?.depth??0));dummy.rotation.set(lean*.2,0,lean);dummy.scale.set(1,h*.98,1);dummy.updateMatrix();trunks.setMatrixAt(i,dummy.matrix);
     for(let j=0;j<boughsPerTree;j++){
       const t=.026+j/(boughsPerTree-1)*.974;
       const angle=j*2.399963+i*.81+(random()-.5)*.49;
@@ -182,10 +204,35 @@ export function createWinterLodgeWorld(): WorldBuild {
       const cy=.28+t*(h-.32)+(random()-.5)*.105;
       dummy.position.set(x+lean*cy,cy,z);
       dummy.rotation.set(-.16+random()*.15,angle,(random()-.5)*.11);
-      dummy.scale.set(len*(.85+random()*.26),len*(1.05+random()*.32),len);dummy.updateMatrix();foliage.setMatrixAt(bi,dummy.matrix);
+      dummy.scale.set(len*(.85+random()*.26),len*(1.05+random()*.32),len);
+      if(crown){
+        // Coherent windward gaps and crown bends distinguish whole trees;
+        // local limb variation then prevents evenly spaced silhouette shelves.
+        const {phase,random:nearRandom}=crown;
+        const windward=.5+.5*Math.sin(angle+phase);
+        const gap=t>.30&&t<.53&&Math.cos(angle-phase)>.28?.61:1;
+        const reach=(.80+.29*windward+.09*Math.sin(t*19+phase))*gap;
+        dummy.position.x+=Math.sin(phase)*t*t*.31;
+        dummy.position.y+=Math.sin(t*24+phase)*.075*Math.sin(t*Math.PI);
+        dummy.position.z+=crown.depth+Math.cos(phase)*t*t*.17;
+        dummy.rotation.x+=(nearRandom()-.5)*.23;
+        dummy.rotation.y+=(nearRandom()-.5)*.28;
+        dummy.rotation.z+=(nearRandom()-.5)*.09;
+        dummy.scale.multiplyScalar(reach);
+        dummy.scale.x*=.82+nearRandom()*.26;
+        dummy.scale.y*=.83+nearRandom()*.29;
+        foliage.setColorAt(bi,new THREE.Color().setRGB(.88+windward*.10,.93+windward*.06,.96+windward*.035));
+      }
+      dummy.updateMatrix();foliage.setMatrixAt(bi,dummy.matrix);
       // Asymmetric snow coverage varies between adjacent boughs; all snow is
       // physically supported by the branch body even where the tips are bare.
-      const frostScale=.73+random()*.25;dummy.scale.x*=frostScale;dummy.scale.y*=.93+random()*.12;dummy.updateMatrix();snowBoughs.setMatrixAt(bi,dummy.matrix);bi++;
+      const frostScale=.73+random()*.25;dummy.scale.x*=frostScale;dummy.scale.y*=.93+random()*.12;
+      if(crown){
+        dummy.scale.x*=.74+crown.random()*.23;
+        dummy.updateMatrix();crown.snow.setMatrixAt(j,dummy.matrix);
+        dummy.scale.setScalar(0);
+      }
+      dummy.updateMatrix();snowBoughs.setMatrixAt(bi,dummy.matrix);bi++;
     }
   }
   scene.add(foliage,snowBoughs,trunks);
@@ -279,16 +326,15 @@ export function createWinterLodgeWorld(): WorldBuild {
   for(let row=0;row<5;row++){let x=-.815;const count=row%2?3:4;const widths=Array.from({length:count},()=>.7+random()*.6);const sum=widths.reduce((a,b)=>a+b,0);for(const fraction of widths){const w=fraction/sum*1.63;const st=box(w-.022,.238+random()*.015,.39,random()>.6?paleStone:hearthStone,x+w/2,1.53+row*.26,.07+(random()-.5)*.025,hearth,.025);st.rotation.z=(random()-.5)*.017;x+=w;}}
   box(1.76,.13,.78,wood('#5b3d2a',3),0,1.47,.09,hearth,.04);
   box(1.30,.11,.59,rough('#282721',.9),0,.24,.17,hearth);
-  const charred=wood('#282019',5);
-  for(let i=0;i<5;i++) {
-    const log=cylinder(.075,.087,.62,charred,(i-2)*.17,.36+(i%2)*.1,.27,hearth,9);log.rotation.z=Math.PI/2;log.rotation.y=-.4+i*.27;log.userData.cozyAction='log';
-    for(let j=0;j<3;j++){
-      const ember=sphere(.012,.006,.021,new THREE.MeshBasicMaterial({color:j%2?'#ce5719':'#e88a31'}),(i-2)*.17-.12+j*.1,.425+(i%2)*.1,.28,hearth);ember.userData.cozyAction='log';
-    }
-  }
-  const fireMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{uTime:{value:0}},vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec2 vUv;uniform float uTime;void main(){vec2 p=vUv;float sway=.04*sin(uTime*1.4+p.y*8.)+.03*sin(uTime*.8-p.y*13.);float shape=abs(p.x-.5-sway);float w=.34*pow(1.-p.y,1.5);float a=smoothstep(w,w-.10,shape)*smoothstep(.0,.08,p.y)*smoothstep(1.,.77,p.y);float core=smoothstep(w*.7,.0,shape)*(1.-p.y);vec3 c=mix(vec3(.87,.16,.013),vec3(1.,.64,.15),core);gl_FragColor=vec4(c,a*.68);}`});
-  const flamePlanes:THREE.Mesh[]=[];
-  for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.PlaneGeometry(.23,.56-i%2*.12),fireMat);m.position.set(-.36+i*.18,.61+(i%2)*.04,.31);m.rotation.y=(i-2)*.13;hearth.add(m);flamePlanes.push(m);}
+  const fire=createFireDetail({
+    seed:53017,
+    logs:Array.from({length:5},(_,i)=>({length:.62,radius:.087,
+      position:[(i-2)*.17,.36+(i%2)*.1,.27] as [number,number,number],
+      rotation:[0,-.4+i*.27,Math.PI/2] as [number,number,number]})),
+    bed:{width:1.08,depth:.40,y:.285,z:.25},
+    flame:{width:.86,depth:.30,y:.38,z:.27,height:.53},
+  });
+  hearth.add(fire.group);
   const fireLight=new THREE.PointLight('#ff9d49',8,5,2);fireLight.position.set(0,.77,.63);hearth.add(fireLight);
   // Mantel still-life, asymmetric and small: a closed book and two pine cones.
   const book=box(.41,.07,.29,fabric('#676650',4),-.39,1.57,.15,hearth);book.rotation.y=.09;
@@ -311,9 +357,13 @@ export function createWinterLodgeWorld(): WorldBuild {
 
   function resize(aspect:number) {
     camera.aspect=aspect;
-    const portrait=aspect<.8;table.position.set(portrait?-1.0:-1.49,0,portrait?-.95:.68);lamp.position.set(portrait?-1.15:-1.82,0,portrait?-1.8:-.05);
+    const portrait=aspect<.8;table.position.set(portrait?-.88:-1.49,0,portrait?-.95:.68);lamp.position.set(portrait?-1.0:-1.82,0,portrait?-1.8:-.05);
     interior.position.set(portrait?-.9:-1.45,2.4,portrait?-1.2:.4);
-    if(aspect<.8){camera.fov=56;camera.position.set(-.27,1.72,3.3);camera.lookAt(-.53,1.54,-3.2);}
+    // The narrow seated view retains the nearby lamp and cup while bringing
+    // the left stone jamb and part of the fire into its right edge. Wider
+    // compositions keep the original hearth, prop and camera coordinates.
+    hearth.position.set(portrait?1.08:3.1,0,portrait?-2.15:-1.94);
+    if(aspect<.8){camera.fov=56;camera.position.set(-.27,1.72,3.3);camera.lookAt(-.30,1.47,-3.2);}
     else if(aspect<1.25){camera.fov=53;camera.position.set(-.13,1.71,3.56);camera.lookAt(-.14,1.57,-3.5);}
     else{camera.fov=50;camera.position.set(.06,1.73,3.52);camera.lookAt(-.08,1.52,-3.6);}
     camera.updateProjectionMatrix();
@@ -323,7 +373,7 @@ export function createWinterLodgeWorld(): WorldBuild {
     scene,camera,resize,
     update(time:number,dt:number){
       timeNow=time;cupResponse=Math.max(0,cupResponse-dt*.55);logResponse=Math.max(0,logResponse-dt*.8);
-      fireMat.uniforms.uTime.value=time;
+      fire.update(time,logResponse);
       fireLight.intensity=8+Math.sin(time*1.9)*.24+Math.sin(time*3.1)*.12+logResponse*.65;
       lampLight.intensity=lampOn?17:3.2;shadeMat.emissiveIntensity=lampOn?.32:.055;bulb.visible=lampOn;
       interior.intensity=lampOn?28:19;
@@ -335,12 +385,11 @@ export function createWinterLodgeWorld(): WorldBuild {
         p.setX(i,snowPos[i*3]+Math.sin(time*.14+snowSeeds[i]*17)*dt*.022);
       }
       p.needsUpdate=true;
-      flamePlanes.forEach((m,i)=>{m.scale.y=1+Math.sin(time*.8+i)*.026;});
     },
     interact(action:string){
       if(action==='lamp'){lampOn=!lampOn;lampLight.intensity=lampOn?17:3.2;shadeMat.emissiveIntensity=lampOn?.32:.055;bulb.visible=lampOn;interior.intensity=lampOn?28:19;return{type:'lamp',intensity:lampOn?.24:.16};}
       if(action==='cup'){cupResponse=1;return{type:'cup',intensity:.12};}
-      if(action==='log'){logResponse=1;fireLight.intensity=8.65;fireMat.uniforms.uTime.value=timeNow+.08;return{type:'log',intensity:.18};}
+      if(action==='log'){logResponse=1;fireLight.intensity=8.65;fire.update(timeNow+.08,logResponse);return{type:'log',intensity:.18};}
       return null;
     },
   };

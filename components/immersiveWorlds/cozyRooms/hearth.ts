@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldBuild } from './contracts';
 import { wood, stone, fabric, rough, rounded } from './materials';
+import { createFireDetail } from './fireDetail';
 
 // All geometry and texture pixels are original procedural work. No gallery source or assets.
 export function createHearthWorld(): WorldBuild {
@@ -143,56 +144,26 @@ export function createHearthWorld(): WorldBuild {
     }
   }
   for (const x of [-1.32, 1.32]) block(0.1, 1.07, 0.8, 0.01, soot, x, 0.94, -3.32);
-  const logCanvas = document.createElement('canvas'); logCanvas.width = 256; logCanvas.height = 512;
-  const ctx = logCanvas.getContext('2d')!;
-  ctx.fillStyle = '#25221c'; ctx.fillRect(0, 0, 256, 512);
-  for (let i = 0; i < 760; i++) {
-    const x = random() * 256; const y = random() * 512;
-    const shade = Math.floor(27 + random() * 25);
-    ctx.strokeStyle = `rgb(${shade + 6},${shade + 1},${shade - 5})`; ctx.lineWidth = 1 + random() * 5;
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.bezierCurveTo(x + 7, y + 14, x - 4, y + 38, x + 3, y + 75); ctx.stroke();
-  }
-  for (let i = 0; i < 45; i++) {
-    ctx.strokeStyle = i % 4 === 0 ? '#a85220' : '#0a0b0a'; ctx.lineWidth = 1.2;
-    const x = random() * 256, y = random() * 512;
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 4, y + 18); ctx.lineTo(x - 2, y + 45); ctx.stroke();
-  }
-  const barkTex = new THREE.CanvasTexture(logCanvas); barkTex.colorSpace = THREE.SRGBColorSpace; barkTex.wrapS = barkTex.wrapT = THREE.RepeatWrapping;
-  const barkMat = new THREE.MeshStandardMaterial({ color: '#847760', map: barkTex, bumpMap: barkTex, bumpScale: 0.042, roughness: 1 });
-  const logEndMat = wood('#28261f', 4);
-  const logGroup = new THREE.Group(); scene.add(logGroup);
-  const logs: THREE.Mesh[] = [];
-  for (let i = 0; i < 5; i++) {
+  // Preserve the established scene's random stream and exact fuel placement.
+  // The former bark pixels consumed these draws; detail maps now use their own seed.
+  for (let i = 0; i < 760 * 4 + 45 * 2; i++) random();
+  const fuel = Array.from({ length: 5 }, (_, i) => {
     const length = 1.48 + random() * 0.35, radius = 0.13 + random() * 0.035;
-    const logGeometry = new THREE.CylinderGeometry(radius * 0.82, radius, length, 17, 9);
-    const logVertices = logGeometry.attributes.position;
-    for (let j = 0; j < logVertices.count; j++) {
-      const x = logVertices.getX(j), y = logVertices.getY(j), z = logVertices.getZ(j);
-      const irregularity = 1 + Math.sin(y * 27 + Math.atan2(x, z) * 5) * 0.048 + Math.sin(y * 11) * 0.034;
-      logVertices.setXYZ(j, x * irregularity, y, z * irregularity);
-    }
-    logGeometry.computeVertexNormals();
-    const log = new THREE.Mesh(logGeometry, [barkMat, logEndMat, logEndMat]);
-    log.rotation.z = Math.PI / 2 + (i % 2 ? 0.16 : -0.19); log.rotation.y = (i % 2 ? -0.37 : 0.3);
-    log.position.set((i - 2) * 0.075, 0.56 + (i > 1 ? 0.17 : 0), -3.08 + (i % 3 - 1) * 0.19);
-    log.castShadow = true; log.receiveShadow = true; log.userData.cozyAction = 'log'; logGroup.add(log); logs.push(log);
-    for (const end of [-1, 1]) {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius * 0.62, 0.008, 5, 17), rough('#44372b', 0.98));
-      ring.rotation.x = Math.PI / 2; ring.position.y = end * (length / 2 + 0.001); log.add(ring);
-    }
-    for (let crack = 0; crack < 5; crack++) {
-      const crackCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0, -0.09, 0), new THREE.Vector3(0.012, -0.026, 0.004), new THREE.Vector3(-0.009, 0.015, 0), new THREE.Vector3(0.003, 0.074, 0.004)]);
-      const glow = new THREE.Mesh(new THREE.TubeGeometry(crackCurve, 7, 0.004, 4, false), new THREE.MeshStandardMaterial({ color: '#311304', emissive: '#b7450d', emissiveIntensity: 0.6, roughness: 1 }));
-      const a = crack / 5 * Math.PI * 2;
-      glow.position.set(Math.sin(a) * radius * 0.96, (random() - 0.5) * 0.5, Math.cos(a) * radius * 0.96); glow.rotation.z = 0.03; log.add(glow);
-    }
-  }
-  const coalMaterials = Array.from({ length: 4 }, (_, i) => new THREE.MeshStandardMaterial({ color: i ? '#211c13' : '#4a230e', emissive: i ? '#441306' : '#c84708', emissiveIntensity: i ? 0.12 : 0.5, roughness: 0.95 }));
-  for (let i = 0; i < 67; i++) {
-    const coalMat = coalMaterials[i % 4];
-    const coal = mesh(new THREE.DodecahedronGeometry(0.025 + random() * 0.055, 0), coalMat, (random() - 0.5) * 1.9, 0.415 + random() * 0.04, -3.04 + (random() - 0.5) * 0.56);
-    coal.scale.y = 0.45 + random() * 0.35; coal.rotation.set(random(), random(), random()); coal.castShadow = false; coal.receiveShadow = false;
-  }
+    for (let crack = 0; crack < 5; crack++) random();
+    return {
+      length, radius,
+      position: [(i - 2) * 0.075, 0.56 + (i > 1 ? 0.17 : 0), -3.08 + (i % 3 - 1) * 0.19] as [number, number, number],
+      rotation: [0, i % 2 ? -0.37 : 0.3, Math.PI / 2 + (i % 2 ? 0.16 : -0.19)] as [number, number, number],
+    };
+  });
+  // Retain the former coal/flame draw count so chair, basket and fringe stay fixed.
+  for (let i = 0; i < 67 * 8 + 13 * 4 + 9; i++) random();
+  const fire = createFireDetail({
+    seed: 0x58251, logs: fuel,
+    bed: { width: 1.9, depth: 0.56, y: 0.405, z: -3.04 },
+    flame: { width: 1.45, depth: 0.44, y: 0.56, z: -3.03, height: 1.08 },
+  });
+  scene.add(fire.group);
   // Low iron andirons ground the fuel. Log touch remains a small, slow ember response.
   for (const x of [-0.83, 0.83]) {
     mesh(new THREE.CylinderGeometry(0.025, 0.037, 0.41, 9), iron, x, 0.57, -2.64);
@@ -200,39 +171,6 @@ export function createHearthWorld(): WorldBuild {
     const foot = block(0.18, 0.037, 0.64, 0.009, iron, x, 0.38, -2.87); foot.rotation.y = 0.08;
   }
 
-  // Interleaved spatial flame bodies: irregular radii, slow rising noise and translucent edges.
-  // These are lit-looking volumes, not a screen-space fire sprite or emissive cone placeholders.
-  const fireMaterials: THREE.ShaderMaterial[] = [];
-  for (let i = 0; i < 13; i++) {
-    const height = i < 9 ? 0.52 + random() * 0.59 : 0.38 + random() * 0.29;
-    const width = i < 9 ? 0.085 + random() * 0.084 : 0.065;
-    const profile: THREE.Vector2[] = [];
-    for (let j = 0; j <= 23; j++) {
-      const t = j / 23;
-      const r = width * Math.pow(Math.sin(t * Math.PI), 0.66) * (1.12 - t * 0.55) + 0.001;
-      profile.push(new THREE.Vector2(r, t * height));
-    }
-    const material = new THREE.ShaderMaterial({
-      uniforms: { uTime: { value: 0 }, uPhase: { value: i * 4.17 }, uHeight: { value: height }, uCore: { value: i >= 9 ? 1 : 0 }, uResponse: { value: 0 } },
-      vertexShader: `varying vec3 vPosition; varying vec3 vNormal; varying vec3 vView; uniform float uTime; uniform float uPhase; uniform float uHeight;
-        void main(){ vec3 p=position; float h=p.y/uHeight; float drift=sin(uTime*1.7+uPhase+h*5.0)*0.055+sin(uTime*2.9+uPhase*.4+h*9.0)*0.018;
-          p.x+=drift*h; p.z+=cos(uTime*1.35+uPhase+h*7.0)*.043*h; p.xz*=1.0+sin(uTime*2.1+uPhase+h*16.0)*.22; p.y*=.94+sin(uTime*1.53+uPhase)*.06;
-          vPosition=p; vNormal=normalize(normalMatrix*normal); vec4 view=modelViewMatrix*vec4(p,1.0); vView=normalize(-view.xyz); gl_Position=projectionMatrix*view; }`,
-      fragmentShader: `varying vec3 vPosition; varying vec3 vNormal; varying vec3 vView; uniform float uTime; uniform float uPhase; uniform float uHeight; uniform float uCore; uniform float uResponse;
-        float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);} float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
-        void main(){float h=clamp(vPosition.y/uHeight,0.,1.); float n=noise(vPosition*vec3(17.,10.,17.)+vec3(uPhase,-uTime*1.8,0.)); float facing=abs(dot(normalize(vNormal),normalize(vView)));
-          float a=pow(facing,.55)*smoothstep(0.,.12,h)*(1.-smoothstep(.73,1.,h)); a*=.38+n*.34; a*=1.-smoothstep(.32,.82,h)*(1.-n)*.45;
-          vec3 low=vec3(1.0,.36,.035); vec3 high=vec3(.95,.025,.001); vec3 col=mix(low,high,smoothstep(.12,.85,h)); col=mix(col,vec3(1.,.63,.14),uCore*.7); col*=1.3+uResponse*.05;
-          gl_FragColor=vec4(col,a*.88);
-          #include <tonemapping_fragment>
-          #include <colorspace_fragment>
-        }`,
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide,
-    });
-    fireMaterials.push(material);
-    const flame = mesh(new THREE.LatheGeometry(profile, 21), material, (random() - 0.5) * 1.45, 0.56 + random() * 0.12, -3.03 + (random() - 0.5) * 0.44);
-    flame.castShadow = false; flame.receiveShadow = false; flame.renderOrder = 2;
-  }
   // Smoke is almost invisible indoors, rising into the throat, never covering the room.
   const smokeMaterial = new THREE.MeshBasicMaterial({ color: '#777366', transparent: true, opacity: 0.006, depthWrite: false });
   const smoke: THREE.Mesh[] = [];
@@ -366,8 +304,7 @@ export function createHearthWorld(): WorldBuild {
       const warmth = Math.sin(time * 1.73) * 0.11 + Math.sin(time * 2.89 + 2) * 0.07;
       ambientBounce.intensity = 14.5 + warmth + response * 0.32;
       wallWash.intensity = 5.8 + Math.sin(time * 0.91) * 0.035;
-      fireMaterials.forEach(m => { m.uniforms.uTime.value = time; m.uniforms.uResponse.value = response; });
-      coalMaterials.forEach((material, i) => { material.emissiveIntensity = (i ? 0.12 : 0.5) + Math.sin(time * 0.71 + i * 1.7) * (i ? 0.025 : 0.07) + response * (i ? 0.03 : 0.12); });
+      fire.update(time, response);
       smoke.forEach((m, i) => { m.position.x = Math.sin(time * 0.37 + i * 0.6) * 0.11; m.position.y = 1.52 + i * 0.13 + Math.sin(time * 0.3 + i) * 0.045; });
     },
     interact(action) {

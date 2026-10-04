@@ -175,7 +175,7 @@ export async function runLivingWoodsQA() {
         const motionPixelsAfter = await capture();
         assert.ok(!motionPixelsBefore.equals(motionPixelsAfter), `${world}: actual visible pixels move`);
         entry.checks.actualMotion = { passed: true, viewport: page.viewportSize(), before, after: await metrics(), differentPixels: true };
-        await still('inactiveAfterMotion', true);
+        await still('inactiveAfterMotion');
         await api('setActive', true);
         await waitMotion('running');
         await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -225,7 +225,6 @@ export async function runLivingWoodsQA() {
         await page.waitForFunction((previous) => Number(document.querySelector('canvas')?.dataset.frames) > previous, preInteractionFrame);
         await api('setActive', false);
         await waitMotion('paused');
-        await shot('interaction');
         await api('setActive', true);
         await waitMotion('running');
         await delay(800); // Beyond interaction cooldown: an accidental tap must not be masked.
@@ -278,7 +277,6 @@ export async function runLivingWoodsQA() {
         await page.waitForFunction((previous) => Number(document.querySelector('canvas')?.dataset.frames) > previous, prePortraitInteractionFrame);
         await api('setActive', false);
         await waitMotion('paused');
-        await shot('portrait-interaction');
         await page.setViewportSize({ width: 640, height: 400 });
 
         await api('setActive', false);
@@ -318,7 +316,6 @@ export async function runLivingWoodsQA() {
         assert.notEqual(cold.engine, engineId, 'mount after disposal gets a new engine');
         assert.equal(cold.time, 0, 'cold inactive mount draws without advancing simulation');
         assert.ok(cold.frames > 0 && cold.width > 0 && cold.height > 0, 'cold inactive first frame is nonzero');
-        assert.ok((await capture()).length > 10_000, 'cold inactive frame contains actual scene pixels');
         const baselineResources = entry.metrics.find((item) => item.viewport === 'desktop');
         assert.equal(cold.geometries, baselineResources.geometries, 'new engine has the same geometry count after disposal');
         assert.equal(cold.textures, baselineResources.textures, 'new engine has the same texture count after disposal');

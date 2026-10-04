@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "scope": "lifecycle-only",
+  "generatedAt": "2026-10-04T19:33:04.859Z",
+  "browser": "153.0.8010.0",
+  "environment": "Headless Chromium with software SwiftShader; viewport checks, not physical device performance.",
+  "visibilityTest": "Synthetic document.hidden override plus visibilitychange; not real browser tab switching.",
+  "gitHead": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+  "gitStatus": "M qa/verify.mjs\n?? qa/github-png-blobs.json\n?? qa/iteration-history.json\n?? qa/night-pond-desktop.png\n?? qa/night-pond-fold-inner-viewport.png\n?? qa/night-pond-portrait.png\n?? qa/pebble-shore-desktop.png\n?? qa/pebble-shore-fold-inner-viewport.png\n?? qa/pebble-shore-portrait.png\n?? qa/screenshots.json\n?? qa/summer-valley-desktop.png\n?? qa/summer-valley-fold-inner-viewport.png\n?? qa/summer-valley-portrait.png\n?? qa/verification-night-pond.json\n?? qa/verification-progress.json",
+  "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+  "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+  "bundleSha256": "49ac6409b4b31f74d4da1251973d5a31547c991a71d54fa526e4c3c2f20e889a",
+  "worlds": {
+    "night-pond": {
+      "screenshots": [],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "checks": {
+        "secondHolder": {
+          "before": {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272
+          },
+          "second": {
+            "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+            "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "night-pond",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              },
+              {
+                "world": "night-pond",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800,
+                "frames": 4,
+                "time": 0,
+                "drawCalls": 58,
+                "triangles": 330272
+              }
+            ],
+            "events": []
+          },
+          "returned": {
+            "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+            "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "night-pond",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 1280,
+                "height": 800,
+                "frames": 5,
+                "time": 0,
+                "drawCalls": 58,
+                "triangles": 330272
+              }
+            ],
+            "events": []
+          },
+          "note": "Holder transfer models shared fullscreen ownership; does not invoke browser Fullscreen API."
+        },
+        "mountCycles": [
+          {
+            "cycle": 1,
+            "disposed": {
+              "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+              "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+              "diagnostics": {
+                "created": 1,
+                "disposed": 1,
+                "live": 0
+              },
+              "syntheticHidden": null,
+              "reducedMotion": false,
+              "roots": [],
+              "canvases": [],
+              "events": []
+            },
+            "remounted": {
+              "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+              "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+              "diagnostics": {
+                "created": 2,
+                "disposed": 1,
+                "live": 1
+              },
+              "syntheticHidden": null,
+              "reducedMotion": false,
+              "roots": [
+                {
+                  "world": "night-pond",
+                  "state": "ready",
+                  "motion": "paused",
+                  "holder": "primary",
+                  "width": 1280,
+                  "height": 800
+                }
+              ],
+              "canvases": [
+                {
+                  "id": 2,
+                  "holder": "primary",
+                  "width": 1280,
+                  "height": 800,
+                  "frames": 2,
+                  "time": 0,
+                  "drawCalls": 58,
+                  "triangles": 330272
+                }
+              ],
+              "events": []
+            }
+          },
+          {
+            "cycle": 2,
+            "disposed": {
+              "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+              "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+              "diagnostics": {
+                "created": 2,
+                "disposed": 2,
+                "live": 0
+              },
+              "syntheticHidden": null,
+              "reducedMotion": false,
+              "roots": [],
+              "canvases": [],
+              "events": []
+            },
+            "remounted": {
+              "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+              "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+              "diagnostics": {
+                "created": 3,
+                "disposed": 2,
+                "live": 1
+              },
+              "syntheticHidden": null,
+              "reducedMotion": false,
+              "roots": [
+                {
+                  "world": "night-pond",
+                  "state": "ready",
+                  "motion": "paused",
+                  "holder": "primary",
+                  "width": 1280,
+                  "height": 800
+                }
+              ],
+              "canvases": [
+                {
+                  "id": 3,
+                  "holder": "primary",
+                  "width": 1280,
+                  "height": 800,
+                  "frames": 2,
+                  "time": 0,
+                  "drawCalls": 58,
+                  "triangles": 330272
+                }
+              ],
+              "events": []
+            }
+          }
+        ]
+      },
+      "pass": true
+    }
+  },
+  "failures": []
+}

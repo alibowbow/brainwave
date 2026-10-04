@@ -1,0 +1,3551 @@
+{
+  "schema": 2,
+  "world": "pebble-shore",
+  "mode": "byte",
+  "stage": "behavior",
+  "viewportName": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "dpr": 1,
+  "generatedAt": "2026-10-04T20:37:27.615Z",
+  "scope": "Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.",
+  "limitations": [
+    "SwiftShader software GPU; no physical touch device or sustained hardware performance certification.",
+    "Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.",
+    "render-js-return duration includes synchronous driver/compiler stalls; it is not pure JavaScript CPU time.",
+    "Configured shared-host retention is 5000 ms; disposal entry/exit and actual context loss are separate measured events."
+  ],
+  "gitHead": "b01c44978684833983cf80360e4a07c6ed796b2c",
+  "gitStatus": "M INTEGRATION.md\n M qa/followup-verify.mjs\n?? qa/COMPATIBILITY.md\n?? qa/FOLLOWUP.md\n?? qa/followup-evidence/\n?? qa/verification-progress.json",
+  "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+  "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+  "bundleSha256": "ae74b16d8207d48f7f03cf61ff9295aa8e4db7578bd34a379552cb4e884a998b",
+  "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+  "status": "passed",
+  "checks": {
+    "initialPaused": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "targetCompatibility": {
+      "status": "passed",
+      "audit": {
+        "forcedByte": true,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "checks": [
+          {
+            "label": "pebble-byte-sky-cube",
+            "type": "unsigned-byte",
+            "width": 256,
+            "height": 256,
+            "faces": [
+              36053,
+              36053,
+              36053,
+              36053,
+              36053,
+              36053
+            ],
+            "complete": true
+          },
+          {
+            "label": "pebble-byte-cube-uv",
+            "type": "unsigned-byte",
+            "width": 768,
+            "height": 1024,
+            "faces": [
+              36053
+            ],
+            "complete": true
+          }
+        ],
+        "environment": "byte-ggx-cube-uv"
+      },
+      "note": "Legitimate format selection was forced before initialization; reported extensions remained genuine."
+    },
+    "chrome-initial-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "2",
+        "time": "0.0000"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "2",
+        "time": "0.0000"
+      },
+      "polls": 95,
+      "waitStatus": 37148,
+      "elapsedMs": 2045.800000000745,
+      "automationElapsedMs": 2053
+    },
+    "trustedDirectRootMouseDrag": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 13,
+            "time": 0.1786,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 13,
+            "time": 0.1786,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "method": "Native mouse with sibling overlay absent; harness control panel remains visible, so this is not a full-app hidden-chrome claim."
+    },
+    "trustedDirectRootMouseDrag-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "13",
+        "time": "0.1786"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "13",
+        "time": "0.1786"
+      },
+      "polls": 498,
+      "waitStatus": 37148,
+      "elapsedMs": 10330.39999999851,
+      "automationElapsedMs": 10332
+    },
+    "nativeChromePlayPause": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 21,
+            "time": 0.305,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 21,
+            "time": 0.305,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "nativeChromePlayPause-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "21",
+        "time": "0.3050"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "21",
+        "time": "0.3050"
+      },
+      "polls": 283,
+      "waitStatus": 37148,
+      "elapsedMs": 5906.300000000745,
+      "automationElapsedMs": 5908
+    },
+    "chromeControlSuppression": {
+      "status": "passed",
+      "method": "Native browser clicks on harness Play, overlay button and Pause; scene emitted no interaction"
+    },
+    "trustedMouseDrag": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 26,
+            "time": 0.3718,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 26,
+            "time": 0.3718,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "trustedMouseDrag-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "26",
+        "time": "0.3718"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "26",
+        "time": "0.3718"
+      },
+      "polls": 151,
+      "waitStatus": 37148,
+      "elapsedMs": 3097.5,
+      "automationElapsedMs": 3104
+    },
+    "syntheticCancellationEdges": {
+      "status": "passed",
+      "blurNoTap": true,
+      "outsideNoTap": true,
+      "outAndBackNoTap": true,
+      "method": "Explicitly synthetic DOM PointerEvents and window blur in one task through real production handlers; not native device input."
+    },
+    "syntheticCancellationEdgesPaused": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 27,
+            "time": 0.3718,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 27,
+            "time": 0.3718,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "syntheticCancellationEdgesPaused-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "27",
+        "time": "0.3718"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "27",
+        "time": "0.3718"
+      },
+      "polls": 6,
+      "waitStatus": 37148,
+      "elapsedMs": 121.70000000298023,
+      "automationElapsedMs": 123
+    },
+    "trustedTouchCancel": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 30,
+            "time": 0.4107,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 30,
+            "time": 0.4107,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "trustedTouchCancel-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "30",
+        "time": "0.4107"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "30",
+        "time": "0.4107"
+      },
+      "polls": 143,
+      "waitStatus": 37148,
+      "elapsedMs": 3011.800000000745,
+      "automationElapsedMs": 3014
+    },
+    "trustedTouchTapPaused": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 34,
+            "time": 0.4606,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 34,
+            "time": 0.4606,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      }
+    },
+    "trustedTouchTapPaused-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "34",
+        "time": "0.4606"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "34",
+        "time": "0.4606"
+      },
+      "polls": 147,
+      "waitStatus": 37148,
+      "elapsedMs": 3041.699999999255,
+      "automationElapsedMs": 3046
+    },
+    "touch": {
+      "status": "passed",
+      "method": "Playwright touchscreen.tap, trusted browser emulated touch; not synthetic DOM dispatch or physical hardware",
+      "tapPoint": {
+        "x": 0.4661,
+        "y": 0.6446
+      },
+      "interactions": [
+        {
+          "world": "pebble-shore",
+          "kind": "pebble-roll",
+          "strength": 0.24,
+          "position": {
+            "x": -0.18,
+            "z": 1.36
+          }
+        }
+      ]
+    },
+    "postInteractionRendered": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 42,
+            "time": 0.6105,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 42,
+            "time": 0.6105,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "beforeBurst": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 34,
+            "time": 0.4606,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "note": "At least two genuine animation submissions after the trusted touch; bounded test burst, not continuous performance evidence."
+    },
+    "postInteractionRendered-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "42",
+        "time": "0.6105"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "42",
+        "time": "0.6105"
+      },
+      "polls": 307,
+      "waitStatus": 37148,
+      "elapsedMs": 6343,
+      "automationElapsedMs": 6344
+    },
+    "post-native-input-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "42",
+        "time": "0.6105"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "42",
+        "time": "0.6105"
+      },
+      "polls": 1,
+      "waitStatus": 37148,
+      "elapsedMs": 20.400000002235174,
+      "automationElapsedMs": 23
+    },
+    "static3D": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 43,
+            "time": 0.6222,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 43,
+            "time": 0.6222,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      }
+    },
+    "static3D-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "43",
+        "time": "0.6222"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "43",
+        "time": "0.6222"
+      },
+      "polls": 10,
+      "waitStatus": 37148,
+      "elapsedMs": 202.19999999925494,
+      "automationElapsedMs": 204
+    },
+    "reducedMotion": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": true,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 43,
+            "time": 0.6222,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": true,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 43,
+            "time": 0.6222,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      }
+    },
+    "reducedMotion-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "43",
+        "time": "0.6222"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "43",
+        "time": "0.6222"
+      },
+      "polls": 3,
+      "waitStatus": 37148,
+      "elapsedMs": 60.69999999925494,
+      "automationElapsedMs": 63
+    },
+    "syntheticHidden": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": true,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 43,
+            "time": 0.6222,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": true,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 43,
+            "time": 0.6222,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "method": "Synthetic document.hidden override+visibilitychange; real background-tab behavior unrun"
+    },
+    "syntheticHidden-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "43",
+        "time": "0.6222"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "43",
+        "time": "0.6222"
+      },
+      "polls": 1,
+      "waitStatus": 37148,
+      "elapsedMs": 20.300000000745058,
+      "automationElapsedMs": 24
+    }
+  },
+  "captures": [
+    {
+      "file": "pebble-shore-byte-desktop-behavior-chrome-initial.png",
+      "sha256": "f7f92aa644112329f204009d26d51163351f0cd237635412562e9f4f1e700c88",
+      "bytes": 643259,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 438,
+      "combinedElapsedMs": 2512,
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "2",
+          "time": "0.0000"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "2",
+          "time": "0.0000"
+        },
+        "polls": 95,
+        "waitStatus": 37148,
+        "elapsedMs": 2045.800000000745
+      },
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 35,
+            "triangles": 457780,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "file": "pebble-shore-byte-desktop-behavior-post-native-input.png",
+      "sha256": "0b30f0d1b7be580956d45877aafb89e8fd8c11f90711dda93e9f71558f8911df",
+      "bytes": 645128,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 225,
+      "combinedElapsedMs": 253,
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "42",
+          "time": "0.6105"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "42",
+          "time": "0.6105"
+        },
+        "polls": 1,
+        "waitStatus": 37148,
+        "elapsedMs": 20.400000002235174
+      },
+      "before": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 42,
+            "time": 0.6105,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      },
+      "after": {
+        "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+        "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 42,
+            "time": 0.6105,
+            "drawCalls": 56,
+            "triangles": 852610,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            }
+          }
+        ],
+        "events": [
+          {
+            "world": "pebble-shore",
+            "kind": "pebble-roll",
+            "strength": 0.24,
+            "position": {
+              "x": -0.18,
+              "z": 1.36
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+  ],
+  "unrun": [
+    "Physical hardware touch; true operating-system background/foreground; sustained GPU throughput; full-app production chrome."
+  ],
+  "browser": "153.0.8010.0",
+  "initial": {
+    "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+    "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "pebble-shore",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 2,
+        "time": 0,
+        "drawCalls": 35,
+        "triangles": 457780,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "pebble-byte-sky-cube",
+              "type": "unsigned-byte",
+              "width": 256,
+              "height": 256,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "pebble-byte-cube-uv",
+              "type": "unsigned-byte",
+              "width": 768,
+              "height": 1024,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ],
+          "environment": "byte-ggx-cube-uv"
+        }
+      }
+    ],
+    "events": []
+  },
+  "graphics": {
+    "canvasId": 1,
+    "width": 1280,
+    "height": 800,
+    "frames": "2",
+    "time": "0.0000",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "extColorBufferFloat": true,
+    "extColorBufferHalfFloat": true,
+    "targetAudit": {
+      "forcedByte": true,
+      "colorBufferFloat": true,
+      "colorBufferHalfFloat": true,
+      "checks": [
+        {
+          "label": "pebble-byte-sky-cube",
+          "type": "unsigned-byte",
+          "width": 256,
+          "height": 256,
+          "faces": [
+            36053,
+            36053,
+            36053,
+            36053,
+            36053,
+            36053
+          ],
+          "complete": true
+        },
+        {
+          "label": "pebble-byte-cube-uv",
+          "type": "unsigned-byte",
+          "width": 768,
+          "height": 1024,
+          "faces": [
+            36053
+          ],
+          "complete": true
+        }
+      ],
+      "environment": "byte-ggx-cube-uv"
+    }
+  },
+  "final": {
+    "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+    "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "pebble-shore",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 43,
+        "time": 0.6222,
+        "drawCalls": 56,
+        "triangles": 852610,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "pebble-byte-sky-cube",
+              "type": "unsigned-byte",
+              "width": 256,
+              "height": 256,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "pebble-byte-cube-uv",
+              "type": "unsigned-byte",
+              "width": 768,
+              "height": 1024,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ],
+          "environment": "byte-ggx-cube-uv"
+        }
+      }
+    ],
+    "events": [
+      {
+        "world": "pebble-shore",
+        "kind": "pebble-roll",
+        "strength": 0.24,
+        "position": {
+          "x": -0.18,
+          "z": 1.36
+        }
+      }
+    ]
+  },
+  "telemetry": {
+    "timeline": [
+      {
+        "kind": "render-js-return",
+        "atMs": 1450.699999999255,
+        "canvasId": 1,
+        "dt": 0,
+        "startMs": 452.5999999977648,
+        "elapsedMs": 997.9000000022352,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1458.800000000745,
+        "canvasId": 1,
+        "dt": 0,
+        "startMs": 1451.800000000745,
+        "elapsedMs": 6.899999998509884,
+        "submitted": true,
+        "frame": 2,
+        "time": "0.0000"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 2162.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 4207.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4694.800000000745,
+        "canvasId": 1,
+        "dt": 0.012049999999255306,
+        "startMs": 4692.099999997765,
+        "elapsedMs": 2.7000000029802322,
+        "submitted": true,
+        "frame": 3,
+        "time": "0.0120"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4712.39999999851,
+        "canvasId": 1,
+        "dt": 0.016549999999999274,
+        "startMs": 4710.89999999851,
+        "elapsedMs": 1.5,
+        "submitted": true,
+        "frame": 4,
+        "time": "0.0286"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4724.39999999851,
+        "canvasId": 1,
+        "dt": 0.016700000000000728,
+        "startMs": 4723.5,
+        "elapsedMs": 0.8999999985098839,
+        "submitted": true,
+        "frame": 5,
+        "time": "0.0453"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4750.199999999255,
+        "canvasId": 1,
+        "dt": 0.01669999999999982,
+        "startMs": 4747,
+        "elapsedMs": 3.199999999254942,
+        "submitted": true,
+        "frame": 6,
+        "time": "0.0620"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4756.39999999851,
+        "canvasId": 1,
+        "dt": 0.01669999999999982,
+        "startMs": 4755.699999999255,
+        "elapsedMs": 0.6000000014901161,
+        "submitted": true,
+        "frame": 7,
+        "time": "0.0787"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4774.699999999255,
+        "canvasId": 1,
+        "dt": 0.016600000000000364,
+        "startMs": 4773.599999997765,
+        "elapsedMs": 1.1000000014901161,
+        "submitted": true,
+        "frame": 8,
+        "time": "0.0953"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4791.199999999255,
+        "canvasId": 1,
+        "dt": 0.01669999999999982,
+        "startMs": 4790.199999999255,
+        "elapsedMs": 1,
+        "submitted": true,
+        "frame": 9,
+        "time": "0.1120"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4810.099999997765,
+        "canvasId": 1,
+        "dt": 0.016599999999999455,
+        "startMs": 4808.89999999851,
+        "elapsedMs": 1.199999999254942,
+        "submitted": true,
+        "frame": 10,
+        "time": "0.1286"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4823.300000000745,
+        "canvasId": 1,
+        "dt": 0.016700000000000728,
+        "startMs": 4822.599999997765,
+        "elapsedMs": 0.7000000029802322,
+        "submitted": true,
+        "frame": 11,
+        "time": "0.1453"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4854.39999999851,
+        "canvasId": 1,
+        "dt": 0.016599999999999455,
+        "startMs": 4853.199999999255,
+        "elapsedMs": 1.199999999254942,
+        "submitted": true,
+        "frame": 12,
+        "time": "0.1619"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 4857.199999999255,
+        "canvasId": 1,
+        "dt": 0.01669999999999982,
+        "startMs": 4856.5,
+        "elapsedMs": 0.6999999992549419,
+        "submitted": true,
+        "frame": 13,
+        "time": "0.1786"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 5564.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 15895.099999997765,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 15974.099999997765,
+        "canvasId": 1,
+        "dt": 0.009766000001489373,
+        "startMs": 15973.199999999255,
+        "elapsedMs": 0.8999999985098839,
+        "submitted": true,
+        "frame": 14,
+        "time": "0.1884"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 15990.300000000745,
+        "canvasId": 1,
+        "dt": 0.016634000000000013,
+        "startMs": 15989.199999999255,
+        "elapsedMs": 1.1000000014901161,
+        "submitted": true,
+        "frame": 15,
+        "time": "0.2050"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 16006.800000000745,
+        "canvasId": 1,
+        "dt": 0.016700000000000728,
+        "startMs": 16006,
+        "elapsedMs": 0.6999999992549419,
+        "submitted": true,
+        "frame": 16,
+        "time": "0.2217"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 16024.599999997765,
+        "canvasId": 1,
+        "dt": 0.016700000000000728,
+        "startMs": 16023.699999999255,
+        "elapsedMs": 0.8999999985098839,
+        "submitted": true,
+        "frame": 17,
+        "time": "0.2384"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 16048.599999997765,
+        "canvasId": 1,
+        "dt": 0.016599999999998546,
+        "startMs": 16047.39999999851,
+        "elapsedMs": 1.199999999254942,
+        "submitted": true,
+        "frame": 18,
+        "time": "0.2550"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 16056.599999997765,
+        "canvasId": 1,
+        "dt": 0.016700000000000728,
+        "startMs": 16055.89999999851,
+        "elapsedMs": 0.6999999992549419,
+        "submitted": true,
+        "frame": 19,
+        "time": "0.2717"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 16072.89999999851,
+        "canvasId": 1,
+        "dt": 0.016600000000000364,
+        "startMs": 16072.099999997765,
+        "elapsedMs": 0.7000000029802322,
+        "submitted": true,
+        "frame": 20,
+        "time": "0.2883"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 16089.89999999851,
+        "canvasId": 1,
+        "dt": 0.01669999999999891,
+        "startMs": 16089.099999997765,
+        "elapsedMs": 0.8000000007450581,
+        "submitted": true,
+        "frame": 21,
+        "time": "0.3050"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 16760.800000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 22667,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 22673.300000000745,
+        "canvasId": 1,
+        "dt": 0.00010399999925357406,
+        "startMs": 22672.300000000745,
+        "elapsedMs": 1,
+        "submitted": true,
+        "frame": 22,
+        "time": "0.3051"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 22689.199999999255,
+        "canvasId": 1,
+        "dt": 0.016695999999999912,
+        "startMs": 22688.699999999255,
+        "elapsedMs": 0.5,
+        "submitted": true,
+        "frame": 23,
+        "time": "0.3218"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 22705.89999999851,
+        "canvasId": 1,
+        "dt": 0.016600000000002182,
+        "startMs": 22705.39999999851,
+        "elapsedMs": 0.5,
+        "submitted": true,
+        "frame": 24,
+        "time": "0.3384"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 22722.5,
+        "canvasId": 1,
+        "dt": 0.016700000000000728,
+        "startMs": 22722.099999997765,
+        "elapsedMs": 0.4000000022351742,
+        "submitted": true,
+        "frame": 25,
+        "time": "0.3551"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 22747.599999997765,
+        "canvasId": 1,
+        "dt": 0.01669999999999709,
+        "startMs": 22747.099999997765,
+        "elapsedMs": 0.5,
+        "submitted": true,
+        "frame": 26,
+        "time": "0.3718"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 23418.599999997765,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 26516,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 26527.599999997765,
+        "canvasId": 1,
+        "dt": -0.0055840000007447085,
+        "startMs": 26526.800000000745,
+        "elapsedMs": 0.7999999970197678,
+        "submitted": true,
+        "frame": 27,
+        "time": "0.3718"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 27222.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 27344.300000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 27364.800000000745,
+        "canvasId": 1,
+        "dt": 0.005533999999999651,
+        "startMs": 27363.89999999851,
+        "elapsedMs": 0.9000000022351742,
+        "submitted": true,
+        "frame": 28,
+        "time": "0.3773"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 27371.89999999851,
+        "canvasId": 1,
+        "dt": 0.016666000000001076,
+        "startMs": 27371.39999999851,
+        "elapsedMs": 0.5,
+        "submitted": true,
+        "frame": 29,
+        "time": "0.3940"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 27388.699999999255,
+        "canvasId": 1,
+        "dt": 0.016700000000000728,
+        "startMs": 27388.199999999255,
+        "elapsedMs": 0.5,
+        "submitted": true,
+        "frame": 30,
+        "time": "0.4107"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 28078.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 31090.199999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 31108.5,
+        "canvasId": 1,
+        "dt": -0.002499999998508429,
+        "startMs": 31107.800000000745,
+        "elapsedMs": 0.6999999992549419,
+        "submitted": true,
+        "frame": 31,
+        "time": "0.4107"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 31125.89999999851,
+        "canvasId": 1,
+        "dt": 0.01669999999999709,
+        "startMs": 31125.099999997765,
+        "elapsedMs": 0.8000000007450581,
+        "submitted": true,
+        "frame": 32,
+        "time": "0.4274"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 31155.599999997765,
+        "canvasId": 1,
+        "dt": 0.016600000000002182,
+        "startMs": 31147.599999997765,
+        "elapsedMs": 8,
+        "submitted": true,
+        "frame": 33,
+        "time": "0.4440"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 31156.599999997765,
+        "canvasId": 1,
+        "dt": 0.016599999999998546,
+        "startMs": 31156.199999999255,
+        "elapsedMs": 0.3999999985098839,
+        "submitted": true,
+        "frame": 34,
+        "time": "0.4606"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 31851.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 34893.099999997765,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 34903.699999999255,
+        "canvasId": 1,
+        "dt": -0.014999999997766281,
+        "startMs": 34903,
+        "elapsedMs": 0.6999999992549419,
+        "submitted": true,
+        "frame": 35,
+        "time": "0.4606"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 34906,
+        "canvasId": 1,
+        "dt": 0.016599999999998546,
+        "startMs": 34904.89999999851,
+        "elapsedMs": 1.1000000014901161,
+        "submitted": true,
+        "frame": 36,
+        "time": "0.4772"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 34929.199999999255,
+        "canvasId": 1,
+        "dt": 0.016700000000004364,
+        "startMs": 34928.199999999255,
+        "elapsedMs": 1,
+        "submitted": true,
+        "frame": 37,
+        "time": "0.4939"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 34948.39999999851,
+        "canvasId": 1,
+        "dt": 0.01669999999999709,
+        "startMs": 34947.39999999851,
+        "elapsedMs": 0.9000000022351742,
+        "submitted": true,
+        "frame": 38,
+        "time": "0.5106"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 34967.300000000745,
+        "canvasId": 1,
+        "dt": 0.016599999999998546,
+        "startMs": 34966.300000000745,
+        "elapsedMs": 1,
+        "submitted": true,
+        "frame": 39,
+        "time": "0.5272"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 34999.599999997765,
+        "canvasId": 1,
+        "dt": 0.016700000000004364,
+        "startMs": 34998.699999999255,
+        "elapsedMs": 0.8999999985098839,
+        "submitted": true,
+        "frame": 40,
+        "time": "0.5439"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 35047.800000000745,
+        "canvasId": 1,
+        "dt": 0.03329999999999563,
+        "startMs": 35018.5,
+        "elapsedMs": 29.300000000745058,
+        "submitted": true,
+        "frame": 41,
+        "time": "0.5772"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 35057.199999999255,
+        "canvasId": 1,
+        "dt": 0.03330000000000291,
+        "startMs": 35048.599999997765,
+        "elapsedMs": 8.600000001490116,
+        "submitted": true,
+        "frame": 42,
+        "time": "0.6105"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 35724.599999997765,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 42067.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 42070.39999999851,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 42090.800000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 42339,
+        "canvasId": 1,
+        "dt": 0.011700000002238085,
+        "startMs": 42338,
+        "elapsedMs": 1,
+        "submitted": true,
+        "frame": 43,
+        "time": "0.6222"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 43013,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 43215.199999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 43907.199999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 43967.89999999851,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 44652.39999999851,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 44672.699999999255,
+        "canvasId": 1
+      }
+    ],
+    "input": [
+      {
+        "kind": "pointermove",
+        "atMs": 4691.800000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 614.4000244140625,
+        "y": 416,
+        "target": "CANVAS"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 4695.199999999255,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 614.4000244140625,
+        "y": 416,
+        "target": "CANVAS"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 4723.099999997765,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 665.5999755859375,
+        "y": 440,
+        "target": "CANVAS"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 4773.39999999851,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 716.7999877929688,
+        "y": 464,
+        "target": "CANVAS"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 4830.39999999851,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 716.7999877929688,
+        "y": 464,
+        "target": "CANVAS"
+      },
+      {
+        "kind": "click",
+        "atMs": 4831.39999999851,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 716,
+        "y": 464,
+        "target": "CANVAS"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 15956,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 567.1799926757812,
+        "y": 34.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 15956.39999999851,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 567.1799926757812,
+        "y": 34.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 15957.300000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 567.1799926757812,
+        "y": 34.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "click",
+        "atMs": 15957.300000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 567,
+        "y": 34,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 16021.800000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 1200.5,
+        "y": 20.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 16022.39999999851,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 1200.5,
+        "y": 20.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "blur",
+        "atMs": 16023,
+        "trusted": true,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 16023.300000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 1200.5,
+        "y": 20.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "click",
+        "atMs": 16023.39999999851,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 1200,
+        "y": 20,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 16078.199999999255,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 572.1799926757812,
+        "y": 34.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 16078.39999999851,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 572.1799926757812,
+        "y": 34.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "blur",
+        "atMs": 16078.599999997765,
+        "trusted": true,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 16078.800000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 572.1799926757812,
+        "y": 34.5,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "click",
+        "atMs": 16078.800000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 572,
+        "y": 34,
+        "target": "BUTTON"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 22688.5,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 640,
+        "y": 440,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 22691.300000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 640,
+        "y": 440,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 22705.199999999255,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 704,
+        "y": 460,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 22721.800000000745,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 768,
+        "y": 480,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 22729.699999999255,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 768,
+        "y": 480,
+        "target": "DIV"
+      },
+      {
+        "kind": "click",
+        "atMs": 22730.099999997765,
+        "trusted": true,
+        "pointerType": "mouse",
+        "x": 768,
+        "y": 480,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 26532.699999999255,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 640,
+        "y": 480,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 26532.800000000745,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 710,
+        "y": 510,
+        "target": "window"
+      },
+      {
+        "kind": "blur",
+        "atMs": 26532.800000000745,
+        "trusted": false,
+        "target": "window"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 26532.89999999851,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 640,
+        "y": 480,
+        "target": "window"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 26532.89999999851,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 2,
+        "y": 480,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 26533,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": -2,
+        "y": 480,
+        "target": "window"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 26533.099999997765,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 640,
+        "y": 480,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 26533.099999997765,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 710,
+        "y": 510,
+        "target": "window"
+      },
+      {
+        "kind": "pointermove",
+        "atMs": 26533.199999999255,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 640,
+        "y": 480,
+        "target": "window"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 26533.199999999255,
+        "trusted": false,
+        "pointerType": "touch",
+        "x": 640,
+        "y": 480,
+        "target": "window"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 27368.5,
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 640,
+        "y": 520,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointercancel",
+        "atMs": 27378.099999997765,
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 640,
+        "y": 520,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointerdown",
+        "atMs": 31129.099999997765,
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 596.6079711914062,
+        "y": 515.6799926757812,
+        "target": "DIV"
+      },
+      {
+        "kind": "pointerup",
+        "atMs": 31129.300000000745,
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 596.6079711914062,
+        "y": 515.6799926757812,
+        "target": "DIV"
+      },
+      {
+        "kind": "click",
+        "atMs": 31134.099999997765,
+        "trusted": true,
+        "pointerType": "touch",
+        "x": 597,
+        "y": 516,
+        "target": "DIV"
+      },
+      {
+        "kind": "visibilitychange",
+        "atMs": 43982.39999999851,
+        "trusted": false,
+        "target": "window"
+      },
+      {
+        "kind": "visibilitychange",
+        "atMs": 44680.199999999255,
+        "trusted": false,
+        "target": "window"
+      }
+    ],
+    "maxHeartbeatLagMs": 1337.3999999985099
+  },
+  "finishedAt": "2026-10-04T20:38:12.559Z"
+}

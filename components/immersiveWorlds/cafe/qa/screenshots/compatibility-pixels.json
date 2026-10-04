@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "9f7cad297ee27b57c75da19c245f79bfb6dd85d4",
+  "baselineSourceCommit": "215c50ff7bafd7e52a1593022a75a7a032cc3c4c",
+  "baselineEvidenceCommit": "8b9383b8086b99bec04eb2273a68ec9d2bd76f43",
+  "method": "Absolute RGB channel differences of actual PNG bytes, including harness UI, at unchanged native dimensions; no alignment, filtering or image editing.",
+  "comparisons": [
+    {
+      "name": "desktop",
+      "baselineSha256": "cb01e40cf5483078c10cfaa164484e894a56613a3e211d43538929cd7fbb916f",
+      "supportedSha256": "1a2308173c4415792ba728583f95955eb9dbd55494d3a35d352c0f5c58527d11",
+      "meanAbsoluteChannelDelta255": 0.049436274509803924,
+      "percentChannelsDeltaGreaterThan8": 0.0,
+      "baselineMean255": 87.15578492647059,
+      "supportedMean255": 87.20444730392157
+    },
+    {
+      "name": "fold-portrait",
+      "baselineSha256": "f7ef88bb84d45a2880d6715840015899235c99efdb5687df59247abfe1cc83e4",
+      "supportedSha256": "ebccbef33ac44e2d1f94fa617d1f79cdbf9a371c30397438e90a72ea55ee2c93",
+      "meanAbsoluteChannelDelta255": 0.03947777954621819,
+      "percentChannelsDeltaGreaterThan8": 0.0,
+      "baselineMean255": 102.00139264682477,
+      "supportedMean255": 102.03914442852849
+    },
+    {
+      "name": "fold-inner-portrait",
+      "baselineSha256": "6949d8e81157f5deafb59be9aa660222e0782863c7f89791ff6f5a7aa43070fb",
+      "supportedSha256": "42d32195b517276d8af72cc1dc88919e30a00ea4de333d07c25e08349feda993",
+      "meanAbsoluteChannelDelta255": 0.03970131550507986,
+      "percentChannelsDeltaGreaterThan8": 0.0,
+      "baselineMean255": 91.65802698384374,
+      "supportedMean255": 91.69655631783432
+    },
+    {
+      "name": "fold-landscape",
+      "baselineSha256": "a9a15beaa37e5112fa94427e895d3439948ff85aadf39c71852c52347345b20a",
+      "supportedSha256": "a0c381cf99b3708e095e225e49b6f829ea8c08e8c54321b89eb0b21e8d610b56",
+      "meanAbsoluteChannelDelta255": 0.04696800891293968,
+      "percentChannelsDeltaGreaterThan8": 0.0,
+      "baselineMean255": 80.92790510548747,
+      "supportedMean255": 80.97427891842185
+    }
+  ]
+}

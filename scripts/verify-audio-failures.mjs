@@ -12,7 +12,7 @@ const report = {
   scope: 'Existing application routes, native Web Audio and controlled HTTP 503 audio responses in isolated browser contexts.',
   evidenceScope: 'PCM measured at the existing pre-limiter master analyser. No human audition, speaker/headphone, perceptual quality, or output loudness claim.',
   policy: 'Browser autoplay policy remains enabled. Native AudioContext methods are observed, not replaced with successful fake playback.',
-  recordingScope: 'Existing monsoon-eaves preset with the eaves layer removed through its actual picker, leaving only the approved rain recording and disabled brainwave tone.',
+  recordingScope: 'Existing monsoon-eaves preset with every non-rain layer removed through its actual picker, leaving only the approved rain recording and disabled brainwave tone.',
   checks: [], errors: [], screenshots: [], requests: [], status: 'running',
 };
 let browser;
@@ -194,10 +194,17 @@ try {
     await waitForRequests(page, recording.blocked, ['rain-jun-v1.mp3']);
     await page.locator('[data-sound-error="rain"]').waitFor();
     await press(page, '세션 세부 조절 열기');
-    const eaves = page.getByRole('button', { name: /^처마 물방울 ·/ });
-    assert.equal(await eaves.getAttribute('aria-pressed'), 'true');
-    await eaves.click();
-    assert.equal(await eaves.getAttribute('aria-pressed'), 'false');
+    // Fresh immersive profiles may include quiet stream alongside eaves/rain.
+    // Isolate the intended recording using the actual picker; retain the strict
+    // selected-length, silence, retry and single-context assertions below.
+    const activeOptions = page.locator('.sound-option[aria-pressed="true"]');
+    const removeNames = (await activeOptions.allTextContents()).filter(text => !/빗소리/.test(text));
+    for (const text of removeNames) {
+      const option = page.locator('.sound-option').filter({ hasText: text });
+      assert.equal(await option.count(), 1, 'one exact selected source to remove');
+      await option.click();
+      assert.equal(await option.getAttribute('aria-pressed'), 'false');
+    }
     const selected = await page.locator('.sound-option[aria-pressed="true"]').allTextContents();
     assert.equal(selected.length, 1);
     assert.match(selected[0], /빗소리/);

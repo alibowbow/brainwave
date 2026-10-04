@@ -1,0 +1,12 @@
+import {mkdir,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {build} from 'vite';
+import react from '@vitejs/plugin-react';
+import {qa,sourceDigest,digest,gitHead} from './common.mjs';
+const bundle=path.resolve(process.env.COZY_BUNDLE||'/tmp/cozy-followup-bundle');
+const source=await sourceDigest();
+await build({configFile:false,root:qa,base:'./',plugins:[react()],build:{outDir:bundle,emptyOutDir:true,sourcemap:true,chunkSizeWarningLimit:1000}});
+const manifest={timestamp:new Date().toISOString(),gitHead:gitHead(),source,bundle:await digest(bundle),harness:'Unmodified original qa/index.html and qa/main.tsx; same Vite settings as verify.mjs'};
+const file=process.env.COZY_MANIFEST||`${bundle}.manifest.json`;
+await mkdir(path.dirname(file),{recursive:true});await writeFile(file,JSON.stringify(manifest,null,2));
+console.log(JSON.stringify({bundle,manifest:file,sourceSHA256:source.sha256,bundleSHA256:manifest.bundle.sha256},null,2));

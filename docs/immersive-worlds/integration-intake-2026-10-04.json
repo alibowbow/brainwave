@@ -1,0 +1,1519 @@
+{
+  "schemaVersion": 3,
+  "observedAtUTC": "2026-10-04T21:45:04.750437+00:00",
+  "mode": "read_only_local_coverage_refresh",
+  "coreCheckpoint": "7abc25ab91fda8ec544ba1b8318a644b4ac81228",
+  "worktreeUncommitted": true,
+  "mainBaseline": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+  "sharedWriter": "root only; this reviewer did not edit repository source",
+  "mergeAuthorizedNow": false,
+  "mergeCondition": "All30 gates and Rain dependency resolved AND user confirms final merge release",
+  "remoteObservation": "Uses recorded exact owner heads plus root latest CI refresh; no new remote query in this ledger. Owner Work termination is not inferred.",
+  "coverage": {
+    "targetScenes": 30,
+    "registered": 30,
+    "notRegistered": 0,
+    "registeredOwnedRootsExact": 14,
+    "registeredOwnerFilesExact": 893,
+    "userVisualAccepted": 26,
+    "rainVisualHeld": 4,
+    "finalSharedAppAcceptance": "pending"
+  },
+  "registry": {
+    "path": "components/immersiveWorlds/registry.ts",
+    "sha256": "58c8b32beffed139d1ac4229c43a9c30c38acaa2d97c5d6350dc473be87654e7",
+    "entries": {
+      "amb:morning_forest": "forest/ForestWorld",
+      "amb:focus_cafe": "cafe/CafeWorld",
+      "amb:cosmic": "cosmic/CosmicWorld",
+      "meditation": "quietSanctuaries/MeditationCourtWorld",
+      "nature:womb": "quietSanctuaries/WarmHeartWorld",
+      "amb:snowy_night": "quietSanctuaries/SnowVillageWorld",
+      "amb:waterfall_valley": "deepWater/WaterfallWorld",
+      "amb:cave_meditation": "deepWater/CaveWorld",
+      "nature:deep_sea": "deepWater/DeepSeaWorld",
+      "amb:campfire_night": "nightFires/MountainCampfireWorld",
+      "amb:deep_night": "nightFires/DeepNightWorld",
+      "nature:campfire": "nightFires/LakesideCampWorld",
+      "amb:night_pond": "waterEdge/NightPondWorld",
+      "nature:summer_valley": "waterEdge/SummerValleyWorld",
+      "nature:pebble_shore": "waterEdge/PebbleShoreWorld",
+      "nature:tent_rain": "rainShelters/RainTentWorld",
+      "nature:window_rain": "rainShelters/GardenWindowWorld",
+      "nature:monsoon_eaves": "rainShelters/MonsoonPorchWorld",
+      "amb:summer_storm": "rainShelters/SummerStormWorld",
+      "relax": "cozyRooms/HearthWorld",
+      "sleep_prep": "cozyRooms/SleepRoomWorld",
+      "power_nap": "cozyRooms/NapTerraceWorld",
+      "nature:winter_lodge": "cozyRooms/WinterLodgeWorld",
+      "nature:temple_dawn": "koreanPlaces/TempleWorld",
+      "nature:scops_night": "koreanPlaces/ScopsNightWorld",
+      "nature:rural_summer_night": "koreanPlaces/RuralSummerNightWorld",
+      "country_morning": "livingWoods/MorningPorchWorld",
+      "amb:rainy_forest": "livingWoods/RainyForestWorld",
+      "amb:deep_forest": "livingWoods/AncientForestWorld",
+      "nature:bamboo_grove": "livingWoods/BambooWorld"
+    }
+  },
+  "protected": {
+    "baseline": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+    "checks": [
+      {
+        "path": "components/rainyWindow",
+        "files": 22,
+        "mismatches": [],
+        "extras": [],
+        "exact": true
+      },
+      {
+        "path": "components/oilSea",
+        "files": 22,
+        "mismatches": [],
+        "extras": [],
+        "exact": true
+      },
+      {
+        "path": "public/images/nature/backgrounds/oil-sea-v2.webp",
+        "files": 1,
+        "mismatches": [],
+        "extras": [],
+        "exact": true
+      },
+      {
+        "path": "public/images/nature/backgrounds/focus-window-v1.webp",
+        "files": 1,
+        "mismatches": [],
+        "extras": [],
+        "exact": true
+      }
+    ],
+    "files": 46,
+    "exact": true
+  },
+  "sharedValidation": {
+    "basis": "Latest root instruction; this reviewer did not execute tests/build/browser/GPU.",
+    "currentFullUnitSuite": "pending_root_after_PR67_and_host_guard",
+    "currentFullTypecheckBuildBudgetPwa": "pending_root_after_PR67_and_host_guard",
+    "lastCompletedCheckpoint": {
+      "unitTestsPassed": 497,
+      "typecheck": "passed",
+      "build": "passed",
+      "initialJSKiB": 408.8,
+      "initialJSLimitKiB": 410,
+      "indexChunk": "index-CNv_jj82",
+      "initialCSSKiB": 101.0,
+      "initialCSSLimitKiB": 135,
+      "pwaFinalGuard": "passed; actual optional world/protected renderer CSS and JS excluded from precache",
+      "limit": "Historical checkpoint; not a pass for latest30entry worktree."
+    },
+    "nativeApp": "pending on newly frozen current source/build; preserve previous native failures and diagnostic evidence",
+    "audioBridge": "implemented from PR61 cc5b47f with existing context/bgBus; clean cold-autoplay and native end-to-end verification pending",
+    "realDeviceFPSHeatListening": "not verified"
+  },
+  "audioOwnerHead": "cc5b47fea7989b60f5ffb9a17ad4c16264508901",
+  "worlds": [
+    {
+      "group": "forest",
+      "id": "amb:morning_forest",
+      "entry": "components/immersiveWorlds/forest/ForestWorld.tsx",
+      "pr": 63,
+      "ownerHead": "7382d7c8fd822c46981d764e4381c9b10ffcd816",
+      "runtimeSource": "f231cc77c24d3e20cbb534412d4eafa9c47b5553",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/forest",
+          "tree": "a4c73b663c1e83144bece76248b9b4a6dfc5cde8",
+          "files": 72,
+          "exactInWorktree": true
+        },
+        {
+          "path": "public/immersive-worlds/forest",
+          "tree": "f4db2ef4e45cc0b9b597005e3f56bac8067d8a9d",
+          "files": 4,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "5a59184586da62dfe27d80a27897ffa84b444de20ca0ba52772dc0ed50f6b71d",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Owner isolated evidence accepted; shared App native input/lifecycle pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Forest Reflector callback target/face/mip restoration inventory followup; not a demonstrated visible failure."
+      },
+      "ci": {
+        "run": 37234134896,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "root latest independent refresh"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "cafe",
+      "id": "amb:focus_cafe",
+      "entry": "components/immersiveWorlds/cafe/CafeWorld.tsx",
+      "pr": 50,
+      "ownerHead": "e2cc261cd5f88fa6ca9142bf4e6b77ad0eac5925",
+      "runtimeSource": "9f7cad297ee27b57c75da19c245f79bfb6dd85d4",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/cafe",
+          "tree": "7b331af745761d10aa59b0ee078b05c68a18962b",
+          "files": 42,
+          "exactInWorktree": true
+        },
+        {
+          "path": "public/immersive-worlds/cafe",
+          "tree": "12efd2d81a4d09b75696e1161989b4cd11f88e4c",
+          "files": 5,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "0011837fcdafb857a1259e551f7ff578d56fdb4b0177b0ee94c450e79a82e67c",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Owner visual/compatibility evidence accepted. Prior core native attempts retained; latest integrated source/build native/audio verification still pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": ""
+      },
+      "ci": {
+        "run": 37231937079,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "pilots-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "cosmic",
+      "id": "amb:cosmic",
+      "entry": "components/immersiveWorlds/cosmic/CosmicWorld.tsx",
+      "pr": 52,
+      "ownerHead": "c9383a0799b26fc8990363ea93affc8dca982d3b",
+      "runtimeSource": "c9383a0799b26fc8990363ea93affc8dca982d3b",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/cosmic",
+          "tree": "42a361865f4339c28dc969d207a0dadb8bf65b20",
+          "files": 46,
+          "exactInWorktree": true
+        },
+        {
+          "path": "public/immersive-worlds/cosmic",
+          "tree": "d149c2ccb5c5c95656cf0f4161576c1727849f78",
+          "files": 10,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "b7cacdbc7eabc4320f180c2aeabccd0c1cfe133864757c02850cef87bdc01dba",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted_preserved_after_bounded_fix",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "c9383 owner compatibility/lifecycle evidence received; shared App native gate pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": ""
+      },
+      "ci": {
+        "run": 37235011440,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "cosmic-c9383-review exact final-head audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "waterEdge",
+      "id": "amb:night_pond",
+      "entry": "components/immersiveWorlds/waterEdge/NightPondWorld.tsx",
+      "pr": 64,
+      "ownerHead": "c6cad439abbaae54884292c6cc6ea60c76587e32",
+      "runtimeSource": "8b906c4e23f18984804659e9213292b84204500b",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/waterEdge",
+          "tree": "5e9e8e58466bdf45cdea2ef9847c68b3cabd9870",
+          "files": 93,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "228aa758d21ace5711838ddaa722bf47d74beab3b618ebf6fe26801742a518e3",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted_preserved",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Pond normal and shore normal/byte clean cycles pass; Valley normal/byte fixed20s cleanup fails; group final lifecycle blocked.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "",
+        "sceneSpecific": "No direct failure in published clean cycles; shared group release remains blocked by Valley."
+      },
+      "ci": {
+        "run": 37234305610,
+        "status": "in_progress_at_last_audit",
+        "conclusion": null,
+        "basis": "wateredge-followup-current audit; not re-polled"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "waterEdge.valley_cleanup_group_gate"
+      ]
+    },
+    {
+      "group": "waterEdge",
+      "id": "nature:summer_valley",
+      "entry": "components/immersiveWorlds/waterEdge/SummerValleyWorld.tsx",
+      "pr": 64,
+      "ownerHead": "c6cad439abbaae54884292c6cc6ea60c76587e32",
+      "runtimeSource": "8b906c4e23f18984804659e9213292b84204500b",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/waterEdge",
+          "tree": "5e9e8e58466bdf45cdea2ef9847c68b3cabd9870",
+          "files": 93,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "7009d7f90583239861f3cc224d1f1abb04a49767e271cf982d0acb2ae56c8129",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted_preserved",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Pond normal and shore normal/byte clean cycles pass; Valley normal/byte fixed20s cleanup fails; group final lifecycle blocked.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "",
+        "sceneSpecific": "Direct cleanup failure:36.8076s normal/45.4897s byte>20s; secondcycle/remount unrun."
+      },
+      "ci": {
+        "run": 37234305610,
+        "status": "in_progress_at_last_audit",
+        "conclusion": null,
+        "basis": "wateredge-followup-current audit; not re-polled"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "waterEdge.valley_cleanup_group_gate"
+      ]
+    },
+    {
+      "group": "waterEdge",
+      "id": "nature:pebble_shore",
+      "entry": "components/immersiveWorlds/waterEdge/PebbleShoreWorld.tsx",
+      "pr": 64,
+      "ownerHead": "c6cad439abbaae54884292c6cc6ea60c76587e32",
+      "runtimeSource": "8b906c4e23f18984804659e9213292b84204500b",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/waterEdge",
+          "tree": "5e9e8e58466bdf45cdea2ef9847c68b3cabd9870",
+          "files": 93,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "4ccd204582fff58a80161dcfa32d58cb43392076ae3c28ee71d49bfd034f95aa",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted_preserved",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Pond normal and shore normal/byte clean cycles pass; Valley normal/byte fixed20s cleanup fails; group final lifecycle blocked.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "",
+        "sceneSpecific": "No direct failure in published clean cycles; shared group release remains blocked by Valley."
+      },
+      "ci": {
+        "run": 37234305610,
+        "status": "in_progress_at_last_audit",
+        "conclusion": null,
+        "basis": "wateredge-followup-current audit; not re-polled"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "waterEdge.valley_cleanup_group_gate"
+      ]
+    },
+    {
+      "group": "deepWater",
+      "id": "amb:waterfall_valley",
+      "entry": "components/immersiveWorlds/deepWater/WaterfallWorld.tsx",
+      "pr": 62,
+      "ownerHead": "3ecff28909ac7e3550bf923be9b148fa028ad80b",
+      "runtimeSource": "0a3c8f17e87abe4592f0148dd5c8a787d5928e15",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/deepWater",
+          "tree": "0b114df5139ec26ee385807030ec59f82277a3f9",
+          "files": 75,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "55c26be9b6f693f6292dc051fb33f648b87fef641fe69b79cffda1086b2751d5",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Owner followup ready; shared App native input/lifecycle/audio pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": ""
+      },
+      "ci": {
+        "run": 37232496575,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "water-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "deepWater",
+      "id": "amb:cave_meditation",
+      "entry": "components/immersiveWorlds/deepWater/CaveWorld.tsx",
+      "pr": 62,
+      "ownerHead": "3ecff28909ac7e3550bf923be9b148fa028ad80b",
+      "runtimeSource": "0a3c8f17e87abe4592f0148dd5c8a787d5928e15",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/deepWater",
+          "tree": "0b114df5139ec26ee385807030ec59f82277a3f9",
+          "files": 75,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "7944214ad0837208e3df69d1df8641f82cb4c1d2efe885b0d354341d38760fed",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Owner followup ready; shared App native input/lifecycle/audio pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": ""
+      },
+      "ci": {
+        "run": 37232496575,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "water-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "deepWater",
+      "id": "nature:deep_sea",
+      "entry": "components/immersiveWorlds/deepWater/DeepSeaWorld.tsx",
+      "pr": 62,
+      "ownerHead": "3ecff28909ac7e3550bf923be9b148fa028ad80b",
+      "runtimeSource": "0a3c8f17e87abe4592f0148dd5c8a787d5928e15",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/deepWater",
+          "tree": "0b114df5139ec26ee385807030ec59f82277a3f9",
+          "files": 75,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "2d97b5301a9ac922cfd4937ed51e09da1c2f40ce317e9be6bed97724917059ab",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Owner followup ready; shared App native input/lifecycle/audio pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": ""
+      },
+      "ci": {
+        "run": 37232496575,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "water-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "cozyRooms",
+      "id": "relax",
+      "entry": "components/immersiveWorlds/cozyRooms/HearthWorld.tsx",
+      "pr": 65,
+      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/cozyRooms",
+          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
+          "files": 140,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "",
+        "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
+      },
+      "ci": {
+        "run": 37234961723,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "cozy65-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "cozyRooms.winter_recreation_group_gate"
+      ]
+    },
+    {
+      "group": "cozyRooms",
+      "id": "sleep_prep",
+      "entry": "components/immersiveWorlds/cozyRooms/SleepRoomWorld.tsx",
+      "pr": 65,
+      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/cozyRooms",
+          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
+          "files": 140,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "",
+        "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
+      },
+      "ci": {
+        "run": 37234961723,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "cozy65-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "cozyRooms.winter_recreation_group_gate"
+      ]
+    },
+    {
+      "group": "cozyRooms",
+      "id": "power_nap",
+      "entry": "components/immersiveWorlds/cozyRooms/NapTerraceWorld.tsx",
+      "pr": 65,
+      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/cozyRooms",
+          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
+          "files": 140,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "",
+        "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
+      },
+      "ci": {
+        "run": 37234961723,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "cozy65-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "cozyRooms.winter_recreation_group_gate"
+      ]
+    },
+    {
+      "group": "cozyRooms",
+      "id": "nature:winter_lodge",
+      "entry": "components/immersiveWorlds/cozyRooms/WinterLodgeWorld.tsx",
+      "pr": 65,
+      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/cozyRooms",
+          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
+          "files": 140,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "",
+        "sceneSpecific": "Repeated120s recreated-ready failure; cause undetermined."
+      },
+      "ci": {
+        "run": 37234961723,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "cozy65-current audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "cozyRooms.winter_recreation_group_gate"
+      ]
+    },
+    {
+      "group": "rainShelters",
+      "id": "nature:tent_rain",
+      "entry": "components/immersiveWorlds/rainShelters/RainTentWorld.tsx",
+      "pr": 53,
+      "ownerHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+      "runtimeSource": "b0a4e5d668791a9bc826bf54a0890c4b78cc8bba",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/rainShelters",
+          "tree": "321b63a6927bdd6cf75f63d9b18b65657f921e76",
+          "files": 57,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "8bf04614cdf7f81821ffb791b24235fb22ff65613aa3a4a2eebb1d61fd9d9a18",
+      "visualGate": {
+        "status": "held_user_dependency",
+        "previousReviewStatus": "held_user_dependency",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
+        "sceneSpecific": "Public original isolated evidence only; no final Rain quality approval."
+      },
+      "ci": {
+        "run": 37231021218,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "shelter-current public original audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "rainShelters.rejected_upload_access_and_quality_dependency"
+      ]
+    },
+    {
+      "group": "rainShelters",
+      "id": "nature:window_rain",
+      "entry": "components/immersiveWorlds/rainShelters/GardenWindowWorld.tsx",
+      "pr": 53,
+      "ownerHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+      "runtimeSource": "b0a4e5d668791a9bc826bf54a0890c4b78cc8bba",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/rainShelters",
+          "tree": "321b63a6927bdd6cf75f63d9b18b65657f921e76",
+          "files": 57,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "df8818e9365eaac5adc8e734679d96326ade00635c970ff82f62941fbbbef653",
+      "visualGate": {
+        "status": "held_user_dependency",
+        "previousReviewStatus": "held_user_dependency",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
+        "sceneSpecific": "GardenWindow compatibility pending."
+      },
+      "ci": {
+        "run": 37231021218,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "shelter-current public original audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "rainShelters.rejected_upload_access_and_quality_dependency"
+      ]
+    },
+    {
+      "group": "rainShelters",
+      "id": "nature:monsoon_eaves",
+      "entry": "components/immersiveWorlds/rainShelters/MonsoonPorchWorld.tsx",
+      "pr": 53,
+      "ownerHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+      "runtimeSource": "b0a4e5d668791a9bc826bf54a0890c4b78cc8bba",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/rainShelters",
+          "tree": "321b63a6927bdd6cf75f63d9b18b65657f921e76",
+          "files": 57,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "e24ee1a3d6cb415e53cb7579c7ea50aadb1789656e5cdf3dc9a76b986aeb3ae7",
+      "visualGate": {
+        "status": "held_user_dependency",
+        "previousReviewStatus": "held_user_dependency",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
+        "sceneSpecific": "Public original isolated evidence only; no final Rain quality approval."
+      },
+      "ci": {
+        "run": 37231021218,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "shelter-current public original audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "rainShelters.rejected_upload_access_and_quality_dependency"
+      ]
+    },
+    {
+      "group": "rainShelters",
+      "id": "amb:summer_storm",
+      "entry": "components/immersiveWorlds/rainShelters/SummerStormWorld.tsx",
+      "pr": 53,
+      "ownerHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+      "runtimeSource": "b0a4e5d668791a9bc826bf54a0890c4b78cc8bba",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/rainShelters",
+          "tree": "321b63a6927bdd6cf75f63d9b18b65657f921e76",
+          "files": 57,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "b83c5fd2966f2a1263312db2f0ad475305fe9ba0044c04404163f12fcd975d3b",
+      "visualGate": {
+        "status": "held_user_dependency",
+        "previousReviewStatus": "held_user_dependency",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
+        "sceneSpecific": "Public original isolated evidence only; no final Rain quality approval."
+      },
+      "ci": {
+        "run": 37231021218,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "shelter-current public original audit"
+      },
+      "finalMergeReady": false,
+      "blockers": [
+        "rainShelters.rejected_upload_access_and_quality_dependency"
+      ]
+    },
+    {
+      "group": "livingWoods",
+      "id": "country_morning",
+      "entry": "components/immersiveWorlds/livingWoods/MorningPorchWorld.tsx",
+      "pr": 67,
+      "ownerHead": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "runtimeSource": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/livingWoods",
+          "tree": "3e040eff650bc4240bec9916d0238f67594798c6",
+          "files": 133,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "68b13118c86592bd94d417e77e34dad7bef0b3a72e90040b4f9ed17c212e203e",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "awaiting_owner_followup",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "New pointer-through chrome plus actual App/catalog/audio/history/focus/native lifecycle still unverified. Owner harness success does not replace App acceptance.",
+        "sceneSpecific": "Retained same-runtime15s cold GPU settlement failure; later selected jobs pass. Deterministic cold-load timing remains unproven."
+      },
+      "ci": {
+        "run": 37235908064,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "living67-intake exact final-head audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "livingWoods",
+      "id": "amb:rainy_forest",
+      "entry": "components/immersiveWorlds/livingWoods/RainyForestWorld.tsx",
+      "pr": 67,
+      "ownerHead": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "runtimeSource": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/livingWoods",
+          "tree": "3e040eff650bc4240bec9916d0238f67594798c6",
+          "files": 133,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "b73a6c1116ca61f1655e6d19857814be4ef9378f1c3d4179b981e71fbe802fc4",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "awaiting_owner_followup",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "New pointer-through chrome plus actual App/catalog/audio/history/focus/native lifecycle still unverified. Owner harness success does not replace App acceptance.",
+        "sceneSpecific": "Selected owner runs passed; actual integrated cold/native/lifecycle remains pending."
+      },
+      "ci": {
+        "run": 37235908064,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "living67-intake exact final-head audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "livingWoods",
+      "id": "amb:deep_forest",
+      "entry": "components/immersiveWorlds/livingWoods/AncientForestWorld.tsx",
+      "pr": 67,
+      "ownerHead": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "runtimeSource": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/livingWoods",
+          "tree": "3e040eff650bc4240bec9916d0238f67594798c6",
+          "files": 133,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "8e3c0fa0d8732511952bc680d37dfc6b74ef63da90ad3709d750a2c672553932",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "awaiting_owner_followup",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "New pointer-through chrome plus actual App/catalog/audio/history/focus/native lifecycle still unverified. Owner harness success does not replace App acceptance.",
+        "sceneSpecific": "Selected owner runs passed; actual integrated cold/native/lifecycle remains pending."
+      },
+      "ci": {
+        "run": 37235908064,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "living67-intake exact final-head audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "livingWoods",
+      "id": "nature:bamboo_grove",
+      "entry": "components/immersiveWorlds/livingWoods/BambooWorld.tsx",
+      "pr": 67,
+      "ownerHead": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "runtimeSource": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/livingWoods",
+          "tree": "3e040eff650bc4240bec9916d0238f67594798c6",
+          "files": 133,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "f3c26503fef49fb4db89160c221dd26ca76282650c0f8ad49496ec5294c8cbd8",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "awaiting_owner_followup",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "New pointer-through chrome plus actual App/catalog/audio/history/focus/native lifecycle still unverified. Owner harness success does not replace App acceptance.",
+        "sceneSpecific": "Selected owner runs passed; actual integrated cold/native/lifecycle remains pending."
+      },
+      "ci": {
+        "run": 37235908064,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "living67-intake exact final-head audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "koreanPlaces",
+      "id": "nature:temple_dawn",
+      "entry": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+      "pr": 66,
+      "ownerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "runtimeSource": "b72ed33ec990b7bf0e1414a381fb80437bb5d855",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/koreanPlaces",
+          "tree": "e20ad790629bece2774ffe78aa7d0b432b06f1b9",
+          "files": 88,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "PR66 all3 isolated runs pass; core clean native lifecycle/Player/Immersive/audio pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Rural-only toon exception retained; bounded correction is not full photorealism approval."
+      },
+      "ci": {
+        "run": 37235352339,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "root latest independent refresh"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "koreanPlaces",
+      "id": "nature:scops_night",
+      "entry": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+      "pr": 66,
+      "ownerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "runtimeSource": "b72ed33ec990b7bf0e1414a381fb80437bb5d855",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/koreanPlaces",
+          "tree": "e20ad790629bece2774ffe78aa7d0b432b06f1b9",
+          "files": 88,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "PR66 all3 isolated runs pass; core clean native lifecycle/Player/Immersive/audio pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Rural-only toon exception retained; bounded correction is not full photorealism approval."
+      },
+      "ci": {
+        "run": 37235352339,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "root latest independent refresh"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "koreanPlaces",
+      "id": "nature:rural_summer_night",
+      "entry": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+      "pr": 66,
+      "ownerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "runtimeSource": "b72ed33ec990b7bf0e1414a381fb80437bb5d855",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/koreanPlaces",
+          "tree": "e20ad790629bece2774ffe78aa7d0b432b06f1b9",
+          "files": 88,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "PR66 all3 isolated runs pass; core clean native lifecycle/Player/Immersive/audio pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Rural-only toon exception retained; bounded correction is not full photorealism approval."
+      },
+      "ci": {
+        "run": 37235352339,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "root latest independent refresh"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "nightFires",
+      "id": "amb:campfire_night",
+      "entry": "components/immersiveWorlds/nightFires/MountainCampfireWorld.tsx",
+      "pr": 60,
+      "ownerHead": "3ad1292f971dfb37186d423be6c6c19e8620f4d0",
+      "runtimeSource": "6623c083888e2baece9da11436fe35694a7fcebf",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/nightFires",
+          "tree": "e9a215c3108d6bbba85ef3f0e824a270a00d2e37",
+          "files": 85,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "dcedb12e8ad9b0a39dd467e6e9ce336499abd40afefbb49d6700a35c89621870",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Final3ad evidence source6623:67isolated checks,24PNG/16source hashes; shared App native gates pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+      },
+      "ci": {
+        "run": 37234116444,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "final exact3ad intake audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "nightFires",
+      "id": "amb:deep_night",
+      "entry": "components/immersiveWorlds/nightFires/DeepNightWorld.tsx",
+      "pr": 60,
+      "ownerHead": "3ad1292f971dfb37186d423be6c6c19e8620f4d0",
+      "runtimeSource": "6623c083888e2baece9da11436fe35694a7fcebf",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/nightFires",
+          "tree": "e9a215c3108d6bbba85ef3f0e824a270a00d2e37",
+          "files": 85,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "4e0535895df72608d1fa7a387b16390e4bf22decddea8102376d25b7fc2d95dd",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Final3ad evidence source6623:67isolated checks,24PNG/16source hashes; shared App native gates pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+      },
+      "ci": {
+        "run": 37234116444,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "final exact3ad intake audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "nightFires",
+      "id": "nature:campfire",
+      "entry": "components/immersiveWorlds/nightFires/LakesideCampWorld.tsx",
+      "pr": 60,
+      "ownerHead": "3ad1292f971dfb37186d423be6c6c19e8620f4d0",
+      "runtimeSource": "6623c083888e2baece9da11436fe35694a7fcebf",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/nightFires",
+          "tree": "e9a215c3108d6bbba85ef3f0e824a270a00d2e37",
+          "files": 85,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "2dae5a14734e34986df014dd717761025e750c68b892bab61a2db8908b647b3d",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "bounded_correction_accepted",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "Final3ad evidence source6623:67isolated checks,24PNG/16source hashes; shared App native gates pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+      },
+      "ci": {
+        "run": 37234116444,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "final exact3ad intake audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "quietSanctuaries",
+      "id": "meditation",
+      "entry": "components/immersiveWorlds/quietSanctuaries/MeditationCourtWorld.tsx",
+      "pr": 55,
+      "ownerHead": "c5a100794084e6230e9fdc8a4c036a02a5813176",
+      "runtimeSource": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/quietSanctuaries",
+          "tree": "919ea59c8626d7dec42a44f2ce0c07287ee9ebe1",
+          "files": 43,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "f8b8275259d899af60b40af3ce0fb4013de926df8def6b8228db5b2f4754b673",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "user_accepted_limited_correction",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "c5 evidence source5fc:45isolated checks,14PNG/18source hashes; shared App native gates pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+      },
+      "ci": {
+        "run": 37232191690,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "quiet-night exactc5 audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "quietSanctuaries",
+      "id": "nature:womb",
+      "entry": "components/immersiveWorlds/quietSanctuaries/WarmHeartWorld.tsx",
+      "pr": 55,
+      "ownerHead": "c5a100794084e6230e9fdc8a4c036a02a5813176",
+      "runtimeSource": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/quietSanctuaries",
+          "tree": "919ea59c8626d7dec42a44f2ce0c07287ee9ebe1",
+          "files": 43,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "user_accepted_limited_correction",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "c5 evidence source5fc:45isolated checks,14PNG/18source hashes; shared App native gates pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+      },
+      "ci": {
+        "run": 37232191690,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "quiet-night exactc5 audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    },
+    {
+      "group": "quietSanctuaries",
+      "id": "amb:snowy_night",
+      "entry": "components/immersiveWorlds/quietSanctuaries/SnowVillageWorld.tsx",
+      "pr": 55,
+      "ownerHead": "c5a100794084e6230e9fdc8a4c036a02a5813176",
+      "runtimeSource": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+      "integrated": true,
+      "requiredProps": {
+        "active": "boolean"
+      },
+      "registered": true,
+      "sourceState": "exact_owner_tree_intaken_for_QA",
+      "ownedTreeMatch": true,
+      "ownedRoots": [
+        {
+          "path": "components/immersiveWorlds/quietSanctuaries",
+          "tree": "919ea59c8626d7dec42a44f2ce0c07287ee9ebe1",
+          "files": 43,
+          "exactInWorktree": true
+        }
+      ],
+      "entrySha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261",
+      "visualGate": {
+        "status": "user_accepted",
+        "previousReviewStatus": "user_accepted_limited_correction",
+        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+      },
+      "functionGate": {
+        "isolated": "c5 evidence source5fc:45isolated checks,14PNG/18source hashes; shared App native gates pending.",
+        "sharedApp": "pending",
+        "sourceOrEvidenceFollowup": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+      },
+      "ci": {
+        "run": 37232191690,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "quiet-night exactc5 audit"
+      },
+      "finalMergeReady": false,
+      "blockers": []
+    }
+  ],
+  "blockers": [
+    {
+      "id": "waterEdge.valley_cleanup_group_gate",
+      "directScene": "nature:summer_valley",
+      "detail": "Clean normal36.8076s/byte45.4897s detach-to-context-loss exceed fixed20s; secondcycle/remount not reached; preserve failed outcomes."
+    },
+    {
+      "id": "cozyRooms.winter_recreation_group_gate",
+      "directScene": "nature:winter_lodge",
+      "detail": "Original full suite and isolated retry both fail recreated-ready120s; no proven cause; do not replace with separate disposal timings."
+    },
+    {
+      "id": "rainShelters.rejected_upload_access_and_quality_dependency",
+      "detail": "Rejected two uploads remain inaccessible and were not read, acquired inline, or retrieved via another access path. Public original53 only; new art/final Rain quality remains on hold. GardenWindow compatibility pending."
+    },
+    {
+      "id": "shared_app_acceptance",
+      "detail": "Visible/hidden chrome native tap/drag, controls/keyboard focus,1tap=1callback, routing, lifecycle, audio and regression gates remain open."
+    }
+  ],
+  "remainingSourceEvidenceFollowups": [
+    {
+      "group": "forest",
+      "note": "Forest Reflector callback target/face/mip restoration inventory followup; not a demonstrated visible failure."
+    },
+    {
+      "group": "quietSanctuaries",
+      "note": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+    },
+    {
+      "group": "nightFires",
+      "note": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+    }
+  ],
+  "supportingReports": [
+    "coverage-owned-tree-check.json",
+    "coverage-protected-check.json",
+    "cozy65-current.md",
+    "korean66-intake.md",
+    "wateredge-followup-current.md",
+    "cosmic-c9383-review.md",
+    "global-render-target-inventory.json",
+    "living67-intake.md",
+    "living67-intake.json"
+  ],
+  "scopeLimits": [
+    "Source/registry counts and standalone CI do not certify shared App function or final visual quality.",
+    "Prior isolated actual-image audits are retained; this refresh did not render or open new images.",
+    "Some built evidence bundles were not published as bytes; recorded bundle manifests are not independent rebuilds.",
+    "Source/CI publication does not prove an owner Work has stopped.",
+    "Owner harness wrappers/QA scheduling and selected passing jobs are not actual current App acceptance."
+  ],
+  "sharedSourceDelta": {
+    "path": "components/liveScene/liveSceneHost.ts",
+    "change": "After engine.renderFrame(0), recheck this.engine===engine before publishing ready/applyRunning; protects synchronous first-frame teardown/failure.",
+    "sha256": "344d71381575ec775187f80c250ec0222b51223effdde80dce2bd2cfd9236a78",
+    "testPath": "components/liveScene/liveSceneHost.test.ts",
+    "testObserved": "keeps first-render synchronous failure failed instead of publishing ready without a canvas",
+    "testSha256": "b3dfcb3eff7211fa9b64c48d48db4f9dc9420de34ec5586de7d6b705b840bc86",
+    "currentFullValidation": "pending_root"
+  },
+  "retainedFailureEvidence": [
+    {
+      "scene": "country_morning",
+      "ownerHead": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "detail": "Same-runtime original15s cold-settlement failure retained; later selected runs pass. New integrated cold gallery must measure current source; do not imply every owner run passed."
+    }
+  ],
+  "rootValidationUpdate": {
+    "source": "current integration working tree after Living intake and host/focus/retry fixes",
+    "unitTests": 535,
+    "testFiles": 60,
+    "typecheck": "pass",
+    "build": "pass",
+    "bundle": "pass",
+    "initialJavaScriptKiB": 408.8,
+    "cssKiB": 101.0,
+    "initialJsAsset": "index-DE69dX8D.js",
+    "initialCssAsset": "index-D2nj3flF.css",
+    "sharedAppFinalGate": "pending",
+    "nativeCafeLatest": "failed hidden chrome touch180s; cleanup10s",
+    "audioLiveLatest": "2passed; later control visibility60s and cleanup15s failed",
+    "newCompatibilityFollowups": [
+      "Quiet actual FBO and environment PMREM",
+      "Korean Temple/Scops implicit PMREM"
+    ],
+    "mainMerge": "held"
+  }
+}

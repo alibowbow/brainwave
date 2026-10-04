@@ -134,6 +134,8 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
       engine.init().then(() => {
         if (this.engine !== engine) return;
         engine.renderFrame(0);
+        // A first draw/fence failure may synchronously tear down this engine.
+        if (this.engine !== engine) return;
         this.setStatus('ready');
         this.applyRunning();
       }).catch(() => {

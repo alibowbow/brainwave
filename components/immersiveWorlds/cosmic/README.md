@@ -78,17 +78,54 @@ repository dependencies or external asset/network requests are introduced.
 
 ## Motion, quality, lifecycle
 
-Default rendering follows requestAnimationFrame; no fixed 24fps cap. DPR is at most
-2 and raster allocation is bounded to3.6 million pixels. Only sustained measured
-slow frames for8 seconds reduce the quality multiplier to0.8 and reflection target
-from1024 to768. Sustained fast frames restore quality. Narrow portrait layouts retain foreground foliage and recenter the distant sky. The camera is seated, with
-maximum yaw≈6° / pitch≈3.4°, a0.7-second follow and3.2-second settle.
+Default rendering follows requestAnimationFrame; no fixed 24fps cap. A new engine
+starts at quality multiplier 1 with a 1024-pixel reflection target. DPR is at most
+2 and raster allocation is bounded to 3.6 million pixels before the multiplier.
+The policy measures **accumulating/decaying frame pressure, not consecutive slow
+frames**: intervals above 34 ms and below 500 ms add their duration to slow
+pressure and clear the fast counter. Intervals above 0 and below 22 ms add to the
+fast counter and subtract their duration from slow pressure (floored at zero).
+Other intervals, including long scheduling gaps, leave both counters unchanged.
+More than 8 seconds of slow pressure selects multiplier 0.8 and a 768-pixel
+reflection target, clearing slow pressure. More than 24 accumulated fast seconds
+restores multiplier 1 and a 1024-pixel target, clearing the fast counter.
+
+Pause, hidden, offscreen and reduced-motion states stop RAF and retain the last
+selected quality and pressure counters; they do **not** force full quality or
+clear adaptation history. Resume's first frame has a zero time delta. A new
+engine after disposal starts at full quality again. Narrow portrait layouts retain
+foreground foliage and recenter the distant sky. The camera is seated, with
+maximum yaw ≈ 6° / pitch ≈ 3.4°, a 0.7-second follow and 3.2-second settle.
 
 The shared live-scene host cancels RAF and detaches the canvas immediately when
 unmounted, then disposes GPU resources after5 seconds. A quick return reuses it.
 Context loss shows an explicitly labeled failure state; it never masquerades as
-successful3D. A later mount can initialize again. Reduced motion keeps a genuine
-rendered still, including after resize.
+successful 3D. A later mount can initialize again. Reduced motion keeps a genuine
+rendered still at the retained quality, including after resize.
+
+## Reflection compatibility correction · 2026-10-04
+
+Before the first GPU allocation, the owned helper checks the real
+`EXT_color_buffer_float` and `EXT_color_buffer_half_float` extensions. Either
+permits this non-MSAA RGBA16F reflection. With neither extension, the same pool
+uses RGBA8/UnsignedByte. The actual framebuffer is checked, and an incomplete
+half allocation is disposed before retrying byte. Both initial allocation and
+quality-driven resize are checked; the probe restores the previous render target,
+cube face and mip level in `finally`. No GL extension result is fabricated.
+Existing PCF shadow targets use byte color/depth and do not need float attachments.
+The scene has no PMREM or other offscreen color pass.
+
+The isolated built harness accepts `?compatibility=auto` and
+`?compatibility=byte` for full-quality, time-zero real-3D stills. `&probe` also
+runs a small validation-only GPU state-restoration check. These controls are
+not component props or production app routing. The production host always uses
+automatic capability selection. Optional engine-level byte selection exists
+only to exercise the exact fallback without spoofing unsupported hardware.
+
+The ring-shadow center is refreshed with `planet.getWorldPosition()` before
+rendering, so the portrait sky rotation and ring fragments share world coordinates.
+Correction source/bundle SHA-256 bindings, native PNGs, functional checks and
+limits are in [validation/correction-20261004](validation/correction-20261004).
 
 ## Harness and verification
 

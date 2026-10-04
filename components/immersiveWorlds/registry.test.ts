@@ -6,10 +6,17 @@ import { createWorldRegistry, immersiveWorldRegistry, type WorldLoaders } from '
 import { WORLD_IDS } from './worldCatalog';
 
 describe('reviewed world registration', () => {
-  it('registers only the three real pilots admitted for draft QA, with no placeholders', () => {
-    expect(WORLD_IDS.filter(id => immersiveWorldRegistry.has(id))).toEqual(['amb:morning_forest', 'amb:cosmic', 'amb:focus_cafe']);
+  it('registers only admitted owned trees, with no protected overrides or placeholders', () => {
+    const admitted = new Set(['amb:morning_forest', 'amb:cosmic', 'amb:focus_cafe',
+      'meditation', 'nature:womb', 'amb:snowy_night', 'amb:waterfall_valley', 'amb:cave_meditation', 'nature:deep_sea',
+      'amb:campfire_night', 'amb:deep_night', 'nature:campfire', 'amb:night_pond', 'nature:summer_valley', 'nature:pebble_shore',
+      'nature:tent_rain', 'nature:window_rain', 'nature:monsoon_eaves', 'amb:summer_storm',
+      'relax', 'sleep_prep', 'power_nap', 'nature:winter_lodge', 'nature:temple_dawn', 'nature:scops_night', 'nature:rural_summer_night',
+      'country_morning', 'amb:rainy_forest', 'amb:deep_forest', 'nature:bamboo_grove']);
+    expect(admitted.size).toBe(30);
+    expect(new Set(WORLD_IDS.filter(id => immersiveWorldRegistry.has(id)))).toEqual(admitted);
     for (const id of WORLD_IDS) {
-      if (id === 'amb:morning_forest' || id === 'amb:focus_cafe' || id === 'amb:cosmic') continue;
+      if (admitted.has(id)) continue;
       expect(immersiveWorldRegistry.has(id)).toBe(false);
       expect(immersiveWorldRegistry.get(id)).toBeUndefined();
     }

@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-04T21:02:54.023611+00:00",
+  "expectedOriginalHead": "0e09a28a175b0aab8a52443c14a506f54b6998ee",
+  "remoteRefs": {
+    "refs/heads/codex/korean-places-three-worlds": "0e09a28a175b0aab8a52443c14a506f54b6998ee",
+    "refs/heads/main": "14940149cc5c0fccb778b58d4d755a04aea55e53"
+  },
+  "newBranch": "codex/korean-places-quality-followup-20261004",
+  "newBranchAbsent": true,
+  "originalPr": 57,
+  "handoffCommentId": 5983982007,
+  "independentReview": "At 21:00–21:01 UTC all 17 open PRs across all authors contained only original #57 as Korean-related; original PR remained open/draft with latest non-bot handoff, only original Korean branch existed. Unpushed private work is not discoverable.",
+  "allowedPublication": "New isolated branch and draft PR targeting codex/korean-places-three-worlds only; no original PR update, main merge, force push or manual deployment."
+}

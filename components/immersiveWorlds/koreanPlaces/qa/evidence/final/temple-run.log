@@ -1,0 +1,28 @@
+Testing temple
+Loaded temple; waiting for scene ready
+Ready temple
+Captured temple-desktop.png (1236780 bytes)
+Captured temple-chrome.png (1236285 bytes)
+Captured temple-portrait.png (287657 bytes)
+Captured temple-fold.png (705103 bytes)
+Lifecycle temple: motion endpoints at 683x450
+Lifecycle temple: visible chrome pointer and UI controls
+Lifecycle temple: cooldown real frame 1/11 flushed
+Lifecycle temple: cooldown real frame 2/11 flushed
+Lifecycle temple: cooldown real frame 3/11 flushed
+Lifecycle temple: cooldown real frame 4/11 flushed
+Lifecycle temple: cooldown real frame 5/11 flushed
+Lifecycle temple: cooldown real frame 6/11 flushed
+Lifecycle temple: cooldown real frame 7/11 flushed
+Lifecycle temple: cooldown real frame 8/11 flushed
+Lifecycle temple: cooldown real frame 9/11 flushed
+Lifecycle temple: cooldown real frame 10/11 flushed
+Lifecycle temple: cooldown real frame 11/11 flushed
+Lifecycle temple: trusted browser touch
+Lifecycle temple: three holder transports
+Lifecycle temple: reduced/static/hidden policies
+Lifecycle temple: mount reuse and delayed disposal
+Lifecycle temple: static first frame
+Loaded temple; waiting for scene ready
+Ready temple
+Evidence: components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-temple.json; pass=true

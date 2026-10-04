@@ -1,0 +1,58 @@
+{
+  "sourceCommit": "9f7cad297ee27b57c75da19c245f79bfb6dd85d4",
+  "sourceTree": "c81ee7ccc06794057508e025010917a1124a7dd6",
+  "bundle": "cafe-pilot-DUYsDNTQ.mjs",
+  "bundleSha256": "60b203d397980271a36c869c188b8705be07a445a0b765e03161ecdbb21fd8ac",
+  "environmentSha256": "43bb5410f1ede07802bf3371ee2a9c3054abeaba1fb87eefb7bc992b1cac5d92",
+  "capture": "Unmodified native-resolution WebGL canvas; Chromium 153 / SwiftShader WebGL2 / DPR 1; compiled pilot; paused initial simulation.",
+  "files": {
+    "forced-byte/desktop.png": {
+      "width": 1280,
+      "height": 850,
+      "bytes": 798029,
+      "sha256": "98421d3a7b430b755c5250e02c76d99a42de826b536eb827513cd9f9502f6fbd"
+    },
+    "forced-byte/fold-portrait.png": {
+      "width": 412,
+      "height": 915,
+      "bytes": 278652,
+      "sha256": "74a368dba87914635810b024abe8b8ec3f9ae7a0637af3be4bea0fa17ba585c7"
+    },
+    "forced-byte/fold-inner-portrait.png": {
+      "width": 673,
+      "height": 841,
+      "bytes": 396836,
+      "sha256": "7cbf8494265f390d1f0003dc87e13a564762d45218bf1ed21eeb3ac4d9e26b53"
+    },
+    "forced-byte/fold-landscape.png": {
+      "width": 915,
+      "height": 412,
+      "bytes": 353908,
+      "sha256": "a337fd493fbccca6390578079ef25f35e057865d94769e614eb47d5058041996"
+    },
+    "supported/desktop.png": {
+      "width": 1280,
+      "height": 850,
+      "bytes": 785468,
+      "sha256": "1a2308173c4415792ba728583f95955eb9dbd55494d3a35d352c0f5c58527d11"
+    },
+    "supported/fold-portrait.png": {
+      "width": 412,
+      "height": 915,
+      "bytes": 273558,
+      "sha256": "ebccbef33ac44e2d1f94fa617d1f79cdbf9a371c30397438e90a72ea55ee2c93"
+    },
+    "supported/fold-inner-portrait.png": {
+      "width": 673,
+      "height": 841,
+      "bytes": 385428,
+      "sha256": "42d32195b517276d8af72cc1dc88919e30a00ea4de333d07c25e08349feda993"
+    },
+    "supported/fold-landscape.png": {
+      "width": 915,
+      "height": 412,
+      "bytes": 348672,
+      "sha256": "a0c381cf99b3708e095e225e49b6f829ea8c08e8c54321b89eb0b21e8d610b56"
+    }
+  }
+}

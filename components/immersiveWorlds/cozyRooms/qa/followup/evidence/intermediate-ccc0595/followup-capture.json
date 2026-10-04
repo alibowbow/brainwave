@@ -1,0 +1,1590 @@
+{
+  "timestamp": "2026-10-04T20:31:39.963Z",
+  "gitHead": "ccc0595954de04710fd2850b8c99fcad8b09d6a2",
+  "source": {
+    "sha256": "f093c52572044c1d18bd30630b14c2e10246d50d16c0daac6b9645746a9bd14a",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "60ff86a05ac3a31074cc8fea9452c91b31c3a00023a91a06d2426f765be98f7f",
+      "fireDetail.ts": "ae767ce9ff0ca4b29dad137b45e24f540f0a103d5ab1a5eddd62e5889bb721f7",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "bundle": {
+    "sha256": "b08205d97ba0af14a1685f43a344c631bdcd28e9386610919f292ac32afea8d8",
+    "files": [
+      "assets/CozyWorld-BFJx2zx2.js",
+      "assets/CozyWorld-BFJx2zx2.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-BPscjMPz.js",
+      "assets/HearthWorld-BPscjMPz.js.map",
+      "assets/NapTerraceWorld-6KdUP5O1.js",
+      "assets/NapTerraceWorld-6KdUP5O1.js.map",
+      "assets/SleepRoomWorld-BIIOpVQT.js",
+      "assets/SleepRoomWorld-BIIOpVQT.js.map",
+      "assets/WinterLodgeWorld-Cr7JsrVG.js",
+      "assets/WinterLodgeWorld-Cr7JsrVG.js.map",
+      "assets/fireDetail-D_XKnSjo.js",
+      "assets/fireDetail-D_XKnSjo.js.map",
+      "assets/index-Yx0tNyQg.js",
+      "assets/index-Yx0tNyQg.js.map",
+      "assets/materials-BVVaMuvu.js",
+      "assets/materials-BVVaMuvu.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-BFJx2zx2.js": "8c73e1a6ca8b2d2eca1791694c27a654b83003f4ee681ed81592b03b688946b9",
+      "assets/CozyWorld-BFJx2zx2.js.map": "da0938f5e5eabeef221eb76193f27e8ebf51eb737bfeb05486a10170a270a26c",
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/HearthWorld-BPscjMPz.js": "c2df2b98707cec97839d36eb43383f574ff867333b8539444ec6da6d38fae13d",
+      "assets/HearthWorld-BPscjMPz.js.map": "24b8e9da54136641123be34ca74dec7b9dad0a1c44dc265bc1c339316c4a6f30",
+      "assets/NapTerraceWorld-6KdUP5O1.js": "8380d74a6ee627fb2a80a75974ee4023158d0136789b8c854c85852dbb2c9082",
+      "assets/NapTerraceWorld-6KdUP5O1.js.map": "2d5f5088878e4e33abc818bf0a4e0aa0c3cbf7bfbf0fd8f70af7e59a8eb92625",
+      "assets/SleepRoomWorld-BIIOpVQT.js": "8c5ef861ad4d137eb7193dcbf8be2cb704541c81b0bd6c3b318f3e6c5ed68429",
+      "assets/SleepRoomWorld-BIIOpVQT.js.map": "1ccaaccebd0fef267899c25f870c042eb6654e4f2af300e024a263fb04b8c1cf",
+      "assets/WinterLodgeWorld-Cr7JsrVG.js": "7dbe8c3c2f31efe0018d4845c95cbbd7f1b54973af4d992e1974f51e0daa2393",
+      "assets/WinterLodgeWorld-Cr7JsrVG.js.map": "39cf66768487745bd08efa714791328a5340f824964cb1cdafc60896e99932e5",
+      "assets/fireDetail-D_XKnSjo.js": "a750cbf655a19df9ea9072852b13d5c6931d70c147508d52b38224f6a4fb07b5",
+      "assets/fireDetail-D_XKnSjo.js.map": "02db37d44bd118f531233e9fe3071f37b71f51e3f5de5cedaa4b955eff93d5b8",
+      "assets/index-Yx0tNyQg.js": "f24854d975345e5c445f34159051fa3b94339deb8917d256fda79b5e61e317dd",
+      "assets/index-Yx0tNyQg.js.map": "6e3ce23071c6eeff080dee0992b7eb16c4545076aa026c8ec5f312fc34dfe3de",
+      "assets/materials-BVVaMuvu.js": "bb5ebdcc0d55c216f1f64db0f75888034fb58617ecf8dcc50475d3360c637f69",
+      "assets/materials-BVVaMuvu.js.map": "52ff7ed3c87c8751b66c267b475852f5dd98df3b96b2866c3ae26ceea86e663e",
+      "index.html": "f2b3d7907062c0f2133e4c941f46796ac7d682538406e94135a5e850c6ff9aec"
+    }
+  },
+  "harness": "Unmodified original qa/index.html and qa/main.tsx; same Vite settings as verify.mjs",
+  "passed": true,
+  "results": [
+    {
+      "world": "relax",
+      "browser": "153.0.8010.0",
+      "snapshots": [
+        {
+          "file": "relax-desktop.png",
+          "sha256": "6cb04ac10f8e59286de022c2480486f9c53160e56c3abc90f85de358dc826470",
+          "bytes": 809226,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 3686.10000000149,
+            "polls": 217,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "log",
+                  "x": 0.4776304151574958,
+                  "y": 0.6448388090234305,
+                  "z": 0.9832925097298689
+                },
+                {
+                  "action": "log",
+                  "x": 0.4850526966209123,
+                  "y": 0.6488665787006445,
+                  "z": 0.9826187484157978
+                },
+                {
+                  "action": "log",
+                  "x": 0.4929935840962355,
+                  "y": 0.6204402355554253,
+                  "z": 0.9819132816200882
+                },
+                {
+                  "action": "log",
+                  "x": 0.5044523282936758,
+                  "y": 0.6143833234763021,
+                  "z": 0.9832709619032328
+                },
+                {
+                  "action": "log",
+                  "x": 0.5127810184331357,
+                  "y": 0.6173956641776923,
+                  "z": 0.9825957340770789
+                }
+              ],
+              "drawCalls": 222,
+              "triangles": 298348,
+              "memory": {
+                "geometries": 95,
+                "textures": 31
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "log",
+                  "x": 0.4776304151574958,
+                  "y": 0.6448388090234305,
+                  "z": 0.9832925097298689
+                },
+                {
+                  "action": "log",
+                  "x": 0.4850526966209123,
+                  "y": 0.6488665787006445,
+                  "z": 0.9826187484157978
+                },
+                {
+                  "action": "log",
+                  "x": 0.4929935840962355,
+                  "y": 0.6204402355554253,
+                  "z": 0.9819132816200882
+                },
+                {
+                  "action": "log",
+                  "x": 0.5044523282936758,
+                  "y": 0.6143833234763021,
+                  "z": 0.9832709619032328
+                },
+                {
+                  "action": "log",
+                  "x": 0.5127810184331357,
+                  "y": 0.6173956641776923,
+                  "z": 0.9825957340770789
+                }
+              ],
+              "drawCalls": 222,
+              "triangles": 298348,
+              "memory": {
+                "geometries": 95,
+                "textures": 31
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 1280,
+              "height": 850,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 1280,
+              "height": 850
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 850
+            }
+          },
+          "captureMs": 483.47418200000084,
+          "totalMs": 5086.6296680000005
+        },
+        {
+          "file": "relax-portrait.png",
+          "sha256": "cda7dd71101b94f1329d2a6b59705f4111ba99f0a8b8d7aba8fda1e307e99bbf",
+          "bytes": 356915,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 218,
+            "polls": 14,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "log",
+                  "x": 0.43538706568891783,
+                  "y": 0.5787059448446911,
+                  "z": 0.9815346965795061
+                },
+                {
+                  "action": "log",
+                  "x": 0.46236367055200245,
+                  "y": 0.5826142675423146,
+                  "z": 0.9807461591340085
+                },
+                {
+                  "action": "log",
+                  "x": 0.49134656901584906,
+                  "y": 0.5549166436656663,
+                  "z": 0.9798743653318053
+                },
+                {
+                  "action": "log",
+                  "x": 0.5228545413256145,
+                  "y": 0.5490572965964889,
+                  "z": 0.9815031373738511
+                },
+                {
+                  "action": "log",
+                  "x": 0.5530255377971776,
+                  "y": 0.5519023116948567,
+                  "z": 0.9807122845711906
+                }
+              ],
+              "drawCalls": 165,
+              "triangles": 287628,
+              "memory": {
+                "geometries": 95,
+                "textures": 31
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "log",
+                  "x": 0.43538706568891783,
+                  "y": 0.5787059448446911,
+                  "z": 0.9815346965795061
+                },
+                {
+                  "action": "log",
+                  "x": 0.46236367055200245,
+                  "y": 0.5826142675423146,
+                  "z": 0.9807461591340085
+                },
+                {
+                  "action": "log",
+                  "x": 0.49134656901584906,
+                  "y": 0.5549166436656663,
+                  "z": 0.9798743653318053
+                },
+                {
+                  "action": "log",
+                  "x": 0.5228545413256145,
+                  "y": 0.5490572965964889,
+                  "z": 0.9815031373738511
+                },
+                {
+                  "action": "log",
+                  "x": 0.5530255377971776,
+                  "y": 0.5519023116948567,
+                  "z": 0.9807122845711906
+                }
+              ],
+              "drawCalls": 165,
+              "triangles": 287628,
+              "memory": {
+                "geometries": 95,
+                "textures": 31
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 412,
+              "height": 915,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 412,
+              "height": 915
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 412,
+              "height": 915
+            }
+          },
+          "captureMs": 149.43746499999907,
+          "totalMs": 1281.985571000001
+        }
+      ],
+      "input": null,
+      "passed": true
+    },
+    {
+      "world": "sleep_prep",
+      "browser": "153.0.8010.0",
+      "snapshots": [
+        {
+          "file": "sleep_prep-desktop.png",
+          "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982",
+          "bytes": 546519,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 1415.800000000745,
+            "polls": 82,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "curtain",
+                  "x": 0.35467149370779105,
+                  "y": 0.37635926394155983,
+                  "z": 0.9829028480465697
+                },
+                {
+                  "action": "curtain",
+                  "x": 0.6774451861646038,
+                  "y": 0.37963368035621176,
+                  "z": 0.9832490750740214
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.8413439446765383,
+                  "y": 0.7033900466709939,
+                  "z": 0.9708437318614971
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.8387633671933958,
+                  "y": 0.49102810286960036,
+                  "z": 0.9710755033103184
+                }
+              ],
+              "drawCalls": 520,
+              "triangles": 239398,
+              "memory": {
+                "geometries": 252,
+                "textures": 13
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "curtain",
+                  "x": 0.35467149370779105,
+                  "y": 0.37635926394155983,
+                  "z": 0.9829028480465697
+                },
+                {
+                  "action": "curtain",
+                  "x": 0.6774451861646038,
+                  "y": 0.37963368035621176,
+                  "z": 0.9832490750740214
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.8413439446765383,
+                  "y": 0.7033900466709939,
+                  "z": 0.9708437318614971
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.8387633671933958,
+                  "y": 0.49102810286960036,
+                  "z": 0.9710755033103184
+                }
+              ],
+              "drawCalls": 520,
+              "triangles": 239398,
+              "memory": {
+                "geometries": 252,
+                "textures": 13
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 1280,
+              "height": 850,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 1280,
+              "height": 850
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 850
+            }
+          },
+          "captureMs": 218.09055999999873,
+          "totalMs": 2556.7511749999994
+        },
+        {
+          "file": "sleep_prep-portrait.png",
+          "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5",
+          "bytes": 181089,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 2.699999999254942,
+            "polls": 1,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "curtain",
+                  "x": -0.013942836083943755,
+                  "y": 0.42403938915616196,
+                  "z": 0.9812989302360424
+                },
+                {
+                  "action": "curtain",
+                  "x": 0.989481187817584,
+                  "y": 0.42525549770094456,
+                  "z": 0.9814515888858355
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.7136509355013353,
+                  "y": 0.7151190760857363,
+                  "z": 0.9711139938479373
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.7106133487951451,
+                  "y": 0.5362220211980874,
+                  "z": 0.9715460235414889
+                }
+              ],
+              "drawCalls": 423,
+              "triangles": 212226,
+              "memory": {
+                "geometries": 252,
+                "textures": 13
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "curtain",
+                  "x": -0.013942836083943755,
+                  "y": 0.42403938915616196,
+                  "z": 0.9812989302360424
+                },
+                {
+                  "action": "curtain",
+                  "x": 0.989481187817584,
+                  "y": 0.42525549770094456,
+                  "z": 0.9814515888858355
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.7136509355013353,
+                  "y": 0.7151190760857363,
+                  "z": 0.9711139938479373
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.7106133487951451,
+                  "y": 0.5362220211980874,
+                  "z": 0.9715460235414889
+                }
+              ],
+              "drawCalls": 423,
+              "triangles": 212226,
+              "memory": {
+                "geometries": 252,
+                "textures": 13
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 412,
+              "height": 915,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 412,
+              "height": 915
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 412,
+              "height": 915
+            }
+          },
+          "captureMs": 94.8422499999997,
+          "totalMs": 1031.097953999999
+        }
+      ],
+      "input": null,
+      "passed": true
+    },
+    {
+      "world": "power_nap",
+      "browser": "153.0.8010.0",
+      "snapshots": [
+        {
+          "file": "power_nap-desktop.png",
+          "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7",
+          "bytes": 1231975,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 7808.800000000745,
+            "polls": 466,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "canopy",
+                  "x": 0.4961019336313916,
+                  "y": 0.9166821626148216,
+                  "z": 0.9641707234121167
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4961019336313916,
+                  "y": 0.9166821626148216,
+                  "z": 0.9641707234121167
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4961019336313916,
+                  "y": 0.9166821626148216,
+                  "z": 0.9641707234121167
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.7292774309270397,
+                  "y": 0.254163962668259,
+                  "z": 0.9764287515672567
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.7294779551722277,
+                  "y": 0.41690773245268375,
+                  "z": 0.976407261308326
+                }
+              ],
+              "drawCalls": 406,
+              "triangles": 1649826,
+              "memory": {
+                "geometries": 207,
+                "textures": 19
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "canopy",
+                  "x": 0.4961019336313916,
+                  "y": 0.9166821626148216,
+                  "z": 0.9641707234121167
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4961019336313916,
+                  "y": 0.9166821626148216,
+                  "z": 0.9641707234121167
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4961019336313916,
+                  "y": 0.9166821626148216,
+                  "z": 0.9641707234121167
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.7292774309270397,
+                  "y": 0.254163962668259,
+                  "z": 0.9764287515672567
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.7294779551722277,
+                  "y": 0.41690773245268375,
+                  "z": 0.976407261308326
+                }
+              ],
+              "drawCalls": 406,
+              "triangles": 1649826,
+              "memory": {
+                "geometries": 207,
+                "textures": 19
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 1280,
+              "height": 850,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 1280,
+              "height": 850
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 850
+            }
+          },
+          "captureMs": 250.402398000002,
+          "totalMs": 8980.675244000002
+        },
+        {
+          "file": "power_nap-portrait.png",
+          "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504",
+          "bytes": 425676,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 790,
+            "polls": 48,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "canopy",
+                  "x": 0.4699829399851602,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4699829399851602,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4699829399851602,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.8091166510700529,
+                  "y": 0.2782226343529906,
+                  "z": 0.9754586525773171
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.8101313381301567,
+                  "y": 0.4277299358904443,
+                  "z": 0.975374810499464
+                }
+              ],
+              "drawCalls": 360,
+              "triangles": 1552282,
+              "memory": {
+                "geometries": 207,
+                "textures": 19
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "canopy",
+                  "x": 0.4699829399851602,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4699829399851602,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.4699829399851602,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.8091166510700529,
+                  "y": 0.2782226343529906,
+                  "z": 0.9754586525773171
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.8101313381301567,
+                  "y": 0.4277299358904443,
+                  "z": 0.975374810499464
+                }
+              ],
+              "drawCalls": 360,
+              "triangles": 1552282,
+              "memory": {
+                "geometries": 207,
+                "textures": 19
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 412,
+              "height": 915,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 412,
+              "height": 915
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 412,
+              "height": 915
+            }
+          },
+          "captureMs": 92.20690399999876,
+          "totalMs": 1795.8467199999977
+        },
+        {
+          "file": "power_nap-fold-inner-viewport.png",
+          "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470",
+          "bytes": 660518,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 908.5,
+            "polls": 56,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 4,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "canopy",
+                  "x": 0.483110172770708,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.483110172770708,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.483110172770708,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.6739319849342147,
+                  "y": 0.2782226343529906,
+                  "z": 0.9754586525773171
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.6745029232315856,
+                  "y": 0.4277299358904443,
+                  "z": 0.975374810499464
+                }
+              ],
+              "drawCalls": 379,
+              "triangles": 1561810,
+              "memory": {
+                "geometries": 207,
+                "textures": 19
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 4,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "canopy",
+                  "x": 0.483110172770708,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.483110172770708,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.483110172770708,
+                  "y": 0.9046287134549749,
+                  "z": 0.960636189488443
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.6739319849342147,
+                  "y": 0.2782226343529906,
+                  "z": 0.9754586525773171
+                },
+                {
+                  "action": "canopy",
+                  "x": 0.6745029232315856,
+                  "y": 0.4277299358904443,
+                  "z": 0.975374810499464
+                }
+              ],
+              "drawCalls": 379,
+              "triangles": 1561810,
+              "memory": {
+                "geometries": 207,
+                "textures": 19
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 673,
+              "height": 841,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 673,
+              "height": 841
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 673,
+              "height": 841
+            }
+          },
+          "captureMs": 127.67846600000121,
+          "totalMs": 1969.4288860000015
+        }
+      ],
+      "input": null,
+      "passed": true
+    },
+    {
+      "world": "nature:winter_lodge",
+      "browser": "153.0.8010.0",
+      "snapshots": [
+        {
+          "file": "nature-winter_lodge-desktop.png",
+          "sha256": "ca0af048b0f1bf6fc6c06cc0ab360595b2044173641b1c523c513f62aea6600c",
+          "bytes": 912258,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 11899.400000002235,
+            "polls": 701,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "cup",
+                  "x": 0.13736739894839928,
+                  "y": 0.8125590954840582,
+                  "z": 0.9569004896133495
+                },
+                {
+                  "action": "cup",
+                  "x": 0.09321310610451172,
+                  "y": 0.7656469701435584,
+                  "z": 0.9568973537142805
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.14239993071872897,
+                  "y": 0.45051655710232014,
+                  "z": 0.9673495917121584
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.14730033732753905,
+                  "y": 0.6027171884734851,
+                  "z": 0.9672611221954316
+                },
+                {
+                  "action": "log",
+                  "x": 0.8655758604024826,
+                  "y": 0.7447993194139689,
+                  "z": 0.9780888288779535
+                },
+                {
+                  "action": "log",
+                  "x": 0.8916083889069171,
+                  "y": 0.7279177483067474,
+                  "z": 0.9777985014716816
+                },
+                {
+                  "action": "log",
+                  "x": 0.9178437542823218,
+                  "y": 0.7516784546944905,
+                  "z": 0.9775269365320773
+                },
+                {
+                  "action": "log",
+                  "x": 0.9452217369138786,
+                  "y": 0.7344619072992344,
+                  "z": 0.9772218811362687
+                },
+                {
+                  "action": "log",
+                  "x": 0.972779590181326,
+                  "y": 0.7589087258771514,
+                  "z": 0.9769363631721307
+                }
+              ],
+              "drawCalls": 676,
+              "triangles": 2697394,
+              "memory": {
+                "geometries": 373,
+                "textures": 30
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "cup",
+                  "x": 0.13736739894839928,
+                  "y": 0.8125590954840582,
+                  "z": 0.9569004896133495
+                },
+                {
+                  "action": "cup",
+                  "x": 0.09321310610451172,
+                  "y": 0.7656469701435584,
+                  "z": 0.9568973537142805
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.14239993071872897,
+                  "y": 0.45051655710232014,
+                  "z": 0.9673495917121584
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.14730033732753905,
+                  "y": 0.6027171884734851,
+                  "z": 0.9672611221954316
+                },
+                {
+                  "action": "log",
+                  "x": 0.8655758604024826,
+                  "y": 0.7447993194139689,
+                  "z": 0.9780888288779535
+                },
+                {
+                  "action": "log",
+                  "x": 0.8916083889069171,
+                  "y": 0.7279177483067474,
+                  "z": 0.9777985014716816
+                },
+                {
+                  "action": "log",
+                  "x": 0.9178437542823218,
+                  "y": 0.7516784546944905,
+                  "z": 0.9775269365320773
+                },
+                {
+                  "action": "log",
+                  "x": 0.9452217369138786,
+                  "y": 0.7344619072992344,
+                  "z": 0.9772218811362687
+                },
+                {
+                  "action": "log",
+                  "x": 0.972779590181326,
+                  "y": 0.7589087258771514,
+                  "z": 0.9769363631721307
+                }
+              ],
+              "drawCalls": 676,
+              "triangles": 2697394,
+              "memory": {
+                "geometries": 373,
+                "textures": 30
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 1280,
+              "height": 850,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 1280,
+              "height": 850
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 850
+            }
+          },
+          "captureMs": 430.2797119999959,
+          "totalMs": 13247.393512999995
+        },
+        {
+          "file": "nature-winter_lodge-portrait.png",
+          "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7",
+          "bytes": 346221,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 1957,
+            "polls": 116,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "cup",
+                  "x": 0.25184165764059097,
+                  "y": 0.6619398020298026,
+                  "z": 0.9716206105563457
+                },
+                {
+                  "action": "cup",
+                  "x": 0.16562500024549037,
+                  "y": 0.6347729987234532,
+                  "z": 0.9715936817073917
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.21053157081406632,
+                  "y": 0.4509081073228265,
+                  "z": 0.9771151041878124
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.2225324588581466,
+                  "y": 0.5451441431428042,
+                  "z": 0.9770942008678911
+                },
+                {
+                  "action": "log",
+                  "x": 0.8736547151997891,
+                  "y": 0.7023777374630453,
+                  "z": 0.9782930178317605
+                },
+                {
+                  "action": "log",
+                  "x": 0.9406599184079167,
+                  "y": 0.687590330182879,
+                  "z": 0.9780143451561966
+                },
+                {
+                  "action": "log",
+                  "x": 1.0086082613831193,
+                  "y": 0.7080362857234728,
+                  "z": 0.9777622855173852
+                },
+                {
+                  "action": "log",
+                  "x": 1.0789444367942054,
+                  "y": 0.6929658032048356,
+                  "z": 0.9774701488912919
+                },
+                {
+                  "action": "log",
+                  "x": 1.150119858449116,
+                  "y": 0.7139698104366383,
+                  "z": 0.977205762331846
+                }
+              ],
+              "drawCalls": 559,
+              "triangles": 2655332,
+              "memory": {
+                "geometries": 373,
+                "textures": 30
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "cup",
+                  "x": 0.25184165764059097,
+                  "y": 0.6619398020298026,
+                  "z": 0.9716206105563457
+                },
+                {
+                  "action": "cup",
+                  "x": 0.16562500024549037,
+                  "y": 0.6347729987234532,
+                  "z": 0.9715936817073917
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.21053157081406632,
+                  "y": 0.4509081073228265,
+                  "z": 0.9771151041878124
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.2225324588581466,
+                  "y": 0.5451441431428042,
+                  "z": 0.9770942008678911
+                },
+                {
+                  "action": "log",
+                  "x": 0.8736547151997891,
+                  "y": 0.7023777374630453,
+                  "z": 0.9782930178317605
+                },
+                {
+                  "action": "log",
+                  "x": 0.9406599184079167,
+                  "y": 0.687590330182879,
+                  "z": 0.9780143451561966
+                },
+                {
+                  "action": "log",
+                  "x": 1.0086082613831193,
+                  "y": 0.7080362857234728,
+                  "z": 0.9777622855173852
+                },
+                {
+                  "action": "log",
+                  "x": 1.0789444367942054,
+                  "y": 0.6929658032048356,
+                  "z": 0.9774701488912919
+                },
+                {
+                  "action": "log",
+                  "x": 1.150119858449116,
+                  "y": 0.7139698104366383,
+                  "z": 0.977205762331846
+                }
+              ],
+              "drawCalls": 559,
+              "triangles": 2655332,
+              "memory": {
+                "geometries": 373,
+                "textures": 30
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 412,
+              "height": 915,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 412,
+              "height": 915
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 412,
+              "height": 915
+            }
+          },
+          "captureMs": 129.43229900000006,
+          "totalMs": 3007.5160019999967
+        },
+        {
+          "file": "nature-winter_lodge-landscape-viewport.png",
+          "sha256": "b47f55c05dd1a94ec38fb3d5bda053002ed0ee8c50b783bf0c9a357b56443c24",
+          "bytes": 313283,
+          "method": "Playwright native viewport screenshot, Chromium surface PNG; no CSS changes or canvas substitution",
+          "budgetMs": 120000,
+          "gpuDrain": {
+            "elapsedMs": 7283.300000000745,
+            "polls": 427,
+            "status": "CONDITION_SATISFIED",
+            "before": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 4,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "cup",
+                  "x": 0.2541138817221831,
+                  "y": 0.8125590954840582,
+                  "z": 0.9569004896133495
+                },
+                {
+                  "action": "cup",
+                  "x": 0.2241746880556416,
+                  "y": 0.7656469701435584,
+                  "z": 0.9568973537142805
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.25752623267608993,
+                  "y": 0.45051655710232014,
+                  "z": 0.9673495917121584
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.26084899504088843,
+                  "y": 0.6027171884734851,
+                  "z": 0.9672611221954316
+                },
+                {
+                  "action": "log",
+                  "x": 0.7478818203045364,
+                  "y": 0.7447993194139689,
+                  "z": 0.9780888288779535
+                },
+                {
+                  "action": "log",
+                  "x": 0.7655333975878518,
+                  "y": 0.7279177483067474,
+                  "z": 0.9777985014716816
+                },
+                {
+                  "action": "log",
+                  "x": 0.7833225101360658,
+                  "y": 0.7516784546944905,
+                  "z": 0.9775269365320773
+                },
+                {
+                  "action": "log",
+                  "x": 0.8018863840294478,
+                  "y": 0.7344619072992344,
+                  "z": 0.9772218811362687
+                },
+                {
+                  "action": "log",
+                  "x": 0.8205722207367716,
+                  "y": 0.7589087258771514,
+                  "z": 0.9769363631721307
+                }
+              ],
+              "drawCalls": 704,
+              "triangles": 2710898,
+              "memory": {
+                "geometries": 393,
+                "textures": 30
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "after": {
+              "instance": 1,
+              "taps": 0,
+              "lastHit": "none",
+              "frames": 4,
+              "time": 8,
+              "running": false,
+              "targets": [
+                {
+                  "action": "cup",
+                  "x": 0.2541138817221831,
+                  "y": 0.8125590954840582,
+                  "z": 0.9569004896133495
+                },
+                {
+                  "action": "cup",
+                  "x": 0.2241746880556416,
+                  "y": 0.7656469701435584,
+                  "z": 0.9568973537142805
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.25752623267608993,
+                  "y": 0.45051655710232014,
+                  "z": 0.9673495917121584
+                },
+                {
+                  "action": "lamp",
+                  "x": 0.26084899504088843,
+                  "y": 0.6027171884734851,
+                  "z": 0.9672611221954316
+                },
+                {
+                  "action": "log",
+                  "x": 0.7478818203045364,
+                  "y": 0.7447993194139689,
+                  "z": 0.9780888288779535
+                },
+                {
+                  "action": "log",
+                  "x": 0.7655333975878518,
+                  "y": 0.7279177483067474,
+                  "z": 0.9777985014716816
+                },
+                {
+                  "action": "log",
+                  "x": 0.7833225101360658,
+                  "y": 0.7516784546944905,
+                  "z": 0.9775269365320773
+                },
+                {
+                  "action": "log",
+                  "x": 0.8018863840294478,
+                  "y": 0.7344619072992344,
+                  "z": 0.9772218811362687
+                },
+                {
+                  "action": "log",
+                  "x": 0.8205722207367716,
+                  "y": 0.7589087258771514,
+                  "z": 0.9769363631721307
+                }
+              ],
+              "drawCalls": 704,
+              "triangles": 2710898,
+              "memory": {
+                "geometries": 393,
+                "textures": 30
+              },
+              "lifetime": {
+                "created": 1,
+                "disposed": 0
+              }
+            },
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "vendor": "WebKit",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "viewport": {
+              "width": 915,
+              "height": 412,
+              "dpr": 1
+            },
+            "backing": {
+              "width": 915,
+              "height": 412
+            },
+            "css": {
+              "x": 0,
+              "y": 0,
+              "width": 915,
+              "height": 412
+            }
+          },
+          "captureMs": 170.25225099999807,
+          "totalMs": 8370.749082000002
+        }
+      ],
+      "input": null,
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "scope": "Isolated original QA harness; not the integrated app. Native browser input and PNGs. Fold dimensions are viewport emulation only. No hidden-tab claim."
+}

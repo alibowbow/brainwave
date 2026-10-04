@@ -1,6 +1,6 @@
 # Provenance and benchmark decisions
 
-All café geometry, texture generation, rain/refraction/condensation shader, steam, plant meshes, and scene layout were independently implemented for this pilot. No paid service, external media asset, image-generation request, subscription, or new permission was used. All textures are deterministic local canvas output; no runtime network asset request is required. The compiled pilot is generated only from this source and existing npm dependencies.
+All café geometry, texture generation, rain/refraction/condensation shader, steam, plant meshes, and scene layout were independently implemented for this pilot. No paid service, external media asset, image-generation request, subscription, or new permission was used. Material textures are deterministic local canvas output. The compatibility patch also bundles a locally baked Three RoomEnvironment CubeUV atlas, fetched from the same origin at runtime; there are no external image requests. The compiled pilot is generated only from this source and existing npm dependencies.
 
 The visual revision follows the same provenance: `exterior.ts` independently constructs varied architecture, curtains, light halos and wet-street reflection strips; `shelves.ts` independently constructs pitchers, cups, folded paper packets, books, an unlettered still life and trailing leaves. Contact-shadow, masonry, halo and reflection maps are locally generated canvas effects. These auxiliary surfaces sit within a geometric 3D scene; no image replaces the café or street. No external or generated-image asset was added for this revision.
 
@@ -21,3 +21,11 @@ Opus gallery was located in the actual JEV navigation (`opus.html` → `opus-htm
 The physical quality benchmark was the repository's existing rainyWindow scene, inspected read-only: differentiated material maps, real curved geometry, lighting depth, reflection, and lifecycle. This café does not reuse its study layout, textures, city, material code, or audio. The approved café remains its own scene.
 
 Not adopted: original music systems, lightning/thunder, strong whole-screen blur, entire-scene wiping, 2D scene composition as the final environment, or their source code. Opus's collision/merge simulation was considered but not reproduced; current shader rain prioritizes quiet continuous motion without adding a CPU fluid system.
+
+## Capability-safe environment bake
+
+`public/immersive-worlds/cafe/room-environment.hdr` is generated locally from the existing MIT-licensed Three 0.186.1 RoomEnvironment and PMREMGenerator, using the previous sigma .035, 256 face size and original HDR lighting. It is not a downloaded photo or a scene replacement. The reproducible owner-local bake checks real RGBA16F framebuffer support before generation and writes a standard Radiance RGBE atlas. Asset SHA-256: `43bb5410f1ede07802bf3371ee2a9c3054abeaba1fb87eefb7bc992b1cac5d92`. Full source hashes, dimensions, format and HDRLoader roundtrip measurements are in `room-environment.provenance.json`. No generated-image service or new asset license was needed.
+
+Runtime uses direct CubeUV mapping with a sample-only HalfFloat texture; no PMREM render targets are allocated at runtime on either supported or byte path. Relevant exact local sources were inspected: examples/jsm/objects/Reflector.js, src/extras/PMREMGenerator.js, src/renderers/webgl/{WebGLEnvironments,WebGLTextures,WebGLShadowMap}. Khronos EXT_color_buffer_half_float permits RGBA16F rendering in WebGL2 independently of EXT_color_buffer_float; actual framebuffer completeness remains checked.
+
+References: https://raw.githubusercontent.com/mrdoob/three.js/r186/examples/jsm/objects/Reflector.js ; https://registry.khronos.org/webgl/extensions/EXT_color_buffer_half_float/ . No other owner's code or helper was used.

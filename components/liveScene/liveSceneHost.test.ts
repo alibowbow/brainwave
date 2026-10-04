@@ -71,6 +71,22 @@ afterEach(() => {
 });
 
 describe('shared live scene lifecycle', () => {
+  it('keeps first-render synchronous failure failed instead of publishing ready without a canvas', async () => {
+    const { host, engines } = setup(0, engine => {
+      engine.renderFrame.mockImplementation(() => engine.loseContext());
+    });
+    const current = holder();
+    host.acquire(current);
+    engines[0].resolveInit();
+    await Promise.resolve();
+    expect(engines[0].renderFrame).toHaveBeenCalledWith(0);
+    expect(engines[0].dispose).toHaveBeenCalledOnce();
+    expect(engines[0].canvas.parentElement).toBeNull();
+    expect(engines[0].start).not.toHaveBeenCalled();
+    expect(current.onStatus).toHaveBeenLastCalledWith('failed');
+    expect(current.onStatus).not.toHaveBeenCalledWith('ready');
+  });
+
   it('retains the protected scenes default for five seconds, and cancels disposal on return', async () => {
     const { host, engines, create } = setup();
     const first = holder();

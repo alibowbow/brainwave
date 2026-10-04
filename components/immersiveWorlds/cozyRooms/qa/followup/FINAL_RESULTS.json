@@ -1,0 +1,239 @@
+{
+  "timestamp": "2026-10-04T20:57:42.620978+00:00",
+  "status": "Visual corrections and owned production gates passed; winter recreation remains unresolved. Draft only, not integration acceptance.",
+  "branch": "codex/cozy-rooms-bounded-visual-correction",
+  "baseBranch": "codex/cozy-rooms-four-worlds",
+  "requiredBaseHead": "7373c1eeb5372fa9bebf41889ff2960643f3990e",
+  "productionSourceCommit": "eff612d8ea6ba63d2cc41a11d834e5fa11518461",
+  "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+  "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0",
+  "lifecycleInstrumentationBundleSHA256": "77b568410b8e9b7d580f123f7fb021d7355baaf81874ac9196a829470846f831",
+  "passed": {
+    "visualReview": "All10 final cold PNGs,4 post-native-input PNGs, and11 original PNGs actually inspected;3 requested visual corrections accepted; sleep PNGs byte-identical.",
+    "typecheck": true,
+    "unitTests": 150,
+    "unitTestFiles": 24,
+    "applicationBuild": true,
+    "bundleBudget": {
+      "initialJSKiB": 402.6,
+      "limitJSKiB": 410,
+      "cssKiB": 99.5,
+      "limitCSSKiB": 135
+    },
+    "nativeInputChecks": 16,
+    "fenceFaultChecks": 7,
+    "fullyCompletedLegacyChecks": 78,
+    "fullyCompletedLegacyWorlds": [
+      "relax",
+      "sleep_prep",
+      "power_nap"
+    ],
+    "cleanLifecycleWorlds": 4
+  },
+  "failed": [
+    {
+      "check": "Unchanged original verify-group.mjs",
+      "reason": "Winter recreated ready canvas wait exceeded120000ms after eventual-disposal assertions passed.",
+      "evidence": "evidence/final-original/failure.json"
+    },
+    {
+      "check": "Unchanged isolated winter retry",
+      "reason": "Same recreation wait exceeded120000ms after disposal; no third retry and no assertion/timeout change.",
+      "evidence": "evidence/final-winter-retry/failure.json"
+    },
+    {
+      "check": "First new lifecycle measurement instrumentation",
+      "reason": "Did not capture React ancestor detachment because observer only watched connected canvas Element.remove. QA-only instrumentation corrected, all4 fresh measurements passed; original failed run retained.",
+      "evidence": "evidence/final-lifecycle-instrumentation-failed/clean-lifecycle.json"
+    }
+  ],
+  "unrunOrUnmeasured": [
+    "Original motion-proof.mjs: passing full lifecycle verification prerequisite unmet; not bypassed. Existing tests do verify actual animated clock/frame advancement, but no final no-input motion-only pixel-proof claim.",
+    "Actual integrated app routing/fullscreen/audio",
+    "Real background-tab visibility (existing hidden-state test is synthetic)",
+    "Physical Fold device and hardware FPS, battery or thermal behavior",
+    "Physical GPU-memory reclamation and production in-flight submission bound"
+  ],
+  "lifecycleMetrics": [
+    {
+      "world": "relax",
+      "configuredRetentionMs": 5000,
+      "removalToTimerFireMs": 5000.5,
+      "timerDelayMs": 5000.5,
+      "removalToDisposeEntryMs": 5000.599999997765,
+      "disposeDurationMs": 3.5,
+      "removalToDisposeExitMs": 5004.099999997765,
+      "contextLoss": {
+        "observed": false,
+        "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+      },
+      "maxHeartbeatLagMs": 1395.699999999255
+    },
+    {
+      "world": "sleep_prep",
+      "configuredRetentionMs": 5000,
+      "removalToTimerFireMs": 5000.300000000745,
+      "timerDelayMs": 5000.199999999255,
+      "removalToDisposeEntryMs": 5000.5,
+      "disposeDurationMs": 4.199999999254942,
+      "removalToDisposeExitMs": 5004.699999999255,
+      "contextLoss": {
+        "observed": false,
+        "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+      },
+      "maxHeartbeatLagMs": 756.6999999992549
+    },
+    {
+      "world": "power_nap",
+      "configuredRetentionMs": 5000,
+      "removalToTimerFireMs": 5007.800000000745,
+      "timerDelayMs": 5000.400000002235,
+      "removalToDisposeEntryMs": 5007.89999999851,
+      "disposeDurationMs": 4.400000002235174,
+      "removalToDisposeExitMs": 5012.300000000745,
+      "contextLoss": {
+        "observed": false,
+        "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+      },
+      "maxHeartbeatLagMs": 935
+    },
+    {
+      "world": "nature:winter_lodge",
+      "configuredRetentionMs": 5000,
+      "removalToTimerFireMs": 5000.5,
+      "timerDelayMs": 5000.300000000745,
+      "removalToDisposeEntryMs": 5000.599999997765,
+      "disposeDurationMs": 6.699999999254942,
+      "removalToDisposeExitMs": 5007.29999999702,
+      "contextLoss": {
+        "observed": false,
+        "reason": "Engine deliberately does not force WEBGL_lose_context; no context-loss event was observed during this bounded run. Dispose return does not prove physical GPU reclamation."
+      },
+      "maxHeartbeatLagMs": 1505.5
+    }
+  ],
+  "inputMethod": "Native supplement uses browser hit-tested trusted mouse/touch events; original PointerEvent cancellation/drag tests and document.hidden changes are explicitly synthetic. No physical input-device claim.",
+  "GPUInterpretation": "Nonblocking WebGL2 fence drains use existing context, later-task zero-timeout polling, no render/readback/gl.finish. Long drain then short PNG is consistent with queued GPU work, not proof of a sole cause. Clean lifecycle stops at dispose return; it does not resolve winter recreation failure or measure physical GPU reclamation.",
+  "ownership": {
+    "productionChangedFiles": [
+      "components/immersiveWorlds/cozyRooms/fireDetail.ts",
+      "components/immersiveWorlds/cozyRooms/hearth.ts",
+      "components/immersiveWorlds/cozyRooms/napTerrace.ts",
+      "components/immersiveWorlds/cozyRooms/winterLodge.ts"
+    ],
+    "outsideOwnedPathsChanged": false,
+    "protectedContractsUnchanged": true,
+    "mainAncestor": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+    "seaPR51Preserved": true,
+    "originalBranchWritten": false,
+    "mergePerformed": false
+  },
+  "identityVerification": {
+    "all14ProductionFileHashesMatched": true,
+    "original13SourceFileHashesMatched": true,
+    "original11PNGsMatched": true,
+    "final14PNGHashesAndDimensionsMatched": true,
+    "newPNGManifestCount": 56
+  },
+  "reportHashes": [
+    {
+      "file": "evidence/fence-check.json",
+      "sha256": "9ee0ea758c1bd0da0702283a83965ed500d80ded217cbfc84f1be7e66045a029",
+      "passed": true,
+      "sourceSHA256": null,
+      "bundleSHA256": null
+    },
+    {
+      "file": "evidence/final/followup-capture.json",
+      "sha256": "0a09a7b861a646ec1043aaf1c970aa5158e3571e116382fbff980b7f6f4dce17",
+      "passed": true,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0"
+    },
+    {
+      "file": "evidence/final-gates/gates.json",
+      "sha256": "4f5ec53a883c451d44fd078100c0a87d0b1ffc47c839a03ce15b0cf582634dca",
+      "passed": true,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": null
+    },
+    {
+      "file": "evidence/final-lifecycle/clean-lifecycle.json",
+      "sha256": "155522f757179caa88eb70ed3486b39802ddb59ebcab8166298df8d69ec2f3f1",
+      "passed": true,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "77b568410b8e9b7d580f123f7fb021d7355baaf81874ac9196a829470846f831"
+    },
+    {
+      "file": "evidence/final-lifecycle-instrumentation-failed/clean-lifecycle.json",
+      "sha256": "91f768160cd25462178f29444625754b1666f73fb706f8289fd64fb9390aa90d",
+      "passed": false,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "4a60f6da09dc8262462680a669266703df36fdbb5cc571c85501f995e9f54ca5"
+    },
+    {
+      "file": "evidence/final-native/followup-capture.json",
+      "sha256": "aa2d45637aa106ef9973913a161b8cf911ebd8a86df0f87959754d598bcf7aee",
+      "passed": true,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0"
+    },
+    {
+      "file": "evidence/final-original/checkpoint.json",
+      "sha256": "1185a745cc6c2c23c2e8eba829c4532d20865c488fe26a351d60f71f71f9ed04",
+      "passed": null,
+      "sourceSHA256": null,
+      "bundleSHA256": null
+    },
+    {
+      "file": "evidence/final-original/failure.json",
+      "sha256": "4c52b04974c4d2e4a79951c3a4e78748aaaf0601fd05a6a530b51cc6a5dca8ba",
+      "passed": false,
+      "sourceSHA256": null,
+      "bundleSHA256": null
+    },
+    {
+      "file": "evidence/final-original/nature-winter_lodge/verification.json",
+      "sha256": "a6a71e845471bed01139503caa2417990f1735d490cb38e92020cc2b5272575b",
+      "passed": false,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0"
+    },
+    {
+      "file": "evidence/final-original/power_nap/verification.json",
+      "sha256": "c4cb3991b82cc2e691c0450b7d0d0ecaf4725694b81ce5bd0e212ff0ea1090ab",
+      "passed": true,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0"
+    },
+    {
+      "file": "evidence/final-original/relax/verification.json",
+      "sha256": "302c3054e65a1a93e6074e9c15fa82a447892a244b2d99b67974f33b4a6e81c4",
+      "passed": true,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0"
+    },
+    {
+      "file": "evidence/final-original/sleep_prep/verification.json",
+      "sha256": "a41082bfadbbc854048bb0a5a0052600796c38ea2bc953900b6f154a01d1fd6c",
+      "passed": true,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0"
+    },
+    {
+      "file": "evidence/final-winter-retry/failure.json",
+      "sha256": "8fbcdf6ae401aee5bd03f194530c1322d3ee6fd032ab203ca129fbdfe093642a",
+      "passed": false,
+      "sourceSHA256": null,
+      "bundleSHA256": null
+    },
+    {
+      "file": "evidence/final-winter-retry/verification.json",
+      "sha256": "f525604822ea078f74e1eae28104f2ea56eb2242f3ccbc7934d8c63312118d5e",
+      "passed": false,
+      "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+      "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0"
+    }
+  ],
+  "publicationMethod": "Connected GitHub Git Data API; published tree must exactly equal the local tree. Report gitHead and productionSourceCommit identify local test checkpoints; published commit is recorded in draft PR."
+}

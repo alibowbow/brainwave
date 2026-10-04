@@ -1,5 +1,7 @@
 # Immersive worlds integration contract
 
+> **Current 30-world draft:** [intake and gate ledger](./integration-status-2026-10-04.md). All30 are now registered; user visual acceptance covers26, Rain4 remains held. Audio/input/compatibility integration and exact-head CI are in progress. The three-pilot checkpoint and failed runs below are historical, not the current completion status. Final main merge remains held until the user confirms all30 gates and the Rain dependency.
+
 Original foundation base: `1bb79ac572e8568676881bbc7b4404f1bac443e8` (remote main checked 2026-10-04).
 Current local integration baseline: `14940149cc5c0fccb778b58d4d755a04aea55e53`, incorporating the independently merged sea PR #51. Both protected renderer directories are exactly equal to this remote main; they were not edited during pilot integration.
 Branch: `codex/immersive-worlds-integration-20261004`. Draft only; **do not merge until the user's later instruction**.

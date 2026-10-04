@@ -1,0 +1,12 @@
+FOLLOWUP START relax
+CAPTURE post-native-input relax
+FOLLOWUP PASS relax
+FOLLOWUP START sleep_prep
+CAPTURE post-native-input sleep_prep
+FOLLOWUP PASS sleep_prep
+FOLLOWUP START power_nap
+CAPTURE post-native-input power_nap
+FOLLOWUP PASS power_nap
+FOLLOWUP START nature:winter_lodge
+CAPTURE post-native-input nature:winter_lodge
+FOLLOWUP PASS nature:winter_lodge

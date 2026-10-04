@@ -14,6 +14,7 @@ import { getRecommendations } from './nature/recommend';
 import { hasNatureSceneHistory, withNatureSceneHistory } from '../appNavigation';
 import { ImmersiveWorldSlot } from './immersiveWorlds/ImmersiveWorldSlot';
 import { immersiveWorldRegistry } from './immersiveWorlds/registry';
+import type { WorldInteractionHandler } from './immersiveWorlds/contract';
 
 interface Props {
   layers: SoundLayer[];
@@ -22,6 +23,7 @@ interface Props {
   timeLeft: number;             // seconds remaining, only when a finite timer is running
   volume: number;
   sceneId: NatureSceneId;
+  onWorldInteraction?: WorldInteractionHandler;
   onSceneChange: (id: NatureSceneId) => void;
   onPositionsChange: (positions: Partial<Record<BackgroundSoundType, number>>) => void;
   onPlay: () => void;
@@ -58,7 +60,7 @@ export const NatureMode: React.FC<Props> = ({
   layers, isPlaying, timerMin, timeLeft, volume,
   onPlay, onStop, onToggleLayer, onLayerVolume, onToggleMute, onSelectMix,
   onTimerChange, onVolumeChange, subscribeEvents, sceneId, onSceneChange, onPositionsChange,
-  initialSceneOnly = false, playbackStates, onRetrySound,
+  initialSceneOnly = false, playbackStates, onRetrySound, onWorldInteraction,
 }) => {
   const [selected, setSelected] = useState<BackgroundSoundType | null>(null);
   const catalogRef = useRef<HTMLElement>(null);
@@ -224,8 +226,8 @@ export const NatureMode: React.FC<Props> = ({
     <div ref={viewerRootRef} className={`sound-studio ${sceneOnly ? 'nature-viewer-root' : ''}`} role={sceneOnly ? 'dialog' : undefined} aria-modal={sceneOnly || undefined} aria-label={sceneOnly ? '자연 장면만 보기' : undefined} data-controls={sceneOnly && !viewerControlsVisible && !selectedLayer ? 'hidden' : 'visible'}>
       <div className="sound-experience" onPointerMove={sceneOnly ? revealViewerControls : undefined} onPointerDown={sceneOnly ? revealViewerControls : undefined}>
         <div className="sound-stage" data-scene-surface style={immersiveWorldRegistry.has(worldId) ? { touchAction: 'none' } : undefined}>
-          <ImmersiveWorldSlot worldId={worldId} active={isPlaying} layers={layers} subscribeEvents={subscribeEvents}
-            fallback={<NatureScene types={visibleTypes} quietTypes={quietTypes} sceneId={sceneId} fill active={isPlaying} interactive selectedType={selectedValid} onSelectType={handleSceneSelect} subscribeEvents={subscribeEvents} onPositionsChange={onPositionsChange} />} />
+          <ImmersiveWorldSlot worldId={worldId} active={isPlaying} layers={layers} subscribeEvents={subscribeEvents} onWorldInteraction={onWorldInteraction}
+            fallback={<NatureScene types={visibleTypes} quietTypes={quietTypes} sceneId={sceneId} fill active={isPlaying} interactive selectedType={selectedValid} onSelectType={handleSceneSelect} subscribeEvents={subscribeEvents} onPositionsChange={immersiveWorldRegistry.has(worldId) ? undefined : onPositionsChange} />} />
           <header className="scene-heading">
             <div><h1>{mixName}</h1><p>{isPlaying ? '재생 중' : '재생 대기'} · {layers.length}개 소리{isPlaying && timerMin != null ? ` · ${fmt(timeLeft)}` : ''}</p></div>
             <button type="button" className="scene-button" onClick={sceneOnly ? exitSceneOnly : enterSceneOnly}><Eye size={18} />{sceneOnly ? '전체화면 나가기' : '장면만 보기'}</button>

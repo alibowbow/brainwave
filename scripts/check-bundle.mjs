@@ -34,7 +34,7 @@ if (failed) {
 // Budget alone cannot detect a small eager import that pulls every world in.
 const manifest = JSON.parse(await readFile('dist/.vite/manifest.json', 'utf8'));
 const visited = new Set();
-const optionalScene = /\/assets\/(?:world-|RainyWindowScene-|OilSeaScene-|three-)/;
+const optionalScene = /\/assets\/(?:world-|immersiveSessionBridge-|RainyWindowScene-|OilSeaScene-|three-)/;
 const visit = (key) => {
   if (visited.has(key)) return;
   visited.add(key);
@@ -48,6 +48,9 @@ const serviceWorker = await readFile('dist/sw.js', 'utf8');
 for (const entry of Object.values(manifest)) {
   if (optionalScene.test(`/${entry.file}`) && serviceWorker.includes(entry.file)) {
     throw new Error(`Optional scene is in initial service-worker precache: ${entry.file}`);
+  }
+  if (optionalScene.test(`/${entry.file}`)) for (const css of entry.css ?? []) {
+    if (serviceWorker.includes(css)) throw new Error(`Optional scene CSS is in initial service-worker precache: ${css}`);
   }
 }
 console.log('Scene chunks: absent from initial static imports and service-worker precache.');

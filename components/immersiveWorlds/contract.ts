@@ -5,6 +5,7 @@ import type { BackgroundSoundType } from '../../types';
 /** A pilot may accept just active. All other inputs are optional and read-only. */
 export interface ImmersiveWorldProps {
   active: boolean;
+  onInteraction?: (event: unknown) => void;
   layers?: readonly SoundLayer[];
   subscribeEvents?: (callback: (type: BackgroundSoundType) => void) => () => void;
   /** auto starts at high quality; lower only on measured sustained pressure.
@@ -13,3 +14,4 @@ export interface ImmersiveWorldProps {
 }
 
 export type ImmersiveWorldLoader = () => Promise<{ default: ComponentType<ImmersiveWorldProps> }>;
+export type WorldInteractionHandler = (worldId: string, event: unknown) => void;

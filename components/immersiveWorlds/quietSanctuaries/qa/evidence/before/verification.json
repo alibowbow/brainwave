@@ -1,0 +1,370 @@
+{
+  "generatedAt": "2026-10-04T19:15:07.527Z",
+  "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+  "gitBranch": "codex/quiet-sanctuaries-3d-20261004",
+  "ownedGitStatus": "M components/immersiveWorlds/quietSanctuaries/qa/README.md\n M components/immersiveWorlds/quietSanctuaries/qa/verify.mjs\n?? components/immersiveWorlds/quietSanctuaries/qa/evidence/",
+  "sourceManifest": {
+    "sha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/.gitignore",
+        "sha256": "3f6c8c458d86bb8dd9eebdcf89b8f3019f76ce4abb54b72dc1d188134d0959e7"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/INTEGRATION.md",
+        "sha256": "2eec2176b2f52a3b440ceb7131cedc34ecdfb699e1a8fa78e436677e32c25108"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/meditation.ts",
+        "sha256": "dc6cdab08b12b14d6433d9d47d653ffcb7bdb0d48d80bd5c115b701e8765b66d"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/MeditationCourtWorld.tsx",
+        "sha256": "f8b8275259d899af60b40af3ce0fb4013de926df8def6b8228db5b2f4754b673"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/PROVENANCE.md",
+        "sha256": "7b511a00b8e854355b1a62c1ac0d42f8df2bcc8b1ad665d2a43e2d1d753abc98"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/index.html",
+        "sha256": "cad3936a7ffd64734ac709427df2e6942cce06b193e879aed9459207130ec94e"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/main.tsx",
+        "sha256": "7b031b400635d4ba7fa42f10bd76935931a759d60ede4cc9ef63b7d0a0723c58"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/README.md",
+        "sha256": "2861795e254fb09b31848d564613b2ba1fbb45dbe18e092e1a09533c93173326"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/verify.mjs",
+        "sha256": "c999a14f0873da1c65c4c34f055e8c17bd0280a2671a9a27a4cbf37b62552897"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/vite.config.ts",
+        "sha256": "410bedeee3ae9c190b81f39027c2186776996e720d7294089c472cf7f804ebca"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/sanctuaries.css",
+        "sha256": "c4fb0aad98944929f7246300b47a7a1b23df61092b5b373933c35779bdc1dcc5"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SanctuaryEngine.ts",
+        "sha256": "0b228983ad0e4fe7152be3d7755f2e6a43b1be3d71205f1d2c047109bbc7b9ed"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SanctuaryView.tsx",
+        "sha256": "5b736fd5c8f4fc1528b2c0fe585912d7cf0727f44abc2d6fffeb931967b2a27c"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/snowVillage.ts",
+        "sha256": "ef79f5b4c5d0b814becb3de2024058ace2863df38f4a1049bc57a7baf4823935"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SnowVillageWorld.tsx",
+        "sha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/warmHeart.ts",
+        "sha256": "7f7a2c512a042f0b0b21e9c232e1aacc6b083298de6924b80fee8bff3480891f"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/WarmHeartWorld.tsx",
+        "sha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7"
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/worldTypes.ts",
+        "sha256": "5ed80797cd8e368dec21dc50cd578d76cd68247c4b56589feabfa5034f47d63b"
+      }
+    ]
+  },
+  "bundleManifest": {
+    "sha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+    "files": [
+      {
+        "path": "assets/index-Dfoe_3zm.css",
+        "sha256": "a1918380bdb0ad8b4808d6fb19075a57250366449ad8fd83d3d3a82893a3b143"
+      },
+      {
+        "path": "assets/index-Pg0-PK2b.js",
+        "sha256": "daddcb4cf844907648366b5415a1e65129588b755ebb8e53a88b33ffdb22023c"
+      },
+      {
+        "path": "assets/three-CjpurMV9.js",
+        "sha256": "f443a18530f2871b7d44837652f636021772623025d5d744cc554fdfbd609127"
+      },
+      {
+        "path": "index.html",
+        "sha256": "bd3aca6bf2a2c913fb7691073bfb778d40b78620bdc8d4c1c06d0c8295ff1a9c"
+      }
+    ]
+  },
+  "servedBundleVerified": true,
+  "base": "http://127.0.0.1:4175/",
+  "mode": "visual-captures-only",
+  "scope": "Isolated owned components; no shared player integration is claimed.",
+  "environment": {
+    "browser": "153.0.8010.0",
+    "headless": true,
+    "graphics": "Chromium launched with ANGLE SwiftShader; no real-device performance claim.",
+    "viewportChecks": "Desktop 1280×800; narrow portrait 390×844; Fold-inner-like 900×650. Viewports only, not physical Fold hardware.",
+    "hiddenCheck": "Synthetic own-property document.hidden/document.visibilityState override plus visibilitychange; not real OS/browser-tab switching."
+  },
+  "screenshots": [
+    {
+      "file": "meditation-desktop.png",
+      "sha256": "2831afb44df25b1485b73e0b1d7bbc37c959f95b65b6ac2573336574ec7a820a",
+      "bytes": 384093,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "world": "meditation",
+      "sourceSha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+      "bundleSha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+      "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 1280,
+        "height": 800,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "131",
+          "triangles": "35426",
+          "geometries": "144",
+          "textures": "11"
+        }
+      }
+    },
+    {
+      "file": "meditation-portrait.png",
+      "sha256": "4c9af397b68d8ded151515f024e07223869ad86cefc258bfd1760d70eacc5d57",
+      "bytes": 55016,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "world": "meditation",
+      "sourceSha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+      "bundleSha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+      "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 390,
+        "height": 844,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "67",
+          "triangles": "28454",
+          "geometries": "140",
+          "textures": "11"
+        }
+      }
+    },
+    {
+      "file": "warm-heart-desktop.png",
+      "sha256": "8c49922ebf0f221eb195d865fa6a8da6d0cf07cc5c3367d70f5038f41545f2eb",
+      "bytes": 1076609,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "world": "warm-heart",
+      "sourceSha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+      "bundleSha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+      "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 1280,
+        "height": 800,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "71",
+          "triangles": "299184",
+          "geometries": "55",
+          "textures": "5"
+        }
+      }
+    },
+    {
+      "file": "warm-heart-portrait.png",
+      "sha256": "95df157f95b96e0879755ad177c2922a0577319fadbaeef1cfac8ca97d757e5f",
+      "bytes": 316025,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "world": "warm-heart",
+      "sourceSha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+      "bundleSha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+      "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 390,
+        "height": 844,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "71",
+          "triangles": "299184",
+          "geometries": "55",
+          "textures": "5"
+        }
+      }
+    },
+    {
+      "file": "snow-village-desktop.png",
+      "sha256": "ef87b9fe04c849d03adba1f37831facc944fd542257a6928497c2b6ab65c6782",
+      "bytes": 579555,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "world": "snow-village",
+      "sourceSha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+      "bundleSha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+      "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 1280,
+        "height": 800,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "71",
+          "triangles": "325366",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    },
+    {
+      "file": "snow-village-portrait.png",
+      "sha256": "f1a9a9d7d101b7a3380cde714099ef2062f105ac8044d7026f8f124d49d885d2",
+      "bytes": 172720,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "world": "snow-village",
+      "sourceSha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+      "bundleSha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+      "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 390,
+        "height": 844,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "67",
+          "triangles": "325318",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    },
+    {
+      "file": "snow-village-fold-inner-viewport.png",
+      "sha256": "7a83fe7d5b77c473c824ebc5771a6602e88321c2efaf6a4c2447aa9167577ef6",
+      "bytes": 353450,
+      "viewport": {
+        "width": 900,
+        "height": 650
+      },
+      "world": "snow-village",
+      "sourceSha256": "c10d11458151ee31e4772405cc2843adc3a4a901aa1e30a5e81845bba9740a5e",
+      "bundleSha256": "193f474ae6425dd7c71eededd7a50e36ac4fe4bb9be497ef953511f3de614ded",
+      "gitHead": "34ec92e6b495b1a018d0c2dc30e9e7e960eacf53",
+      "diagnostics": {
+        "engineId": "1",
+        "frame": 2,
+        "elapsed": 0,
+        "interactions": 0,
+        "width": 900,
+        "height": 650,
+        "diagnostics": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "interactions": "0",
+          "frame": "2",
+          "elapsed": "0.0000",
+          "drawCalls": "71",
+          "triangles": "325366",
+          "geometries": "38",
+          "textures": "9"
+        }
+      }
+    }
+  ],
+  "worlds": [
+    {
+      "world": "meditation",
+      "checks": [
+        "motion and lifecycle checks intentionally skipped in visual-captures-only mode; real spatial first frames captured"
+      ],
+      "tap": null,
+      "diagnostics": null
+    },
+    {
+      "world": "warm-heart",
+      "checks": [
+        "motion and lifecycle checks intentionally skipped in visual-captures-only mode; real spatial first frames captured"
+      ],
+      "tap": null,
+      "diagnostics": null
+    },
+    {
+      "world": "snow-village",
+      "checks": [
+        "motion and lifecycle checks intentionally skipped in visual-captures-only mode; real spatial first frames captured"
+      ],
+      "tap": null,
+      "diagnostics": null
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "finishedAt": "2026-10-04T19:16:15.752Z"
+}

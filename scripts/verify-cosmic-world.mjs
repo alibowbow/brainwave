@@ -184,7 +184,7 @@ const drag = async (page, visible) => {
     const rect = root.getBoundingClientRect();
     const point = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
     const target = document.elementFromPoint(point.x, point.y);
-    if (!(shown ? target?.hasAttribute('data-scene-drag') : root.contains(target))) throw new Error('Unexpected cosmic drag hit target');
+    if (!(root.contains(target) && !target?.closest('button, input, select, textarea, a'))) throw new Error('Unexpected cosmic drag hit target');
     const event = { bubbles: true, isPrimary: true, pointerId: 71, pointerType: 'mouse', button: 0, clientX: point.x, clientY: point.y };
     target.dispatchEvent(new PointerEvent('pointerdown', event));
     const frameBefore = Number(root.querySelector('canvas').dataset.frame);

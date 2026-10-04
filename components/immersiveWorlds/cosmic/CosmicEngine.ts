@@ -3,6 +3,8 @@ import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import { LookSpring } from '../../liveScene/look';
 import { createCosmicSky } from './sky';
 import { createGarden, seededRandom } from './garden';
+import { prepareCosmicReflection, type CosmicReflectionMode } from './reflectionTarget';
+import { createCosmicQualityState, advanceCosmicQuality } from './qualityPolicy';
 
 export interface CosmicTouch {
   kind: 'plant' | 'light' | 'water';
@@ -37,7 +39,8 @@ export class CosmicEngine implements LiveSceneEngine {
   private raf=0;
   private lastFrame=0;
   private width=1;private height=1;private dpr=1;
-  private quality=1;private slowFor=0;private fastFor=0;
+  private qualityState=createCosmicQualityState();
+  private reflection:ReturnType<typeof prepareCosmicReflection>|null=null;
   private ray=new THREE.Raycaster();
   private look=new LookSpring({yaw:.105,pitch:.06},{follow:.7,settle:3.2});
   private originalQuaternion=new THREE.Quaternion();
@@ -45,7 +48,7 @@ export class CosmicEngine implements LiveSceneEngine {
 
   static isSupported(){return typeof window!=='undefined' && typeof WebGL2RenderingContext!=='undefined';}
 
-  constructor(private options:{canvas:HTMLCanvasElement;onContextLost:()=>void}){
+  constructor(private options:{canvas:HTMLCanvasElement;onContextLost:()=>void;reflectionMode?:CosmicReflectionMode}){
     this.renderer=new THREE.WebGLRenderer({canvas:options.canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
     this.renderer.outputColorSpace=THREE.SRGBColorSpace;
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -64,7 +67,11 @@ export class CosmicEngine implements LiveSceneEngine {
 
   async init(){
     if(this.disposed)return;
-    this.sky=createCosmicSky();this.garden=createGarden();this.scene.add(this.sky.group,this.garden.group);
+    this.sky=createCosmicSky();this.garden=createGarden();
+    // Reflector has not rendered/allocated yet. Choose a legal format and check
+    // its actual framebuffer before compileAsync or the first reflection draw.
+    this.reflection=prepareCosmicReflection(this.renderer,this.garden.water.getRenderTarget(),this.options.reflectionMode);
+    this.scene.add(this.sky.group,this.garden.group);
     this.garden.setAspect(this.width/this.height);this.sky.group.rotation.y=this.width/this.height<.8?.18:0;
     const hemi=new THREE.HemisphereLight('#b9d6e1','#394147',2.05);this.scene.add(hemi);
     this.scene.fog=new THREE.FogExp2('#344b5b',.009);
@@ -106,7 +113,7 @@ export class CosmicEngine implements LiveSceneEngine {
   setSize(width:number,height:number,dpr:number){
     if(this.disposed)return;
     this.width=Math.max(1,width);this.height=Math.max(1,height);this.dpr=dpr;
-    this.renderer.setPixelRatio(cosmicPixelRatio(this.width,this.height,dpr,this.quality));
+    this.renderer.setPixelRatio(cosmicPixelRatio(this.width,this.height,dpr,this.qualityState.quality));
     this.renderer.setSize(this.width,this.height,false);
     this.camera.aspect=this.width/this.height;
     this.garden?.setAspect(this.camera.aspect);if(this.sky)this.sky.group.rotation.y=this.camera.aspect<.8?.18:0;
@@ -136,23 +143,34 @@ export class CosmicEngine implements LiveSceneEngine {
     const data=this.options.canvas.dataset;
     data.frame=String(this.frame);data.time=this.time.toFixed(4);data.yaw=this.look.yaw.toFixed(5);data.pitch=this.look.pitch.toFixed(5);
     data.pulses=String(this.pulseCount);data.drawCalls=String(this.renderer.info.render.calls);data.triangles=String(this.renderer.info.render.triangles);
+    data.ringShadowError=String(this.sky?.getShadowState().centerError??-1);
+    const reflection=this.reflection?.getDiagnostics();
+    data.reflectionFormat=reflection?.format??'uninitialized';
+    data.reflectionComplete=String(reflection?.framebufferComplete??false);
+    data.reflectionSize=String(reflection?.width??0);
+    data.quality=String(this.qualityState.quality);
   }
 
   private tick=(now:number)=>{
     if(!this.running||this.disposed)return;
     const rawDt=this.lastFrame?(now-this.lastFrame)/1000:0;this.lastFrame=now;
     this.renderFrame(rawDt);
-    // Only sustained measured overload reduces resolution. 0.8 remains the minimum;
-    // static/reduced-motion views retain the latest frame at native requested quality.
-    if(rawDt>.034 && rawDt<.5){this.slowFor+=rawDt;this.fastFor=0;}else if(rawDt>0 && rawDt<.022){this.fastFor+=rawDt;this.slowFor=Math.max(0,this.slowFor-rawDt);}
-    if(this.slowFor>8 && this.quality> .8){this.quality=.8;this.slowFor=0;this.garden?.setReflectionSize(768);this.setSize(this.width,this.height,this.dpr);}
-    if(this.fastFor>24 && this.quality<1){this.quality=1;this.fastFor=0;this.garden?.setReflectionSize(1024);this.setSize(this.width,this.height,this.dpr);}
+    // Accumulating/decaying frame pressure, not consecutive slow time. Pausing
+    // retains the chosen quality and counters; only a new engine resets them.
+    const previousQuality=this.qualityState.quality;
+    this.qualityState=advanceCosmicQuality(this.qualityState,rawDt);
+    if(this.qualityState.quality!==previousQuality){
+      this.reflection?.setSize(this.qualityState.reflectionSize);
+      this.setSize(this.width,this.height,this.dpr);
+    }
     this.raf=requestAnimationFrame(this.tick);
   };
   start(){if(this.running||this.disposed||!this.ready)return;this.running=true;this.lastFrame=0;this.options.canvas.dataset.running='true';this.raf=requestAnimationFrame(this.tick);}
   stop(){this.running=false;cancelAnimationFrame(this.raf);this.raf=0;this.lastFrame=0;this.look.release();this.options.canvas.dataset.running='false';}
   drag(dx:number,dy:number){if(this.running)this.look.drag(dx,dy);}
   releaseDrag(){this.look.release();}
+
+  getDiagnostics(){return{reflection:this.reflection?.getDiagnostics()??null,shadow:this.sky?.getShadowState()??null,quality:{...this.qualityState}};}
 
   touch(x:number,y:number):CosmicTouch|null{
     if(!this.running||!this.garden||this.time-this.lastPulse<1.2)return null;
@@ -174,7 +192,7 @@ export class CosmicEngine implements LiveSceneEngine {
   dispose(){
     if(this.disposed)return;this.stop();this.disposed=true;this.ready=false;
     this.options.canvas.removeEventListener('webglcontextlost',this.onLost);
-    this.garden?.dispose();this.sky?.dispose();this.garden=null;this.sky=null;
+    this.garden?.dispose();this.sky?.dispose();this.garden=null;this.sky=null;this.reflection=null;
     if(this.lightSeeds){this.lightSeeds.geometry.dispose();(this.lightSeeds.material as THREE.Material).dispose();this.lightSeeds=null;}
     this.scene.traverse(o=>{if(o instanceof THREE.Light && 'shadow' in o)(o as THREE.DirectionalLight).shadow?.dispose();});
     this.scene.clear();this.renderer.renderLists.dispose();this.renderer.dispose();this.renderer.forceContextLoss();

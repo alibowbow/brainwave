@@ -16,14 +16,21 @@ export type ForestStatus = LiveSceneStatus;
 
 /** A player and its fullscreen view share one canvas, one engine and one RAF. */
 class ForestHost extends LiveSceneHost<ForestEngine> {
+  private diagnosticByteTargets = false;
   constructor() {
     super({
       canvasClass: 'forest-world-canvas',
       // The renderer does the actual capability check. Do not allocate a probe
       // context, which would waste a context on mobile alongside the scene.
       isSupported: () => typeof window.WebGL2RenderingContext !== 'undefined',
-      create: (canvas, onContextLost) => new ForestEngine(canvas, onContextLost),
+      create: (canvas, onContextLost) => new ForestEngine(canvas, onContextLost, { forceByteTargets: this.diagnosticByteTargets }),
     });
+  }
+
+  /** Isolated harness only; never changes capability reports or public props. */
+  configureDiagnosticTargets(forceByteTargets: boolean) {
+    if (this.engine) throw new Error('Choose the diagnostic target policy before acquiring the forest.');
+    this.diagnosticByteTargets = forceByteTargets;
   }
 
   protected configure(engine: ForestEngine) {

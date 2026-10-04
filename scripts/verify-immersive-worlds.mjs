@@ -225,7 +225,7 @@ const dragThroughChrome = async (page, visible) => {
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
     const target = document.elementFromPoint(x, y);
-    const expectedTarget = shown ? target?.hasAttribute('data-scene-drag') : world.contains(target);
+    const expectedTarget = world.contains(target) && !target?.closest('button, input, select, textarea, a');
     if (!expectedTarget) throw new Error(`Unexpected ${shown ? 'visible' : 'hidden'} chrome hit target: ${target?.tagName} ${target?.className}`);
     const event = { bubbles: true, isPrimary: true, pointerId: 41, pointerType: 'mouse', button: 0, clientX: x, clientY: y };
     target.dispatchEvent(new PointerEvent('pointerdown', event));

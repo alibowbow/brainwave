@@ -32,6 +32,7 @@ import type { SessionBackdropVariant } from './session/sessionBackdrop';
 import { VisualModeSwitch } from './VisualModeSwitch';
 import { immersiveWorldRegistry } from './immersiveWorlds/registry';
 import { SoundFailureNotice } from './session/SoundFailureNotice';
+import type { WorldInteractionHandler } from './immersiveWorlds/contract';
 
 interface PlayerProps {
   sessionName: string;
@@ -65,6 +66,7 @@ interface PlayerProps {
   onImmersive: () => void;
   backgroundVariant?: SessionBackdropVariant;
   worldId?: string;
+  onWorldInteraction?: WorldInteractionHandler;
   /** The fullscreen view covers the player; its scene can rest meanwhile. */
   sceneCovered?: boolean;
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
@@ -108,7 +110,7 @@ export const Player: React.FC<PlayerProps> = ({
   onVisualModeChange,
   getAnalyser,
   onImmersive,
-  backgroundVariant, worldId, sceneCovered = false, subscribeEvents, shareUrl,
+  backgroundVariant, worldId, sceneCovered = false, subscribeEvents, shareUrl, onWorldInteraction,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
   const [panel, setPanel] = useState<'controls' | 'sounds'>('sounds');
@@ -117,6 +119,7 @@ export const Player: React.FC<PlayerProps> = ({
   const linkCopiedTimerRef = useRef<number | null>(null);
   const [sceneChromeVisible, setSceneChromeVisible] = useState(true);
   const sceneChromeTimerRef = useRef<number | null>(null);
+  const sceneChromeRef = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLElement>(null);
   const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#7886ff';
   // The rainy study and the painted sea are live 3D scenes: their lower third
@@ -128,7 +131,9 @@ export const Player: React.FC<PlayerProps> = ({
   const revealSceneChrome = useCallback(() => {
     setSceneChromeVisible(true);
     if (sceneChromeTimerRef.current != null) window.clearTimeout(sceneChromeTimerRef.current);
-    sceneChromeTimerRef.current = window.setTimeout(() => setSceneChromeVisible(false), 3600);
+    sceneChromeTimerRef.current = window.setTimeout(() => {
+      if (!sceneChromeRef.current?.contains(document.activeElement)) setSceneChromeVisible(false);
+    }, 3600);
   }, []);
 
   const holdSceneChrome = useCallback(() => {
@@ -227,35 +232,41 @@ export const Player: React.FC<PlayerProps> = ({
 
       <main inert={playbackHint === 'starting' ? true : undefined} aria-busy={playbackHint === 'starting'} className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>
         <section
+          tabIndex={-1}
           data-scene-surface
           onPointerMove={visualMode === 'nature' ? revealSceneChrome : undefined}
-          onPointerDown={visualMode === 'nature' ? revealSceneChrome : undefined}
+          onPointerDown={visualMode === 'nature' ? (event) => {
+            revealSceneChrome();
+            if (event.target instanceof Element && !event.target.closest('button,input,select,textarea,a[href],[role="button"],[contenteditable="true"]')) event.currentTarget.focus({ preventScroll: true });
+          } : undefined}
           // The live scenes turn a little under a drag; only page scrolling (when the details are open) stays with the browser.
+          data-scene-scroll={detailsOpen ? 'true' : undefined}
           style={liveScene && visualMode === 'nature' ? { touchAction: detailsOpen ? 'pan-y' : 'none' } : undefined}
           className={`relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] ${visualMode === 'nature' ? 'min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]' : 'min-h-[540px] rounded-[30px] border sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]'}`}
         >
-          <div className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
-            <SessionBackdrop variant={backgroundVariant} worldId={worldId} layers={activeLayers} active={isPlaying && !sceneCovered} subscribeEvents={subscribeEvents} />
+          <div data-scene-renderer className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
+            <SessionBackdrop variant={backgroundVariant} worldId={worldId} layers={activeLayers} active={isPlaying && !sceneCovered} subscribeEvents={subscribeEvents} onWorldInteraction={onWorldInteraction} />
           </div>
           <div className={`pointer-events-none absolute inset-0 transition-colors duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? (liveScene ? 'bg-gradient-to-b from-transparent via-transparent via-70% to-[#02050b]/55' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/82') : 'bg-gradient-to-b from-[#050914]/42 via-[#050914]/46 to-[#050914]/92'}`} />
           {visualMode === 'graphics' ? <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(3,6,14,0.32)_72%,rgba(3,6,14,0.72)_100%)]" /> : null}
 
           {visualMode === 'nature' ? (
             <div
+              ref={sceneChromeRef}
               data-scene-drag
               onFocusCapture={holdSceneChrome}
               onBlurCapture={revealSceneChrome}
-              className={`absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${sceneChromeVisible ? 'visible opacity-100' : 'invisible pointer-events-none opacity-0'}`}
+              className={`pointer-events-none absolute inset-0 z-20 ${sceneChromeVisible ? 'visible opacity-100' : 'invisible opacity-0'}`}
             >
               <VisualModeSwitch
                 value={visualMode}
                 onChange={handleVisualModeChange}
-                className="absolute left-1/2 top-[max(12px,env(safe-area-inset-top))] -translate-x-1/2"
+                className="pointer-events-auto absolute left-1/2 top-[max(12px,env(safe-area-inset-top))] -translate-x-1/2"
                 compact
                 quiet
               />
 
-              <div className="absolute bottom-[max(18px,calc(env(safe-area-inset-bottom)+18px))] left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/16 bg-black/58 p-1.5 pl-4 text-white shadow-[0_16px_45px_rgba(0,0,0,0.34)] backdrop-blur-md">
+              <div className="pointer-events-auto absolute bottom-[max(18px,calc(env(safe-area-inset-bottom)+18px))] left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/16 bg-black/58 p-1.5 pl-4 text-white shadow-[0_16px_45px_rgba(0,0,0,0.34)] backdrop-blur-md">
                 <div className="mr-1 min-w-[62px] text-center">
                   <p className="text-[8px] font-bold tracking-[0.14em] text-white/58">남은 시간</p>
                   <p className="mt-0.5 text-base font-semibold tabular-nums tracking-tight" aria-label={`남은 시간 ${Math.floor(timeLeft / 60)}분 ${timeLeft % 60}초`}>{formatTime(timeLeft)}</p>

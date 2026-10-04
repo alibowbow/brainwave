@@ -1,16 +1,17 @@
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
+import { sourceFingerprint } from './source-fingerprint.mjs';
 
 // Run against the isolated Vite harness, without mounting or modifying the app:
 // SCENE_BASE_URL=http://127.0.0.1:5193 node components/immersiveWorlds/cosmic/validation/verify-cosmic.mjs
 // SCENE_BROWSER_PATH can select an already installed Chromium binary.
 // SCENE_SCREENSHOT_DIR optionally saves screenshots and the factual run report.
 const base = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:5193').replace(/\/$/, '');
-const url = `${base}/components/immersiveWorlds/cosmic/validation/index.html`;
+const url = `${base}${process.env.SCENE_HARNESS_PATH || '/components/immersiveWorlds/cosmic/validation/index.html'}`;
 const output = process.env.SCENE_SCREENSHOT_DIR || 'components/immersiveWorlds/cosmic/validation/screenshots';
 const errors = [];
-const report = { url, renderer: 'Chromium with requested SwiftShader launch flags', checks: [], limitations: [] };
+const report = { url, source:await sourceFingerprint(), renderer: 'Chromium with requested SwiftShader launch flags', checks: [], limitations: [] };
 if (output) await mkdir(output, { recursive: true });
 let browser;
 let page;
@@ -125,6 +126,17 @@ try {
   assert.equal(await metric('pulses'),beforeReturnDrag,'out-and-back drag does not become a tap');
   check('an out-and-back drag never emits a touch event');
 
+  await canvas.evaluate(element=>{
+    const r=element.getBoundingClientRect();
+    const init={bubbles:true,isPrimary:true,pointerType:'touch',pointerId:79,button:0,clientX:r.x+r.width*.5,clientY:r.y+r.height*.8};
+    element.dispatchEvent(new PointerEvent('pointerdown',init));
+    window.dispatchEvent(new PointerEvent('pointercancel',init));
+    window.dispatchEvent(new PointerEvent('pointerup',init));
+  });
+  assert.equal(await metric('pulses'),beforeReturnDrag,'cancelled pointer never emits a tap');
+  assert.equal(await page.locator('.cosmic-world').first().getAttribute('data-look'),null);
+  check('pointercancel releases look and suppresses tap');
+
 
   const pulsesBeforeTouch = await metric('pulses');
   const nearbyGlow = page.getByRole('button', { name: '가까운 빛에 손길 보내기', exact: true }).first();
@@ -238,6 +250,7 @@ try {
   }
 
   assert.deepEqual(errors, [], 'no page or WebGL errors');
+  assert.equal((await sourceFingerprint()).digest,report.source.digest,'source and built harness unchanged throughout behavior checks');
   report.status = 'passed';
   report.limitations.push('Software rendering verifies behavior and output, not native-GPU frame rate or battery usage.');
   report.limitations.push('Behavior and screenshots use device scale factor 1; a separate initially-still portrait context checks device scale factor 2.');

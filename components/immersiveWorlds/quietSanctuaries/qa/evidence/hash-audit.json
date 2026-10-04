@@ -1,0 +1,21 @@
+{
+  "auditedAt": "2026-10-04T20:27:09.877335+00:00",
+  "passed": true,
+  "verifiedSourceCommit": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+  "sourceSha256": "91d21a58fece11881cb3edcb71475f5bd72edc8a7eec188c8c1e43efa50c4a5b",
+  "bundleSha256": "f3c1314a674002e727c047238be3c1de84090e2b1c3cf752e1ded855dc6eb498",
+  "sourceFilesMatchCommittedBytes": 18,
+  "builtFilesMatchManifest": 4,
+  "pngFilesMatchManifest": 14,
+  "verificationJsonSha256": "83539dbc4b4ca223645c37dbd91f41b3c01c9f7d47cfc3f3015c9802e08ce849",
+  "normalMeditationIdenticalToEvidenceCommit": "301977852d65ea5a4f2fc28d22b2b38b02eafb14",
+  "unchangedMeditationPngSha256": {
+    "meditation-desktop.png": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6",
+    "meditation-portrait.png": "c2200432b93168bca6e266e8bcfe79527ebafe1bc392fea02d2bb3545ca045ed"
+  },
+  "allCommittedPathsWithinOwnedRoots": true,
+  "sourceCi": {
+    "run": 37231505554,
+    "conclusion": "success"
+  }
+}

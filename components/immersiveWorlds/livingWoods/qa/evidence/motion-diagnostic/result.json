@@ -1,0 +1,51 @@
+{
+  "browserMode": "standard multi-process Chromium",
+  "bundleHash": "d5bb2b070e6af16bdcde85a35dc226dbf5b7ce99f62b3fd1e14f60f58c2df8eb",
+  "sourceHash": "842e361c67a3fa83c435e8ce6bb30be29ae54cfabdbecc9d7bff92934e611397",
+  "viewport": {
+    "width": 640,
+    "height": 400
+  },
+  "events": [
+    {
+      "label": "cold-ready",
+      "time": 0,
+      "frames": 2,
+      "width": 640,
+      "height": 400,
+      "status": "ready",
+      "motion": "paused"
+    },
+    {
+      "label": "advanced",
+      "time": 0.1667,
+      "frames": 13,
+      "width": 640,
+      "height": 400,
+      "status": "ready",
+      "motion": "running"
+    },
+    {
+      "label": "paused",
+      "time": 0.1667,
+      "frames": 13,
+      "width": 640,
+      "height": 400,
+      "status": "ready",
+      "motion": "paused"
+    },
+    {
+      "label": "paused-after-1000ms",
+      "time": 0.1667,
+      "frames": 13,
+      "width": 640,
+      "height": 400,
+      "status": "ready",
+      "motion": "paused"
+    }
+  ],
+  "errors": [
+    "page.screenshot: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\n    at /workspace/scratch/f9b5eee20809/brainwave-livingwoods/components/immersiveWorlds/livingWoods/qa/diagnose-motion.mjs:42:28"
+  ],
+  "passed": false
+}

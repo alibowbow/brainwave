@@ -5,8 +5,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import { LookSpring } from '../../liveScene/look';
 import type { ForestInteraction } from './forestHost';
-import { createForestMaterials, createTree, createFern, createBroadleafPlant } from './botany';
+import { createForestMaterials, createTree, createFern, createBroadleafPlant, createForegroundMaterials } from './botany';
 import { forestRandom, groundHeight, pondRadius, forestPixelRatio, FOREST_LOOK, FOREST_FEEL } from './forestMath';
+import { ForestFrameScheduler } from './forestFrameScheduler';
+import { createForestTargetPolicy, createForestEnvironment, configureForestReflectionTarget, checkForestFramebuffer, type ForestTargetPolicy } from './forestRenderTargets';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 
@@ -20,9 +22,11 @@ export class ForestEngine implements LiveSceneEngine {
   private clock = { value: 0 };
   private time = 0;
   private frame = 0;
-  private request = 0;
-  private pendingGPUFrames: WebGLSync[] = [];
-  private last = 0;
+  private scheduler: ForestFrameScheduler<{ dataUrl: string; width: number; height: number; time: number; method: 'same-task-webgl-png'; readbackMs: number }>;
+  private requestedSize: { width: number; height: number; ratio: number } | null = null;
+  private appliedSize: { width: number; height: number; ratio: number } | null = null;
+  private requestedHolder: HTMLElement | null = null;
+  private staticDirty = true;
   private running = false;
   private disposed = false;
   private ready = false;
@@ -37,9 +41,12 @@ export class ForestEngine implements LiveSceneEngine {
   private onInteraction?: (event: ForestInteraction) => void;
   private resources: { dispose(): void }[] = [];
   private onLost: (event: Event) => void;
+  private targetPolicy: ForestTargetPolicy;
+  private auditedTargets = new Set<THREE.WebGLRenderTarget>();
 
-  constructor(private canvas: HTMLCanvasElement, onContextLost: () => void) {
+  constructor(private canvas: HTMLCanvasElement, onContextLost: () => void, options: { forceByteTargets?: boolean } = {}) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+    this.targetPolicy = createForestTargetPolicy(this.renderer, options);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.08;
@@ -48,7 +55,25 @@ export class ForestEngine implements LiveSceneEngine {
     this.renderer.shadowMap.autoUpdate = false;
     // Count both the planar reflection pass and the main pass honestly.
     this.renderer.info.autoReset = false;
-    this.onLost = (event) => { event.preventDefault(); this.stop(); onContextLost(); };
+    this.scheduler = new ForestFrameScheduler({
+      gl: this.renderer.getContext() as WebGL2RenderingContext,
+      canDraw: () => this.canvas.isConnected,
+      draw: (dt) => this.drawFrame(dt),
+      readback: () => {
+        const started=performance.now(),dataUrl=this.canvas.toDataURL('image/png');
+        return {dataUrl,width:this.canvas.width,height:this.canvas.height,time:this.time,method:'same-task-webgl-png',readbackMs:performance.now()-started};
+      },
+      requestFrame: (callback) => requestAnimationFrame(callback), cancelFrame: (request) => cancelAnimationFrame(request), now: () => performance.now(),
+      onState: (state) => Object.assign(this.canvas.dataset, {
+        gpuSubmitted: String(state.submitted), gpuSubmissionAttempts: String(state.submitted), gpuInitializationSubmitted: String(state.initializationSubmitted), gpuCompleted: String(state.completed),
+        gpuPending: String(state.pending), gpuAbandoned: String(state.abandoned), gpuQueued: String(state.queued), gpuCaptures: String(state.captures),
+        gpuFault: state.fault ?? '', running: String(state.running),
+      }),
+      onFault: () => { this.stop(); onContextLost(); },
+    });
+    this.onLost = (event) => {
+      event.preventDefault(); this.canvas.dataset.contextLostAt = String(performance.now()); this.scheduler.contextLost();
+    };
     canvas.addEventListener('webglcontextlost', this.onLost);
     canvas.dataset.frames = '0';
     canvas.dataset.time = '0';
@@ -58,11 +83,15 @@ export class ForestEngine implements LiveSceneEngine {
 
   async init() {
     this.buildWorld();
-    this.ready = true;
     this.renderer.shadowMap.needsUpdate = true;
     // Async compilation leaves React responsive while drivers prepare shaders.
     try { await this.renderer.compileAsync(this.scene, this.camera); }
     catch (error) { if (!this.disposed) throw error; }
+    if (this.disposed) return;
+    // PMREM preparation is real queued GL work too. Account for it before the
+    // host requests the initial main frame, without reducing render quality.
+    this.scheduler.trackInitialization();
+    if (!this.disposed && !this.scheduler.state.fault) this.ready = true;
   }
 
   private buildWorld() {
@@ -95,10 +124,10 @@ export class ForestEngine implements LiveSceneEngine {
     const sky = new THREE.Mesh(new THREE.SphereGeometry(90, 24, 16), skyMaterial); this.scene.add(sky);
     const envScene = new THREE.Scene();
     envScene.add(new THREE.Mesh(new THREE.SphereGeometry(30, 24, 16), skyMaterial));
-    const pmrem = new THREE.PMREMGenerator(this.renderer);
-    const environment = pmrem.fromScene(envScene, 0.05, 0.1, 80);
-    this.scene.environment = environment.texture; this.scene.environmentIntensity = 0.55;
-    this.resources.push(environment); pmrem.dispose();
+    const environment = createForestEnvironment(this.renderer, envScene, this.targetPolicy);
+    this.scene.environment = environment.texture; this.scene.environmentIntensity = 0.55 * environment.intensityScale;
+    this.canvas.dataset.environmentPath = environment.kind;
+    this.resources.push(environment);
     (envScene.children[0] as THREE.Mesh).geometry.dispose();
 
     const ground = new THREE.PlaneGeometry(115, 115, 150, 150);
@@ -244,8 +273,10 @@ export class ForestEngine implements LiveSceneEngine {
     // separate meshes must not drift apart under the canopy's vertex wind.
     wetLeaf.onBeforeCompile = leafBacklight;
     wetLeaf.customProgramCacheKey = () => 'forest-wet-leaf-v2';
+    const foregroundMaterials = createForegroundMaterials({...materials,leaf:wetLeaf});
     for (const [x,z,s] of [[-1.65,3.22,1.10],[1.95,3.02,.95],[-.48,3.48,.82],[.66,3.58,.65],[-2.95,1.4,1.2],[2.85,.7,.92],[-2.1,-2.8,.8]]) {
-      const plant = createBroadleafPlant({...materials,leaf:wetLeaf}, random, s);
+      const foreground = z > 3;
+      const plant = createBroadleafPlant(foreground ? foregroundMaterials : {...materials,leaf:wetLeaf}, random, s, foreground);
       plant.position.set(x, groundHeight(x,z), z); plant.rotation.y = random() * 6.28;
       plant.userData.baseRotation = plant.rotation.z;
       this.plants.push(plant); this.scene.add(plant);
@@ -270,6 +301,26 @@ export class ForestEngine implements LiveSceneEngine {
     this.addBirds();
     this.addSunrays();
     this.addMotes();
+  }
+
+  private auditRenderTargets() {
+    // PCFSoft shadows allocate a byte color attachment and unsigned-int depth
+    // texture inside Three on first use. Audit that actual lazily-created FBO.
+    // All materials retain transmission=0, and renderer output stays byte;
+    // those paths therefore allocate no additional float color target.
+    this.scene.traverse((object) => {
+      if (!(object instanceof THREE.DirectionalLight)) return;
+      const target = object.shadow.map as THREE.WebGLRenderTarget | null;
+      if (!target || this.auditedTargets.has(target)) return;
+      if (target.texture.type !== THREE.UnsignedByteType) throw new Error('Unexpected forest shadow color target type.');
+      const result = checkForestFramebuffer(this.renderer, target, 'directional-pcf-shadow', this.targetPolicy.checks);
+      if (!result.complete) throw new Error('Forest shadow framebuffer is incomplete.');
+      this.auditedTargets.add(target);
+    });
+    Object.assign(this.canvas.dataset, {
+      targetMode: this.targetPolicy.mode, halfFloatSupported: String(this.targetPolicy.halfFloatSupported),
+      targetChecks: JSON.stringify(this.targetPolicy.checks),
+    });
   }
 
   private addUnderstory() {
@@ -362,6 +413,7 @@ export class ForestEngine implements LiveSceneEngine {
         }`,
     };
     this.reflection=new Reflector(new THREE.ShapeGeometry(shape,48),{textureWidth:1024,textureHeight:1024,clipBias:.004,multisample:0,shader});
+    configureForestReflectionTarget(this.renderer, this.reflection.getRenderTarget(), this.targetPolicy);
     this.reflection.rotation.x=-Math.PI/2;this.reflection.position.y=.075;
     const mat=this.reflection.material as THREE.ShaderMaterial;mat.transparent=true;mat.depthWrite=false;
     this.waterUniforms=mat.uniforms;this.reflection.renderOrder=1;
@@ -420,9 +472,25 @@ export class ForestEngine implements LiveSceneEngine {
 
   setSize(width:number,height:number,devicePixelRatio:number){
     if(this.disposed)return;
-    this.renderer.setPixelRatio(forestPixelRatio(width,height,devicePixelRatio));
-    this.renderer.setSize(Math.max(1,width),Math.max(1,height),false);
-    this.camera.aspect=width/Math.max(1,height);
+    const next={width:Math.max(1,width),height:Math.max(1,height),ratio:forestPixelRatio(width,height,devicePixelRatio)};
+    const previous=this.requestedSize;
+    const holder=this.canvas.parentElement;
+    if(previous&&previous.width===next.width&&previous.height===next.height&&previous.ratio===next.ratio&&holder===this.requestedHolder)return;
+    this.requestedSize=next;this.requestedHolder=holder;this.staticDirty=true;
+    if(this.ready)this.scheduler.renderFrame(0);
+  }
+
+  private applySize(){
+    const next=this.requestedSize;
+    if(!next)return;
+    const previous=this.appliedSize;
+    if(previous&&previous.width===next.width&&previous.height===next.height&&previous.ratio===next.ratio)return;
+    // Resize only when a render slot is available. Clearing the drawing buffer
+    // before a saturated queue drains would blank a paused/restored holder.
+    if(this.renderer.getPixelRatio()!==next.ratio)this.renderer.setPixelRatio(next.ratio);
+    this.renderer.setSize(next.width,next.height,false);
+    this.appliedSize=next;
+    this.camera.aspect=next.width/next.height;
     // Preserve the near pool + canopy in narrow folded screens, without zooming into a trunk.
     this.camera.fov=this.camera.aspect<.8?66:this.camera.aspect>2?45:55;this.camera.updateProjectionMatrix();
     this.canvas.dataset.dpr=String(this.renderer.getPixelRatio());
@@ -430,6 +498,13 @@ export class ForestEngine implements LiveSceneEngine {
 
   renderFrame(dt:number){
     if(!this.ready||this.disposed)return;
+    // Same-size ResizeObserver/attachTop callbacks do not invalidate a frame.
+    if(dt===0&&!this.staticDirty)return;
+    this.scheduler.renderFrame(dt);
+  }
+
+  private drawFrame(dt:number){
+    this.applySize();this.staticDirty=false;
     const step=Math.max(0,Math.min(dt,.05));this.time+=step;this.clock.value=this.time;
     // The analytic camera spring follows elapsed time even on a slow GPU.
     // Ambient wind remains conservatively clamped after unusually long frames.
@@ -442,48 +517,26 @@ export class ForestEngine implements LiveSceneEngine {
       plant.rotation.z=(plant.userData.baseRotation||0)+Math.sin(this.time*.48+i*1.8)*.007+touch;
     }
     for(let i=0;i<this.birds.length;i++)this.birds[i].rotation.y=.65+Math.sin(this.time*.21+i*2.1)*.09;
+    const submissionStarted=performance.now();
     this.renderer.info.reset();this.renderer.render(this.scene,this.camera);this.frame++;
-    const gl=this.renderer.getContext() as WebGL2RenderingContext;
-    const fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
-    if(fence)this.pendingGPUFrames.push(fence);gl.flush();
+    this.canvas.dataset.cpuSubmissionMs=(performance.now()-submissionStarted).toFixed(3);
     Object.assign(this.canvas.dataset,{frames:String(this.frame),time:this.time.toFixed(4),lookYaw:this.look.yaw.toFixed(5),lookPitch:this.look.pitch.toFixed(5),drawCalls:String(this.renderer.info.render.calls),triangles:String(this.renderer.info.render.triangles)});
-  }
-
-  private retireGPUFrames(){
-    const gl=this.renderer.getContext() as WebGL2RenderingContext;
-    while(this.pendingGPUFrames.length){
-      const fence=this.pendingGPUFrames[0],status=gl.clientWaitSync(fence,0,0);
-      if(status===gl.TIMEOUT_EXPIRED)break;
-      gl.deleteSync(fence);this.pendingGPUFrames.shift();
-    }
+    this.auditRenderTargets();
   }
 
   start(){
-    if(this.running||this.disposed)return;this.running=true;this.canvas.dataset.running='true';this.last=performance.now();
-    const tick=(now:number)=>{
-      if(!this.running)return;
-      this.retireGPUFrames();
-      // Keep at most two live GPU submissions in flight. This preserves normal
-      // display-rate RAF rendering without queuing seconds of stale frames on
-      // a busy GPU. It neither fixes FPS nor reduces pixels/material quality.
-      if(this.pendingGPUFrames.length<2){
-        const dt=(now-this.last)/1000;this.last=now;this.renderFrame(dt);
-      }
-      this.request=requestAnimationFrame(tick);
-    };
-    this.request=requestAnimationFrame(tick);
+    if(this.running||this.disposed||!this.ready||this.scheduler.state.fault)return;
+    this.running=true;this.scheduler.start();
   }
-  stop(){this.running=false;cancelAnimationFrame(this.request);this.request=0;this.canvas.dataset.running='false';this.look.release();}
+  stop(){this.running=false;this.scheduler.stop();this.look.release();}
   drag(dx:number,dy:number){if(this.running)this.look.drag(dx,dy);}
   releaseDrag(){this.look.release();}
-  /** Owned QA harness only: a native-size frame from the same real renderer.
-   * Read in this call stack, before the browser clears its drawing buffer.
-   * This does not advance simulation or change render quality. */
+  /** Owned QA harness only: wait for a bounded slot, then render and read in
+   * the same task before the drawing buffer can clear. GPU completion is
+   * separately reported by gpuCompleted; this promise is readback evidence. */
   captureFrame(){
-    if(!this.ready||this.disposed)throw new Error('Forest renderer is not ready.');
-    this.renderFrame(0);
-    const result={dataUrl:this.canvas.toDataURL('image/jpeg',.9),width:this.canvas.width,height:this.canvas.height,time:this.time};
-    this.retireGPUFrames();return result;
+    if(!this.ready||this.disposed)return Promise.reject(new Error('Forest renderer is not ready.'));
+    return this.scheduler.capture();
   }
   setOnInteraction(callback:((event:ForestInteraction)=>void)|undefined){this.onInteraction=callback;}
   touch(x:number,y:number){
@@ -507,9 +560,9 @@ export class ForestEngine implements LiveSceneEngine {
   }
 
   dispose(){
-    if(this.disposed)return;this.stop();this.disposed=true;this.ready=false;this.onInteraction=undefined;
-    const gl=this.renderer.getContext() as WebGL2RenderingContext;
-    this.pendingGPUFrames.forEach(fence=>gl.deleteSync(fence));this.pendingGPUFrames=[];
+    if(this.disposed)return;
+    this.canvas.dataset.disposeStartedAt=String(performance.now());
+    this.disposed=true;this.ready=false;this.stop();this.onInteraction=undefined;this.scheduler.dispose();
     this.canvas.removeEventListener('webglcontextlost',this.onLost);
     const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>(),textures=new Set<THREE.Texture>();
     this.scene.traverse(object=>{
@@ -523,5 +576,6 @@ export class ForestEngine implements LiveSceneEngine {
     this.reflection?.getRenderTarget().dispose();this.resources.forEach(r=>r.dispose());
     this.renderer.renderLists.dispose();this.renderer.dispose();this.renderer.forceContextLoss();this.scene.clear();
     this.canvas.dataset.disposed='true';
+    this.canvas.dataset.disposeFinishedAt=String(performance.now());
   }
 }

@@ -273,6 +273,7 @@ function seededRandom(seed: number): () => number {
 export function createCosmicSky(): {
   group: THREE.Group;
   update(time: number): void;
+  getShadowState(): { planetWorldCenter: number[]; uniformWorldCenter: number[]; centerError: number };
   dispose(): void;
 } {
   const group = new THREE.Group();
@@ -398,10 +399,13 @@ export function createCosmicSky(): {
   atmosphere.renderOrder = -40;
   group.add(atmosphere);
 
+  // The ring fragment and sun direction use world coordinates. Keep this
+  // separate from the placement vector: portrait rotates the whole sky.
+  const planetWorldPosition = planetPosition.clone();
   const rings = new THREE.Mesh(
     ownGeometry(new THREE.RingGeometry(20.3, 30.6, 192, 1)),
     ownMaterial(new THREE.ShaderMaterial({
-      uniforms: { uPlanetPosition: { value: planetPosition } },
+      uniforms: { uPlanetPosition: { value: planetWorldPosition } },
       vertexShader: RING_VERTEX,
       fragmentShader: RING_FRAGMENT,
       transparent: true,
@@ -438,6 +442,17 @@ export function createCosmicSky(): {
       timeUniform.value = time;
       planet.rotation.y = -.4 + time * .00032;
       clouds.rotation.y = -.4 + time * .00054;
+      // getWorldPosition refreshes ancestor matrices before reading the center,
+      // including a just-resized portrait sky and any containing scene group.
+      planet.getWorldPosition(planetWorldPosition);
+    },
+    getShadowState() {
+      const actualCenter = planet.getWorldPosition(new THREE.Vector3());
+      return {
+        planetWorldCenter: actualCenter.toArray(),
+        uniformWorldCenter: planetWorldPosition.toArray(),
+        centerError: actualCenter.distanceTo(planetWorldPosition),
+      };
     },
     dispose() {
       if (disposed) return;

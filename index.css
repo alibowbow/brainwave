@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Native vertical scrolling wins inside the player when its details are open.
+   Scene-owned roots/canvases may otherwise declare touch-action:none. Keep this
+   override inside the render subtree; controls retain their native gestures. */
+[data-scene-scroll="true"] [data-scene-renderer],
+[data-scene-scroll="true"] [data-scene-renderer] * {
+  touch-action: pan-y !important;
+}
+
 /* --- Global styles that aren't expressible as utility classes --- */
 
 /* Typography refinement for the Pretendard typeface. */

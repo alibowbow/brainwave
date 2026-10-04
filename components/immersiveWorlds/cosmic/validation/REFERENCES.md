@@ -48,6 +48,7 @@ retrieved directly, rather than inferred from thumbnail descriptions.
 | [#061 Firefly Meadow](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/061-firefly-meadow.html) | Cached land/treeline, two grass scales with spring response to a shared wind field, reusable glow sprites, and three firefly depth bands interleaved with foliage. Its firefly phase coupling gradually synchronizes flashes. | Strongest candidate for botanical scale and local glow placement. Unlike a particle overlay, near leaves hide some lights while other lights pass in front. Use varied plant silhouettes, foliage occlusion, and sparse glow hierarchy in the existing 3D scene. Do not import the pairwise firefly simulation or add synchronized flashing to a meditation background. |
 | [#022 Deep Sea Descent](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/022-deep-sea-descent.html) | CSS/inline SVG organisms with Canvas2D effects: gradient light columns, cached glow sprites, bounded typed-array particle pools, scroll-dependent suspended particles, and an eased pointer torch affecting subjects. | Useful secondary check for local light affecting nearby matter. Sonnet #073 remains the more direct far/near particle source comparison. Neither example establishes a successful volumetric WebGL render. |
 | [#100 Organic Wave Lab](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/100-organic-wave-lab.html) | CPU Canvas2D finite-difference height field using three buffers, damped propagation and absorbing edges; slope-derived diffuse/specular shading and a curvature-based caustic approximation. | Secondary reference for how a local touch propagates and fades. Retain the garden's smaller analytic ripple response; a full-screen numerical simulation would add cost and an unrelated visual mode. |
+| [#082 Rosée / Perfume Rosée](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/082-perfume-rosee.html) | Source-only review on 2026-10-04. SVG bottle facets clip differently tinted, translated copies of the liquid path to suggest refraction. A damped pointer-driven bottle tilt and a separate lagging liquid slope animate that path; a moving gradient ellipse suggests transmitted light. It is not a 3D transmission renderer. | **Deferred for this correction.** The conceptual separation of surface highlight, liquid body and transmitted light is useful, but its illustrative facet offsets and projected ellipse do not improve the already accepted mirrored-camera garden basin. Keep the original 3D reflection, geometry and small analytic ripples. Do not port the bottle, shopping UI, falling petals, shine sweeps or spring parameters. No new visual claim is made for this source-only review. |
 
 These Opus rows record **source review**, not a claim that a live rendered view
 was inspected by the source reviewer. Separate live browser reviews confirmed:
@@ -76,6 +77,41 @@ fixed number of simulation steps per animation frame. Those patterns do not
 replace the garden's elapsed-time motion, reduced-motion still, hidden/offscreen
 stop, or resource disposal behavior.
 
+## Render-target compatibility sources and scope
+
+The correction also reviews the actual upstream
+[Three r186 Reflector source](https://raw.githubusercontent.com/mrdoob/three.js/r186/examples/jsm/objects/Reflector.js),
+matched against the installed dependency. Its constructor creates a
+`WebGLRenderTarget` with `HalfFloatType`; the first target bind performs GPU
+allocation. Therefore the owned helper must select the texture type before
+that bind or any scene render, not change an already rendered texture afterward.
+The garden explicitly uses `multisample: 0`, avoiding an additional requirement
+for optional multisampled floating-point buffers. A completeness probe must
+restore the renderer's previous target, active cube face and mip level in a
+`finally` block.
+
+The Khronos specifications establish the format decision:
+
+- [EXT_color_buffer_float](https://registry.khronos.org/webgl/extensions/EXT_color_buffer_float/)
+  makes WebGL2 `RGBA16F` color-renderable.
+- [EXT_color_buffer_half_float](https://registry.khronos.org/webgl/extensions/EXT_color_buffer_half_float/)
+  also applies to WebGL2 and requires `RGBA16F` color-renderability. It is a valid
+  alternative when the broader float extension is absent. WebGL2 `RGB16F` is
+  not color-renderable through this extension.
+- WebGL2 presence alone is insufficient. The current reflector uses RGBA;
+  choosing `HalfFloatType` requires a relevant enabled extension and successful
+  framebuffer check. The unsupported or deliberately forced test path uses
+  RGBA `UnsignedByteType`, retaining the reflection pass and scene geometry.
+
+Audit of all cosmic targets: the pool is the only explicitly constructed scene
+render target. The one shadow-casting directional light additionally creates a
+Three-managed PCF shadow target; the installed r186 non-VSM path uses a default
+byte color texture plus an unsigned-integer depth texture. No cosmic code uses
+PMREM, VSM, cube-camera environment capture, postprocessing render targets or a
+second renderer. Thus no PMREM generation needs a separate capability-safe
+environment path here. The tests and captures, rather than these source
+observations alone, establish the selected target's actual rendering result.
+
 ## Provenance and license boundary
 
 The public repository
@@ -103,3 +139,4 @@ Fetched reference fingerprints, for reproducibility:
 | Opus `091-alpenglow-day-cycle.html` | 37,559 | `a75d4218b39d4debaa9c377691e14405a07dd8e287a7a08865b5b0db867b2e82` |
 | Opus `022-deep-sea-descent.html` | 92,277 | `ad4b26599e916f5c5b58a5176f416030e5691a6414348af2264cfca0c9b84d5e` |
 | Opus `100-organic-wave-lab.html` | 45,530 | `a42d6ab1ec3dd928332f544be4005b2667e0a5c08ce04695fde51bdd9a061aa1` |
+| Opus `082-perfume-rosee.html` | 55,792 | `0209a01493bea764402588ce343d36e651f43970bdf5cc9d7ae63394b3d91b24` |

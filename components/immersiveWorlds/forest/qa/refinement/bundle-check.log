@@ -1,0 +1,7 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> brainwave-ritual-studio@4.0.0 check:bundle
+> node scripts/check-bundle.mjs
+
+initial JavaScript: 402.6 KiB / 410 KiB (index-BwrL9QaU.js)
+compiled CSS: 100.1 KiB / 135 KiB (index-D9cTC-2m.css)

@@ -1,4 +1,5 @@
 import path from 'path';
+import { readFile } from 'node:fs/promises';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -48,12 +49,20 @@ export default defineConfig(({ mode }) => {
             // Nature plates and cutouts are loaded per scene. Keeping them out
             // of the initial precache prevents the first visit from downloading
             // the entire illustration library.
-            globIgnores: ['**/images/nature/**', '**/immersive-worlds/**', '**/assets/world-*.js', '**/assets/RainyWindowScene-*.js', '**/assets/OilSeaScene-*.js', '**/assets/three-*.js'],
+            globIgnores: ['**/images/nature/**', '**/immersive-worlds/**', '**/assets/world-*', '**/assets/immersiveSessionBridge-*.js', '**/assets/RainyWindowScene-*.js', '**/assets/OilSeaScene-*.js', '**/assets/three-*.js'],
+            // CSS chunk names can come from a shared material/view module.
+            // Use the emitted manifest, not guessed names, to keep all owned
+            // world styles on demand along with their actual renderer chunks.
+            manifestTransforms: [async (entries) => {
+              const manifest = JSON.parse(await readFile(path.resolve('dist/.vite/manifest.json'), 'utf8')) as Record<string, { file: string; css?: string[] }>;
+              const deferred = new Set(Object.values(manifest).filter(entry => /^assets\/(?:world-|RainyWindowScene-|OilSeaScene-)/.test(entry.file)).flatMap(entry => entry.css ?? []));
+              return { manifest: entries.filter(entry => !deferred.has(entry.url)), warnings: [] };
+            }],
             runtimeCaching: [
               {
                 // Approved world chunks/assets are fetched on entry, never
                 // all thirty worlds at PWA installation time.
-                urlPattern: /\/(?:assets\/world-[\w-]+\.js|immersive-worlds\/.*\.(?:webp|png|jpe?g|avif|ktx2|glb|gltf|bin))$/i,
+                urlPattern: /\/(?:assets\/(?:world-[\w-]+|immersiveSessionBridge-[\w-]+)\.js|assets\/[\w-]+\.css|immersive-worlds\/.*\.(?:webp|png|jpe?g|avif|ktx2|glb|gltf|bin|hdr))$/i,
                 handler: 'CacheFirst',
                 options: {
                   cacheName: 'immersive-worlds-v1',

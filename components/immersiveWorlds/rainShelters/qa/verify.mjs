@@ -314,12 +314,17 @@ try {
       await page.waitForFunction(() => document.querySelectorAll('.rain-shelter-canvas').length === 0);
       await page.waitForTimeout(5700);
       const disposed = await page.evaluate(() => window.__rainQA);
-      assert.ok(disposed.losses >= 1, 'expired host explicitly releases WebGL context');
+      // Chromium may suppress contextlost delivery once the canvas is detached.
+      // Inspect the retained real context instead of mistaking missing telemetry for a leak.
+      await page.waitForFunction((c) => c.getContext('webgl2')?.isContextLost() === true, originalCanvas);
+      const releasedContext = await originalCanvas.evaluate((c) => ({connected:c.isConnected,contextLost:c.getContext('webgl2')?.isContextLost()}));
+      assert.equal(releasedContext.contextLost,true,'expired host explicitly releases the actual WebGL context');
+      assert.equal(releasedContext.connected,false);
       await clickControl('#qa-mounted');
       await ready();
       assert.equal(await canvas().count(),1);
       assert.equal(await canvas().evaluate((c,original)=>c===original,originalCanvas),false,'expired scene creates a fresh canvas');
-      result.checks.push({ name: 'delayed teardown releases WebGL context and later remount is fresh', pass: true, telemetry: disposed });
+      result.checks.push({ name: 'delayed teardown releases WebGL context and later remount is fresh', pass: true, telemetry: disposed, releasedContext });
       await page.goto(`${baseURL}${baseURL.includes('?') ? '&' : '?'}world=${world}&static3D=1`, {waitUntil:'domcontentloaded',timeout:120_000});
       await ready();
       await motion('paused');

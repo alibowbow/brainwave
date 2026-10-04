@@ -26,39 +26,49 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     return canvas;
   });
   const environment = new THREE.CubeTexture(faces); environment.colorSpace = THREE.SRGBColorSpace; environment.needsUpdate = true;
-  scene.environment = environment; scene.environmentIntensity = .58; textures.push(environment);
+  scene.environment = environment; scene.environmentIntensity = .42; textures.push(environment);
 
   function texture(kind: 'stone' | 'wood' | 'bronze' | 'soil', size = 256) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
     const ctx = canvas.getContext('2d')!;
     const pixels = ctx.createImageData(size, size);
+    const lattice = Array.from({ length: 33 * 33 }, () => random());
+    const smoothNoise = (x: number, y: number, scale: number) => {
+      const gx = x / size * scale, gy = y / size * scale;
+      const ix = Math.floor(gx), iy = Math.floor(gy); let fx = gx - ix, fy = gy - iy;
+      fx *= fx * (3 - 2 * fx); fy *= fy * (3 - 2 * fy);
+      const a = lattice[(iy % 32) * 33 + ix % 32], b = lattice[(iy % 32) * 33 + (ix + 1) % 32];
+      const c = lattice[((iy + 1) % 32) * 33 + ix % 32], d = lattice[((iy + 1) % 32) * 33 + (ix + 1) % 32];
+      return (a + (b - a) * fx) * (1 - fy) + (c + (d - c) * fx) * fy;
+    };
     for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4;
       let value = 190 + (random() - 0.5) * 32;
       if (kind === 'wood') value = 134 + 21 * Math.sin(x * .31 + 2 * Math.sin(y * .012)) + 11 * Math.sin(x * 1.3 + Math.sin(y * .05)) + random() * 22;
-      if (kind === 'stone') value += 7 * Math.sin(x * .058 + Math.sin(y * .051)) + 5 * Math.sin(y * .1);
+      if (kind === 'stone') value = 209 + smoothNoise(x, y, 5) * 23 + smoothNoise(x, y, 17) * 13 + (random() - .5) * 9;
       if (kind === 'soil') value = 84 + random() * 80;
       if (kind === 'bronze') value = 165 + 14 * Math.sin(x * .7) * Math.sin(y * .7) + random() * 24;
       pixels.data[i] = value; pixels.data[i + 1] = value; pixels.data[i + 2] = value; pixels.data[i + 3] = 255;
     }
     ctx.putImageData(pixels, 0, 0);
     if (kind === 'stone') {
-      for (let i = 0; i < 1200; i++) {
-        ctx.fillStyle = random() < .5 ? 'rgba(73,67,53,0.12)' : 'rgba(255,255,245,0.22)';
-        ctx.beginPath(); ctx.ellipse(random() * size, random() * size, .3 + random() * 1.4, .2 + random() * .7, random() * 3, 0, Math.PI * 2); ctx.fill();
+      for (let i = 0; i < 3500; i++) {
+        ctx.fillStyle = random() < .56 ? 'rgba(80,76,64,0.20)' : 'rgba(255,255,248,0.29)';
+        ctx.beginPath(); ctx.ellipse(random() * size, random() * size, .35 + random() * 1.7, .2 + random() * .9, random() * 3, 0, Math.PI * 2); ctx.fill();
       }
     }
     const map = new THREE.CanvasTexture(canvas); map.wrapS = map.wrapT = THREE.RepeatWrapping;
     map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     textures.push(map); return map;
   }
-  const stoneMap = texture('stone'); stoneMap.repeat.set(2, 2);
+  const stoneMap = texture('stone', 512); stoneMap.repeat.set(2, 2); stoneMap.colorSpace = THREE.SRGBColorSpace;
+  const limewashMap = stoneMap.clone(); limewashMap.repeat.set(1.4, 1.4); textures.push(limewashMap);
   const woodMap = texture('wood'); woodMap.repeat.set(1, 3);
   const bronzeMap = texture('bronze'); bronzeMap.repeat.set(3, 1);
   const soilMap = texture('soil'); soilMap.repeat.set(4, 4);
-  const limestone = new THREE.MeshStandardMaterial({ color: '#e0c9a7', roughness: .93, bumpMap: stoneMap, bumpScale: .025 });
-  const plaster = new THREE.MeshStandardMaterial({ color: '#decbb0', roughness: .96, bumpMap: stoneMap, bumpScale: .018 });
-  const wornEdge = new THREE.MeshStandardMaterial({ color: '#cab18b', roughness: .85, bumpMap: stoneMap, bumpScale: .016 });
+  const limestone = new THREE.MeshStandardMaterial({ color: '#ded8c8', roughness: .93, map: stoneMap, bumpMap: stoneMap, bumpScale: .032 });
+  const plaster = new THREE.MeshStandardMaterial({ color: '#d8d0bb', roughness: .96, map: limewashMap, bumpMap: limewashMap, bumpScale: .02 });
+  const wornEdge = new THREE.MeshStandardMaterial({ color: '#c6bca7', roughness: .88, map: stoneMap, bumpMap: stoneMap, bumpScale: .020 });
   const warmWood = new THREE.MeshStandardMaterial({ color: '#6c4930', roughness: .73, map: woodMap, bumpMap: woodMap, bumpScale: .025 });
   const paleWood = new THREE.MeshStandardMaterial({ color: '#a17a50', roughness: .79, map: woodMap, bumpMap: woodMap, bumpScale: .025 });
   const brass = new THREE.MeshStandardMaterial({ color: '#b59856', metalness: .79, roughness: .32, bumpMap: bronzeMap, bumpScale: .015 });
@@ -76,6 +86,19 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     const out = mesh(new THREE.CylinderGeometry(r1, r0, a.distanceTo(b), 9), material, mid.x, mid.y, mid.z);
     out.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()); return out;
   }
+  function organicBranch(points: THREE.Vector3[], radius: number, tipRadius: number) {
+    const curve = new THREE.CatmullRomCurve3(points); const segments = Math.max(12, points.length * 9);
+    const geometry = new THREE.TubeGeometry(curve, segments, radius, 9, false);
+    const positions = geometry.getAttribute('position'); const vertex = new THREE.Vector3();
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments, center = curve.getPointAt(t), fraction = THREE.MathUtils.lerp(radius, tipRadius, t) / radius;
+      for (let j = 0; j <= 9; j++) {
+        const index = i * 10 + j; vertex.fromBufferAttribute(positions, index).sub(center).multiplyScalar(fraction).add(center);
+        positions.setXYZ(index, vertex.x, vertex.y, vertex.z);
+      }
+    }
+    geometry.computeVertexNormals(); return mesh(geometry, bark);
+  }
 
   // The sky is spatial and lights the open portal; it is not a background picture.
   const sky = mesh(new THREE.SphereGeometry(85, 24, 12), new THREE.ShaderMaterial({
@@ -84,8 +107,8 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     fragmentShader: 'varying vec3 vPos; void main(){ float h=clamp(normalize(vPos).y*.9+.13,0.,1.); vec3 c=mix(vec3(.89,.81,.64),vec3(.43,.65,.72),pow(h,.56)); gl_FragColor=vec4(c,1.);\n #include <tonemapping_fragment>\n #include <colorspace_fragment>\n }',
   }), 0, 0, 0, false);
   sky.frustumCulled = false;
-  scene.add(new THREE.HemisphereLight('#d8e8e1', '#8b785b', 2.1));
-  const sunlight = new THREE.DirectionalLight('#fff0cc', 3.7); sunlight.position.set(-8, 11, -5);
+  scene.add(new THREE.HemisphereLight('#c9dce5', '#817662', 1.25));
+  const sunlight = new THREE.DirectionalLight('#ffead0', 3.4); sunlight.position.set(-8.5, 8, 3.5);
   sunlight.castShadow = true; sunlight.shadow.mapSize.set(2048, 2048);
   Object.assign(sunlight.shadow.camera, { left: -11, right: 11, top: 10, bottom: -10, near: .1, far: 36 });
   sunlight.shadow.normalBias = .035; sunlight.shadow.bias = -.00012; sunlight.shadow.radius = 3;
@@ -95,7 +118,7 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
   // Individually jointed large limestone slabs, with restrained variation.
   box(0, -.17, -4, 18, .28, 27, wornEdge);
   const floorGeometry = new THREE.BoxGeometry(1.16, .075, 1.39);
-  const floorMaterial = limestone.clone(); floorMaterial.color.set('#d6c5a8');
+  const floorMaterial = limestone.clone(); floorMaterial.color.set('#d0c7b5');
   const paving = new THREE.InstancedMesh(floorGeometry, floorMaterial, 210);
   const dummy = new THREE.Object3D(); const tint = new THREE.Color();
   let pavingIndex = 0;
@@ -214,15 +237,15 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
   for (const z of [-3.62, -7.28]) box(4.21, .105, z, 2.95, .21, .14, wornEdge);
   box(2.72, .105, -5.45, .14, .21, 3.8, wornEdge);
   const trunkPoints = [treeBase, new THREE.Vector3(3.84, .9, -5.26), new THREE.Vector3(4.03, 1.76, -5.29), new THREE.Vector3(3.69, 2.55, -5.40), new THREE.Vector3(3.81, 3.21, -5.51)];
-  for (let i = 0; i < 4; i++) branch(trunkPoints[i], trunkPoints[i + 1], .19 - i * .029, .16 - i * .03);
+  organicBranch(trunkPoints, .20, .055);
   for (let i = 0; i < 7; i++) {
     const a = i * .95;
     branch(treeBase.clone().add(new THREE.Vector3(0, .15, 0)), treeBase.clone().add(new THREE.Vector3(Math.cos(a) * .49, .035, Math.sin(a) * .48)), .10, .026);
   }
   const leafShape = new THREE.Shape(); leafShape.moveTo(0, -.1); leafShape.quadraticCurveTo(.05, -.01, 0, .12); leafShape.quadraticCurveTo(-.05, -.01, 0, -.1);
   const leafGeometry = new THREE.ShapeGeometry(leafShape, 3);
-  const leaves = new THREE.InstancedMesh(leafGeometry, green, 1160); leaves.castShadow = true;
-  const silverLeaves = new THREE.InstancedMesh(leafGeometry, leafSilver, 380); silverLeaves.castShadow = true;
+  const leaves = new THREE.InstancedMesh(leafGeometry, green, 1960); leaves.castShadow = true;
+  const silverLeaves = new THREE.InstancedMesh(leafGeometry, leafSilver, 640); silverLeaves.castShadow = true;
   let leafIndex = 0, silverIndex = 0;
   const canopy = new THREE.Group(); scene.add(canopy); canopy.add(leaves, silverLeaves);
   for (let b = 0; b < 14; b++) {
@@ -230,14 +253,14 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
     const start = trunkPoints[2 + b % 2];
     const tip = new THREE.Vector3(3.8 + Math.cos(theta) * reach, 2.8 + random() * 1.25, -5.4 + Math.sin(theta) * reach);
     const elbow = start.clone().lerp(tip, .56); elbow.y += .25;
-    branch(start, elbow, .077, .040); branch(elbow, tip, .040, .010);
-    for (let j = 0; j < 110; j++) {
+    organicBranch([start, elbow, tip], .077, .009);
+    for (let j = 0; j < 180; j++) {
       const a = random() * Math.PI * 2, r = Math.sqrt(random()) * .84;
       dummy.position.set(tip.x + Math.cos(a) * r, tip.y + (random() - .5) * .8, tip.z + Math.sin(a) * r * .76);
       dummy.rotation.set(random() * 2, random() * 6.28, random() * 6.28);
       const s = .65 + random() * .57; dummy.scale.set(s, s, s); dummy.updateMatrix();
-      if (j % 4 === 0 && silverIndex < 380) silverLeaves.setMatrixAt(silverIndex++, dummy.matrix);
-      else if (leafIndex < 1160) leaves.setMatrixAt(leafIndex++, dummy.matrix);
+      if (j % 4 === 0 && silverIndex < 640) silverLeaves.setMatrixAt(silverIndex++, dummy.matrix);
+      else if (leafIndex < 1960) leaves.setMatrixAt(leafIndex++, dummy.matrix);
     }
   }
   leaves.count = leafIndex; silverLeaves.count = silverIndex;
@@ -264,10 +287,19 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
   box(-.7, -.01, -17, 2.8, .045, 15, limestone);
   box(-4.4, .45, -18.5, .65, .9, 15, plaster); box(3.1, .45, -18.5, .65, .9, 15, plaster);
   const distantLeaves = new THREE.MeshStandardMaterial({ color: '#596c51', roughness: 1 });
+  const cypressFoliage = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), distantLeaves, 240);
+  let cypressIndex = 0;
   for (const [x, z, h] of [[-3.4, -13.8, 4.0], [2.0, -16.5, 4.5], [-2.7, -21.2, 4.7], [1.7, -24, 4.8]]) {
     mesh(new THREE.CylinderGeometry(.06, .1, h, 8), bark, x, h / 2, z);
-    const cypress = mesh(new THREE.SphereGeometry(1, 13, 12), distantLeaves, x, h * .64, z); cypress.scale.set(.5, h * .50, .55);
+    for (let i = 0; i < 60; i++) {
+      const t = i / 60, a = i * 2.399, width = Math.pow(Math.sin(Math.PI * (t * .91 + .055)), .7) * (.44 - t * .20);
+      dummy.position.set(x + Math.cos(a) * width * .5 + Math.sin(t * 5) * .065, .32 + t * h, z + Math.sin(a) * width * .5);
+      dummy.rotation.set(random() * .3, a, random() * .3);
+      dummy.scale.set(width * (.73 + random() * .17), .17 + width * .46, width * (.7 + random() * .22)); dummy.updateMatrix();
+      cypressFoliage.setMatrixAt(cypressIndex, dummy.matrix); tint.setHSL(.285 + random() * .03, .17, .29 + random() * .09); cypressFoliage.setColorAt(cypressIndex++, tint);
+    }
   }
+  cypressFoliage.castShadow = cypressFoliage.receiveShadow = true; scene.add(cypressFoliage);
   for (let i = 0; i < 7; i++) {
     const hill = mesh(new THREE.SphereGeometry(1, 24, 12), new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(.30, .12, .43 + i * .022), roughness: 1 }), -20 + i * 7.5, -3.3, -40 - random() * 13, false);
     hill.scale.set(8 + random() * 5, 5 + random() * 6, 9);
@@ -280,9 +312,11 @@ export const buildMeditationCourt: SanctuaryBuilder = (renderer) => {
       camera.aspect = aspect;
       if (aspect < .85) {
         // Bring the near hand-height rim into the portrait, keeping arch and olive canopy above it.
-        camera.fov = 61; camera.position.set(.77, 1.61, 3.86); camera.lookAt(.23, 1.41, -4.3);
+        camera.fov = 53; camera.position.set(.77, 1.61, 3.86); camera.lookAt(.15, 1.15, -4.3);
+        bowlGroup.position.set(.84, .47, .64);
       } else {
         camera.fov = aspect > 1.9 ? 49 : 53; camera.position.set(.55, 1.64, 4.16); camera.lookAt(.02, 1.42, -4.5);
+        bowlGroup.position.set(2.17, .47, .31);
       }
       camera.updateProjectionMatrix();
     },

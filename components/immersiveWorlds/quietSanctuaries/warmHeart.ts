@@ -24,21 +24,28 @@ function surface(nu: number, nv: number, at: (u: number, v: number) => THREE.Vec
 }
 function textileMaps() {
   const size = 256, col = new Uint8Array(size * size * 4), normal = new Uint8Array(size * size * 4);
-  const rand = random(4213);
+  const rand = random(4213), heights = new Float32Array(size * size), strands = new Float32Array(size);
+  for (let x = 0; x < size; x++) strands[x] = rand() - .5;
+  // Irregular narrow longitudinal fibrils and very low contrast slubs, never a woven checker grid.
   for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-    const i = (y * size + x) * 4;
-    const thread = Math.sin(x * .62 + Math.sin(y * .098) * .45) * .035 + Math.sin(y * .78 + Math.sin(x * .078) * .4) * .025;
-    const slub = Math.sin(x * .035 + y * .019) * .035 + (rand() - .5) * .032;
-    const v = Math.round((.86 + thread + slub) * 255);
-    col[i] = v; col[i + 1] = Math.round(v * .964); col[i + 2] = Math.round(v * .899); col[i + 3] = 255;
-    normal[i] = 128 + Math.round(Math.cos(x * .62 + Math.sin(y * .098) * .45) * 34);
-    normal[i + 1] = 128 + Math.round(Math.cos(y * .78 + Math.sin(x * .078) * .4) * 28);
-    normal[i + 2] = 248; normal[i + 3] = 255;
+    const warp = Math.round(2.2 * Math.sin(y * Math.PI * 2 / size) + 1.2 * Math.sin(y * Math.PI * 6 / size));
+    const strand = strands[(x + warp + size) % size];
+    const cloud = Math.sin(x * Math.PI * 2 / size + Math.sin(y * Math.PI * 2 / size) * .65) * .34 + Math.sin((x + y) * Math.PI * 4 / size) * .1;
+    heights[y * size + x] = strand * .018 + cloud * .012 + (rand() - .5) * .008;
+  }
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const i = (y * size + x) * 4, h = heights[y * size + x];
+    const v = Math.round((.952 + h) * 255);
+    col[i] = v; col[i + 1] = Math.round(v * .986); col[i + 2] = Math.round(v * .955); col[i + 3] = 255;
+    const dx = heights[y * size + (x + 1) % size] - heights[y * size + (x + size - 1) % size];
+    const dy = heights[((y + 1) % size) * size + x] - heights[((y + size - 1) % size) * size + x];
+    normal[i] = 128 + Math.round(dx * 130); normal[i + 1] = 128 + Math.round(dy * 100);
+    normal[i + 2] = 255; normal[i + 3] = 255;
   }
   const map = new THREE.DataTexture(col, size, size, THREE.RGBAFormat);
   const normalMap = new THREE.DataTexture(normal, size, size, THREE.RGBAFormat);
   for (const tex of [map, normalMap]) {
-    tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(5, 7);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(9, 13);
     tex.magFilter = THREE.LinearFilter; tex.minFilter = THREE.LinearMipmapLinearFilter;
     tex.generateMipmaps = true; tex.needsUpdate = true;
   }
@@ -48,14 +55,14 @@ function textileMaps() {
 
 export const buildWarmHeart: SanctuaryBuilder = () => {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#bd8865');
-  scene.fog = new THREE.FogExp2('#b77b54', .025);
+  scene.background = new THREE.Color('#ccb29b');
+  scene.fog = new THREE.FogExp2('#c5ac93', .022);
   const camera = new THREE.PerspectiveCamera(49, 1, .08, 80);
   const habitat = new THREE.Group(); scene.add(habitat);
   const { map, normalMap } = textileMaps();
   const uniforms = { time: { value: -100 }, touch: { value: point(0, 2, -6) }, pulse: { value: 0 } };
   const silk = new THREE.MeshPhysicalMaterial({
-    color: '#f3d6ad', map, normalMap, normalScale: new THREE.Vector2(.2, .2),
+    color: '#f8e7d2', map, normalMap, normalScale: new THREE.Vector2(.2, .2),
     roughness: .83, metalness: 0, sheen: .7, sheenColor: new THREE.Color('#ffe2ba'),
     sheenRoughness: .7, side: THREE.DoubleSide,
   });
@@ -73,11 +80,11 @@ export const buildWarmHeart: SanctuaryBuilder = () => {
     `);
   };
   silk.customProgramCacheKey = () => 'warm-heart-silk-touch-v1';
-  const blush = new THREE.MeshPhysicalMaterial({ color: '#c79780', map, normalMap, normalScale: new THREE.Vector2(.23, .2), roughness: .91, sheen: .55, sheenColor: new THREE.Color('#f0c8b0'), side: THREE.DoubleSide });
-  const velvet = new THREE.MeshPhysicalMaterial({ color: '#e4c09d', map, normalMap, normalScale: new THREE.Vector2(.38, .32), roughness: .98, sheen: .85, sheenColor: new THREE.Color('#fff0d1'), side: THREE.DoubleSide });
-  const fiber = new THREE.MeshStandardMaterial({ color: '#e8c59c', map, normalMap, normalScale: new THREE.Vector2(.16, .16), roughness: .89 });
-  const fineFiber = new THREE.MeshStandardMaterial({ color: '#b8865f', roughness: .95 });
-  const litFiber = new THREE.MeshStandardMaterial({ color: '#ffdda8', roughness: .76, emissive: '#d59950', emissiveIntensity: .16 });
+  const blush = new THREE.MeshPhysicalMaterial({ color: '#d8bdac', map, normalMap, normalScale: new THREE.Vector2(.23, .2), roughness: .91, sheen: .55, sheenColor: new THREE.Color('#f0c8b0'), side: THREE.DoubleSide });
+  const velvet = new THREE.MeshPhysicalMaterial({ color: '#f1dfc7', map, normalMap, normalScale: new THREE.Vector2(.38, .32), roughness: .98, sheen: .85, sheenColor: new THREE.Color('#fff0d1'), side: THREE.DoubleSide });
+  const fiber = new THREE.MeshStandardMaterial({ color: '#ead2b1', map, normalMap, normalScale: new THREE.Vector2(.16, .16), roughness: .89 });
+  const fineFiber = new THREE.MeshStandardMaterial({ color: '#c8ad8f', roughness: .95 });
+  const litFiber = new THREE.MeshStandardMaterial({ color: '#fff1da', roughness: .76, emissive: '#d59950', emissiveIntensity: .16 });
   for (const material of [blush, velvet, fiber]) {
     material.onBeforeCompile = silk.onBeforeCompile;
     material.customProgramCacheKey = () => 'warm-heart-silk-touch-v1';
@@ -103,25 +110,25 @@ export const buildWarmHeart: SanctuaryBuilder = () => {
   const vaultMesh = add(surface(112, 136, (u, v) => vault(-.055 + u * (Math.PI + .11), 6 - v * 18)), silk);
   targets.push(vaultMesh);
   // Raised seams follow curved, converging paths along the membrane; adjacent strands are never a repeated grid.
-  for (let j = 0; j < 17; j++) {
-    const baseTheta = .065 + j / 16 * (Math.PI - .13);
+  for (let j = 0; j < 12; j++) {
+    const baseTheta = .065 + j / 11 * (Math.PI - .13) + .055 * Math.sin(j * 1.7);
     const pts: THREE.Vector3[] = [];
     for (let k = 0; k <= 36; k++) {
-      const z = 5.9 - k / 36 * 17.65;
-      const th = baseTheta + .04 * Math.sin(z * .65 + j * .9) + .085 * Math.sin(z * .18 + j * .4);
+      const z = 5.9 - (j % 3) * .65 - k / 36 * (16.4 - (j % 4) * .27);
+      const th = baseTheta + .065 * Math.sin(z * .65 + j * .9) + .095 * Math.sin(z * .18 + j * .4);
       pts.push(vault(th, z, .025));
     }
-    tube(pts, .022 + .008 * (1 + Math.sin(j * 4)), j % 4 === 0 ? litFiber : fiber, 110);
+    tube(pts, .014 + .006 * (1 + Math.sin(j * 4)), j % 4 === 0 ? litFiber : fiber, 110);
   }
   // Structural ribs cross the vault like pliant plant fibers; an asymmetrical opening holds the light.
-  for (let j = 0; j < 7; j++) {
-    const z = 4.9 - j * 2.32;
+  for (let j = 0; j < 5; j++) {
+    const z = [4.9, 2.1, -1.2, -5.4, -8.7][j];
     const pts: THREE.Vector3[] = [];
     for (let k = 0; k <= 48; k++) {
       const th = k / 48 * Math.PI;
-      pts.push(vault(th, z + .55 * Math.sin(th + j * .8) + .12 * Math.sin(th * 4), .09));
+      pts.push(vault(th, z + .85 * Math.sin(th * 1.25 + j * .8) + .35 * Math.cos(th) + .17 * Math.sin(th * 4 + j), .09));
     }
-    const rib = tube(pts, .055 + (j % 3) * .008, fiber, 100);
+    const rib = tube(pts, .029 + (j % 3) * .007, fiber, 100);
     targets.push(rib);
     // Smaller wrapped fibers run along each load bearing seam, with visible strand variation nearby.
     for (let strand = 0; strand < 2; strand++) {
@@ -129,18 +136,40 @@ export const buildWarmHeart: SanctuaryBuilder = () => {
       tube(woven, .0075, fineFiber, 130);
     }
   }
-  // Open layered petals form an offset far chamber, giving a softly illuminated depth destination.
-  for (let layer = 0; layer < 5; layer++) {
-    const z = -7.5 - layer * .74;
-    const angle = -.17 + layer * .085;
-    const petal = add(surface(78, 34, (u, v) => {
-      const th = -.25 + u * (Math.PI + .5);
-      const outer = 3.75 - layer * .37, inner = outer - .62;
-      const r = inner + v * (outer - inner);
-      const tip = .14 * Math.sin(th * 3 + layer * .7) + .055 * Math.sin(th * 9);
-      return point(Math.cos(th) * (r + tip) + .24 + angle, .18 + Math.sin(th) * (r * 1.18 + tip), z + .54 * Math.sin(v * Math.PI) + .28 * Math.cos(th));
-    }), layer % 2 === 0 ? silk : blush, true);
+  // Overlapping asymmetric lamellae carry translucent ivory edges toward an offset warm chamber.
+  const petalMaterials = ['#f3e2cb', '#edcebc', '#fae7cd', '#ead3c1'].map((color) => {
+    const material = new THREE.MeshPhysicalMaterial({
+      color, map, normalMap, normalScale: new THREE.Vector2(.16, .16), roughness: .79,
+      sheen: .72, sheenColor: new THREE.Color('#fff4dc'), sheenRoughness: .75,
+      transparent: true, opacity: .94, side: THREE.DoubleSide,
+      emissive: '#f2d3a6', emissiveIntensity: .012,
+    });
+    material.onBeforeCompile = silk.onBeforeCompile;
+    material.customProgramCacheKey = () => 'warm-heart-silk-touch-v1';
+    return material;
+  });
+  for (let layer = 0; layer < 4; layer++) {
+    const z = [-7.55, -8.75, -9.3, -10.25][layer];
+    const centerX = [-.24, .18, .42, -.06][layer];
+    const petal = add(surface(96, 42, (u, v) => {
+      const th = -.12 + layer * .047 + u * (Math.PI + .25 - layer * .058);
+      const outer = 3.6 - layer * .43;
+      const band = .37 + .17 * Math.sin(th * 1.5 + layer * 1.2) + .10 * Math.cos(th * 3 - layer);
+      const r = outer - band + v * band;
+      const tip = .15 * Math.sin(th * 2.1 + layer * 1.1) + .042 * Math.sin(th * 7.3 - layer);
+      const lift = .08 * Math.sin(th * 2 + layer * .4);
+      return point(Math.cos(th) * (r + tip) + centerX, .12 + Math.sin(th) * (r * (1.07 + layer * .023) + tip) + lift,
+        z + .3 * Math.sin(v * Math.PI) + .46 * Math.cos(th + layer * .7) + .12 * Math.sin(th * 3.4));
+    }), petalMaterials[layer], true);
     targets.push(petal);
+    const edge: THREE.Vector3[] = [];
+    for (let i = 0; i <= 60; i++) {
+      const th = -.12 + layer * .047 + i / 60 * (Math.PI + .25 - layer * .058);
+      const outer = 3.6 - layer * .43, band = .37 + .17 * Math.sin(th * 1.5 + layer * 1.2) + .10 * Math.cos(th * 3 - layer);
+      const tip = .15 * Math.sin(th * 2.1 + layer * 1.1) + .042 * Math.sin(th * 7.3 - layer);
+      edge.push(point(Math.cos(th) * (outer - band + tip) + centerX, .12 + Math.sin(th) * ((outer - band) * (1.07 + layer * .023) + tip) + .08 * Math.sin(th * 2 + layer * .4), z + .46 * Math.cos(th + layer * .7) + .12 * Math.sin(th * 3.4)));
+    }
+    tube(edge, .011, litFiber, 110);
   }
   const backWall = add(surface(64, 64, (u, v) => {
     const x = (u - .5) * 7.6, y = v * 6 - .1;
@@ -149,7 +178,7 @@ export const buildWarmHeart: SanctuaryBuilder = () => {
   targets.push(backWall);
   // Suspended translucent panels are separate folds with real overlapping edges and parallax.
   const veilMaterial = new THREE.MeshPhysicalMaterial({
-    color: '#f6d9b0', map, normalMap, normalScale: new THREE.Vector2(.09, .1),
+    color: '#f5e6d2', map, normalMap, normalScale: new THREE.Vector2(.09, .1),
     roughness: .9, sheen: .65, sheenColor: new THREE.Color('#fff2d5'), sheenRoughness: .82,
     transparent: true, opacity: .62, side: THREE.DoubleSide, depthWrite: false,
   });
@@ -199,14 +228,14 @@ export const buildWarmHeart: SanctuaryBuilder = () => {
     stitches.setMatrixAt(i, stitchMatrix.makeTranslation(x, .12, z));
   }
   stitches.instanceMatrix.needsUpdate = true; habitat.add(stitches);
-  const hemi = new THREE.HemisphereLight('#fff0d6', '#865849', 1.35); scene.add(hemi);
-  const apertureLight = new THREE.PointLight('#ffcf83', 21, 18, 1.7); apertureLight.position.set(.2, 2.4, -10.0); scene.add(apertureLight);
-  const warmKey = new THREE.SpotLight('#ffe7ba', 46, 21, .9, .9, 1.5);
+  const hemi = new THREE.HemisphereLight('#fff6ea', '#9c8272', 1.2); scene.add(hemi);
+  const apertureLight = new THREE.PointLight('#ffdeaa', 17, 18, 1.7); apertureLight.position.set(.2, 2.4, -10.0); scene.add(apertureLight);
+  const warmKey = new THREE.SpotLight('#fff0d8', 39, 21, .9, .9, 1.5);
   warmKey.position.set(-2.4, 3.3, -.3); warmKey.target.position.set(.3, .1, 2);
   warmKey.castShadow = true; warmKey.shadow.mapSize.set(1024, 1024); warmKey.shadow.bias = -.0002;
   warmKey.shadow.normalBias = .035; warmKey.shadow.radius = 4; scene.add(warmKey, warmKey.target);
-  const blushFill = new THREE.PointLight('#ffd1c0', 9, 12, 1.9); blushFill.position.set(3.15, 1.5, -.1); scene.add(blushFill);
-  const ceilingGlow = new THREE.PointLight('#ffdfaa', 11, 11, 1.8); ceilingGlow.position.set(-.8, 2.9, -5.8); scene.add(ceilingGlow);
+  const blushFill = new THREE.PointLight('#ffe2d8', 7, 12, 1.9); blushFill.position.set(3.15, 1.5, -.1); scene.add(blushFill);
+  const ceilingGlow = new THREE.PointLight('#ffeac8', 9, 11, 1.8); ceilingGlow.position.set(-.8, 2.9, -5.8); scene.add(ceilingGlow);
   // Sparse tiny airborne fibers float through the illuminated chamber, with no attraction or flashing.
   const rand = random(983), dustBase: number[] = [];
   for (let i = 0; i < 64; i++) dustBase.push((rand() - .5) * 7, .3 + rand() * 3.4, 3 - rand() * 13);
@@ -230,7 +259,7 @@ export const buildWarmHeart: SanctuaryBuilder = () => {
       habitat.scale.set(1 + breath * .003, 1 + breath * .004, 1);
       uniforms.pulse.value = breath;
       uniforms.time.value = touchAt < 0 ? -100 : elapsed - touchAt;
-      apertureLight.intensity = 21 + breath * 1.2;
+      apertureLight.intensity = 17 + breath * 1.0;
       litFiber.emissiveIntensity = .14 + breath * .025;
       for (let i = 0; i < veils.length; i++) veils[i].rotation.z = Math.sin(elapsed * .23 + i * 1.4) * .002;
       const array = dustGeometry.attributes.position.array as Float32Array;

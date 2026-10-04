@@ -73,7 +73,14 @@ const report = {
 };
 
 let browser;
+let previewServer;
 try {
+  if (process.env.SANCTUARY_QA_SERVE === '1') {
+    const { preview } = await import('vite');
+    const target = new URL(base);
+    previewServer = await preview({ configFile: path.join(here, 'vite.config.ts'), preview: { host: target.hostname, port: Number(target.port || 80), strictPort: true } });
+    console.log(`Owned QA preview listening at ${base}`);
+  }
   // Bind the resulting screenshots to the EXACT bundle served by the test URL.
   for (const entry of bundle.files) {
     const response = await fetch(new URL(entry.path, base));
@@ -81,6 +88,7 @@ try {
     assert.equal(hash(Buffer.from(await response.arrayBuffer())), entry.sha256, `served bundle SHA: ${entry.path}`);
   }
   report.servedBundleVerified = true;
+  console.log(`Verified served bundle ${bundle.sha256}`);
   browser = await chromium.launch({
     executablePath: process.env.SCENE_BROWSER_PATH || process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
     headless: true,
@@ -137,9 +145,10 @@ try {
     return { before, after };
   };
   const imageOptions = { style: '[data-qa-controls] { visibility: hidden !important; }', animations: 'disabled' };
+  const pixels = async (extra = {}) => page.screenshot({ ...imageOptions, clip: await page.locator('[data-qa-stage]').boundingBox(), ...extra });
   const screenshot = async (name) => {
     const file = `${name}.png`;
-    const buffer = await page.locator('[data-qa-stage]').screenshot({ ...imageOptions, path: path.join(output, file) });
+    const buffer = await pixels({ path: path.join(output, file) });
     const diagnostics = await state();
     assert.ok(buffer.length > 5000, 'actual scene screenshot has nontrivial pixel data');
     const evidence = { file, sha256: hash(buffer), bytes: buffer.length, viewport: page.viewportSize(), world: currentWorld, sourceSha256: sources.sha256, bundleSha256: bundle.sha256, gitHead: report.gitHead, diagnostics };
@@ -153,30 +162,37 @@ try {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto(`${base}?world=${world}${query}`, { waitUntil: 'networkidle' });
     await ready();
+    console.log(`Ready ${world} ${viewport.width}×${viewport.height}${query}`);
   };
 
   for (const world of ['meditation', 'warm-heart', 'snow-village']) {
     const result = { world, checks: [], tap: null, diagnostics: null };
     report.worlds.push(result);
+    if (capturesOnly) {
+      await navigate(world, { width: 1280, height: 800 }, '&inactive=1');
+      await assertFrozen('desktop inactive first-frame visual capture');
+      await screenshot(`${world}-desktop`);
+      await navigate(world, { width: 390, height: 844 }, '&inactive=1');
+      await assertFrozen('portrait inactive first-frame visual capture');
+      await screenshot(`${world}-portrait`);
+      result.checks.push('motion and lifecycle checks intentionally skipped in visual-captures-only mode; real spatial first frames captured');
+      continue;
+    }
     await navigate(world, { width: 1280, height: 800 });
     result.checks.push({ active: await assertAdvances() });
-    const movingBefore = await page.locator('[data-qa-stage]').screenshot(imageOptions);
+    await press('active');
+    await assertFrozen('motion baseline capture');
+    const movingBefore = await pixels();
+    await press('active');
+    await assertAdvances();
     await page.waitForTimeout(700);
+    await press('active');
+    await assertFrozen('motion advanced-frame capture');
     const movingAfter = await screenshot(`${world}-motion`);
     assert.notEqual(hash(movingBefore), hash(movingAfter), `${world}: actual pixels change while active`);
     result.checks.push('active rendered pixels change (two captured frames; no FPS inference)');
-    await press('active');
     result.checks.push(await assertFrozen('active=false'));
     await screenshot(`${world}-desktop`);
-    if (capturesOnly) {
-      await navigate(world, { width: 390, height: 844 });
-      await assertAdvances();
-      await press('active');
-      await assertFrozen('portrait paused composition capture');
-      await screenshot(`${world}-portrait`);
-      result.checks.push('remaining lifecycle checks intentionally skipped in visual-captures-only mode');
-      continue;
-    }
     await press('active');
     await assertAdvances();
 
@@ -200,6 +216,12 @@ try {
     assert.ok(emitted.strength >= 0 && emitted.strength <= .45, 'bounded interaction strength');
     assert.ok(Number.isFinite(emitted.x) && Math.abs(emitted.x) <= 1, 'bounded finite spatial interaction position');
     result.tap.event = emitted;
+    await assertAdvances();
+    await press('active');
+    await assertFrozen('post-interaction capture');
+    await screenshot(`${world}-interaction`);
+    await press('active');
+    await assertAdvances();
     const interactionsBeforeDrag = await count();
     await page.waitForTimeout(750); // Let the 700ms interaction rate limit expire.
     await page.mouse.move(result.tap.x, result.tap.y);
@@ -304,9 +326,11 @@ try {
     await screenshot(`${world}-portrait`);
     result.checks.push('narrow portrait composition rendered at 390×844');
   }
-  await navigate('snow-village', { width: 900, height: 650 });
-  await assertAdvances();
-  await press('active');
+  await navigate('snow-village', { width: 900, height: 650 }, capturesOnly ? '&inactive=1' : '');
+  if (!capturesOnly) {
+    await assertAdvances();
+    await press('active');
+  }
   await assertFrozen('Fold-inner-like landscape composition capture');
   await screenshot('snow-village-fold-inner-viewport');
   assert.deepEqual(report.errors, [], 'no browser runtime, shader, or other console errors');
@@ -317,6 +341,7 @@ try {
   process.exitCode = 1;
 } finally {
   if (browser) await browser.close();
+  if (previewServer) await new Promise((resolve) => previewServer.httpServer.close(resolve));
   report.finishedAt = new Date().toISOString();
   await writeFile(path.join(output, 'verification.json'), `${JSON.stringify(report, null, 2)}\n`);
   console.log(JSON.stringify({ passed: report.passed, output, sourceSha256: sources.sha256, bundleSha256: bundle.sha256, screenshots: report.screenshots.length, failure: report.failure?.message }, null, 2));

@@ -20,6 +20,7 @@ If the configured Playwright Chromium already exists, omit `SCENE_BROWSER_PATH`.
 Optional environment variables:
 
 - `SANCTUARY_QA_URL`: URL of the isolated built harness (default `http://127.0.0.1:4175`).
+- `SANCTUARY_QA_SERVE=1`: start/stop the owned Vite preview in the verifier process. Use this when separate executor commands have separate loopback namespaces; no external routing or access change is needed.
 - `SANCTUARY_QA_OUTPUT`: evidence output directory (default `qa/evidence/`).
 - `SANCTUARY_QA_MODE=visual`: fast initial visual captures; deliberately skips full interaction and lifecycle verification and labels the JSON accordingly. Final approval requires a normal run.
 
@@ -29,4 +30,13 @@ The full verifier checks active motion by frame/clock progression and actual cha
 
 `verification.json` contains Git HEAD, branch, dirty owned status, every source-file SHA-256, aggregate source SHA-256, every built-file SHA-256, aggregate bundle SHA-256, renderer counters, per-check results, errors, and PNG hashes. Before testing, it fetches every served bundle file and checks exact equality to the local `.build` content. A dirty source tree is explicitly recorded; the source manifest identifies its exact content independently of Git HEAD. A passing JSON means the automated checks completed; aesthetic approval still requires reading the actual images. No production audio or shared catalog integration is claimed.
 
+Screenshots are taken while paused after the relevant frames have actually rendered, preserving full production resolution/geometry while avoiding unnecessary continuous software-GPU work during PNG capture. Motion verification advances the real frame/elapsed counters between two paused images and compares their pixels. The post-interaction PNG follows a genuine successful raycast event; its visual change is not isolated from ordinary ambient movement, and the recorded callback is the interaction-specific evidence. Fast visual mode captures only initially inactive first frames and never claims motion verification.
+
 `qa/.build/` is generated and uncommitted. `qa/evidence/` contains modest committed QA-only images/JSON for review and must not enter production assets. Do not change the scene source or harness after the final evidence run without rebuilding and re-running; generated evidence itself is excluded from the source digest.
+
+For the managed Work executor, a single-process preview + browser run is reproducible with:
+
+```sh
+npx vite build --config components/immersiveWorlds/quietSanctuaries/qa/vite.config.ts
+SANCTUARY_QA_SERVE=1 SCENE_BROWSER_PATH=/tmp/cosmic-browser-bin/chromium node components/immersiveWorlds/quietSanctuaries/qa/verify.mjs
+```

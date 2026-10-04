@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import type { SanctuaryBuilder } from './worldTypes';
 
 /** Original spatial winter village. All geometry and material maps are generated here. */
@@ -19,6 +20,17 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
     materials.add(value);
     return value;
   };
+  const noise2 = (x: number, y: number, period: number) => {
+    const ix = Math.floor(x), iy = Math.floor(y);
+    const fx = x - ix, fy = y - iy;
+    const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+    const hash = (a: number, b: number) => {
+      const v = Math.sin(((a + period) % period) * 127.1 + ((b + period) % period) * 311.7 + 73.3) * 43758.5453;
+      return v - Math.floor(v);
+    };
+    return THREE.MathUtils.lerp(THREE.MathUtils.lerp(hash(ix, iy), hash(ix + 1, iy), sx),
+      THREE.MathUtils.lerp(hash(ix, iy + 1), hash(ix + 1, iy + 1), sx), sy) * 2 - 1;
+  };
   const texture = (kind: 'wood' | 'plaster' | 'snow' | 'slate') => {
     const canvas = document.createElement('canvas');
     canvas.width = canvas.height = 256;
@@ -37,13 +49,13 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
           const v = grain * 13 + n * 8 + knot * 15;
           c = [111 + v, 84 + v * 0.79, 59 + v * 0.61];
         } else if (kind === 'plaster') {
-          const v = 17 * n + Math.sin(x * 0.07) * Math.sin(y * 0.054) * 6;
+          const v = noise2(x / 32, y / 32, 8) * 12 + noise2(x / 8, y / 8, 32) * 4 + n * 2;
           c = [183 + v, 177 + v, 161 + v];
         } else if (kind === 'slate') {
           const v = n * 16 + Math.sin(x * 0.44 + y * 0.016) * 6;
           c = [67 + v, 77 + v, 83 + v];
         } else {
-          const v = n * 5 + Math.sin(x * 0.08) * Math.sin(y * 0.09) * 3;
+          const v = n * 2 + noise2(x / 32, y / 32, 8) * 3;
           c = [231 + v, 239 + v, 244 + v];
         }
         pixels.data[i] = c[0]; pixels.data[i + 1] = c[1]; pixels.data[i + 2] = c[2]; pixels.data[i + 3] = 255;
@@ -61,14 +73,14 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   const snowMap = texture('snow');
   const plasterMap = texture('plaster');
   const slateMap = texture('slate');
-  const timber = material({ color: '#77756c', map: woodMap, roughness: 0.92, bumpMap: woodMap, bumpScale: 0.055 });
-  const railWood = material({ color: '#a68b69', map: woodMap, roughness: 0.86, bumpMap: woodMap, bumpScale: 0.045 });
+  const timber = material({ color: '#77756c', map: woodMap, roughness: 0.92, bumpMap: woodMap, bumpScale: 0.018 });
+  const railWood = material({ color: '#a68b69', map: woodMap, roughness: 0.86, bumpMap: woodMap, bumpScale: 0.012 });
   const darkWood = material({ color: '#656264', map: woodMap, roughness: 0.92 });
-  const snow = material({ color: '#e1e7eb', map: snowMap, roughness: 0.94, bumpMap: snowMap, bumpScale: 0.035 });
+  const snow = material({ color: '#e1e7eb', map: snowMap, roughness: 0.94, bumpMap: snowMap, bumpScale: 0.004 });
   const roofSnow = material({ color: '#dce7ef', map: snowMap, roughness: 0.94 });
   const snowShade = material({ color: '#a7bbcc', map: snowMap, roughness: 1 });
-  const plaster = material({ color: '#969b9c', map: plasterMap, roughness: 0.99, bumpMap: plasterMap, bumpScale: 0.07 });
-  const plasterWarm = material({ color: '#b0a99b', map: plasterMap, roughness: 0.96, bumpMap: plasterMap, bumpScale: 0.07 });
+  const plaster = material({ color: '#969b9c', map: plasterMap, roughness: 0.99, bumpMap: plasterMap, bumpScale: 0.012 });
+  const plasterWarm = material({ color: '#b0a99b', map: plasterMap, roughness: 0.96, bumpMap: plasterMap, bumpScale: 0.012 });
   const slate = material({ color: '#777d84', map: slateMap, roughness: 0.9 });
   const stone = material({ color: '#697784', map: slateMap, roughness: 0.96, bumpMap: slateMap, bumpScale: 0.06 });
   const brass = material({ color: '#6f5739', metalness: 0.66, roughness: 0.43 });
@@ -118,7 +130,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   moon.target.position.set(0, 0, -11);
   scene.add(moon, moon.target);
   const porchBounce = new THREE.PointLight('#ffdba8', 5.2, 5.4, 2);
-  porchBounce.position.set(-0.75, 1.55, 1.65);
+  porchBounce.position.set(-0.45, 1.55, 1.65);
   scene.add(porchBounce);
 
   const laneCenter = (z: number) => Math.sin((-z + 2) * 0.115) * 1.6 + Math.sin(z * 0.037) * 0.4;
@@ -169,7 +181,8 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
     mesh(geo, mat, parent);
     // Eaves carry a rounded overhang of real snow, with a dark fascia beneath.
     if (extra > 0) {
-      const lip = box(side * (width / 2 + 0.3), wall + extra - 0.052, 0, 0.18, 0.14, depth + 0.68, mat, parent);
+      const lip = mesh(new RoundedBoxGeometry(0.22, 0.18, depth + 0.73, 3, 0.072), mat, parent);
+      lip.position.set(side * (width / 2 + 0.3), wall + extra - 0.045, 0);
       lip.rotation.z = side * -0.08;
     }
   };
@@ -209,6 +222,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
       box(s * (w / 2 - 0.065), wall / 2 + 0.13, d / 2 + 0.02, 0.16, wall, 0.16, timber, group);
       box(s * (w / 2 + 0.24), wall + 0.04, 0, 0.13, 0.16, d + 0.65, darkWood, group);
       beam(new THREE.Vector3(s * (w / 2 + 0.28), wall + 0.11, d / 2 + 0.35), new THREE.Vector3(0, wall + pitch + 0.11, d / 2 + 0.35), 0.065, darkWood, group);
+      beam(new THREE.Vector3(s * (w / 2 + 0.3), wall + 0.27, d / 2 + 0.35), new THREE.Vector3(0, wall + pitch + 0.28, d / 2 + 0.35), 0.095, roofSnow, group);
     }
     box(0, wall + 0.05, d / 2 + 0.025, w, 0.16, 0.16, timber, group);
     box(0, wall + pitch * 0.45, d / 2 + 0.085, 0.095, pitch * 0.92, 0.12, timber, group);
@@ -233,8 +247,8 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
       light.position.set(x - doorX, 1.4, z + d / 2 + 0.5); windows.push(light); scene.add(light);
     }
   };
-  house(-5.1, -7.4, 3.5, 4.3, 2.6, 1.62, 0.1, true, 1);
-  house(5.25, -10.3, 4.5, 5.1, 3.35, 1.8, -0.18, false, 2);
+  house(-4.1, -8, 3.5, 4.3, 2.6, 1.62, 0.1, true, 1);
+  house(4.45, -10.3, 4.5, 5.1, 3.35, 1.8, -0.18, false, 2);
   house(-5.8, -17.4, 4.2, 4.7, 2.65, 1.8, 0.15, false, 3);
   house(5.5, -21.1, 3.25, 4.7, 2.25, 1.75, -0.06, true, 4);
   house(-4.7, -29.7, 3.55, 4, 2.72, 1.57, -0.09, true, 5);
@@ -243,7 +257,8 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   house(0.6, -51, 3.6, 4.3, 2.6, 1.67, -0.08, true, 8);
 
   const fir = (x: number, z: number, height: number, scale = 1) => {
-    const y = groundHeight(x, z), group = new THREE.Group(); group.position.set(x, y, z); staticRoot.add(group);
+    const hillY = z < -43 ? Math.max(0, (-z - 43) / 37) * (6 + Math.sin(x * 0.066) * 3.4 + Math.sin(x * 0.135) * 1.7) : 0;
+    const y = groundHeight(x, z) + hillY, group = new THREE.Group(); group.position.set(x, y, z); staticRoot.add(group);
     beam(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, height, 0), height * 0.021, darkWood, group);
     const layers = Math.ceil(height * 1.8);
     for (let level = 0; level < layers; level++) {
@@ -289,7 +304,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
 
   // Sheltered first-person foreground: planks below, tactile rail and eave above.
   for (let i = 0; i < 20; i++) box(-4.55 + i * 0.48, -0.055, 2.7, 0.46, 0.12, 5.1, i % 4 ? railWood : timber);
-  box(0, 0.73, 0.96, 8.7, 0.18, 0.34, railWood);
+  const handrail = mesh(new RoundedBoxGeometry(8.7, 0.18, 0.34, 3, 0.033), railWood); handrail.position.set(0, 0.73, 0.96);
   box(0, 0.26, 0.98, 8.7, 0.115, 0.125, darkWood);
   for (let i = -7; i <= 7; i++) box(i * 0.59 + 0.13, 0.43, 0.97, 0.073, 0.62, 0.09, timber);
   for (const x of [-3.9, 3.9]) {
@@ -309,7 +324,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   }
 
   // The lantern is modeled at hand scale, with metal cage, glass and a tiny wick.
-  const lantern = new THREE.Group(); lantern.position.set(-0.75, 0.88, 1); staticRoot.add(lantern);
+  const lantern = new THREE.Group(); lantern.position.set(-0.45, 0.88, 1); staticRoot.add(lantern);
   box(0, 0.016, 0, 0.25, 0.055, 0.23, brass, lantern);
   box(0, 0.23, 0, 0.175, 0.32, 0.17, lanternGlass, lantern);
   for (const x of [-0.105, 0.105]) for (const z of [-0.098, 0.098]) box(x, 0.23, z, 0.022, 0.39, 0.022, brass, lantern);
@@ -317,13 +332,13 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   box(0, 0.525, 0, 0.055, 0.05, 0.045, brass, lantern);
   const handle = mesh(new THREE.TorusGeometry(0.084, 0.009, 5, 18, Math.PI), brass, lantern); handle.position.y = 0.53;
   const flame = mesh(new THREE.SphereGeometry(0.028, 8, 7), windowAmber, lantern); flame.position.y = 0.19; flame.scale.set(0.8, 1.6, 0.7);
-  const lampLight = new THREE.PointLight('#ffd59a', 1.9, 4.2, 2); lampLight.position.set(-0.75, 1.14, 1.02); scene.add(lampLight);
+  const lampLight = new THREE.PointLight('#ffd59a', 1.9, 4.2, 2); lampLight.position.set(-0.45, 1.14, 1.02); scene.add(lampLight);
   const lampGlowCanvas = document.createElement('canvas'); lampGlowCanvas.width = lampGlowCanvas.height = 64;
   const lctx = lampGlowCanvas.getContext('2d')!, gradient = lctx.createRadialGradient(32,32,0,32,32,32);
   gradient.addColorStop(0, 'rgba(255,204,130,.65)'); gradient.addColorStop(0.24,'rgba(255,185,106,.19)'); gradient.addColorStop(1,'rgba(255,181,110,0)');
   lctx.fillStyle = gradient; lctx.fillRect(0,0,64,64);
   const lampGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(lampGlowCanvas), transparent: true, opacity: 0.36, depthWrite: false, blending: THREE.AdditiveBlending }));
-  lampGlow.position.set(-0.75, 1.1, 1.04); lampGlow.scale.set(0.62, 0.7, 1); scene.add(lampGlow);
+  lampGlow.position.set(-0.45, 1.1, 1.04); lampGlow.scale.set(0.62, 0.7, 1); scene.add(lampGlow);
 
   // The rail snow is continuous geometry, and a tap makes a shallow soft-edged sweep.
   const snowCols = 160, snowRows = 12;
@@ -393,9 +408,9 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   const resize=(aspect:number)=>{
     camera.aspect=aspect;
     const portrait=aspect<0.86;
-    camera.fov=portrait?59:50;
-    camera.position.set(portrait?-0.27:0.2,portrait?1.43:1.47,portrait?3.06:3.27);
-    camera.lookAt(portrait?0.75:0.28,portrait?1.7:1.65,portrait?-15:-19);
+    camera.fov=portrait?53:50;
+    camera.position.set(portrait?-0.4:0.2,portrait?1.41:1.47,portrait?3.55:3.27);
+    camera.lookAt(portrait?0:0.28,portrait?0.65:1.65,portrait?-12:-19);
     camera.updateProjectionMatrix();
   };
   resize(1);
@@ -431,7 +446,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
       camera.updateMatrixWorld(true);scene.updateMatrixWorld(true);raycaster.setFromCamera(ndc,camera);
       const hit=raycaster.intersectObject(railSnow,false)[0];if(!hit)return undefined;
       const x=hit.point.x;
-      if(Math.abs(x+0.75)<0.28)return undefined;
+      if(Math.abs(x+0.45)<0.28)return undefined;
       for(let i=0;i<sp.count;i++){
         const distance=Math.abs(sp.getX(i)-x);
         const weight=Math.exp(-Math.pow(distance/0.27,4));

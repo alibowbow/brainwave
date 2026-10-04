@@ -410,8 +410,10 @@ async function verifyWorld(world) {
       assert.equal((await diagnostics()).liveEngines, 1);
       assert.equal(await page.evaluate(() => window.__nightBrowserQA.contextsCreated), 1, 'one WebGL context before disposal');
     };
-    const dragChrome = async () => {
+    const dragChrome = async (expectedSurface = 'holder-primary') => {
       const point = await pointerTarget();
+      const hitSurface = await page.evaluate(({ x, y }) => document.elementFromPoint(x, y)?.closest('[data-scene-surface]')?.id, point);
+      assert.equal(hitSurface, expectedSurface, 'native chrome drag hit-testing reaches the intended surface');
       const beforeDrag = await canvasState();
       const count = await eventCount();
       await page.mouse.move(point.x, point.y); await page.mouse.down();
@@ -426,7 +428,7 @@ async function verifyWorld(world) {
       const viewport = page.viewportSize();
       assert.ok(Math.abs(shift.x) < viewport.width * .25 && Math.abs(shift.y) < viewport.height * .25, 'look stays bounded inside one quarter viewport');
       result.chromeLookSamples ??= [];
-      result.chromeLookSamples.push({ before: point, held: shifted, shift, beforeFrame: beforeDrag, heldFrame: await canvasState() });
+      result.chromeLookSamples.push({ hitSurface, before: point, held: shifted, shift, beforeFrame: beforeDrag, heldFrame: await canvasState() });
       await page.mouse.up();
       assert.equal(await lookCount(), 0, 'chrome drag releases cleanly');
       assert.equal(await eventCount(), count, 'chrome drag never becomes a tap');
@@ -502,7 +504,7 @@ async function verifyWorld(world) {
     await page.waitForFunction(() => document.querySelectorAll('.night-world').length === 2);
     await ready(); await waitMotion('running'); await assertCanvasIdentity();
     assert.equal(await page.locator('[data-scene-surface]').count(), 2, 'second holder has its distinct nearest surface');
-    await dragChrome(); await tapChromeExactlyOnce();
+    await dragChrome('holder-second'); await tapChromeExactlyOnce();
     await page.evaluate(() => window.__nightQA.setSecond(false));
     await page.waitForFunction(() => document.querySelectorAll('.night-world').length === 1);
     await waitMotion('running'); await assertCanvasIdentity(); await tapChromeExactlyOnce();

@@ -34,7 +34,7 @@ function Harness() {
   Object.assign(window, { __nightQA: { setActive, setSecond, setSameSurface, setChrome, setStatic, setMounted, events, get chromeActions() { return chromeActions; }, diagnostics: getNightDiagnostics } });
   const interact = (event: NightInteraction) => events.push(event);
   return <>
-    {mounted && <div id="holder-primary" data-scene-surface style={{ touchAction: 'none' }}>
+    {mounted && <div id="holder-primary" data-scene-surface style={{ touchAction: 'none', isolation: 'isolate' }}>
       <div style={{ visibility: sameSurface ? 'hidden' : 'visible' }}><Scene active={active} static3D={static3D} onInteraction={interact} /></div>
       {sameSurface && <Scene active={active} static3D={static3D} onInteraction={interact} />}
       {chrome && <Chrome />}

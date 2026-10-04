@@ -38,6 +38,8 @@ export class WaterEdgeEngine implements LiveSceneEngine {
   private disposed = false;
   private width = 1;
   private height = 1;
+  private pixelRatio = 0;
+  private frameDirty = true;
   private baseRotation = new THREE.Quaternion();
   private offsetRotation = new THREE.Quaternion();
   private look = new THREE.Vector2();
@@ -65,22 +67,35 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     this.baseRotation.copy(this.world.camera.quaternion);
     this.world.update(0, 0);
     this.renderer.shadowMap.needsUpdate = true;
+    this.frameDirty = true;
   }
   setSize(width: number, height: number, dpr: number) {
-    this.width = Math.max(1, width); this.height = Math.max(1, height);
-    this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)));
+    width = Math.max(1, width); height = Math.max(1, height);
+    const pixelRatio = Math.min(2, Math.max(1, dpr));
+    const dimensionsChanged = width !== this.width || height !== this.height;
+    const ratioChanged = pixelRatio !== this.pixelRatio;
+    // Three rewrites the backing buffer even for an identical setSize. Host
+    // attachment and ResizeObserver may both request the same paused view.
+    if (!dimensionsChanged && !ratioChanged) return;
+    this.width = width; this.height = height; this.pixelRatio = pixelRatio;
+    if (ratioChanged) this.renderer.setPixelRatio(pixelRatio);
     this.renderer.setSize(this.width, this.height, false);
-    if (this.world) { this.world.resize(this.width, this.height); this.baseRotation.copy(this.world.camera.quaternion); }
+    if (this.world && dimensionsChanged) { this.world.resize(this.width, this.height); this.baseRotation.copy(this.world.camera.quaternion); }
+    this.frameDirty = true;
   }
   renderFrame(dt: number) {
     if (!this.world || this.disposed) return;
     const step = Math.min(0.05, Math.max(0, dt));
+    // Keep the already presented canvas across unchanged holder/observer calls.
+    // Animated frames, actual resizes and successful interactions still render.
+    if (step === 0 && !this.frameDirty) return;
     this.time += step;
     this.look.lerp(this.targetLook, step ? 1 - Math.exp(-step * 5) : 0);
     this.world.update(this.time, step);
     this.offsetRotation.setFromEuler(new THREE.Euler(this.look.y, this.look.x, 0, 'YXZ'));
     this.world.camera.quaternion.copy(this.baseRotation).multiply(this.offsetRotation);
     this.renderer.render(this.world.scene, this.world.camera);
+    this.frameDirty = false;
     this.canvas.dataset.frames = String(++this.frames);
     this.canvas.dataset.time = this.time.toFixed(4);
     this.canvas.dataset.drawCalls = String(this.renderer.info.render.calls);
@@ -98,13 +113,19 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     };
     this.raf = requestAnimationFrame(loop);
   }
-  stop() { cancelAnimationFrame(this.raf); this.raf = 0; }
+  stop() {
+    cancelAnimationFrame(this.raf); this.raf = 0;
+    // A resize or tap can arrive immediately before pause and before the next
+    // RAF. Present that final state at the frozen time; dispose marks itself
+    // disposed before stop, so teardown never adds another submission.
+    if (this.frameDirty) this.renderFrame(0);
+  }
   drag(dx: number, dy: number) { this.targetLook.set(THREE.MathUtils.clamp(-dx * .28, -.15, .15), THREE.MathUtils.clamp(-dy * .18, -.09, .09)); }
   releaseDrag() { this.targetLook.set(0, 0); }
   interact(x: number, y: number) {
     if (!this.world || this.disposed || this.time - this.lastInteraction < .65) return null;
     const event = this.world.interact(THREE.MathUtils.clamp(x, -1, 1), THREE.MathUtils.clamp(y, -1, 1), this.time);
-    if (event) this.lastInteraction = this.time;
+    if (event) { this.lastInteraction = this.time; this.frameDirty = true; }
     return event;
   }
   dispose() {

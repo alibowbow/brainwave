@@ -66,6 +66,13 @@
       "git_sha": "5ffb0a5fcea04abfce0c7a1ca7727468f2f8312e",
       "blob_sha": "5ffb0a5fcea04abfce0c7a1ca7727468f2f8312e",
       "git_hash_matches": true
+    },
+    "components/immersiveWorlds/waterEdge/qa/pebble-shore-interaction.png": {
+      "size": 815010,
+      "sha256": "66b10079f2b86313e9eb6a5d793210109e2a0d1b52785eeb12d09eeaeeb216cb",
+      "git_sha": "f94da5c84af7e0dc54df8cee9d1f958631f322fe",
+      "blob_sha": "f94da5c84af7e0dc54df8cee9d1f958631f322fe",
+      "git_hash_matches": true
     }
   }
 }

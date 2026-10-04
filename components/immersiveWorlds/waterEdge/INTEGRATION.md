@@ -10,6 +10,8 @@ This worker owns only `components/immersiveWorlds/waterEdge/` and `public/immers
 
 Each entry accepts `{ active: boolean; static3D?: boolean; onInteraction?: (event: WaterEdgeInteraction) => void }`. Only `active` is required. Lazy-import entries from the shared core. Supply a positioned parent with a nonzero height; the world fills it. Keep existing `data-scene-surface` / `data-scene-drag` hooks for chrome-overlay look/taps, and classify these IDs as live 3D centrally so shared overlays and touch-action follow the existing live-scene path. No extra audio context, media element, fetch dependency or external asset service is created. All geometry, textures and shaders are procedural original work. Public asset directory is intentionally empty of runtime assets.
 
+Integration owner also needs to include these lazy scene chunks in the shared PWA on-demand cache policy rather than precaching every world. The isolated QA build imports all three only for verification; do not import its dev entry into production.
+
 ## Rendering and lifecycle
 
 Each world has its own Three scene and camera; each same-world player/fullscreen holder shares one `LiveSceneHost` and one canvas. The newest holder wins, and release returns the canvas to the previous holder. Different worlds have independent hosts. All holders released => animation stops immediately, then the standard host disposes after 5 seconds. Geometry, instance buffers, material textures, shadow maps, environment targets and renderer are released. Static shadow maps are cached; the rolling pebble explicitly invalidates its map while moving. No package changes.

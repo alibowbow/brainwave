@@ -14,6 +14,7 @@ const ownedRoot = path.dirname(directory);
 const args = process.argv.slice(2);
 const smoke = args.includes('--smoke');
 const screenshotsOnly = args.includes('--screenshots-only');
+const lifecycleOnly = args.includes('--lifecycle-only');
 const onlyWorld = args.find(value => value.startsWith('--world='))?.split('=')[1];
 const worlds = (onlyWorld ? [onlyWorld] : ['night-pond', 'summer-valley', 'pebble-shore']);
 const base = process.env.WATER_EDGE_URL || 'http://127.0.0.1:4187';
@@ -45,7 +46,7 @@ if (server) await new Promise((resolve, reject) => { server.once('error', reject
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/tmp/cosmic-browser-bin/chromium', headless: true,
   args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 const result = {
-  schema: 1, generatedAt: new Date().toISOString(), browser: await browser.version(),
+  schema: 1, scope: lifecycleOnly ? 'lifecycle-only' : screenshotsOnly ? 'screenshots-only' : smoke ? 'visual-iteration' : 'full', generatedAt: new Date().toISOString(), browser: await browser.version(),
   environment: 'Headless Chromium with software SwiftShader; viewport checks, not physical device performance.',
   visibilityTest: 'Synthetic document.hidden override plus visibilitychange; not real browser tab switching.',
   gitHead: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ownedRoot, encoding: 'utf8' }).trim(),
@@ -61,10 +62,11 @@ async function waitFrames(page, count = 2) {
   const before = (await inspect(page)).canvases[0]?.frames || 0;
   await page.waitForFunction(({ before, count }) => (window.__waterEdgeQA.inspect().canvases[0]?.frames || 0) >= before + count, { before, count }, { timeout: 30000 });
 }
-async function freezeCheck(page, label, operation) {
+async function freezeCheck(page, label, operation, flush = false) {
   await operation();
   await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
   await page.waitForTimeout(150);
+  if (flush) await page.screenshot({ timeout: 90000 });
   const before = await inspect(page);
   await page.waitForTimeout(800);
   const after = await inspect(page);
@@ -92,7 +94,8 @@ async function pixelDifference(page, first, second) {
 }
 try {
   for (const world of worlds) {
-    const report = result.worlds[world] = { screenshots: [], consoleErrors: [], pageErrors: [], checks: {} };
+    const controlled = args.includes('--controlled-bursts');
+    const report = result.worlds[world] = { controlledBursts: controlled, screenshots: [], consoleErrors: [], pageErrors: [], checks: {} };
     const context = await browser.newContext({ viewport: viewports.desktop, deviceScaleFactor: 1, reducedMotion: 'no-preference' });
     const page = await context.newPage();
     page.on('pageerror', error => report.pageErrors.push(error.message));
@@ -106,6 +109,7 @@ try {
         assert(version.harnessSha256 === result.harnessSha256, 'Built harness hash differs from current harness. Rebuild harness.');
       }
       for (const [label, viewport] of Object.entries(viewports)) {
+        if (lifecycleOnly) break;
         if (smoke && label === 'fold-inner-viewport') continue;
         await page.setViewportSize(viewport); await page.waitForTimeout(250);
         // Capture a real rendered frame without racing the software GPU animation queue.
@@ -122,24 +126,57 @@ try {
         console.log(`${world} ${label}: ${name}`);
       }
       if (smoke || screenshotsOnly) continue;
+      if (!lifecycleOnly) {
       await page.setViewportSize(viewports.desktop); await page.waitForTimeout(150);
       const first = await page.screenshot({ timeout: 90000 }); const before = await inspect(page);
-      await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page, 8);
+      await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page, controlled ? 2 : 8);
       await page.evaluate(() => window.__waterEdgeQA.setActive(false));
       await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
       const second = await page.screenshot({ timeout: 90000 }); const after = await inspect(page);
       const diff = await pixelDifference(page, first, second);
       assert(after.canvases[0].time > before.canvases[0].time && diff.changedPixelsOver6RGB > 15, 'Active scene did not visibly animate');
       report.checks.motion = { before, after, difference: diff, firstSha256: sha(first), secondSha256: sha(second) };
+      console.log(`${world}: active motion pixels verified`);
       await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page);
-      report.checks.inactive = await freezeCheck(page, 'active=false', () => page.evaluate(() => window.__waterEdgeQA.setActive(false)));
+      report.checks.inactive = await freezeCheck(page, 'active=false', () => page.evaluate(() => window.__waterEdgeQA.setActive(false)), controlled);
       await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page);
-      report.checks.static3D = await freezeCheck(page, 'static3D=true', () => page.evaluate(() => window.__waterEdgeQA.setStatic(true)));
+      report.checks.static3D = await freezeCheck(page, 'static3D=true', () => page.evaluate(() => window.__waterEdgeQA.setStatic(true)), controlled);
       await page.evaluate(() => window.__waterEdgeQA.setStatic(false)); await waitFrames(page);
-      report.checks.reducedMotion = await freezeCheck(page, 'emulated prefers-reduced-motion', () => page.emulateMedia({ reducedMotion: 'reduce' }));
+      report.checks.reducedMotion = await freezeCheck(page, 'emulated prefers-reduced-motion', () => page.emulateMedia({ reducedMotion: 'reduce' }), controlled);
       await page.emulateMedia({ reducedMotion: 'no-preference' }); await waitFrames(page);
-      report.checks.syntheticHidden = await freezeCheck(page, 'synthetic document.hidden', () => page.evaluate(() => window.__waterEdgeQA.setSyntheticHidden(true)));
+      report.checks.syntheticHidden = await freezeCheck(page, 'synthetic document.hidden', () => page.evaluate(() => window.__waterEdgeQA.setSyntheticHidden(true)), controlled);
       await page.evaluate(() => window.__waterEdgeQA.setSyntheticHidden(null)); await waitFrames(page);
+      console.log(`${world}: inactive/static/reduced/synthetic-hidden verified`);
+      if (controlled) {
+        // Bound software-GPU submissions. Pointer dispatch still traverses the
+        // real DOM listener, shared host and geometric raycast; events are explicitly synthetic.
+        await page.evaluate(() => { window.__waterEdgeQA.setActive(false); window.__waterEdgeQA.setOverlay(true); window.__waterEdgeQA.clearEvents(); });
+        await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
+        await page.screenshot({ timeout: 90000 });
+        await page.evaluate(() => window.__waterEdgeQA.setActive(true));
+        await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'running'));
+        const pointer = await page.evaluate(({ world }) => {
+          const api = window.__waterEdgeQA, overlay = document.querySelector('[data-scene-drag]');
+          const fire = (target, type, x, y, id = 17) => target.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: id, isPrimary: true, pointerType: 'touch', button: 0, clientX: x, clientY: y }));
+          const noEvents = [];
+          const button = overlay.querySelector('button');
+          fire(button, 'pointerdown', 1220, 20); fire(window, 'pointerup', 1220, 20); noEvents.push(api.events.length === 0);
+          fire(overlay, 'pointerdown', 630, 450); fire(window, 'pointermove', 730, 490); fire(window, 'pointerup', 730, 490); noEvents.push(api.events.length === 0);
+          fire(overlay, 'pointerdown', 630, 500); fire(window, 'pointercancel', 630, 500); noEvents.push(api.events.length === 0);
+          fire(overlay, 'pointerdown', 2, 500); fire(window, 'pointerup', -2, 500); noEvents.push(api.events.length === 0);
+          const candidates = world === 'pebble-shore' ? [[.4661,.6446],[.46,.65],[.43,.70]] : world === 'night-pond' ? [[.5,.525],[.675,.55],[.5,.675]] : [[.5,.65],[.4,.62],[.6,.6],[.5,.75]];
+          let tapPoint;
+          for (const [x,y] of candidates) { fire(overlay, 'pointerdown', x*1280, y*800); fire(window, 'pointerup', x*1280, y*800); if (api.events.length) { tapPoint={x,y}; break; } }
+          const events = api.events.map(event => ({...event, position:{...event.position}}));
+          api.setActive(false);
+          return { syntheticDomPointerSequence: true, browserMouseSequence: false, controlSuppressed: noEvents[0], dragNoTap: noEvents[1], cancellationNoTap: noEvents[2], outsideNoTap: noEvents[3], tapPoint, events };
+        }, { world });
+        assert(pointer.controlSuppressed && pointer.dragNoTap && pointer.cancellationNoTap && pointer.outsideNoTap, 'Synthetic DOM pointer suppression failure');
+        assert(pointer.events.length === 1 && pointer.events[0].world === world && pointer.events[0].kind === (world === 'pebble-shore' ? 'pebble-roll' : 'ripple') && pointer.events[0].strength >= 0 && pointer.events[0].strength <= 1 && Number.isFinite(pointer.events[0].position.x) && Number.isFinite(pointer.events[0].position.z), 'Synthetic DOM valid geometry tap did not emit one bounded scene event');
+        report.checks.pointer = pointer;
+        await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
+        await page.screenshot({ timeout: 90000 });
+      } else {
       // A real mouse drag must not become a tap at pointerup.
       await page.evaluate(() => { window.__waterEdgeQA.clearEvents(); window.__waterEdgeQA.setOverlay(true); });
       await page.getByRole('button', { name: 'Overlay QA control' }).click();
@@ -164,8 +201,19 @@ try {
       }
       const interaction = (await inspect(page)).events;
       assert(interaction.length === 1, 'Water/pebble tap did not emit one bounded interaction');
+      assert(interaction[0].world === world && interaction[0].kind === (world === 'pebble-shore' ? 'pebble-roll' : 'ripple'), 'Interaction routed to the wrong world/event');
       assert(interaction[0].strength >= 0 && interaction[0].strength <= 1 && Number.isFinite(interaction[0].position.x) && Number.isFinite(interaction[0].position.z), 'Unbounded interaction');
       report.checks.pointer = { parentSurfaceOverlayControlSuppressed: true, parentSurfaceOverlayTapWorked: true, realMouseDragNoTap: true, syntheticCancellationNoTap: true, syntheticOutsideReleaseNoTap: true, tapPoint, events: interaction };
+      }
+      if (world === 'pebble-shore') {
+        await page.evaluate(() => window.__waterEdgeQA.setActive(true));
+        await waitFrames(page, controlled ? 2 : 6);
+        await page.evaluate(() => { window.__waterEdgeQA.setActive(false); window.__waterEdgeQA.setOverlay(false); });
+        await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
+        const interactionFrame = await page.screenshot({ path: path.join(directory, 'pebble-shore-interaction.png'), timeout: 90000 });
+        report.checks.interactionRenderedFrame = { file: 'pebble-shore-interaction.png', sha256: sha(interactionFrame), state: await inspect(page), note: 'Actual valid mesh tap followed by real RAF frames (two controlled / six normal); animation clock is sampled, no device FPS inference.' };
+      }
+      }
       await page.evaluate(() => { window.__waterEdgeQA.setActive(false); window.__waterEdgeQA.setOverlay(false); });
       await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
       const canvasBefore = (await inspect(page)).canvases[0]; const createdBefore = (await inspect(page)).diagnostics.created;
@@ -178,16 +226,20 @@ try {
       const holderReturned = await inspect(page);
       assert(holderReturned.canvases.length === 1 && holderReturned.canvases[0].id === canvasBefore.id, 'Canvas identity lost returning to primary');
       report.checks.secondHolder = { before: canvasBefore, second: holderSecond, returned: holderReturned, note: 'Holder transfer models shared fullscreen ownership; does not invoke browser Fullscreen API.' };
+      // Drain initialization/holder-resize draws before measuring delayed disposal.
+      await page.screenshot({ timeout: 90000 });
       report.checks.mountCycles = [];
       for (let cycle = 0; cycle < 2; cycle++) {
         await page.evaluate(() => window.__waterEdgeQA.unmount());
-        await page.waitForFunction(() => window.__waterEdgeQA.inspect().diagnostics.live === 0, null, { timeout: 9000 });
+        await page.waitForFunction(() => window.__waterEdgeQA.inspect().diagnostics.live === 0, null, { timeout: 20000, polling: 100 });
         const disposed = await inspect(page);
         assert(disposed.canvases.length === 0 && disposed.diagnostics.created === disposed.diagnostics.disposed, 'Scene leaked after host disposal delay');
         await page.evaluate(() => window.__waterEdgeQA.mount()); await ready(page);
+        await page.screenshot({ timeout: 90000 });
         const remounted = await inspect(page);
         assert(remounted.diagnostics.live === 1 && remounted.canvases.length === 1, 'Remount did not make exactly one engine');
         report.checks.mountCycles.push({ cycle: cycle + 1, disposed, remounted });
+        console.log(`${world}: disposal/remount ${cycle + 1} verified`);
       }
       assert(report.pageErrors.length === 0, 'Page errors occurred');
       assert(report.consoleErrors.length === 0, 'Console/shader errors occurred');
@@ -207,7 +259,7 @@ try {
 } finally {
   await browser.close();
   if (server) await new Promise(resolve => server.close(resolve));
-  const output = path.join(directory, smoke ? 'first-render.json' : screenshotsOnly ? 'screenshots.json' : onlyWorld ? `verification-${onlyWorld}.json` : 'verification.json');
+  const output = path.join(directory, smoke ? 'first-render.json' : screenshotsOnly ? 'screenshots.json' : lifecycleOnly ? `lifecycle-${onlyWorld}.json` : onlyWorld ? `verification-${onlyWorld}.json` : 'verification.json');
   await writeFile(output, JSON.stringify(result, null, 2) + '\n');
   console.log(output);
 }

@@ -1,0 +1,141 @@
+{
+  "scope": "Non-authoritative iteration history. Final machine results are verification.json and screenshots.json.",
+  "iterations": [
+    {
+      "sourceCommit": "8ca66531b0a64ddf22f8227f8a8e94a2f34616ef",
+      "world": "night-pond",
+      "finding": "An optional 12-frame easing wait after pointer cancellation exceeded 30000 ms in the shared SwiftShader environment. Earlier motion, inactive, static3D, reduced-motion and synthetic-hidden assertions had completed; the run was interrupted before a complete final report.",
+      "resolution": "Reduced that nonessential easing wait to 2 actual frames. Retained substantive pointer, geometry-hit, shared-holder and two repeated disposal/remount checks. This timeout is not counted as a scene correctness pass or as physical-device FPS evidence."
+    },
+    {
+      "sourceCommit": "8ca66531b0a64ddf22f8227f8a8e94a2f34616ef",
+      "world": "summer-valley",
+      "finding": "Actual Chromium reported THREE.WebGLProgram fragment compile errors at end of source, lines 70 and 170, for the sky and reflection variants. The sky fragment was missing the main function closing brace.",
+      "fixCommit": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+      "resolution": "Restored the missing brace and rebuilt the entire isolated bundle. First-frame shader/page errors now stop validation before screenshots. Final screenshots and checks are rerun from the corrected bundle; earlier pale sky screenshots are not visual approval evidence."
+    },
+    {
+      "id": "pond-disposal-polling",
+      "productionCodeCommit": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+      "runGitHead": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+      "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+      "bundleSha256": "49ac6409b4b31f74d4da1251973d5a31547c991a71d54fa526e4c3c2f20e889a",
+      "generatedAt": "2026-10-04T19:29:33.333Z",
+      "world": "night-pond",
+      "failure": "page.waitForFunction: Timeout 9000ms exceeded.\n    at /workspace/scratch/3d47ec61686d/brainwave/components/immersiveWorlds/waterEdge/qa/verify.mjs:185:20",
+      "failureState": {
+        "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+        "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 1,
+          "live": 0
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [],
+        "canvases": [],
+        "events": [
+          {
+            "world": "night-pond",
+            "kind": "ripple",
+            "strength": 0.32,
+            "position": {
+              "x": 0.038789814994000915,
+              "z": -1.2984884862141222
+            }
+          }
+        ]
+      },
+      "completedCheckNames": [
+        "motion",
+        "inactive",
+        "static3D",
+        "reducedMotion",
+        "syntheticHidden",
+        "pointer",
+        "secondHolder",
+        "mountCycles"
+      ],
+      "resolution": "Revalidated shared-holder return and two disposal/remount cycles using timer polling every100ms with a20000ms ceiling. Immediate failed-attempt snapshot had already shown created1/disposed1/live0 and no DOM canvas."
+    },
+    {
+      "id": "valley-eight-frame-readback",
+      "productionCodeCommit": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+      "runGitHead": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+      "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+      "bundleSha256": "49ac6409b4b31f74d4da1251973d5a31547c991a71d54fa526e4c3c2f20e889a",
+      "generatedAt": "2026-10-04T19:33:24.174Z",
+      "world": "summer-valley",
+      "failure": "page.screenshot: Timeout 90000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\n    at /workspace/scratch/3d47ec61686d/brainwave/components/immersiveWorlds/waterEdge/qa/verify.mjs:133:33",
+      "failureState": {
+        "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+        "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 14,
+            "time": 0.1333,
+            "drawCalls": 39,
+            "triangles": 663802
+          }
+        ],
+        "events": []
+      },
+      "completedCheckNames": [],
+      "resolution": "Revalidated with two actual RAF frames per burst and paused screenshot drains. DOM pointer events in the controlled recheck are explicitly synthetic; they still traverse the real scene listener, shared host and geometry raycast. This is not a physical-device performance measurement."
+    },
+    {
+      "id": "valley-second-disposal-deadline",
+      "productionCodeCommit": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+      "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+      "world": "summer-valley",
+      "failure": "page.waitForFunction: Timeout 20000ms exceeded.\n    at /workspace/scratch/3d47ec61686d/brainwave/components/immersiveWorlds/waterEdge/qa/verify.mjs:232:20",
+      "failureState": {
+        "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+        "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+        "diagnostics": {
+          "created": 2,
+          "disposed": 2,
+          "live": 0
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [],
+        "canvases": [],
+        "events": [
+          {
+            "world": "summer-valley",
+            "kind": "ripple",
+            "strength": 0.35,
+            "position": {
+              "x": 0.04269640785257667,
+              "z": 0.09758447587136132
+            }
+          }
+        ]
+      },
+      "resolution": "Revalidated only shared-holder ownership and two complete disposal/remount cycles. Paused first-frame readbacks drain initialization draws before the20-second timer-polling disposal check. lifecycle-summer-valley.json passed both cycles with real zero-live/no-canvas states and subsequent one-canvas mounts."
+    }
+  ]
+}

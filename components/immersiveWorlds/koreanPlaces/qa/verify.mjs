@@ -118,7 +118,22 @@ const ready = async () => {
 };
 const running = async () => page.waitForFunction(() => document.querySelector('canvas')?.dataset.running === 'true');
 const stopped = async () => page.waitForFunction(() => document.querySelector('canvas')?.dataset.running === 'false');
-const pixelHash = async () => hash(await page.locator('canvas').screenshot({ timeout: 45000 }));
+async function canvasImage(options = {}) {
+  await page.waitForFunction(() => {
+    const canvas = document.querySelector('canvas');
+    const ratio = Math.min(2, Math.max(1, devicePixelRatio));
+    return canvas?.width === Math.round(innerWidth * ratio) && canvas?.height === Math.round(innerHeight * ratio);
+  });
+  const bounds = await evaluate(() => {
+    const canvas = document.querySelector('canvas');
+    const box = canvas.getBoundingClientRect();
+    return { x: box.x, y: box.y, width: box.width, height: box.height, backWidth: canvas.width, backHeight: canvas.height, viewportWidth: innerWidth, viewportHeight: innerHeight, ratio: Math.min(2, Math.max(1, devicePixelRatio)) };
+  });
+  assert(Math.abs(bounds.x) < .1 && Math.abs(bounds.y) < .1 && bounds.width === bounds.viewportWidth && bounds.height === bounds.viewportHeight, 'Scene canvas does not fill the expected viewport');
+  assert(bounds.backWidth === Math.round(bounds.width * bounds.ratio) && bounds.backHeight === Math.round(bounds.height * bounds.ratio), 'Canvas backbuffer does not match the resized viewport');
+  return await page.screenshot({ ...options, clip: { x: 0, y: 0, width: bounds.width, height: bounds.height }, timeout: 45000 });
+}
+const pixelHash = async () => hash(await canvasImage());
 function assert(check, message) { if (!check) throw new Error(message); }
 async function stable(label) {
   await stopped();
@@ -142,7 +157,7 @@ async function capture(scene, name, viewport) {
   await ready();
   await page.waitForTimeout(150);
   const file = path.join(evidence, `${scene}-${name}.png`);
-  const bytes = await page.locator('canvas').screenshot({ path: file, timeout: 45000 });
+  const bytes = await canvasImage({ path: file });
   const entry = { scene, viewport: name, width: viewport.width, height: viewport.height, path: relative(file), sha256: hash(bytes), bytes: bytes.length, state: await snap() };
   results.screenshots.push(entry);
   process.stdout.write(`Captured ${scene}-${name}.png (${bytes.length} bytes)\n`);

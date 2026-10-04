@@ -1,0 +1,4 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> brainwave-ritual-studio@4.0.0 build
+> vite build

@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-04T20:55:11.916210+00:00",
+  "phase": "before evidence object publication; fresh enforced check required immediately before branch creation",
+  "expectedOriginalHead": "1925398f9c1eaf2319bf624d4f17e68e17d745dd",
+  "observed": {
+    "refs/heads/codex/morning-forest-pilot": "1925398f9c1eaf2319bf624d4f17e68e17d745dd",
+    "refs/heads/main": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+    "refs/pull/49/head": "1925398f9c1eaf2319bf624d4f17e68e17d745dd",
+    "refs/pull/51/head": "e054a47c6f303210e18699e1078ddd8e0277f58f"
+  },
+  "originalBranchAndPrHeadMatch": true,
+  "newBranchAbsent": true,
+  "transport": "Ordinary git push failed without credentials. Existing GitHub connector creates exact tested blobs/tree with new commit metadata. No new login/token/permission.",
+  "capturedLocalSource": "7dd22c762fc8af1477257377c349344b2dbd0c37",
+  "publishedSource": "f231cc77c24d3e20cbb534412d4eafa9c47b5553",
+  "identicalSourceTree": "ac7baf26c1d2eaba79629bc824a6c3050fbb56fa",
+  "policy": "Create only the new isolated branch; never update original/main/PR48/PR51. Base is the exact original commit. No force push or merge."
+}

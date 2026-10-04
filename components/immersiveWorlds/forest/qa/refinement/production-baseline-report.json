@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-10-04T20:32:01.737Z",
+  "url": "https://jhbrainwave.vercel.app/#/play/amb/morning_forest",
+  "scope": "Read-only current production baseline, not the unpublished forest refinement",
+  "status": "blocked",
+  "scripts": [],
+  "errors": [],
+  "failure": "Error: page.goto: net::ERR_EMPTY_RESPONSE at https://jhbrainwave.vercel.app/#/play/amb/morning_forest\nCall log:\n\u001b[2m  - navigating to \"https://jhbrainwave.vercel.app/#/play/amb/morning_forest\", waiting until \"domcontentloaded\"\u001b[22m\n",
+  "finishedAt": "2026-10-04T20:32:01.918Z"
+}

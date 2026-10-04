@@ -2,6 +2,7 @@ import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { captureScenePng } from './capture-scene.mjs';
 
 // Real pilot only: the standalone bundle and its reviewed application route.
 // SwiftShader is a correctness runner, never evidence of device performance.
@@ -18,15 +19,16 @@ const report = {
   startedAt: new Date().toISOString(),
   baseUrl: BASE,
   renderer: 'Chromium headless with SwiftShader',
-  applicationPilotHead: '531ecb22b31a4b098eec155b08f3f5af4f24c04e',
-  standalonePilotHead: process.env.SCENE_FOREST_HARNESS_URL ? '531ecb22b31a4b098eec155b08f3f5af4f24c04e' : '989186c396e9b15641d8ef31d43c5dee7df5b49a',
+  captureMethod: 'Native Chromium compositor, lossless PNG fast encoding, unchanged viewport and rendering quality.',
+  applicationPilotHead: '6a58c254a8d8d4b36d34947527fad1f2daf3df45',
+  standalonePilotHead: process.env.SCENE_FOREST_HARNESS_URL ? '6a58c254a8d8d4b36d34947527fad1f2daf3df45' : '989186c396e9b15641d8ef31d43c5dee7df5b49a',
   standaloneUrl: HARNESS,
   deviceScope: 'Desktop and Fold-like CSS viewport checks; no physical Fold or FPS measurement.',
   visibilityScope: 'Simulated document.hidden getter and visibilitychange event; not a real background-tab test.',
   fullscreenScope: 'One canvas across the harness second holder and application CSS immersive overlay; not browser Fullscreen API.',
   sourceScope: process.env.SCENE_FOREST_HARNESS_URL
-    ? 'Both the source standalone harness and production-built application use reviewed 531ecb2 source and current integration helpers. The older public QA bundle is not used in this run.'
-    : 'Public standalone QA is the older 989186c snapshot; application checks use reviewed 531ecb2 source. Never label old bundle PNGs as latest-head evidence.',
+    ? 'Both the source standalone harness and production-built application use reviewed 6a58c25 source and current integration helpers. The older public QA bundle is not used in this run.'
+    : 'Public standalone QA is the older 989186c snapshot; application checks use reviewed 6a58c25 source. Never label old bundle PNGs as latest-head evidence.',
   visualReview: 'PNG artifacts require human visual inspection; this script does not grade artistic quality.',
   checks: [],
   errors: [],
@@ -123,7 +125,7 @@ const pressApp = (page, name) => page.getByRole('button', { name, exact: true, i
 
 const capture = async (page, name) => {
   const filename = `${name}.png`;
-  await page.screenshot({ path: path.join(output, filename), animations: 'disabled', timeout: 120_000 });
+  await captureScenePng(page, path.join(output, filename));
   report.screenshots.push(filename);
   return filename;
 };
@@ -189,11 +191,15 @@ const dragThroughChrome = async (page, visible) => {
     if (!expectedTarget) throw new Error(`Unexpected ${shown ? 'visible' : 'hidden'} chrome hit target: ${target?.tagName} ${target?.className}`);
     const event = { bubbles: true, isPrimary: true, pointerId: 41, pointerType: 'mouse', button: 0, clientX: x, clientY: y };
     target.dispatchEvent(new PointerEvent('pointerdown', event));
-    window.dispatchEvent(new PointerEvent('pointermove', { ...event, clientX: x + 100 }));
-    return { chromeVisibleAtStart: shown, hitTag: target.tagName, hitWasDragSurface: target.hasAttribute('data-scene-drag'), lookState: world.dataset.look };
+    const frameBefore = Number(canvas.dataset.frames);
+    window.dispatchEvent(new PointerEvent('pointermove', { ...event, clientX: x + (shown ? 100 : -100) }));
+    return { chromeVisibleAtStart: shown, hitTag: target.tagName, hitWasDragSurface: target.hasAttribute('data-scene-drag'), lookState: world.dataset.look, frameBefore, direction: shown ? 1 : -1 };
   }, visible);
   assert.equal(hit.lookState, 'drag', 'hit-tested scene or visible chrome must start look drag');
-  await page.waitForFunction(() => Math.abs(Number(document.querySelector('.forest-world-canvas')?.dataset.lookYaw)) > 0.00001);
+  await page.waitForFunction(({ frameBefore, direction }) => {
+    const data = document.querySelector('.forest-world-canvas')?.dataset;
+    return Number(data?.frames) > frameBefore && Number(data?.lookYaw) * direction > 0.00001;
+  }, hit);
   await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 41, pointerType: 'mouse', button: 0 })));
   assert.equal(await page.locator('.forest-world').getAttribute('data-look'), null);
   return { ...hit, yawAfterDrag: await page.locator('.forest-world-canvas').getAttribute('data-look-yaw') };

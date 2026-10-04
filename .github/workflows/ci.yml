@@ -67,6 +67,12 @@ jobs:
           SCENE_FOREST_HARNESS_URL: http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
         run: npm run verify:worlds
 
+      - name: Verify integrated cafe world
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: npm run verify:cafe
+
       - name: Preserve scene screenshots and results
         if: always()
         uses: actions/upload-artifact@v4

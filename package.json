@@ -16,6 +16,7 @@
     "verify:sea": "node scripts/verify-sea-scene.mjs",
     "verify:links": "node scripts/verify-links.mjs",
     "verify:audio": "node scripts/verify-audio-failures.mjs",
+    "verify:cafe": "node scripts/verify-cafe-world.mjs",
     "verify:worlds": "node scripts/verify-immersive-worlds.mjs"
   },
   "dependencies": {

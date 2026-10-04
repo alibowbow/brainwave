@@ -1,0 +1,13 @@
+import { chromium } from 'playwright-core';
+import { createServer } from 'vite';
+const server=await createServer({server:{host:'127.0.0.1',port:4196}});await server.listen();
+import { mkdir,writeFile } from 'node:fs/promises';
+const output=process.env.CAFE_OUTPUT || '/tmp/cafe-qa';await mkdir(output,{recursive:true});
+const browser=await chromium.launch({executablePath:process.env.SCENE_BROWSER_PATH,headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--disable-dev-shm-usage']});
+const page=await browser.newPage({viewport:{width:1280,height:850},deviceScaleFactor:1});page.setDefaultTimeout(120000);
+const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+await page.goto(process.env.CAFE_URL||'http://127.0.0.1:4196/components/immersiveWorlds/cafe/qa/index.html?paused');
+await page.waitForSelector('.cafe-world[data-state="ready"]');
+await page.screenshot({path:output+'/desktop.png'});
+console.log(JSON.stringify({errors,canvas:await page.locator('canvas').evaluate(c=>({width:c.width,height:c.height,...c.dataset}))}));
+await writeFile(output+'/capture-errors.json',JSON.stringify(errors,null,2));await browser.close();await server.close();

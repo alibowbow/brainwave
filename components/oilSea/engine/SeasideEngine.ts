@@ -45,9 +45,9 @@ interface Profile {
 }
 
 const PROFILES: Record<SeasideQuality, Profile> = {
-  high: { maxPixels: 2_000_000, maxPixelRatio: 1.5, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 66, grass: 31000, shrubs: 1200, rocks: 140, trees: 9000, gulls: 6 },
-  medium: { maxPixels: 1_000_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 60, grass: 21500, shrubs: 820, rocks: 110, trees: 6400, gulls: 6 },
-  low: { maxPixels: 620_000, maxPixelRatio: 1, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 52, grass: 12800, shrubs: 530, rocks: 80, trees: 3850, gulls: 5 },
+  high: { maxPixels: 2_400_000, maxPixelRatio: 2, brush: 3, stride: 2, strokeSteps: 9, dabs: true, terrainDetail: 1, clouds: 66, grass: 31000, shrubs: 1200, rocks: 140, trees: 9000, gulls: 6 },
+  medium: { maxPixels: 1_200_000, maxPixelRatio: 1.4, brush: 3.5, stride: 2, strokeSteps: 6, dabs: true, terrainDetail: 0.8, clouds: 60, grass: 21500, shrubs: 820, rocks: 110, trees: 6400, gulls: 6 },
+  low: { maxPixels: 760_000, maxPixelRatio: 1.15, brush: 3.5, stride: 2, strokeSteps: 4, dabs: false, terrainDetail: 0.6, clouds: 52, grass: 12800, shrubs: 530, rocks: 80, trees: 3850, gulls: 5 },
   software: { maxPixels: 300_000, maxPixelRatio: 1, brush: 3, stride: 2, strokeSteps: 0, dabs: false, terrainDetail: 0.5, clouds: 42, grass: 7100, shrubs: 300, rocks: 70, trees: 2050, gulls: 4 },
 };
 
@@ -235,7 +235,9 @@ export class SeasideEngine implements LiveSceneEngine {
     this.sceneTarget = new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: true, depthTexture: new THREE.DepthTexture(width, height) });
     // The same brush on the same picture, whatever the resolution it is made at.
     const shown = width * (this.cssWidth / painted);
-    this.post.setSize(width, height, profile.brush * Math.sqrt((shown * height) / REFERENCE_PIXELS), shown / width);
+    // How many screen pixels each painted pixel is stretched over (1 = none).
+    const upscale = (this.cssWidth * this.devicePixelRatio) / shown;
+    this.post.setSize(width, height, profile.brush * Math.sqrt((shown * height) / REFERENCE_PIXELS), shown / width, upscale);
     this.sunPoint.copy(this.sunDirection).multiplyScalar(10000).add(this.camera.position).project(this.camera);
     this.post.setSun(this.sunPoint.x * 0.5 + 0.5, this.sunPoint.y * 0.5 + 0.5, Math.abs(this.sunPoint.x) < 1.2 && this.sunPoint.z < 1);
     if (this.oceanMaterial) {

@@ -5,10 +5,11 @@ import { isProtectedWorldId, isWorldId, type UpgradeableWorldId } from './worldC
 export type WorldLoaders = Partial<Record<UpgradeableWorldId, ImmersiveWorldLoader>>;
 
 /** Explicit reviewed imports only. Never glob/eager-import an unfinished pilot.
- * The forest is admitted for draft integration QA only (PR #49, 531ecb2).
+ * Forest (PR #49, 6a58c25) and café (PR #50, c0de2c4) enter draft QA only.
  * This is not a visual-quality approval. Other worlds keep their existing view. */
 const approvedLoaders: WorldLoaders = {
   'amb:morning_forest': () => import('./forest/ForestWorld'),
+  'amb:focus_cafe': () => import('./cafe/CafeWorld'),
 };
 
 export function createWorldRegistry(loaders: WorldLoaders) {

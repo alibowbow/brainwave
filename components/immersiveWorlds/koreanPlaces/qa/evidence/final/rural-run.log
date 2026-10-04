@@ -1,0 +1,28 @@
+Testing rural
+Loaded rural; waiting for scene ready
+Ready rural
+Captured rural-desktop.png (915493 bytes)
+Captured rural-chrome.png (918291 bytes)
+Captured rural-portrait.png (245178 bytes)
+Captured rural-fold.png (563404 bytes)
+Lifecycle rural: motion endpoints at 683x450
+Lifecycle rural: visible chrome pointer and UI controls
+Lifecycle rural: cooldown real frame 1/11 flushed
+Lifecycle rural: cooldown real frame 2/11 flushed
+Lifecycle rural: cooldown real frame 3/11 flushed
+Lifecycle rural: cooldown real frame 4/11 flushed
+Lifecycle rural: cooldown real frame 5/11 flushed
+Lifecycle rural: cooldown real frame 6/11 flushed
+Lifecycle rural: cooldown real frame 7/11 flushed
+Lifecycle rural: cooldown real frame 8/11 flushed
+Lifecycle rural: cooldown real frame 9/11 flushed
+Lifecycle rural: cooldown real frame 10/11 flushed
+Lifecycle rural: cooldown real frame 11/11 flushed
+Lifecycle rural: trusted browser touch
+Lifecycle rural: three holder transports
+Lifecycle rural: reduced/static/hidden policies
+Lifecycle rural: mount reuse and delayed disposal
+Lifecycle rural: static first frame
+Loaded rural; waiting for scene ready
+Ready rural
+Evidence: components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-rural.json; pass=true

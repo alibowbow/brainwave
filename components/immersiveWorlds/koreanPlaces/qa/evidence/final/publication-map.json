@@ -1,0 +1,12 @@
+{
+  "method": "Existing GitHub connector Git data API; local git push had no credential. No new token or permission requested.",
+  "originalBase": "0e09a28a175b0aab8a52443c14a506f54b6998ee",
+  "localTestedSource": "bbc321dcf9fcaa107154c9802e6ef49e7021699c",
+  "publishedEquivalentSource": "b72ed33ec990b7bf0e1414a381fb80437bb5d855",
+  "localTestedFullTree": "110123abdea8a90a481b3f886ced081a540cb375",
+  "publishedSourceFullTree": "110123abdea8a90a481b3f886ced081a540cb375",
+  "sourceTreeEqualityVerified": true,
+  "localEvidenceSnapshotBeforeMapping": "78dc6ad9b970021cd26e3afaa3b978dd3c4a73cd",
+  "rawEvidencePolicy": "Raw records and comparison labels retain original local tested commit IDs; exact source, bundle and image hashes remain unchanged.",
+  "finalCommitPolicy": "Only owned reports/evidence are added after publishedEquivalentSource; final evidence commit ID is supplied in the draft PR."
+}

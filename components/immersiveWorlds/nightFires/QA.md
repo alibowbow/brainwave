@@ -2,7 +2,46 @@
 
 Three independent first-person worlds are implemented. The coordinator's visible-chrome input issue is fixed inside this group. Only the two assigned nightFires roots change. Shared core, protected worlds, package files and CI remain untouched. PR #60 stays draft and must not be merged by this worker.
 
-## Verified revisions
+## Latest: limited material refinement
+
+Remote PR head `813b4ef7f468366e330893f13c27962249f1c3b5` was read before this follow-up. Final material source is `6623c083888e2baece9da11436fe35694a7fcebf`. This revision changes fire-only log/coal surfaces and geometry in `scenery.ts`, the Lakeside water fragment shader, and an initial paused-portrait capture in the QA runner. Independent source comparison confirms that DeepNight, guarded chrome input, holder ownership, scene cameras/lights, flame/spark animation and audio remain unchanged. The slower, broader water waves are intentional shader changes; the engine update loop is unchanged.
+
+[MATERIAL_REFINEMENT.md](MATERIAL_REFINEMENT.md) records the actual visual iterations, before/after comparison, original PNG hashes and exact scope. The latest three-world browser run is [material-refinement/results.json](qa/evidence/material-refinement/results.json). Earlier images and reports below are retained as historical evidence, not the latest Mountain/Lakeside appearance.
+
+| Latest validation | Result |
+| --- | --- |
+| Full frozen-source real-WebGL run | PASS; 67 checks (Mountain 21 / DeepNight 23 / Lakeside 23), 24 original PNGs |
+| Typecheck and unit tests | PASS; 149 tests in 24 files |
+| Main build and bundle budget | PASS; initial JS 402.6 KiB / 410, CSS 99.5 KiB / 135 |
+| Separate production harness build | PASS; main combined JS 836.07 kB raw / 233.11 kB gzip |
+| CI associated with material source | [Run 299 PASS](https://github.com/alibowbow/brainwave/actions/runs/37233051835) |
+
+| Latest manifest | SHA256 |
+| --- | --- |
+| Source tree | `2957a9ed91177425953654a2fe0dc68ee554e60b7ffb6eb77a792dbcd9fbd371` |
+| Complete isolated bundle tree | `25d34563c4211fbcee3a1e9ab417482f9d8cabfb7d9f9322d1be3736cd66ba0c` |
+| Main isolated JS `index-BMIBpFoN.js` | `c91b8c23b685cd2b2aa9bf4eec2a3f666c7179cd4f46098450b8a4d5331469a3` |
+
+The complete report includes every source/bundle file hash, loaded scripts, original PNG hashes and actual input/lifecycle measurements. The evidence commit after the tested source changes only documentation and captures. Initial desktop and portrait now share untouched simulation time zero, separately from the existing post-interaction portrait. The final DeepNight time-zero views are byte-identical to fresh same-view captures from the previously approved bundle; the approved bench, ridges, house lights and unobstructed lantern are preserved.
+
+All 24 final PNGs were matched to their report SHA256; the six untouched views also match the visually reviewed material previews. Source and build fingerprints stayed unchanged throughout the complete run. All three worlds report zero browser/shader errors and final liveEngines 0, with two engines created and two disposed per lifecycle suite. Guarded chrome drag/tap, native/nested control exclusions, pointercancel/blur, covered and distinct holder transitions, reduced motion/static3D, actual moving pixels and delayed disposal all passed again. The two static lantern checks changed 79,113 / 161,222 rendered pixels without advancing simulation time. Report SHA256: `d7b00f9e9e77d2f1e9bd1266ac5b232ccc90877944e047f7a36ea248172ed744`.
+
+| Latest actual view | Desktop 1440×900 | Initial portrait 390×844 | Chrome visible |
+| --- | --- | --- | --- |
+| Mountain | [PNG](qa/evidence/material-refinement/mountain-desktop.png) | [PNG](qa/evidence/material-refinement/mountain-portrait-initial.png) | [PNG](qa/evidence/material-refinement/mountain-chrome-overlay.png) |
+| DeepNight, preserved | [PNG](qa/evidence/material-refinement/deep-desktop.png) | [PNG](qa/evidence/material-refinement/deep-portrait-initial.png) | [PNG](qa/evidence/material-refinement/deep-chrome-overlay.png) |
+| Lakeside | [PNG](qa/evidence/material-refinement/lakeside-desktop.png) | [PNG](qa/evidence/material-refinement/lakeside-portrait-initial.png) | [PNG](qa/evidence/material-refinement/lakeside-chrome-overlay.png) |
+
+Reproduce this final material run without overwriting the earlier evidence:
+
+```sh
+npx vite build --config components/immersiveWorlds/nightFires/qa/vite.config.ts
+SCENE_SCREENSHOT_DIR=components/immersiveWorlds/nightFires/qa/evidence/material-refinement \
+SCENE_BROWSER_PATH=/path/to/chromium \
+node components/immersiveWorlds/nightFires/qa/verify-night-fires.mjs --serve
+```
+
+## Historical verified revisions
 
 | Scope | Tested source commit | Result | Original report |
 | --- | --- | --- | --- |
@@ -20,7 +59,7 @@ The original full-run deep portrait is retained as before-fix evidence: visual i
 
 The JSON reports also contain individual source/bundle file hashes, loaded script URLs, PNG hashes, native hit-test surfaces, camera projection samples, frame counts, elapsed simulation time, pixel differences and lifecycle diagnostics. Complete-run JS: `index-BKtx9edC.js`; deep-repeat JS: `index-BYa97GcX.js`.
 
-## Actual rendered views
+## Historical rendered views
 
 | World | Desktop 1440×900 | Narrow portrait 390×844 | Chrome visible |
 | --- | --- | --- | --- |
@@ -32,7 +71,7 @@ Additional inspected views: [Deep Fold-inner viewport, 900×720](qa/evidence/dee
 
 Practical visual corrections included natural ground scale/litter, varied flattened fire-ring stones, charred log grain, restrained local fire lighting, deeper pine silhouettes, worn timber and chipped stone paving, a violet sky/water palette, softened water reflection bands, larger portrait foreground objects and the final unobstructed deep-night lantern. No whole-scene image backdrop, placeholder proxy render or blanket frame-rate cap is used.
 
-## Validation
+## Historical validation and shared test coverage
 
 - `npm run typecheck`: passed, including after the final portrait change.
 - `npm test`: 149 tests in 24 files passed, including two new live/static lantern regressions.

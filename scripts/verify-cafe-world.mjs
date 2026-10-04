@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { captureScenePng } from './capture-scene.mjs';
+import { verifySceneStill } from './verify-scene-still.mjs';
 
 const BASE = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:4173').replace(/\/?$/, '/');
 const output = path.join(process.env.SCENE_SCREENSHOT_DIR || 'artifacts', 'worlds');
@@ -14,34 +15,72 @@ const viewports = [
 ];
 const report = {
   startedAt: new Date().toISOString(), baseUrl: BASE,
-  pilotHead: 'c0de2c42bd803545cc1675587eda6ffc84aef9aa',
+  pilotHead: '8b9383b8086b99bec04eb2273a68ec9d2bd76f43',
   renderer: 'Headless Chromium with SwiftShader; no physical device or FPS claim.',
-  captureMethod: 'Native Chromium compositor, lossless PNG fast encoding, unchanged viewport and rendering quality.',
+  captureMethod: 'Bounded native Chromium compositor capture, lossless PNG, unchanged viewport and rendering quality. GPU readback can still fail; capture failures remain failures.',
   scope: 'Actual amb:focus_cafe application route first, then the rebuilt standalone pilot. Fold-like CSS viewports only.',
   visibilityScope: 'Injected document.hidden getter plus visibilitychange; not an actual background-tab test.',
   fullscreenScope: 'Application CSS immersive overlay and standalone second holder, not the native Fullscreen API.',
   contextScope: 'Capability probe contexts are recorded separately from live cafe renderer contexts; a lost probe is not a second live renderer.',
   visualReview: 'Saved PNGs require human visual review; no automated artistic-quality or audio-audition claim.',
-  checks: [], screenshots: [], errors: [], status: 'running',
+  checks: [], screenshots: [], captureFailures: [], errors: [], status: 'running',
 };
 let browser;
 let currentPage;
 let step = 'launch browser';
 await mkdir(output, { recursive: true });
 
+const persist = () => writeFile(path.join(output, 'cafe-verification.json'), `${JSON.stringify(report, null, 2)}\n`);
+
+const bounded = async (run, ms, label) => {
+  let timer;
+  try {
+    return await Promise.race([
+      Promise.resolve().then(run),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`${label} exceeded ${ms} ms; subsequent assertions were not run`)), ms); }),
+    ]);
+  } finally { clearTimeout(timer); }
+};
+
 const check = async (name, run) => {
   step = name;
+  report.currentStep = name;
+  await persist();
+  console.log(`START: ${name}`);
   const start = Date.now();
-  const evidence = await run();
-  report.checks.push({ name, status: 'passed', elapsedMs: Date.now() - start, evidence });
-  console.log(`PASS: ${name}`);
+  const capturesBefore = report.captureFailures.length;
+  const evidence = await bounded(run, 600_000, name);
+  const captureFailed = report.captureFailures.length > capturesBefore;
+  report.checks.push({ name, status: captureFailed ? 'failed' : 'passed', elapsedMs: Date.now() - start, evidence,
+    ...(captureFailed ? { failure: 'Required PNG capture failed; functional evidence is retained separately.' } : {}) });
+  await persist();
+  console.log(`${captureFailed ? 'FAIL (capture)' : 'PASS'}: ${name}`);
   return evidence;
 };
+const stalledCapturePages = new WeakSet();
 const capture = async (page, name) => {
   const filename = `${name}.png`;
-  await captureScenePng(page, path.join(output, filename));
-  report.screenshots.push(filename);
-  return filename;
+  report.captureInProgress = filename;
+  await persist();
+  try {
+    if (stalledCapturePages.has(page)) {
+      const skipped = { status: 'not-run', filename, message: 'Previous capture on this page timed out; its GPU readback may still be pending.' };
+      report.captureFailures.push(skipped);
+      return skipped;
+    }
+    const dimensions = await captureScenePng(page, path.join(output, filename));
+    report.screenshots.push(filename);
+    return { status: 'passed', filename, ...dimensions };
+  } catch (error) {
+    if (error?.code === 'SCENE_CAPTURE_TIMEOUT') stalledCapturePages.add(page);
+    const failure = { status: 'failed', filename, message: String(error), stage: error?.captureStage, code: error?.code };
+    report.captureFailures.push(failure);
+    console.error(`CAPTURE FAIL: ${filename}: ${failure.message}`);
+    return failure;
+  } finally {
+    delete report.captureInProgress;
+    await persist();
+  }
 };
 const createPage = async (surface) => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
@@ -96,12 +135,7 @@ const frozen = async (page) => {
     const canvas = document.querySelector('.cafe-world-canvas');
     return canvas?.dataset.running === 'false' && canvas.closest('.cafe-world')?.dataset.motion === 'paused';
   });
-  const before = await snapshot(page);
-  await page.waitForTimeout(300);
-  const after = await snapshot(page);
-  assert.equal(after.frames, before.frames, 'paused scene must stop drawing');
-  assert.equal(after.time, before.time, 'paused simulation must stop advancing');
-  return after;
+  return verifySceneStill(page, '.cafe-world-canvas', snapshot);
 };
 const running = async (page) => {
   await page.waitForFunction(() => {
@@ -173,13 +207,19 @@ try {
     assert.equal(await page.getByRole('dialog').count(), 0, 'one tap must not open a second confirmation');
     return { route: await page.evaluate(() => location.hash), oneTrustedTap: true, rendered, motion };
   });
-  await check('cafe app drag reaches the scene through visible and hidden chrome', async () => ({ visible: await drag(page, true), hidden: await drag(page, false) }));
+  await check('cafe app drag reaches visible and hidden chrome and excludes controls', async () => {
+    const visible = await drag(page, true);
+    const hidden = await drag(page, false);
+    await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first().dispatchEvent('pointerdown', { isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 });
+    assert.equal(await page.locator('.cafe-world').getAttribute('data-look'), null, 'transport button must not begin look drag');
+    await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 })));
+    return { visible, hidden, transportControlsStartDrag: false };
+  });
   await check('cafe application pause freezes rendering', async () => { await press(page, '일시정지'); return frozen(page); });
   await check('cafe application desktop and Fold-like paused screenshots', async () => {
     const results = [];
     for (const viewport of viewports) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await page.evaluate(() => document.fonts.ready);
       await page.waitForFunction(() => {
         const canvas = document.querySelector('.cafe-world-canvas');
         if (!canvas) return false;
@@ -240,7 +280,7 @@ try {
     await page.evaluate(() => { location.hash = '#/guide'; });
     return finalDisposal(page);
   });
-  await app.context.close();
+  await bounded(() => app.context.close(), 10_000, 'close cafe application');
 
   const pilot = await createPage('standalone rebuilt pilot');
   await check('rebuilt cafe standalone paused entry contains the real renderer', async () => {
@@ -266,20 +306,21 @@ try {
     return { disposed, remounted };
   });
   await check('cafe has no uncaught runtime or renderer errors', () => { assert.deepEqual(report.errors, []); return { errors: [] }; });
-  await pilot.context.close();
-  report.status = 'passed';
+  await bounded(() => pilot.context.close(), 10_000, 'close cafe standalone');
+  report.status = report.captureFailures.length ? 'failed' : 'passed';
+  if (report.status === 'failed') process.exitCode = 1;
 } catch (error) {
   report.status = 'failed';
   report.failure = { step, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined };
+  await persist();
   if (currentPage && !currentPage.isClosed()) {
-    try { await capture(currentPage, 'cafe-failure'); } catch (captureError) { report.failure.captureError = String(captureError); }
-    try { report.failure.data = await snapshot(currentPage); report.failure.contexts = await contexts(currentPage); } catch { /* no live canvas after a failed load */ }
+    try { report.failure.data = await bounded(() => snapshot(currentPage), 5000, 'failure snapshot'); report.failure.contexts = await bounded(() => contexts(currentPage), 5000, 'failure contexts'); } catch { /* no live canvas after a failed load */ }
   }
   console.error(`FAIL: ${step}: ${report.failure.message}`);
   process.exitCode = 1;
 } finally {
   report.finishedAt = new Date().toISOString();
-  await writeFile(path.join(output, 'cafe-verification.json'), `${JSON.stringify(report, null, 2)}\n`);
-  await browser?.close();
+  await persist();
+  try { await bounded(() => browser?.close(), 10_000, 'browser cleanup'); } catch (error) { report.cleanupError = String(error); report.status = 'failed'; process.exitCode = 1; await persist(); }
   console.log(`Cafe verification report: ${path.join(output, 'cafe-verification.json')}`);
 }

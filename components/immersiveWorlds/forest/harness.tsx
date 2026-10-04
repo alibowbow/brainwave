@@ -1,6 +1,7 @@
 import { StrictMode, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createRoot } from 'react-dom/client';
 import ForestWorld, { type ForestInteraction } from './ForestWorld';
+import { forestHost } from './forestHost';
 
 const harnessStyle = `
   html, body, #forest-harness-root { margin: 0; width: 100%; height: 100%; overflow: hidden; }
@@ -98,6 +99,20 @@ function ForestHarness() {
   const [osReduced, setOSReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   useEffect(() => {
+    const root = document.querySelector('.forest-harness');
+    // Diagnostic image readback only. Interaction/lifecycle assertions below
+    // continue to exercise the component through its public DOM handlers.
+    const captureFrame = (event: Event) => {
+      const detail = (event as CustomEvent<{result?: ReturnType<typeof forestHost.captureFrame>; error?: string}>).detail;
+      if (!detail) return;
+      try { detail.result = forestHost.captureFrame(); }
+      catch (error) { detail.error = error instanceof Error ? error.message : String(error); }
+    };
+    root?.addEventListener('forest:diagnostic-capture', captureFrame);
+    return () => root?.removeEventListener('forest:diagnostic-capture', captureFrame);
+  }, []);
+
+  useEffect(() => {
     const wasReduced = document.documentElement.classList.contains('reduce-motion');
     return () => { document.documentElement.classList.toggle('reduce-motion', wasReduced); };
   }, []);
@@ -175,7 +190,9 @@ function ForestHarness() {
       const canvas = canvasNow()!;
       check('Actual rendered 3D canvas', canvas.width > 0 && canvas.height > 0 && Number(canvas.dataset.frames) > 0 && Number(canvas.dataset.triangles) > 0, snapshot(canvas));
       const framesBefore = Number(canvas.dataset.frames), timeBefore = Number(canvas.dataset.time), observedAt = performance.now();
-      await delay(1300);
+      // Software WebGL may render below one frame per second. Assert actual
+      // progress within a bounded test wait; do not alter runtime frame pacing.
+      await waitFor(() => Number(canvas.dataset.frames) > framesBefore && Number(canvas.dataset.time) > timeBefore, 'Active scene did not advance a frame and simulation time.', 30000);
       const frameDelta = Number(canvas.dataset.frames) - framesBefore;
       check('Active animation advances', frameDelta > 0 && Number(canvas.dataset.time) > timeBefore, {
         frameDelta, timeDelta: Number(canvas.dataset.time) - timeBefore,
@@ -229,7 +246,7 @@ function ForestHarness() {
       await delay(120);
       const releaseYaw = Math.abs(Number(canvas.dataset.lookYaw));
       check('Gentle drag changes view without a tap', peakYaw > .009 && countsRef.current.main === dragHits, { peakYaw, callbacksBefore: dragHits, callbacksAfter: countsRef.current.main });
-      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, 'Camera did not slowly return after drag release.', 60000);
+      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, 'Camera did not slowly return after drag release.', 120000);
       check('View returns gradually after release', releaseYaw > peakYaw * .5 && Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, { peakYaw, yaw120msAfterRelease: releaseYaw, finalYaw: Number(canvas.dataset.lookYaw) });
 
       const callbacksBeforeSecond = { ...countsRef.current };
@@ -255,8 +272,9 @@ function ForestHarness() {
       await waitFor(() => isReady() && running() && canvasNow() !== canvas, 'Remount did not create a fresh ready engine.', 90000);
       const remounted = canvasNow()!;
       const remountFrames = Number(remounted.dataset.frames);
-      await delay(700);
-      check('Remount creates a fresh working engine', remounted !== canvas && Number(remounted.dataset.frames) > remountFrames, snapshot(remounted));
+      const remountTime = Number(remounted.dataset.time);
+      await waitFor(() => Number(remounted.dataset.frames) > remountFrames && Number(remounted.dataset.time) > remountTime, 'Remounted engine did not advance a frame and simulation time.', 30000);
+      check('Remount creates a fresh working engine', remounted !== canvas && Number(remounted.dataset.frames) > remountFrames && Number(remounted.dataset.time) > remountTime, snapshot(remounted));
     } catch (error) {
       check('QA sequence completed', false, error instanceof Error ? error.message : String(error));
     } finally {

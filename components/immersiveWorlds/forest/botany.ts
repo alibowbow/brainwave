@@ -168,7 +168,7 @@ export function createForestMaterials(): ForestMaterials {
     rock: new THREE.MeshStandardMaterial({ color: '#bdc1af', map: rockMap, bumpMap: rockMap, bumpScale: 0.035, roughness: 0.66 }),
     moss: new THREE.MeshStandardMaterial({ color: '#c0cd91', map: mossMap, bumpMap: mossMap, bumpScale: 0.035, roughness: 0.97 }),
     twig: new THREE.MeshStandardMaterial({ color: '#686b37', roughness: 0.89 }),
-    dew: new THREE.MeshPhysicalMaterial({ color: '#e7f6ed', roughness: 0.07, metalness: 0.04, transmission: 0, transparent: true, opacity: 0.8, clearcoat: 1, clearcoatRoughness: 0, ior: 1.33 }),
+    dew: new THREE.MeshPhysicalMaterial({ color: '#bed7c9', roughness: 0.075, metalness: 0.35, transmission: 0, transparent: true, opacity: 0.55, clearcoat: 1, clearcoatRoughness: 0, ior: 1.33 }),
   };
 }
 
@@ -262,7 +262,7 @@ export function createTree(materials: ForestMaterials, rng: Random, options: Tre
   const detail = options.detail === 'far' || options.detail === false || options.detail === 0 ? 0 : options.detail === 'mid' || options.detail === 1 ? 1 : 2;
   const group = new THREE.Group(); group.name = 'forest-tree';
   const wood: THREE.BufferGeometry[] = [], leafTransforms: THREE.Matrix4[] = [];
-  const lean = new THREE.Vector3((rng() - 0.5) * height * 0.1, 0, (rng() - 0.5) * height * 0.07);
+  const lean = new THREE.Vector3((rng() - 0.5) * height * 0.135, 0, (rng() - 0.5) * height * 0.105);
   const trunk = [new THREE.Vector3(0, -0.12, 0), new THREE.Vector3(lean.x * 0.1, height * 0.2, lean.z * 0.1), new THREE.Vector3(lean.x * 0.35, height * 0.55, lean.z * 0.4), new THREE.Vector3(lean.x, height, lean.z)];
   wood.push(tube(trunk, [radius * 1.36, radius, radius * 0.67, radius * 0.15], detail === 2 ? 14 : 9, rng));
   if (detail > 0) {
@@ -287,7 +287,7 @@ export function createTree(materials: ForestMaterials, rng: Random, options: Tre
       const secondaryAngle = angle + (secondary - 1) * 0.88 + (rng() - 0.5) * 0.55;
       const tip = from.clone().add(new THREE.Vector3(Math.cos(secondaryAngle) * reach * 0.56, height * (0.035 + rng() * 0.06), Math.sin(secondaryAngle) * reach * 0.56));
       if (detail > 0) wood.push(tube([from, from.clone().lerp(tip, 0.5).add(new THREE.Vector3(0, -0.04, 0)), tip], [radius * 0.064, radius * 0.036, 0.009], 5, rng));
-      const clusterCount = detail === 0 ? 27 : detail === 1 ? 37 : 45;
+      const clusterCount = detail === 0 ? 32 : detail === 1 ? 46 : 58;
       for (let leaf = 0; leaf < clusterCount; leaf++) {
         const phase = rng() * TAU, radial = Math.sqrt(rng());
         const spread = reach * (0.30 + rng() * 0.09);
@@ -295,12 +295,12 @@ export function createTree(materials: ForestMaterials, rng: Random, options: Tre
         const pos = center.add(new THREE.Vector3(Math.cos(phase) * spread * radial, (rng() - 0.5) * spread * 0.65, Math.sin(phase) * spread * radial));
         const direction = new THREE.Vector3(Math.cos(phase), (rng() - 0.5) * 0.9, Math.sin(phase));
         const normal = new THREE.Vector3((rng() - 0.5) * 0.75, 1, (rng() - 0.5) * 0.75);
-        leafTransforms.push(leafMatrix(pos, direction, normal, height * (0.029 + rng() * 0.022), 0.9 + rng() * 0.45));
+        leafTransforms.push(leafMatrix(pos, direction, normal, height * (0.021 + rng() * 0.016), 0.9 + rng() * 0.45));
       }
     }
   }
   const trunkMesh = new THREE.Mesh(merge(wood), materials.bark); trunkMesh.name = 'forest-tree-bark'; trunkMesh.castShadow = detail > 0; trunkMesh.receiveShadow = true; group.add(trunkMesh);
-  const leaves = new THREE.InstancedMesh(leafGeometry(detail === 0 ? 4 : 6), materials.leaf, leafTransforms.length);
+  const leaves = new THREE.InstancedMesh(leafGeometry(detail === 0 ? 3 : detail === 1 ? 4 : 6), materials.leaf, leafTransforms.length);
   leaves.name = 'forest-tree-leaves';
   leafTransforms.forEach((matrix, i) => { leaves.setMatrixAt(i, matrix); leaves.setColorAt(i, colorLeaf(rng)); });
   leaves.instanceMatrix.needsUpdate = true; leaves.castShadow = detail > 0; leaves.receiveShadow = true; leaves.computeBoundingSphere(); group.add(leaves);

@@ -65,21 +65,67 @@ jobs:
         env:
           SCENE_SCREENSHOT_DIR: qa/screenshots
           SCENE_FOREST_HARNESS_URL: http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
-        run: npm run verify:worlds
+        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:worlds
 
       - name: Verify integrated cafe world
         if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
         env:
           SCENE_SCREENSHOT_DIR: qa/screenshots
-        run: npm run verify:cafe
+        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cafe
 
-      - name: Preserve scene screenshots and results
+      - name: Verify integrated cosmic world
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cosmic
+
+      - name: Preserve protected and existing scene screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: scene-screenshots
+          name: scene-core
           path: |
-            qa/screenshots
+            qa/screenshots/*.png
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Preserve audio screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-audio
+          path: |
+            qa/screenshots/audio
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Preserve forest screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-forest
+          path: |
+            qa/screenshots/worlds/forest-*
             components/immersiveWorlds/forest/qa/ci-output
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Preserve cafe screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-cafe
+          path: |
+            qa/screenshots/worlds/cafe-*
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Preserve cosmic screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-cosmic
+          path: |
+            qa/screenshots/worlds/cosmic-*
           if-no-files-found: ignore
           retention-days: 14

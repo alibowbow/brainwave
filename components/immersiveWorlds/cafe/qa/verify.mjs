@@ -24,8 +24,10 @@ try{
  await page.setViewportSize({width:800,height:600});await page.waitForTimeout(500);
  const frozen=await data();await page.waitForTimeout(400);check('active=false freezes simulation',frozen.time===(await data()).time);
  await press('Resume');await waitFrames();check('active=true advances actual rendered frames',Number((await data()).time)>Number(frozen.time));
- // Capture actual scene pixels on two running frames, rather than trusting a CSS flag.
- const frameA=await page.screenshot();await waitFrames();const frameB=await page.screenshot();check('rain/steam change real pixels',!frameA.equals(frameB));
+ // Freeze each rendered sample only while reading pixels. Continuous SwiftShader
+ // rendering can starve headless capture; both samples retain the same paused UI.
+ await press('Pause');await page.waitForFunction(()=>document.querySelector('canvas').dataset.running==='false');const frameA=await page.screenshot();
+ await press('Resume');await waitFrames();await press('Pause');await page.waitForFunction(()=>document.querySelector('canvas').dataset.running==='false');const frameB=await page.screenshot();check('rain/steam change real pixels',!frameA.equals(frameB));await press('Resume');
  await page.evaluate(()=>{const c=document.querySelector('canvas');window.savedCafeCanvas=c;const p={bubbles:true,isPrimary:true,pointerId:8,pointerType:'mouse',button:0,clientX:350,clientY:220};c.dispatchEvent(new PointerEvent('pointerdown',p));window.dispatchEvent(new PointerEvent('pointermove',{...p,clientX:510}));});
  await waitFrames();check('look drag turns the camera',Number((await data()).yaw)>.0001);const yawBefore=Number((await data()).yaw);
  await page.evaluate(()=>window.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,isPrimary:true,pointerId:8,pointerType:'mouse',button:0,clientX:510,clientY:220})));
@@ -41,7 +43,7 @@ try{
  await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});await waitFrames();check('visible signal resumes',true);
  // Tap raycasts at current shot coordinates. Coordinates come from camera projection,
  // not engine.interact calls, so pointer handlers and callback delivery are exercised.
- const width=800,height=600,a=width/height,p=1-T.MathUtils.smoothstep(a,.48,1.35);const camera=new T.PerspectiveCamera(45+23*p,a,.04,80);camera.position.set(T.MathUtils.lerp(.2,-1.6,p),1.67,T.MathUtils.lerp(4.3,5,p));camera.lookAt(new T.Vector3(T.MathUtils.lerp(-.08,.18,p),1.45,-1.7));camera.updateMatrixWorld();const targets=[[-.64,1.03,1.45],[-1.15,1.46,.56],[-2,2,-1.55]].map(v=>{const q=new T.Vector3(...v).project(camera);return {x:(q.x+1)*width/2,y:(1-q.y)*height/2};});
+ const width=800,height=600,a=width/height,p=1-T.MathUtils.smoothstep(a,.48,1.35);const camera=new T.PerspectiveCamera(43+7*p,a,.04,80);camera.position.set(T.MathUtils.lerp(.10,-.70,p),T.MathUtils.lerp(1.53,1.44,p),T.MathUtils.lerp(3.50,3.12,p));camera.lookAt(new T.Vector3(T.MathUtils.lerp(-.40,-1.35,p),1.30,-1.7));camera.updateMatrixWorld();const targets=[[-.64,1.03,1.45],[-1.15,1.46,.56],[-2,2,-1.55]].map(v=>{const q=new T.Vector3(...v).project(camera);return {x:(q.x+1)*width/2,y:(1-q.y)*height/2};});
  for(const [i,name] of ['cup','lamp','window'].entries()){const p=targets[i];await page.mouse.click(p.x,p.y);await page.waitForFunction(name=>document.querySelector('[data-interaction]').textContent===name,name);check(`${name} tap reaches optional callback`,true);}
  await press('Pause');await page.waitForFunction(()=>document.querySelector('canvas').dataset.running==='false');const paused=await data();await page.mouse.click(targets[0].x,targets[0].y);await page.waitForTimeout(200);check('paused tap causes no scene reaction',(await data()).cupPulse===paused.cupPulse);
  await press('Unmount');await page.waitForFunction(()=>!document.querySelector('.cafe-world-canvas'));await page.waitForFunction(()=>window.savedCafeCanvas.dataset.lifecycle==='disposed',{},{timeout:120000,polling:100});check('last release disposes renderer after host grace period',true);

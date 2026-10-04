@@ -8,6 +8,6 @@ const page=await browser.newPage({viewport:{width:1280,height:850},deviceScaleFa
 const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
 await page.goto(process.env.CAFE_URL||'http://127.0.0.1:4196/components/immersiveWorlds/cafe/qa/index.html?paused');
 await page.waitForSelector('.cafe-world[data-state="ready"]');
-await page.screenshot({path:output+'/desktop.png'});
+for(const [name,width,height] of [['desktop',1280,850],['fold-portrait',412,915],['fold-inner-portrait',673,841],['fold-landscape',915,412]]){await page.setViewportSize({width,height});await page.waitForFunction(({width,height})=>{const c=document.querySelector('canvas');return c.width===width&&c.height===height;},{width,height});await page.screenshot({path:output+'/'+name+'.png'});}
 console.log(JSON.stringify({errors,canvas:await page.locator('canvas').evaluate(c=>({width:c.width,height:c.height,...c.dataset}))}));
 await writeFile(output+'/capture-errors.json',JSON.stringify(errors,null,2));await browser.close();await server.close();

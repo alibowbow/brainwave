@@ -2,7 +2,9 @@
 
 All café geometry, texture generation, rain/refraction/condensation shader, steam, plant meshes, and scene layout were independently implemented for this pilot. No paid service, external media asset, image-generation request, subscription, or new permission was used. All textures are deterministic local canvas output; no runtime network asset request is required. The compiled pilot is generated only from this source and existing npm dependencies.
 
-Existing dependencies: Three.js (MIT, including its Reflector/RoomEnvironment utilities), React/ReactDOM (MIT). No package or lockfile modification. The illustrative scenes below are inspiration/research only: no HTML, CSS, shader, texture, sound, or other asset was copied. Their source license was not established, so reuse was deliberately excluded.
+The visual revision follows the same provenance: `exterior.ts` independently constructs varied architecture, curtains, light halos and wet-street reflection strips; `shelves.ts` independently constructs pitchers, cups, folded paper packets, books, an unlettered still life and trailing leaves. Contact-shadow, masonry, halo and reflection maps are locally generated canvas effects. These auxiliary surfaces sit within a geometric 3D scene; no image replaces the café or street. No external or generated-image asset was added for this revision.
+
+Existing dependencies: Three.js (MIT, including its Reflector/RoomEnvironment and BufferGeometryUtils utilities), React/ReactDOM (MIT). No package or lockfile modification. The illustrative scenes below are inspiration/research only: no HTML, CSS, shader, texture, sound, or other asset was copied. Their source license was not established, so reuse was deliberately excluded.
 
 ## Actual source and visual reviews
 

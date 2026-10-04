@@ -1,0 +1,59 @@
+{
+  "captures": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800,
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "running": "false",
+        "frame": "2",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "201",
+        "triangles": "1340572"
+      }
+    },
+    {
+      "name": "fold-portrait",
+      "width": 344,
+      "height": 882,
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "running": "false",
+        "frame": "3",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "183",
+        "triangles": "1214136"
+      }
+    },
+    {
+      "name": "fold-landscape",
+      "width": 882,
+      "height": 344,
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "running": "false",
+        "frame": "4",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "201",
+        "triangles": "1340572"
+      }
+    }
+  ],
+  "errors": []
+}

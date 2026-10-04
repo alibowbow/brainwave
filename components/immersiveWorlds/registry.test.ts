@@ -6,10 +6,10 @@ import { createWorldRegistry, immersiveWorldRegistry, type WorldLoaders } from '
 import { WORLD_IDS } from './worldCatalog';
 
 describe('reviewed world registration', () => {
-  it('registers only the real forest and café pilots admitted for draft QA, with no placeholders', () => {
-    expect(WORLD_IDS.filter(id => immersiveWorldRegistry.has(id))).toEqual(['amb:morning_forest', 'amb:focus_cafe']);
+  it('registers only the three real pilots admitted for draft QA, with no placeholders', () => {
+    expect(WORLD_IDS.filter(id => immersiveWorldRegistry.has(id))).toEqual(['amb:morning_forest', 'amb:cosmic', 'amb:focus_cafe']);
     for (const id of WORLD_IDS) {
-      if (id === 'amb:morning_forest' || id === 'amb:focus_cafe') continue;
+      if (id === 'amb:morning_forest' || id === 'amb:focus_cafe' || id === 'amb:cosmic') continue;
       expect(immersiveWorldRegistry.has(id)).toBe(false);
       expect(immersiveWorldRegistry.get(id)).toBeUndefined();
     }

@@ -37,6 +37,12 @@ class ForestHost extends LiveSceneHost<ForestEngine> {
     if (this.top !== holder || !holder.running || this.status !== 'ready') return;
     this.engine?.touch(Math.max(-1, Math.min(1, x)), Math.max(-1, Math.min(1, y)));
   }
+
+  /** Diagnostic readback for the isolated harness, never a second renderer. */
+  captureFrame() {
+    if (!this.top || this.status !== 'ready' || !this.engine) throw new Error('No ready forest holder.');
+    return this.engine.captureFrame();
+  }
 }
 
 export const forestHost = new ForestHost();

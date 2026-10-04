@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { captureScenePng } from './capture-scene.mjs';
+import { verifySceneStill } from './verify-scene-still.mjs';
 
 // Real pilot only: the standalone bundle and its reviewed application route.
 // SwiftShader is a correctness runner, never evidence of device performance.
@@ -19,20 +20,21 @@ const report = {
   startedAt: new Date().toISOString(),
   baseUrl: BASE,
   renderer: 'Chromium headless with SwiftShader',
-  captureMethod: 'Native Chromium compositor, lossless PNG fast encoding, unchanged viewport and rendering quality.',
-  applicationPilotHead: '6a58c254a8d8d4b36d34947527fad1f2daf3df45',
-  standalonePilotHead: process.env.SCENE_FOREST_HARNESS_URL ? '6a58c254a8d8d4b36d34947527fad1f2daf3df45' : '989186c396e9b15641d8ef31d43c5dee7df5b49a',
+  captureMethod: 'Bounded native Chromium compositor capture, lossless PNG, unchanged viewport and rendering quality. GPU readback can still fail; capture failures remain failures.',
+  applicationPilotHead: 'f4d24d60c92317f9bc158b1c00af217faa1d923d',
+  standalonePilotHead: process.env.SCENE_FOREST_HARNESS_URL ? 'f4d24d60c92317f9bc158b1c00af217faa1d923d' : '989186c396e9b15641d8ef31d43c5dee7df5b49a',
   standaloneUrl: HARNESS,
   deviceScope: 'Desktop and Fold-like CSS viewport checks; no physical Fold or FPS measurement.',
   visibilityScope: 'Simulated document.hidden getter and visibilitychange event; not a real background-tab test.',
   fullscreenScope: 'One canvas across the harness second holder and application CSS immersive overlay; not browser Fullscreen API.',
   sourceScope: process.env.SCENE_FOREST_HARNESS_URL
-    ? 'Both the source standalone harness and production-built application use reviewed 6a58c25 source and current integration helpers. The older public QA bundle is not used in this run.'
-    : 'Public standalone QA is the older 989186c snapshot; application checks use reviewed 6a58c25 source. Never label old bundle PNGs as latest-head evidence.',
+    ? 'Both the source standalone harness and production-built application use reviewed f4d24d6 source and current integration helpers. The older public QA bundle is not used in this run.'
+    : 'Public standalone QA is the older 989186c snapshot; application checks use reviewed f4d24d6 source. Never label old bundle PNGs as latest-head evidence.',
   visualReview: 'PNG artifacts require human visual inspection; this script does not grade artistic quality.',
   checks: [],
   errors: [],
   screenshots: [],
+  captureFailures: [],
   status: 'running',
 };
 let browser;
@@ -41,12 +43,31 @@ let currentStep = 'launch browser';
 
 await mkdir(output, { recursive: true });
 
+const persist = () => writeFile(path.join(output, 'forest-verification.json'), `${JSON.stringify(report, null, 2)}\n`);
+
+const bounded = async (run, ms, label) => {
+  let timer;
+  try {
+    return await Promise.race([
+      Promise.resolve().then(run),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`${label} exceeded ${ms} ms; subsequent assertions were not run`)), ms); }),
+    ]);
+  } finally { clearTimeout(timer); }
+};
+
 const check = async (name, run) => {
   currentStep = name;
+  report.currentStep = name;
+  await persist();
+  console.log(`START: ${name}`);
   const start = Date.now();
-  const evidence = await run();
-  report.checks.push({ name, status: 'passed', elapsedMs: Date.now() - start, evidence });
-  console.log(`PASS: ${name}`);
+  const capturesBefore = report.captureFailures.length;
+  const evidence = await bounded(run, 600_000, name);
+  const captureFailed = report.captureFailures.length > capturesBefore;
+  report.checks.push({ name, status: captureFailed ? 'failed' : 'passed', elapsedMs: Date.now() - start, evidence,
+    ...(captureFailed ? { failure: 'Required PNG capture failed; functional evidence is retained separately.' } : {}) });
+  await persist();
+  console.log(`${captureFailed ? 'FAIL (capture)' : 'PASS'}: ${name}`);
   return evidence;
 };
 
@@ -110,12 +131,7 @@ const frozen = async (page) => {
     const canvas = document.querySelector('.forest-world-canvas');
     return canvas?.dataset.running === 'false' && canvas.closest('.forest-world')?.dataset.motion === 'paused';
   });
-  const before = await snapshot(page);
-  await page.waitForTimeout(300);
-  const after = await snapshot(page);
-  assert.equal(after.frames, before.frames, 'paused renderer must not keep drawing');
-  assert.equal(after.time, before.time, 'paused simulation clock must not advance');
-  return after;
+  return verifySceneStill(page, '.forest-world-canvas', snapshot);
 };
 
 const pressHarness = (page, testId) => page.getByTestId(testId).dispatchEvent('click');
@@ -123,18 +139,36 @@ const pressHarness = (page, testId) => page.getByTestId(testId).dispatchEvent('c
 // without an actionability wait spending minutes on software-rendered frames.
 const pressApp = (page, name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first().dispatchEvent('click');
 
+const stalledCapturePages = new WeakSet();
 const capture = async (page, name) => {
   const filename = `${name}.png`;
-  await captureScenePng(page, path.join(output, filename));
-  report.screenshots.push(filename);
-  return filename;
+  report.captureInProgress = filename;
+  await persist();
+  try {
+    if (stalledCapturePages.has(page)) {
+      const skipped = { status: 'not-run', filename, message: 'Previous capture on this page timed out; its GPU readback may still be pending.' };
+      report.captureFailures.push(skipped);
+      return skipped;
+    }
+    const dimensions = await captureScenePng(page, path.join(output, filename));
+    report.screenshots.push(filename);
+    return { status: 'passed', filename, ...dimensions };
+  } catch (error) {
+    if (error?.code === 'SCENE_CAPTURE_TIMEOUT') stalledCapturePages.add(page);
+    const failure = { status: 'failed', filename, message: String(error), stage: error?.captureStage, code: error?.code };
+    report.captureFailures.push(failure);
+    console.error(`CAPTURE FAIL: ${filename}: ${failure.message}`);
+    return failure;
+  } finally {
+    delete report.captureInProgress;
+    await persist();
+  }
 };
 
 const viewportCaptures = async (page, surface) => {
   const results = [];
   for (const viewport of viewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
-    await page.evaluate(() => document.fonts.ready);
     await page.waitForFunction(() => {
       const canvas = document.querySelector('.forest-world-canvas');
       if (!canvas) return false;
@@ -154,6 +188,7 @@ const viewportCaptures = async (page, surface) => {
 
 const rememberCanvas = (page) => page.evaluate(() => {
   window.__forestVerificationCanvas = document.querySelector('.forest-world-canvas');
+  window.__forestVerificationContext = window.__forestVerificationCanvas.getContext('webgl2');
 });
 
 const disposedAfterRelease = async (page) => {
@@ -163,13 +198,16 @@ const disposedAfterRelease = async (page) => {
   // The unmodified pilot uses the protected-compatible five-second host default.
   await page.waitForTimeout(5100);
   await page.waitForFunction(() => window.__forestVerificationCanvas?.dataset.disposed === 'true', undefined, { timeout: 15_000, polling: 100 });
-  return page.evaluate((waitedMs) => ({
+  const evidence = await page.evaluate((waitedMs) => ({
     waitedAfterRemovalMs: waitedMs,
     disposed: window.__forestVerificationCanvas.dataset.disposed,
     running: window.__forestVerificationCanvas.dataset.running,
     connected: window.__forestVerificationCanvas.isConnected,
     finalFrames: Number(window.__forestVerificationCanvas.dataset.frames),
+    contextLost: window.__forestVerificationContext?.isContextLost() ?? null,
   }), Date.now() - started);
+  assert.equal(evidence.contextLost, true, 'final release must lose the actual renderer context');
+  return evidence;
 };
 
 const dragThroughChrome = async (page, visible) => {
@@ -279,7 +317,7 @@ try {
     assert.ok(await harness.evaluate(() => document.querySelector('.forest-world-canvas') !== window.__forestVerificationCanvas));
     return frozen(harness);
   });
-  await harnessContext.close();
+  await bounded(() => harnessContext.close(), 10_000, 'close forest harness');
 
   const appContext = await browser.newContext({ viewport: { width: viewports[0].width, height: viewports[0].height }, serviceWorkers: 'block' });
   const app = await appContext.newPage();
@@ -352,20 +390,21 @@ try {
     assert.deepEqual(report.errors, []);
     return { errors: [] };
   });
-  await appContext.close();
-  report.status = 'passed';
+  await bounded(() => appContext.close(), 10_000, 'close forest application');
+  report.status = report.captureFailures.length ? 'failed' : 'passed';
+  if (report.status === 'failed') process.exitCode = 1;
 } catch (error) {
   report.status = 'failed';
   report.failure = { step: currentStep, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined };
+  await persist();
   if (currentPage && !currentPage.isClosed()) {
-    try { await capture(currentPage, 'forest-failure'); } catch (captureError) { report.failure.captureError = String(captureError); }
-    try { report.failure.canvas = await snapshot(currentPage); } catch { /* failed navigation may have no execution context */ }
+    try { report.failure.canvas = await bounded(() => snapshot(currentPage), 5000, 'failure snapshot'); } catch { /* failed navigation may have no execution context */ }
   }
   console.error(`FAIL: ${currentStep}: ${report.failure.message}`);
   process.exitCode = 1;
 } finally {
   report.finishedAt = new Date().toISOString();
-  await writeFile(path.join(output, 'forest-verification.json'), `${JSON.stringify(report, null, 2)}\n`);
-  await browser?.close();
+  await persist();
+  try { await bounded(() => browser?.close(), 10_000, 'browser cleanup'); } catch (error) { report.cleanupError = String(error); report.status = 'failed'; process.exitCode = 1; await persist(); }
   console.log(`Forest verification report: ${path.join(output, 'forest-verification.json')}`);
 }

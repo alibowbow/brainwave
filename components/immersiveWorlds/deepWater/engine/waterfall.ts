@@ -43,9 +43,12 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   sunlight.shadow.camera.bottom = -22;
   sunlight.shadow.camera.near = 1;
   sunlight.shadow.camera.far = 90;
-  sunlight.shadow.normalBias = 0.055;
-  sunlight.shadow.bias = -0.00022;
+  sunlight.shadow.normalBias = .16;
+  sunlight.shadow.bias = -.0005;
   sunlight.shadow.radius = 3;
+  // Static cliff/shore occlusion is cached; centimetre-scale leaf sway does not need a whole gorge shadow pass.
+  sunlight.shadow.autoUpdate = false;
+  sunlight.shadow.needsUpdate = true;
   scene.add(sunlight, sunlight.target);
   const bounce = new THREE.DirectionalLight('#a0d1ca', 0.4);
   bounce.position.set(5, 6, 8);
@@ -55,6 +58,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   const wallMaterial = rockMaterial('#90948c', 0.48);
   wallMaterial.vertexColors = true;
   wallMaterial.side = THREE.DoubleSide;
+  wallMaterial.shadowSide = THREE.FrontSide;
   const cliffPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-15, 0, 13), new THREE.Vector3(-14, 0, -4),
     new THREE.Vector3(-10.8, 0, -15.5), new THREE.Vector3(-6.3, 0, -25.2),
@@ -87,7 +91,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
       wallColors.push(stoneColor.r, stoneColor.g, stoneColor.b);
       if (row < nr && col < nc) {
         const a = row * (nc + 1) + col, b = a + nc + 1;
-        wallIndices.push(a, b, a + 1, a + 1, b, b + 1);
+        wallIndices.push(a, a + 1, b, a + 1, b + 1, b);
       }
     }
   }
@@ -103,6 +107,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   const bankMaterial = rockMaterial('#6e7667', 0.63);
   bankMaterial.vertexColors = true;
   bankMaterial.side = THREE.DoubleSide;
+  bankMaterial.shadowSide = THREE.FrontSide;
   addBank(-1);
   addBank(1);
   // The cropped foreground shelf establishes the seated, human-scale viewpoint.
@@ -260,7 +265,8 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
         col.push(.65 - moss * .16, .7 - moss * .04, .56 - moss * .2);
         if (j < nz && i < nx) {
           const a = j * (nx + 1) + i, b = a + nx + 1;
-          idx.push(a, b, a + 1, a + 1, b, b + 1);
+          if (side < 0) idx.push(a, b, a + 1, a + 1, b, b + 1);
+          else idx.push(a, a + 1, b, a + 1, b + 1, b);
         }
       }
     }

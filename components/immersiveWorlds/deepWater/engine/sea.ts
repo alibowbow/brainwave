@@ -14,7 +14,7 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
   const target = new THREE.Vector3(0.05, 1.65, -13);
   camera.lookAt(target);
   const timers: { value: number }[] = [];
-  let pulse = 0;
+  let pulse = 0, pulseTarget = 0;
   const rnd = seeded(62893);
 
   scene.add(new THREE.HemisphereLight('#a8e9e2', '#0b2941', 1.75));
@@ -75,7 +75,19 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
     const fan=makeSeaFan(fanColors[i%3], 94+i*71); fan.position.set(x,y,z); fan.scale.setScalar(s); fan.rotation.y=.15+i*.28;
     scene.add(fan); coralGroups.push(fan);
   });
-  const spongeMat = new THREE.MeshStandardMaterial({color:'#8c8464',roughness:.86,metalness:.02});
+  const spongeMat = new THREE.MeshStandardMaterial({color:'#8c8464',roughness:.92,metalness:0});
+  spongeMat.onBeforeCompile=shader=>{
+    shader.vertexShader='varying vec3 vSpongeP;\n'+shader.vertexShader;
+    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvSpongeP=position;');
+    shader.fragmentShader='varying vec3 vSpongeP;\n'+shader.fragmentShader;
+    shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+      vec3 sp=vSpongeP*43.;
+      float spongeGrain=sin(sp.x*1.9+sin(sp.z*.73))*sin(sp.y*2.2+cos(sp.x*.39))*sin(sp.z*1.7+sin(sp.y*.5));
+      float pores=smoothstep(.48,.79,spongeGrain);
+      diffuseColor.rgb *= .80+.16*sin(vSpongeP.y*11.+vSpongeP.z*5.)-pores*.34;
+    `);
+  };
+  spongeMat.customProgramCacheKey=()=> 'deepwater-sponge-pores-v1';
   for(let i=0;i<12;i++){
     const sponge=new THREE.Mesh(spongeGeometry(i+31),spongeMat);
     const s=.24+rnd()*.26;
@@ -166,7 +178,8 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
     scene,camera,target,
     update(time,dt){
       for(const timer of timers) timer.value=time;
-      pulse=Math.max(0,pulse-dt*.18);
+      pulseTarget=Math.max(0,pulseTarget-dt*.13);
+      pulse+=(pulseTarget-pulse)*(1-Math.exp(-dt*1.8));
       const breathe=1+Math.sin(time*.53)*.021+pulse*.038;
       mainJelly.group.position.set(home.x+Math.sin(time*.047)*.16,home.y+Math.sin(time*.095)*.23,home.z);
       mainJelly.group.rotation.z=-.12+Math.sin(time*.067)*.025;
@@ -186,7 +199,7 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
     interact(ray){
       const hit=ray.intersectObjects(interactTargets,false)[0];
       if(!hit)return null;
-      pulse=.9;
+      pulseTarget=.9;
       return {world:'sea',kind:'organism-pulse',strength:.28,pan:.18};
     },
     resize(aspect){

@@ -31,12 +31,19 @@ export class DeepWaterEngine implements LiveSceneEngine {
   }
 
   async init() {
-    const create = this.kind === 'waterfall'
-      ? (await import('./waterfall')).createWaterfall
-      : this.kind === 'cave' ? (await import('./cave')).createCave
-      : (await import('./sea')).createDeepSea;
-    if (this.disposed) return;
-    this.content = create(this.renderer);
+    try {
+      const create = this.kind === 'waterfall'
+        ? (await import('./waterfall')).createWaterfall
+        : this.kind === 'cave' ? (await import('./cave')).createCave
+        : (await import('./sea')).createDeepSea;
+      if (this.disposed) return;
+      this.content = create(this.renderer);
+    } catch (error) {
+      // The shared host has a delayed-release grace period. An import rejection
+      // from a disposed generation must not fail a newer host engine.
+      if (this.disposed) return;
+      throw error;
+    }
     this.content.camera.aspect = this.width / this.height;
     this.content.resize?.(this.width / this.height);
     this.content.camera.updateProjectionMatrix();

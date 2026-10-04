@@ -39,25 +39,22 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
     shader.vertexShader = shader.vertexShader.replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvCaveP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', `#include <common>
       varying vec3 vCaveP; uniform float uCaveTime;
-      float caveHash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
-      float caveNoise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(caveHash(i),caveHash(i+vec3(1,0,0)),f.x),mix(caveHash(i+vec3(0,1,0)),caveHash(i+vec3(1,1,0)),f.x),f.y),mix(mix(caveHash(i+vec3(0,0,1)),caveHash(i+vec3(1,0,1)),f.x),mix(caveHash(i+vec3(0,1,1)),caveHash(i+vec3(1,1,1)),f.x),f.y),f.z);}
-      float caveFbm(vec3 p){return caveNoise(p)*.55+caveNoise(p*2.05)*.27+caveNoise(p*4.1)*.13+caveNoise(p*8.2)*.05;}
     `);
     shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
-      float coarse=caveFbm(vCaveP*vec3(.31,.52,.31));
-      float flow=caveFbm(vCaveP*vec3(2.1,.11,2.1)+vec3(0.,coarse*3.,0.));
+      float coarse=rfbm(vCaveP*vec3(.31,.52,.31));
+      float flow=rn(vCaveP*vec3(2.1,.11,2.1)+vec3(0.,coarse*3.,0.));
       float strata=sin(vCaveP.y*5.1+coarse*8.0+sin(vCaveP.z*.35)*2.0);
-      vec3 mineral=mix(vec3(.31,.35,.32),vec3(.83,.78,.65),smoothstep(.23,.77,coarse));
-      mineral=mix(mineral,vec3(.68,.58,.40),smoothstep(.60,.83,flow)*.26);
+      vec3 mineral=mix(vec3(.65,.72,.66),vec3(1.10,1.04,.91),smoothstep(.23,.77,coarse));
+      mineral=mix(mineral,vec3(.91,.80,.63),smoothstep(.60,.83,flow)*.21);
       mineral*=.94+strata*.06;
       float wet=1.-smoothstep(-.2,1.9,vCaveP.y);
-      mineral=mix(mineral,mineral*vec3(.60,.73,.70),wet*.66);
-      diffuseColor.rgb*=mineral*1.31;
+      mineral=mix(mineral,mineral*vec3(.60,.73,.70),wet*.48);
+      diffuseColor.rgb*=mineral;
       float caustic=pow(.5+.5*sin(vCaveP.x*3.2+sin(vCaveP.z*2.8+uCaveTime*.18)*1.6),10.)*pow(.5+.5*sin(vCaveP.z*3.3+sin(vCaveP.x*2.1-uCaveTime*.15)),7.);
       diffuseColor.rgb+=vec3(.20,.40,.30)*caustic*(1.-smoothstep(.1,3.2,vCaveP.y))*.25;
     `);
   };
-  limestone.customProgramCacheKey = () => 'deepwater-cave-mineral-v1';
+  limestone.customProgramCacheKey = () => 'deepwater-cave-mineral-v2';
   const paleCalcite = rockMaterial('#c8b99b', 0.72);
   paleCalcite.roughness = 0.72;
   const wetStone = rockMaterial('#65736b', 0.89);
@@ -65,10 +62,10 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
 
   function wallPoint(theta: number, z: number) {
     const taper = 1 - THREE.MathUtils.smoothstep(-z, 35, 59) * 0.86;
-    const radius = (13.5 + Math.sin(z * .13) * 1.5 + Math.sin(z * .41) * .53) * taper;
+    const radius = (13.5 + 2.6*Math.exp(-(((z+16)/13)**2)) + Math.sin(z * .13) * 1.5 + Math.sin(z * .41) * .53) * taper;
     const roof = (15.5 + Math.sin(z * .10 + 1) * 1.1) * Math.max(.45, taper);
     const ripple = Math.sin(theta*21+z*.14)*.20+Math.sin(theta*47-z*.53)*.085;
-    const shelves = Math.sin(Math.sin(theta)*18+z*.085)*.35;
+    const shelves = Math.sin(Math.sin(theta)*18+z*.085)*.10 + Math.sin(theta*8.3+z*.26)*.13;
     const x = Math.cos(theta) * (radius+ripple+shelves) + Math.sin(z*.075)*1.5;
     const y = Math.pow(Math.max(0,Math.sin(theta)),.88)*roof-3 + ripple*.8;
     return new THREE.Vector3(x,y,z);
@@ -86,7 +83,8 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   for (let j=0;j<length;j++) for(let i=0;i<circum;i++) {
     const z=17-(j+.5)/length*77, theta=(i+.5)/circum*Math.PI;
     // Actual opening in the roof, not a light pasted on a closed ceiling.
-    if (Math.abs(z+18.2)<1.9 && Math.abs(theta-1.285)<.068) continue;
+    const opening=((z+18.2)/1.95)**2+((theta-1.285)/.087)**2;
+    if (opening<1+.14*Math.sin(z*3.7+theta*17)) continue;
     const a=j*(circum+1)+i,b=a+circum+1;
     wallIndices.push(a,b,a+1,b,b+1,a+1);
   }
@@ -117,14 +115,15 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
     const rings=28,sides=20,positions:number[]=[],uvs:number[]=[],indices:number[]=[];
     for(let j=0;j<=rings;j++) {
       const t=j/rings;
-      const centreX=Math.sin(t*2.4+seed)*Math.sin(t*Math.PI)*height*.045;
-      const centreZ=Math.cos(t*3.2+seed)*Math.sin(t*Math.PI)*height*.035;
-      const taper=Math.pow(1-t,.72);
+      const centreX=Math.sin(t*2.4+seed)*Math.sin(t*Math.PI)*height*.074;
+      const centreZ=Math.cos(t*3.2+seed)*Math.sin(t*Math.PI)*height*.045;
+      const taper=Math.pow(1-t,.58)+.18*Math.exp(-(((t-(.22+.10*Math.sin(seed)))/.15)**2));
+      const apron=1+.45*Math.exp(-t*18);
       const lobe=.94+.032*Math.sin(t*29+seed)+.019*Math.sin(t*67+seed*2)+.022*Math.sin(t*11+seed);
       for(let i=0;i<=sides;i++) {
         const a=i/sides*Math.PI*2;
         const flute=1+.085*Math.sin(a*7+seed)+.035*Math.sin(a*13+t*8);
-        const r=Math.max(.008,radius*taper*lobe*flute);
+        const r=Math.max(.008,radius*taper*lobe*flute*apron);
         positions.push(centreX+Math.cos(a)*r,(up?1:-1)*t*height,centreZ+Math.sin(a)*r);
         uvs.push(i/sides,t*height);
         if(j<rings&&i<sides){const n=j*(sides+1)+i;indices.push(n,n+sides+1,n+1,n+1,n+sides+1,n+sides+2);}
@@ -135,18 +134,21 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
     geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
     geometry.setIndex(indices);geometry.computeVertexNormals();
     const mesh=new THREE.Mesh(geometry,seed%3===0?paleCalcite:limestone);
-    mesh.position.copy(position);mesh.receiveShadow=true;mesh.castShadow=true;scene.add(mesh);
+    mesh.position.copy(position);if(!up)mesh.position.y+=radius*.78;mesh.receiveShadow=true;mesh.castShadow=true;scene.add(mesh);
     return mesh;
   }
   const hanging: Array<[number,number,number,number]> = [
     [.64,-2,4.3,.8],[.79,-4,3.8,.65],[.99,-6,2.9,.48],
     [2.30,-5,5.2,.90],[2.14,-9,4.8,.66],[2.40,-12,4.0,.69],
-    [.72,-17,5.0,.70],[.85,-20,4.2,.6],[1.10,-24,3.1,.38],
-    [1.59,-18,2.9,.43],[1.72,-22,3.6,.5],[1.80,-28,3.3,.48],
-    [.61,-31,3.6,.55],[2.22,-32,4.3,.65],[1.21,-37,2.1,.31],
+    [.72,-17,5.0,.70],[.85,-20,3.5,.54],
+    [1.59,-18,2.9,.43],[1.85,-28,4.1,.57],
+    [.61,-31,2.6,.48],[2.22,-32,4.3,.65],
     [.50,4,4.2,.85],[2.55,3,3.6,.64],
   ];
-  hanging.forEach(([angle,z,h,r],i)=>formation(wallPoint(angle,z),h,r,i+9));
+  hanging.forEach(([angle,z,h,r],i)=>{
+    formation(wallPoint(angle,z),h,r,i+9);
+    if(i===1||i===4||i===8){const root=wallPoint(angle,z);root.x+=r*.57;root.z+=r*.38;formation(root,h*.62,r*.49,i+64);}
+  });
   // Broad mineral buttresses are anchored to the cave walls and break their silhouette.
   const buttresses: Array<[number,number,number,number,number]> = [
     [-10.7,-1,-3,9,1.8],[-10.2,-1,-13,7,1.3],[-8.9,-1,-25,6,1.15],
@@ -160,7 +162,10 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   addRock(scene,[-7.3,-.15,2.3],[2.1,.95,2.6],83,wetStone);
   addRock(scene,[8.3,-.4,-1.5],[2.0,1.0,3.1],57,wetStone);
   addRock(scene,[-5.7,-.67,-9],[2.2,1.4,3.2],12,wetStone);
-  addRock(scene,[5.4,-1.15,-17],[2.5,1.4,2.9],91,paleCalcite);
+  addRock(scene,[6.6,-1.64,-17],[2.5,1.4,2.9],91,wetStone);
+  addRock(scene,[8.6,-.59,-31.4],[3.8,.79,3.9],124,wetStone);
+  addRock(scene,[-1.15,-.12,5.8],[1.85,.56,2.35],163,wetStone);
+  addRock(scene,[-1.6,-.22,4.3],[1.5,.44,1.4],187,wetStone);
   for(let i=0;i<23;i++) {
     const s=Math.sin(i*19.79)*.5+.5;
     const side=i%2===0?-1:1;
@@ -175,10 +180,11 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   }
 
   const aperture=wallPoint(1.285,-18.2);
-  const skylight=new THREE.Mesh(new THREE.SphereGeometry(1.35,24,16),new THREE.MeshBasicMaterial({color:'#fff9de'}));
+  const skylight=new THREE.Mesh(new THREE.PlaneGeometry(9,10),new THREE.MeshBasicMaterial({color:'#e7eddf',side:THREE.DoubleSide}));
+  skylight.rotation.x=-Math.PI/2;
   skylight.name='cave-daylight-aperture';
-  skylight.position.copy(aperture).add(new THREE.Vector3(.18,.75,0));
-  skylight.scale.set(.55,.20,1.8);scene.add(skylight);
+  skylight.position.copy(aperture).add(new THREE.Vector3(0,1.2,0));
+  scene.add(skylight);
   const spot=new THREE.SpotLight('#fff3c5',210,44,.255,.95,1.5);
   spot.castShadow=true;spot.shadow.mapSize.set(1024,1024);
   spot.shadow.camera.near=.2;spot.shadow.camera.far=44;spot.shadow.bias=-.0001;spot.shadow.normalBias=.035;

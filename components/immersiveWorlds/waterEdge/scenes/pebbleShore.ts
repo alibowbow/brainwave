@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createShoreEnvironment } from '../byteEnvironment';
 import type { WorldScene, WaterEdgeInteraction } from '../contracts';
 
 /** Independently authored basalt strand: physical stones, shallow swash and a silver dawn. */
@@ -46,11 +47,9 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
   const environmentScene = new THREE.Scene();
   const environmentSky = new THREE.Mesh(new THREE.SphereGeometry(25, 32, 16), skyMaterial);
   environmentScene.add(environmentSky);
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const environment = pmrem.fromScene(environmentScene, 0.05, 0.1, 80);
+  const environment = createShoreEnvironment(renderer, environmentScene);
   scene.environment = environment.texture;
   environmentSky.geometry.dispose();
-  pmrem.dispose();
 
   scene.add(new THREE.HemisphereLight(0xd1e8eb, 0x5a5144, 1.85));
   const morning = new THREE.DirectionalLight(0xffe6c1, 2.65);
@@ -87,36 +86,60 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
   const bed = new THREE.Mesh(bedGeometry, bedMaterial);
   bed.receiveShadow = true; bed.name = 'sloped-gravel-strand'; scene.add(bed);
 
-  const stoneMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.52, metalness: 0.04, vertexColors: true, envMapIntensity: 0.75 });
+  // Basalt is dielectric. Dry crowns stay diffuse; only the actual swash contact
+  // and its narrow damp fringe acquire a smoother, darker surface.
+  const stoneMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.79, metalness: 0, vertexColors: true, envMapIntensity: 0.75 });
   stoneMaterial.onBeforeCompile = shader => {
     shader.uniforms.uShoreTime = clock;
-    shader.vertexShader = `varying vec3 vStoneLocal;varying vec3 vStoneWorld;\n${shader.vertexShader}`.replace('#include <begin_vertex>', `#include <begin_vertex>
+    shader.vertexShader = `varying vec3 vStoneLocal;varying vec3 vStoneWorld;varying float vStoneSeed;\n${shader.vertexShader}`.replace('#include <begin_vertex>', `#include <begin_vertex>
       vStoneLocal=position;
       vec4 shoreWorld=vec4(transformed,1.);
+      vec3 stoneTint=vec3(1.);
+      #ifdef USE_COLOR
+        stoneTint=color;
+      #endif
       #ifdef USE_INSTANCING
         shoreWorld=instanceMatrix*shoreWorld;
       #endif
+      #ifdef USE_INSTANCING_COLOR
+        stoneTint*=instanceColor;
+      #endif
+      // Immutable mineral colour anchors grain even while the reachable pebble rolls.
+      vStoneSeed=fract(dot(stoneTint,vec3(17.3,11.7,23.1)));
       vStoneWorld=(modelMatrix*shoreWorld).xyz;`);
-    shader.fragmentShader = `varying vec3 vStoneLocal;varying vec3 vStoneWorld;uniform float uShoreTime;\n${noiseGLSL}\n${shader.fragmentShader}`
+    shader.fragmentShader = `varying vec3 vStoneLocal;varying vec3 vStoneWorld;varying float vStoneSeed;uniform float uShoreTime;\n${noiseGLSL}\n${shader.fragmentShader}`
       .replace('#include <color_fragment>', `#include <color_fragment>
-        float grain=rn(vStoneLocal.xz*98.+vStoneLocal.y*36.);
-        float patches=rn(vStoneLocal.xz*4.9+vStoneLocal.y*2.6);
-        float flecks=smoothstep(.76,.91,rn(vStoneLocal.xy*47.));
-        float strata=vStoneLocal.y*6.+vStoneLocal.x*1.7+rn(vStoneLocal.xz*3.4)*.63;
-        float quartz=1.-smoothstep(.026,.087,abs(sin(strata)));
-        quartz*=smoothstep(.46,.61,rn(vStoneWorld.xz*.65));
-        diffuseColor.rgb*=.72+grain*.17+patches*.34;
-        diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.55,.56,.51),quartz*.64);
-        diffuseColor.rgb+=flecks*.025;
-        float wetness=1.-smoothstep(.26,2.65,vStoneWorld.z+sin(vStoneWorld.x*.7)*.3);
-        wetness=max(wetness,(1.-smoothstep(.025,.16,vStoneWorld.y))*.85);
-        diffuseColor.rgb*=mix(1.,.55,wetness);`)
+        vec3 stoneP=vStoneLocal+vec3(vStoneSeed*17.3,vStoneSeed*11.7,vStoneSeed*23.1);
+        // Low-contrast isotropic mineral grain, filtered below a pixel. No pale
+        // sine stripes, thresholded flecks or repeated scratch-like quartz marks.
+        float broad=rn(stoneP.xz*3.6+stoneP.y*.8)*.55+rn(stoneP.zy*4.1)*.45;
+        float grain=rn(stoneP.xy*58.)*.35+rn(stoneP.yz*61.)*.35+rn(stoneP.zx*55.)*.3;
+        float resolved=1.-smoothstep(.35,1.4,length(fwidth(vStoneLocal))*60.);
+        grain=mix(.5,grain,resolved);
+        float mineral=rn(stoneP.xz*17.+stoneP.y*3.1)*.6+rn(stoneP.zy*19.)*.4;
+        diffuseColor.rgb*=.89+broad*.23+(mineral-.5)*.17+(grain-.5)*.16;
+        float shoreBed=.038*(vStoneWorld.z+1.7)+.018*sin(vStoneWorld.x*.67)+.009*sin(vStoneWorld.z*1.3+vStoneWorld.x*.2)
+          -.09*exp(-pow((vStoneWorld.x+.4)*.6,2.))*exp(-pow((vStoneWorld.z-.2)*.35,2.));
+        float tide=.076+sin(uShoreTime*.29-.7)*.042+sin(uShoreTime*.14)*.009;
+        float waterHeight=tide+(sin(vStoneWorld.x*.94+vStoneWorld.z*1.57+uShoreTime*.72)*.014
+          +sin(vStoneWorld.z*4.1-vStoneWorld.x*1.3+uShoreTime*.88)*.006)*smoothstep(0.,.8,tide-shoreBed);
+        float contact=1.-smoothstep(-.006,.008,vStoneWorld.y-waterHeight);
+        float damp=(1.-smoothstep(.008,.043,vStoneWorld.y-waterHeight))*(.7+broad*.3);
+        diffuseColor.rgb*=mix(1.,.68,max(contact,damp*.65));`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
-        float wetR=1.-smoothstep(.26,2.65,vStoneWorld.z+sin(vStoneWorld.x*.7)*.3);
-        wetR=max(wetR,(1.-smoothstep(.025,.16,vStoneWorld.y))*.85);
-        roughnessFactor=mix(.76,.23,wetR)+rn(vStoneLocal.xz*39.)*.055;`);
+        float dryR=.73+vStoneSeed*.13+(broad-.5)*.065;
+        roughnessFactor=mix(dryR,.57+vStoneSeed*.095,damp);
+        roughnessFactor=mix(roughnessFactor,.32+vStoneSeed*.1,contact);`)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+        // Sub-millimetre surface grain modulates local light without glitter.
+        // Derivatives are in view-space, so bumps follow the real curved surface.
+        vec3 surfaceX=dFdx(-vViewPosition),surfaceY=dFdy(-vViewPosition);
+        vec3 gradX=cross(surfaceY,normal),gradY=cross(normal,surfaceX);
+        float surfaceDet=dot(surfaceX,gradX);
+        vec3 mineralGradient=sign(surfaceDet)*(dFdx(grain)*gradX+dFdy(grain)*gradY);
+        normal=normalize(max(abs(surfaceDet),1.e-10)*normal-mineralGradient*.00065*(1.-contact*.7));`);
   };
-  stoneMaterial.customProgramCacheKey = () => 'water-edge-basalt-v3';
+  stoneMaterial.customProgramCacheKey = () => 'water-edge-basalt-contact-v4';
 
   // Several independently warped rounded geometries, distributed by a jittered hexagonal field.
   // No shared sphere silhouettes: each variant has flattened lobes and uneven worn shoulders.

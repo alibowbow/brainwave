@@ -1,0 +1,6770 @@
+{
+  "schema": 3,
+  "world": "summer-valley",
+  "mode": "byte",
+  "stage": "static",
+  "tag": "final",
+  "drainBeforeDispose": false,
+  "activeFrames": 0,
+  "viewportName": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "dpr": 1,
+  "generatedAt": "2026-10-04T21:54:17.545Z",
+  "scope": "Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.",
+  "limitations": [
+    "SwiftShader software GPU; no physical touch device or sustained hardware performance certification.",
+    "Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.",
+    "render-js-return duration includes synchronous driver/compiler stalls; it is not pure JavaScript CPU time.",
+    "Configured shared-host retention is 5000 ms; disposal entry/exit and actual context loss are separate measured events."
+  ],
+  "gitHead": "d5f7530228d69664df42b3e4901ede6215aeba22",
+  "gitStatus": "M qa/FOLLOWUP.md\n?? qa/LIFECYCLE.md\n?? qa/build-lifecycle-manifest.py\n?? qa/lifecycle-publication.json\n?? qa/submission-evidence/",
+  "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+  "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+  "bundleSha256": "789f1cf31ce3840e71a9a50a283f1d811dc4f2f888124ebd10d5768e7eb4d91b",
+  "scriptSha256": "93af8cef0201bf870f2546d20165ef2be12ff8f93305f207514213c9a4e9d963",
+  "status": "passed",
+  "checks": {
+    "initialPaused": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "targetCompatibility": {
+      "status": "passed",
+      "selectedTargets": [
+        {
+          "label": "valley-reflection-cube",
+          "type": "unsigned-byte",
+          "width": 128,
+          "height": 128,
+          "faces": [
+            36053,
+            36053,
+            36053,
+            36053,
+            36053,
+            36053
+          ],
+          "complete": true
+        },
+        {
+          "label": "valley-refraction-depth",
+          "type": "unsigned-byte",
+          "width": 1280,
+          "height": 800,
+          "faces": [
+            36053
+          ],
+          "complete": true
+        }
+      ],
+      "failedProbes": [],
+      "selection": "unsigned-byte",
+      "note": "Final selected targets are complete; discarded failed capability probes do not invalidate a legitimate byte fallback. Actual rendered-frame/no-error checks remain separate mandatory gates.",
+      "audit": {
+        "forcedByte": true,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "checks": [
+          {
+            "label": "valley-reflection-cube",
+            "type": "unsigned-byte",
+            "width": 128,
+            "height": 128,
+            "faces": [
+              36053,
+              36053,
+              36053,
+              36053,
+              36053,
+              36053
+            ],
+            "complete": true
+          },
+          {
+            "label": "valley-refraction-depth",
+            "type": "unsigned-byte",
+            "width": 1280,
+            "height": 800,
+            "faces": [
+              36053
+            ],
+            "complete": true
+          }
+        ]
+      }
+    },
+    "initial-desktop-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "polls": 206,
+      "waitStatus": 37148,
+      "elapsedMs": 4170,
+      "automationElapsedMs": 4172
+    },
+    "sameSizeHolderRoundtrip-1": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "sameSizeHolderRoundtrip-2": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "sameSizeHolderRoundtrip-3": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "after-holder-roundtrips-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "polls": 2,
+      "waitStatus": 37148,
+      "elapsedMs": 40.900000002235174,
+      "automationElapsedMs": 43
+    },
+    "staticHolderRoundtrips": {
+      "status": "passed",
+      "transferStates": [
+        {
+          "cycle": 1,
+          "secondary": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              },
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800,
+                "frames": 1,
+                "time": 0,
+                "drawCalls": 163,
+                "triangles": 5474754,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": false,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 1,
+                  "completed": 1,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          },
+          "returned": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 1280,
+                "height": 800,
+                "frames": 1,
+                "time": 0,
+                "drawCalls": 163,
+                "triangles": 5474754,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": false,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 1,
+                  "completed": 1,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          }
+        },
+        {
+          "cycle": 2,
+          "secondary": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              },
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800,
+                "frames": 1,
+                "time": 0,
+                "drawCalls": 163,
+                "triangles": 5474754,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": false,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 1,
+                  "completed": 1,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          },
+          "returned": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 1280,
+                "height": 800,
+                "frames": 1,
+                "time": 0,
+                "drawCalls": 163,
+                "triangles": 5474754,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": false,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 1,
+                  "completed": 1,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          }
+        },
+        {
+          "cycle": 3,
+          "secondary": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              },
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "secondary",
+                "width": 1280,
+                "height": 800,
+                "frames": 1,
+                "time": 0,
+                "drawCalls": 163,
+                "triangles": 5474754,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": false,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 1,
+                  "completed": 1,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          },
+          "returned": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 1280,
+                "height": 800,
+                "frames": 1,
+                "time": 0,
+                "drawCalls": 163,
+                "triangles": 5474754,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": false,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 1,
+                  "completed": 1,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          }
+        }
+      ],
+      "pixelComparison": {
+        "sameDimensions": true,
+        "changedPixels": 0,
+        "firstDifferentPixel": null,
+        "totalPixels": 1024000
+      }
+    },
+    "pausedActualResize-portrait": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 2,
+              "time": 0,
+              "drawCalls": 237,
+              "triangles": 6783118,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 390,
+                    "height": 844,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 2,
+                "completed": 1,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 2,
+              "time": 0,
+              "drawCalls": 237,
+              "triangles": 6783118,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 390,
+                    "height": 844,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 2,
+                "completed": 1,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 237,
+            "triangles": 6783118,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 390,
+                  "height": 844,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 2,
+              "completed": 1,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 237,
+            "triangles": 6783118,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 390,
+                  "height": 844,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 2,
+              "completed": 1,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "portrait-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 390,
+        "height": 844,
+        "frames": "2",
+        "time": "0.0000"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 390,
+        "height": 844,
+        "frames": "2",
+        "time": "0.0000"
+      },
+      "polls": 22,
+      "waitStatus": 37148,
+      "elapsedMs": 443.5,
+      "automationElapsedMs": 446
+    },
+    "pausedActualResize-restored-desktop": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 3,
+              "time": 0,
+              "drawCalls": 313,
+              "triangles": 8092482,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 3,
+                "completed": 2,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 3,
+              "time": 0,
+              "drawCalls": 313,
+              "triangles": 8092482,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 3,
+                "completed": 2,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 313,
+            "triangles": 8092482,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 3,
+              "completed": 2,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 313,
+            "triangles": 8092482,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 3,
+              "completed": 2,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "restored-desktop-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "3",
+        "time": "0.0000"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "3",
+        "time": "0.0000"
+      },
+      "polls": 50,
+      "waitStatus": 37148,
+      "elapsedMs": 1013,
+      "automationElapsedMs": 1022
+    },
+    "staticResizeRoundtrip": {
+      "status": "passed",
+      "resizeStates": [
+        {
+          "label": "portrait",
+          "before": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 1280,
+                "height": 800,
+                "frames": 1,
+                "time": 0,
+                "drawCalls": 163,
+                "triangles": 5474754,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": false,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 1,
+                  "completed": 1,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          },
+          "after": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 390,
+                "height": 844
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 390,
+                "height": 844,
+                "frames": 2,
+                "time": 0,
+                "drawCalls": 237,
+                "triangles": 6783118,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 390,
+                      "height": 844,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": true,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 2,
+                  "completed": 1,
+                  "requestedSize": [
+                    390,
+                    844,
+                    1
+                  ],
+                  "appliedSize": [
+                    390,
+                    844,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          }
+        },
+        {
+          "label": "restored-desktop",
+          "before": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 390,
+                "height": 844
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 390,
+                "height": 844,
+                "frames": 2,
+                "time": 0,
+                "drawCalls": 237,
+                "triangles": 6783118,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 390,
+                      "height": 844,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": true,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 2,
+                  "completed": 1,
+                  "requestedSize": [
+                    390,
+                    844,
+                    1
+                  ],
+                  "appliedSize": [
+                    390,
+                    844,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          },
+          "after": {
+            "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+            "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+            "diagnostics": {
+              "created": 1,
+              "disposed": 0,
+              "live": 1
+            },
+            "syntheticHidden": null,
+            "reducedMotion": false,
+            "roots": [
+              {
+                "world": "summer-valley",
+                "state": "ready",
+                "motion": "paused",
+                "holder": "primary",
+                "width": 1280,
+                "height": 800
+              }
+            ],
+            "canvases": [
+              {
+                "id": 1,
+                "holder": "primary",
+                "width": 1280,
+                "height": 800,
+                "frames": 3,
+                "time": 0,
+                "drawCalls": 313,
+                "triangles": 8092482,
+                "targets": {
+                  "forcedByte": true,
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true,
+                  "checks": [
+                    {
+                      "label": "valley-reflection-cube",
+                      "type": "unsigned-byte",
+                      "width": 128,
+                      "height": 128,
+                      "faces": [
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053,
+                        36053
+                      ],
+                      "complete": true
+                    },
+                    {
+                      "label": "valley-refraction-depth",
+                      "type": "unsigned-byte",
+                      "width": 1280,
+                      "height": 800,
+                      "faces": [
+                        36053
+                      ],
+                      "complete": true
+                    }
+                  ]
+                },
+                "submission": {
+                  "pending": true,
+                  "dirty": false,
+                  "running": false,
+                  "disposed": false,
+                  "fault": null,
+                  "submitted": 3,
+                  "completed": 2,
+                  "requestedSize": [
+                    1280,
+                    800,
+                    1
+                  ],
+                  "appliedSize": [
+                    1280,
+                    800,
+                    1
+                  ]
+                }
+              }
+            ],
+            "events": []
+          }
+        }
+      ],
+      "pixelComparison": {
+        "sameDimensions": true,
+        "changedPixels": 0,
+        "firstDifferentPixel": null,
+        "totalPixels": 1024000
+      }
+    }
+  },
+  "captures": [
+    {
+      "file": "final-summer-valley-byte-desktop-static-initial-desktop.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "bytes": 1528303,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "screenshotElapsedMs": 320,
+      "combinedElapsedMs": 4503,
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "polls": 206,
+        "waitStatus": 37148,
+        "elapsedMs": 4170
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "file": "final-summer-valley-byte-desktop-static-after-holder-roundtrips.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "bytes": 1528303,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "screenshotElapsedMs": 306,
+      "combinedElapsedMs": 367,
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": false,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 1,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 2,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "polls": 2,
+        "waitStatus": 37148,
+        "elapsedMs": 40.900000002235174
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": false,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 1,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "file": "final-summer-valley-byte-desktop-static-portrait.png",
+      "sha256": "729181280ac8fee817088a7b6d5934f902e4d3dc8bfc9e075e6369fd4cdb7096",
+      "bytes": 522864,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotElapsedMs": 86,
+      "combinedElapsedMs": 542,
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 2,
+              "time": 0,
+              "drawCalls": 237,
+              "triangles": 6783118,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 390,
+                    "height": 844,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 2,
+                "completed": 1,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 2,
+              "time": 0,
+              "drawCalls": 237,
+              "triangles": 6783118,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 390,
+                    "height": 844,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 2,
+                "completed": 1,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 4,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 390,
+          "height": 844,
+          "frames": "2",
+          "time": "0.0000"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 390,
+          "height": 844,
+          "frames": "2",
+          "time": "0.0000"
+        },
+        "polls": 22,
+        "waitStatus": 37148,
+        "elapsedMs": 443.5
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 237,
+            "triangles": 6783118,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 390,
+                  "height": 844,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 2,
+              "completed": 1,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 237,
+            "triangles": 6783118,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 390,
+                  "height": 844,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 2,
+              "completed": 1,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "file": "final-summer-valley-byte-desktop-static-restored-desktop.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "bytes": 1528303,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "screenshotElapsedMs": 307,
+      "combinedElapsedMs": 1338,
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 3,
+              "time": 0,
+              "drawCalls": 313,
+              "triangles": 8092482,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 3,
+                "completed": 2,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 3,
+              "time": 0,
+              "drawCalls": 313,
+              "triangles": 8092482,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 3,
+                "completed": 2,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "3",
+          "time": "0.0000"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "3",
+          "time": "0.0000"
+        },
+        "polls": 50,
+        "waitStatus": 37148,
+        "elapsedMs": 1013
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 313,
+            "triangles": 8092482,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 3,
+              "completed": 2,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 3,
+            "time": 0,
+            "drawCalls": 313,
+            "triangles": 8092482,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 3,
+              "completed": 2,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+  ],
+  "unrun": [
+    "This paused static regression is not active-motion performance or a clean no-capture lifecycle run."
+  ],
+  "browser": "153.0.8010.0",
+  "initial": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "summer-valley",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 163,
+        "triangles": 5474754,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "valley-reflection-cube",
+              "type": "unsigned-byte",
+              "width": 128,
+              "height": 128,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "valley-refraction-depth",
+              "type": "unsigned-byte",
+              "width": 1280,
+              "height": 800,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ]
+        },
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "graphics": {
+    "canvasId": 1,
+    "width": 1280,
+    "height": 800,
+    "frames": "1",
+    "time": "0.0000",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "extColorBufferFloat": true,
+    "extColorBufferHalfFloat": true,
+    "targetAudit": {
+      "forcedByte": true,
+      "colorBufferFloat": true,
+      "colorBufferHalfFloat": true,
+      "checks": [
+        {
+          "label": "valley-reflection-cube",
+          "type": "unsigned-byte",
+          "width": 128,
+          "height": 128,
+          "faces": [
+            36053,
+            36053,
+            36053,
+            36053,
+            36053,
+            36053
+          ],
+          "complete": true
+        },
+        {
+          "label": "valley-refraction-depth",
+          "type": "unsigned-byte",
+          "width": 1280,
+          "height": 800,
+          "faces": [
+            36053
+          ],
+          "complete": true
+        }
+      ]
+    }
+  },
+  "final": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "summer-valley",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 3,
+        "time": 0,
+        "drawCalls": 313,
+        "triangles": 8092482,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "valley-reflection-cube",
+              "type": "unsigned-byte",
+              "width": 128,
+              "height": 128,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "valley-refraction-depth",
+              "type": "unsigned-byte",
+              "width": 1280,
+              "height": 800,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ]
+        },
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 3,
+          "completed": 2,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "telemetry": {
+    "timeline": [
+      {
+        "kind": "set-size-request",
+        "atMs": 71.10000000149012,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 71.30000000074506,
+        "canvasId": 1
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 635,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 402.6000000014901,
+        "elapsedMs": 232.39999999850988,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 11,
+        "drawTargets": {
+          "0fa8cec9-8c4e-4055-a461-d1e3f3d21308:128x128:type1009:face0:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 635.9000000022352,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 635,
+        "elapsedMs": 0.9000000022351742,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 22,
+        "drawTargets": {
+          "0fa8cec9-8c4e-4055-a461-d1e3f3d21308:128x128:type1009:face1:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 636.4000000022352,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 635.9000000022352,
+        "elapsedMs": 0.5,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 32,
+        "drawTargets": {
+          "0fa8cec9-8c4e-4055-a461-d1e3f3d21308:128x128:type1009:face2:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 636.7000000029802,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 636.4000000022352,
+        "elapsedMs": 0.30000000074505806,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 42,
+        "drawTargets": {
+          "0fa8cec9-8c4e-4055-a461-d1e3f3d21308:128x128:type1009:face3:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 637.1000000014901,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 636.7000000029802,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 57,
+        "drawTargets": {
+          "0fa8cec9-8c4e-4055-a461-d1e3f3d21308:128x128:type1009:face4:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 637.6000000014901,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 637.2000000029802,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 72,
+        "drawTargets": {
+          "0fa8cec9-8c4e-4055-a461-d1e3f3d21308:128x128:type1009:face5:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 1241.7000000029802,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 1,
+        "startMs": 964.3000000007451,
+        "elapsedMs": 277.30000000074506,
+        "exclusiveDrawCalls": 37,
+        "inclusiveDrawCalls": 37,
+        "cumulativeDrawCalls": 161,
+        "drawTargets": {
+          "dedc2d98-3647-467c-bc24-eb73d900d98b:1280x800:type1009:face0:mip0": {
+            "calls": 37,
+            "submittedElements": 1936686
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 1280,
+          "height": 800,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 1277.300000000745,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 647,
+        "elapsedMs": 630.3000000007451,
+        "exclusiveDrawCalls": 54,
+        "inclusiveDrawCalls": 91,
+        "cumulativeDrawCalls": 163,
+        "drawTargets": {
+          "59616294-38d3-4fc3-b3dd-a082212b0924:2048x2048:type1009:face0:mip0": {
+            "calls": 15,
+            "submittedElements": 978078
+          },
+          "canvas": {
+            "calls": 39,
+            "submittedElements": 1991506
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1278.2000000029802,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 71.10000000149012,
+          "same": false
+        },
+        "drawCalls": 91,
+        "startMs": 646.8000000007451,
+        "elapsedMs": 631.3000000007451,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1278.800000000745,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 1279.1000000014901,
+        "canvasId": 1,
+        "elapsedMs": 1207.800000000745,
+        "drawCalls": 163
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1279.1000000014901,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1278.800000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1279.1000000014901,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1279.5,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1279.6000000014901,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1279.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1279.6000000014901,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 1977.800000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 6147.800000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "static-transfer-secondary",
+        "atMs": 6476.900000002235
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6478.60000000149,
+        "canvasId": 1,
+        "action": "static-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6478.800000000745,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6478.60000000149,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6478.60000000149,
+        "elapsedMs": 0.19999999925494194,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "canvas-holder-move-observed",
+        "atMs": 6478.800000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6479,
+        "canvasId": 1,
+        "action": "static-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6479,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6479,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6479,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "static-transfer-primary",
+        "atMs": 6483.60000000149
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 6483.900000002235,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6484,
+        "canvasId": 1,
+        "action": "static-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6484.20000000298,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6484,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6484.10000000149,
+        "elapsedMs": 0.10000000149011612,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6492.60000000149,
+        "canvasId": 1,
+        "action": "static-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6492.70000000298,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6492.60000000149,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6492.60000000149,
+        "elapsedMs": 0.10000000149011612,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "static-transfer-secondary",
+        "atMs": 7153.10000000149
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7154.10000000149,
+        "canvasId": 1,
+        "action": "static-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7154.10000000149,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7154.10000000149,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7154.10000000149,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "canvas-holder-move-observed",
+        "atMs": 7154.20000000298,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7154.300000000745,
+        "canvasId": 1,
+        "action": "static-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7154.400000002235,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7154.300000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7154.300000000745,
+        "elapsedMs": 0.10000000149011612,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "static-transfer-primary",
+        "atMs": 7158.5
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 7158.70000000298,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7158.900000002235,
+        "canvasId": 1,
+        "action": "static-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7158.900000002235,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7158.900000002235,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7158.900000002235,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7159.300000000745,
+        "canvasId": 1,
+        "action": "static-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7159.300000000745,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7159.300000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7159.300000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "static-transfer-secondary",
+        "atMs": 7828.5
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7829.400000002235,
+        "canvasId": 1,
+        "action": "static-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7829.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7829.400000002235,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7829.5,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "canvas-holder-move-observed",
+        "atMs": 7829.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7829.70000000298,
+        "canvasId": 1,
+        "action": "static-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7829.70000000298,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7829.70000000298,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7829.70000000298,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "static-transfer-primary",
+        "atMs": 7833.10000000149
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 7833.20000000298,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7833.400000002235,
+        "canvasId": 1,
+        "action": "static-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7833.400000002235,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7833.400000002235,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7833.400000002235,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7842.5,
+        "canvasId": 1,
+        "action": "static-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 7842.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7842.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 7842.5,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 8503.900000002235,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 8544.60000000149,
+        "canvasId": 1
+      },
+      {
+        "kind": "static-resize-portrait",
+        "atMs": 9303.60000000149
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 9305,
+        "canvasId": 1,
+        "action": "static-resize-portrait",
+        "width": 390,
+        "height": 844,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 9314,
+        "canvasId": 1,
+        "scope": "static-redraw",
+        "action": "static-resize-portrait",
+        "nestedDepth": 1,
+        "startMs": 9312.900000002235,
+        "elapsedMs": 1.0999999977648258,
+        "exclusiveDrawCalls": 36,
+        "inclusiveDrawCalls": 36,
+        "cumulativeDrawCalls": 235,
+        "drawTargets": {
+          "dedc2d98-3647-467c-bc24-eb73d900d98b:390x844:type1009:face0:mip0": {
+            "calls": 36,
+            "submittedElements": 1935186
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 390,
+          "height": 844,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 9314,
+        "canvasId": 1,
+        "scope": "static-redraw",
+        "action": "static-resize-portrait",
+        "nestedDepth": 0,
+        "startMs": 9310.20000000298,
+        "elapsedMs": 3.7999999970197678,
+        "exclusiveDrawCalls": 38,
+        "inclusiveDrawCalls": 74,
+        "cumulativeDrawCalls": 237,
+        "drawTargets": {
+          "canvas": {
+            "calls": 38,
+            "submittedElements": 1990006
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 9314.10000000149,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-resize-portrait",
+        "lastSize": {
+          "width": 390,
+          "height": 844,
+          "dpr": 1,
+          "atMs": 9305,
+          "same": false
+        },
+        "drawCalls": 74,
+        "startMs": 9305,
+        "elapsedMs": 9.100000001490116,
+        "submitted": true,
+        "frame": 2,
+        "time": "0.0000"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 9993.10000000149,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 10436.60000000149,
+        "canvasId": 1
+      },
+      {
+        "kind": "static-resize-restored-desktop",
+        "atMs": 10530.70000000298
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 10531.800000000745,
+        "canvasId": 1,
+        "action": "static-resize-restored-desktop",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 10544.800000000745,
+        "canvasId": 1,
+        "scope": "static-redraw",
+        "action": "static-resize-restored-desktop",
+        "nestedDepth": 1,
+        "startMs": 10544,
+        "elapsedMs": 0.8000000007450581,
+        "exclusiveDrawCalls": 37,
+        "inclusiveDrawCalls": 37,
+        "cumulativeDrawCalls": 311,
+        "drawTargets": {
+          "dedc2d98-3647-467c-bc24-eb73d900d98b:1280x800:type1009:face0:mip0": {
+            "calls": 37,
+            "submittedElements": 1936686
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 1280,
+          "height": 800,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 10544.900000002235,
+        "canvasId": 1,
+        "scope": "static-redraw",
+        "action": "static-resize-restored-desktop",
+        "nestedDepth": 0,
+        "startMs": 10535.20000000298,
+        "elapsedMs": 9.699999999254942,
+        "exclusiveDrawCalls": 39,
+        "inclusiveDrawCalls": 76,
+        "cumulativeDrawCalls": 313,
+        "drawTargets": {
+          "canvas": {
+            "calls": 39,
+            "submittedElements": 1991506
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 10545,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "static-resize-restored-desktop",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 10531.800000000745,
+          "same": false
+        },
+        "drawCalls": 76,
+        "startMs": 10531.800000000745,
+        "elapsedMs": 13.199999999254942,
+        "submitted": true,
+        "frame": 3,
+        "time": "0.0000"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 11234.70000000298,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 12247.70000000298,
+        "canvasId": 1
+      }
+    ],
+    "input": [],
+    "maxHeartbeatLagMs": 1194.9000000022352,
+    "heartbeats": [
+      {
+        "atMs": 1288.4000000022352,
+        "lagMs": 1194.9000000022352
+      },
+      {
+        "atMs": 1293.7000000029802,
+        "lagMs": -44.69999999925494
+      },
+      {
+        "atMs": 1343.7000000029802,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1393.7000000029802,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1443.7000000029802,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1493.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 1543.7000000029802,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1593.7000000029802,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1643.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 1693.7000000029802,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1743.7000000029802,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1793.7000000029802,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1843.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 1893.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1943.7000000029802,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1998.1000000014901,
+        "lagMs": 4.399999998509884
+      },
+      {
+        "atMs": 2043.6000000014901,
+        "lagMs": -4.5
+      },
+      {
+        "atMs": 2099.2000000029802,
+        "lagMs": 5.600000001490116
+      },
+      {
+        "atMs": 2143.7000000029802,
+        "lagMs": -5.5
+      },
+      {
+        "atMs": 2200.10000000149,
+        "lagMs": 6.399999998509884
+      },
+      {
+        "atMs": 2243.7000000029802,
+        "lagMs": -6.399999998509884
+      },
+      {
+        "atMs": 2301.300000000745,
+        "lagMs": 7.599999997764826
+      },
+      {
+        "atMs": 2343.60000000149,
+        "lagMs": -7.699999999254942
+      },
+      {
+        "atMs": 2393.7000000029802,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2443.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2493.60000000149,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2543.60000000149,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2593.7000000029802,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2644.2000000029802,
+        "lagMs": 0.5
+      },
+      {
+        "atMs": 2693.60000000149,
+        "lagMs": -0.6000000014901161
+      },
+      {
+        "atMs": 2744.900000002235,
+        "lagMs": 1.300000000745058
+      },
+      {
+        "atMs": 2793.7000000029802,
+        "lagMs": -1.199999999254942
+      },
+      {
+        "atMs": 2846,
+        "lagMs": 2.2999999970197678
+      },
+      {
+        "atMs": 2893.7000000029802,
+        "lagMs": -2.2999999970197678
+      },
+      {
+        "atMs": 2947.10000000149,
+        "lagMs": 3.399999998509884
+      },
+      {
+        "atMs": 2993.7000000029802,
+        "lagMs": -3.399999998509884
+      },
+      {
+        "atMs": 3047.900000002235,
+        "lagMs": 4.199999999254942
+      },
+      {
+        "atMs": 3093.7000000029802,
+        "lagMs": -4.199999999254942
+      },
+      {
+        "atMs": 3148.900000002235,
+        "lagMs": 5.199999999254942
+      },
+      {
+        "atMs": 3193.7000000029802,
+        "lagMs": -5.199999999254942
+      },
+      {
+        "atMs": 3249.7000000029802,
+        "lagMs": 6
+      },
+      {
+        "atMs": 3293.60000000149,
+        "lagMs": -6.100000001490116
+      },
+      {
+        "atMs": 3350.60000000149,
+        "lagMs": 7
+      },
+      {
+        "atMs": 3393.7000000029802,
+        "lagMs": -6.899999998509884
+      },
+      {
+        "atMs": 3443.7000000029802,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3493.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3543.60000000149,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3593.60000000149,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3643.60000000149,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3694.2000000029802,
+        "lagMs": 0.6000000014901161
+      },
+      {
+        "atMs": 3743.60000000149,
+        "lagMs": -0.6000000014901161
+      },
+      {
+        "atMs": 3795.7000000029802,
+        "lagMs": 2.100000001490116
+      },
+      {
+        "atMs": 3843.7000000029802,
+        "lagMs": -2
+      },
+      {
+        "atMs": 3897.5,
+        "lagMs": 3.7999999970197678
+      },
+      {
+        "atMs": 3943.60000000149,
+        "lagMs": -3.899999998509884
+      },
+      {
+        "atMs": 3999.2000000029802,
+        "lagMs": 5.600000001490116
+      },
+      {
+        "atMs": 4044.300000000745,
+        "lagMs": -4.900000002235174
+      },
+      {
+        "atMs": 4100.10000000149,
+        "lagMs": 5.800000000745058
+      },
+      {
+        "atMs": 4143.60000000149,
+        "lagMs": -6.5
+      },
+      {
+        "atMs": 4201.10000000149,
+        "lagMs": 7.5
+      },
+      {
+        "atMs": 4243.60000000149,
+        "lagMs": -7.5
+      },
+      {
+        "atMs": 4293.60000000149,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4343.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4393.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4443.60000000149,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 4493.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4544,
+        "lagMs": 0.29999999701976776
+      },
+      {
+        "atMs": 4593.70000000298,
+        "lagMs": -0.29999999701976776
+      },
+      {
+        "atMs": 4645,
+        "lagMs": 1.2999999970197678
+      },
+      {
+        "atMs": 4693.60000000149,
+        "lagMs": -1.3999999985098839
+      },
+      {
+        "atMs": 4745.900000002235,
+        "lagMs": 2.300000000745058
+      },
+      {
+        "atMs": 4793.70000000298,
+        "lagMs": -2.199999999254942
+      },
+      {
+        "atMs": 4846.800000000745,
+        "lagMs": 3.099999997764826
+      },
+      {
+        "atMs": 4893.70000000298,
+        "lagMs": -3.099999997764826
+      },
+      {
+        "atMs": 4950.300000000745,
+        "lagMs": 6.599999997764826
+      },
+      {
+        "atMs": 4993.60000000149,
+        "lagMs": -6.699999999254942
+      },
+      {
+        "atMs": 5051.5,
+        "lagMs": 7.899999998509884
+      },
+      {
+        "atMs": 5093.900000002235,
+        "lagMs": -7.599999997764826
+      },
+      {
+        "atMs": 5143.70000000298,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 5193.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 5243.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 5294.400000002235,
+        "lagMs": 0.6999999992549419
+      },
+      {
+        "atMs": 5343.70000000298,
+        "lagMs": -0.6999999992549419
+      },
+      {
+        "atMs": 5398.10000000149,
+        "lagMs": 4.399999998509884
+      },
+      {
+        "atMs": 5443.60000000149,
+        "lagMs": -4.5
+      },
+      {
+        "atMs": 5499,
+        "lagMs": 5.399999998509884
+      },
+      {
+        "atMs": 5543.60000000149,
+        "lagMs": -5.399999998509884
+      },
+      {
+        "atMs": 5599.70000000298,
+        "lagMs": 6.100000001490116
+      },
+      {
+        "atMs": 5643.70000000298,
+        "lagMs": -6
+      },
+      {
+        "atMs": 5700.5,
+        "lagMs": 6.799999997019768
+      },
+      {
+        "atMs": 5743.70000000298,
+        "lagMs": -6.799999997019768
+      },
+      {
+        "atMs": 5801.300000000745,
+        "lagMs": 7.599999997764826
+      },
+      {
+        "atMs": 5843.70000000298,
+        "lagMs": -7.599999997764826
+      },
+      {
+        "atMs": 5893.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5943.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 5993.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 6044.900000002235,
+        "lagMs": 1.199999999254942
+      },
+      {
+        "atMs": 6093.70000000298,
+        "lagMs": -1.199999999254942
+      },
+      {
+        "atMs": 6148.10000000149,
+        "lagMs": 4.399999998509884
+      },
+      {
+        "atMs": 6193.70000000298,
+        "lagMs": -4.399999998509884
+      },
+      {
+        "atMs": 6243.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6293.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6343.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6393.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6443.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6493.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 6543.800000000745,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 6593.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6643.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6693.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6743.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6793.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6843.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6893.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6943.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6993.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7043.900000002235,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 7093.800000000745,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 7143.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7193.60000000149,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 7243.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 7293.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7343.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7393.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 7443.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 7493.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7543.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7593.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7643.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7693.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 7743.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7793.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7843.60000000149,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 7893.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 7943.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7993.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 8043.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8093.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8143.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8193.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8243.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 8293.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 8343.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 8393.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8443.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 8493.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8544.900000002235,
+        "lagMs": 1.199999999254942
+      },
+      {
+        "atMs": 8593.900000002235,
+        "lagMs": -1
+      },
+      {
+        "atMs": 8643.70000000298,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 8693.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8743.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 8793.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 8843.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 8893.900000002235,
+        "lagMs": 0.30000000074505806
+      },
+      {
+        "atMs": 9061.300000000745,
+        "lagMs": 117.39999999850988
+      },
+      {
+        "atMs": 9258,
+        "lagMs": 146.69999999925494
+      },
+      {
+        "atMs": 9300.5,
+        "lagMs": -7.5
+      },
+      {
+        "atMs": 9343.70000000298,
+        "lagMs": -6.799999997019768
+      },
+      {
+        "atMs": 9393.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 9443.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9493.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 9543.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9593.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 9643.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 9693.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9743.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9793.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9843.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9893.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9943.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9993.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10043.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10094.10000000149,
+        "lagMs": 0.3999999985098839
+      },
+      {
+        "atMs": 10143.70000000298,
+        "lagMs": -0.3999999985098839
+      },
+      {
+        "atMs": 10194.70000000298,
+        "lagMs": 1
+      },
+      {
+        "atMs": 10243.70000000298,
+        "lagMs": -1
+      },
+      {
+        "atMs": 10295.300000000745,
+        "lagMs": 1.5999999977648258
+      },
+      {
+        "atMs": 10343.60000000149,
+        "lagMs": -1.699999999254942
+      },
+      {
+        "atMs": 10396.20000000298,
+        "lagMs": 2.600000001490116
+      },
+      {
+        "atMs": 10443.60000000149,
+        "lagMs": -2.600000001490116
+      },
+      {
+        "atMs": 10493.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10545.60000000149,
+        "lagMs": 1.8999999985098839
+      },
+      {
+        "atMs": 10593.70000000298,
+        "lagMs": -1.8999999985098839
+      },
+      {
+        "atMs": 10644.10000000149,
+        "lagMs": 0.3999999985098839
+      },
+      {
+        "atMs": 10693.70000000298,
+        "lagMs": -0.3999999985098839
+      },
+      {
+        "atMs": 10743.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 10793.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 10843.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10893.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 10943.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 10993.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 11043.60000000149,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11093.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 11143.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11193.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11243.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 11295.20000000298,
+        "lagMs": 1.6000000014901161
+      },
+      {
+        "atMs": 11343.60000000149,
+        "lagMs": -1.6000000014901161
+      },
+      {
+        "atMs": 11395.900000002235,
+        "lagMs": 2.300000000745058
+      },
+      {
+        "atMs": 11443.70000000298,
+        "lagMs": -2.199999999254942
+      },
+      {
+        "atMs": 11496.70000000298,
+        "lagMs": 3
+      },
+      {
+        "atMs": 11543.60000000149,
+        "lagMs": -3.100000001490116
+      },
+      {
+        "atMs": 11598.20000000298,
+        "lagMs": 4.600000001490116
+      },
+      {
+        "atMs": 11643.70000000298,
+        "lagMs": -4.5
+      },
+      {
+        "atMs": 11693.60000000149,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 11743.70000000298,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 11793.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11843.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11893.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11943.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11993.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12044.70000000298,
+        "lagMs": 1
+      },
+      {
+        "atMs": 12093.70000000298,
+        "lagMs": -1
+      },
+      {
+        "atMs": 12145.5,
+        "lagMs": 1.7999999970197678
+      },
+      {
+        "atMs": 12193.800000000745,
+        "lagMs": -1.699999999254942
+      },
+      {
+        "atMs": 12247.900000002235,
+        "lagMs": 4.100000001490116
+      },
+      {
+        "atMs": 12293.70000000298,
+        "lagMs": -4.199999999254942
+      },
+      {
+        "atMs": 12343.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12393.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12443.70000000298,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12493.800000000745,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 12543.70000000298,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 12593.900000002235,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 12744.10000000149,
+        "lagMs": 100.19999999925494
+      },
+      {
+        "atMs": 12863.5,
+        "lagMs": 69.39999999850988
+      },
+      {
+        "atMs": 12893.70000000298,
+        "lagMs": -19.799999997019768
+      }
+    ],
+    "countingMethod": "Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls."
+  },
+  "finishedAt": "2026-10-04T21:54:30.575Z"
+}

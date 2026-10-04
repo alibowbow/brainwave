@@ -33,12 +33,20 @@ export default function DeepWaterView({ active, static3D = false, onInteraction,
     const element = root.current;
     const current = holder.current;
     if (!element || !current || !motion || status !== 'ready') return;
+    // Player/ImmersiveMode put their transparent drag layer beside the scene.
+    // Listen once on their common surface, never once on each layer.
+    const surface = element.closest<HTMLElement>('[data-scene-surface]') ?? element;
+    const controls = 'button,a,input,select,textarea,summary,label,[contenteditable]:not([contenteditable="false"]),[aria-controls],[role="button"],[role="link"],[role="slider"],[role="switch"],[role="checkbox"],[role="radio"],[role="combobox"],[role="listbox"],[role="option"],[role="menuitem"],[role="menuitemcheckbox"],[role="menuitemradio"],[role="spinbutton"],[role="textbox"],[role="tab"],[role="scrollbar"],[role="treeitem"]';
+    // LiveSceneHost moves its sole canvas into the top holder's mount.
+    const isTop = () => holder.current === current && current.running && current.mount.isConnected
+      && current.mount.querySelector('canvas.deepwater-canvas')?.parentElement === current.mount;
     let pointer: { id: number; x: number; y: number; moved: boolean; started: number } | null = null;
     const end = (event?: PointerEvent) => {
       if (!pointer || (event && event.pointerId !== pointer.id)) return;
       const p = pointer; pointer = null; delete element.dataset.look;
+      if (surface.hasPointerCapture(p.id)) surface.releasePointerCapture(p.id);
       host.releaseDrag(current);
-      if (event?.type === 'pointerup' && !p.moved && performance.now() - p.started < 600) {
+      if (isTop() && event?.type === 'pointerup' && !p.moved && Math.hypot(event.clientX - p.x, event.clientY - p.y) <= 7 && performance.now() - p.started < 600) {
         const rect = element.getBoundingClientRect();
         if (event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom) host.touch(current, (event.clientX - rect.left) / rect.width * 2 - 1, 1 - (event.clientY - rect.top) / rect.height * 2);
       }
@@ -47,18 +55,34 @@ export default function DeepWaterView({ active, static3D = false, onInteraction,
     const cancel = () => end();
     const move = (event: PointerEvent) => {
       if (!pointer || event.pointerId !== pointer.id) return;
+      if (!isTop()) { cancel(); return; }
       const dx = event.clientX - pointer.x, dy = event.clientY - pointer.y;
       pointer.moved ||= Math.hypot(dx, dy) > 7;
       if (pointer.moved) { element.dataset.look = 'drag'; const unit = Math.max(1, Math.min(element.clientWidth, element.clientHeight)); host.drag(current, dx / unit, dy / unit); }
     };
     const down = (event: PointerEvent) => {
-      if (pointer || !event.isPrimary || event.button !== 0 || (event.target as Element)?.closest('button,a,input,select,textarea')) return;
+      if (pointer || !isTop() || !event.isPrimary || event.button !== 0) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target || target.closest(controls)) return;
+      const targetSurface = target.closest('[data-scene-surface]');
+      if (targetSurface !== (surface.hasAttribute('data-scene-surface') ? surface : null)) return;
+      const sceneTarget = element.contains(target);
+      const dragTarget = target.hasAttribute('data-scene-drag') && target.parentElement === surface;
+      if (!sceneTarget && !dragTarget) return;
       if (event.pointerType === 'mouse') event.preventDefault();
       pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false, started: performance.now() };
+      // Synthetic events may have no active pointer; real pointers are captured.
+      try { surface.setPointerCapture(event.pointerId); } catch { /* pointer already cancelled */ }
       window.addEventListener('pointermove', move); window.addEventListener('pointerup', end); window.addEventListener('pointercancel', end); window.addEventListener('blur', cancel);
     };
-    element.addEventListener('pointerdown', down);
-    return () => { element.removeEventListener('pointerdown', down); cancel(); };
+    const transfer = new MutationObserver(records => {
+      // Also cancel an out-and-back transfer occurring before this callback.
+      if (!isTop() || records.some(record => Array.from(record.removedNodes).some(node => node instanceof HTMLCanvasElement && node.classList.contains('deepwater-canvas')))) cancel();
+    });
+    transfer.observe(current.mount, { childList: true });
+    surface.addEventListener('pointerdown', down);
+    surface.addEventListener('lostpointercapture', end);
+    return () => { transfer.disconnect(); surface.removeEventListener('pointerdown', down); surface.removeEventListener('lostpointercapture', end); cancel(); };
   }, [host, motion, status]);
   return <div ref={root} className={`deepwater-world deepwater-${kind}`} data-world={kind} data-state={status} data-motion={motion ? 'running' : 'paused'} aria-label={`${names[kind]} 3D 풍경`}>
     <div ref={mount} className="deepwater-mount" />

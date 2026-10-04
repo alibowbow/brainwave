@@ -9,6 +9,11 @@ export class DeepWaterEngine implements LiveSceneEngine {
   private disposed = false;
   private raf = 0;
   private running = false;
+  private pendingGPUFrames: WebGLSync[] = [];
+  private pendingFrame: number | null = null;
+  private demandRaf = 0;
+  private gpuFailure: Error | null = null;
+  private idleWaiters = new Set<(error: Error) => void>();
   private last = 0;
   private time = 0;
   private frames = 0;
@@ -51,6 +56,7 @@ export class DeepWaterEngine implements LiveSceneEngine {
   }
 
   setSize(width: number, height: number, dpr: number) {
+    if (this.disposed) return;
     this.width = Math.max(1, width); this.height = Math.max(1, height);
     this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)));
     this.renderer.setSize(this.width, this.height, false);
@@ -61,7 +67,20 @@ export class DeepWaterEngine implements LiveSceneEngine {
   }
 
   renderFrame(dt: number) {
-    if (this.disposed || !this.content) return;
+    if (this.disposed || !this.content || this.gpuFailure) return;
+    // The host also requests one frame after a paused resize. Preserve that
+    // demand if both GPU slots are occupied; dropping it would leave a cleared
+    // canvas. Newer demands replace older ones instead of building a queue.
+    this.pendingFrame = dt;
+    if (this.drawFrame(dt)) this.pendingFrame = null;
+    else if (!this.running) this.scheduleDemandFrame();
+  }
+
+  private drawFrame(dt: number): boolean {
+    if (this.disposed || !this.content || !this.retireGPUFrames()) return false;
+    // Native RAF and the existing pixel ratio/material quality are unchanged.
+    // Only submission is held when two complete scene draws remain in flight.
+    if (this.pendingGPUFrames.length >= 2) return false;
     const safeDt = Number.isFinite(dt) ? Math.max(0, Math.min(dt, .05)) : 0;
     this.time += safeDt;
     this.look.update(safeDt);
@@ -71,6 +90,13 @@ export class DeepWaterEngine implements LiveSceneEngine {
     this.lookRotation.setFromEuler(new THREE.Euler(this.look.pitch, this.look.yaw, 0, 'YXZ'));
     camera.quaternion.multiply(this.lookRotation);
     this.renderer.render(scene, camera);
+    const gl = this.renderer.getContext() as WebGL2RenderingContext;
+    const fence = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+    if (!fence) return this.failGPU('Could not create a GPU completion fence.');
+    this.pendingGPUFrames.push(fence);
+    gl.flush();
+    this.canvas.dataset.gpuPending = String(this.pendingGPUFrames.length);
+    this.canvas.dataset.gpuState = 'busy';
     this.frames++;
     this.canvas.dataset.frames = String(this.frames);
     this.canvas.dataset.time = this.time.toFixed(4);
@@ -78,18 +104,89 @@ export class DeepWaterEngine implements LiveSceneEngine {
     this.canvas.dataset.triangles = String(this.renderer.info.render.triangles);
     this.canvas.dataset.geometries = String(this.renderer.info.memory.geometries);
     this.canvas.dataset.yaw = this.look.yaw.toFixed(4);
+    return true;
+  }
+
+  private retireGPUFrames(): boolean {
+    if (this.gpuFailure || this.disposed) return false;
+    const gl = this.renderer.getContext() as WebGL2RenderingContext;
+    while (this.pendingGPUFrames.length) {
+      const fence = this.pendingGPUFrames[0];
+      const status = gl.clientWaitSync(fence, 0, 0);
+      if (status === gl.TIMEOUT_EXPIRED) break;
+      // WAIT_FAILED is not completion: stop and report the failed renderer.
+      if (status !== gl.ALREADY_SIGNALED && status !== gl.CONDITION_SATISFIED) {
+        return this.failGPU(`GPU completion check failed (${status}).`);
+      }
+      gl.deleteSync(fence);
+      this.pendingGPUFrames.shift();
+    }
+    this.canvas.dataset.gpuPending = String(this.pendingGPUFrames.length);
+    this.canvas.dataset.gpuState = this.pendingGPUFrames.length ? 'busy' : 'idle';
+    return true;
+  }
+
+  private failGPU(message: string): false {
+    this.gpuFailure = new Error(message);
+    this.stop();
+    cancelAnimationFrame(this.demandRaf);
+    this.demandRaf = 0;
+    this.pendingFrame = null;
+    this.canvas.dataset.gpuState = 'failed';
+    this.canvas.dataset.gpuError = message;
+    this.onContextLost();
+    return false;
+  }
+
+  private scheduleDemandFrame() {
+    if (this.demandRaf || this.disposed || this.gpuFailure || this.pendingFrame === null) return;
+    this.demandRaf = requestAnimationFrame(() => {
+      this.demandRaf = 0;
+      if (this.pendingFrame === null || this.disposed || this.running) return;
+      if (this.drawFrame(this.pendingFrame)) this.pendingFrame = null;
+      else this.scheduleDemandFrame();
+    });
   }
 
   private tick = (stamp: number) => {
     if (!this.running || this.disposed) return;
     const dt = this.last ? (stamp - this.last) / 1000 : 0;
-    this.last = stamp;
-    this.renderFrame(dt);
-    this.raf = requestAnimationFrame(this.tick);
+    if (this.drawFrame(dt)) { this.last = stamp; this.pendingFrame = null; }
+    if (this.running && !this.disposed) this.raf = requestAnimationFrame(this.tick);
   };
 
-  start() { if (this.running || this.disposed) return; this.running = true; this.last = 0; this.canvas.dataset.running = 'true'; this.raf = requestAnimationFrame(this.tick); }
-  stop() { this.running = false; cancelAnimationFrame(this.raf); this.raf = 0; this.last = 0; this.canvas.dataset.running = 'false'; }
+  start() { if (this.running || this.disposed || this.gpuFailure) return; this.running = true; this.last = 0; cancelAnimationFrame(this.demandRaf); this.demandRaf = 0; this.canvas.dataset.running = 'true'; this.raf = requestAnimationFrame(this.tick); }
+  stop() { this.running = false; cancelAnimationFrame(this.raf); this.raf = 0; this.last = 0; this.canvas.dataset.running = 'false'; this.scheduleDemandFrame(); }
+
+  /** Owned QA can await submitted GPU work after stop(). A stopped JS frame
+   * counter alone does not prove completion. This never blocks the GL thread. */
+  awaitGPUIdle(timeoutMs = 10_000): Promise<void> {
+    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) return Promise.reject(new Error('GPU idle timeout must be positive.'));
+    return new Promise((resolve, reject) => {
+      let pollRaf = 0;
+      let done = false;
+      const finish = (error?: Error) => {
+        if (done) return;
+        done = true;
+        cancelAnimationFrame(pollRaf);
+        window.clearTimeout(timer);
+        this.idleWaiters.delete(cancel);
+        if (error) reject(error); else resolve();
+      };
+      const cancel = (error: Error) => finish(error);
+      const timer = window.setTimeout(() => finish(new Error('Timed out waiting for GPU completion.')), timeoutMs);
+      const poll = () => {
+        if (this.gpuFailure) return finish(this.gpuFailure);
+        if (this.disposed) return finish(new Error('Renderer disposed before GPU completion.'));
+        if (this.running) return finish(new Error('Stop the renderer before awaiting GPU completion.'));
+        if (!this.retireGPUFrames()) return finish(this.gpuFailure ?? new Error('GPU completion is unavailable.'));
+        if (!this.pendingGPUFrames.length && this.pendingFrame === null) return finish();
+        pollRaf = requestAnimationFrame(poll);
+      };
+      this.idleWaiters.add(cancel);
+      poll();
+    });
+  }
   drag(dx: number, dy: number) { if (this.running) this.look.drag(dx, dy); }
   releaseDrag() { this.look.release(); }
 
@@ -105,6 +202,13 @@ export class DeepWaterEngine implements LiveSceneEngine {
   dispose() {
     if (this.disposed) return;
     this.disposed = true; this.stop();
+    cancelAnimationFrame(this.demandRaf); this.demandRaf = 0; this.pendingFrame = null;
+    for (const cancel of this.idleWaiters) cancel(this.gpuFailure ?? new Error('Renderer disposed before GPU completion.'));
+    const gl = this.renderer.getContext() as WebGL2RenderingContext;
+    this.pendingGPUFrames.forEach(fence => gl.deleteSync(fence));
+    this.pendingGPUFrames = [];
+    this.canvas.dataset.gpuPending = '0';
+    this.canvas.dataset.gpuState = this.gpuFailure ? 'failed' : 'disposed';
     this.canvas.removeEventListener('webglcontextlost', this.contextLost);
     this.content?.dispose?.();
     const geometries = new Set<THREE.BufferGeometry>();

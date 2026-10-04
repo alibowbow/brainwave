@@ -10,6 +10,9 @@ type EngineView = { renderer: THREE.WebGLRenderer; content: { scene: THREE.Scene
 export function installEnvironmentQA(scene: WorldId, mode: EnvironmentMode) {
   const audits: Array<{ scope: 'scene' | 'sentinel'; observedAtMs: number; event: EnvironmentAudit }> = [];
   const observations: Array<{ label: string; observedAtMs: number; errors: number[]; framebufferStatus: number; contextLost: boolean; sceneEnvironmentType: number | null; sceneEnvironmentMapping: number | null }> = [];
+  const rendererCleanupCalls: Array<{ rendererId: number; method: 'dispose' | 'forceContextLoss'; startedAtMs: number; completedAtMs?: number; threwAtMs?: number; error?: string }> = [];
+  const renderStatistics: Array<{ rendererId: number; renderFrameCalls: number; zeroDtCalls: number; lastCallAtMs?: number; lastReturnAtMs?: number; renderedFrames: number }> = [];
+  const engineRecords = new WeakMap<WorldEngine, (typeof renderStatistics)[number]>();
   let scope: 'scene' | 'sentinel' = 'scene';
   let engine: EngineView | null = null;
   configureEnvironmentQA({
@@ -19,7 +22,35 @@ export function installEnvironmentQA(scene: WorldId, mode: EnvironmentMode) {
   const originalInit = WorldEngine.prototype.init;
   WorldEngine.prototype.init = function () {
     engine = this as unknown as EngineView;
+    if (!engineRecords.has(this)) {
+      const renderer = engine.renderer;
+      const record = { rendererId: renderStatistics.length + 1, renderFrameCalls: 0, zeroDtCalls: 0, renderedFrames: 0 };
+      engineRecords.set(this, record); renderStatistics.push(record);
+      for (const method of ['dispose', 'forceContextLoss'] as const) {
+        const nativeMethod = renderer[method];
+        renderer[method] = function () {
+          const observation: (typeof rendererCleanupCalls)[number] = { rendererId: record.rendererId, method, startedAtMs: performance.now() };
+          rendererCleanupCalls.push(observation);
+          try {
+            nativeMethod.call(renderer);
+            observation.completedAtMs = performance.now();
+          } catch (error) {
+            observation.threwAtMs = performance.now(); observation.error = String(error);
+            throw error;
+          }
+        };
+      }
+    }
     return originalInit.call(this);
+  };
+  const originalRenderFrame = WorldEngine.prototype.renderFrame;
+  WorldEngine.prototype.renderFrame = function (dt) {
+    const record = engineRecords.get(this);
+    if (record) { record.renderFrameCalls++; if (dt === 0) record.zeroDtCalls++; record.lastCallAtMs = performance.now(); }
+    try { return originalRenderFrame.call(this, dt); }
+    finally {
+      if (record) { record.lastReturnAtMs = performance.now(); record.renderedFrames = Number((this as unknown as EngineView).renderer.domElement.dataset.frames ?? 0); }
+    }
   };
 
   function errors(gl: WebGLRenderingContext | WebGL2RenderingContext) {
@@ -83,7 +114,7 @@ export function installEnvironmentQA(scene: WorldId, mode: EnvironmentMode) {
   }
   return {
     mode,
-    snapshot: () => ({ mode, audits: audits.map(audit => ({ ...audit })), observations: observations.map(observation => ({ ...observation, errors: [...observation.errors] })) }),
+    snapshot: () => ({ mode, audits: audits.map(audit => ({ ...audit })), observations: observations.map(observation => ({ ...observation, errors: [...observation.errors] })), rendererCleanupCalls: rendererCleanupCalls.map(call => ({ ...call })), renderStatistics: renderStatistics.map(record => ({ ...record })) }),
     inspect,
     sentinel,
   };

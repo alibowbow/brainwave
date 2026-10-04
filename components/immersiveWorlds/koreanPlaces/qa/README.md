@@ -28,6 +28,19 @@ Each report records helper events for the real scene: actual target types, RGBA1
 
 Every run also hashes the unchanged Rural scene source/entry and approved desktop/portrait/Fold/chrome PNG files against commit `174aa43bffa4ead7723dfc7c4c6f9a86e35f8600`. That byte-preservation record does not claim a rerender; the separate Rural screenshots-only command produces new actual images for a separate pixel comparison.
 
+### Bounded cleanup diagnostics
+
+`--cleanup-diagnostic=clean`, `rapid`, or `rapid-drained` runs a separate, explicitly labelled two-cycle dispose/remount diagnostic at the existing 683×450 lifecycle viewport. It takes **no screenshots**, runs **no auxiliary environment sentinel**, and starts the real scene paused without holding or dropping its scheduled frames. Every cycle checks the actual assigned environment and reports initial, rapid-remount and pre-cleanup renderFrame calls, zero-dt redraws and genuinely rendered frame counts. Source/dependency/bundle hashes retain the normal integrity checks. These diagnostics do not replace a failed full-regression gate.
+
+```sh
+node components/immersiveWorlds/koreanPlaces/qa/verify.mjs --scene=temple --environment=normal --cleanup-diagnostic=clean
+node components/immersiveWorlds/koreanPlaces/qa/verify.mjs --scene=temple --environment=normal --cleanup-diagnostic=rapid
+```
+
+`clean` disposes the initial scene directly. `rapid` first performs three real rapid remounts without an explicit GPU drain. `rapid-drained` performs those same remounts, then times one direct call to the existing QA `gl.finish()` before unmount. Its JSON reports drain duration plus synchronous cleanup duration, and the total from drain start through observed context loss including the unchanged host grace; a wait moved into the drain is never reported as a cleanup improvement. All three preserve the existing 20-second observation gate and five-second host grace. Outputs default to `evidence/cleanup-<diagnostic>-<environment>/cleanup-<diagnostic>-<scene>.json`, separate from full runs and failed raw artifacts.
+
+QA wrappers timestamp entry/return or throw of the real JavaScript `renderer.dispose` and `renderer.forceContextLoss` methods, call each original method unchanged, and retain observed exceptions. No GL method or extension is wrapped or replaced. A failed diagnostic retains completed cycles, the active cycle's partial records and the subsequently observed failure-state cleanup telemetry. The 20-second gate remains a failure even if the failure snapshot later observes eventual cleanup completion.
+
 The verification script serves the built harness through a temporary standard HTTP server in the same process/network namespace as Playwright. This avoids cross-exec loopback failures in managed workspaces. No external deployment is created. `--url=http://127.0.0.1:4179` can instead use an existing preview when its namespace is reachable.
 
 The default browser is the existing executable `/tmp/cosmic-browser-bin/chromium`. Override with `CHROMIUM_PATH` or `--browser=/absolute/path/to/chromium` in another environment. The script uses installed `playwright-core` and Chromium ANGLE SwiftShader, without downloading a browser or installing dependencies. `--scene=temple`, `--scene=scops`, and `--scene=rural` select one world.

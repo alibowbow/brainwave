@@ -12,18 +12,23 @@ const args = process.argv.slice(2);
 const option = (name, fallback) => args.find(a => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=') ?? fallback;
 const environmentMode = option('environment', 'normal');
 if (!['normal', 'forced-byte'].includes(environmentMode)) throw new Error('Environment mode must be normal or forced-byte.');
-const evidence = path.resolve(qa, option('output', `evidence/environment-${environmentMode}`));
+const cleanupDiagnosticMode = option('cleanup-diagnostic', null);
+if (cleanupDiagnosticMode !== null && !['clean', 'rapid', 'rapid-drained'].includes(cleanupDiagnosticMode)) throw new Error('Cleanup diagnostic must be clean, rapid or rapid-drained.');
+const evidence = path.resolve(qa, option('output', cleanupDiagnosticMode ? `evidence/cleanup-${cleanupDiagnosticMode}-${environmentMode}` : `evidence/environment-${environmentMode}`));
 if (!evidence.startsWith(`${path.join(qa, 'evidence')}${path.sep}`)) throw new Error('Follow-up output must be a subdirectory of qa/evidence, preserving original evidence.');
 const sceneOption = option('scene', 'all');
 const scenes = sceneOption === 'all' ? ['scops', 'temple'] : [sceneOption];
 if (scenes.some(scene => !['temple', 'scops', 'rural'].includes(scene))) throw new Error('Unknown scene option.');
 const screenshotsOnly = args.includes('--screenshots-only');
+if (screenshotsOnly && cleanupDiagnosticMode) throw new Error('Cleanup diagnostic cannot be combined with screenshots-only.');
 let base = option('url', null);
 const executablePath = option('browser', process.env.CHROMIUM_PATH || '/tmp/cosmic-browser-bin/chromium');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const relative = file => path.relative(repo, file).split(path.sep).join('/');
 const results = { generatedAt: new Date().toISOString(), mode: screenshotsOnly ? 'screenshots-only' : 'full', renderer: 'Chromium headless; ANGLE SwiftShader software WebGL', hardwareClaim: 'Viewport tests only. No physical Fold, device FPS, battery, or thermal claims.', visibilityScope: 'The mandatory hidden-state test uses a labelled synthetic visibilitychange; actual tab visibility is separately reported if observable.', browserExecutable: executablePath, repositoryHead: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).trim(), source: {}, bundle: {}, screenshots: [], worlds: {}, errors: [] };
 results.environmentMode = environmentMode;
+results.cleanupDiagnosticMode = cleanupDiagnosticMode;
+if (cleanupDiagnosticMode) results.mode = 'cleanup-diagnostic';
 
 const ruralBaseline = '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600';
 const ruralPreservationPaths = ['scenes/rural.ts', 'RuralSummerNightWorld.tsx', ...['desktop', 'portrait', 'fold', 'chrome'].map(view => `qa/evidence/final/rural-${view}.png`)].map(file => `components/immersiveWorlds/koreanPlaces/${file}`);
@@ -132,6 +137,7 @@ const evaluate = (callback, argument) => bounded(page.evaluate(callback, argumen
 const lifecycleViewport = { width: 683, height: 450 };
 results.lifecycleViewport = lifecycleViewport;
 results.lifecycleRendering = '683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.';
+if (cleanupDiagnosticMode) results.lifecycleRendering = '683x450 initially paused real scene; native scheduler remains unheld with zero pending scene RAF. No screenshot, native-motion probe or auxiliary environment sentinel. Real initial/remount redraws are counted; only rapid-drained explicitly waits once on existing QA gl.finish before unmount.';
 const phase = (scene, label) => process.stdout.write(`Lifecycle ${scene}: ${label}\n`);
 const snap = () => evaluate(() => window.koreanQA.snapshot());
 const api = (method, value) => evaluate(({ method, value }) => window.koreanQA[method](value), { method, value });
@@ -483,6 +489,8 @@ async function lifecycle(scene) {
   assert(detachedScheduler.pendingCallbacks === 0, `${scene}: disposal retained a scene RAF callback`);
   assert((await snap()).subscribers === 0, `${scene}: disposal retained an existing-engine audio subscription`);
   await api('setMounted', true); await ready(); const rebuilt = await snap();
+  record.rendererCleanupCalls = rebuilt.environment.rendererCleanupCalls;
+  record.renderStatisticsAfterRemount = rebuilt.environment.renderStatistics;
   record.rebuiltEnvironment = await checkEnvironment(scene, 'after disposal and remount');
   if (scene !== 'rural') {
     assert(record.rebuiltEnvironment.generationCount === record.initialEnvironment.generationCount + 1, `${scene}: true disposal/remount did not generate exactly one new checked environment`);
@@ -503,9 +511,83 @@ async function lifecycle(scene) {
   return record;
 }
 
+async function cleanupDiagnostic(scene) {
+  const record = {
+    diagnosticOnly: true, mode: cleanupDiagnosticMode, viewport: lifecycleViewport,
+    method: 'Two real dispose/remount cycles, initially paused, no screenshots or auxiliary environment sentinel. Original 20000 ms cleanup gate and 5000 ms host grace remain unchanged.',
+    rendererTimingMethod: 'QA wrappers timestamp original renderer.dispose/forceContextLoss entry and synchronous return or throw. No GL methods or extensions are replaced.',
+    cycles: [],
+  };
+  results.worlds[scene] = record;
+  for (let cycle = 1; cycle <= 2; cycle++) {
+    phase(scene, `${cleanupDiagnosticMode} cleanup diagnostic cycle ${cycle}/2`);
+    await ready(); await stopped();
+    const initial = await snap();
+    const entry = { cycle, canvasIdentity: initial.canvasIdentity, initialCanvas: initial.canvas, initialRenderStatistics: initial.environment.renderStatistics, rapidRemounts: [] };
+    record.cycles.push(entry);
+    entry.initialEnvironment = await checkEnvironment(scene, `cleanup diagnostic cycle ${cycle} initial`);
+    const scheduler = await evaluate(() => window.sceneQAScheduler.snapshot());
+    assert(!scheduler.held && scheduler.pendingCallbacks === 0, `${scene}: clean diagnostic unexpectedly held or scheduled scene frames`);
+    if (cleanupDiagnosticMode !== 'clean') {
+      for (let index = 0; index < 3; index++) {
+        await api('setMounted', false); await page.waitForFunction(() => !document.querySelector('canvas')); await page.waitForTimeout(90);
+        await api('setMounted', true); await ready(); await stopped();
+        const remounted = await snap();
+        assert(remounted.canvasIdentity === initial.canvasIdentity && remounted.canvasCount === 1, `${scene}: diagnostic rapid remount failed to reuse the canvas`);
+        entry.rapidRemounts.push({ index: index + 1, canvas: remounted.canvas, canvasIdentity: remounted.canvasIdentity, renderStatistics: remounted.environment.renderStatistics });
+      }
+    }
+    entry.beforeCleanup = await snap();
+    if (cleanupDiagnosticMode === 'rapid-drained') {
+      entry.explicitDrain = await evaluate(() => {
+        const startedAtMs = performance.now(); window.sceneQAScheduler.flush();
+        const completedAtMs = performance.now(); return { startedAtMs, completedAtMs, durationMs: completedAtMs - startedAtMs, method: 'Existing QA gl.finish called directly once; no frames removed and GL method unchanged.' };
+      });
+    }
+    entry.unmountRequestedAtMs = await evaluate(() => { const at = performance.now(); window.koreanQA.setMounted(false); return at; });
+    await page.waitForFunction(() => !document.querySelector('canvas'));
+    entry.detachedObservedAtMs = await evaluate(() => performance.now());
+    assert(!(await snap()).disposalObservations.some(item => item.canvasIdentity === initial.canvasIdentity), `${scene}: diagnostic skipped the host grace`);
+    await page.waitForFunction(identity => window.koreanQA.snapshot().disposalObservations.some(item => item.canvasIdentity === identity && item.completedAtMs !== undefined && item.contextLostAtMs !== undefined), initial.canvasIdentity, { timeout: 20000 });
+    const disposed = await snap();
+    const cleanup = disposed.disposalObservations.find(item => item.canvasIdentity === initial.canvasIdentity);
+    entry.cleanup = cleanup;
+    entry.rendererCleanupCalls = disposed.environment.rendererCleanupCalls.filter(call => call.rendererId === cycle);
+    entry.finalRenderStatistics = disposed.environment.renderStatistics;
+    entry.afterCleanup = disposed;
+    entry.synchronousCleanupDurationMs = cleanup.completedAtMs - cleanup.startedAtMs;
+    entry.contextLostAfterUnmountRequestMs = cleanup.contextLostAtMs - entry.unmountRequestedAtMs;
+    entry.drainPlusSynchronousCleanupMs = (entry.explicitDrain?.durationMs ?? 0) + entry.synchronousCleanupDurationMs;
+    entry.drainStartOrUnmountToContextLostMs = cleanup.contextLostAtMs - (entry.explicitDrain?.startedAtMs ?? entry.unmountRequestedAtMs);
+    assert(cleanup.startedAtMs - entry.unmountRequestedAtMs >= 4950 && !cleanup.error, `${scene}: diagnostic grace timing or engine cleanup error`);
+    assert(entry.rendererCleanupCalls.length === 2 && entry.rendererCleanupCalls.every(call => call.completedAtMs !== undefined && !call.error), `${scene}: diagnostic did not observe both real renderer cleanup methods returning`);
+    assert(disposed.canvasCount === 0 && disposed.subscribers === 0, `${scene}: diagnostic retained canvas or audio subscriber`);
+    const detachedListeners = await evaluate(() => window.__qaPointerCounts());
+    const detachedScheduler = await evaluate(() => window.sceneQAScheduler.snapshot());
+    assert(detachedListeners.every(item => item.pointerdown === 0) && detachedScheduler.pendingCallbacks === 0, `${scene}: diagnostic cleanup retained listener or scheduled scene RAF`);
+    entry.detachedListeners = detachedListeners; entry.detachedScheduler = detachedScheduler;
+    await api('setMounted', true); await ready(); await stopped();
+    const rebuilt = await snap();
+    assert(rebuilt.canvasIdentity !== initial.canvasIdentity && rebuilt.canvasCount === 1, `${scene}: diagnostic remount did not create one new canvas`);
+    entry.rebuiltIdentity = rebuilt.canvasIdentity;
+    entry.rebuiltEnvironment = await checkEnvironment(scene, `cleanup diagnostic cycle ${cycle} remount`);
+    entry.pass = true;
+  }
+  record.createdAudioContexts = await evaluate(() => window.__qaAudioContexts);
+  assert(record.createdAudioContexts === 0, `${scene}: cleanup diagnostic created an AudioContext`);
+  record.pass = record.cycles.length === 2 && record.cycles.every(cycle => cycle.pass);
+  return record;
+}
+
 try {
   for (const scene of scenes) {
     process.stdout.write(`Testing ${scene}\n`);
+    if (cleanupDiagnosticMode) {
+      await page.setViewportSize(lifecycleViewport);
+      await navigate(scene, '&active=0');
+      await cleanupDiagnostic(scene);
+      continue;
+    }
     await page.setViewportSize({ width: 1365, height: 900 });
     await navigate(scene, '&active=0');
     await stopped();
@@ -530,7 +612,7 @@ try {
     results.worlds[scene] = screenshotsOnly ? { screenshotsCaptured: true, initialEnvironment } : await lifecycle(scene);
     if (sentinelProbe) results.worlds[scene].sentinelProbe = sentinelProbe;
   }
-  if (!screenshotsOnly) {
+  if (!screenshotsOnly && !cleanupDiagnosticMode) {
     const other = await context.newPage(); await other.goto('about:blank'); await other.bringToFront(); await page.waitForTimeout(150);
     const observed = await evaluate(() => ({ hidden: document.hidden, visibilityState: document.visibilityState }));
     results.actualTabVisibility = { ...observed, tested: observed.hidden, note: observed.hidden ? 'Original page became hidden after a separate page was brought forward.' : 'Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified.' };
@@ -542,8 +624,20 @@ try {
   results.failure = error.stack;
   process.stdout.write(`FAILED: ${error.stack}\n`);
   try { await bounded(evaluate(() => window.koreanQA?.setActive(false)), 'failure pause', 5000); } catch {}
-  try { await page.screenshot({ path: path.join(evidence, 'debug-failure.png'), timeout: 5000 }); } catch {}
+  if (!cleanupDiagnosticMode) try { await page.screenshot({ path: path.join(evidence, 'debug-failure.png'), timeout: 5000 }); } catch {}
   try { results.failureState = await bounded(snap(), 'failure snapshot', 5000); } catch {}
+  if (cleanupDiagnosticMode && results.failureState) {
+    const world = results.worlds[results.failureState.scene];
+    const incompleteCycle = world?.cycles?.[world.cycles.length - 1];
+    if (incompleteCycle) {
+      incompleteCycle.pass = false;
+      incompleteCycle.observedAfterFailure = {
+        cleanup: results.failureState.disposalObservations.find(item => item.canvasIdentity === incompleteCycle.canvasIdentity) ?? null,
+        rendererCleanupCalls: results.failureState.environment.rendererCleanupCalls,
+        renderStatistics: results.failureState.environment.renderStatistics,
+      };
+    }
+  }
   try { results.failurePointerCapture = await bounded(captureState(), 'failure capture telemetry', 5000); } catch {}
   process.exitCode = 1;
 } finally {
@@ -557,7 +651,7 @@ try {
   }
   if (!results.pass) process.exitCode = 1;
   results.finishedAt = new Date().toISOString();
-  const filename = screenshotsOnly ? `screenshots-${sceneOption}.json` : `verification-${sceneOption}.json`;
+  const filename = cleanupDiagnosticMode ? `cleanup-${cleanupDiagnosticMode}-${sceneOption}.json` : screenshotsOnly ? `screenshots-${sceneOption}.json` : `verification-${sceneOption}.json`;
   await fs.writeFile(path.join(evidence, filename), `${JSON.stringify(results, null, 2)}\n`);
   await browser.close();
   if (server) await new Promise(resolve => server.close(resolve));

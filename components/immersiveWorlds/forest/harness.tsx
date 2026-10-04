@@ -240,7 +240,7 @@ function ForestHarness() {
       const unit = Math.min(rect.width, rect.height), dragHits = countsRef.current.main;
       pointer(canvas, 'pointerdown', dragX, dragY);
       pointer(window, 'pointermove', dragX + unit * .22, dragY + unit * .04);
-      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) > .009, 'DOM drag did not move the camera.', 10000);
+      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) > .009, 'DOM drag did not move the camera.', 30000);
       const peakYaw = Math.abs(Number(canvas.dataset.lookYaw));
       pointer(window, 'pointerup', dragX + unit * .22, dragY + unit * .04);
       await delay(120);

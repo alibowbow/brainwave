@@ -88,11 +88,11 @@ async function screenshot(page: Page, filename: string, report: BrowserReport) {
   // SwiftShader can saturate the compositor while a full-quality reflected
   // scene continuously draws. Freeze via the real session prop for capture;
   // preserve simulation time and native-resolution buffers, then resume.
-  // Exact capture protocol: active=false -> viewport width minus one CSS
-  // pixel -> await that ResizeObserver render -> restore the original viewport
-  // -> await full-size buffer -> finish the existing WebGL context -> CDP view
-  // capture (30-second bound). If this compositor route fails, synchronously
-  // capture immediately after the same real renderer draws its full buffer.
+  // Direct protocol: active=false -> verify full native buffer -> draw and
+  // synchronously read that same renderer frame (90-second readback bound).
+  // Only opt-in CDP capture refreshes width minus one pixel and restores it
+  // before gl.finish()/view capture. Direct readback already draws a fresh frame
+  // and needs no extra ResizeObserver-triggered GPU work.
   // Restore active=true if previously running. The shared host renders dt=0
   // on paused resizes. No render resolution or runtime quality is reduced.
   const wasRunning = await page.locator('.forest-world-canvas').getAttribute('data-running') === 'true';
@@ -107,11 +107,13 @@ async function screenshot(page: Page, filename: string, report: BrowserReport) {
       const canvas = document.querySelector<HTMLCanvasElement>('.forest-world-canvas');
       return canvas?.clientWidth === width && canvas.clientHeight === height && canvas.width === width && canvas.height === height;
     };
-    await page.setViewportSize(refreshViewport);
-    await page.waitForFunction(fullSizeCanvas, refreshViewport);
-    await page.setViewportSize(viewport);
+    if (!preferDirectCapture) {
+      await page.setViewportSize(refreshViewport);
+      await page.waitForFunction(fullSizeCanvas, refreshViewport);
+      await page.setViewportSize(viewport);
+    }
     await page.waitForFunction(fullSizeCanvas, viewport);
-    await page.waitForTimeout(250);
+    if (!preferDirectCapture) await page.waitForTimeout(250);
 
     let buffer: Buffer | undefined;
     let method: Screenshot['method'] = 'cdp-view';
@@ -146,7 +148,7 @@ async function screenshot(page: Page, filename: string, report: BrowserReport) {
         document.querySelector('.forest-harness')?.dispatchEvent(new CustomEvent('forest:diagnostic-capture', { detail }));
         if (detail.error || !detail.result) throw new Error(detail.error || 'Synchronous WebGL capture callback did not return a frame');
         return detail.result;
-      }), 'Direct real WebGL frame capture');
+      }), 'Direct real WebGL frame capture', 90000);
       const match = /^data:image\/(jpeg|png);base64,(.+)$/.exec(captured.dataUrl);
       if (!match) throw new Error('Direct WebGL capture did not return a supported image data URL');
       buffer = Buffer.from(match[2], 'base64');
@@ -190,6 +192,7 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
     limitations: [
       'Software rendering in Linux CI is not representative of physical-phone performance.',
       '344×800 and 882×344 are layout simulations, not physical Fold hardware tests.',
+      'Motion and DOM lifecycle run at the requested native 882×344 landscape viewport after all three layout captures; rendering quality and resolution scale are unchanged.',
       'Reduced motion is tested with browser media emulation and the actual app class.',
       'Native tab/window visibility is observed when supported by headless Chromium; the separate document.hidden override tests only the simulated hook.',
       'DOM gesture assertions use PointerEvents through the component; they are not physical touchscreen tests.',
@@ -208,7 +211,7 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
   };
 
   try {
-    preferDirectCapture = false;
+    preferDirectCapture = process.env.FOREST_QA_COMPOSITOR_CAPTURE !== '1';
     await mkdir(outputDirectory, { recursive: true });
     execFileSync(process.execPath, [path.join(repositoryDirectory, 'node_modules/playwright-core/cli.js'), 'install', '--with-deps', 'chromium'], {
       cwd: repositoryDirectory, env: process.env, stdio: 'inherit', timeout: 180000,
@@ -254,15 +257,8 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
     // leaves real-renderer visual evidence for review in the CI log.
     await page.evaluate(() => { document.querySelector<HTMLElement>('.forest-harness')!.dataset.capture = 'true'; });
     await page.waitForTimeout(900);
-    const desktop = await screenshot(page, 'forest-desktop.jpg', report);
-    const movementBefore = await diagnostic(page);
-    await page.waitForFunction((time) => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.time) > time + .25, Number(movementBefore.time));
-    const motion = await screenshot(page, 'forest-motion.jpg', report);
-    const movementAfter = await diagnostic(page);
-    imageMovementPassed = !!desktop && !!motion && desktop.method === motion.method && desktop.sha256 !== motion.sha256 && Number(movementAfter.frames) > Number(movementBefore.frames) && Number(movementAfter.time) > Number(movementBefore.time);
-    // A capture failure is recorded without preventing the independent DOM
-    // interaction, lifecycle, media-preference and hidden-hook assertions.
-    report.checks.push({ name: 'Actual rendered motion changes the image', passed: imageMovementPassed, detail: { before: movementBefore, after: movementAfter, beforeImage: desktop?.sha256, afterImage: motion?.sha256, beforeMethod: desktop?.method, afterMethod: motion?.method } });
+    await screenshot(page, 'forest-desktop.jpg', report);
+    let landscape: Screenshot | null = null;
 
     for (const size of [{ width: 344, height: 800, filename: 'forest-fold-portrait.jpg' }, { width: 882, height: 344, filename: 'forest-fold-landscape.jpg' }]) {
       await page.setViewportSize({ width: size.width, height: size.height });
@@ -272,11 +268,21 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
       }, size);
       const before = await diagnostic(page);
       await page.waitForFunction((frames) => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.frames) > frames + 1, Number(before.frames));
-      await screenshot(page, size.filename, report);
+      const view = await screenshot(page, size.filename, report);
+      if (size.filename === 'forest-fold-landscape.jpg') landscape = view;
       check(`Actual ${size.width}×${size.height} layout renders`, Number((await diagnostic(page)).triangles) > 1000, await diagnostic(page));
     }
 
-    await page.setViewportSize({ width: 1280, height: 800 });
+    // Compare motion at the same requested native landscape dimensions and run
+    // lifecycle there. This changes the test viewport, not scene quality/DPR.
+    const movementBefore = await diagnostic(page);
+    await page.waitForFunction((time) => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.time) > time + .25, Number(movementBefore.time));
+    const motion = await screenshot(page, 'forest-motion.jpg', report);
+    const movementAfter = await diagnostic(page);
+    imageMovementPassed = !!landscape && !!motion && landscape.method === motion.method && landscape.width === 882 && landscape.height === 344 && motion.width === 882 && motion.height === 344 && landscape.sha256 !== motion.sha256 && Number(movementAfter.frames) > Number(movementBefore.frames) && Number(movementAfter.time) > Number(movementBefore.time);
+    // Capture failures remain non-blocking until the final overall verdict.
+    report.checks.push({ name: 'Actual rendered motion changes the image', passed: imageMovementPassed, detail: { nativeViewport: [882, 344], before: movementBefore, after: movementAfter, beforeImage: landscape?.sha256, afterImage: motion?.sha256, beforeMethod: landscape?.method, afterMethod: motion?.method } });
+
     await page.evaluate(() => { document.querySelector<HTMLElement>('.forest-harness')!.dataset.capture = 'false'; });
     await page.getByTestId('qa-run').dispatchEvent('click');
     // These generous waits accommodate software rendering only. The scene's

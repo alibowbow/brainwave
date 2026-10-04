@@ -265,6 +265,7 @@ export class ForestEngine implements LiveSceneEngine {
     litter.count=count; this.scene.add(litter);
     this.addFallenWood(materials.bark);
     this.addUnderstory();
+    this.addSurroundingStand(materials.bark);
     this.addBirds();
     this.addSunrays();
     this.addMotes();
@@ -300,6 +301,32 @@ export class ForestEngine implements LiveSceneEngine {
       }
     }
     blades.count=count;blades.castShadow=true;blades.receiveShadow=true;blades.computeBoundingSphere();this.scene.add(blades);
+  }
+
+  private addSurroundingStand(bark: THREE.MeshStandardMaterial) {
+    // Continue the woodland beyond the central path and wide-screen frustum.
+    // These are real tapered trunks/branches at different depths, never a flat
+    // skyline image. A separate seed keeps nearby leaves and stones unchanged.
+    const random=forestRandom(9187),parts:THREE.BufferGeometry[]=[];
+    const up=V(0,1,0);
+    const limb=(start:THREE.Vector3,end:THREE.Vector3,radius:number,tip:number)=>{
+      const direction=end.clone().sub(start),geometry=new THREE.CylinderGeometry(tip,radius,direction.length(),7,3);
+      geometry.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(up,direction.normalize()));
+      geometry.translate(...start.clone().add(end).multiplyScalar(.5).toArray());parts.push(geometry);
+    };
+    for(let row=0;row<6;row++)for(let column=0;column<24;column++){
+      const x=(column-11.5)*4.3+(random()-.5)*2.8,z=-9-row*9+(random()-.5)*4;
+      if(Math.abs(x)<8.5)continue;
+      const base=V(x,groundHeight(x,z)-.1,z),height=9+random()*13,radius=.13+random()*.24;
+      const tip=base.clone().add(V((random()-.5)*1.7,height,(random()-.5)*1.3));
+      limb(base,tip,radius,.04);
+      for(let branch=0;branch<3;branch++){
+        const start=base.clone().lerp(tip,.45+branch*.14),angle=random()*6.28,reach=1.8+random()*2.4;
+        limb(start,start.clone().add(V(Math.cos(angle)*reach,1.3+random()*1.7,Math.sin(angle)*reach)),radius*.22,.012);
+      }
+    }
+    const stand=new THREE.Mesh(mergeGeometries(parts),bark);parts.forEach(g=>g.dispose());
+    stand.castShadow=true;stand.receiveShadow=true;this.scene.add(stand);
   }
 
   private addWater() {

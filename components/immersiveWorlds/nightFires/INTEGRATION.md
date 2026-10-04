@@ -40,6 +40,8 @@ These are integration recommendations, not verified audio playback/panning in th
 
 ## Verification
 
+See [QA.md](QA.md) for passed checks, exact tested source/bundle hashes and the final desktop/portrait/chrome PNG index. The full three-world run and the later deep-portrait correction are retained as separate, explicitly scoped evidence.
+
 Main commands: `npm run typecheck`, `npm test`, `npm run build`, `npm run check:bundle`.
 
 The main application intentionally does not import these entries until the integration owner wires them. Therefore the isolated production harness **also** compiles all scene code:

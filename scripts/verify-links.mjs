@@ -29,9 +29,9 @@ const button = (name) => page.getByRole('button', { name, exact: true, includeHi
 const press = (name) => button(name).dispatchEvent('click');
 const playing = () => button('일시정지').waitFor({ state: 'attached' });
 const stopped = () => button('재생').waitFor({ state: 'attached' });
-const typeLink = async (address) => {
+const typeLink = async (address, expected = address) => {
   await page.evaluate((next) => { location.hash = next; }, address);
-  await page.waitForFunction((expected) => location.hash === expected, address);
+  await page.waitForFunction((expected) => location.hash === expected, expected);
 };
 
 try {
@@ -109,7 +109,7 @@ try {
   await typeLink('#/play/last');
   await page.waitForSelector('h1:has-text("링크 테스트")'); await playing();
 
-  await typeLink('#/play/amb/nowhere');
+  await typeLink('#/play/amb/nowhere', '');
   await page.waitForFunction(() => location.hash === '');
   assert.equal(await button('일시정지').count(), 0);
   assert.equal(await page.locator('[data-playback-hint]').count(), 0);

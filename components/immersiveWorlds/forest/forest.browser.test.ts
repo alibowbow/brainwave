@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest';
-import { chromium, type Browser, type Page } from 'playwright-core';
+import { chromium, type Browser, type Page, type CDPSession } from 'playwright-core';
 import { execFileSync, spawn, type ChildProcess } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -26,6 +26,7 @@ interface BrowserReport {
   captureAttempts: { filename: string; method: string; passed: boolean; detail: unknown }[];
   captureFailures: string[];
   lifecycleReport?: unknown;
+  actualVisibility?: Record<string, unknown>;
   failure?: string;
   serverLog?: string;
 }
@@ -42,7 +43,10 @@ async function waitForRunning(page: Page, running: boolean) {
   await page.waitForFunction((value) => document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.running === String(value), running);
 }
 
-let preferDirectCapture = false;
+// Several recorded CI attempts stalled inside Chromium's compositor capture.
+// Default to synchronous readback of the actual full-size scene render. The
+// browser-view route remains opt-in for environments whose compositor works.
+let preferDirectCapture = process.env.FOREST_QA_COMPOSITOR_CAPTURE !== '1';
 
 async function bounded<T>(operation: Promise<T>, label: string, milliseconds = 30000): Promise<T> {
   let timer: ReturnType<typeof setTimeout>;
@@ -187,7 +191,7 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
       'Software rendering in Linux CI is not representative of physical-phone performance.',
       '344×800 and 882×344 are layout simulations, not physical Fold hardware tests.',
       'Reduced motion is tested with browser media emulation and the actual app class.',
-      'The hidden-state hook is simulated only inside this isolated test document; actual OS/tab backgrounding remains unverified.',
+      'Native tab/window visibility is observed when supported by headless Chromium; the separate document.hidden override tests only the simulated hook.',
       'DOM gesture assertions use PointerEvents through the component; they are not physical touchscreen tests.',
     ],
     screenshots: [], checks: [], errors: [], captureAttempts: [], captureFailures: [],
@@ -294,8 +298,85 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
     await page.waitForFunction((frames) => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.frames) > frames, Number(mediaAfter.frames));
     check('Browser OS reduced-motion release resumes', true, await diagnostic(page));
 
-    // Test only the hook's response to hidden. This is deliberately separate
-    // from a real tab/background test, which headless CI cannot substantiate.
+    // Attempt real browser visibility without overriding any document state.
+    // Interval polling is essential: requestAnimationFrame stops in hidden tabs.
+    let foregroundTab: Page | undefined;
+    let visibilitySession: CDPSession | undefined;
+    let windowId: number | undefined;
+    let minimizedRequestSucceeded = false;
+    let actuallyHidden = false;
+    let actualHiddenPassed = false;
+    let actualHiddenFailure: string | undefined;
+    const visibilityAttempts: { method: string; hidden: boolean; note?: string }[] = [];
+    let realHiddenEvidence: Record<string, unknown> = {};
+    const observeHidden = async () => {
+      try {
+        await page!.waitForFunction(() => document.hidden && document.visibilityState === 'hidden', undefined, { polling: 100, timeout: 2500 });
+        return true;
+      } catch { return false; }
+    };
+    try {
+      try {
+        foregroundTab = await page.context().newPage();
+        await foregroundTab.goto('about:blank');
+        await foregroundTab.bringToFront();
+        actuallyHidden = await observeHidden();
+        visibilityAttempts.push({ method: 'about:blank tab brought to front', hidden: actuallyHidden });
+      } catch (error) {
+        visibilityAttempts.push({ method: 'about:blank tab brought to front', hidden: false, note: error instanceof Error ? error.message : String(error) });
+      }
+      if (!actuallyHidden) {
+        try {
+          visibilitySession = await page.context().newCDPSession(page);
+          ({ windowId } = await visibilitySession.send('Browser.getWindowForTarget'));
+          await visibilitySession.send('Browser.setWindowBounds', { windowId, bounds: { windowState: 'minimized' } });
+          minimizedRequestSucceeded = true;
+          actuallyHidden = await observeHidden();
+          visibilityAttempts.push({ method: 'native browser window minimized', hidden: actuallyHidden });
+        } catch (error) {
+          visibilityAttempts.push({ method: 'native browser window minimized', hidden: false, note: error instanceof Error ? error.message : String(error) });
+        }
+      }
+      if (actuallyHidden) {
+        await page.waitForFunction(() => document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.running === 'false', undefined, { polling: 100, timeout: 15000 });
+        const before = await diagnostic(page), began = Date.now();
+        await delay(1100);
+        const after = await diagnostic(page), durationMs = Date.now() - began;
+        const nativeState = await page.evaluate(() => ({ hidden: document.hidden, visibilityState: document.visibilityState }));
+        actualHiddenPassed = nativeState.hidden && nativeState.visibilityState === 'hidden' && durationMs >= 900 && before.frames === after.frames && before.time === after.time;
+        realHiddenEvidence = { actualTabVisibilityTested: true, simulated: false, method: visibilityAttempts.find((attempt) => attempt.hidden)?.method, durationMs, nativeState, before, after };
+      }
+    } catch (error) {
+      actualHiddenFailure = error instanceof Error ? error.message : String(error);
+    } finally {
+      // Restore the existing window and original tab even if observation fails.
+      if (visibilitySession && windowId !== undefined) {
+        try { await visibilitySession.send('Browser.setWindowBounds', { windowId, bounds: { windowState: 'normal' } }); }
+        catch (error) {
+          const note = `Restore native window: ${error instanceof Error ? error.message : String(error)}`;
+          if (minimizedRequestSucceeded) report.errors.push(note);
+          else visibilityAttempts.push({ method: 'restore unsupported native window operation', hidden: false, note });
+        }
+      }
+      try { await page.bringToFront(); }
+      catch (error) { report.errors.push(`Restore original tab: ${error instanceof Error ? error.message : String(error)}`); }
+      if (foregroundTab) await foregroundTab.close().catch(() => undefined);
+      if (visibilitySession) await visibilitySession.detach().catch(() => undefined);
+    }
+    report.actualVisibility = { actualTabVisibilityTested: actuallyHidden, attempts: visibilityAttempts, ...realHiddenEvidence, ...(actualHiddenFailure ? { failure: actualHiddenFailure } : {}) };
+    if (actuallyHidden) {
+      check('Actual browser hidden state freezes frames and time', actualHiddenPassed && !actualHiddenFailure, report.actualVisibility);
+      await page.waitForFunction(() => !document.hidden && document.visibilityState === 'visible', undefined, { polling: 100, timeout: 15000 });
+      await waitForRunning(page, true);
+      const restored = await diagnostic(page);
+      await page.waitForFunction((frames) => Number(document.querySelector<HTMLCanvasElement>('.forest-world-canvas')?.dataset.frames) > frames, Number(restored.frames));
+      check('Actual browser visibility restoration resumes animation', true, { actualTabVisibilityTested: true, after: await diagnostic(page) });
+    } else {
+      report.limitations.push(`Actual hidden state was not observed: ${visibilityAttempts.map((attempt) => `${attempt.method}: ${attempt.note ?? 'document.hidden remained false'}`).join('; ')}. Real tab-background pause remains unverified.`);
+    }
+
+    // Independently validate the explicit simulated hook, regardless of whether
+    // the native browser visibility transition was available above.
     await page.evaluate(() => {
       document.documentElement.dataset.forestVisibilitySimulation = 'ci-hook-test';
       Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });

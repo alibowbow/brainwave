@@ -88,7 +88,7 @@ export class ShelterEngine implements LiveSceneEngine {
   releaseDrag() { this.targetLook.set(0, 0); }
 
   interact(x: number, y: number, explicit = false): ShelterInteraction | null {
-    const event = this.recipe?.interact(x, y, explicit);
+    const event = this.recipe?.interact(x, y, explicit, !this.running);
     if (!event) return null;
     this.renderFrame(0);
     return { world: this.kind, action: event.action, value: THREE.MathUtils.clamp(event.value, 0, 1) };

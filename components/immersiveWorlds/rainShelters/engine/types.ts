@@ -6,7 +6,7 @@ export interface WorldRecipe {
   update(time: number, dt: number): void;
   resize(aspect: number): void;
   /** Normalized device coordinates. Explicit=true is the accessible interaction button. */
-  interact(x: number, y: number, explicit?: boolean): Omit<ShelterInteraction, 'world'> | null;
+  interact(x: number, y: number, explicit?: boolean, immediate?: boolean): Omit<ShelterInteraction, 'world'> | null;
   dispose?(): void;
 }
 export type WorldBuilder = (context: WorldContext) => WorldRecipe;

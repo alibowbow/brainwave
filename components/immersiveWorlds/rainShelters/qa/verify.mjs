@@ -11,7 +11,7 @@ const ownedRoot = path.dirname(qaRoot);
 const projectRoot = path.resolve(qaRoot, '../../../..');
 const output = process.env.SCENE_SCREENSHOT_DIR || path.join(qaRoot, 'evidence');
 const baseURL = process.env.SCENE_BASE_URL || 'http://127.0.0.1:4175/';
-const sourceExtensions = /\.(?:tsx?|css)$/;
+const sourceExtensions = /\.(?:tsx?|css|mjs|html)$/;
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 async function filesIn(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -43,6 +43,8 @@ const browser = await chromium.launch({
 report.browser = { version: browser.version(), executable: process.env.SCENE_BROWSER_PATH || 'playwright-default', renderer: 'SwiftShader requested', viewportDeviceScaleFactor: 1 };
 const worlds = (process.env.SCENE_WORLDS || 'tent,window,porch,storm').split(',');
 const captureOnly = process.env.SCENE_CAPTURE_ONLY === '1';
+const tapTargets = { tent: [0, 0], window: [0, 0], porch: [0.238, -0.428], storm: [0.31, 0.02] };
+const actions = { tent: 'opening', window: 'glass-trace', porch: 'basin-ripple', storm: 'awning' };
 
 try {
   for (const world of worlds) {
@@ -70,7 +72,19 @@ try {
     const canvas = () => page.locator('.rain-shelter-canvas');
     const clickControl = (id) => page.locator(id).dispatchEvent('click');
     const events = () => page.locator('#qa-events').getAttribute('data-events').then(JSON.parse);
-    const metric = () => canvas().evaluate((c) => ({ frame: Number(c.dataset.frame), time: Number(c.dataset.time), width: c.width, height: c.height }));
+    const tapCanvas = async () => {
+      const [x,y] = tapTargets[world];
+      const box = await canvas().boundingBox();
+      assert.ok(box, 'canvas has a real nonzero target');
+      await page.mouse.click(box.x+(x+1)*box.width/2, box.y+(1-y)*box.height/2);
+    };
+    const pixelState = async () => {
+      await page.evaluate(() => { document.documentElement.dataset.qaCapture = 'true'; });
+      const bytes=await page.screenshot({animations:'disabled'});
+      await page.evaluate(() => { delete document.documentElement.dataset.qaCapture; });
+      return {sha256:hash(bytes),bytes:bytes.byteLength};
+    };
+    const metric = () => canvas().evaluate((c) => ({ frame: Number(c.dataset.frame), time: Number(c.dataset.time), width: c.width, height: c.height, drawCalls: Number(c.dataset.drawCalls), triangles: Number(c.dataset.triangles), geometries: Number(c.dataset.geometries), textures: Number(c.dataset.textures) }));
     const motion = (value) => page.waitForFunction((v) => [...document.querySelectorAll('.rain-shelter')].at(-1)?.dataset.motion === v, value);
     const ready = () => page.waitForSelector('.rain-shelter[data-state="ready"]', { timeout: 240_000 });
     const capture = async (name, viewport) => {
@@ -85,11 +99,24 @@ try {
       return bytes;
     };
     try {
-      await page.goto(`${baseURL}${baseURL.includes('?') ? '&' : '?'}world=${world}`, { waitUntil: 'networkidle', timeout: 120_000 });
+      await page.goto(`${baseURL}${baseURL.includes('?') ? '&' : '?'}world=${world}&paused=1`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
       await ready();
+      console.log(`READY ${world}: actual WebGL scene`);
       assert.equal(await canvas().count(), 1);
       result.renderer = await canvas().evaluate((c) => { const gl = c.getContext('webgl2'); const ext = gl?.getExtension('WEBGL_debug_renderer_info'); return { webgl2: !!gl, vendor: ext && gl.getParameter(ext.UNMASKED_VENDOR_WEBGL), renderer: ext && gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) }; });
       assert.equal(result.renderer.webgl2, true, 'real WebGL2 renderer');
+      await motion('paused');
+      const initialPaused=await metric();
+      assert.ok(initialPaused.frame >= 1 && initialPaused.time === 0, 'initial active=false renders a first 3D frame');
+      result.checks.push({name:'initial active=false renders a real first 3D frame',pass:true,frame:initialPaused});
+      if (captureOnly) {
+        await page.evaluate(() => document.fonts.ready);
+        await capture('desktop', {width:1440,height:960});
+        await capture('portrait', {width:390,height:844});
+        if (world === 'porch') await capture('fold-inner', {width:884,height:768});
+        continue;
+      }
+      await clickControl('#qa-active');
       await motion('running');
       const start = await metric();
       await page.waitForFunction((old) => Number(document.querySelector('.rain-shelter-canvas')?.getAttribute('data-time')) > old.time && Number(document.querySelector('.rain-shelter-canvas')?.getAttribute('data-frame')) > old.frame, start);
@@ -103,13 +130,20 @@ try {
       assert.equal(still.time, paused.time, 'pause freezes simulation');
       assert.equal(still.frame, paused.frame, 'pause stops frame loop');
       result.checks.push({ name: 'active=false stops motion and preserves rendered frame', pass: true, state: still });
+      await page.evaluate(() => document.fonts.ready);
       await capture('desktop', { width: 1440, height: 960 });
       await capture('portrait', { width: 390, height: 844 });
       if (world === 'porch') await capture('fold-inner', { width: 884, height: 768 });
-      if (captureOnly) continue;
       await page.setViewportSize({ width: 1100, height: 800 });
       await clickControl('#qa-active');
       await motion('running');
+      const beforeCanvasTap = await events();
+      await tapCanvas();
+      await page.waitForFunction((old) => Number(document.querySelector('#qa-events')?.getAttribute('data-count')) > old, beforeCanvasTap.length);
+      const tapped = await events();
+      assert.equal(tapped.length, beforeCanvasTap.length + 1);
+      assert.equal(tapped.at(-1).action, actions[world]);
+      result.checks.push({name:'native canvas pointer tap hits the intended 3D target',pass:true,ndc:tapTargets[world],event:tapped.at(-1)});
       const beforeInteraction = await events();
       await page.locator('.rain-shelter-action').last().dispatchEvent('click');
       await page.waitForFunction((old) => Number(document.querySelector('#qa-events')?.getAttribute('data-count')) > old, beforeInteraction.length);
@@ -119,6 +153,8 @@ try {
       assert.ok(Number.isFinite(afterInteraction.at(-1).value));
       assert.ok(afterInteraction.at(-1).value >= 0 && afterInteraction.at(-1).value <= 1);
       result.checks.push({ name: 'accessible scene interaction emits one bounded event', pass: true, event: afterInteraction.at(-1) });
+      const interactionFrame = await metric();
+      await page.waitForFunction((frame) => Number(document.querySelector('.rain-shelter-canvas')?.getAttribute('data-frame')) > frame + 4, interactionFrame.frame);
       await clickControl('#qa-active');
       await motion('paused');
       await capture('interaction');
@@ -177,15 +213,27 @@ try {
       const staticFrame = await metric();
       await page.waitForTimeout(650);
       assert.equal((await metric()).time, staticFrame.time);
+      const staticBefore = await pixelState();
+      const staticEvents = await events();
+      await tapCanvas();
+      await page.waitForFunction((old) => Number(document.querySelector('#qa-events')?.getAttribute('data-count')) > old, staticEvents.length);
+      const staticAfterMetric = await metric();
+      const staticAfter = await pixelState();
+      assert.equal(staticAfterMetric.time, staticFrame.time);
+      assert.equal(staticAfterMetric.frame, staticFrame.frame + 1, 'static interaction draws exactly one real frame');
+      assert.notEqual(staticAfter.sha256, staticBefore.sha256, 'static interaction changes actual pixels');
+      await page.waitForTimeout(650);
+      assert.equal((await metric()).frame, staticAfterMetric.frame, 'no follow-up animation in static mode');
+      result.checks.push({name:'static3D canvas interaction visibly redraws exactly once without animation',pass:true,before:staticBefore,after:staticAfter});
       await clickControl('#qa-static');
       await motion('running');
       result.checks.push({ name: 'static3D preserves full 3D frame without animation', pass: true });
-      await page.evaluate(() => { Object.defineProperty(document,'visibilityState',{configurable:true,get:()=> 'hidden'}); document.dispatchEvent(new Event('visibilitychange')); });
+      await page.evaluate(() => { Object.defineProperty(document,'visibilityState',{configurable:true,get:()=> 'hidden'}); Object.defineProperty(document,'hidden',{configurable:true,get:()=> true}); document.dispatchEvent(new Event('visibilitychange')); });
       await motion('paused');
       const hidden = await metric();
       await page.waitForTimeout(650);
       assert.equal((await metric()).time, hidden.time);
-      await page.evaluate(() => { delete document.visibilityState; document.dispatchEvent(new Event('visibilitychange')); });
+      await page.evaluate(() => { delete document.visibilityState; delete document.hidden; document.dispatchEvent(new Event('visibilitychange')); });
       await motion('running');
       result.checks.push({ name: 'synthetic hidden state pauses; visibility restoration resumes', pass: true, actualTabSwitch: false });
       await clickControl('#qa-active');
@@ -209,6 +257,17 @@ try {
       assert.equal(await canvas().count(),1);
       assert.equal(await canvas().evaluate((c,original)=>c===original,originalCanvas),false,'expired scene creates a fresh canvas');
       result.checks.push({ name: 'delayed teardown releases WebGL context and later remount is fresh', pass: true, telemetry: disposed });
+      await page.goto(`${baseURL}${baseURL.includes('?') ? '&' : '?'}world=${world}&static3D=1`, {waitUntil:'domcontentloaded',timeout:120_000});
+      await ready();
+      await motion('paused');
+      const firstStatic = await metric();
+      assert.ok(firstStatic.frame >= 1);
+      assert.equal(firstStatic.time,0);
+      const firstStaticPixels=await pixelState();
+      assert.ok(firstStaticPixels.bytes > 10_000, 'fresh static first frame contains scene detail');
+      await page.waitForTimeout(650);
+      assert.equal((await metric()).frame,firstStatic.frame);
+      result.checks.push({name:'fresh static3D first load renders a nonblank full 3D frame with no RAF',pass:true,frame:firstStatic,pixels:firstStaticPixels});
       assert.deepEqual(result.errors, []);
     } catch(error) {
       result.errors.push(String(error?.stack || error));

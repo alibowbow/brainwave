@@ -5,6 +5,7 @@ import GardenWindowWorld from '../GardenWindowWorld';
 import MonsoonPorchWorld from '../MonsoonPorchWorld';
 import SummerStormWorld from '../SummerStormWorld';
 import type { ShelterInteraction, WorldKind } from '../engine/types';
+import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './harness.css';
 
 const worlds = { tent: RainTentWorld, window: GardenWindowWorld, porch: MonsoonPorchWorld, storm: SummerStormWorld };

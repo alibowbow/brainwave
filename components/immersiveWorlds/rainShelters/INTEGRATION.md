@@ -42,6 +42,8 @@ The current shared summer-storm preset still selects `thunder` at 0.8; this work
 
 ## QA separation
 
-Everything under `qa/` is a development harness, test script, or evidence; it is not a production asset. The harness builds separately with its own Vite config and imports the same entry sources. Do not add the harness or evidence to app imports/PWA caches. No public runtime assets are required: all current geometry and material maps are locally generated and deterministic. `public/immersive-worlds/rainShelters/` is reserved for future group-owned assets.
+Everything under `qa/` is a development harness, test script, or evidence; it is not a production asset. The harness builds separately with its own Vite config and imports the same entry sources. Do not add the harness or evidence to app imports/PWA caches. The garden window uses a full-resolution HDR refraction target and two scene passes within the same WebGL context. Reported renderer.info counters are the final pass, not the sum of both passes; physical-device performance remains unmeasured.
+
+No public runtime assets are required: all current geometry and material maps are locally generated and deterministic. `public/immersive-worlds/rainShelters/` is reserved for future group-owned assets.
 
 See `qa/README.md` and evidence JSON for commands, exact source/bundle hashes and measured results. Screenshots are real local Chromium WebGL renders. Viewport emulation is not physical Fold hardware validation; synthetic hidden-state tests are not real tab switching. A second-holder test proves canvas reuse in this harness, not completed wiring of the shared fullscreen UI. Production integration and device/audio approval remain with the integration owner.

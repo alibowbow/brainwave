@@ -1,4 +1,4 @@
-html, body, #root { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #1b272a; }
+html, body, #root { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #1b272a; font-family: "Pretendard Variable", sans-serif; }
 * { box-sizing: border-box; }
 #qa-stage, .qa-holder { position: absolute; inset: 0; width: 100%; height: 100%; }
 .qa-second { z-index: 2; }

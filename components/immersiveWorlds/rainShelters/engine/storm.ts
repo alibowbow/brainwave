@@ -59,7 +59,7 @@ ${noiseGLSL}
 void main(){
  vec3 d=normalize(vWorld-cameraPosition);float h=max(d.y,0.);
  vec3 sky=mix(vec3(.57,.65,.65),vec3(.24,.32,.37),pow(h,.47));
- vec2 p=d.xz/max(d.y+.10,.105);p=p*.60+vec2(uTime*.002,0.);
+ vec2 p=d.xz/max(d.y+.35,.13);p=p*1.18+vec2(uTime*.002,0.);
  float broad=fbm(p*.61+vec2(4.1,13.));
  float fold=fbm(p*2.1+vec2(broad*2.,-uTime*.003));
  float billow=fbm(p*4.8+fold*2.);
@@ -67,11 +67,11 @@ void main(){
  vec3 cloud=mix(vec3(.15,.205,.24),vec3(.44,.50,.52),smoothstep(.3,.75,fold));
  float side=clamp(-d.x*.50+.40,0.,1.);
  cloud+=vec3(.085,.09,.078)*side*smoothstep(.52,.70,fold);
- sky=mix(sky,cloud,cover*.95*smoothstep(-.06,.32,d.y));
- float underside=smoothstep(.50,.70,fbm(p*.83+vec2(19.,5.)))*smoothstep(.02,.45,d.y);
+ sky=mix(sky,cloud,cover*.97*smoothstep(-.20,.085,d.y));
+ float underside=smoothstep(.50,.70,fbm(p*.83+vec2(19.,5.)))*smoothstep(-.15,.16,d.y);
  sky=mix(sky,vec3(.17,.235,.275),underside*.45);
  float haze=1.-smoothstep(.0,.16,abs(d.y));
- sky=mix(sky,vec3(.60,.68,.66),haze*.55);
+ sky=mix(sky,vec3(.60,.68,.66),haze*.19);
  gl_FragColor=vec4(sky,1.);
  #include <tonemapping_fragment>
  #include <colorspace_fragment>
@@ -91,13 +91,13 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   scene.fog = new THREE.FogExp2('#869e9a', .0085);
   const skyMat = new THREE.ShaderMaterial({ vertexShader: cloudVertex, fragmentShader: cloudFragment, uniforms: { uTime: { value: 0 } }, side: THREE.BackSide, depthWrite: false });
   const sky = new THREE.Mesh(new THREE.SphereGeometry(240, 48, 24), skyMat); sky.renderOrder = -10; scene.add(sky);
-  const ambient = new THREE.HemisphereLight('#cbdcda', '#454830', 2.05); scene.add(ambient);
+  const ambient = new THREE.HemisphereLight('#cbdcda', '#6f6b51', 2.55); scene.add(ambient);
   const daylight = new THREE.DirectionalLight('#e4eadc', 1.9); daylight.position.set(-30, 35, 12); scene.add(daylight);
   const warmFill = new THREE.PointLight('#ffbe79', 5.5, 7, 2); warmFill.position.set(-1.55, 1.42, 1.7); scene.add(warmFill);
 
-  const wood = surface('timber', 0x544939, .85);
-  const wetWood = surface('timber', 0x443e30, .34);
-  const cutWood = surface('timber', 0x776750, .79);
+  const wood = surface('timber', 0x75634e, .85);
+  const wetWood = surface('timber', 0x635745, .43);
+  const cutWood = surface('timber', 0x85765b, .79);
   const clay = surface('clay', 0x965e40, .74);
   const stone = surface('stone', 0x706f61, .89);
   const brass = new THREE.MeshStandardMaterial({ color: 0x65513b, metalness: .72, roughness: .42 });
@@ -112,7 +112,7 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
     const x = pos.getX(i), z = pos.getZ(i) - 83;
     pos.setY(i, height(x, z)); pos.setZ(i, z);
     const v = .5 + .5 * Math.sin(x * .097 + z * .18 + Math.sin(x * .11));
-    const c = new THREE.Color().lerpColors(new THREE.Color('#596a41'), new THREE.Color('#7d8852'), v * .68);
+    const c = new THREE.Color().lerpColors(new THREE.Color('#56674a'), new THREE.Color('#81916a'), v * .58);
     const furrow = Math.pow(.5 + .5 * Math.cos(z * .67 + x * .026), 14) * .048;
     c.offsetHSL(0, 0, -furrow); colors.push(c.r, c.g, c.b);
   }
@@ -132,20 +132,38 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
     scene.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: [0x4b6250, 0x64776a, 0x798d82][layer], roughness: 1, side: THREE.DoubleSide })));
   }
 
-  // Wind-polished farm track and wet edge catch the sky, with separate true puddle geometry.
-  const track = new THREE.Mesh(new THREE.PlaneGeometry(4.5, 56, 2, 34), surface('stone', 0x727262, .97));
-  track.rotation.x = -Math.PI / 2; track.rotation.z = -.28; track.position.set(-10.5, -.18, -25); scene.add(track);
-  const puddleMat = new THREE.MeshPhysicalMaterial({ color: 0x788d84, roughness: .17, metalness: .18, transparent: true, opacity: .64, clearcoat: .8, clearcoatRoughness: .13 });
-  for (let i = 0; i < 7; i++) {
-    const p = new THREE.Mesh(new THREE.CircleGeometry(.5 + random() * .8, 24), puddleMat); p.rotation.x = -Math.PI / 2;
-    p.scale.set(1.6, .55 + random() * .7, 1); p.position.set(-3 - random() * 2.4, -.20, -4.2 - random() * 9); scene.add(p);
+  // Fine, organic ground variation joins the many true 3D grass tufts.
+  const fieldCanvas = document.createElement('canvas'); fieldCanvas.width = fieldCanvas.height = 256;
+  const fieldContext = fieldCanvas.getContext('2d')!;
+  fieldContext.fillStyle = '#bdc3a9'; fieldContext.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 6000; i++) {
+    const alpha = .025 + random() * .11;
+    fieldContext.fillStyle = random() < .58 ? `rgba(49,65,32,${alpha})` : `rgba(230,225,165,${alpha})`;
+    fieldContext.beginPath(); fieldContext.ellipse(random() * 256, random() * 256, 1 + random() * 8, 1 + random() * 3, random() * 3, 0, Math.PI * 2); fieldContext.fill();
   }
+  const fieldMap = new THREE.CanvasTexture(fieldCanvas); fieldMap.colorSpace = THREE.SRGBColorSpace; fieldMap.wrapS = fieldMap.wrapT = THREE.RepeatWrapping; fieldMap.repeat.set(30, 26);
+  (terrain.material as THREE.MeshStandardMaterial).map = fieldMap;
+  (terrain.material as THREE.MeshStandardMaterial).bumpMap = fieldMap;
+  (terrain.material as THREE.MeshStandardMaterial).bumpScale = .045;
 
   // Field grasses are individually rooted in space; the shader bends tips, not whole patches.
   const bladeGeo = new THREE.BufferGeometry();
-  bladeGeo.setAttribute('position', new THREE.Float32BufferAttribute([-.025, 0, 0, .025, 0, 0, -.018, .24, .018, .018, .24, .018, -.008, .50, .05, .008, .50, .05, 0, .69, .11], 3));
-  bladeGeo.setIndex([0,1,2,1,3,2,2,3,4,3,5,4,4,5,6]); bladeGeo.computeVertexNormals();
-  const grassMat = new THREE.MeshStandardMaterial({ color: 0x849450, roughness: .97, side: THREE.DoubleSide });
+  const bladePositions: number[] = [], bladeIndices: number[] = [];
+  // Each instance is a loosely clustered tussock of slender curved blades.
+  for (let b = 0; b < 12; b++) {
+    const direction = random() * Math.PI * 2, spread = random() * .19, bend = .06 + random() * .18;
+    const bx = Math.cos(direction) * spread, bz = Math.sin(direction) * spread;
+    const h = .26 + random() * .37, width = .015 + random() * .015, start = bladePositions.length / 3;
+    for (let j = 0; j < 4; j++) {
+      const t = j / 3, cx = bx + Math.cos(direction) * t * t * bend, cz = bz + Math.sin(direction) * t * t * bend;
+      const w = width * (1 - t * .92);
+      bladePositions.push(cx - Math.cos(direction + 1.57) * w, t * h, cz - Math.sin(direction + 1.57) * w,
+        cx + Math.cos(direction + 1.57) * w, t * h, cz + Math.sin(direction + 1.57) * w);
+      if (j < 3) { const k = start + j * 2; bladeIndices.push(k,k+1,k+2,k+1,k+3,k+2); }
+    }
+  }
+  bladeGeo.setAttribute('position', new THREE.Float32BufferAttribute(bladePositions, 3)); bladeGeo.setIndex(bladeIndices); bladeGeo.computeVertexNormals();
+  const grassMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .97, side: THREE.DoubleSide });
   const grassTime = { value: 0 };
   grassMat.onBeforeCompile = shader => {
     shader.uniforms.uGrassTime = grassTime;
@@ -155,21 +173,27 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
       transformed.x += sin(uGrassTime*.65+bx*.15+bz*.11)*pow(max(position.y,0.),2.)*.19;
       transformed.z += sin(uGrassTime*.49+bz*.16)*pow(max(position.y,0.),2.)*.09;`);
   };
-  const grass = new THREE.InstancedMesh(bladeGeo, grassMat, 7200); const dummy = new THREE.Object3D();
+  const grass = new THREE.InstancedMesh(bladeGeo, grassMat, 4200); const dummy = new THREE.Object3D();
   const grassColor = new THREE.Color();
-  for (let i = 0; i < 7200; i++) {
-    const x = (random() - .5) * 110, z = -3.7 - Math.pow(random(), 1.35) * 88;
+  for (let i = 0; i < 4200; i++) {
+    const x = (random() - .5) * 80, z = -3.0 - Math.pow(random(), 1.9) * 69;
     dummy.position.set(x, height(x, z) + .08, z); dummy.rotation.set(0, random() * Math.PI * 2, 0); dummy.scale.setScalar(.6 + random() * 1.1); dummy.updateMatrix(); grass.setMatrixAt(i, dummy.matrix);
-    grassColor.setHSL(.18 + random() * .035, .23 + random() * .20, .22 + random() * .14); grass.setColorAt(i, grassColor);
+    grassColor.setHSL(.19 + random() * .05, .20 + random() * .18, .24 + random() * .12); grass.setColorAt(i, grassColor);
   }
   grass.frustumCulled = false; scene.add(grass);
 
   // The distant shelterbelt uses irregular crown geometry and staggered trunks.
-  const crownGeo = new THREE.IcosahedronGeometry(1, 2);
+  const crownGeo = new THREE.IcosahedronGeometry(1, 3);
   const cp = crownGeo.attributes.position;
-  for (let i = 0; i < cp.count; i++) { const f = .84 + random() * .26; cp.setXYZ(i, cp.getX(i) * f, cp.getY(i) * f, cp.getZ(i) * f); }
-  crownGeo.computeVertexNormals();
-  const crowns = new THREE.InstancedMesh(crownGeo, new THREE.MeshStandardMaterial({ color: 0x354d36, roughness: 1 }), 165);
+  for (let i = 0; i < cp.count; i++) {
+    const x = cp.getX(i), y = cp.getY(i), z = cp.getZ(i);
+    const f = 1 + Math.sin(x * 8 + z * 6) * .072 + Math.sin(y * 11 + x * 5) * .068 + Math.cos(z * 14 - y * 9) * .053;
+    cp.setXYZ(i, x * f, y * f, z * f);
+  }
+  // Continuous normals prevent faceted low-poly clouds of foliage.
+  const cn = crownGeo.attributes.normal;
+  for (let i = 0; i < cp.count; i++) { const v = new THREE.Vector3(cp.getX(i), cp.getY(i), cp.getZ(i)).normalize(); cn.setXYZ(i, v.x, v.y, v.z); }
+  const crowns = new THREE.InstancedMesh(crownGeo, new THREE.MeshStandardMaterial({ color: 0x7d9572, roughness: 1 }), 165);
   const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(.10, .18, 1, 5), new THREE.MeshStandardMaterial({ color: 0x4e5141 }), 55);
   for (let t = 0; t < 55; t++) {
     const x = -87 + t * 3.4 + random() * 2, z = -62 + Math.sin(t * .33) * 7, h = 2.2 + random() * 2.7;
@@ -177,7 +201,7 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
     for (let c = 0; c < 3; c++) {
       dummy.position.set(x + (c - 1) * h * .25, height(x, z) + h * (.68 + random() * .16), z + (random() - .5) * 2);
       dummy.rotation.set(random(), random(), random()); dummy.scale.set(h * (.37 + random() * .1), h * (.35 + random() * .22), h * .40); dummy.updateMatrix(); crowns.setMatrixAt(t * 3 + c, dummy.matrix);
-      grassColor.setHSL(.26, .16, .15 + random() * .055); crowns.setColorAt(t * 3 + c, grassColor);
+      grassColor.setHSL(.25, .21, .22 + random() * .08); crowns.setColorAt(t * 3 + c, grassColor);
     }
   }
   scene.add(crowns, trunks);
@@ -228,9 +252,10 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   const potProfile = [new THREE.Vector2(.21, 0), new THREE.Vector2(.28, .08), new THREE.Vector2(.40, .40), new THREE.Vector2(.42, .62), new THREE.Vector2(.34, .84), new THREE.Vector2(.29, .89), new THREE.Vector2(.30, .96), new THREE.Vector2(.34, .99), new THREE.Vector2(.35, 1.03), new THREE.Vector2(.30, 1.06), new THREE.Vector2(.26, 1.01), new THREE.Vector2(.255, .90), new THREE.Vector2(.30, .77)];
   const pot = new THREE.Mesh(new THREE.LatheGeometry(potProfile, 56), clay); pot.position.set(1.11, .025, .25); pot.castShadow = true; pot.receiveShadow = true; scene.add(pot);
   const potInside = new THREE.Mesh(new THREE.CircleGeometry(.29, 40), new THREE.MeshStandardMaterial({ color: 0x342c23, roughness: .9 })); potInside.rotation.x = -Math.PI / 2; potInside.position.set(1.11, .79, .25); scene.add(potInside);
+  const potRings: THREE.Mesh[] = [];
   for (const y of [.13, .75, .94]) {
     const ring = new THREE.Mesh(new THREE.TorusGeometry(y === .75 ? .368 : y === .94 ? .292 : .30, .007, 4, 56), clay);
-    ring.rotation.x = Math.PI / 2; ring.position.set(1.11, y + .025, .25); scene.add(ring);
+    ring.rotation.x = Math.PI / 2; ring.position.set(1.11, y + .025, .25); scene.add(ring); potRings.push(ring);
   }
   const saucer = new THREE.Mesh(new THREE.CylinderGeometry(.52, .46, .07, 40), clay); saucer.position.set(1.11, .067, .25); scene.add(saucer);
 
@@ -256,7 +281,7 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
       uniforms: { uTime: { value: 0 }, uOpacity: { value: opacity } },
       vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
       fragmentShader: `varying vec2 vUv;uniform float uTime;uniform float uOpacity;${noiseGLSL}
-      void main(){float x=vUv.x+vUv.y*.17;float streak=fbm(vec2(x*19.,vUv.y*.8-uTime*.022));float edge=smoothstep(0.,.2,vUv.x)*smoothstep(1.,.79,vUv.x);float base=smoothstep(0.,.20,vUv.y)*smoothstep(1.,.48,vUv.y);float a=(.3+streak*.7)*edge*base*uOpacity;gl_FragColor=vec4(.70,.78,.78,a);#include <colorspace_fragment>}`.replace(';#include', ';\n#include') });
+      void main(){float x=vUv.x+vUv.y*.17;float streak=fbm(vec2(x*19.,vUv.y*.8-uTime*.022));float edge=smoothstep(0.,.2,vUv.x)*smoothstep(1.,.79,vUv.x);float base=smoothstep(0.,.07,vUv.y)*smoothstep(1.,.48,vUv.y);float a=(.3+streak*.7)*edge*base*uOpacity;gl_FragColor=vec4(.70,.78,.78,a);#include <colorspace_fragment>}`.replace(';#include', ';\n#include') });
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, 30), m); mesh.position.set(x, 13.1, z); mesh.renderOrder = 2; scene.add(mesh); curtainMats.push(m);
   }
   // Near rainfall lives outside the porch. Keep sharp streaks sparse against a soft storm bed.
@@ -269,9 +294,21 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   runoffGeo.setAttribute('position', new THREE.BufferAttribute(runoffPos, 3));
   const runoff = new THREE.LineSegments(runoffGeo, new THREE.LineBasicMaterial({ color: 0xcbd8c6, transparent: true, opacity: .39, depthWrite: false })); runoff.frustumCulled = false; scene.add(runoff);
   // Muted wet glints on the deck edge reinforce shelter and contact with rain.
-  const splashGeo = new THREE.RingGeometry(.017, .031, 14), splashMat = new THREE.MeshBasicMaterial({ color: 0xb3c5b8, transparent: true, opacity: .18, depthWrite: false, side: THREE.DoubleSide });
+  const splashGeo = new THREE.RingGeometry(.017, .031, 14), splashMat = new THREE.MeshBasicMaterial({ color: 0xb3c5b8, transparent: true, opacity: .065, depthWrite: false, side: THREE.DoubleSide });
   const splashes = new THREE.InstancedMesh(splashGeo, splashMat, 36); scene.add(splashes);
 
+  // Local contact shading stays soft under overcast light; silhouettes meet the deck.
+  const shadowCanvas = document.createElement('canvas'); shadowCanvas.width = shadowCanvas.height = 128;
+  const shadowContext = shadowCanvas.getContext('2d')!;
+  const shadowGradient = shadowContext.createRadialGradient(64, 64, 7, 64, 64, 64);
+  shadowGradient.addColorStop(0, 'rgba(19,22,18,0.52)'); shadowGradient.addColorStop(.45, 'rgba(19,22,18,0.29)'); shadowGradient.addColorStop(1, 'rgba(19,22,18,0)');
+  shadowContext.fillStyle = shadowGradient; shadowContext.fillRect(0, 0, 128, 128);
+  const shadowMap = new THREE.CanvasTexture(shadowCanvas);
+  const contactMaterial = new THREE.MeshBasicMaterial({ map: shadowMap, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 });
+  const contacts: THREE.Mesh[] = [];
+  for (const [x, z, width, depth] of [[1.11,.25,1.4,1.2],[-1.6,1.35,1.1,.86],[-2.85,-1.13,.74,.7],[2.85,-1.13,.74,.7]]) {
+    const contact = new THREE.Mesh(new THREE.PlaneGeometry(width, depth), contactMaterial); contact.rotation.x = -Math.PI / 2; contact.position.set(x, .033, z); scene.add(contact); contacts.push(contact);
+  }
   const raycaster = new THREE.Raycaster();
   function update(time: number, dt: number) {
     skyMat.uniforms.uTime.value = time; grassTime.value = time;
@@ -295,22 +332,31 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
     runoffGeo.attributes.position.needsUpdate = true;
     for (let i = 0; i < 36; i++) {
       const phase = (time * .41 + i * .317) % 1;
-      dummy.position.set(-3.12 + (i / 36) * 6.24, .033, -1.60 - (i % 3) * .07); dummy.rotation.set(-Math.PI / 2, 0, 0); dummy.scale.setScalar(.55 + phase * 2.1); dummy.updateMatrix(); splashes.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(runoffSeeds[i * 3], .033, -1.66 - ((i * .618) % 1) * .16); dummy.rotation.set(-Math.PI / 2, 0, 0); dummy.scale.setScalar(.25 + phase * 1.1); dummy.updateMatrix(); splashes.setMatrixAt(i, dummy.matrix);
     }
     splashes.instanceMatrix.needsUpdate = true;
   }
   function resize(aspect: number) {
-    camera.position.set(aspect < .8 ? .05 : 0, 1.48, 3.60);
+    camera.position.set(aspect < .8 ? .12 : 0, 1.48, 2.45);
+    const portrait = aspect < .8;
+    const potX = portrait ? .61 : 1.11, potZ = portrait ? -.28 : .25;
+    pot.position.set(potX, .025, potZ); potInside.position.set(potX, .79, potZ); saucer.position.set(potX, .067, potZ);
+    for (const ring of potRings) { ring.position.x = potX; ring.position.z = potZ; }
+    stool.position.set(portrait ? -.39 : -1.6, .06, portrait ? -.05 : 1.35);
+    lantern.position.set(portrait ? -.39 : -1.6, .65, portrait ? -.05 : 1.35);
+    contacts[0].position.set(potX, .033, potZ); contacts[1].position.set(portrait ? -.39 : -1.6, .033, portrait ? -.05 : 1.35);
+    warmFill.position.set(portrait ? -.39 : -1.55, 1.20, portrait ? -.05 : 1.7);
     camera.fov = aspect < .8 ? 62 : 56; camera.near = .08; camera.far = 420;
     camera.lookAt(aspect < .8 ? -.10 : 0, aspect < .8 ? 1.78 : 1.90, -27); camera.updateProjectionMatrix();
   }
   update(0, 0); resize(camera.aspect);
   return {
     update, resize,
-    interact(x, y, explicit = false) {
+    interact(x, y, explicit = false, immediate = false) {
       raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
       if (!explicit && raycaster.intersectObjects([target, awning, lowerRail, rope, ropeLoop], false).length === 0) return null;
       requestedOpening = requestedOpening > .6 ? .26 : .90;
+      if (immediate) opening = requestedOpening;
       return { action: 'awning', value: requestedOpening };
     },
   };

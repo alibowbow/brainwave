@@ -11,7 +11,7 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
   scene.add(new THREE.HemisphereLight('#b7d3d3', '#343b2b', 1.15));
   const sky = new THREE.DirectionalLight('#c5e0df', 1.8);
   sky.position.set(-6, 12, -10); scene.add(sky);
-  const bounce = new THREE.PointLight('#ffe2a3', 2.8, 7, 2);
+  const bounce = new THREE.PointLight('#efd9b3', 1.4, 7, 2);
   bounce.position.set(0, 1.3, 2); scene.add(bounce);
 
   const canvasTexture = (paint: (c: CanvasRenderingContext2D) => void, size = 512) => {
@@ -24,7 +24,7 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
     return texture;
   };
   const fabricMap = canvasTexture(c => {
-    c.fillStyle = '#b39b6c'; c.fillRect(0, 0, 512, 512);
+    c.fillStyle = '#bbb59f'; c.fillRect(0, 0, 512, 512);
     for (let i = 0; i < 512; i += 2) {
       c.strokeStyle = i % 4 ? 'rgba(55,43,28,.08)' : 'rgba(247,228,177,.13)';
       c.beginPath(); c.moveTo(i, 0); c.lineTo(i, 512); c.stroke();
@@ -43,10 +43,10 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
       c.fillStyle = gradient; c.fillRect(x - 12, 0, 24, 512);
     }
   });
-  fabricMap.repeat.set(3, 6);
+  fabricMap.repeat.set(6, 12);
   const canvas = new THREE.MeshStandardMaterial({
-    map: fabricMap, color: '#e5cea0', roughness: .94, side: THREE.DoubleSide,
-    bumpMap: fabricMap, bumpScale: .022,
+    map: fabricMap, color: '#d5d2b7', roughness: .94, side: THREE.DoubleSide,
+    bumpMap: fabricMap, bumpScale: .006,
   });
   const seamMaterial = material('fabric', '#796444', .97);
   const poleMaterial = new THREE.MeshStandardMaterial({ color: '#3e4947', metalness: .7, roughness: .38 });
@@ -143,6 +143,7 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
 
   // A soft down quilt fills the near view with a broad, curved surface and stitched baffles.
   const quiltMaterial = material('fabric', '#294c50', .94);
+  quiltMaterial.map?.repeat.set(2, 2); quiltMaterial.bumpMap?.repeat.set(2, 2); quiltMaterial.bumpScale = .004;
   const quiltGeo = new THREE.BufferGeometry(); const qp: number[] = [], qu: number[] = [], qi: number[] = [];
   const qx = 52, qz = 100;
   const quiltPoint = (u: number, v: number, seam = false) => {
@@ -192,7 +193,7 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
   tube(Array.from({ length: 22 }, (_, i) => {
     const a = i / 21 * Math.PI; return new THREE.Vector3(Math.cos(a) * .13, .385 + Math.sin(a) * .16, 0);
   }), .009, brass, lantern, 22);
-  const lanternLight = new THREE.PointLight('#ffce86', 9, 4.8, 2); lanternLight.position.set(-.88, .26, .40); scene.add(lanternLight);
+  const lanternLight = new THREE.PointLight('#ffce86', 5.2, 4.8, 2); lanternLight.position.set(-.88, .26, .40); scene.add(lanternLight);
   // Local pooled warm light is restrained, with a soft grounding shadow beneath the lantern.
   const shadowMap = canvasTexture(c => {
     const g = c.createRadialGradient(256, 256, 15, 256, 256, 250);
@@ -226,14 +227,19 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
   const trees = new THREE.Group(); scene.add(trees);
   // Trunks and branch roots taper and bend; foliage is built from flattened branch sprays, never spheres.
   const leafMat = material('leaf', '#385644', .94); leafMat.side = THREE.DoubleSide;
-  const leafGeo = new THREE.PlaneGeometry(1, 1, 1, 1);
-  const leafPos = leafGeo.attributes.position;
-  leafPos.setXYZ(0, 0, .5, 0); leafPos.setXYZ(1, .21, .12, .04); leafPos.setXYZ(2, -.21, .12, .04); leafPos.setXYZ(3, 0, -.5, 0);
-  leafGeo.computeVertexNormals();
-  const foliage = new THREE.InstancedMesh(leafGeo, leafMat, 5500); foliage.instanceMatrix.setUsage(THREE.StaticDrawUsage); trees.add(foliage);
+  const leafGeo = new THREE.BufferGeometry(); const lp: number[] = [], lu: number[] = [], li: number[] = [];
+  for (let j = 0; j <= 8; j++) for (let k = 0; k < 3; k++) {
+    const t = j / 8, side = k - 1;
+    lp.push(side * Math.sin(t * Math.PI) * .23, t - .5, Math.sin(t * Math.PI) * (.06 - Math.abs(side) * .04)); lu.push(k / 2, t);
+  }
+  for (let j = 0; j < 8; j++) for (let k = 0; k < 2; k++) {
+    const a = j * 3 + k; li.push(a, a + 1, a + 3, a + 1, a + 4, a + 3);
+  }
+  leafGeo.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3)); leafGeo.setAttribute('uv', new THREE.Float32BufferAttribute(lu, 2)); leafGeo.setIndex(li); leafGeo.computeVertexNormals();
+  const foliage = new THREE.InstancedMesh(leafGeo, leafMat, 8000); foliage.instanceMatrix.setUsage(THREE.StaticDrawUsage); trees.add(foliage);
   const transform = new THREE.Object3D(); let leafCount = 0;
   const addLeaf = (x: number, y: number, z: number, sx: number, sy: number, angle: number) => {
-    if (leafCount >= 5500) return;
+    if (leafCount >= 8000) return;
     transform.position.set(x, y, z); transform.rotation.set(.8 + random() * 1.1, random() * Math.PI * 2, angle);
     transform.scale.set(sx, sy, 1); transform.updateMatrix(); foliage.setMatrixAt(leafCount++, transform.matrix);
   };
@@ -241,9 +247,13 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
     let x = (random() - .5) * 34, z = -4.3 - random() * 29;
     if (i < 5) { x = [-3.1, 3.7, -1.7, 1.4, -.45][i]; z = [-5.5, -7.2, -10, -12, -20][i]; }
     const h = 7 + random() * 9, r = .13 + random() * .26;
-    const trunk = mesh(new THREE.CylinderGeometry(r * .38, r, h, 9, 7), i % 3 ? bark : barkLight, x, h / 2 - .1, z, trees);
+    const trunk = mesh(new THREE.CylinderGeometry(r * .38, r, h, 13, 12), i % 3 ? bark : barkLight, x, h / 2 - .1, z, trees);
     const tp = trunk.geometry.attributes.position;
-    for (let k = 0; k < tp.count; k++) tp.setX(k, tp.getX(k) + .05 * Math.sin(tp.getY(k) * 1.2 + i));
+    for (let k = 0; k < tp.count; k++) {
+      const yy = tp.getY(k), a = Math.atan2(tp.getZ(k), tp.getX(k));
+      const ridge = 1 + .08 * Math.sin(a * 5 + Math.sin(yy * .8));
+      tp.setX(k, tp.getX(k) * ridge + .055 * Math.sin(yy * 1.2 + i)); tp.setZ(k, tp.getZ(k) * ridge);
+    }
     trunk.geometry.computeVertexNormals(); trunk.rotation.z = (random() - .5) * .09;
     for (let k = 0; k < 4; k++) {
       const a = random() * Math.PI * 2;
@@ -253,9 +263,9 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
       const a = random() * Math.PI * 2, yy = 3.6 + b * h * .105, len = 1.3 + random() * 1.6;
       const end = new THREE.Vector3(x + Math.cos(a) * len, yy + .38, z + Math.sin(a) * len);
       tube([new THREE.Vector3(x, yy, z), new THREE.Vector3((x + end.x) / 2, yy + .1, (z + end.z) / 2), end], r * .17, bark, trees, 10);
-      for (let l = 0; l < 20; l++) {
+      for (let l = 0; l < 25; l++) {
         const f = .12 + random() * .93;
-        addLeaf(THREE.MathUtils.lerp(x, end.x, f) + (random() - .5) * .8, yy + .4 * f + (random() - .5) * .45, THREE.MathUtils.lerp(z, end.z, f) + (random() - .5) * .8, .45 + random() * .45, .6 + random() * .55, a);
+        addLeaf(THREE.MathUtils.lerp(x, end.x, f) + (random() - .5) * .8, yy + .4 * f + (random() - .5) * .45, THREE.MathUtils.lerp(z, end.z, f) + (random() - .5) * .8, .3 + random() * .38, .34 + random() * .45, a);
       }
     }
   }
@@ -281,7 +291,12 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
         const p = point(j / 10), q = point((j - 1) / 10); fernStems.push(p.x, p.y, p.z, q.x, q.y, q.z);
         for (const s of [-1, 1]) {
           const size = .15 * Math.sin(j / 10 * Math.PI) + .045;
-          addLeaf(p.x + Math.cos(a + s * 1.25) * size * .5, p.y, p.z + Math.sin(a + s * 1.25) * size * .5, size * .46, size * 1.8, a + s * 1.25);
+          if (leafCount < 8000) {
+            const direction = new THREE.Vector3(Math.cos(a + s * 1.25), .25, Math.sin(a + s * 1.25)).normalize();
+            transform.position.set(p.x + direction.x * size * .5, p.y, p.z + direction.z * size * .5);
+            transform.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+            transform.scale.set(size * .85, size * 1.6, 1); transform.updateMatrix(); foliage.setMatrixAt(leafCount++, transform.matrix);
+          }
         }
       }
     }
@@ -298,6 +313,16 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
     const scale = .06 + random() * .22; transform.scale.set(scale * 1.6, scale * .55, scale); transform.updateMatrix(); rockInst.setMatrixAt(i, transform.matrix);
   }
   const fallenLog = mesh(new THREE.CylinderGeometry(.18, .22, 3.8, 10), bark, -2.3, .18, -5.5); fallenLog.rotation.set(0, -.32, Math.PI / 2);
+  const cutMap = canvasTexture(c => {
+    c.fillStyle = '#948063'; c.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 32; i++) {
+      c.beginPath(); c.ellipse(249, 265, 6 + i * 8.3, 5 + i * 7.7, .12, 0, Math.PI * 2);
+      c.strokeStyle = `rgba(53,42,29,${.1 + random() * .2})`; c.lineWidth = 1 + random() * 2.5; c.stroke();
+    }
+    c.strokeStyle = '#443f30'; c.lineWidth = 3;
+    for (let i = 0; i < 5; i++) { const a = random() * 6.28; c.beginPath(); c.moveTo(256 + Math.cos(a) * 245, 256 + Math.sin(a) * 245); c.lineTo(256 + Math.cos(a + .1) * 100, 256 + Math.sin(a + .1) * 100); c.stroke(); }
+  });
+  const cutFace = mesh(new THREE.CircleGeometry(.216, 20), new THREE.MeshStandardMaterial({ map: cutMap, color: '#aaa18b', roughness: .92 }), 0, -1.905, 0, fallenLog); cutFace.rotation.x = Math.PI / 2;
 
   const rain = addRain(scene, { count: 1400, width: 29, height: 17, depth: 27, z: -16, speed: 8.5, color: '#d0e1de', opacity: .29 });
   // Tiny beaded water follows the exposed front pole, distinct from rain behind the tent.
@@ -306,6 +331,15 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
   for (let i = 0; i < 47; i++) {
     const a = .09 + i / 46 * (Math.PI - .18), r = .01 + random() * .012;
     transform.position.set(Math.cos(a) * 2.09, Math.sin(a) * 2.12, -1.75); transform.rotation.set(0, 0, 0); transform.scale.set(r, r * 1.4, r); transform.updateMatrix(); beads.setMatrixAt(i, transform.matrix);
+  }
+  for (let sideIndex = 0; sideIndex < 2; sideIndex++) {
+    const s = sideIndex ? 1 : -1;
+    const edgeBeads = new THREE.InstancedMesh(beads.geometry, beadMat, 24); flaps[sideIndex].add(edgeBeads);
+    for (let i = 0; i < 24; i++) {
+      const v = .08 + random() * .86, r = .007 + random() * .006;
+      transform.position.set(s * (.96 * Math.pow(1 - v, .58) + .03 + random() * .05), .035 + v * 2.085, -1.54 + .05 * Math.sin(v * 13));
+      transform.rotation.set(0, 0, 0); transform.scale.set(r, r * 1.7, r * .65); transform.updateMatrix(); edgeBeads.setMatrixAt(i, transform.matrix);
+    }
   }
 
   let opening = .68, targetOpening = .68;
@@ -316,23 +350,27 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
       const spread = .8 + opening * .38;
       flaps[0].scale.x = spread; flaps[1].scale.x = spread;
       flaps[0].position.x = -.10 * opening; flaps[1].position.x = .10 * opening;
-      lanternLight.intensity = 9 + Math.sin(time * .71) * .085;
+      lanternLight.intensity = 5.2 + Math.sin(time * .71) * .055;
       rain.update(time);
     },
     resize(aspect) {
       const portrait = aspect < .82;
+      lantern.position.set(portrait ? -.62 : -.88, .027, portrait ? -.52 : .40);
+      lanternLight.position.set(lantern.position.x, .26, lantern.position.z);
+      lanternShadow.position.set(lantern.position.x, .031, lantern.position.z);
       camera.fov = portrait ? 69 : 62;
       camera.position.set(portrait ? 0 : .10, portrait ? .75 : .78, portrait ? 1.77 : 2.05);
       camera.lookAt(portrait ? 0 : .02, portrait ? .84 : .83, -6);
       camera.updateProjectionMatrix();
     },
-    interact(x, y, explicit = false) {
+    interact(x, y, explicit = false, immediate = false) {
       if (!explicit) {
         raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
         const hit = raycaster.intersectObjects([...flaps, openingHit], false)[0];
         if (!hit) return null;
       }
       targetOpening = targetOpening > .5 ? .2 : .95;
+      if (immediate) opening = targetOpening;
       return { action: 'opening', value: targetOpening };
     },
   };

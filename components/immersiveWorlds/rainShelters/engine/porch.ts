@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldBuilder } from './types';
 
 /** Original procedural architecture/materials. No external assets or copied gallery code. */
@@ -19,8 +20,8 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
     const pixels = ctx.createImageData(512, 512);
     for (let y = 0; y < 512; y++) for (let x = 0; x < 512; x++) {
       const g = kind === 'wood'
-        ? 128 + Math.sin(y * .23 + Math.sin(x * .014) * 1.8 + Math.sin(y * .041) * 4) * 19 + Math.sin(y * 1.3 + x * .007) * 7 + range(-12, 12)
-        : 139 + Math.sin(x * .042 + Math.sin(y * .029) * 3) * 15 + Math.sin(y * .052 - x * .027) * 12 + range(-29, 29);
+        ? 174 + Math.sin(y * .71 + Math.sin(x * .009) * 1.3 + Math.sin(y * .027) * 2) * 7 + Math.sin(y * 2.1 + x * .002) * 3 + range(-5, 5)
+        : 153 + Math.sin(x * .042 + Math.sin(y * .029) * 3) * 12 + Math.sin(y * .052 - x * .027) * 9 + range(-19, 19);
       const k = (y * 512 + x) * 4;
       pixels.data[k] = g; pixels.data[k + 1] = g; pixels.data[k + 2] = g; pixels.data[k + 3] = 255;
     }
@@ -35,13 +36,14 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
     tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); return tex;
   };
   const woodTex = texture('wood'), stoneTex = texture('stone'), soilTex = texture('soil');
-  const wood = new THREE.MeshStandardMaterial({ color: '#856746', map: woodTex, bumpMap: woodTex, bumpScale: .045, roughness: .74 });
+  woodTex.center.set(.5, .5); woodTex.rotation = Math.PI / 2;
+  const wood = new THREE.MeshStandardMaterial({ color: '#8f7b5e', map: woodTex, bumpMap: woodTex, bumpScale: .014, roughness: .74 });
   const darkWood = new THREE.MeshStandardMaterial({ color: '#5d4530', map: woodTex, bumpMap: woodTex, bumpScale: .028, roughness: .82 });
   const endWood = new THREE.MeshStandardMaterial({ color: '#a08561', map: woodTex, roughness: .92 });
-  const stoneMat = new THREE.MeshStandardMaterial({ color: '#74796b', map: stoneTex, bumpMap: stoneTex, bumpScale: .08, roughness: .88 });
-  const wetStone = new THREE.MeshStandardMaterial({ color: '#536052', map: stoneTex, bumpMap: stoneTex, bumpScale: .055, roughness: .46 });
+  const stoneMat = new THREE.MeshStandardMaterial({ color: '#a6afa6', map: stoneTex, bumpMap: stoneTex, bumpScale: .028, roughness: .88 });
+  const wetStone = new THREE.MeshStandardMaterial({ color: '#838e80', map: stoneTex, bumpMap: stoneTex, bumpScale: .024, roughness: .46 });
   const moss = new THREE.MeshStandardMaterial({ color: '#596b3a', map: soilTex, bumpMap: soilTex, bumpScale: .09, roughness: 1 });
-  const soil = new THREE.MeshStandardMaterial({ color: '#444e34', map: soilTex, bumpMap: soilTex, bumpScale: .07, roughness: .9 });
+  const soil = new THREE.MeshStandardMaterial({ color: '#737e60', map: soilTex, bumpMap: soilTex, bumpScale: .07, roughness: .9 });
   const mortar = new THREE.MeshStandardMaterial({ color: '#353d30', roughness: 1 });
   const stemMat = new THREE.MeshStandardMaterial({ color: '#526337', roughness: .9 });
   const trunkMat = new THREE.MeshStandardMaterial({ color: '#655b46', map: woodTex, bumpMap: woodTex, bumpScale: .085, roughness: .9 });
@@ -97,7 +99,7 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
   tiles.castShadow = true; scene.add(tiles);
 
   // Wet stones lead away from the porch; their surfaces are individually deformed, not a box path.
-  const rockGeo = new THREE.IcosahedronGeometry(1, 2);
+  const rockGeo = mergeVertices(new THREE.IcosahedronGeometry(1, 3));
   const rp = rockGeo.attributes.position;
   for (let i = 0; i < rp.count; i++) { const x = rp.getX(i), y = rp.getY(i), z = rp.getZ(i); const n = 1 + Math.sin(x * 8 + z * 4) * .08 + Math.sin(y * 13 - x * 3) * .035; rp.setXYZ(i, x * n, y * n, z * n); }
   rockGeo.computeVertexNormals();
@@ -151,7 +153,7 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
         const t = pair / 13, point = curve.getPoint(t), len = Math.sin(t * Math.PI) * length * .36;
         for (const side of [-1, 1]) {
           const direction = new THREE.Vector3(Math.cos(angle) * .2 + Math.sin(angle) * side, .12, Math.sin(angle) * .2 - Math.cos(angle) * side).normalize();
-          dummy.position.copy(point); dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction); dummy.scale.set(.54 * size, len, .8); dummy.updateMatrix(); fernLeaves.setMatrixAt(leafIndex, dummy.matrix);
+          dummy.position.copy(point); dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction); dummy.scale.set(.22 * size, len, .8); dummy.updateMatrix(); fernLeaves.setMatrixAt(leafIndex, dummy.matrix);
           fernLeaves.setColorAt(leafIndex++, new THREE.Color().setHSL(range(.20, .27), range(.25, .49), range(.29, .61)));
         }
       }
@@ -160,23 +162,50 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
   fernLeaves.count = leafIndex; fernLeaves.receiveShadow = true; scene.add(fernLeaves);
 
   // Trees are rooted beyond the stone garden; trunks and branching silhouette remain visible.
-  const treeLeaves = new THREE.InstancedMesh(bladeGeo, leafMat, 3800); let treeLeafCount = 0;
-  for (let t = 0; t < 10; t++) {
-    const tx = t < 2 ? (t ? 5.4 : -5.6) : range(-17, 17), tz = t < 2 ? -8.8 : range(-15, -29), h = range(5.3, 8.3);
-    between(new THREE.Vector3(tx, -.25, tz), new THREE.Vector3(tx + .23, h, tz - .2), range(.13, .24), trunkMat, .047, 9);
-    for (let b = 0; b < 5; b++) {
-      const angle = b * 2.39 + t, y = h * range(.45, .8), reach = range(1.2, 2.7);
-      const tip = new THREE.Vector3(tx + Math.cos(angle) * reach, y + range(.4, 1.3), tz + Math.sin(angle) * reach);
-      between(new THREE.Vector3(tx, y, tz), tip, .047, trunkMat, .012, 7);
-      for (let j = 0; j < 60; j++) {
-        const r = Math.sqrt(rand()) * 1.2, a = range(0, Math.PI * 2);
-        dummy.position.copy(tip).add(new THREE.Vector3(Math.cos(a) * r, range(-.22, .85), Math.sin(a) * r));
-        dummy.rotation.set(range(.5, 2.4), range(0, Math.PI * 2), range(0, Math.PI * 2)); dummy.scale.set(range(.6, 1), range(.3, .64), 1); dummy.updateMatrix(); treeLeaves.setMatrixAt(treeLeafCount, dummy.matrix);
-        treeLeaves.setColorAt(treeLeafCount++, new THREE.Color().setHSL(range(.22, .32), range(.19, .35), range(.25, .56)));
+  const treeLeaves = new THREE.InstancedMesh(bladeGeo, leafMat, 7800); let treeLeafCount = 0;
+  for (let t = 0; t < 17; t++) {
+    const tx = t < 2 ? (t ? 5.4 : -5.6) : range(-18, 18), tz = t < 2 ? -8.8 : range(-16, -30), h = range(3.8, 9.3);
+    const lean = range(-.8, .8), bend = range(-.55, .55);
+    const root = new THREE.Vector3(tx, -.25, tz), crotch = new THREE.Vector3(tx + lean*.32, h*.43, tz+bend*.3), crown = new THREE.Vector3(tx+lean,h*.86,tz+bend);
+    between(root, crotch, range(.14,.26), trunkMat, .105, 11);
+    between(crotch, crown, .105, trunkMat, .031, 9);
+    for (let b = 0; b < 6; b++) {
+      const angle = b * 2.39 + t*.8, y = h * range(.38, .78), reach = range(1.1, 2.9);
+      const branchRoot = new THREE.Vector3(tx+lean*y/h,y,tz+bend*y/h);
+      const fork = new THREE.Vector3(tx+Math.cos(angle)*reach*.6,y+range(.12,.55),tz+Math.sin(angle)*reach*.6);
+      const tip = new THREE.Vector3(tx + Math.cos(angle) * reach, y + range(.5, 1.5), tz + Math.sin(angle) * reach);
+      between(branchRoot, fork, .055, trunkMat, .034, 8); between(fork, tip, .034, trunkMat, .008, 6);
+      for (let j = 0; j < 64; j++) {
+        const r = Math.sqrt(rand()) * 1.32, a = range(0, Math.PI * 2);
+        dummy.position.copy(tip).add(new THREE.Vector3(Math.cos(a) * r, range(-.44, .66), Math.sin(a) * r));
+        dummy.rotation.set(range(.5, 2.4), range(0, Math.PI * 2), range(0, Math.PI * 2)); dummy.scale.set(range(.5, .9), range(.3, .61), 1); dummy.updateMatrix(); treeLeaves.setMatrixAt(treeLeafCount, dummy.matrix);
+        treeLeaves.setColorAt(treeLeafCount++, new THREE.Color().setHSL(range(.22, .31), range(.17, .31), range(.32, .58)));
       }
     }
   }
+  // Low, overlapping evergreen growth interrupts the wall line and the long bare trunk gaps.
+  for (let plant = 0; plant < 18; plant++) {
+    const cx=range(-16,16), cz=range(-13,-24), h=range(.8,2.5);
+    between(new THREE.Vector3(cx,-.15,cz),new THREE.Vector3(cx+.11,h,cz-.09),.034,trunkMat,.008,6);
+    for(let j=0;j<64;j++) {
+      const a=range(0,Math.PI*2), r=Math.sqrt(rand())*range(.45,1.15);
+      dummy.position.set(cx+Math.cos(a)*r,h*.53+range(-.3,.7),cz+Math.sin(a)*r);
+      dummy.rotation.set(range(.7,2.2),range(0,6.28),range(0,6.28));dummy.scale.set(.7,range(.3,.63),1);dummy.updateMatrix();treeLeaves.setMatrixAt(treeLeafCount,dummy.matrix);
+      treeLeaves.setColorAt(treeLeafCount++,new THREE.Color().setHSL(range(.22,.29),range(.23,.37),range(.3,.51)));
+    }
+  }
   treeLeaves.count = treeLeafCount; treeLeaves.receiveShadow = true; scene.add(treeLeaves);
+
+  // A sequence of planted distant slopes closes the horizon beyond the garden, softened by real depth fog.
+  for (let layer = 0; layer < 3; layer++) {
+    const hillGeo = new THREE.PlaneGeometry(95, 34, 58, 22); hillGeo.rotateX(-Math.PI / 2);
+    const p = hillGeo.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x=p.getX(i), z=p.getZ(i); const ridge = 4.3+layer*1.1+Math.sin(x*.073+layer*1.7)*1.6+Math.sin(x*.19+layer)*.64;
+      const depth=Math.max(0,Math.sin((z+17)/34*Math.PI));p.setY(i,-.7+depth*ridge+Math.sin(x*.37+z*.19)*.16);
+    }
+    hillGeo.computeVertexNormals(); const hill = new THREE.Mesh(hillGeo,new THREE.MeshStandardMaterial({color:layer===0?'#66795b':layer===1?'#78927f':'#92a79a',roughness:1}));hill.position.z=-35-layer*16;scene.add(hill);
+  }
 
   // Hollow carved granite bowl at arm's reach. Both inside wall and irregular rim are geometry.
   const basin = new THREE.Group(); basin.position.set(.64, -.13, -.03); scene.add(basin);
@@ -205,10 +234,10 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
       uniform float uTime; uniform vec2 uTouch; uniform float uTouchTime;
       varying vec2 vP; varying vec3 vWorld; varying vec3 vNormal;
       float ripple(vec2 p,vec2 o,float age,float amp){float d=length(p-o);return sin(d*56.-age*11.)*exp(-pow((d-age*.27)*9.,2.))*exp(-age*.65)*amp;}
-      float surface(vec2 p){float h=sin(p.x*14.+uTime*.58)*sin(p.y*13.-uTime*.65)*.0011;
-        for(int i=0;i<7;i++){float f=float(i);float age=mod(uTime*.87+f*.471,3.6);vec2 c=vec2(sin(f*12.4),cos(f*8.7))*.39;h+=ripple(p,c,age,.0018);}
-        h+=ripple(p,vec2(.27,-.09),mod(uTime*1.5,2.5),.0027);
-        float age=uTime-uTouchTime;if(age>=0.&&age<8.)h+=ripple(p,uTouch,age,.013);
+      float surface(vec2 p){float h=sin(p.x*14.+uTime*.58)*sin(p.y*13.-uTime*.65)*.00025;
+        for(int i=0;i<7;i++){float f=float(i);float age=mod(uTime*.87+f*.471,3.6);vec2 c=vec2(sin(f*12.4),cos(f*8.7))*.39;h+=ripple(p,c,age,.0004);}
+        h+=ripple(p,vec2(.27,-.09),mod(uTime*1.5,2.5),.00065);
+        float age=uTime-uTouchTime;if(age>=0.&&age<8.)h+=ripple(p,uTouch,age,.0045);
         return h;}
       void main(){vP=position.xy;float h=surface(position.xy);vec3 p=position+vec3(0.,0.,h);vec4 w=modelMatrix*vec4(p,1.);vWorld=w.xyz;
         float e=.004;float dx=surface(position.xy+vec2(e,0.))-surface(position.xy-vec2(e,0.));float dy=surface(position.xy+vec2(0.,e))-surface(position.xy-vec2(0.,e));
@@ -217,9 +246,9 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
     fragmentShader: `
       varying vec2 vP; varying vec3 vWorld; varying vec3 vNormal;
       void main(){vec3 n=normalize(vNormal);vec3 v=normalize(cameraPosition-vWorld);vec3 r=reflect(-v,n);float f=.04+.72*pow(1.-max(dot(n,v),0.),4.);
-        vec3 deep=vec3(.083,.15,.118);vec3 sky=mix(vec3(.22,.32,.27),vec3(.62,.72,.67),smoothstep(-.05,.6,r.y));
-        float branch=sin(r.x*23.+r.z*4.)*sin(r.z*17.-r.x*6.);sky*=mix(.7,1.,smoothstep(-.1,.15,branch+r.y*.6));
-        vec3 c=mix(deep,sky,.35+f*.55);float glint=pow(max(dot(reflect(normalize(vec3(-.4,-1.,.3)),n),v),0.),65.);c+=vec3(.63,.68,.60)*glint*.22;
+        vec3 deep=vec3(.012,.035,.026);vec3 sky=mix(vec3(.035,.06,.044),vec3(.18,.22,.19),smoothstep(-.05,.6,r.y));
+        float branch=sin(r.x*8.+r.z*2.)*sin(r.z*7.-r.x*3.);sky*=mix(.83,1.,smoothstep(-.1,.2,branch+r.y*.6));
+        vec3 c=mix(deep,sky,.12+f*.5);float glint=pow(max(dot(reflect(normalize(vec3(-.4,-1.,.3)),n),v),0.),65.);c+=vec3(.63,.68,.60)*glint*.06;
         float edge=smoothstep(.39,.558,length(vP));c*=1.-edge*.18;gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -238,11 +267,10 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
 
   // Roof runoff has coherent streams plus detached falling drops; there is no glass plane.
   const streamMat = new THREE.MeshPhysicalMaterial({ color: '#b4d1cc', transparent: true, opacity: .34, roughness: .14, metalness: .08, depthWrite: false });
-  const streamGeometries: THREE.BufferGeometry[] = [];
   for (const [x,z,thickness] of [[-3.5,-.33,.015],[-1.74,-.3,.012],[2.5,-.34,.018],[4.4,-.35,.019],[.91,-.12,.009]]) {
     const startY = x === .91 ? .8 : 2.96, endY = x === .91 ? .46 : -.13;
     const line = new THREE.CatmullRomCurve3([new THREE.Vector3(x,startY,z),new THREE.Vector3(x+.012,startY*.67,z+.015),new THREE.Vector3(x+.025,(startY+endY)*.37,z+.036),new THREE.Vector3(x+.012,endY,z+.045)]);
-    const geo = new THREE.TubeGeometry(line, 18, thickness, 5, false); streamGeometries.push(geo); scene.add(new THREE.Mesh(geo, streamMat));
+    const geo = new THREE.TubeGeometry(line, 18, thickness, 5, false); scene.add(new THREE.Mesh(geo, streamMat));
   }
   const rainCount = 1550, rainPositions = new Float32Array(rainCount * 6), rainSeeds: number[] = [];
   for (let i = 0; i < rainCount; i++) rainSeeds.push(range(-17,17),range(0,9),range(-24,-.45),range(.7,1.35));
@@ -256,8 +284,8 @@ export const buildPorch: WorldBuilder = ({ scene, camera, renderer }) => {
     resize(aspect) {
       camera.fov = aspect < .8 ? 61 : 52;
       // Narrow composition keeps the bowl, rain edge and the path; it never becomes empty roof/floor.
-      camera.position.set(aspect < .8 ? .48 : 0, aspect < .8 ? 1.38 : 1.49, aspect < .8 ? 2.75 : 3.7);
-      camera.lookAt(aspect < .8 ? .43 : .08, aspect < .8 ? 1.02 : .92, -5);
+      camera.position.set(aspect < .8 ? .68 : 0, aspect < .8 ? 1.42 : 1.49, aspect < .8 ? 3.3 : 3.7);
+      camera.lookAt(aspect < .8 ? .56 : .08, aspect < .8 ? 1.0 : .92, -5);
       camera.updateProjectionMatrix();
     },
     update(time) {

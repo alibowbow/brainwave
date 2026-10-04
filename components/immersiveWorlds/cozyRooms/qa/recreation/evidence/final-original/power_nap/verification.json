@@ -1,0 +1,158 @@
+{
+  "passed": true,
+  "worlds": [
+    "power_nap"
+  ],
+  "timestamp": "2026-10-04T21:45:23.043Z",
+  "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+    "files": [
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/CozyWorld-ytSbzKp7.js",
+      "assets/CozyWorld-ytSbzKp7.js.map",
+      "assets/HearthWorld-Bhp1wYZq.js",
+      "assets/HearthWorld-Bhp1wYZq.js.map",
+      "assets/NapTerraceWorld-CJEFGunM.js",
+      "assets/NapTerraceWorld-CJEFGunM.js.map",
+      "assets/SleepRoomWorld-CwSgMfOq.js",
+      "assets/SleepRoomWorld-CwSgMfOq.js.map",
+      "assets/WinterLodgeWorld-6ksoT8O-.js",
+      "assets/WinterLodgeWorld-6ksoT8O-.js.map",
+      "assets/fireDetail-CHpiNEXL.js",
+      "assets/fireDetail-CHpiNEXL.js.map",
+      "assets/index-CLDB1DB6.js",
+      "assets/index-CLDB1DB6.js.map",
+      "assets/materials-Di5W0wSt.js",
+      "assets/materials-Di5W0wSt.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [
+    {
+      "world": "power_nap",
+      "snapshots": [
+        {
+          "file": "power_nap-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+        },
+        {
+          "file": "power_nap-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+        },
+        {
+          "file": "power_nap-fold-inner-viewport.png",
+          "width": 673,
+          "height": 841,
+          "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-canopy",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 9,
+        "time": 8.055000000001488,
+        "running": false,
+        "targets": [
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.7517556104296906,
+            "y": 0.254163962668259,
+            "z": 0.9764287515672567
+          },
+          {
+            "action": "canopy",
+            "x": 0.7519757939146029,
+            "y": 0.41690773245268375,
+            "z": 0.976407261308326
+          }
+        ],
+        "drawCalls": 405,
+        "triangles": 1649238,
+        "memory": {
+          "geometries": 207,
+          "textures": 19
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    }
+  ],
+  "errors": []
+}

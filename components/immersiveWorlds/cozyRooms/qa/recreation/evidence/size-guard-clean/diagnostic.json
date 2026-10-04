@@ -1,0 +1,645 @@
+{
+  "timestamp": "2026-10-04T21:36:12.130Z",
+  "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+  "three": {
+    "version": "0.186.1",
+    "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+  },
+  "bundle": {
+    "sha256": "83a3d64864bf9edd9c610711999d27074eb600563467030f952711a8f4e5167e",
+    "files": [
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/CozyWorld-DHjbhpHO.js",
+      "assets/CozyWorld-DHjbhpHO.js.map",
+      "assets/HearthWorld-s6VVOQ6J.js",
+      "assets/HearthWorld-s6VVOQ6J.js.map",
+      "assets/NapTerraceWorld-B2uSlzdU.js",
+      "assets/NapTerraceWorld-B2uSlzdU.js.map",
+      "assets/SleepRoomWorld-BWjoM68L.js",
+      "assets/SleepRoomWorld-BWjoM68L.js.map",
+      "assets/WinterLodgeWorld-CQktAGJj.js",
+      "assets/WinterLodgeWorld-CQktAGJj.js.map",
+      "assets/fireDetail-DxGGQYaE.js",
+      "assets/fireDetail-DxGGQYaE.js.map",
+      "assets/index-CiCrMyek.js",
+      "assets/index-CiCrMyek.js.map",
+      "assets/main-D-w0NWJx.js",
+      "assets/main-D-w0NWJx.js.map",
+      "assets/materials-C6I0Zt1z.js",
+      "assets/materials-C6I0Zt1z.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/CozyWorld-DHjbhpHO.js": "11247e141423337395a43e59ab79d3ca97820336f2ce5be77d40f6ad99d7ba45",
+      "assets/CozyWorld-DHjbhpHO.js.map": "73362f8bb90b60220ba66641582cf9b41df68fd5dbbfd08d203f5cb6d2edd7a5",
+      "assets/HearthWorld-s6VVOQ6J.js": "64717a01243f78d75265e7a477d6ba328472a96bafe0451bcc3ddffb093b194f",
+      "assets/HearthWorld-s6VVOQ6J.js.map": "6a78dd9843f8814f1e02936186634921ab29f39b76b3bd2619effcc380ae067e",
+      "assets/NapTerraceWorld-B2uSlzdU.js": "6438b2a8efd72fd15cc80d0d01d7011a6538abec5445c9ca6f7d1b6468c6156e",
+      "assets/NapTerraceWorld-B2uSlzdU.js.map": "ccd74fe9060510e8a74ae5903af33b2c87e602d2021fda9c4ebc428ccacd4acf",
+      "assets/SleepRoomWorld-BWjoM68L.js": "2bbfd977dc4dab87afa86cd9a6b52f4dd5c5ce23515e5129e8197b63d9ae9c5a",
+      "assets/SleepRoomWorld-BWjoM68L.js.map": "8a7d87501d7eb1b5201251226655cf5171cd8e89ad66da0e5841b8779539b450",
+      "assets/WinterLodgeWorld-CQktAGJj.js": "0c6b0d09bbd7a480341f64b35c694180d8076266bb1a056370962f4046661f1a",
+      "assets/WinterLodgeWorld-CQktAGJj.js.map": "74ba1e702361f456251ae1fc97d9f58ea6e248a7583c09f02b30cb3a35a48638",
+      "assets/fireDetail-DxGGQYaE.js": "69286cb5139a689a6e60bdbb7e288da5c7c1fc38ef49555d3f14a7832c90c234",
+      "assets/fireDetail-DxGGQYaE.js.map": "d8c454a9d49223818e619da8cd82e333ec63e30a3e83b568085cc9a4c4ca7acd",
+      "assets/index-CiCrMyek.js": "ad5e5d7443f81532833d722419c390cd65c439122d5cf0f5d8f3d5de393cff5c",
+      "assets/index-CiCrMyek.js.map": "e1b73100c1a1c840ee3567b025cef117afecab15b9f8266f76bdc9a0f05a404b",
+      "assets/main-D-w0NWJx.js": "25508c4ad51e7524e5e6ed02b9467f40d723d15b6f723e8279d5dca0207d2af7",
+      "assets/main-D-w0NWJx.js.map": "ac5ba909b9692279f48cde9490da0bcb31cee40b8c7eff2f776a6808c953dc94",
+      "assets/materials-C6I0Zt1z.js": "183e6b3c6714b1c05d22cb13a55c233b9b518c31cc36471642f624da81d6086d",
+      "assets/materials-C6I0Zt1z.js.map": "bfd3840693e6c81ddf97c9e950aff539709a82dd8fdbc41d67ee38c7240fef2e",
+      "index.html": "64458c03f3d327a758ed37e84697311a5bd98a531983e81e37e27c89660bc4dd"
+    }
+  },
+  "scripts": {
+    "sha256": "12a0fbbafdd6d237e46d5d196a5f1a524ed22606bf1ae108323320f8900b0983",
+    "files": [
+      "clean.mjs",
+      "entry.mjs",
+      "evidence/baseline-original-sequence/runner-source.mjs",
+      "instrumentation.mjs",
+      "original-sequence.mjs"
+    ],
+    "fileSHA256": {
+      "clean.mjs": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b",
+      "entry.mjs": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac",
+      "evidence/baseline-original-sequence/runner-source.mjs": "c6d971e76b68a8c63491afd49640371ebcefed329b7e1283c125f93fc8f86e77",
+      "instrumentation.mjs": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf",
+      "original-sequence.mjs": "c68dd6eedff7712918d00a6f17287ab1c685ce5b03190943b3ed59faaac3bb18"
+    }
+  },
+  "originalVerifySHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+  "transforms": [
+    {
+      "file": "components/liveScene/liveSceneHost.ts",
+      "originalSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "transformedSHA256": "1c20cc6d13b03394d2492423e869fbdbb095fc7acedf989d7317b5f1b0f5b3c2"
+    },
+    {
+      "file": "components/immersiveWorlds/cozyRooms/engine.ts",
+      "originalSHA256": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "transformedSHA256": "1a0955ab10468ab441b382cc4585df2cafb425e6adb4f94382dbe20edacf348b"
+    }
+  ],
+  "instrumentation": "QA build only: original production files untouched. Original promise returned from init; observers do not delay host await through an extra promise. Constructor/factory/host catches add phase records only.",
+  "passed": true,
+  "mode": "one clean winter cold first mount -> dispose -> fresh mount, same document; no screenshots/fences/animation, no retries",
+  "stages": [
+    {
+      "name": "first-mount-ready",
+      "inspect": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 343,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      },
+      "snapshot": {
+        "hosts": [
+          {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 0,
+            "canvas": {
+              "id": 2,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "1",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 1,
+              "dead": false,
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "5582094e-215d-4867-85d5-843e59d84548",
+              "canvas": {
+                "id": 2,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "1",
+                "frames": "2",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          }
+        ],
+        "canvases": [
+          {
+            "id": 2,
+            "connected": true,
+            "parent": "cozy-world-mount",
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 960,
+            "cssHeight": 700,
+            "instance": "1",
+            "frames": "2",
+            "contextPresent": true,
+            "contextLost": false
+          }
+        ],
+        "dom": [
+          {
+            "state": "ready",
+            "motion": "paused",
+            "world": "nature:winter_lodge",
+            "connected": true,
+            "width": 960,
+            "height": 700,
+            "canvasCount": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "disposed",
+      "inspect": {
+        "lifetime": {
+          "created": 1,
+          "disposed": 1
+        },
+        "disposed": true
+      },
+      "snapshot": {
+        "hosts": [
+          {
+            "id": 1,
+            "status": "loading",
+            "unsupported": false,
+            "holders": 0,
+            "timer": 4,
+            "canvas": null,
+            "engine": null
+          }
+        ],
+        "canvases": [
+          {
+            "id": 2,
+            "connected": false,
+            "parent": null,
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 0,
+            "cssHeight": 0,
+            "instance": "1",
+            "frames": "2",
+            "contextPresent": true,
+            "contextLost": false
+          }
+        ],
+        "dom": []
+      }
+    },
+    {
+      "name": "fresh-mount-ready",
+      "inspect": {
+        "instance": 2,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 343,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 2,
+          "disposed": 1
+        }
+      },
+      "snapshot": {
+        "hosts": [
+          {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 4,
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 2,
+              "dead": false,
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "bfac31d9-3f15-4721-ad9a-c1e7d6d3b626",
+              "canvas": {
+                "id": 3,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "2",
+                "frames": "2",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          }
+        ],
+        "canvases": [
+          {
+            "id": 2,
+            "connected": false,
+            "parent": null,
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 0,
+            "cssHeight": 0,
+            "instance": "1",
+            "frames": "2",
+            "contextPresent": true,
+            "contextLost": false
+          },
+          {
+            "id": 3,
+            "connected": true,
+            "parent": "cozy-world-mount",
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 960,
+            "cssHeight": 700,
+            "instance": "2",
+            "frames": "2",
+            "contextPresent": true,
+            "contextLost": false
+          }
+        ],
+        "dom": [
+          {
+            "state": "ready",
+            "motion": "paused",
+            "world": "nature:winter_lodge",
+            "connected": true,
+            "width": 960,
+            "height": 700,
+            "canvasCount": 1
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "browser": "153.0.8010.0",
+  "streamSummary": {
+    "events": 101,
+    "lastEvent": {
+      "receivedAt": "2026-10-04T21:36:21.190Z",
+      "delivery": "node",
+      "type": "node-fresh-mount-ready",
+      "inspect": {
+        "instance": 2,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 343,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 2,
+          "disposed": 1
+        }
+      },
+      "snapshot": {
+        "hosts": [
+          {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 4,
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 2,
+              "dead": false,
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "bfac31d9-3f15-4721-ad9a-c1e7d6d3b626",
+              "canvas": {
+                "id": 3,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "2",
+                "frames": "2",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          }
+        ],
+        "canvases": [
+          {
+            "id": 2,
+            "connected": false,
+            "parent": null,
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 0,
+            "cssHeight": 0,
+            "instance": "1",
+            "frames": "2",
+            "contextPresent": true,
+            "contextLost": false
+          },
+          {
+            "id": 3,
+            "connected": true,
+            "parent": "cozy-world-mount",
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 960,
+            "cssHeight": 700,
+            "instance": "2",
+            "frames": "2",
+            "contextPresent": true,
+            "contextLost": false
+          }
+        ],
+        "dom": [
+          {
+            "state": "ready",
+            "motion": "paused",
+            "world": "nature:winter_lodge",
+            "connected": true,
+            "width": 960,
+            "height": 700,
+            "canvasCount": 1
+          }
+        ]
+      }
+    }
+  }
+}

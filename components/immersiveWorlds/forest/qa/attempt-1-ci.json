@@ -1,0 +1,49 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-04T18:41:33.883Z",
+  "renderer": "Headless Chromium WebGL2 using SwiftShader; actual Three.js geometry and shaders.",
+  "limitations": [
+    "Software rendering in Linux CI is not representative of physical-phone performance.",
+    "344×800 and 882×344 are layout simulations, not physical Fold hardware tests.",
+    "Reduced motion is tested with browser media emulation and the actual app class.",
+    "The hidden-state hook is simulated only inside this isolated test document; actual OS/tab backgrounding remains unverified.",
+    "DOM gesture assertions use PointerEvents through the component; they are not physical touchscreen tests."
+  ],
+  "screenshots": [],
+  "checks": [
+    {
+      "name": "Engine ready instead of fallback",
+      "passed": true,
+      "detail": {
+        "state": "ready"
+      }
+    },
+    {
+      "name": "Nonzero rendered geometry and full desktop buffer",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "frames": "9",
+        "time": "0.1832",
+        "waterHits": "0",
+        "leafHits": "0",
+        "dpr": "1",
+        "running": "true",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "239",
+        "triangles": "1289963",
+        "cssWidth": 1280,
+        "cssHeight": 800,
+        "width": 1280,
+        "height": 800
+      }
+    }
+  ],
+  "errors": [
+    "Final screenshot capture: page.screenshot: Timeout 45000ms exceeded.\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n"
+  ],
+  "failure": "page.screenshot: Timeout 45000ms exceeded.\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n\npage.screenshot: Timeout 45000ms exceeded.\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n\n    at screenshot (/home/runner/work/brainwave/brainwave/components/immersiveWorlds/forest/forest.browser.test.ts:44:29)\n    at /home/runner/work/brainwave/brainwave/components/immersiveWorlds/forest/forest.browser.test.ts:136:27\n    at /home/runner/work/brainwave/brainwave/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20",
+  "serverLog": "\n  \u001b[32m\u001b[1mVITE\u001b[22m v6.4.3\u001b[39m  \u001b[2mready in \u001b[0m\u001b[1m194\u001b[22m\u001b[2m\u001b[0m ms\u001b[22m\n\n  \u001b[32m➜\u001b[39m  \u001b[1mLocal\u001b[22m:   \u001b[36mhttp://127.0.0.1:\u001b[1m4178\u001b[22m/\u001b[39m\n",
+  "finishedAt": "2026-10-04T18:44:51.748Z"
+}

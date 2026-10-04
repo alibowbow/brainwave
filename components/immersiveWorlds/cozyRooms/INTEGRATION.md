@@ -15,9 +15,9 @@ Four independently constructed seated / reclining first-person Three.js environm
 
 `active=false`, hidden documents, the existing app `.reduce-motion` class, and `prefers-reduced-motion` stop the clock/RAF. `static3D=true` retains the fully rendered first frame. Resizing a frozen view draws the same state at its new aspect, with separate portrait compositions. A WebGL creation/context-loss failure is reported visibly, without pretending a poster is a 3D render.
 
-A short tap raycasts actual geometry; dragging over seven CSS pixels never becomes a tap even when it returns to its origin. Cancel, blur and unmount release the gesture. Look motion is bounded and eases home. Keyboard users can Tab to contextual controls (shown only while focused). Paused/hidden scenes do not dispatch interactions. Reduced/static mode allows discrete light/curtain updates without ambient animation.
+Input listens at the closest `data-scene-surface`, accepting the scene subtree or the exact transparent `data-scene-drag` target. Native/ARIA controls, links, form fields, editable/inert content and unrelated nested surfaces are excluded. Only the holder that currently owns the shared canvas can begin/continue an input gesture. A short tap raycasts actual geometry; dragging over seven CSS pixels never becomes a tap even when it returns to its origin. Cancel, blur and unmount release the gesture. Look motion is bounded and eases home. Keyboard users can Tab to contextual controls (shown only while focused). Paused/hidden scenes do not dispatch interactions. Reduced/static mode allows discrete light/curtain updates without ambient animation.
 
-After the last holder leaves, the existing host retains the stopped renderer for five seconds for quick return. Then geometry, materials, textures, instanced buffers, shadow maps and renderer/context are disposed. There are no standalone AudioContexts, audio elements, network assets, timers for sounds, paid assets or new dependencies.
+After the last holder leaves, the existing host retains the stopped renderer for five seconds for quick return. Then geometry, materials, textures, instanced buffers, shadow maps and renderer resources are disposed; the detached canvas/context is released for browser reclamation. We do not synchronously force WEBGL_lose_context, which demonstrably stalled this SwiftShader driver after renderer disposal. There are no standalone AudioContexts, audio elements, network assets, timers for sounds, paid assets or new dependencies.
 
 ## Existing-engine audio adapter
 
@@ -46,10 +46,10 @@ npm run check:bundle
 The production app remains intentionally unwired, so its successful build alone does not validate these new worlds. The owned QA script separately bundles all four entry points and uses the resulting static output for real software-WebGL rendering and interaction/lifecycle tests:
 
 ```bash
-SCENE_BROWSER_PATH=/path/to/chromium node components/immersiveWorlds/cozyRooms/qa/verify.mjs
+SCENE_BROWSER_PATH=/path/to/chromium node components/immersiveWorlds/cozyRooms/qa/verify-group.mjs
 ```
 
-The browser may also be a normal installed Playwright Chromium (omit `SCENE_BROWSER_PATH`). `COZY_OUTPUT` defaults to `/tmp/cozy-qa-final`, `COZY_BUNDLE` to `/tmp/cozy-qa-bundle`, `COZY_PORT` to4201. The script records exact source and bundle SHA-256, PNG hashes, browser version and evidence. See `qa/evidence/verification.json` and `qa/VALIDATION.md` for actual outcomes, rather than treating this reproduction instruction as a pass claim.
+The browser may also be a normal installed Playwright Chromium (omit `SCENE_BROWSER_PATH`). `COZY_OUTPUT` defaults to `/tmp/cozy-qa-final`, `COZY_BUNDLE` to `/tmp/cozy-qa-bundle`, `COZY_PORT` to4201. The group runs one browser per world and preserves completed evidence. `qa/verify.mjs` is the single-process harness; `COZY_WORLDS` selects a subset when reproducing a specific scene. The script records exact source and bundle SHA-256, PNG hashes, browser version and evidence. See `qa/evidence/verification.json` and `qa/VALIDATION.md` for actual outcomes, rather than treating this reproduction instruction as a pass claim.
 
 The small committed QA PNGs/JSON are review artifacts, not production assets. Do not move the harness or screenshots into the public asset directory or precache. Fold-inner / landscape checks are viewport emulation, not physical Fold hardware. Visibility tests explicitly simulate `document.hidden`; no real tab-switch claim. Software WebGL does not establish real-device FPS, battery or thermals. Central player/selection/audio wiring must be exercised by the integration Work after it connects the entries.
 

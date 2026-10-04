@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 export async function verifyChrome(page,world,point){
   const set=(key,value)=>page.evaluate(([k,v])=>window.__cozyQA[k](v),[key,value]);
   await set('setStatic',true);await set('setChrome',true);await page.waitForSelector('main>[data-scene-drag]');
-  const tap=()=>page.evaluate(({x,y})=>{const target=document.elementFromPoint(x,y);if(!target?.hasAttribute('data-scene-drag'))throw new Error('mesh point is not covered by transparent chrome');const init={bubbles:true,isPrimary:true,pointerId:111,pointerType:'touch',button:0,clientX:x,clientY:y};target.dispatchEvent(new PointerEvent('pointerdown',init));window.dispatchEvent(new PointerEvent('pointerup',init));},point);
+  const tap=()=>page.evaluate(({x,y})=>{const target=document.elementFromPoint(x,y);if(!target?.hasAttribute('data-scene-drag'))throw new Error('mesh point is not covered by transparent chrome');if(target.closest('[data-scene-surface]')!==document.querySelector('canvas').closest('[data-scene-surface]'))throw new Error('hit-tested chrome must belong to the visible canvas holder');const init={bubbles:true,isPrimary:true,pointerId:111,pointerType:'touch',button:0,clientX:x,clientY:y};target.dispatchEvent(new PointerEvent('pointerdown',init));window.dispatchEvent(new PointerEvent('pointerup',init));},point);
   let n=await page.evaluate(()=>window.__cozyQA.events.length);await tap();assert.equal(await page.evaluate(()=>window.__cozyQA.events.length),n+1,'chrome overlay tap reaches exactly one scene holder');
   await set('setStatic',false);await page.waitForFunction(()=>window.__cozyQA.inspect().running);
   const drag=await page.evaluate(()=>{const target=document.querySelector('main>[data-scene-drag]'),root=document.querySelector('main .cozy-world');const e={bubbles:true,isPrimary:true,pointerId:112,pointerType:'touch',button:0,clientX:480,clientY:300};target.dispatchEvent(new PointerEvent('pointerdown',e));window.dispatchEvent(new PointerEvent('pointermove',{...e,clientX:570}));const during=root.dataset.look;window.dispatchEvent(new PointerEvent('pointerup',{...e,clientX:570}));return{during,after:root.dataset.look??null};});
@@ -20,11 +20,11 @@ export async function verifyChrome(page,world,point){
   }
   const instance=await page.evaluate(()=>window.__cozyQA.inspect().instance);
   for(let i=0;i<2;i++){
-    await set('setSecond',true);await page.waitForSelector('.second canvas');assert.equal(await page.locator('canvas').count(),1);assert.equal(await page.evaluate(()=>window.__cozyQA.inspect().instance),instance);
+    await set('setSecond',true);await page.waitForSelector('.second .cozy-world[data-state="ready"][data-input="ready"] canvas');assert.equal(await page.locator('canvas').count(),1);assert.equal(await page.evaluate(()=>window.__cozyQA.inspect().instance),instance);
     // Synthetic event deliberately targeted at obscured underlying holder.
     await page.evaluate(({x,y})=>{const t=document.querySelector('main>[data-scene-drag]'),e={bubbles:true,isPrimary:true,pointerId:115,pointerType:'touch',button:0,clientX:x,clientY:y};t.dispatchEvent(new PointerEvent('pointerdown',e));window.dispatchEvent(new PointerEvent('pointerup',e));},point);
     assert.equal(await page.evaluate(()=>window.__cozyQA.events.length),n,'covered holder does not react');
-    await tap();assert.equal(await page.evaluate(()=>window.__cozyQA.events.length),++n,'immersive overlay has one handler');
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));await tap();assert.equal(await page.evaluate(()=>window.__cozyQA.events.length),++n,'immersive overlay has one handler');
     await set('setSecond',false);await page.waitForSelector('main canvas');await tap();assert.equal(await page.evaluate(()=>window.__cozyQA.events.length),++n,'restored player has one handler');
   }
   await set('setMounted',false);await page.waitForFunction(()=>!document.querySelector('canvas'));await set('setMounted',true);await page.waitForSelector('[data-state="ready"] canvas');

@@ -10,7 +10,7 @@ export class CozyEngine implements LiveSceneEngine {
   private raf=0; private time=8; private last=0; private dead=false;
   private look=new THREE.Vector2(); private aim=new THREE.Vector2();
   private rotation=new THREE.Quaternion();
-  private frames=0; private aspect=1;
+  private frames=0; private aspect=1;private taps=0;private lastHit='none';
   private ray=new THREE.Raycaster();
   readonly instance=++serial;
   constructor(private canvas:HTMLCanvasElement, private factory:WorldFactory, private onLost:()=>void) {
@@ -46,16 +46,16 @@ export class CozyEngine implements LiveSceneEngine {
   releaseDrag(){this.aim.set(0,0);}
   interact(action:string){const event=this.world?.interact(action);if(event){this.renderFrame(0);return {...event,intensity:THREE.MathUtils.clamp(event.intensity,0,.35)};}return null;}
   tap(clientX:number,clientY:number){
-    if(!this.world)return null;
+    if(!this.world)return null;this.taps++;this.lastHit='none';
     const rect=this.canvas.getBoundingClientRect();
     this.ray.setFromCamera(new THREE.Vector2((clientX-rect.left)/rect.width*2-1,-(clientY-rect.top)/rect.height*2+1),this.world.camera);
     const hits=this.ray.intersectObjects(this.world.scene.children,true);
-    for(const hit of hits){let object:THREE.Object3D|null=hit.object;while(object){if(typeof object.userData.cozyAction==='string')return this.interact(object.userData.cozyAction);object=object.parent;}
+    for(const hit of hits){let object:THREE.Object3D|null=hit.object;while(object){if(typeof object.userData.cozyAction==='string'){this.lastHit=object.userData.cozyAction;return this.interact(object.userData.cozyAction);}object=object.parent;}
       // Non-interactive opaque objects genuinely occlude objects behind them.
-      const materials=(hit.object as THREE.Mesh).material;const m=Array.isArray(materials)?materials[hit.face?.materialIndex??0]:materials;if(m&&!m.transparent)break;
+      const materials=(hit.object as THREE.Mesh).material;const m=Array.isArray(materials)?materials[hit.face?.materialIndex??0]:materials;if(m&&!m.transparent){this.lastHit='occluded:'+hit.object.type;break;}
     }return null;
   }
-  diagnostics(){const targets:Array<{action:string;x:number;y:number;z:number}>=[];if(this.world){this.world.scene.updateMatrixWorld(true);this.world.scene.traverse(o=>{if(o.userData.cozyAction){const p=o.getWorldPosition(new THREE.Vector3()).project(this.world!.camera);targets.push({action:o.userData.cozyAction,x:(p.x+1)/2,y:(1-p.y)/2,z:p.z});}});}return {instance:this.instance,frames:this.frames,time:this.time,running:!!this.raf,targets,drawCalls:this.renderer.info.render.calls,triangles:this.renderer.info.render.triangles,memory:{...this.renderer.info.memory},lifetime:{...lifetime}};}
+  diagnostics(){const targets:Array<{action:string;x:number;y:number;z:number}>=[];if(this.world){this.world.scene.updateMatrixWorld(true);this.world.scene.traverse(o=>{if(o.userData.cozyAction){const p=o.getWorldPosition(new THREE.Vector3()).project(this.world!.camera);targets.push({action:o.userData.cozyAction,x:(p.x+1)/2,y:(1-p.y)/2,z:p.z});}});}return {instance:this.instance,taps:this.taps,lastHit:this.lastHit,frames:this.frames,time:this.time,running:!!this.raf,targets,drawCalls:this.renderer.info.render.calls,triangles:this.renderer.info.render.triangles,memory:{...this.renderer.info.memory},lifetime:{...lifetime}};}
   dispose(){if(this.dead)return;this.dead=true;this.stop();this.canvas.removeEventListener('webglcontextlost',this.contextLost);if(this.world){const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>(),textures=new Set<THREE.Texture>();this.world.scene.traverse(o=>{if(o instanceof THREE.InstancedMesh)o.dispose();if(o instanceof THREE.Light&&'shadow' in o)(o as THREE.DirectionalLight).shadow?.dispose();const m=o as THREE.Mesh;if(m.geometry)geometries.add(m.geometry);if(m.material){for(const material of Array.isArray(m.material)?m.material:[m.material])materials.add(material);}});for(const material of materials){for(const value of Object.values(material))if(value instanceof THREE.Texture)textures.add(value);if(material instanceof THREE.ShaderMaterial)for(const u of Object.values(material.uniforms))if(u.value instanceof THREE.Texture)textures.add(u.value);}for(const t of [this.world.scene.background,this.world.scene.environment])if(t instanceof THREE.Texture)textures.add(t);textures.forEach(t=>t.dispose());geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());this.world.dispose?.();this.world=null;}this.renderer.dispose();lifetime.disposed++;
     // dispose frees GPU resources. The detached canvas/context is left to the
     // browser: synchronous WEBGL_lose_context can stall SwiftShader indefinitely.

@@ -70,8 +70,8 @@ export function CozyWorld({active,onInteraction,static3D=false,className='',id,f
       window.addEventListener('pointercancel',cancelPointer);
       window.addEventListener('blur',blur);
     };
-    surface.addEventListener('pointerdown',down);
-    return()=>{surface.removeEventListener('pointerdown',down);finish(undefined,true);};
+    surface.addEventListener('pointerdown',down);element.dataset.input='ready';
+    return()=>{delete element.dataset.input;surface.removeEventListener('pointerdown',down);finish(undefined,true);};
   },[host,id,motion,status,active]);
   const action=(key:string)=>{if(!holder.current||!active||document.hidden)return;const event=host.action(holder.current,key);if(event)callback.current?.({world:id,...event});};
   return <div ref={root} className={`cozy-world ${className}`} data-world={id} data-state={status} data-motion={motion?'running':'paused'} role="group" aria-label={`${names[id]} 3D 공간`}>

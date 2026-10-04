@@ -268,19 +268,26 @@ async function verifyWorld(world) {
     assert.ok(pausedAfter.frames - pausedBefore.frames <= 1, 'pause must not run a render loop');
     mark('pause freezes time and render loop', { before: pausedBefore, after: pausedAfter });
 
+    const waitAdvancement = (from, frames, seconds) => page.waitForFunction(({ from, frames, seconds }) => {
+      const canvas = document.querySelector('.night-world-canvas');
+      return canvas && Number(canvas.dataset.renderCount) >= from.frames + frames && Number(canvas.dataset.time) >= from.time + seconds;
+    }, { from, frames, seconds }, { polling: 100 });
     await setActive(true); await waitMotion('running');
-    await page.waitForTimeout(400);
+    await waitAdvancement(pausedAfter, 3, .05);
+    await setActive(false); await waitMotion('paused');
     const movingBefore = await canvasState();
     const beforePNG = await page.screenshot({ clip: await page.locator('.night-world-canvas').boundingBox(), type: 'png' });
-    await page.waitForTimeout(1400);
-    const afterPNG = await page.screenshot({ clip: await page.locator('.night-world-canvas').boundingBox(), type: 'png' });
+    await setActive(true); await waitMotion('running');
+    await waitAdvancement(movingBefore, 8, .3);
+    await setActive(false); await waitMotion('paused');
     const movingAfter = await canvasState();
+    const afterPNG = await page.screenshot({ clip: await page.locator('.night-world-canvas').boundingBox(), type: 'png' });
     const difference = pixelDifference(beforePNG, afterPNG);
     assert.ok(movingAfter.frames > movingBefore.frames && movingAfter.time > movingBefore.time, 'active simulation advances');
     assert.ok(difference.changedPixels > 20, 'real image pixels change under active motion');
     await writeFile(path.join(output, `${world}-motion-before.png`), beforePNG);
     await writeFile(path.join(output, `${world}-motion-after.png`), afterPNG);
-    result.motionEvidence = { before: movingBefore, after: movingAfter, difference, files: [`${world}-motion-before.png`, `${world}-motion-after.png`], sha256: [sha(beforePNG), sha(afterPNG)], sourceTreeSha256: report.revision.sourceTreeSha256 };
+    result.motionEvidence = { captureMode: 'Paused real-frame snapshots separated by verified active RAF frame and elapsed-time advancement; screenshots avoid competing with the software renderer loop.', before: movingBefore, after: movingAfter, difference, files: [`${world}-motion-before.png`, `${world}-motion-after.png`], sha256: [sha(beforePNG), sha(afterPNG)], sourceTreeSha256: report.revision.sourceTreeSha256 };
     mark('active motion changes actual pixels', result.motionEvidence);
     await setActive(false); await waitMotion('paused');
 
@@ -331,6 +338,33 @@ async function verifyWorld(world) {
     assert.ok(reducedAfter.frames - reducedBefore.frames <= 1);
     assert.ok(reducedAfter.frames > 0, 'reduced motion retains a real 3D frame');
     mark('reduced motion freezes while retaining real frame', { before: reducedBefore, after: reducedAfter });
+    if (world === 'deep' || world === 'lakeside') {
+      await page.waitForTimeout(720); // Do not confuse the quiet-action throttle with a missing response.
+      const lantern = page.locator('.night-world-action[data-kind="lantern-brightness"]');
+      await lantern.focus();
+      // Focus precedes both samples so focus outlines/assistive controls cannot
+      // be mistaken for a rendered change in the lantern's static 3D lighting.
+      const lanternBeforePNG = await page.screenshot({ clip: await page.locator('.night-world-canvas').boundingBox(), type: 'png' });
+      const lanternBefore = await canvasState();
+      const lanternEventsBefore = await eventCount();
+      await page.keyboard.press('Enter');
+      await page.waitForFunction((count) => window.__nightQA.events.length > count, lanternEventsBefore, { timeout: 20_000 });
+      const lanternEvent = await page.evaluate(() => window.__nightQA.events.at(-1));
+      assert.equal(lanternEvent.world, world);
+      assert.equal(lanternEvent.kind, 'lantern-brightness');
+      assert.ok(Number.isFinite(lanternEvent.value) && lanternEvent.value >= 0 && lanternEvent.value <= 1);
+      const lanternAfter = await canvasState();
+      assert.equal(lanternAfter.time, lanternBefore.time, 'reduced-motion lantern response keeps simulation time frozen');
+      assert.ok(lanternAfter.frames > lanternBefore.frames, 'reduced-motion lantern renders a new static response');
+      const lanternAfterPNG = await page.screenshot({ clip: await page.locator('.night-world-canvas').boundingBox(), type: 'png' });
+      const lanternDifference = pixelDifference(lanternBeforePNG, lanternAfterPNG);
+      assert.ok(lanternDifference.changedPixels > 20, 'reduced-motion lantern visibly changes actual pixels');
+      const files = [`${world}-lantern-before.png`, `${world}-lantern-after.png`];
+      await writeFile(path.join(output, files[0]), lanternBeforePNG);
+      await writeFile(path.join(output, files[1]), lanternAfterPNG);
+      result.reducedLanternEvidence = { before: lanternBefore, after: lanternAfter, event: lanternEvent, difference: lanternDifference, files, sha256: [sha(lanternBeforePNG), sha(lanternAfterPNG)], sourceTreeSha256: report.revision.sourceTreeSha256 };
+      mark('reduced-motion keyboard lantern renders changed static pixels without advancing time', result.reducedLanternEvidence);
+    }
     await page.emulateMedia({ reducedMotion: 'no-preference' }); await waitMotion('running');
 
     await page.evaluate(() => {

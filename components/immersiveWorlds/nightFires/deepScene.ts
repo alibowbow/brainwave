@@ -309,6 +309,8 @@ export function buildDeepNightWorld(): WorldRecipe {
     }
   }
 
+  let bounceTarget = lanternBounce.intensity;
+  let bounceChanged = false;
   return {
     scene,
     view: aspect => aspect < .8
@@ -317,12 +319,16 @@ export function buildDeepNightWorld(): WorldRecipe {
     targets: [{ object: lamp.target, kind: 'lantern-brightness' }],
     interact: () => {
       const level = lamp.toggle();
-      lanternBounce.intensity = level * 1.45;
+      bounceTarget = level * 1.45;
+      bounceChanged = true;
       return level;
     },
     update: (elapsed, dt) => {
       grassTime.value = elapsed;
       lamp.update(elapsed, dt);
+      if (dt === 0 && bounceChanged) lanternBounce.intensity = bounceTarget;
+      bounceChanged = false;
+      lanternBounce.intensity += (bounceTarget - lanternBounce.intensity) * (1 - Math.exp(-Math.max(0, dt) * 2.4));
     },
   };
 }

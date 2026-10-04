@@ -140,7 +140,7 @@ export class NightEngine implements LiveSceneEngine {
     this.lastInteraction = performance.now();
     const value = THREE.MathUtils.clamp(this.recipe.interact(hitKind), 0, 1);
     // A reduced-motion scene still renders a meaningful static response.
-    this.renderFrame(0);
+    if (!this.running) this.renderFrame(0);
     return { world: this.world, kind: hitKind, value };
   }
 

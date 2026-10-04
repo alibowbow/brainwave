@@ -1,0 +1,863 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-04T19:44:27.067Z",
+  "renderer": "Headless Chromium WebGL2 using SwiftShader; actual Three.js geometry and shaders.",
+  "limitations": [
+    "Software rendering in Linux CI is not representative of physical-phone performance.",
+    "344×800 and 882×344 are layout simulations, not physical Fold hardware tests.",
+    "Motion and DOM lifecycle run at the requested native 882×344 landscape viewport after all three layout captures; rendering quality and resolution scale are unchanged.",
+    "Reduced motion is tested with browser media emulation and the actual app class.",
+    "Native tab/window visibility is observed when supported by headless Chromium; the separate document.hidden override tests only the simulated hook.",
+    "DOM gesture assertions use PointerEvents through the component; they are not physical touchscreen tests.",
+    "Actual hidden state was not observed: about:blank tab brought to front: Please use browser.newContext(); native browser window minimized: document.hidden remained false. Real tab-background pause remains unverified."
+  ],
+  "screenshots": [
+    {
+      "filename": "forest-desktop.jpg",
+      "bytes": 306410,
+      "sha256": "634bf9657b4338a8e1e2dd247a064ebe57ed79075b8dd658d14a4d75684058c0",
+      "width": 1280,
+      "height": 800,
+      "method": "direct-webgl",
+      "time": 0.05133399999995345
+    },
+    {
+      "filename": "forest-fold-portrait.jpg",
+      "bytes": 97755,
+      "sha256": "489f591f757c2350aae53b01c5ecda441fb2e4d4a89d3b5984a62912f80c25b2",
+      "width": 344,
+      "height": 800,
+      "method": "direct-webgl",
+      "time": 0.167933999999952
+    },
+    {
+      "filename": "forest-fold-landscape.jpg",
+      "bytes": 103849,
+      "sha256": "2fd6e35992ffd2bea80ddaea3ab1ebeb903351bcfa5903951249f147716fbc60",
+      "width": 882,
+      "height": 344,
+      "method": "direct-webgl",
+      "time": 0.2846339999999491
+    },
+    {
+      "filename": "forest-motion.jpg",
+      "bytes": 103929,
+      "sha256": "f45f7c54900b42dfe429caae514124f32e3e91c004ab2a05ccce1c1d730933c8",
+      "width": 882,
+      "height": 344,
+      "method": "direct-webgl",
+      "time": 0.5563339999999753
+    }
+  ],
+  "checks": [
+    {
+      "name": "Engine ready instead of fallback",
+      "passed": true,
+      "detail": {
+        "state": "ready"
+      }
+    },
+    {
+      "name": "Nonzero rendered geometry and full desktop buffer",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "frames": "3",
+        "time": "0.0513",
+        "waterHits": "0",
+        "leafHits": "0",
+        "dpr": "1",
+        "running": "true",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "170",
+        "triangles": "2678699",
+        "cssWidth": 1280,
+        "cssHeight": 800,
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "name": "Actual 344×800 layout renders",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "frames": "11",
+        "time": "0.1846",
+        "waterHits": "0",
+        "leafHits": "0",
+        "dpr": "1",
+        "running": "true",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "144",
+        "triangles": "2612167",
+        "cssWidth": 344,
+        "cssHeight": 800,
+        "width": 344,
+        "height": 800
+      }
+    },
+    {
+      "name": "Actual 882×344 layout renders",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "frames": "14",
+        "time": "0.2846",
+        "waterHits": "0",
+        "leafHits": "0",
+        "dpr": "1",
+        "running": "true",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "166",
+        "triangles": "2677001",
+        "cssWidth": 882,
+        "cssHeight": 344,
+        "width": 882,
+        "height": 344
+      }
+    },
+    {
+      "name": "Actual rendered motion changes the image",
+      "passed": true,
+      "detail": {
+        "nativeViewport": [
+          882,
+          344
+        ],
+        "before": {
+          "engine": "three.js r186",
+          "frames": "15",
+          "time": "0.2896",
+          "waterHits": "0",
+          "leafHits": "0",
+          "dpr": "1",
+          "running": "true",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2677001",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "after": {
+          "engine": "three.js r186",
+          "frames": "24",
+          "time": "0.5730",
+          "waterHits": "0",
+          "leafHits": "0",
+          "dpr": "1",
+          "running": "true",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2677001",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "beforeImage": "2fd6e35992ffd2bea80ddaea3ab1ebeb903351bcfa5903951249f147716fbc60",
+        "afterImage": "f45f7c54900b42dfe429caae514124f32e3e91c004ab2a05ccce1c1d730933c8",
+        "beforeMethod": "direct-webgl",
+        "afterMethod": "direct-webgl"
+      }
+    },
+    {
+      "name": "In-page real-component lifecycle and interactions pass",
+      "passed": true,
+      "detail": {
+        "report": {
+          "status": "passed",
+          "startedAt": "2026-10-04T19:47:59.862Z",
+          "method": "In-page DOM PointerEvent assertions through the component handlers. No direct engine calls. Synthetic gestures are not physical-device testing.",
+          "environment": {
+            "viewportPreset": "desktop",
+            "window": [
+              882,
+              344
+            ],
+            "devicePixelRatio": 1,
+            "osReducedMotion": false,
+            "osReducedMotionTest": "Observed actual media query only; OS emulation is not performed by this harness.",
+            "visibilityTest": "Requires a real tab hide/show cycle; see visibilitySamples. No document.hidden override.",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36"
+          },
+          "checks": [
+            {
+              "name": "Actual rendered 3D canvas",
+              "passed": true,
+              "detail": {
+                "engine": "three.js r186",
+                "frames": "24",
+                "time": "0.5730",
+                "waterHits": "0",
+                "leafHits": "0",
+                "dpr": "1",
+                "running": "true",
+                "lookYaw": "0.00000",
+                "lookPitch": "0.00000",
+                "drawCalls": "166",
+                "triangles": "2677001",
+                "cssWidth": 882,
+                "cssHeight": 344,
+                "width": 882,
+                "height": 344
+              }
+            },
+            {
+              "name": "Active animation advances",
+              "passed": true,
+              "detail": {
+                "frameDelta": 1,
+                "timeDelta": 0.050000000000000044,
+                "observedMs": 7057,
+                "observedFPS": 0.1
+              }
+            },
+            {
+              "name": "Water touch through DOM raycast",
+              "passed": true,
+              "detail": {
+                "before": 0,
+                "after": 7,
+                "screenFraction": [
+                  0.7,
+                  0.97
+                ]
+              }
+            },
+            {
+              "name": "Leaf touch through DOM raycast",
+              "passed": true,
+              "detail": {
+                "before": 0,
+                "after": 1,
+                "screenFraction": [
+                  0.85,
+                  0.97
+                ]
+              }
+            },
+            {
+              "name": "Active=false freezes animation and rejects touches",
+              "passed": true,
+              "detail": {
+                "before": {
+                  "frames": "25",
+                  "time": "0.6230",
+                  "callbacks": 8
+                },
+                "after": {
+                  "engine": "three.js r186",
+                  "frames": "25",
+                  "time": "0.6230",
+                  "waterHits": "7",
+                  "leafHits": "1",
+                  "dpr": "1",
+                  "running": "false",
+                  "lookYaw": "0.00000",
+                  "lookPitch": "0.00000",
+                  "drawCalls": "166",
+                  "triangles": "2677001",
+                  "cssWidth": 882,
+                  "cssHeight": 344,
+                  "width": 882,
+                  "height": 344,
+                  "callbacks": 8
+                }
+              }
+            },
+            {
+              "name": "App reduced-motion freezes animation and rejects touches",
+              "passed": true,
+              "detail": {
+                "before": {
+                  "frames": "25",
+                  "time": "0.6230",
+                  "callbacks": 8
+                },
+                "after": {
+                  "engine": "three.js r186",
+                  "frames": "25",
+                  "time": "0.6230",
+                  "waterHits": "7",
+                  "leafHits": "1",
+                  "dpr": "1",
+                  "running": "false",
+                  "lookYaw": "0.00000",
+                  "lookPitch": "0.00000",
+                  "drawCalls": "166",
+                  "triangles": "2677001",
+                  "cssWidth": 882,
+                  "cssHeight": 344,
+                  "width": 882,
+                  "height": 344,
+                  "callbacks": 8
+                }
+              }
+            },
+            {
+              "name": "Gentle drag changes view without a tap",
+              "passed": true,
+              "detail": {
+                "peakYaw": 0.0417,
+                "callbacksBefore": 8,
+                "callbacksAfter": 8
+              }
+            },
+            {
+              "name": "View returns gradually after release",
+              "passed": true,
+              "detail": {
+                "peakYaw": 0.0417,
+                "yaw120msAfterRelease": 0.0417,
+                "finalYaw": 0.02385
+              }
+            },
+            {
+              "name": "One shared canvas; only top holder gets callbacks",
+              "passed": true,
+              "detail": {
+                "sameCanvas": true,
+                "ignoredCoveredHolder": true,
+                "before": {
+                  "main": 8,
+                  "second": 0
+                },
+                "after": {
+                  "main": 8,
+                  "second": 1
+                }
+              }
+            },
+            {
+              "name": "Closing second holder returns the same canvas",
+              "passed": true,
+              "detail": {
+                "engine": "three.js r186",
+                "frames": "32",
+                "time": "0.8230",
+                "waterHits": "8",
+                "leafHits": "1",
+                "dpr": "1",
+                "running": "true",
+                "lookYaw": "0.02385",
+                "lookPitch": "-0.00253",
+                "drawCalls": "165",
+                "triangles": "2654921",
+                "cssWidth": 882,
+                "cssHeight": 344,
+                "width": 882,
+                "height": 344
+              }
+            },
+            {
+              "name": "Last unmount disposes after host reuse window",
+              "passed": true,
+              "detail": {
+                "engine": "three.js r186",
+                "frames": "32",
+                "time": "0.8230",
+                "waterHits": "8",
+                "leafHits": "1",
+                "dpr": "1",
+                "running": "false",
+                "lookYaw": "0.02385",
+                "lookPitch": "-0.00253",
+                "drawCalls": "165",
+                "triangles": "2654921",
+                "disposed": "true",
+                "cssWidth": 0,
+                "cssHeight": 0,
+                "width": 882,
+                "height": 344
+              }
+            },
+            {
+              "name": "Remount creates a fresh working engine",
+              "passed": true,
+              "detail": {
+                "engine": "three.js r186",
+                "frames": "3",
+                "time": "0.0500",
+                "waterHits": "0",
+                "leafHits": "0",
+                "dpr": "1",
+                "running": "true",
+                "lookYaw": "0.00000",
+                "lookPitch": "0.00000",
+                "drawCalls": "166",
+                "triangles": "2677001",
+                "cssWidth": 882,
+                "cssHeight": 344,
+                "width": 882,
+                "height": 344
+              }
+            }
+          ],
+          "finishedAt": "2026-10-04T19:49:26.252Z"
+        },
+        "visibilitySamples": []
+      }
+    },
+    {
+      "name": "Browser OS reduced-motion emulation freezes frames and time",
+      "passed": true,
+      "detail": {
+        "before": {
+          "engine": "three.js r186",
+          "frames": "3",
+          "time": "0.0500",
+          "waterHits": "0",
+          "leafHits": "0",
+          "dpr": "1",
+          "running": "false",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2677001",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "after": {
+          "engine": "three.js r186",
+          "frames": "3",
+          "time": "0.0500",
+          "waterHits": "0",
+          "leafHits": "0",
+          "dpr": "1",
+          "running": "false",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2677001",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        }
+      }
+    },
+    {
+      "name": "Browser OS reduced-motion release resumes",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "frames": "4",
+        "time": "0.0500",
+        "waterHits": "0",
+        "leafHits": "0",
+        "dpr": "1",
+        "running": "true",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "166",
+        "triangles": "2677001",
+        "cssWidth": 882,
+        "cssHeight": 344,
+        "width": 882,
+        "height": 344
+      }
+    },
+    {
+      "name": "Simulated hidden hook freezes frames and time",
+      "passed": true,
+      "detail": {
+        "simulated": true,
+        "actualTabVisibilityTested": false,
+        "before": {
+          "engine": "three.js r186",
+          "frames": "4",
+          "time": "0.0500",
+          "waterHits": "0",
+          "leafHits": "0",
+          "dpr": "1",
+          "running": "false",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2677001",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "after": {
+          "engine": "three.js r186",
+          "frames": "4",
+          "time": "0.0500",
+          "waterHits": "0",
+          "leafHits": "0",
+          "dpr": "1",
+          "running": "false",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2677001",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        }
+      }
+    },
+    {
+      "name": "Simulated hidden release resumes without claiming real visibility",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "frames": "5",
+        "time": "0.1000",
+        "waterHits": "0",
+        "leafHits": "0",
+        "dpr": "1",
+        "running": "true",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "166",
+        "triangles": "2677001",
+        "cssWidth": 882,
+        "cssHeight": 344,
+        "width": 882,
+        "height": 344
+      }
+    },
+    {
+      "name": "No page or WebGL shader errors",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "Native-resolution capture and motion evidence complete",
+      "passed": true,
+      "detail": {
+        "capturedViews": true,
+        "imageMovementPassed": true,
+        "captureFailures": [],
+        "methods": [
+          {
+            "filename": "forest-desktop.jpg",
+            "method": "direct-webgl"
+          },
+          {
+            "filename": "forest-fold-portrait.jpg",
+            "method": "direct-webgl"
+          },
+          {
+            "filename": "forest-fold-landscape.jpg",
+            "method": "direct-webgl"
+          },
+          {
+            "filename": "forest-motion.jpg",
+            "method": "direct-webgl"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "captureAttempts": [
+    {
+      "filename": "forest-desktop.jpg",
+      "method": "direct-webgl",
+      "passed": true,
+      "detail": {
+        "width": 1280,
+        "height": 800,
+        "time": 0.05133399999995345,
+        "scope": "Actual scene WebGL buffer; excludes DOM controls and browser compositor."
+      }
+    },
+    {
+      "filename": "forest-fold-portrait.jpg",
+      "method": "direct-webgl",
+      "passed": true,
+      "detail": {
+        "width": 344,
+        "height": 800,
+        "time": 0.167933999999952,
+        "scope": "Actual scene WebGL buffer; excludes DOM controls and browser compositor."
+      }
+    },
+    {
+      "filename": "forest-fold-landscape.jpg",
+      "method": "direct-webgl",
+      "passed": true,
+      "detail": {
+        "width": 882,
+        "height": 344,
+        "time": 0.2846339999999491,
+        "scope": "Actual scene WebGL buffer; excludes DOM controls and browser compositor."
+      }
+    },
+    {
+      "filename": "forest-motion.jpg",
+      "method": "direct-webgl",
+      "passed": true,
+      "detail": {
+        "width": 882,
+        "height": 344,
+        "time": 0.5563339999999753,
+        "scope": "Actual scene WebGL buffer; excludes DOM controls and browser compositor."
+      }
+    }
+  ],
+  "captureFailures": [],
+  "lifecycleReport": {
+    "report": {
+      "status": "passed",
+      "startedAt": "2026-10-04T19:47:59.862Z",
+      "method": "In-page DOM PointerEvent assertions through the component handlers. No direct engine calls. Synthetic gestures are not physical-device testing.",
+      "environment": {
+        "viewportPreset": "desktop",
+        "window": [
+          882,
+          344
+        ],
+        "devicePixelRatio": 1,
+        "osReducedMotion": false,
+        "osReducedMotionTest": "Observed actual media query only; OS emulation is not performed by this harness.",
+        "visibilityTest": "Requires a real tab hide/show cycle; see visibilitySamples. No document.hidden override.",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36"
+      },
+      "checks": [
+        {
+          "name": "Actual rendered 3D canvas",
+          "passed": true,
+          "detail": {
+            "engine": "three.js r186",
+            "frames": "24",
+            "time": "0.5730",
+            "waterHits": "0",
+            "leafHits": "0",
+            "dpr": "1",
+            "running": "true",
+            "lookYaw": "0.00000",
+            "lookPitch": "0.00000",
+            "drawCalls": "166",
+            "triangles": "2677001",
+            "cssWidth": 882,
+            "cssHeight": 344,
+            "width": 882,
+            "height": 344
+          }
+        },
+        {
+          "name": "Active animation advances",
+          "passed": true,
+          "detail": {
+            "frameDelta": 1,
+            "timeDelta": 0.050000000000000044,
+            "observedMs": 7057,
+            "observedFPS": 0.1
+          }
+        },
+        {
+          "name": "Water touch through DOM raycast",
+          "passed": true,
+          "detail": {
+            "before": 0,
+            "after": 7,
+            "screenFraction": [
+              0.7,
+              0.97
+            ]
+          }
+        },
+        {
+          "name": "Leaf touch through DOM raycast",
+          "passed": true,
+          "detail": {
+            "before": 0,
+            "after": 1,
+            "screenFraction": [
+              0.85,
+              0.97
+            ]
+          }
+        },
+        {
+          "name": "Active=false freezes animation and rejects touches",
+          "passed": true,
+          "detail": {
+            "before": {
+              "frames": "25",
+              "time": "0.6230",
+              "callbacks": 8
+            },
+            "after": {
+              "engine": "three.js r186",
+              "frames": "25",
+              "time": "0.6230",
+              "waterHits": "7",
+              "leafHits": "1",
+              "dpr": "1",
+              "running": "false",
+              "lookYaw": "0.00000",
+              "lookPitch": "0.00000",
+              "drawCalls": "166",
+              "triangles": "2677001",
+              "cssWidth": 882,
+              "cssHeight": 344,
+              "width": 882,
+              "height": 344,
+              "callbacks": 8
+            }
+          }
+        },
+        {
+          "name": "App reduced-motion freezes animation and rejects touches",
+          "passed": true,
+          "detail": {
+            "before": {
+              "frames": "25",
+              "time": "0.6230",
+              "callbacks": 8
+            },
+            "after": {
+              "engine": "three.js r186",
+              "frames": "25",
+              "time": "0.6230",
+              "waterHits": "7",
+              "leafHits": "1",
+              "dpr": "1",
+              "running": "false",
+              "lookYaw": "0.00000",
+              "lookPitch": "0.00000",
+              "drawCalls": "166",
+              "triangles": "2677001",
+              "cssWidth": 882,
+              "cssHeight": 344,
+              "width": 882,
+              "height": 344,
+              "callbacks": 8
+            }
+          }
+        },
+        {
+          "name": "Gentle drag changes view without a tap",
+          "passed": true,
+          "detail": {
+            "peakYaw": 0.0417,
+            "callbacksBefore": 8,
+            "callbacksAfter": 8
+          }
+        },
+        {
+          "name": "View returns gradually after release",
+          "passed": true,
+          "detail": {
+            "peakYaw": 0.0417,
+            "yaw120msAfterRelease": 0.0417,
+            "finalYaw": 0.02385
+          }
+        },
+        {
+          "name": "One shared canvas; only top holder gets callbacks",
+          "passed": true,
+          "detail": {
+            "sameCanvas": true,
+            "ignoredCoveredHolder": true,
+            "before": {
+              "main": 8,
+              "second": 0
+            },
+            "after": {
+              "main": 8,
+              "second": 1
+            }
+          }
+        },
+        {
+          "name": "Closing second holder returns the same canvas",
+          "passed": true,
+          "detail": {
+            "engine": "three.js r186",
+            "frames": "32",
+            "time": "0.8230",
+            "waterHits": "8",
+            "leafHits": "1",
+            "dpr": "1",
+            "running": "true",
+            "lookYaw": "0.02385",
+            "lookPitch": "-0.00253",
+            "drawCalls": "165",
+            "triangles": "2654921",
+            "cssWidth": 882,
+            "cssHeight": 344,
+            "width": 882,
+            "height": 344
+          }
+        },
+        {
+          "name": "Last unmount disposes after host reuse window",
+          "passed": true,
+          "detail": {
+            "engine": "three.js r186",
+            "frames": "32",
+            "time": "0.8230",
+            "waterHits": "8",
+            "leafHits": "1",
+            "dpr": "1",
+            "running": "false",
+            "lookYaw": "0.02385",
+            "lookPitch": "-0.00253",
+            "drawCalls": "165",
+            "triangles": "2654921",
+            "disposed": "true",
+            "cssWidth": 0,
+            "cssHeight": 0,
+            "width": 882,
+            "height": 344
+          }
+        },
+        {
+          "name": "Remount creates a fresh working engine",
+          "passed": true,
+          "detail": {
+            "engine": "three.js r186",
+            "frames": "3",
+            "time": "0.0500",
+            "waterHits": "0",
+            "leafHits": "0",
+            "dpr": "1",
+            "running": "true",
+            "lookYaw": "0.00000",
+            "lookPitch": "0.00000",
+            "drawCalls": "166",
+            "triangles": "2677001",
+            "cssWidth": 882,
+            "cssHeight": 344,
+            "width": 882,
+            "height": 344
+          }
+        }
+      ],
+      "finishedAt": "2026-10-04T19:49:26.252Z"
+    },
+    "visibilitySamples": []
+  },
+  "actualVisibility": {
+    "actualTabVisibilityTested": false,
+    "attempts": [
+      {
+        "method": "about:blank tab brought to front",
+        "hidden": false,
+        "note": "Please use browser.newContext()"
+      },
+      {
+        "method": "native browser window minimized",
+        "hidden": false
+      }
+    ]
+  },
+  "finishedAt": "2026-10-04T19:49:55.104Z"
+}

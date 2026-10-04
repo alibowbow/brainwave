@@ -222,14 +222,7 @@ try {
     assert.equal(await page.getByRole('dialog').count(), 0, 'one tap must not open a second confirmation');
     return { route: await page.evaluate(() => location.hash), oneTrustedTap: true, rendered, motion };
   });
-  await check('cosmic app drag works through visible and hidden chrome and excludes controls', async () => {
-    const visible = await drag(page, true);
-    const hidden = await drag(page, false);
-    await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first().dispatchEvent('pointerdown', { isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 });
-    assert.equal(await page.locator('.cosmic-world').getAttribute('data-look'), null, 'transport button pointerdown must not begin look drag');
-    await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 })));
-    return { visible, hidden, transportControlsStartDrag: false };
-  });
+  // Capture before the longer live drag/motion sequence can queue software-GPU work.
   await check('cosmic application pause freezes rendering', async () => { await press(page, '일시정지'); return frozen(page); });
   await check('cosmic application desktop and Fold-like paused screenshots', async () => {
     const results = [];
@@ -253,6 +246,7 @@ try {
     await press(page, '전체 화면 보기');
     await page.waitForFunction(() => document.querySelector('[aria-label="몰입 화면"] .cosmic-world-canvas') === window.__savedCosmicVerificationCanvas);
     assert.equal(await page.locator('.cosmic-world-canvas').count(), 1);
+    await frozen(page);
     const screenshot = await capture(page, 'cosmic-app-immersive');
     const gpu = await contexts(page);
     assert.equal(gpu.filter((entry) => entry.kind === 'scene' && !entry.lost).length, 1);
@@ -260,9 +254,18 @@ try {
     await page.waitForFunction(() => !document.querySelector('[aria-label="몰입 화면"]') && document.querySelector('.cosmic-world-canvas') === window.__savedCosmicVerificationCanvas);
     return { sameCanvas: true, contexts: gpu, screenshot, data: await frozen(page) };
   });
-  await check('cosmic application resumes and respects OS and app reduced motion', async () => {
+  await check('cosmic application resumes and drag works through visible and hidden chrome and excludes controls', async () => {
     await press(page, '재생');
     const resumed = await running(page);
+    const visible = await drag(page, true);
+    const hidden = await drag(page, false);
+    await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first().dispatchEvent('pointerdown', { isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 });
+    assert.equal(await page.locator('.cosmic-world').getAttribute('data-look'), null, 'transport button pointerdown must not begin look drag');
+    await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 })));
+    return { resumed, visible, hidden, transportControlsStartDrag: false };
+  });
+  await check('cosmic application respects OS and app reduced motion', async () => {
+    const beforePreferences = await running(page);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     const osReduced = await frozen(page);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
@@ -270,7 +273,7 @@ try {
     await page.evaluate(() => document.documentElement.classList.add('reduce-motion'));
     const appReduced = await frozen(page);
     await page.evaluate(() => document.documentElement.classList.remove('reduce-motion'));
-    return { resumed, osReduced, appReduced, restored: await running(page) };
+    return { beforePreferences, osReduced, appReduced, restored: await running(page) };
   });
   await check('cosmic simulated hidden signal stops rendering and visible signal resumes', async () => {
     await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
@@ -290,7 +293,7 @@ try {
     assert.equal(await page.evaluate(() => location.hash), '#/play/amb/cosmic');
     return frozen(page);
   });
-  await check('cosmic app release disposes its engine after five seconds and Back mounts a fresh renderer', async () => {
+  await check('cosmic app release eventually disposes after the five-second grace period and Back mounts a fresh renderer', async () => {
     await remember(page);
     await page.evaluate(() => { location.hash = '#/guide'; });
     const disposed = await finalDisposal(page);

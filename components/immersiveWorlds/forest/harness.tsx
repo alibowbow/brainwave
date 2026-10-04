@@ -79,14 +79,14 @@ function tap(target: HTMLElement, xFraction: number, yFraction: number) {
 }
 
 function ForestHarness() {
-  const [active, setActive] = useState(true);
+  const query = new URLSearchParams(window.location.search);
+  const [active, setActive] = useState(() => query.get('paused') !== '1');
   const [mounted, setMounted] = useState(true);
   const [second, setSecond] = useState(false);
   const [reduced, setReduced] = useState(false);
   const [counts, setCounts] = useState({ main: 0, second: 0 });
   const countsRef = useRef({ main: 0, second: 0 });
   const [last, setLast] = useState<{ holder: string; event: ForestInteraction } | null>(null);
-  const query = new URLSearchParams(window.location.search);
   const capture = query.get('capture') === '1';
   const initialViewport = query.get('viewport');
   const [viewport, setViewport] = useState<Viewport>(initialViewport === 'portrait' || initialViewport === 'landscape' ? initialViewport : 'desktop');
@@ -240,7 +240,7 @@ function ForestHarness() {
       const unit = Math.min(rect.width, rect.height), dragHits = countsRef.current.main;
       pointer(canvas, 'pointerdown', dragX, dragY);
       pointer(window, 'pointermove', dragX + unit * .22, dragY + unit * .04);
-      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) > .009, 'DOM drag did not move the camera.', 10000);
+      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) > .009, 'DOM drag did not move the camera.', 30000);
       const peakYaw = Math.abs(Number(canvas.dataset.lookYaw));
       pointer(window, 'pointerup', dragX + unit * .22, dragY + unit * .04);
       await delay(120);

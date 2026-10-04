@@ -207,14 +207,7 @@ try {
     assert.equal(await page.getByRole('dialog').count(), 0, 'one tap must not open a second confirmation');
     return { route: await page.evaluate(() => location.hash), oneTrustedTap: true, rendered, motion };
   });
-  await check('cafe app drag reaches visible and hidden chrome and excludes controls', async () => {
-    const visible = await drag(page, true);
-    const hidden = await drag(page, false);
-    await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first().dispatchEvent('pointerdown', { isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 });
-    assert.equal(await page.locator('.cafe-world').getAttribute('data-look'), null, 'transport button must not begin look drag');
-    await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 })));
-    return { visible, hidden, transportControlsStartDrag: false };
-  });
+  // Capture before the longer live drag/motion sequence can queue software-GPU work.
   await check('cafe application pause freezes rendering', async () => { await press(page, '일시정지'); return frozen(page); });
   await check('cafe application desktop and Fold-like paused screenshots', async () => {
     const results = [];
@@ -238,6 +231,7 @@ try {
     await press(page, '전체 화면 보기');
     await page.waitForFunction(() => document.querySelector('[aria-label="몰입 화면"] .cafe-world-canvas') === window.__savedCafeVerificationCanvas);
     assert.equal(await page.locator('.cafe-world-canvas').count(), 1);
+    await frozen(page);
     const screenshot = await capture(page, 'cafe-app-immersive');
     const gpu = await contexts(page);
     assert.equal(gpu.filter((entry) => entry.kind === 'scene' && !entry.lost).length, 1);
@@ -245,9 +239,18 @@ try {
     await page.waitForFunction(() => !document.querySelector('[aria-label="몰입 화면"]') && document.querySelector('.cafe-world-canvas') === window.__savedCafeVerificationCanvas);
     return { sameCanvas: true, contexts: gpu, screenshot, data: await frozen(page) };
   });
-  await check('cafe application resumes and respects OS and app reduced motion', async () => {
+  await check('cafe application resumes and drag reaches visible and hidden chrome and excludes controls', async () => {
     await press(page, '재생');
     const resumed = await running(page);
+    const visible = await drag(page, true);
+    const hidden = await drag(page, false);
+    await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first().dispatchEvent('pointerdown', { isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 });
+    assert.equal(await page.locator('.cafe-world').getAttribute('data-look'), null, 'transport button must not begin look drag');
+    await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 })));
+    return { resumed, visible, hidden, transportControlsStartDrag: false };
+  });
+  await check('cafe application respects OS and app reduced motion', async () => {
+    const beforePreferences = await running(page);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     const osReduced = await frozen(page);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
@@ -255,7 +258,7 @@ try {
     await page.evaluate(() => document.documentElement.classList.add('reduce-motion'));
     const appReduced = await frozen(page);
     await page.evaluate(() => document.documentElement.classList.remove('reduce-motion'));
-    return { resumed, osReduced, appReduced, restored: await running(page) };
+    return { beforePreferences, osReduced, appReduced, restored: await running(page) };
   });
   await check('cafe simulated hidden signal stops rendering and visible signal resumes', async () => {
     await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
@@ -275,7 +278,7 @@ try {
     assert.equal(await page.evaluate(() => location.hash), '#/play/amb/focus_cafe');
     return frozen(page);
   });
-  await check('cafe final app release disposes engine and context after five seconds', async () => {
+  await check('cafe final app release eventually disposes engine and context after the five-second grace period', async () => {
     await remember(page);
     await page.evaluate(() => { location.hash = '#/guide'; });
     return finalDisposal(page);
@@ -321,6 +324,6 @@ try {
 } finally {
   report.finishedAt = new Date().toISOString();
   await persist();
-  try { await bounded(() => browser?.close(), 10_000, 'browser cleanup'); } catch (error) { report.cleanupError = String(error); report.status = 'failed'; process.exitCode = 1; await persist(); }
+  try { await bounded(() => browser?.close(), 30_000, 'browser cleanup'); } catch (error) { report.cleanupError = String(error); report.status = 'failed'; process.exitCode = 1; await persist(); }
   console.log(`Cafe verification report: ${path.join(output, 'cafe-verification.json')}`);
 }

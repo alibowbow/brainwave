@@ -21,6 +21,7 @@ export class ForestEngine implements LiveSceneEngine {
   private time = 0;
   private frame = 0;
   private request = 0;
+  private pendingGPUFrames: WebGLSync[] = [];
   private last = 0;
   private running = false;
   private disposed = false;
@@ -265,6 +266,7 @@ export class ForestEngine implements LiveSceneEngine {
     litter.count=count; this.scene.add(litter);
     this.addFallenWood(materials.bark);
     this.addUnderstory();
+    this.addSurroundingStand(materials.bark);
     this.addBirds();
     this.addSunrays();
     this.addMotes();
@@ -300,6 +302,32 @@ export class ForestEngine implements LiveSceneEngine {
       }
     }
     blades.count=count;blades.castShadow=true;blades.receiveShadow=true;blades.computeBoundingSphere();this.scene.add(blades);
+  }
+
+  private addSurroundingStand(bark: THREE.MeshStandardMaterial) {
+    // Continue the woodland beyond the central path and wide-screen frustum.
+    // These are real tapered trunks/branches at different depths, never a flat
+    // skyline image. A separate seed keeps nearby leaves and stones unchanged.
+    const random=forestRandom(9187),parts:THREE.BufferGeometry[]=[];
+    const up=V(0,1,0);
+    const limb=(start:THREE.Vector3,end:THREE.Vector3,radius:number,tip:number)=>{
+      const direction=end.clone().sub(start),geometry=new THREE.CylinderGeometry(tip,radius,direction.length(),7,3);
+      geometry.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(up,direction.normalize()));
+      geometry.translate(...start.clone().add(end).multiplyScalar(.5).toArray());parts.push(geometry);
+    };
+    for(let row=0;row<6;row++)for(let column=0;column<24;column++){
+      const x=(column-11.5)*4.3+(random()-.5)*2.8,z=-9-row*9+(random()-.5)*4;
+      if(Math.abs(x)<8.5)continue;
+      const base=V(x,groundHeight(x,z)-.1,z),height=9+random()*13,radius=.13+random()*.24;
+      const tip=base.clone().add(V((random()-.5)*1.7,height,(random()-.5)*1.3));
+      limb(base,tip,radius,.04);
+      for(let branch=0;branch<3;branch++){
+        const start=base.clone().lerp(tip,.45+branch*.14),angle=random()*6.28,reach=1.8+random()*2.4;
+        limb(start,start.clone().add(V(Math.cos(angle)*reach,1.3+random()*1.7,Math.sin(angle)*reach)),radius*.22,.012);
+      }
+    }
+    const stand=new THREE.Mesh(mergeGeometries(parts),bark);parts.forEach(g=>g.dispose());
+    stand.castShadow=true;stand.receiveShadow=true;this.scene.add(stand);
   }
 
   private addWater() {
@@ -403,7 +431,9 @@ export class ForestEngine implements LiveSceneEngine {
   renderFrame(dt:number){
     if(!this.ready||this.disposed)return;
     const step=Math.max(0,Math.min(dt,.05));this.time+=step;this.clock.value=this.time;
-    this.look.update(step);
+    // The analytic camera spring follows elapsed time even on a slow GPU.
+    // Ambient wind remains conservatively clamped after unusually long frames.
+    this.look.update(Math.max(0,Math.min(dt,1)));
     this.camera.lookAt(Math.sin(this.look.yaw)*14,1.65+this.look.pitch*14,-9);
     this.waterUniforms.time.value=this.time;
     for(let i=0;i<this.plants.length;i++){
@@ -413,12 +443,34 @@ export class ForestEngine implements LiveSceneEngine {
     }
     for(let i=0;i<this.birds.length;i++)this.birds[i].rotation.y=.65+Math.sin(this.time*.21+i*2.1)*.09;
     this.renderer.info.reset();this.renderer.render(this.scene,this.camera);this.frame++;
+    const gl=this.renderer.getContext() as WebGL2RenderingContext;
+    const fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
+    if(fence)this.pendingGPUFrames.push(fence);gl.flush();
     Object.assign(this.canvas.dataset,{frames:String(this.frame),time:this.time.toFixed(4),lookYaw:this.look.yaw.toFixed(5),lookPitch:this.look.pitch.toFixed(5),drawCalls:String(this.renderer.info.render.calls),triangles:String(this.renderer.info.render.triangles)});
+  }
+
+  private retireGPUFrames(){
+    const gl=this.renderer.getContext() as WebGL2RenderingContext;
+    while(this.pendingGPUFrames.length){
+      const fence=this.pendingGPUFrames[0],status=gl.clientWaitSync(fence,0,0);
+      if(status===gl.TIMEOUT_EXPIRED)break;
+      gl.deleteSync(fence);this.pendingGPUFrames.shift();
+    }
   }
 
   start(){
     if(this.running||this.disposed)return;this.running=true;this.canvas.dataset.running='true';this.last=performance.now();
-    const tick=(now:number)=>{if(!this.running)return;const dt=(now-this.last)/1000;this.last=now;this.renderFrame(dt);this.request=requestAnimationFrame(tick);};
+    const tick=(now:number)=>{
+      if(!this.running)return;
+      this.retireGPUFrames();
+      // Keep at most two live GPU submissions in flight. This preserves normal
+      // display-rate RAF rendering without queuing seconds of stale frames on
+      // a busy GPU. It neither fixes FPS nor reduces pixels/material quality.
+      if(this.pendingGPUFrames.length<2){
+        const dt=(now-this.last)/1000;this.last=now;this.renderFrame(dt);
+      }
+      this.request=requestAnimationFrame(tick);
+    };
     this.request=requestAnimationFrame(tick);
   }
   stop(){this.running=false;cancelAnimationFrame(this.request);this.request=0;this.canvas.dataset.running='false';this.look.release();}
@@ -430,7 +482,8 @@ export class ForestEngine implements LiveSceneEngine {
   captureFrame(){
     if(!this.ready||this.disposed)throw new Error('Forest renderer is not ready.');
     this.renderFrame(0);
-    return {dataUrl:this.canvas.toDataURL('image/jpeg',.9),width:this.canvas.width,height:this.canvas.height,time:this.time};
+    const result={dataUrl:this.canvas.toDataURL('image/jpeg',.9),width:this.canvas.width,height:this.canvas.height,time:this.time};
+    this.retireGPUFrames();return result;
   }
   setOnInteraction(callback:((event:ForestInteraction)=>void)|undefined){this.onInteraction=callback;}
   touch(x:number,y:number){
@@ -455,6 +508,8 @@ export class ForestEngine implements LiveSceneEngine {
 
   dispose(){
     if(this.disposed)return;this.stop();this.disposed=true;this.ready=false;this.onInteraction=undefined;
+    const gl=this.renderer.getContext() as WebGL2RenderingContext;
+    this.pendingGPUFrames.forEach(fence=>gl.deleteSync(fence));this.pendingGPUFrames=[];
     this.canvas.removeEventListener('webglcontextlost',this.onLost);
     const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>(),textures=new Set<THREE.Texture>();
     this.scene.traverse(object=>{

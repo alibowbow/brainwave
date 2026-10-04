@@ -3,7 +3,7 @@
 Original foundation base: `1bb79ac572e8568676881bbc7b4404f1bac443e8` (remote main checked 2026-10-04).
 Current local integration baseline: `14940149cc5c0fccb778b58d4d755a04aea55e53`, incorporating the independently merged sea PR #51. Both protected renderer directories are exactly equal to this remote main; they were not edited during pilot integration.
 Branch: `codex/immersive-worlds-integration-20261004`. Draft only; **do not merge until the user's later instruction**.
-At this recorded checkpoint, remote draft PR #48 remains at `7816e3b3b9704aed0ad94c87038acf50bfb43b21`, containing main `14940149`, forest `6a58c25` and café `c0de2c4`. Local forest `f4d24d6`, café `8b9383b` and cosmic `a0178fa` admissions are newer and are not yet pushed or certified by that run. See [pilot review and evidence](./pilot-review-2026-10-04.md).
+Last completed integration CI is `a2ff7f99258de0a7fd9d8885b91dd31c45f5c245`, containing main `14940149`, forest `f4d24d6`, café `8b9383b` and cosmic `a0178fa`. It failed overall; detailed pass/fail/not-run evidence and the next draft revision are recorded below. See [pilot review and evidence](./pilot-review-2026-10-04.md).
 The [complete supplied brief](./scene-upgrade-implementation-brief.md) fixes all 30 world directions, audio directions, JEV references and license limits. Its exact canonical IDs are checked against the 32-card catalog minus the two protected worlds in unit tests. This foundation does not implement or register the remaining 27 worlds.
 
 Later [confirmed design updates](./confirmed-design-updates.md) override the initial brief: only `nature:rural_summer_night` combines the preserved original countryside composition/palette with Ghibli-inspired atmosphere and actual original 3D Zelda-inspired toon shading, without heavy outlines or copied characters/game assets. Its implementation remains assigned later to a separate Work.
@@ -130,7 +130,7 @@ This section records the earlier `531ecb2` admission and its then-current state.
 The initial read-only PR #50 audit at `051c5249` found only café-owned changes, `active` as the sole required prop and no independent audio/media/remote assets. The reviewed `c0de2c4` update fixes the maximum-distance tap guard: an out-and-back drag is no longer classified only by its endpoints. Its matching compiled QA bundle and four PNGs are supplied with the owner checks. The optional callback uses `cup | lamp | window`, unlike forest's position-bearing object; it remains unconnected pending shared audio review. Use `data-lifecycle=disposed`, not forest's `data-disposed`, for final release. Distinguish the destroyed capability-probe context from live renderer contexts and treat geometry counters as nonzero-render evidence, not whole-frame performance totals. Both the five-second delayed release and fresh remount are reported passed in the owner isolated suite; integrated browser QA remains a separate gate.
 
 
-## Current three-pilot draft checkpoint
+## Historical pre-a2ff7f9 three-pilot checkpoint
 
 - Latest local sources are forest `f4d24d60c92317f9bc158b1c00af217faa1d923d`, café `8b9383b8086b99bec04eb2273a68ec9d2bd76f43` and cosmic `a0178faaf919a07cd04bdf53a5efa476b58b8e5e`, merged unchanged after ownership/source review. All three IDs are explicitly lazy-registered. Only `active: boolean` is required; ownership, optional callback policy, five-second release and shared audio behavior are unchanged. Remote PR #48 remains `7816e3b` pending the next push.
 - The latest local combination, forest `f4d24d6`, café `8b9383b` and cosmic `a0178fa`, passed typecheck, **188 tests across 28 files**, build and bundle. Entry JS remains **404.2 / 410 KiB**, CSS **100.6 / 135 KiB**; world/Three chunks remain absent from initial static imports and service-worker precache. All three owned trees are byte-identical to their respective heads, and protected renderer trees exactly match main `14940149`. Browser and final visual acceptance remain separate pending gates.
@@ -145,3 +145,44 @@ The initial read-only PR #50 audit at `051c5249` found only café-owned changes,
 - The shared host permits paused ResizeObserver redraws using `renderFrame(0)`. The old café failure lacks an initial simulation-time sample, so its extra frame cannot be declared benign. The new still helper anchors clock and canvas identity through 400ms of layout settling, then requires 500ms with no frame, time or dimension changes. This revised assertion is pending CI; it does not convert the earlier failure into a pass.
 - CI now splits retained evidence into scene-core, audio, forest, café and cosmic artifacts and gives each pilot command a bounded 20-minute supervisor. The still helper's failure paths were checked with mocks; actual browser verification of these changes remains pending.
 - Keep all three pilots in draft until the user's actual visual gate. The existence of newer group PRs does not authorize this Work to implement or modify their owned worlds, or to merge main ahead of the requested instruction.
+
+
+## Completed a2ff7f9 integration CI and capture follow-up
+
+[CI37229018361](https://github.com/alibowbow/brainwave/actions/runs/37229018361) completed **failed**. Typecheck, 188 tests in 28 files, build, bundle, official browser installation, all four protected/existing scene commands and all seven audio checks passed. Protected renderer trees and the updated sea poster still exactly match remote main `14940149` (rechecked after this run).
+
+| Pilot source in this run | Passed evidence | Failed or not run |
+| --- | --- | --- |
+| Forest `f4d24d6` | Source harness ready/geometry, pause, four viewport PNGs, simulated hidden and both reduced-motion signals | Second-holder PNG exceeded120s despite same-canvas identity; disposal exceeded its then15s wait. Remount and all actual-app checks were not reached. |
+| Café `8b9383b` | Actual-app one-tap route, drag/control exclusion, pause, four viewport layouts, CSS immersive identity, reduced motion, simulated hidden, paused Back, actual final context loss; rebuilt standalone PNG, holder transfer, disposal/remount; zero runtime/renderer errors | App desktop PNG exceeded120s; remaining app PNGs not run on the stalled page. Final browser cleanup exceeded10s. |
+| Cosmic `a0178fa` | All implemented app/standalone functional checks, including one-tap route, paused Back, exact-canvas immersive transfer, native final context loss/fresh renderer; standalone PNG; zero runtime/renderer errors | App desktop PNG exceeded120s; remaining app PNGs not run. JSON correctly reports functional passed, visual evidence incomplete, overall failed. |
+
+The three capture failures reached the compositor stage; fonts/preparation/CDP setup were fast. Standalone café/cosmic captures succeeded at the same1440×1000 viewport. App captures followed running drag checks; hidden chrome waits leave rendering active. Pending software GPU work is a plausible cause, not an established CSS defect. Submitted frame counts are not GPU-completion or hardware performance evidence. Café/cosmic actual context loss was observed roughly66s after removal in the app; this does not prove disposal completes at exactly the five-second grace boundary.
+
+The next shared-QA revision captures immediately after one trusted playback tap, running proof and pause, before drag/motion tests. All behavioral assertions remain afterward; resolution, DPR, materials, shadows and app CSS remain unchanged. Forest's second-holder capture also runs while paused before motion cycles and after the stillness gate. Forest final-disposal observation uses the same120s bound as the other pilots, while preserving actual elapsed time and native context-loss assertions; café browser cleanup alone is raised from10s to30s based on the observed late process exit. Forest additionally checks app reduced motion and simulated visibility on the actual route. No timeout is converted into a pass.
+
+The revised still helper passed café and cosmic paused Back assertions in this run; it does not retroactively erase the old49→50 failure. Each CI artifact now uploads immediately after its own gate, preserving early protected-scene evidence while later pilots run. The revised ordering still requires exact-head browser CI.
+
+| Artifact | Direct download page |
+| --- | --- |
+| Protected/existing PNGs | [scene-core11313319667](https://github.com/alibowbow/brainwave/actions/runs/37229018361/artifacts/11313319667) |
+| Audio PNGs/JSON | [scene-audio11313229893](https://github.com/alibowbow/brainwave/actions/runs/37229018361/artifacts/11313229893) |
+| Forest PNGs/JSON | [scene-forest11313483790](https://github.com/alibowbow/brainwave/actions/runs/37229018361/artifacts/11313483790) |
+| Café PNG/JSON | [scene-cafe11313409237](https://github.com/alibowbow/brainwave/actions/runs/37229018361/artifacts/11313409237) |
+| Cosmic PNG/JSON | [scene-cosmic11313234893](https://github.com/alibowbow/brainwave/actions/runs/37229018361/artifacts/11313234893) |
+
+All five archive SHA-256 values were checked before extraction. Actual still PNGs were opened, including protected focus/sea and the three pilot standalone surfaces. The pilot review document records their visual limitations. Fold means viewport simulation only; injected visibility and CSS immersive mode do not establish native background-tab or browser Fullscreen API behavior. The optional outbound touch callbacks remain unconnected; existing `subscribeEvents` is passed through and cosmic uses existing bowl/chime events only for a visual reaction, creating no new audio.
+
+
+## Latest forest admission and next exact-head gate
+
+Forest PR#49 advanced to `1925398f9c1eaf2319bf624d4f17e68e17d745dd`; the coordinator reviewed and merged those owned paths unchanged into the draft. Its [final owner CI37230588364](https://github.com/alibowbow/brainwave/actions/runs/37230588364) and the two earlier runtime/paused-start runs completed successfully. These independent results do not replace the upcoming shared-app CI. Café remains `8b9383b`; cosmic remains `a0178fa`.
+
+The forest revision adds surrounding procedural trunks/branches, corrects the native-capture selection, and uses asynchronously polled WebGL2 fences to admit at most two pending **animation** submissions. It preserves display RAF, native render dimensions, existing2048 shadows/1024 reflections and material/geometry quality. Paused resize redraws may still append fences beyond that animation bound; they are retired on resume/capture or deleted on disposal. No all-path GPU queue bound or measured hardware FPS is claimed. The camera spring separately follows elapsed time capped at one second; ambient simulation keeps its conservative50ms step clamp. Initial active=false is now explicitly covered by owner time-zero captures.
+
+The rebuilt public forest QA bundle now matches the recorded owner-source hashes; the old989 bundle limitation is historical. CI continues using the source harness with current shared helpers, so its results do not silently inherit the owner bundle's older shared-host snapshot. New owner JPGs/report include actual native WebGL pixels and motion evidence; they do not replace app compositor PNGs. Native headless tab/minimize attempts did not expose hidden state, so actual background-tab behavior remains unverified and separate from passing simulated visibility signals.
+
+All three pilot component contracts still require only active:boolean. Pilot files and both protected scene trees remain untouched by coordinator edits. No remaining27 scene, main merge, Vercel access change or additional service is included.
+
+
+Local verification of this latest1925398/8b9383b/a0178fa combination: typecheck and188 unit tests/28 files passed. The first bundle check found two stale local index assets; a clean generated dist rebuild resolved that build-output contamination. Fresh build and bundle pass at404.2/410KiB entry JS and100.6/135KiB CSS, with no scene/Three chunk in initial imports or precache. Shared verifier syntax and workflow ordering checks pass. This is not a local browser pass; exact-head CI is still required.

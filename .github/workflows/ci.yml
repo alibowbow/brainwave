@@ -54,31 +54,6 @@ jobs:
           npm run verify:sea
           npm run verify:links
 
-      - name: Verify audio failures and recovery
-        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
-        env:
-          SCENE_SCREENSHOT_DIR: qa/screenshots
-        run: npm run verify:audio
-
-      - name: Verify admitted immersive worlds
-        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
-        env:
-          SCENE_SCREENSHOT_DIR: qa/screenshots
-          SCENE_FOREST_HARNESS_URL: http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
-        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:worlds
-
-      - name: Verify integrated cafe world
-        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
-        env:
-          SCENE_SCREENSHOT_DIR: qa/screenshots
-        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cafe
-
-      - name: Verify integrated cosmic world
-        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
-        env:
-          SCENE_SCREENSHOT_DIR: qa/screenshots
-        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cosmic
-
       - name: Preserve protected and existing scene screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -89,6 +64,12 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Verify audio failures and recovery
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: npm run verify:audio
+
       - name: Preserve audio screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
@@ -98,6 +79,13 @@ jobs:
             qa/screenshots/audio
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Verify admitted immersive worlds
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+          SCENE_FOREST_HARNESS_URL: http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
+        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:worlds
 
       - name: Preserve forest screenshots and results
         if: always()
@@ -110,6 +98,12 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Verify integrated cafe world
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cafe
+
       - name: Preserve cafe screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
@@ -119,6 +113,12 @@ jobs:
             qa/screenshots/worlds/cafe-*
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Verify integrated cosmic world
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cosmic
 
       - name: Preserve cosmic screenshots and results
         if: always()

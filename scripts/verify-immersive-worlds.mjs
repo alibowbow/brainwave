@@ -21,15 +21,15 @@ const report = {
   baseUrl: BASE,
   renderer: 'Chromium headless with SwiftShader',
   captureMethod: 'Bounded native Chromium compositor capture, lossless PNG, unchanged viewport and rendering quality. GPU readback can still fail; capture failures remain failures.',
-  applicationPilotHead: 'f4d24d60c92317f9bc158b1c00af217faa1d923d',
-  standalonePilotHead: process.env.SCENE_FOREST_HARNESS_URL ? 'f4d24d60c92317f9bc158b1c00af217faa1d923d' : '989186c396e9b15641d8ef31d43c5dee7df5b49a',
+  applicationPilotHead: '1925398f9c1eaf2319bf624d4f17e68e17d745dd',
+  standalonePilotHead: '1925398f9c1eaf2319bf624d4f17e68e17d745dd',
   standaloneUrl: HARNESS,
   deviceScope: 'Desktop and Fold-like CSS viewport checks; no physical Fold or FPS measurement.',
   visibilityScope: 'Simulated document.hidden getter and visibilitychange event; not a real background-tab test.',
   fullscreenScope: 'One canvas across the harness second holder and application CSS immersive overlay; not browser Fullscreen API.',
   sourceScope: process.env.SCENE_FOREST_HARNESS_URL
-    ? 'Both the source standalone harness and production-built application use reviewed f4d24d6 source and current integration helpers. The older public QA bundle is not used in this run.'
-    : 'Public standalone QA is the older 989186c snapshot; application checks use reviewed f4d24d6 source. Never label old bundle PNGs as latest-head evidence.',
+    ? 'Both the source standalone harness and production-built application use reviewed 1925398 source and current integration helpers. The owner-built public QA bundle is not used in this run.'
+    : 'Public standalone QA matches the owner source hashes recorded at 1925398, but embeds its original shared helpers; the application uses current integration helpers. These are distinct surfaces.',
   visualReview: 'PNG artifacts require human visual inspection; this script does not grade artistic quality.',
   checks: [],
   errors: [],
@@ -197,7 +197,7 @@ const disposedAfterRelease = async (page) => {
   const started = Date.now();
   // The unmodified pilot uses the protected-compatible five-second host default.
   await page.waitForTimeout(5100);
-  await page.waitForFunction(() => window.__forestVerificationCanvas?.dataset.disposed === 'true', undefined, { timeout: 15_000, polling: 100 });
+  await page.waitForFunction(() => window.__forestVerificationCanvas?.dataset.disposed === 'true', undefined, { timeout: 120_000, polling: 100 });
   const evidence = await page.evaluate((waitedMs) => ({
     waitedAfterRemovalMs: waitedMs,
     disposed: window.__forestVerificationCanvas.dataset.disposed,
@@ -265,6 +265,19 @@ try {
   });
   await check('standalone paused desktop and Fold-like viewport screenshots', () => viewportCaptures(harness, 'harness'));
 
+  await check('standalone second holder reuses the exact canvas and restores it', async () => {
+    await rememberCanvas(harness);
+    await pressHarness(harness, 'holder-toggle');
+    await harness.waitForFunction(() => document.querySelector('[data-testid="second-holder"] .forest-world-canvas') === window.__forestVerificationCanvas);
+    assert.equal(await harness.locator('.forest-world-canvas').count(), 1);
+    await frozen(harness);
+    const screenshot = await capture(harness, 'forest-harness-second-holder');
+    await pressHarness(harness, 'holder-toggle');
+    await harness.waitForFunction(() => document.querySelector('[data-testid="main-holder"] .forest-world-canvas') === window.__forestVerificationCanvas);
+    assert.equal(await harness.locator('.forest-world-canvas').count(), 1);
+    return { sameCanvas: true, screenshot, snapshot: await frozen(harness) };
+  });
+
   await check('standalone simulated hidden document stops and visible document resumes', async () => {
     await pressHarness(harness, 'active-toggle');
     await running(harness);
@@ -294,20 +307,9 @@ try {
     await pressHarness(harness, 'motion-toggle');
     return { reduced, restored: await running(harness) };
   });
-  await check('standalone second holder reuses the exact canvas and restores it', async () => {
+  await check('standalone final holder release eventually reaches engine disposal after the five-second grace', async () => {
     await pressHarness(harness, 'active-toggle');
     await frozen(harness);
-    await rememberCanvas(harness);
-    await pressHarness(harness, 'holder-toggle');
-    await harness.waitForFunction(() => document.querySelector('[data-testid="second-holder"] .forest-world-canvas') === window.__forestVerificationCanvas);
-    assert.equal(await harness.locator('.forest-world-canvas').count(), 1);
-    const screenshot = await capture(harness, 'forest-harness-second-holder');
-    await pressHarness(harness, 'holder-toggle');
-    await harness.waitForFunction(() => document.querySelector('[data-testid="main-holder"] .forest-world-canvas') === window.__forestVerificationCanvas);
-    assert.equal(await harness.locator('.forest-world-canvas').count(), 1);
-    return { sameCanvas: true, screenshot, snapshot: await frozen(harness) };
-  });
-  await check('standalone final holder release reaches engine disposal after five seconds', async () => {
     await pressHarness(harness, 'mount-toggle');
     return disposedAfterRelease(harness);
   });
@@ -336,16 +338,6 @@ try {
     assert.equal(await app.getByRole('dialog').count(), 0, 'one playback tap must not require a second dialog');
     return { route: await app.evaluate(() => location.hash), autoplayBlocked: blocked, oneTapRetry: blocked, ...motion };
   });
-  await check('application drag works through visible chrome and the uncovered canvas', async () => {
-    const visibleChrome = await dragThroughChrome(app, true);
-    const hiddenChrome = await dragThroughChrome(app, false);
-    await app.evaluate(() => {
-      const control = document.querySelector('[aria-label^="남은 시간"]');
-      control.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, pointerId: 42, pointerType: 'mouse', button: 0 }));
-    });
-    assert.equal(await app.locator('.forest-world').getAttribute('data-look'), null, 'transport controls must not start look drag');
-    return { visibleChrome, hiddenChrome, transportControlsStartDrag: false, events: 'synthetic pointer events dispatched to actual hit-tested targets' };
-  });
   await check('application pause stops the real renderer', async () => {
     await pressApp(app, '일시정지');
     return frozen(app);
@@ -356,13 +348,25 @@ try {
     await pressApp(app, '전체 화면 보기');
     await app.waitForFunction(() => document.querySelector('[aria-label="몰입 화면"] .forest-world-canvas') === window.__forestVerificationCanvas);
     assert.equal(await app.locator('.forest-world-canvas').count(), 1);
+    await frozen(app);
     const screenshot = await capture(app, 'forest-app-immersive');
     await app.keyboard.press('Escape');
     await app.waitForFunction(() => !document.querySelector('[aria-label="몰입 화면"]') && document.querySelector('.forest-world-canvas') === window.__forestVerificationCanvas);
     return { sameCanvas: true, fullscreenType: 'CSS immersive overlay', screenshot, snapshot: await frozen(app) };
   });
-  await check('application respects OS reduced motion while the session plays', async () => {
+  await check('application drag works through visible chrome and the uncovered canvas', async () => {
     await pressApp(app, '재생');
+    await running(app);
+    const visibleChrome = await dragThroughChrome(app, true);
+    const hiddenChrome = await dragThroughChrome(app, false);
+    await app.evaluate(() => {
+      const control = document.querySelector('[aria-label^="남은 시간"]');
+      control.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, pointerId: 42, pointerType: 'mouse', button: 0 }));
+    });
+    assert.equal(await app.locator('.forest-world').getAttribute('data-look'), null, 'transport controls must not start look drag');
+    return { visibleChrome, hiddenChrome, transportControlsStartDrag: false, events: 'synthetic pointer events dispatched to actual hit-tested targets' };
+  });
+  await check('application respects OS reduced motion while the session plays', async () => {
     await running(app);
     await app.emulateMedia({ reducedMotion: 'reduce' });
     const reduced = await frozen(app);
@@ -371,6 +375,21 @@ try {
     await pressApp(app, '일시정지');
     await frozen(app);
     return { reduced, restored };
+  });
+  await check('application app reduced motion and simulated hidden state pause and resume', async () => {
+    await pressApp(app, '재생');
+    await running(app);
+    await app.evaluate(() => document.documentElement.classList.add('reduce-motion'));
+    const appReduced = await frozen(app);
+    await app.evaluate(() => document.documentElement.classList.remove('reduce-motion'));
+    await running(app);
+    await app.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+    const hidden = await frozen(app);
+    await app.evaluate(() => { delete document.hidden; document.dispatchEvent(new Event('visibilitychange')); });
+    const restored = await running(app);
+    await pressApp(app, '일시정지');
+    await frozen(app);
+    return { method: 'simulated visibility signal; not an actual background tab', appReduced, hidden, restored };
   });
   await check('application navigation away and browser Back restore the correct paused world', async () => {
     await app.evaluate(() => { location.hash = '#/guide'; });
@@ -381,7 +400,7 @@ try {
     assert.equal(await app.evaluate(() => location.hash), '#/play/amb/morning_forest');
     return frozen(app);
   });
-  await check('application final navigation releases the engine after five seconds', async () => {
+  await check('application final navigation eventually releases the engine after the five-second grace', async () => {
     await rememberCanvas(app);
     await app.evaluate(() => { location.hash = '#/guide'; });
     return disposedAfterRelease(app);

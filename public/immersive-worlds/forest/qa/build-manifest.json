@@ -1,0 +1,15 @@
+{
+  "source": "Original procedural Three.js morning forest; no generated/downloaded imagery.",
+  "generatedAt": "2026-10-04T20:01:01.916Z",
+  "sourceSha256": {
+    "ForestEngine.ts": "1b851c559a2262c2f68844c866630ba4c8e8b5e8966f5715277146cd87fe530b",
+    "forestStones.ts": "2e58972f0c129a398e5f2d29cc531cb4b97c7089d5b344577658d587100dd82f",
+    "ForestWorld.tsx": "5a59184586da62dfe27d80a27897ffa84b444de20ca0ba52772dc0ed50f6b71d",
+    "botany.ts": "599534c50fce0058cd9a694a7ac58ad51ba61833ccf3cd93a2735f5bd354e72a",
+    "forestHost.ts": "5f9355bb31468e6fcd5a7620703f8fc61e6b8ebced512ab66db5451f4651a78f",
+    "forestMath.ts": "82067fb3c7c84931de95a546b4115bbc65573c23f2805d7b574e7f3964d18afd",
+    "forest.css": "3fe829475f658cefa32067bd0f9ae487b559cd1d0078785230080abc4ac65bd9",
+    "harness.tsx": "b8a8e6b7696309eb679cf09740a80a3b49c4dc5559d860dce9e504c51f448e6f"
+  },
+  "bundleSha256": "51f7e29c5f488fe992441634e24cf3c6f564e547bf18b104105818a255572091"
+}

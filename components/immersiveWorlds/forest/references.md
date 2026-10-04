@@ -43,7 +43,7 @@ The live render had a broad irregular crown, visible branch hierarchy, finer tip
 
 **User-confirmed selected principles:** branch hierarchy, depth-dependent elastic response, leaf variation and dappled light. These should support dense true woodland depth without repeating identical umbrella-shaped crowns. No season cycle, regrowth or tree shaking.
 
-**Implementation honesty:** at this review checkpoint, `botany.ts` builds branched geometry but merges the woody parts; it does not animate a complete articulated branch hierarchy. `ForestEngine.ts` supplies small phase-varied foliage vertex motion and foreground plant-group motion. This is a partial adoption of the reference's motion principle. Static woody branches plus shader leaf motion must not be described as full hierarchical elastic tree simulation. Any further articulated movement must be demonstrated in final scene QA before claiming it.
+**Implementation honesty:** `botany.ts` builds branched geometry but merges the woody parts; it does not animate an articulated branch hierarchy. `ForestEngine.ts` applies the same slow, height-weighted woody bend to wood and canopy, then adds smaller phase-varied leaf motion. Foreground wet leaves and droplets move together at their plant group. This is an inherited-bend approximation, not a full hierarchical elastic tree simulation.
 
 ### Opus 061 — Dusk Meadow, Fireflies
 
@@ -61,7 +61,7 @@ The actual render has clearly separated mountain layers and trees whose contrast
 
 The live garden's stones read as solid because broad mottling, finer grain, consistent one-sided highlights and contact darkness reinforce each other. Moss has an irregular fuzzy edge and small light tips, not just a green fill. Source inspection of `spriteStone`, `spriteIsland` and `relight` confirmed layered spatial variation, height-derived normals, coherent light direction and edge/contact shading. These are 2D height/sprite techniques, not reusable 3D assets.
 
-**Selected principle:** make the forest's wet stones and moss materially distinct with varied surface scale, grounded edges and controlled highlights. Avoid uniformly green rocks or flat moss-colored surfaces. No top-down garden frame or rake interface. Stone/moss improvements remain subject to final forest screenshots; this reference alone does not establish that the scene meets the quality target.
+**Selected principle:** make the forest's wet stones and moss materially distinct with varied surface scale, grounded edges and controlled highlights. Avoid uniformly green rocks or flat moss-colored surfaces. No top-down garden frame or rake interface. The resulting stone/moss changes were inspected in the final forest screenshots; see `qa/verification.md`. This reference alone does not establish the scene quality.
 
 ## Independent minimal hierarchical-motion design
 
@@ -86,7 +86,19 @@ was brightened. Pool distortion is weaker at the far bank, and solid foreground
 surfaces block touch picking. Seasons, night lighting, attracted organisms, seed
 storms, growth demonstrations and independently scheduled audio were rejected.
 
-These are review observations, not final visual verdicts. The implementation owner is addressing them; final verification belongs in the QA report.
+These observations guided the implementation iterations. The resulting forest captures and their verification limits are recorded in `qa/verification.md`.
+
+After reviewing the first actual 3D desktop and narrow captures, side gaps were
+filled with differently aged trees, middle-distance saplings and rooted ground
+blades. Far trees and ferns were batched without flattening their geometry.
+Grass uses low-frequency spatially varied sinusoidal bending with fixed roots;
+it is not a spring solver. The damped touch response belongs to nearby leaf
+groups, and the camera return uses the existing shared spring. Batched distant
+wood shares a coarser phase than separate near trees. These deliberate limits
+keep the movement restrained without claiming a full Opus-style elastic system.
+Large stone normals are continuous across triangle corners, wet grey stone and
+upper moss are distinct, and small three-dimensional moss tufts break the edge.
+The forest remains an independent bright morning 3D scene throughout.
 
 - Very narrow portrait framing can crop out all near macro leaves, losing the requested veins/dew even if the pool remains visible. Check actual narrow portrait and landscape, not only desktop.
 - Dark albedo multiplied by dark ground vertex colors can suppress foreground material readability; inspect actual exposure and contact contrast.

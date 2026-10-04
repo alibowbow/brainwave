@@ -84,7 +84,7 @@ float surfPhase(vec2 p, float d) {
   float here = hash12(vec2(floor(section), 3.0));
   float next = hash12(vec2(floor(section) + 1.0, 3.0));
   spacing += 0.42 * (mix(here, next, smoothstep(0.6, 1.0, fract(section))) - 0.5) * smoothstep(20.0, 120.0, d);
-  return spacing + 0.5 * (vnoise(vec2(along * 0.004, 1.3)) - 0.5) + 0.7 * (fbm3(p * 0.007) - 0.5) + 0.4 * (fbm3(p * 0.02 + 3.0) - 0.5) + 0.26 * (vnoise(p * 0.045 + 9.0) - 0.5) + 0.16 * (vnoise(p * 0.11) - 0.5) + uTime / 9.0;
+  return spacing + 0.5 * (vnoise(vec2(along * 0.004, 1.3)) - 0.5) + 0.7 * (fbm3(p * 0.007) - 0.5) + 0.4 * (fbm3(p * 0.02 + 3.0) - 0.5) + 0.18 * (vnoise(p * 0.045 + 9.0) - 0.5) + 0.1 * (vnoise(p * 0.11) - 0.5) + uTime / 9.0;
 }
 
 // The swell arrives in sets: a few big waves, then a lull of smaller ones.
@@ -100,11 +100,13 @@ float brokenAt(vec2 p, float d, float wave) {
   float along = alongShore(p);
   float breakLine = 160.0 + 70.0 * vnoise(vec2(along * 0.01, 3.1));
   float progress = smoothstep(breakLine + 10.0, breakLine - 100.0, d);
-  float stretch = vnoise(vec2(along * 0.032 + wave * 7.1, wave * 2.3)) * 0.7 + vnoise(vec2(along * 0.12 + wave * 3.3, wave * 5.7)) * 0.3;
-  float threshold = 0.64 - 0.32 * progress - 0.14 * smoothstep(70.0, 25.0, d);
+  float stretch = vnoise(vec2(along * 0.02 + wave * 7.1, wave * 2.3)) * 0.7 + vnoise(vec2(along * 0.09 + wave * 3.3, wave * 5.7)) * 0.3;
+  float threshold = 0.6 - 0.32 * progress - 0.14 * smoothstep(70.0, 25.0, d);
   // Smaller waves between the sets only break close in.
   float small = step(setStrength(wave), 0.72) * smoothstep(40.0, 90.0, d);
-  return smoothstep(threshold, threshold + 0.06, stretch) * smoothstep(breakLine + 25.0, breakLine, d) * (1.0 - small);
+  // A crest breaks gradually: the foam thickens along it, then thins again,
+  // and never quite leaves it.
+  return smoothstep(threshold - 0.14, threshold + 0.2, stretch) * smoothstep(breakLine + 25.0, breakLine, d) * (1.0 - small);
 }
 
 // Height of the surf; cycle is where a point sits between two crests (0 just
@@ -141,6 +143,30 @@ float threads(vec2 q, float width, float aa) {
   return 1.0 - smoothstep(width - aa, width + aa, f);
 }
 
+// Sparkle (윤슬) at one scale: a lattice laid along the swell (s across the
+// crests, a along them, in metres), each cell holding at most one soft dash
+// that lies along the crests, flashing on and off in its own time. weight
+// thins the cells out, for fading from one scale to the next.
+float sparkleDashes(vec2 sa, float size, float seed, float density, float weight) {
+  vec2 u = vec2(sa.x / size, sa.y / (3.0 * size));
+  vec2 id = floor(u) + seed;
+  vec2 f = fract(u) - 0.5;
+  vec2 j = hash22(id);
+  vec2 k = hash22(id + 31.7);
+  vec2 m = hash22(id + 77.1);
+  // Whether it is there at all, and when it flashes.
+  float present = smoothstep(0.0, 0.08, density * weight - (1.0 - k.x));
+  float blink = smoothstep(0.3, 0.75, 0.5 + 0.5 * sin(uTime * (1.5 + 3.0 * m.y) + 6.2832 * j.x));
+  // The dash: a lens somewhere in its cell, lying a little askew to the crest.
+  float tilt = (j.y - 0.5) * 0.7;
+  vec2 d = (f - (j - 0.5) * 0.3) * vec2(size, 3.0 * size);
+  vec2 r = vec2(d.x * cos(tilt) - d.y * sin(tilt), d.x * sin(tilt) + d.y * cos(tilt));
+  vec2 reach = vec2(0.2 * size, size * (0.7 + 0.6 * m.x));
+  float e = dot(r / reach, r / reach);
+  float shape = smoothstep(0.12, 0.6, exp(-2.5 * e));
+  return shape * present * blink * (0.3 + 0.7 * k.y * k.y) * (1.0 + 0.8 * smoothstep(0.9, 1.0, m.x));
+}
+
 vec3 shadeSea(vec3 world, vec3 eye) {
   vec2 p = world.xz;
   vec3 toEye = eye - world;
@@ -163,6 +189,9 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float wave;
   float waveSize;
   float surfHeight = surf(p, d, cycle, wave, waveSize);
+  // How much of a wave's cycle one pixel covers here (continuous across the crest).
+  float behind = cycle < 0.5 ? cycle : cycle - 1.0;
+  float pixelCycle = fwidth(wave + behind);
   float broken = brokenAt(p, d, wave);
   float surfZone = smoothstep(330.0, 170.0, d);
   float inner = smoothstep(90.0, 30.0, d);
@@ -171,25 +200,33 @@ vec3 shadeSea(vec3 world, vec3 eye) {
 
   // How much foam there is. A broken crest has a thick ragged lip and the
   // bore rushing behind it; foam trails off behind that and lingers between
-  // the waves in scattered patches and streaks along the crests.
+  // the waves in scattered patches and streaks along the crests. Every
+  // crest keeps at least a thin white line, which only thickens where it
+  // breaks, so that the waves run on unbroken across the bay.
   float along = alongShore(p);
   float ragged = vnoise(vec2(along * 0.25, wave * 3.7)) * 0.6 + vnoise(vec2(along * 0.8, wave * 1.9)) * 0.4;
   float thick = 0.55 + 0.45 * vnoise(vec2(along * 0.05, wave * 3.1));
   float lip = smoothstep(0.86 - 0.08 * thick - 0.04 * ragged, 0.93 - 0.05 * thick, cycle) + smoothstep(0.03 + 0.04 * ragged, 0.0, cycle);
   float bore = exp(-cycle / (0.08 + 0.3 * thick * waveSize));
-  float swath = smoothstep(0.22, 0.72, vnoise(vec2(along * 0.014 + wave * 4.1, wave * 0.7)) * 0.75 + vnoise(vec2(along * 0.05, wave * 2.3)) * 0.25 + 0.1 * inner);
+  float swath = smoothstep(0.1, 0.8, vnoise(vec2(along * 0.014 + wave * 4.1, wave * 0.7)) * 0.75 + vnoise(vec2(along * 0.05, wave * 2.3)) * 0.25 + 0.1 * inner);
   float patches = smoothstep(0.3, 0.7, fbm3(p * 0.02 + vec2(0.0, uTime * 0.03)));
-  float density = broken * max(lip * (0.3 + 0.7 * swath), bore * (0.35 + 0.65 * swath));
+  float density = broken * max(lip * (0.4 + 0.6 * swath), bore * (0.4 + 0.6 * swath));
   float scattered = smoothstep(0.55, 0.85, patches);
   float streaks = smoothstep(0.5, 0.8, vnoise(vec2(along * 0.025, d * 0.35 + wave * 2.7)));
   density = max(density, inner * 0.32 * scattered * (0.6 + 0.4 * smoothstep(0.6, 0.0, cycle)));
   density = max(density, smoothstep(280.0, 140.0, d) * 0.24 * scattered * streaks);
-  // Unbroken crests spill a little white at the very top.
-  density = max(density, (1.0 - broken) * surfZone * smoothstep(0.955, 0.99, cycle) * smoothstep(0.35, 0.8, ragged) * 0.6);
-  // Whitecaps on the open sea.
-  float capAt = vnoise(vec2(dot(p, across) * 0.02, dot(p, SWELL_DIR) * 0.035 - uTime * 0.08));
-  float caps = smoothstep(0.35, 0.7, crest) * (1.0 - surfZone) * smoothstep(0.62, 0.8, capAt) * smoothstep(12.0, 3.0, fade);
-  density = max(density, caps * 0.8);
+  // The thin line along the crest, a little wider behind it than before it,
+  // never narrower than a few pixels; fading with the wave's size.
+  float lineHalf = max(0.012 + 0.05 * broken * (0.6 + 0.8 * ragged), 1.5 * pixelCycle);
+  float lineShape = behind < 0.0 ? behind / (0.7 * lineHalf) : behind / (1.7 * lineHalf);
+  float crestLine = exp(-lineShape * lineShape) * surfZone * smoothstep(0.1, 0.4, waveSize) * (0.55 + 0.45 * smoothstep(0.2, 0.8, ragged));
+  density = max(density, crestLine * 0.6);
+  // Whitecaps on the open sea: ragged streaks lying along the crests.
+  float capAt = vnoise(vec2(dot(p, across) * 0.045, dot(p, SWELL_DIR) * 0.08 - uTime * 0.1));
+  float capEnvelope = smoothstep(0.3, 0.65, crest) * (1.0 - surfZone) * smoothstep(0.6, 0.78, capAt) * smoothstep(12.0, 3.0, fade);
+  float capGrain = mix(0.5, fbm3(vec2(dot(p, across) * 0.16, dot(p, SWELL_DIR) * 0.55 - uTime * 0.2) + 3.0), smoothstep(2.5, 0.8, fade));
+  float caps = capEnvelope * smoothstep(0.3, 0.6, capGrain + 0.55 * capEnvelope);
+  density = max(density, caps * 0.7);
   density = clamp(density * (0.85 + 0.15 * uEnergy), 0.0, 1.0);
   // The bubbles a breaking wave churns into the water spread wider than its
   // foam and outlast it.
@@ -280,27 +317,29 @@ vec3 shadeSea(vec3 world, vec3 eye) {
 
   // Sparkle (윤슬). With the sun behind the viewer the sea gives back no mirror
   // image of it, but the little faces of the waves that lean towards it still
-  // flash: dashes of light a few pixels across however far off, coming and
-  // going as the water moves, strongest where the slope leans most to the sun.
+  // flash. They lie on the waves, not on the screen: soft dashes along the
+  // crests, laid out in metres on the water (so that they shrink and flatten
+  // with distance as the waves do, down to a few pixels), lit only where the
+  // slope leans to the sun, each flashing in its own time and drifting with
+  // the swell.
   float sunSlope = dot(n.xz, normalize(uSunDir.xz));
-  float catchLight = smoothstep(0.01, 0.07, sunSlope);
-  if (catchLight > 0.0) {
-    // Cells that stay a constant size on the screen (azimuth across, the
-    // inverse of the distance down), in rows each shifted along its own way.
-    vec2 sparkAt = vec2(atan(rel.x, -rel.y) * 70.0, 9500.0 / max(length(rel), 1.0));
-    float row = floor(sparkAt.y);
-    sparkAt.x += hash12(vec2(row, 4.0)) * 11.0 + uTime * 0.12 * (hash12(vec2(row, 9.0)) - 0.5);
-    vec2 sparkCell = vec2(floor(sparkAt.x), row);
-    float sparkId = hash12(sparkCell + 31.0);
-    // Flashes gather in patches, and are dashes of different lengths.
-    float cluster = smoothstep(0.3, 0.7, fbm3(sparkAt * vec2(0.07, 0.11) + vec2(uTime * 0.015, 3.0)));
-    float reach = 0.4 + 0.6 * hash12(sparkCell + 2.3);
-    float inCell = fract(sparkAt.x);
-    float alongDash = smoothstep(0.0, 0.1, inCell) * smoothstep(reach, reach - 0.15, inCell);
-    float thin = smoothstep(0.5, 0.18, abs(fract(sparkAt.y) - 0.5) * 1.6);
-    float blink = 0.5 + 0.5 * sin(uTime * (0.5 + 1.2 * hash12(sparkCell + 5.7)) + 6.2832 * sparkId);
-    float spark = step(1.0 - 0.55 * cluster, sparkId) * smoothstep(0.5, 0.85, blink) * alongDash * thin * catchLight * smoothstep(40.0, 4.0, fade);
-    col += vec3(1.0, 0.97, 0.86) * spark * 1.9 * (1.0 - shadow);
+  float carrier = smoothstep(-0.03, 0.04, sunSlope) * (1.0 - churned) * smoothstep(30.0, 8.0, fade);
+  if (carrier > 0.0) {
+    vec2 sa = vec2(dot(p, SWELL_DIR) - 0.6 * uTime, dot(p, across));
+    // How many pixels a metre is across the crests, there: the lattice is
+    // kept a few pixels thick, fading from one scale to the next.
+    vec2 fwd = rel / max(length(rel), 1.0);
+    float cs = dot(SWELL_DIR, fwd);
+    float fx = dist * uDetail;
+    float pixelsPerMetre = sqrt(cs * cs / (fade * fade) + (1.0 - cs * cs) / (fx * fx));
+    float lod = log2(max(0.3, 11.0 / pixelsPerMetre));
+    float scale = floor(lod);
+    float between = lod - scale;
+    // Flashes gather in patches.
+    float cluster = 0.28 + 0.72 * smoothstep(0.3, 0.7, fbm3(sa * 0.018 + 5.0));
+    float spark = sparkleDashes(sa, exp2(scale), 13.7 * scale, cluster, 1.0 - between) + sparkleDashes(sa, exp2(scale + 1.0), 13.7 * (scale + 1.0), cluster, between);
+    spark *= carrier;
+    col += mix(vec3(0.7, 0.92, 1.0), vec3(1.0, 0.97, 0.88), smoothstep(0.1, 0.45, spark)) * spark * 2.8 * (1.0 - shadow);
   }
 
   // Where the foam lies. It is carried in with the waves and drifts along
@@ -322,8 +361,17 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float sheet = smoothstep(0.45, 0.72, density + 0.5 * (fbm3(q * 1.9 + 2.0) - 0.44));
   float foam = max(sheet, lace * smoothstep(0.04, 0.3, density));
   foam = mix(foam, density, smoothstep(3.0, 14.0, fade));
-  // The lip of a breaking crest is white all along its broken stretch.
+  // Strands run through the whitewater along the crests, a few thin gaps
+  // between them where the water shows; fainter and fainter as they get finer than a pixel.
+  vec2 strandAt = foamAt + swirl * 0.45;
+  float strandFine = smoothstep(2.5, 0.8, fade);
+  float strand = vnoise(strandAt * vec2(1.4, 7.0) + 3.1) * 0.65 + vnoise(strandAt * vec2(3.3, 15.0) + 9.7) * 0.35;
+  float gaps = smoothstep(0.7, 0.86, vnoise(strandAt * vec2(2.2, 11.0) + 21.0)) * strandFine;
+  foam *= 1.0 - 0.4 * gaps;
+  // The lip of a breaking crest is white all along its broken stretch, and
+  // every crest keeps its thin line.
   foam = max(foam, broken * smoothstep(0.3, 0.9, lip) * smoothstep(0.0, 0.4, swath));
+  foam = max(foam, smoothstep(0.15, 0.7, crestLine) * 0.92);
   // The swash on the sand, and the lip of each whitecap.
   foam = max(foam, swash * (0.55 + 0.45 * threads(q * 2.0 + 3.0, 0.07, aa * 2.0)));
   // The sea washing round the rocks at the headland's foot: a collar of
@@ -340,7 +388,7 @@ vec3 shadeSea(vec3 world, vec3 eye) {
     collar *= 0.5 + 0.5 * threads(q * 2.4 + 5.0, 0.09, aa * 2.4);
     foam = max(foam, collar * 0.9);
   }
-  foam = max(foam, caps * smoothstep(0.35, 0.65, crest));
+  foam = max(foam, caps);
   // Lit on top and on the lumps that face the sun; in blue shadow in the
   // hollows, on the curl's face and in the troughs.
   vec2 sunFlat = normalize(uSunDir.xz + vec2(1e-4, 0.0));
@@ -349,8 +397,8 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   float lump = fbm3(lumpAt);
   float relief = (lump - fbm3(lumpAt + sunward * vec2(3.2, 4.4))) * smoothstep(4.0, 1.5, fade);
   float curl = smoothstep(0.86, 0.94, cycle) * smoothstep(1.0, 0.96, cycle) * broken;
-  float lit = clamp(0.74 + 0.35 * dot(n, uSunDir) + 0.2 * n.y + 2.2 * relief + 0.2 * (lump - 0.44) - 0.45 * curl, 0.35, 1.25);
-  vec3 foamColour = mix(vec3(0.56, 0.68, 0.82), vec3(1.05, 1.04, 1.0), lit) * mix(vec3(1.0), vec3(0.72, 0.78, 0.9), shadow);
+  float lit = clamp(0.74 + 0.35 * dot(n, uSunDir) + 0.2 * n.y + 2.2 * relief + 0.2 * (lump - 0.44) + 0.55 * (strand - 0.5) * strandFine - 0.45 * curl, 0.35, 1.25);
+  vec3 foamColour = mix(vec3(0.5, 0.66, 0.84), vec3(1.04, 1.05, 1.06), lit) * mix(vec3(1.0), vec3(0.72, 0.78, 0.9), shadow);
   // Thin foam is a film the water shows through.
   foamColour = mix(foamColour, mix(col, vec3(0.92, 0.96, 0.98), 0.55), (1.0 - sheet) * 0.3 * smoothstep(14.0, 3.0, fade));
   // Close to, the foam is froth: fine bubbles, and small holes the water

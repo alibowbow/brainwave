@@ -52,11 +52,22 @@ The pilot build uses `.mjs`, which is outside the application's existing `.js` s
 
 - `CafeWorld.tsx`, `cafeHost.ts`, `cafe.css`: component contract, motion/input policy, shared-canvas adapter.
 - `CafeEngine.ts`: Three renderer, real planar reflection, independent rain/refraction/condensation shader, camera, resource lifetime.
-- `world.ts`: real café/street geometry, local lighting and shadow, open lathed ceramic cup, steam, quiet seated people.
+- `world.ts`: café geometry, local lighting and shadows, open lathed ceramic cup, steam, quiet seated people.
+- `exterior.ts`: varied street façades, recessed windows/curtains, wet paving, soft light halos and broken reflection strips.
+- `shelves.ts`: asymmetrical service shelves, curved pitchers, small cup stacks, muted bags/books and a restrained still life.
 - `materials.ts`, `plant.ts`: deterministic PBR canvas textures, custom curved leaves and ceramic pot.
 - `qa/**`: isolated entry, reproducible build, browser tests, evidence and handoff notes.
 - `public/immersive-worlds/cafe/pilot/**`: compiled optional review page.
 
 Native viewport resolution at DPR 1–2; no fixed 24fps cap, low-resolution replacement or flat image backdrop. Planar reflection alone uses 65% resolution while the main scene/refraction remains full resolution. Renderer uses requestAnimationFrame and freezes when inactive. Basic unsupported-device status is explicitly identified as failure, never described as rendered 3D.
+
+The visual revision responds to the four review findings:
+
+- Guests are smaller, farther away, and lower contrast, with varied muted clothing and partial plant/furniture occlusion.
+- A 43–50° responsive field of view and closer seated camera reduce empty ceiling/floor. Portrait framing aims toward the window and repositions the cup, steam, saucer and lamp together, keeping the near table readable.
+- Exterior buildings vary in depth, height, window rhythm, curtains and illumination; soft halos and irregular wet reflection strips break the repeated grid. Shelf objects vary in scale, material, spacing and overlap.
+- Less orange, rougher wood and subdued woven linen separate the surfaces. Restrained ambient fill, local spotlights, real shadows and subtle contact-shadow decals give objects weight without uniformly brightening the room.
+
+These describe the implemented changes, not a new visual approval. Current screenshot/code correspondence and the final verification results belong in `qa/VALIDATION.md` and the screenshot manifest.
 
 Known limits: customers/buildings are original procedural models, not scans; street streaks approximate wet reflections while window interior reflection is true planar rendering; droplets use layered shader fields, not fluid collision/merging simulation. No image-generation assets were necessary. Actual Fold hardware/GPU performance and the shared production route remain integration-stage checks. See `PROVENANCE.md` and `qa/VALIDATION.md` for evidence and precise verification limits.

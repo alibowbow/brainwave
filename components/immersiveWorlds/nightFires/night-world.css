@@ -1,0 +1,8 @@
+.night-world{position:absolute;inset:0;width:100%;height:100%;min-height:1px;overflow:hidden;background:#101727;isolation:isolate;touch-action:none}
+.night-world-mount,.night-world-canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.night-world-canvas{outline:none}
+.night-world-status{position:absolute;inset:0;display:grid;place-items:center;padding:2rem;text-align:center;color:#c8c7c5;font:14px/1.7 system-ui,sans-serif;background:radial-gradient(ellipse at 50% 70%,#343140,#141b2c 75%)}
+.night-world-sr,.night-world-actions{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.night-world-actions:focus-within{inset:auto 16px 16px;width:auto;height:auto;margin:0;padding:8px;overflow:visible;clip-path:none;display:flex;gap:8px;white-space:normal;z-index:3}
+.night-world-action{border:1px solid #c3ac81;border-radius:8px;background:#172034ee;color:#ffe7bd;padding:10px 14px;font:14px/1.4 system-ui,sans-serif;cursor:pointer}
+.night-world-action:focus-visible{outline:2px solid #ffe7bd;outline-offset:3px}

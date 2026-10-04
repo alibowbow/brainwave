@@ -175,7 +175,9 @@ function ForestHarness() {
       const canvas = canvasNow()!;
       check('Actual rendered 3D canvas', canvas.width > 0 && canvas.height > 0 && Number(canvas.dataset.frames) > 0 && Number(canvas.dataset.triangles) > 0, snapshot(canvas));
       const framesBefore = Number(canvas.dataset.frames), timeBefore = Number(canvas.dataset.time), observedAt = performance.now();
-      await delay(1300);
+      // Software WebGL may render below one frame per second. Assert actual
+      // progress within a bounded test wait; do not alter runtime frame pacing.
+      await waitFor(() => Number(canvas.dataset.frames) > framesBefore && Number(canvas.dataset.time) > timeBefore, 'Active scene did not advance a frame and simulation time.', 30000);
       const frameDelta = Number(canvas.dataset.frames) - framesBefore;
       check('Active animation advances', frameDelta > 0 && Number(canvas.dataset.time) > timeBefore, {
         frameDelta, timeDelta: Number(canvas.dataset.time) - timeBefore,
@@ -229,7 +231,7 @@ function ForestHarness() {
       await delay(120);
       const releaseYaw = Math.abs(Number(canvas.dataset.lookYaw));
       check('Gentle drag changes view without a tap', peakYaw > .009 && countsRef.current.main === dragHits, { peakYaw, callbacksBefore: dragHits, callbacksAfter: countsRef.current.main });
-      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, 'Camera did not slowly return after drag release.', 60000);
+      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, 'Camera did not slowly return after drag release.', 120000);
       check('View returns gradually after release', releaseYaw > peakYaw * .5 && Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, { peakYaw, yaw120msAfterRelease: releaseYaw, finalYaw: Number(canvas.dataset.lookYaw) });
 
       const callbacksBeforeSecond = { ...countsRef.current };
@@ -255,8 +257,9 @@ function ForestHarness() {
       await waitFor(() => isReady() && running() && canvasNow() !== canvas, 'Remount did not create a fresh ready engine.', 90000);
       const remounted = canvasNow()!;
       const remountFrames = Number(remounted.dataset.frames);
-      await delay(700);
-      check('Remount creates a fresh working engine', remounted !== canvas && Number(remounted.dataset.frames) > remountFrames, snapshot(remounted));
+      const remountTime = Number(remounted.dataset.time);
+      await waitFor(() => Number(remounted.dataset.frames) > remountFrames && Number(remounted.dataset.time) > remountTime, 'Remounted engine did not advance a frame and simulation time.', 30000);
+      check('Remount creates a fresh working engine', remounted !== canvas && Number(remounted.dataset.frames) > remountFrames && Number(remounted.dataset.time) > remountTime, snapshot(remounted));
     } catch (error) {
       check('QA sequence completed', false, error instanceof Error ? error.message : String(error));
     } finally {

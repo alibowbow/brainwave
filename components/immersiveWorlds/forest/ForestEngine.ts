@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Reflector } from 'three/addons/objects/Reflector.js';
+import { createForestStones } from './forestStones';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import { LookSpring } from '../../liveScene/look';
@@ -67,12 +68,12 @@ export class ForestEngine implements LiveSceneEngine {
     const random = this.rng;
     const materials = createForestMaterials();
     this.scene.background = new THREE.Color('#b5c7a7');
-    this.scene.fog = new THREE.Fog('#bccab0', 10, 72);
+    this.scene.fog = new THREE.Fog('#afbea0', 15, 86);
     this.camera.position.set(0, 1.42, 5.0);
     this.camera.lookAt(0, 1.65, -9);
 
-    this.scene.add(new THREE.HemisphereLight('#e2eed4', '#646447', 2.05));
-    const sun = new THREE.DirectionalLight('#fff1c9', 3.8);
+    this.scene.add(new THREE.HemisphereLight('#e2eed4', '#646447', 1.8));
+    const sun = new THREE.DirectionalLight('#ffe6ad', 4.5);
     sun.position.set(8, 13, -18);
     sun.target.position.set(-2, 0, 1);
     sun.castShadow = true;
@@ -80,7 +81,7 @@ export class ForestEngine implements LiveSceneEngine {
     Object.assign(sun.shadow.camera, { left: -17, right: 17, top: 21, bottom: -17, near: 1, far: 65 });
     sun.shadow.bias = -0.00035; sun.shadow.normalBias = 0.035;
     this.scene.add(sun, sun.target);
-    const fill = new THREE.DirectionalLight('#bcdad4', 0.58);
+    const fill = new THREE.DirectionalLight('#bcdad4', 0.85);
     fill.position.set(-8, 5, 6); this.scene.add(fill);
 
     // A real sky dome is visible between crowns and provides the wet-leaf environment.
@@ -123,11 +124,12 @@ export class ForestEngine implements LiveSceneEngine {
       [8, -43, 22, .50], [-14, -38, 22, .61], [16, -41, 22, .65], [-10, -52, 22, .4],
       [.7, -53, 23, .37], [5, -62, 24, .41], [-7, -67, 24, .44], [15, -59, 23, .46],
     ];
-    for (let i = 0; i < treeLayout.length; i++) {
-      const [x, z, height, radius] = treeLayout[i];
-      const tree = createTree(materials, random, { height, radius, detail: i < 5 ? 'near' : i < 12 ? 'mid' : 'far' });
-      tree.position.set(x, groundHeight(x, z), z); tree.rotation.y = random() * Math.PI * 2;
-      this.scene.add(tree);
+    // Side stands and saplings close the forest around the seated viewer.
+    // Unequal ages break up the otherwise unnaturally even canopy height.
+    treeLayout.push([-9,-3,14,.43],[10,-4,16,.5],[-13,-12,18,.53],[14,-14,17,.49],[-19,-22,20,.57],[20,-25,21,.6],[-4.8,-7,5,.1],[4.2,-11,6.4,.13],[-8.2,-19,8,.18],[6.5,-22,7,.13]);
+    for (let row=0;row<4;row++) for(let column=0;column<9;column++) {
+      const x=(column-4)*6.4+(random()-.5)*4,z=-31-row*11+(random()-.5)*6;
+      treeLayout.push([x,z,15+random()*10,.2+random()*.25]);
     }
 
     // Original two-timescale wind: a slow shared woody bend inherited by the
@@ -170,21 +172,73 @@ export class ForestEngine implements LiveSceneEngine {
         transformed.z+=sin(forestTime*.47+phase*1.7)*.009;`);
     };
     materials.leaf.customProgramCacheKey = () => 'forest-leaf-wind-v2';
+    materials.leaf.clearcoat = 0;
+    const distantLeaf = materials.leaf.clone();
+    distantLeaf.bumpMap = null; distantLeaf.roughness = .65;
+    distantLeaf.onBeforeCompile = materials.leaf.onBeforeCompile;
+    distantLeaf.customProgramCacheKey = () => 'forest-distant-leaf-v2';
+    // Batch distant stands: real branches and individual leaves retain depth
+    // while avoiding one draw call per tree in each reflection pass.
+    const distantWood: THREE.BufferGeometry[] = [], distantMatrices: THREE.Matrix4[] = [], distantColors: THREE.Color[] = [];
+    let distantGeometry: THREE.BufferGeometry | undefined;
+    for (let i=0;i<treeLayout.length;i++) {
+      const [x,z,height,radius]=treeLayout[i];
+      const detail=i<5?'near':i<12||i>=24&&i<34?'mid':'far';
+      const tree=createTree({...materials,leaf:detail==='far'?distantLeaf:materials.leaf},random,{height,radius,detail});
+      tree.position.set(x,groundHeight(x,z),z);tree.rotation.y=random()*Math.PI*2;
+      if(detail!=='far'){this.scene.add(tree);continue;}
+      tree.updateMatrixWorld(true);
+      for(const object of tree.children) {
+        const mesh=object as THREE.Mesh;
+        if(mesh instanceof THREE.InstancedMesh) {
+          if(!distantGeometry)distantGeometry=mesh.geometry;else mesh.geometry.dispose();
+          for(let instance=0;instance<mesh.count;instance++) {
+            const matrix=new THREE.Matrix4(),color=new THREE.Color();mesh.getMatrixAt(instance,matrix);mesh.getColorAt(instance,color);
+            distantMatrices.push(matrix.premultiply(mesh.matrixWorld));distantColors.push(color);
+          }
+          mesh.dispose();
+        } else {distantWood.push(mesh.geometry.clone().applyMatrix4(mesh.matrixWorld));mesh.geometry.dispose();}
+      }
+    }
+    const farWood=new THREE.Mesh(mergeGeometries(distantWood),materials.bark);farWood.receiveShadow=true;this.scene.add(farWood);
+    distantWood.forEach(g=>g.dispose());
+    const farLeaves=new THREE.InstancedMesh(distantGeometry!,distantLeaf,distantMatrices.length);
+    distantMatrices.forEach((matrix,i)=>{farLeaves.setMatrixAt(i,matrix);farLeaves.setColorAt(i,distantColors[i]);});
+    farLeaves.receiveShadow=true;farLeaves.computeBoundingSphere();this.scene.add(farLeaves);
 
-    this.addRocks(materials.rock);
+    const stones=createForestStones(materials.rock,random);
+    this.scene.add(stones);this.solidSurfaces.push(stones.children[0]);
     this.addWater();
 
-    for (let i = 0; i < 36; i++) {
+    const fernStems: THREE.BufferGeometry[] = [], fernMatrices: THREE.Matrix4[] = [], fernColors: THREE.Color[] = [];
+    let fernGeometry: THREE.BufferGeometry | undefined;
+    for (let i = 0; i < 72; i++) {
       const angle = random() * Math.PI * 2;
       const distance = 3.7 + random() * 12;
       const x = Math.cos(angle) * distance, z = Math.sin(angle) * distance - 5;
       if (z > 3 || pondRadius(x, z) < 1.1) continue;
-      const fern = createFern(materials, random, .65 + random() * .9);
+      const fern = createFern(materials, random, .85 + random() * 1.1);
       fern.position.set(x, groundHeight(x,z) + .015, z); fern.rotation.y = random() * 6.28;
-      this.scene.add(fern);
+      fern.updateMatrixWorld(true);
+      for(const object of fern.children) {
+        const mesh=object as THREE.Mesh;
+        if(mesh instanceof THREE.InstancedMesh) {
+          if(!fernGeometry)fernGeometry=mesh.geometry;else mesh.geometry.dispose();
+          for(let instance=0;instance<mesh.count;instance++) {
+            const matrix=new THREE.Matrix4(),color=new THREE.Color();mesh.getMatrixAt(instance,matrix);mesh.getColorAt(instance,color);
+            fernMatrices.push(matrix.premultiply(mesh.matrixWorld));fernColors.push(color);
+          }
+          mesh.dispose();
+        }else{fernStems.push(mesh.geometry.clone().applyMatrix4(mesh.matrixWorld));mesh.geometry.dispose();}
+      }
     }
+    const fernWood=new THREE.Mesh(mergeGeometries(fernStems),materials.twig);this.scene.add(fernWood);fernStems.forEach(g=>g.dispose());
+    const fernLeaves=new THREE.InstancedMesh(fernGeometry!,materials.leaf,fernMatrices.length);
+    fernMatrices.forEach((matrix,i)=>{fernLeaves.setMatrixAt(i,matrix);fernLeaves.setColorAt(i,fernColors[i]);});
+    fernLeaves.castShadow=true;fernLeaves.receiveShadow=true;fernLeaves.computeBoundingSphere();this.scene.add(fernLeaves);
     // Large, physically near leaves frame the sitting place without blocking the pool.
     const wetLeaf = materials.leaf.clone();
+    wetLeaf.clearcoat = .45; wetLeaf.roughness = .34;
     // Wet foreground leaves and droplets move together at the stem. Their
     // separate meshes must not drift apart under the canopy's vertex wind.
     wetLeaf.onBeforeCompile = leafBacklight;
@@ -210,36 +264,42 @@ export class ForestEngine implements LiveSceneEngine {
     }
     litter.count=count; this.scene.add(litter);
     this.addFallenWood(materials.bark);
+    this.addUnderstory();
     this.addBirds();
     this.addSunrays();
     this.addMotes();
   }
 
-  private addRocks(base: THREE.MeshStandardMaterial) {
-    const geometries: THREE.BufferGeometry[] = [];
-    const random=this.rng;
-    const add = (x:number,z:number,s:number,flat=.66) => {
-      const g=new THREE.IcosahedronGeometry(1,2);const p=g.attributes.position;const color:number[]=[];
-      for(let i=0;i<p.count;i++) {
-        const px=p.getX(i),py=p.getY(i),pz=p.getZ(i);
-        const n=1+.1*Math.sin(px*8+pz*5)*Math.cos(py*7)+.055*Math.sin(pz*18+px*11);
-        p.setXYZ(i,px*n,py*n*flat,pz*n*.85);
-        const moss=THREE.MathUtils.smoothstep(py+.18*Math.sin(px*8)*Math.cos(pz*9),.12,.78);
-        const c=new THREE.Color('#777c6a').lerp(new THREE.Color('#647736'),moss*.88);
-        c.multiplyScalar(.8+random()*.3);color.push(c.r,c.g,c.b);
-      }
-      g.setAttribute('color',new THREE.Float32BufferAttribute(color,3));g.computeVertexNormals();
-      g.scale(s,s,s);g.rotateY(random()*6.28);g.translate(x,groundHeight(x,z)+s*.12,z);geometries.push(g);
+  private addUnderstory() {
+    // Curved, rooted blades make an occluding vegetation layer, not a screen
+    // particle effect. Tip flexibility rises smoothly from a motionless root.
+    const geometry=new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.Float32BufferAttribute([-.026,0,0,.026,0,0,-.023,.33,.045,.023,.33,.045,-.012,.68,.13,.012,.68,.13,0,1,.27],3));
+    geometry.setIndex([0,1,2,1,3,2,2,3,4,3,5,4,4,5,6]);geometry.computeVertexNormals();
+    const material=new THREE.MeshStandardMaterial({color:'#829656',roughness:.82,side:THREE.DoubleSide});
+    material.onBeforeCompile=shader=>{
+      shader.uniforms.forestTime=this.clock;
+      shader.vertexShader='uniform float forestTime;\n'+shader.vertexShader;
+      shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
+        float rootPhase=instanceMatrix[3].x*.72+instanceMatrix[3].z*.53;
+        transformed.x+=sin(forestTime*.43+rootPhase)*.036*position.y*position.y;
+        transformed.z+=sin(forestTime*.31+rootPhase*.71)*.026*position.y*position.y;`);
     };
-    [[-2.45,1.8,.73],[2.6,1.0,.77],[-2.25,-2.1,.56],[1.8,-3.45,.69],[-.72,2.91,.33],[.58,3.07,.38],[-3.1,-4.9,.8],[3.4,-6.1,1.1]].forEach(([x,z,s])=>add(x,z,s));
-    for(let i=0;i<76;i++) {
-      const a=random()*6.28,r=.9+random()*.32;
-      add(Math.cos(a)*2.55*r-.18,Math.sin(a)*3.45*r-.55,.08+random()*.22);
+    material.customProgramCacheKey=()=> 'forest-rooted-grass-v1';
+    const blades=new THREE.InstancedMesh(geometry,material,6000),dummy=new THREE.Object3D();let count=0;
+    for(let patch=0;patch<190;patch++) {
+      const x=(this.rng()-.5)*39,z=3-this.rng()*39;
+      if(pondRadius(x,z)<1.08)continue;
+      const height=.17+this.rng()*.45;
+      for(let blade=0;blade<30;blade++) {
+        const bx=x+(this.rng()-.5)*1.65,bz=z+(this.rng()-.5)*1.65;
+        if(pondRadius(bx,bz)<1.08)continue;
+        dummy.position.set(bx,groundHeight(bx,bz),bz);dummy.rotation.set(0,this.rng()*6.28,0);
+        dummy.scale.set(.55+this.rng()*.85,height*(.55+this.rng()),.8);dummy.updateMatrix();blades.setMatrixAt(count,dummy.matrix);
+        blades.setColorAt(count++,new THREE.Color().setHSL(.21+this.rng()*.06,.28+this.rng()*.2,.45+this.rng()*.2));
+      }
     }
-    for(let i=0;i<70;i++){const x=(random()-.5)*4,z=(random()-.5)*5-.5;add(x,z,.035+random()*.09,.6);}
-    const g=mergeGeometries(geometries);geometries.forEach(item=>item.dispose());
-    const mat=base.clone();mat.color.set('white');mat.vertexColors=true;mat.roughness=.65;
-    const stones=new THREE.Mesh(g,mat);stones.castShadow=true;stones.receiveShadow=true;this.scene.add(stones);this.solidSurfaces.push(stones);
+    blades.count=count;blades.castShadow=true;blades.receiveShadow=true;blades.computeBoundingSphere();this.scene.add(blades);
   }
 
   private addWater() {
@@ -336,7 +396,7 @@ export class ForestEngine implements LiveSceneEngine {
     this.renderer.setSize(Math.max(1,width),Math.max(1,height),false);
     this.camera.aspect=width/Math.max(1,height);
     // Preserve the near pool + canopy in narrow folded screens, without zooming into a trunk.
-    this.camera.fov=this.camera.aspect<.8?66:55;this.camera.updateProjectionMatrix();
+    this.camera.fov=this.camera.aspect<.8?66:this.camera.aspect>2?45:55;this.camera.updateProjectionMatrix();
     this.canvas.dataset.dpr=String(this.renderer.getPixelRatio());
   }
 

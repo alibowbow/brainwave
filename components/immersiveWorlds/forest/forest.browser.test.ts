@@ -41,16 +41,39 @@ async function waitForRunning(page: Page, running: boolean) {
 }
 
 async function screenshot(page: Page, filename: string, report: BrowserReport) {
+  // A timed-out in-page QA sequence still owns its disabled transport buttons.
+  // Do not wait 45 seconds for an impossible pause or disturb an active test.
+  if (await page.getByTestId('qa-status').getAttribute('data-state') === 'running') {
+    const note = `Skipped ${filename}: in-page lifecycle QA is still running and owns the disabled transport controls.`;
+    report.errors.push(note);
+    throw new Error(note);
+  }
   // SwiftShader can saturate the compositor while a full-quality reflected
   // scene continuously draws. Freeze via the real session prop for capture;
-  // keep the exact last 3D frame and native-resolution buffer, then resume.
+  // preserve simulation time and native-resolution buffers, then resume.
+  // Exact capture protocol: active=false -> viewport width minus one CSS
+  // pixel -> await that ResizeObserver render -> restore the original viewport
+  // -> await the full-size buffer -> settle 250 ms -> native-pixel JPEG ->
+  // restore active=true if previously running. The shared host renders dt=0
+  // on both paused resizes. This synchronizes the software compositor; neither
+  // the captured resolution nor runtime quality settings are reduced.
   const wasRunning = await page.locator('.forest-world-canvas').getAttribute('data-running') === 'true';
   if (wasRunning) {
     await page.getByTestId('active-toggle').dispatchEvent('click');
     await waitForRunning(page, false);
   }
-  const buffer = await page.screenshot({ type: 'jpeg', quality: 86, animations: 'allow', timeout: 90000 });
   const viewport = page.viewportSize()!;
+  const refreshViewport = { width: viewport.width - 1, height: viewport.height };
+  const fullSizeCanvas = ({ width, height }: { width: number; height: number }) => {
+    const canvas = document.querySelector<HTMLCanvasElement>('.forest-world-canvas');
+    return canvas?.clientWidth === width && canvas.clientHeight === height && canvas.width === width && canvas.height === height;
+  };
+  await page.setViewportSize(refreshViewport);
+  await page.waitForFunction(fullSizeCanvas, refreshViewport);
+  await page.setViewportSize(viewport);
+  await page.waitForFunction(fullSizeCanvas, viewport);
+  await page.waitForTimeout(250);
+  const buffer = await page.screenshot({ type: 'jpeg', quality: 86, animations: 'allow', timeout: 90000 });
   const evidence: Screenshot = {
     filename, bytes: buffer.length, sha256: createHash('sha256').update(buffer).digest('hex'),
     width: viewport.width, height: viewport.height,
@@ -167,7 +190,9 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.evaluate(() => { document.querySelector<HTMLElement>('.forest-harness')!.dataset.capture = 'false'; });
     await page.getByTestId('qa-run').dispatchEvent('click');
-    await page.waitForFunction(() => ['passed', 'failed'].includes(document.querySelector<HTMLElement>('[data-testid="qa-status"]')?.dataset.state ?? ''), undefined, { timeout: 130000 });
+    // These generous waits accommodate software rendering only. The scene's
+    // resolution, materials, geometry, simulation step and RAF remain unchanged.
+    await page.waitForFunction(() => ['passed', 'failed'].includes(document.querySelector<HTMLElement>('[data-testid="qa-status"]')?.dataset.state ?? ''), undefined, { timeout: 300000 });
     report.lifecycleReport = JSON.parse(await page.getByTestId('qa-report').innerText());
     const lifecycleState = await page.getByTestId('qa-status').getAttribute('data-state');
     check('In-page real-component lifecycle and interactions pass', lifecycleState === 'passed', report.lifecycleReport);
@@ -253,4 +278,4 @@ it.runIf(Boolean(process.env.CI))('renders and validates the isolated morning fo
     console.log(`FOREST_BROWSER_REPORT ${JSON.stringify(report)}`);
   }
   if (caught) throw caught;
-}, 420000);
+}, 900000);

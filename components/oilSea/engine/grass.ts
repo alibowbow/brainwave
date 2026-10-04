@@ -45,12 +45,15 @@ function drawTufts(size: number) {
       const height = size * (0.4 + 0.56 * Math.pow(rand(), 0.6));
       const lean = size * (broad ? 0.16 + 0.34 * rand() : 0.1 + 0.3 * rand()) * (height / size);
       const width = size * (broad ? 0.009 + 0.011 * rand() : 0.005 + 0.008 * rand());
-      const warm = rand();
-      const green = rand() < 0.3 ? 1 : 0;
+      // Each blade its own green: yellow-green where the sun has it (warm), emerald
+      // (fresh), now and then a cool blue-green; dark at the root, bright at the tip.
+      const warm = rand() < 0.4 ? rand() : 0;
+      const cool = rand() < 0.22 ? 1 : 0;
+      const root = 22 + 6 * rand();
       const gradient = g.createLinearGradient(0, size, 0, size - height);
-      gradient.addColorStop(0, `rgb(${18 + warm * 10}, ${34 + warm * 10}, 14)`);
-      gradient.addColorStop(0.45, `rgb(${Math.round(58 + warm * 30 - green * 16)}, ${Math.round(92 + warm * 24 + green * 8)}, ${Math.round(34 + warm * 10 + green * 10)})`);
-      gradient.addColorStop(1, `rgb(${Math.round(136 + warm * 54 - green * 40)}, ${Math.round(164 + warm * 30)}, ${Math.round(78 + warm * 24 + green * 12)})`);
+      gradient.addColorStop(0, `rgb(${root}, ${root + 22}, ${root + 6})`);
+      gradient.addColorStop(0.45, `rgb(${Math.round(44 + warm * 34 - cool * 14)}, ${Math.round(110 + warm * 18 + cool * 4)}, ${Math.round(44 - warm * 8 + cool * 22)})`);
+      gradient.addColorStop(1, `rgb(${Math.round(140 + warm * 70 - cool * 56)}, ${Math.round(190 + warm * 26 - cool * 4)}, ${Math.round(76 - warm * 14 + cool * 44)})`);
       // A tapering blade that bends over to the left, in both tiles.
       const tipX = x0 - lean;
       const tipY = size - height;
@@ -287,10 +290,10 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
   const scale = new THREE.Vector3();
   const up = new THREE.Vector3(0, 1, 0);
   const palette = [
-    [1.0, 1.0, 0.95], // fresh green
-    [1.14, 1.1, 0.8], // sunny yellow-green
-    [0.8, 0.92, 0.82], // deep green
-    [0.64, 0.72, 0.62], // dark, in shadow
+    [1.0, 1.02, 0.96], // fresh green
+    [1.18, 1.1, 0.74], // sunny yellow-green
+    [0.84, 1.0, 0.92], // deep green
+    [0.78, 0.9, 0.9], // in shadow: cool blue-green, not dark olive
   ];
   let s = 12345;
   const rand = () => {
@@ -340,7 +343,7 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
       scale.set(height * (1.1 + 0.5 * rand()), height, 1);
       matrix.compose(position, quaternion, scale);
       mesh.setMatrixAt(placed, matrix);
-      const shade = (pocket ? 0.72 : 0.84) + 0.28 * rand();
+      const shade = (pocket ? 0.74 : 0.86) + 0.3 * rand();
       tints.set([tint[0] * shade, tint[1] * shade, tint[2] * shade, height], placed * 4);
       blooms.set([flower, kindOfTuft * 2 + ((flowering || edge) && rand() < (edge ? 0.85 : 0.6) ? 1 : 0)], placed * 2);
       placed++;

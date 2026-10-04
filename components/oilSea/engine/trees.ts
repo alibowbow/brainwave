@@ -298,7 +298,7 @@ export function createTrees(sunDirection: THREE.Vector3, count: number) {
         vec3 tint = mix(vec3(0.82, 0.95, 0.9), vec3(1.1, 1.06, 0.84), vTint);
         vec3 col = tree.rgb * tint;
         // The image carries its own light; the day adds the sky's blue in the shade.
-        col = col * vec3(1.05, 1.03, 0.98) + vec3(0.01, 0.02, 0.05) * (1.0 - tree.g);
+        col = col * vec3(1.18, 1.14, 1.02) + vec3(0.02, 0.03, 0.07) * (1.0 - tree.g);
         // Under a cloud's shadow only the sky's cooler light is left.
         col *= mix(vec3(1.0), vec3(0.6, 0.66, 0.8), vShadow);
         gl_FragColor = vec4(addHaze(col, vWorld, cameraPosition), 1.0);

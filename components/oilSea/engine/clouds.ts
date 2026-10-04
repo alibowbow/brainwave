@@ -314,8 +314,8 @@ export function createClouds(sunDirection: THREE.Vector3, count: number) {
         // Before the sun: light scattered forwards through the thin edges.
         float before = pow(max(dot(-toCamera, uSunDir), 0.0), 6.0);
         float silver = before * pow(1.0 - thick, 1.5);
-        vec3 shade = vec3(0.7, 0.76, 0.88);
-        vec3 light = vec3(1.1, 1.09, 1.06);
+        vec3 shade = vec3(0.68, 0.72, 0.92);
+        vec3 light = vec3(1.14, 1.09, 1.0);
         vec3 col = mix(shade, light, lit * (1.0 - 0.55 * before * thick));
         // Lit from the blue sky above as well; shaded in the dense core and underneath.
         col += vec3(0.06, 0.08, 0.12) * smoothstep(0.0, 0.8, n.y);

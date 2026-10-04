@@ -111,13 +111,13 @@ export function drawClumps(size: number) {
       const inY = size * 0.58;
       image.stroke(bx, by, bx + (inX - bx) * 0.3, by + (inY - by) * 0.3, size * 0.006, size * 0.004, 74, 54, 38);
       // Cones: a few, hanging below the twig among the needles.
-      if (rand() < 0.1) {
+      if (rand() < 0.06) {
         const cr = size * (0.016 + 0.008 * rand());
         const cx = bx + (rand() - 0.5) * size * 0.02;
         const cy = by + size * 0.025;
-        image.ellipse(cx, cy, cr * 0.6, cr, 0.2 * (rand() - 0.5), 86, 60, 36);
+        image.ellipse(cx, cy, cr * 0.6, cr, 0.2 * (rand() - 0.5), 66, 48, 34);
         for (let k = 0; k < 8; k++) {
-          image.ellipse(cx + (rand() - 0.5) * cr * 0.8, cy - cr * 0.8 + (k / 7) * cr * 1.6, cr * 0.2, cr * 0.13, 0, 130, 98, 60);
+          image.ellipse(cx + (rand() - 0.5) * cr * 0.8, cy - cr * 0.8 + (k / 7) * cr * 1.6, cr * 0.2, cr * 0.13, 0, 100, 80, 56);
         }
       }
       // The needles fan out from the twig's end: outwards from the clump's
@@ -141,9 +141,9 @@ export function drawClumps(size: number) {
         const ey = py + Math.sin(angle) * length + size * 0.012;
         // Dark at the base, in the bundle's shade; the back of the clump is bluer.
         const base = Math.max(0, tip * 0.45 - 0.08);
-        const blue = (1 - front) * 24;
-        const near: [number, number, number] = [12 + base * 100, 30 + base * 150, 14 + base * 50 + blue * (1 - base)];
-        const far: [number, number, number] = [14 + tip * 110, 36 + tip * 158, 16 + tip * 56 + blue * (1 - tip)];
+        const blue = (1 - front) * 30;
+        const near: [number, number, number] = [18 + base * 100, 44 + base * 150, 30 + base * 50 + blue * (1 - base)];
+        const far: [number, number, number] = [22 + tip * 126, 52 + tip * 166, 28 + tip * 56 + blue * (1 - tip)];
         image.stroke(px, py, mx, my, width, width * 0.8, Math.round(near[0]), Math.round(near[1]), Math.round(near[2]));
         image.stroke(mx, my, ex, ey, width * 0.8, width * 0.35, Math.round(far[0]), Math.round(far[1]), Math.round(far[2]));
       }
@@ -455,8 +455,8 @@ export function createPine(sunDirection: THREE.Vector3) {
         // The clump carries its own light and shade; the crown adds
         // sunlight above and shadow within. Each clump its own green:
         // old needles blue-green, fresh shoots yellower.
-        vec3 col = clump.rgb * mix(vec3(0.56, 0.64, 0.66), vec3(1.18, 1.14, 0.96), vShade);
-        col *= mix(vec3(0.9, 1.0, 1.1), vec3(1.1, 1.05, 0.84), vHue);
+        vec3 col = clump.rgb * mix(vec3(0.7, 0.8, 0.9), vec3(1.3, 1.22, 0.9), vShade);
+        col *= mix(vec3(0.88, 1.0, 1.12), vec3(1.14, 1.06, 0.8), vHue);
         vec3 albedo = clump.rgb;
         // The sun shines through the thin edges of the crown.
         float through = pow(max(dot(normalize(cameraPosition - vWorld), -uSunDir) * 0.5 + 0.5, 0.0), 4.0);

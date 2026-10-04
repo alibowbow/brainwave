@@ -216,9 +216,10 @@ export const LIGHT_GLSL = /* glsl */ `
 uniform float uHaze;
 vec3 lightGround(vec3 albedo, vec3 n, float sunlight) {
   float wrap = clamp((dot(n, uSunDir) + 0.2) / 1.2, 0.0, 1.0);
-  vec3 sun = vec3(1.0, 0.96, 0.88) * 1.5 * wrap * sunlight;
-  vec3 sky = vec3(0.52, 0.66, 0.92) * (0.36 + 0.24 * n.y);
-  vec3 bounce = vec3(0.36, 0.38, 0.26) * 0.14;
+  // A warm sun; shade lit by the blue sky (a little violet), open and cool; a warm bounce off the ground.
+  vec3 sun = vec3(1.0, 0.92, 0.74) * 1.6 * wrap * sunlight;
+  vec3 sky = vec3(0.44, 0.56, 0.98) * (0.44 + 0.24 * n.y);
+  vec3 bounce = vec3(0.42, 0.38, 0.2) * 0.16;
   return albedo * (sun + sky + bounce);
 }
 // The air between the eye and a point: its colour (rgb) and how much of it (a).
@@ -231,7 +232,7 @@ vec4 hazeAt(vec3 world, vec3 eye) {
   // The air thins with height: high ground shows through more of it.
   float thin = exp(-max(0.0, 0.5 * (world.y + eye.y)) / 1500.0);
   float haze = (1.0 - exp(-dist / 6500.0 * uHaze * thin)) * 0.8 + (1.0 - exp(-dist / 60000.0)) * 0.12;
-  vec3 air = mix(skyLight(vec3(dir.x, max(dir.y, 0.0) * 0.3, dir.z), 0.4), vec3(0.6, 0.7, 0.86), 0.55);
+  vec3 air = mix(skyLight(vec3(dir.x, max(dir.y, 0.0) * 0.3, dir.z), 0.4), vec3(0.64, 0.70, 0.92), 0.55);
   return vec4(air, haze);
 }
 vec3 addHaze(vec3 col, vec3 world, vec3 eye) {
@@ -290,11 +291,11 @@ export function createTerrain(sunDirection: THREE.Vector3, detail = 1) {
         float fine = vnoise(p * 0.25);
         // Hills: summer pasture and scrub, hay-coloured where it has been
         // cut or the soil is thin, dark woods in the folds.
-        vec3 col = mix(vec3(0.24, 0.4, 0.14), vec3(0.4, 0.52, 0.2), smoothstep(0.3, 0.7, mid));
+        vec3 col = mix(vec3(0.25, 0.45, 0.15), vec3(0.45, 0.58, 0.2), smoothstep(0.3, 0.7, mid));
         // Mottled: the pasture is never one green.
         col *= 0.84 + 0.3 * fbm3(p * 0.012 + 3.3) + 0.1 * (vnoise(p * 0.08) - 0.5);
         float dry = smoothstep(0.5, 0.8, large + 0.25 * dot(n, uSunDir));
-        col = mix(col, vec3(0.62, 0.62, 0.3), dry * 0.45);
+        col = mix(col, vec3(0.76, 0.66, 0.28), dry * 0.55);
         // Fields on the gentler slopes, each its own crop or pasture, with
         // rows or mowing stripes across it and a hedgerow round it.
         float dist = length(vWorld - cameraPosition);
@@ -302,7 +303,7 @@ export function createTerrain(sunDirection: THREE.Vector3, detail = 1) {
         if (farm > 0.0) {
           vec3 field = fieldAt(p);
           float kind = field.x;
-          vec3 crop = kind < 0.32 ? vec3(0.3, 0.47, 0.17) : kind < 0.56 ? vec3(0.21, 0.4, 0.13) : kind < 0.78 ? vec3(0.46, 0.56, 0.22) : kind < 0.9 ? vec3(0.72, 0.66, 0.36) : vec3(0.58, 0.62, 0.36);
+          vec3 crop = kind < 0.28 ? vec3(0.3, 0.48, 0.17) : kind < 0.5 ? vec3(0.21, 0.42, 0.14) : kind < 0.7 ? vec3(0.48, 0.6, 0.22) : kind < 0.84 ? vec3(0.76, 0.66, 0.3) : kind < 0.94 ? vec3(0.78, 0.72, 0.42) : vec3(0.54, 0.42, 0.28);
           float angle = field.y * 3.1416;
           float rows = sin(dot(p, vec2(cos(angle), sin(angle))) * 0.9);
           crop *= 1.0 + 0.07 * rows * smoothstep(1400.0, 500.0, dist);

@@ -200,7 +200,7 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // (red light is lost first, then green; blue goes farthest), so the bay
   // runs from pale sand at the water's edge through emerald and turquoise
   // to the deep blue of open water.
-  vec3 water = mix(vec3(0.015, 0.1, 0.3), vec3(0.02, 0.34, 0.42), exp(-depth / 7.0));
+  vec3 water = mix(vec3(0.03, 0.16, 0.44), vec3(0.02, 0.37, 0.45), exp(-depth / 7.0));
   vec3 body = water;
   if (depth < 14.0) {
     // The bottom, seen through the waves (bent a little by their slopes):
@@ -223,6 +223,10 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // Patches of rougher, darker water where gusts touch down.
   float streak = fbm3(vec2(dot(p, across) * 0.006, dot(p, SWELL_DIR) * 0.012) + vec2(0.0, uTime * 0.02));
   body *= 0.86 + 0.28 * streak;
+  // Turquoise where the water is shoaler or stirred, ultramarine where it runs deep and still.
+  float tide = fbm3(vec2(dot(p, across) * 0.0035, dot(p, SWELL_DIR) * 0.0055) + 13.0);
+  body = mix(body, body * vec3(0.7, 1.2, 1.06) + vec3(0.0, 0.025, 0.02), smoothstep(0.52, 0.72, tide) * 0.55);
+  body = mix(body, body * vec3(1.1, 0.95, 1.14), smoothstep(0.48, 0.28, tide) * 0.45);
   // Crests lit through by the sun glow turquoise, in stretches; troughs are deep.
   float backlit = pow(max(dot(-v, uSunDir) * 0.5 + 0.5, 0.0), 2.0);
   float glow = smoothstep(-0.4, 0.9, crest) * (0.45 + 0.55 * vnoise(vec2(dot(p, across) * 0.004, dot(p, SWELL_DIR) * 0.002 + 3.0)));

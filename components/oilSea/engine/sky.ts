@@ -42,9 +42,9 @@ uniform float uTime;
 vec3 skyLight(vec3 dir, float glow) {
   float h = max(dir.y, 0.0);
   float toSun = max(dot(dir, uSunDir), 0.0);
-  vec3 col = mix(vec3(0.42, 0.65, 0.93), vec3(0.2, 0.44, 0.84), smoothstep(0.04, 0.45, h));
+  vec3 col = mix(vec3(0.40, 0.65, 0.96), vec3(0.15, 0.38, 0.86), smoothstep(0.04, 0.45, h));
   // A pale haze along the horizon, a little warmer on the sunny side.
-  vec3 horizon = mix(vec3(0.74, 0.85, 0.95), vec3(0.88, 0.9, 0.9), pow(toSun, 2.0) * 0.6);
+  vec3 horizon = mix(vec3(0.74, 0.85, 0.96), vec3(0.97, 0.92, 0.82), pow(toSun, 2.0) * 0.7);
   col = mix(col, horizon, pow(1.0 - h, 16.0));
   col += vec3(1.0, 0.97, 0.9) * pow(toSun, 6.0) * 0.14 * glow;
   col += vec3(1.0, 0.98, 0.92) * pow(toSun, 60.0) * 0.3 * glow;

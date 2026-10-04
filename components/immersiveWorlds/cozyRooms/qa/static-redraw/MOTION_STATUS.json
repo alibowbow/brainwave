@@ -1,0 +1,13 @@
+{
+  "status": "UNRUN",
+  "prerequisiteAttemptExitCode": 1,
+  "reason": "Original motion-proof.mjs rejects passed:false lifecycle verification before preview/browser creation. No assertion, report or prerequisite was weakened or bypassed.",
+  "sourceSHA256": "588e2d1aa9721bae82c9b5de3fcc48a8d01955c47bba8f9a02398aa7be40a297",
+  "bundleSHA256": "3a3888b3703fda1d03bf0198cbccaa022acb0d1c480da9a77a313eb91632f376",
+  "verificationFile": "evidence/final-original/nature-winter_lodge/verification.json",
+  "verificationSHA256": "6847bec196a0194c2d00551b3d8f1dc4df18188528cd547a001b6e81ab777db3",
+  "logFile": "evidence/tooling/motion-prerequisite.log",
+  "logSHA256": "c894e3f9aa31b8bd7c68e7d012a4fd39674f9c9f1cb1eaca11c9247c11e48e23",
+  "pixelChecksExecuted": 0,
+  "browserLaunched": false
+}

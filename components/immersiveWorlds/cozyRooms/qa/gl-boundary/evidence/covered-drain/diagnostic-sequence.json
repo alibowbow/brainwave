@@ -1,0 +1,1500 @@
+{
+  "passed": true,
+  "worlds": [
+    "nature:winter_lodge"
+  ],
+  "timestamp": "2026-10-04T22:36:40.657Z",
+  "gitHead": "34ce6fa2d0e3bfc57708df7e92a72464c2922983",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+    "files": [
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/CozyWorld-o4FWuVHB.js",
+      "assets/CozyWorld-o4FWuVHB.js.map",
+      "assets/HearthWorld-BzsvmV1s.js",
+      "assets/HearthWorld-BzsvmV1s.js.map",
+      "assets/NapTerraceWorld-Cg1FuqCn.js",
+      "assets/NapTerraceWorld-Cg1FuqCn.js.map",
+      "assets/SleepRoomWorld-ChkPhVGB.js",
+      "assets/SleepRoomWorld-ChkPhVGB.js.map",
+      "assets/WinterLodgeWorld-DKMwcA2Q.js",
+      "assets/WinterLodgeWorld-DKMwcA2Q.js.map",
+      "assets/fireDetail-7ff1P15k.js",
+      "assets/fireDetail-7ff1P15k.js.map",
+      "assets/index-C9C37vN3.js",
+      "assets/index-C9C37vN3.js.map",
+      "assets/main-CVT1hKOw.js",
+      "assets/main-CVT1hKOw.js.map",
+      "assets/materials-wf-a3px0.js",
+      "assets/materials-wf-a3px0.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [
+    {
+      "world": "nature:winter_lodge",
+      "snapshots": [
+        {
+          "file": "nature-winter_lodge-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+        },
+        {
+          "file": "nature-winter_lodge-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+        },
+        {
+          "file": "nature-winter_lodge-landscape-viewport.png",
+          "width": 915,
+          "height": 412,
+          "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-cup",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 11,
+        "time": 8.098199999999999,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 393,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "diagnosticOnly": true,
+  "originalGateClaim": false,
+  "reconciliation": {
+    "complete": true,
+    "recovered": 0,
+    "error": null
+  },
+  "boundary": {
+    "engines": [
+      {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 49,
+        "renderReturns": 49,
+        "renderThrows": 0,
+        "drawCallsSum": 31029,
+        "trianglesSum": 131168608,
+        "pointsSum": 8085,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 56582.10000000149,
+        "lastSubmitReturnAt": 56585.19999999553,
+        "lastRendererMs": 3.0999999940395355,
+        "successfulZeroDtRecords": [
+          {
+            "instance": 1,
+            "call": 1,
+            "dt": 0,
+            "entryAt": 1764.3999999985099,
+            "returnAt": 3313.89999999851,
+            "before": {
+              "frames": 0,
+              "time": 8,
+              "running": false,
+              "entries": 0,
+              "returns": 0,
+              "throws": 0
+            },
+            "after": {
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "entries": 1,
+              "returns": 1,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 2,
+            "dt": 0,
+            "entryAt": 3315,
+            "returnAt": 3359.199999999255,
+            "before": {
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "entries": 1,
+              "returns": 1,
+              "throws": 0
+            },
+            "after": {
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "entries": 2,
+              "returns": 2,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 3,
+            "dt": 0,
+            "entryAt": 24163.10000000149,
+            "returnAt": 24178.5,
+            "before": {
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "entries": 2,
+              "returns": 2,
+              "throws": 0
+            },
+            "after": {
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "entries": 3,
+              "returns": 3,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 4,
+            "dt": 0,
+            "entryAt": 29158.89999999851,
+            "returnAt": 29166.39999999851,
+            "before": {
+              "frames": 3,
+              "time": 8,
+              "running": false,
+              "entries": 3,
+              "returns": 3,
+              "throws": 0
+            },
+            "after": {
+              "frames": 4,
+              "time": 8,
+              "running": false,
+              "entries": 4,
+              "returns": 4,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 5,
+            "dt": 0,
+            "entryAt": 32418.39999999851,
+            "returnAt": 32429.89999999851,
+            "before": {
+              "frames": 4,
+              "time": 8,
+              "running": false,
+              "entries": 4,
+              "returns": 4,
+              "throws": 0
+            },
+            "after": {
+              "frames": 5,
+              "time": 8,
+              "running": false,
+              "entries": 5,
+              "returns": 5,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 6,
+            "dt": 0,
+            "entryAt": 32668,
+            "returnAt": 32675,
+            "before": {
+              "frames": 11,
+              "time": 8.098199999999999,
+              "running": false,
+              "entries": 11,
+              "returns": 11,
+              "throws": 0
+            },
+            "after": {
+              "frames": 12,
+              "time": 8.098199999999999,
+              "running": false,
+              "entries": 12,
+              "returns": 12,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 7,
+            "dt": 0,
+            "entryAt": 32805.79999999702,
+            "returnAt": 32811.39999999851,
+            "before": {
+              "frames": 18,
+              "time": 8.192100000004467,
+              "running": false,
+              "entries": 18,
+              "returns": 18,
+              "throws": 0
+            },
+            "after": {
+              "frames": 19,
+              "time": 8.192100000004467,
+              "running": false,
+              "entries": 19,
+              "returns": 19,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 8,
+            "dt": 0,
+            "entryAt": 32841.60000000149,
+            "returnAt": 32845.29999999702,
+            "before": {
+              "frames": 19,
+              "time": 8.192100000004467,
+              "running": false,
+              "entries": 19,
+              "returns": 19,
+              "throws": 0
+            },
+            "after": {
+              "frames": 20,
+              "time": 8.192100000004467,
+              "running": false,
+              "entries": 20,
+              "returns": 20,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 9,
+            "dt": 0,
+            "entryAt": 32872,
+            "returnAt": 32875.10000000149,
+            "before": {
+              "frames": 20,
+              "time": 8.192100000004467,
+              "running": false,
+              "entries": 20,
+              "returns": 20,
+              "throws": 0
+            },
+            "after": {
+              "frames": 21,
+              "time": 8.192100000004467,
+              "running": false,
+              "entries": 21,
+              "returns": 21,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 10,
+            "dt": 0,
+            "entryAt": 32981.29999999702,
+            "returnAt": 32987.60000000149,
+            "before": {
+              "frames": 25,
+              "time": 8.242100000004466,
+              "running": false,
+              "entries": 25,
+              "returns": 25,
+              "throws": 0
+            },
+            "after": {
+              "frames": 26,
+              "time": 8.242100000004466,
+              "running": false,
+              "entries": 26,
+              "returns": 26,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 11,
+            "dt": 0,
+            "entryAt": 35506.10000000149,
+            "returnAt": 35509.5,
+            "before": {
+              "frames": 29,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 29,
+              "returns": 29,
+              "throws": 0
+            },
+            "after": {
+              "frames": 30,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 30,
+              "returns": 30,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 12,
+            "dt": 0,
+            "entryAt": 38500,
+            "returnAt": 38504.10000000149,
+            "before": {
+              "frames": 30,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 30,
+              "returns": 30,
+              "throws": 0
+            },
+            "after": {
+              "frames": 31,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 31,
+              "returns": 31,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 13,
+            "dt": 0,
+            "entryAt": 41433.89999999851,
+            "returnAt": 41442.29999999702,
+            "before": {
+              "frames": 31,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 31,
+              "returns": 31,
+              "throws": 0
+            },
+            "after": {
+              "frames": 32,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 32,
+              "returns": 32,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 14,
+            "dt": 0,
+            "entryAt": 41450.19999999553,
+            "returnAt": 41453.19999999553,
+            "before": {
+              "frames": 32,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 32,
+              "returns": 32,
+              "throws": 0
+            },
+            "after": {
+              "frames": 33,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 33,
+              "returns": 33,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 15,
+            "dt": 0,
+            "entryAt": 41482.39999999851,
+            "returnAt": 41500.29999999702,
+            "before": {
+              "frames": 33,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 33,
+              "returns": 33,
+              "throws": 0
+            },
+            "after": {
+              "frames": 34,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 34,
+              "returns": 34,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 16,
+            "dt": 0,
+            "entryAt": 41532.10000000149,
+            "returnAt": 41541.69999999553,
+            "before": {
+              "frames": 34,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 34,
+              "returns": 34,
+              "throws": 0
+            },
+            "after": {
+              "frames": 35,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 35,
+              "returns": 35,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 17,
+            "dt": 0,
+            "entryAt": 47532.69999999553,
+            "returnAt": 47536.5,
+            "before": {
+              "frames": 35,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 35,
+              "returns": 35,
+              "throws": 0
+            },
+            "after": {
+              "frames": 36,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 36,
+              "returns": 36,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 18,
+            "dt": 0,
+            "entryAt": 50466,
+            "returnAt": 50469.89999999851,
+            "before": {
+              "frames": 36,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 36,
+              "returns": 36,
+              "throws": 0
+            },
+            "after": {
+              "frames": 37,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 37,
+              "returns": 37,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 19,
+            "dt": 0,
+            "entryAt": 50481.5,
+            "returnAt": 50485.39999999851,
+            "before": {
+              "frames": 37,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 37,
+              "returns": 37,
+              "throws": 0
+            },
+            "after": {
+              "frames": 38,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 38,
+              "returns": 38,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 20,
+            "dt": 0,
+            "entryAt": 50501.5,
+            "returnAt": 50506,
+            "before": {
+              "frames": 38,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 38,
+              "returns": 38,
+              "throws": 0
+            },
+            "after": {
+              "frames": 39,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 39,
+              "returns": 39,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 21,
+            "dt": 0,
+            "entryAt": 50537.79999999702,
+            "returnAt": 50541.19999999553,
+            "before": {
+              "frames": 39,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 39,
+              "returns": 39,
+              "throws": 0
+            },
+            "after": {
+              "frames": 40,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 40,
+              "returns": 40,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 22,
+            "dt": 0,
+            "entryAt": 50602.60000000149,
+            "returnAt": 50606.39999999851,
+            "before": {
+              "frames": 40,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 40,
+              "returns": 40,
+              "throws": 0
+            },
+            "after": {
+              "frames": 41,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 41,
+              "returns": 41,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 23,
+            "dt": 0,
+            "entryAt": 50845.60000000149,
+            "returnAt": 50856.39999999851,
+            "before": {
+              "frames": 41,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 41,
+              "returns": 41,
+              "throws": 0
+            },
+            "after": {
+              "frames": 42,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 42,
+              "returns": 42,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 24,
+            "dt": 0,
+            "entryAt": 50907.10000000149,
+            "returnAt": 50915.69999999553,
+            "before": {
+              "frames": 42,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 42,
+              "returns": 42,
+              "throws": 0
+            },
+            "after": {
+              "frames": 43,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 43,
+              "returns": 43,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 25,
+            "dt": 0,
+            "entryAt": 53577.29999999702,
+            "returnAt": 53582.19999999553,
+            "before": {
+              "frames": 43,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 43,
+              "returns": 43,
+              "throws": 0
+            },
+            "after": {
+              "frames": 44,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 44,
+              "returns": 44,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 26,
+            "dt": 0,
+            "entryAt": 54161.79999999702,
+            "returnAt": 54165.19999999553,
+            "before": {
+              "frames": 45,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 45,
+              "returns": 45,
+              "throws": 0
+            },
+            "after": {
+              "frames": 46,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 46,
+              "returns": 46,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 27,
+            "dt": 0,
+            "entryAt": 54204.79999999702,
+            "returnAt": 54208.19999999553,
+            "before": {
+              "frames": 46,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 46,
+              "returns": 46,
+              "throws": 0
+            },
+            "after": {
+              "frames": 47,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 47,
+              "returns": 47,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 28,
+            "dt": 0,
+            "entryAt": 54243.89999999851,
+            "returnAt": 54247.29999999702,
+            "before": {
+              "frames": 47,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 47,
+              "returns": 47,
+              "throws": 0
+            },
+            "after": {
+              "frames": 48,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 48,
+              "returns": 48,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 1,
+            "call": 29,
+            "dt": 0,
+            "entryAt": 56582,
+            "returnAt": 56585.29999999702,
+            "before": {
+              "frames": 48,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 48,
+              "returns": 48,
+              "throws": 0
+            },
+            "after": {
+              "frames": 49,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 49,
+              "returns": 49,
+              "throws": 0
+            }
+          }
+        ]
+      },
+      {
+        "instance": 2,
+        "contextId": 2,
+        "canvasId": 2,
+        "renderEntries": 2,
+        "renderReturns": 2,
+        "renderThrows": 0,
+        "drawCallsSum": 1264,
+        "trianglesSum": 5351924,
+        "pointsSum": 330,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 171297.5,
+        "lastSubmitReturnAt": 171307,
+        "lastRendererMs": 9.5,
+        "successfulZeroDtRecords": [
+          {
+            "instance": 2,
+            "call": 1,
+            "dt": 0,
+            "entryAt": 170610.8999999985,
+            "returnAt": 171296.1000000015,
+            "before": {
+              "frames": 0,
+              "time": 8,
+              "running": false,
+              "entries": 0,
+              "returns": 0,
+              "throws": 0
+            },
+            "after": {
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "entries": 1,
+              "returns": 1,
+              "throws": 0
+            }
+          },
+          {
+            "instance": 2,
+            "call": 2,
+            "dt": 0,
+            "entryAt": 171297.3999999985,
+            "returnAt": 171307.1000000015,
+            "before": {
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "entries": 1,
+              "returns": 1,
+              "throws": 0
+            },
+            "after": {
+              "frames": 2,
+              "time": 8,
+              "running": false,
+              "entries": 2,
+              "returns": 2,
+              "throws": 0
+            }
+          }
+        ]
+      }
+    ],
+    "contexts": [
+      {
+        "contextId": 1,
+        "createdAt": 475.5,
+        "engineInstance": 1,
+        "api": {
+          "compileShader": {
+            "calls": 38,
+            "returns": 38,
+            "throws": 0,
+            "totalMs": 0,
+            "maxMs": 0,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {}
+          },
+          "linkProgram": {
+            "calls": 19,
+            "returns": 19,
+            "throws": 0,
+            "totalMs": 0.10000000149011612,
+            "maxMs": 0.10000000149011612,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {}
+          },
+          "getProgramParameter": {
+            "calls": 57,
+            "returns": 57,
+            "throws": 0,
+            "totalMs": 45.30000000819564,
+            "maxMs": 14.600000001490116,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {
+              "35714": 19,
+              "35718": 19,
+              "35721": 19
+            }
+          }
+        },
+        "currentCall": null,
+        "canvas": {
+          "boundaryCanvasId": 1,
+          "connected": false,
+          "parent": null,
+          "backingWidth": 960,
+          "backingHeight": 700,
+          "cssWidth": 0,
+          "cssHeight": 0,
+          "instance": "1"
+        }
+      },
+      {
+        "contextId": 2,
+        "createdAt": 169967,
+        "engineInstance": 2,
+        "api": {
+          "compileShader": {
+            "calls": 38,
+            "returns": 38,
+            "throws": 0,
+            "totalMs": 0.10000000149011612,
+            "maxMs": 0.10000000149011612,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {}
+          },
+          "linkProgram": {
+            "calls": 19,
+            "returns": 19,
+            "throws": 0,
+            "totalMs": 0,
+            "maxMs": 0,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {}
+          },
+          "getProgramParameter": {
+            "calls": 57,
+            "returns": 57,
+            "throws": 0,
+            "totalMs": 11.800000011920929,
+            "maxMs": 5.4000000059604645,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {
+              "35714": 19,
+              "35718": 19,
+              "35721": 19
+            }
+          }
+        },
+        "currentCall": null,
+        "canvas": {
+          "boundaryCanvasId": 2,
+          "connected": true,
+          "parent": "cozy-world-mount",
+          "backingWidth": 960,
+          "backingHeight": 700,
+          "cssWidth": 960,
+          "cssHeight": 700,
+          "instance": "2"
+        }
+      }
+    ],
+    "coverage": {
+      "active": true,
+      "monitorUntil": "final-summary",
+      "valid": true,
+      "instance": 1,
+      "canvasId": 1,
+      "contextId": 1,
+      "time": 8.30880000000447,
+      "uncoveredEntries": 1,
+      "uncoveredBackingWrites": 0,
+      "postSignalEntries": 0,
+      "acceptedLateZeroDtCalls": 1,
+      "signaledAt": 164895.29999999702,
+      "releaseAt": 164910.1000000015,
+      "disposeEntryAt": 169911.29999999702,
+      "disposeReturnAt": 169917.69999999553,
+      "frames": 49,
+      "renderEntriesAtFence": 49,
+      "renderReturnsAtFence": 49,
+      "placedAt": 56595.69999999553,
+      "latestFenceId": 2,
+      "framesAtRelease": 49,
+      "timeAtRelease": 8.30880000000447,
+      "countersAtDisposeEntry": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 49,
+        "renderReturns": 49,
+        "renderThrows": 0,
+        "drawCallsSum": 31029,
+        "trianglesSum": 131168608,
+        "pointsSum": 8085,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 56582.10000000149,
+        "lastSubmitReturnAt": 56585.19999999553,
+        "lastRendererMs": 3.0999999940395355
+      },
+      "countersAtDisposeReturn": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 49,
+        "renderReturns": 49,
+        "renderThrows": 0,
+        "drawCallsSum": 31029,
+        "trianglesSum": 131168608,
+        "pointsSum": 8085,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 56582.10000000149,
+        "lastSubmitReturnAt": 56585.19999999553,
+        "lastRendererMs": 3.0999999940395355
+      },
+      "finalOldCounters": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 49,
+        "renderReturns": 49,
+        "renderThrows": 0,
+        "drawCallsSum": 31029,
+        "trianglesSum": 131168608,
+        "pointsSum": 8085,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 56582.10000000149,
+        "lastSubmitReturnAt": 56585.19999999553,
+        "lastRendererMs": 3.0999999940395355
+      }
+    }
+  },
+  "drain": {
+    "version": 2,
+    "passed": true,
+    "budgetMs": 120000,
+    "startedAt": 54279,
+    "deadlineAt": 174279,
+    "maxReplacements": 8,
+    "replacements": 1,
+    "oldContextId": 1,
+    "before": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 48,
+      "time": 8.30880000000447,
+      "running": false,
+      "targets": [
+        {
+          "action": "cup",
+          "x": 0.10181518315902666,
+          "y": 0.8125590954840582,
+          "z": 0.9569004896133495
+        },
+        {
+          "action": "cup",
+          "x": 0.05333203807554232,
+          "y": 0.7656469701435584,
+          "z": 0.9568973537142805
+        },
+        {
+          "action": "lamp",
+          "x": 0.10734110039703582,
+          "y": 0.45051655710232014,
+          "z": 0.9673495917121584
+        },
+        {
+          "action": "lamp",
+          "x": 0.11272193902631739,
+          "y": 0.6027171884734851,
+          "z": 0.9672611221954316
+        },
+        {
+          "action": "log",
+          "x": 0.9014166310301769,
+          "y": 0.7447993194139689,
+          "z": 0.9780888288779535
+        },
+        {
+          "action": "log",
+          "x": 0.9300013682115167,
+          "y": 0.7279177483067474,
+          "z": 0.9777985014716816
+        },
+        {
+          "action": "log",
+          "x": 0.958808828231569,
+          "y": 0.7516784546944905,
+          "z": 0.9775269365320773
+        },
+        {
+          "action": "log",
+          "x": 0.9888709268073961,
+          "y": 0.7344619072992344,
+          "z": 0.9772218811362687
+        },
+        {
+          "action": "log",
+          "x": 1.0191305303951814,
+          "y": 0.7589087258771514,
+          "z": 0.9769363631721307
+        }
+      ],
+      "drawCalls": 631,
+      "triangles": 2675522,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      }
+    },
+    "submissionsBefore": {
+      "instance": 1,
+      "contextId": 1,
+      "canvasId": 1,
+      "renderEntries": 48,
+      "renderReturns": 48,
+      "renderThrows": 0,
+      "drawCallsSum": 30398,
+      "trianglesSum": 128493086,
+      "pointsSum": 7920,
+      "linesSum": 0,
+      "lastSubmitEntryAt": 54244,
+      "lastSubmitReturnAt": 54247.19999999553,
+      "lastRendererMs": 3.1999999955296516
+    },
+    "canvasBefore": {
+      "boundaryCanvasId": 1,
+      "connected": true,
+      "parent": "cozy-world-mount",
+      "backingWidth": 960,
+      "backingHeight": 700,
+      "cssWidth": 960,
+      "cssHeight": 700,
+      "instance": "1"
+    },
+    "fences": [
+      {
+        "id": 1,
+        "reason": "initial covering current completed submissions",
+        "matchedZeroDtCalls": [],
+        "placementCounters": {
+          "frames": 48,
+          "entries": 48,
+          "returns": 48,
+          "throws": 0,
+          "zeroDtCount": 28
+        },
+        "submissionsAtPlacement": {
+          "instance": 1,
+          "contextId": 1,
+          "canvasId": 1,
+          "renderEntries": 48,
+          "renderReturns": 48,
+          "renderThrows": 0,
+          "drawCallsSum": 30398,
+          "trianglesSum": 128493086,
+          "pointsSum": 7920,
+          "linesSum": 0,
+          "lastSubmitEntryAt": 54244,
+          "lastSubmitReturnAt": 54247.19999999553,
+          "lastRendererMs": 3.1999999955296516
+        },
+        "createdAt": 54460.69999999553,
+        "nonnull": true,
+        "polls": 127,
+        "timeoutExpiredCount": 127,
+        "statusTransitions": [
+          {
+            "fenceId": 1,
+            "status": "TIMEOUT_EXPIRED",
+            "at": 54478.89999999851,
+            "poll": 1
+          }
+        ],
+        "clientWaitTotalMs": 1.0000000074505806,
+        "clientWaitMaxMs": 0.10000000149011612,
+        "deleteCalls": 1,
+        "deleteReturned": true,
+        "fenceSyncMs": 0.8999999985098839,
+        "flushMs": 0,
+        "clientWaitLastMs": 0,
+        "clientWaitFirstMs": 0,
+        "supersededByZeroDtCalls": [
+          29
+        ],
+        "supersededAt": 56595.10000000149,
+        "deleteReason": "superseded by observed successful paused zero-dt submissions",
+        "deleteEntryAt": 56595.39999999851,
+        "deleteMs": 0,
+        "deleteReturnAt": 56595.39999999851,
+        "lifetimeMs": 2134.7000000029802
+      },
+      {
+        "id": 2,
+        "reason": "covers observed successful late renderFrame(0)",
+        "matchedZeroDtCalls": [
+          29
+        ],
+        "placementCounters": {
+          "frames": 49,
+          "entries": 49,
+          "returns": 49,
+          "throws": 0,
+          "zeroDtCount": 29
+        },
+        "submissionsAtPlacement": {
+          "instance": 1,
+          "contextId": 1,
+          "canvasId": 1,
+          "renderEntries": 49,
+          "renderReturns": 49,
+          "renderThrows": 0,
+          "drawCallsSum": 31029,
+          "trianglesSum": 131168608,
+          "pointsSum": 8085,
+          "linesSum": 0,
+          "lastSubmitEntryAt": 56582.10000000149,
+          "lastSubmitReturnAt": 56585.19999999553,
+          "lastRendererMs": 3.0999999940395355
+        },
+        "createdAt": 56595.69999999553,
+        "nonnull": true,
+        "polls": 6418,
+        "timeoutExpiredCount": 6417,
+        "statusTransitions": [
+          {
+            "fenceId": 2,
+            "status": "TIMEOUT_EXPIRED",
+            "at": 56612.29999999702,
+            "poll": 1
+          },
+          {
+            "fenceId": 2,
+            "status": "CONDITION_SATISFIED",
+            "at": 164895,
+            "poll": 6418
+          }
+        ],
+        "clientWaitTotalMs": 98.99999985098839,
+        "clientWaitMaxMs": 2.2000000029802322,
+        "deleteCalls": 1,
+        "deleteReturned": true,
+        "fenceSyncMs": 0,
+        "flushMs": 0,
+        "clientWaitLastMs": 0,
+        "clientWaitFirstMs": 0,
+        "signaledAt": 164895.29999999702,
+        "deleteReason": "latest covering fence signaled",
+        "deleteEntryAt": 164895.5,
+        "deleteMs": 0,
+        "deleteReturnAt": 164895.6000000015,
+        "lifetimeMs": 108299.90000000596
+      }
+    ],
+    "ownedSyncs": 2,
+    "polls": 6545,
+    "timeoutExpiredCount": 6544,
+    "statusTransitions": [
+      {
+        "fenceId": 1,
+        "status": "TIMEOUT_EXPIRED",
+        "at": 54478.89999999851,
+        "poll": 1
+      },
+      {
+        "fenceId": 2,
+        "status": "TIMEOUT_EXPIRED",
+        "at": 56612.29999999702,
+        "poll": 1
+      },
+      {
+        "fenceId": 2,
+        "status": "CONDITION_SATISFIED",
+        "at": 164895,
+        "poll": 6418
+      }
+    ],
+    "clientWaitTotalMs": 99.99999985843897,
+    "clientWaitMaxMs": 2.2000000029802322,
+    "deleteSyncCalls": 2,
+    "acceptedZeroDtRecords": [
+      {
+        "instance": 1,
+        "call": 29,
+        "dt": 0,
+        "entryAt": 56582,
+        "returnAt": 56585.29999999702,
+        "before": {
+          "frames": 48,
+          "time": 8.30880000000447,
+          "running": false,
+          "entries": 48,
+          "returns": 48,
+          "throws": 0
+        },
+        "after": {
+          "frames": 49,
+          "time": 8.30880000000447,
+          "running": false,
+          "entries": 49,
+          "returns": 49,
+          "throws": 0
+        }
+      }
+    ],
+    "clientWaitLastMs": 0,
+    "clientWaitFirstMs": 0,
+    "status": "CONDITION_SATISFIED",
+    "signaledAt": 164895.29999999702,
+    "signaledFenceId": 2,
+    "after": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 49,
+      "time": 8.30880000000447,
+      "running": false,
+      "targets": [
+        {
+          "action": "cup",
+          "x": 0.10181518315902666,
+          "y": 0.8125590954840582,
+          "z": 0.9569004896133495
+        },
+        {
+          "action": "cup",
+          "x": 0.05333203807554232,
+          "y": 0.7656469701435584,
+          "z": 0.9568973537142805
+        },
+        {
+          "action": "lamp",
+          "x": 0.10734110039703582,
+          "y": 0.45051655710232014,
+          "z": 0.9673495917121584
+        },
+        {
+          "action": "lamp",
+          "x": 0.11272193902631739,
+          "y": 0.6027171884734851,
+          "z": 0.9672611221954316
+        },
+        {
+          "action": "log",
+          "x": 0.9014166310301769,
+          "y": 0.7447993194139689,
+          "z": 0.9780888288779535
+        },
+        {
+          "action": "log",
+          "x": 0.9300013682115167,
+          "y": 0.7279177483067474,
+          "z": 0.9777985014716816
+        },
+        {
+          "action": "log",
+          "x": 0.958808828231569,
+          "y": 0.7516784546944905,
+          "z": 0.9775269365320773
+        },
+        {
+          "action": "log",
+          "x": 0.9888709268073961,
+          "y": 0.7344619072992344,
+          "z": 0.9772218811362687
+        },
+        {
+          "action": "log",
+          "x": 1.0191305303951814,
+          "y": 0.7589087258771514,
+          "z": 0.9769363631721307
+        }
+      ],
+      "drawCalls": 631,
+      "triangles": 2675522,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      }
+    },
+    "submissionsAfter": {
+      "instance": 1,
+      "contextId": 1,
+      "canvasId": 1,
+      "renderEntries": 49,
+      "renderReturns": 49,
+      "renderThrows": 0,
+      "drawCallsSum": 31029,
+      "trianglesSum": 131168608,
+      "pointsSum": 8085,
+      "linesSum": 0,
+      "lastSubmitEntryAt": 56582.10000000149,
+      "lastSubmitReturnAt": 56585.19999999553,
+      "lastRendererMs": 3.0999999940395355
+    },
+    "completionClaim": "Latest fence signaled covering latest observed completed submissions; post-signal coverage remains monitored through disposal and final summary",
+    "elapsedMs": 110616.60000000149,
+    "allOwnedSyncsDeletedOnce": true
+  },
+  "identity": {
+    "sourceAtStart": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "sourceAtEnd": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "bundleAtStart": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+    "bundleAtEnd": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+    "unchanged": true
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "timestamp": "2026-10-04T22:20:57.065Z",
+  "gitHead": "45591e92be66a04f6eed97d0780d693968ab9df9",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+  "three": {
+    "version": "0.186.1",
+    "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+  },
+  "bundle": {
+    "sha256": "f292a14103e188eff9af6ebb236519cbcaa394afdfe748d466cef51a4e891652",
+    "files": [
+      "assets/CozyWorld-Ba24gTbB.js",
+      "assets/CozyWorld-Ba24gTbB.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-Cc5yDa9a.js",
+      "assets/HearthWorld-Cc5yDa9a.js.map",
+      "assets/NapTerraceWorld-CgnLUZME.js",
+      "assets/NapTerraceWorld-CgnLUZME.js.map",
+      "assets/SleepRoomWorld-C7SfRXbi.js",
+      "assets/SleepRoomWorld-C7SfRXbi.js.map",
+      "assets/WinterLodgeWorld-D2xa8fCS.js",
+      "assets/WinterLodgeWorld-D2xa8fCS.js.map",
+      "assets/fireDetail-BeD7MlKR.js",
+      "assets/fireDetail-BeD7MlKR.js.map",
+      "assets/index-CRdQdscM.js",
+      "assets/index-CRdQdscM.js.map",
+      "assets/main-bAl6bzOS.js",
+      "assets/main-bAl6bzOS.js.map",
+      "assets/materials-e8nGSyYp.js",
+      "assets/materials-e8nGSyYp.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-Ba24gTbB.js": "13bbace3b47b368f2add26d6b36815da90aab172ecdcf0683034fc9a16cec2ac",
+      "assets/CozyWorld-Ba24gTbB.js.map": "5c49fbf6893dddb3a212de1541aca094be3991c8ddcd9356ac5233304b4d85b5",
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/HearthWorld-Cc5yDa9a.js": "ccfccdc3327d533fe91da6d2aae9d842f9c35700e14966e6c5a54760a1fe0842",
+      "assets/HearthWorld-Cc5yDa9a.js.map": "e8e3a6a635c42575e0eaed5937093f07be323a88b7203ecd3aaa7bb851114ddb",
+      "assets/NapTerraceWorld-CgnLUZME.js": "1bf24b6f6c2b031ee21879df1877adff23517bf011c57dd287d1b7772ef8aac1",
+      "assets/NapTerraceWorld-CgnLUZME.js.map": "9869e4710df17eb0eef3c6d571d0df8b8114173dc981b36caa4c253b6cdbfac5",
+      "assets/SleepRoomWorld-C7SfRXbi.js": "cc2234d90a53589d9038f246acaccaaa4dc3d2166b5558ace2eb2f61fa8b731a",
+      "assets/SleepRoomWorld-C7SfRXbi.js.map": "49f377cda4d6517f1338ed287258836fc823b02ec160adb96409eb8ed60fc013",
+      "assets/WinterLodgeWorld-D2xa8fCS.js": "80f3365627cc0f66c2c1e085ea8708d28b2bdb0aa00aa4f9680ddb400b4d171f",
+      "assets/WinterLodgeWorld-D2xa8fCS.js.map": "9d68306e66a672bd860f0726d4bcb63deb4e7f66d5936260f7f9e8f463cba695",
+      "assets/fireDetail-BeD7MlKR.js": "17dcff58711f4e687ed88f6e54848e138c8666dc32bdfd602cec40f0417972ce",
+      "assets/fireDetail-BeD7MlKR.js.map": "e3fa4c38035fd67eba638758f50d38e513a5c0c0ad362412e03b85cd532f5e6e",
+      "assets/index-CRdQdscM.js": "e44b15bd8666520726d21c7c022670f6b8a573b6d4bd55384cdd8251cae98040",
+      "assets/index-CRdQdscM.js.map": "c18798dedb68f9cb8d795338ae0aaaf57067b1314205f07f44315ce108f78c02",
+      "assets/main-bAl6bzOS.js": "f9590664493762acddf483762eb74b446113ce804e353587ab7fadd6df4ad2fe",
+      "assets/main-bAl6bzOS.js.map": "5991fd16d57d1fec1e374cba8433f311ffcc94eb2a9792ccdbd4b8ea3f646651",
+      "assets/materials-e8nGSyYp.js": "e36b25486abc51e480b49f90614e0396f9cad9af2db7f873a013c5dfb7574a25",
+      "assets/materials-e8nGSyYp.js.map": "857de3d6c91d5311aa03f40dd4e7f6bbf6f6cac849a5a2e9102eca96c8560f8b",
+      "index.html": "b4e3566d70b7aa5dec73295b015410d0143685a25487307f84b83afacd78c511"
+    }
+  },
+  "scripts": {
+    "sha256": "d0e6dcc8905c054087ec4f7aec9e614e9543ff178103aaa5193be15dcea0fed4",
+    "files": [
+      "clean.mjs",
+      "entry.mjs",
+      "evidence/baseline-original-sequence/runner-source.mjs",
+      "evidence/size-guard-original-sequence/runner-source.mjs",
+      "instrumentation.mjs",
+      "original-sequence.mjs"
+    ],
+    "fileSHA256": {
+      "clean.mjs": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b",
+      "entry.mjs": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac",
+      "evidence/baseline-original-sequence/runner-source.mjs": "c6d971e76b68a8c63491afd49640371ebcefed329b7e1283c125f93fc8f86e77",
+      "evidence/size-guard-original-sequence/runner-source.mjs": "992a87809376d87b90b9983d06cab2dbe0327be004517056b0f653ebf3a4f89b",
+      "instrumentation.mjs": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf",
+      "original-sequence.mjs": "c68dd6eedff7712918d00a6f17287ab1c685ce5b03190943b3ed59faaac3bb18"
+    }
+  },
+  "originalVerifySHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+  "transforms": [
+    {
+      "file": "components/liveScene/liveSceneHost.ts",
+      "originalSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "transformedSHA256": "1c20cc6d13b03394d2492423e869fbdbb095fc7acedf989d7317b5f1b0f5b3c2"
+    },
+    {
+      "file": "components/immersiveWorlds/cozyRooms/engine.ts",
+      "originalSHA256": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "transformedSHA256": "1a0955ab10468ab441b382cc4585df2cafb425e6adb4f94382dbe20edacf348b"
+    }
+  ],
+  "instrumentation": "QA build only: original production files untouched. Original promise returned from init; observers do not delay host await through an extra promise. Constructor/factory/host catches add phase records only.",
+  "glBoundaryScripts": {
+    "sha256": "e1243079a471e5f0ab67e50560f1554ef409b7ee729ab4b4153d7a0706b27339",
+    "files": [
+      "entry.mjs",
+      "run.mjs",
+      "runtime.mjs"
+    ],
+    "fileSHA256": {
+      "entry.mjs": "5782f4de4a4e03d0a5fc0535338d527f4976f953fb46da730dd6a7637951967e",
+      "run.mjs": "f04ab112cd0eda4ad1d05a69807c105ffbefd62ee5d35f34f7b636568e4fe1ea",
+      "runtime.mjs": "a6053effeb675aca0dec0c38c05d06527709f1a6bbaa16bcd588be64b5afb310"
+    }
+  },
+  "intervention": {
+    "drainBudgetMs": 120000,
+    "externalDrainMs": 125000,
+    "insertion": "After all three rapid-remount iterations, immediately before the original final const end=await inspect()/setMounted(false).",
+    "meaning": "One diagnostic intervention; not an unchanged original-gate pass. A signaled fence proves completion of preceding old-context GL commands, not physical memory reclamation or presentation."
+  }
+}

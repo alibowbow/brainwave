@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "preparedAt": "2026-10-04T23:01:17.714232+00:00",
+  "integrationStatus": "BLOCKED",
+  "draftPR": "https://github.com/alibowbow/brainwave/pull/65",
+  "branch": "codex/cozy-rooms-bounded-visual-correction",
+  "remoteBaseAtStart": "f1540653283a09ddb91427a2e1692466275db2c7",
+  "protectedOriginalHead": "7373c1eeb5372fa9bebf41889ff2960643f3990e",
+  "protectedMainAncestor": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+  "approvedVisualCommit": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "localProductionCommit": "15e8d80eb3e6982858a8ef8fa24f40b388642cb7",
+  "localValidationHead": "908a697e94b1505b00e64317ab79c1567cc4df1f",
+  "identity": {
+    "sourceSHA256": "588e2d1aa9721bae82c9b5de3fcc48a8d01955c47bba8f9a02398aa7be40a297",
+    "originalEntryBundleSHA256": "3a3888b3703fda1d03bf0198cbccaa022acb0d1c480da9a77a313eb91632f376",
+    "engineSHA256": "556388ddf4fe7034d05cc4d5fcfc08e39aa72207079c1c68710c6d29d574dc30",
+    "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+    "perFileManifest": {
+      "file": "static-redraw/FINAL_IDENTITY.json",
+      "sha256": "1c4c076e9ca6a59364c0544b5c94720a1125d53f12519593d229ab572792fde3"
+    }
+  },
+  "productionChange": "Only CozyEngine skips a consecutive settled exact-zero-delta request after a successful zero frame. Init, actual size/DPR changes, every releaseDrag and each returned interaction invalidate; first zero after animation and nonzero look/aim always draw. No deferred submits, timers, production fences, FPS cap or quality change.",
+  "gates": {
+    "originalFourWorldSuite": {
+      "status": "FAILED",
+      "exitCode": 1,
+      "completedWorlds": 3,
+      "completedCheckLabels": 78,
+      "winterFailure": "Original 120000 ms fresh ready-canvas wait at verify.mjs:75:45 after disposal assertions passed",
+      "winterPartialCheckCount": null,
+      "reports": [
+        {
+          "file": "static-redraw/evidence/final-original/relax/verification.json",
+          "sha256": "48097d348ae00291b6232399c3178abac3f03979ef148d2763b12129ba294e57",
+          "world": "relax",
+          "passed": true,
+          "completedResultRecords": 1,
+          "completedCheckLabels": 26,
+          "pageErrors": []
+        },
+        {
+          "file": "static-redraw/evidence/final-original/sleep_prep/verification.json",
+          "sha256": "af1a3edb67628e7037a986362d18f7a203613c95000290e4a1fa3e09b6310523",
+          "world": "sleep_prep",
+          "passed": true,
+          "completedResultRecords": 1,
+          "completedCheckLabels": 26,
+          "pageErrors": []
+        },
+        {
+          "file": "static-redraw/evidence/final-original/power_nap/verification.json",
+          "sha256": "0936b89843ef56eb24d970cef3ef0a5cbf480b2113e1945de4a0721fcd6c95f5",
+          "world": "power_nap",
+          "passed": true,
+          "completedResultRecords": 1,
+          "completedCheckLabels": 26,
+          "pageErrors": []
+        },
+        {
+          "file": "static-redraw/evidence/final-original/nature-winter_lodge/verification.json",
+          "sha256": "6847bec196a0194c2d00551b3d8f1dc4df18188528cd547a001b6e81ab777db3",
+          "world": "nature-winter_lodge",
+          "passed": false,
+          "completedResultRecords": 0,
+          "completedCheckLabels": 0,
+          "pageErrors": []
+        }
+      ],
+      "execution": {
+        "file": "static-redraw/evidence/final-original/execution-status.json",
+        "sha256": "62652840e77241b89904a5d5a837e7024e0d6be88c62c1078181d4f10a241999"
+      },
+      "log": {
+        "file": "static-redraw/evidence/final-original/execution.log",
+        "sha256": "f211e9ccae1d3bfe045be978821c5e74a9b9201d28dbdf0fe0d2767b7f831db3"
+      },
+      "outer600sTimeoutTriggered": false,
+      "forcedTermination": false
+    },
+    "winterTwoRecreations": {
+      "status": "PASSED",
+      "report": {
+        "file": "static-redraw/evidence/winter-cycles/recreation-cycle.json",
+        "sha256": "f461c1dff62715960b9ed8a3ea1d20460c9926bbb191ef8aa272bbf271500f38"
+      },
+      "distinctEngineCanvasPairs": [
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "nativeKeyboardInputs": 2,
+      "finalCreatedAndDisposed": 3,
+      "finishedAt": "2026-10-04T22:48:41.142Z"
+    },
+    "actualContextLoss": {
+      "status": "PASSED",
+      "report": {
+        "file": "static-redraw/evidence/context-loss/context-loss.json",
+        "sha256": "84ef76916ff5a4fdefb605a37e70cb1c240ecac8373871f4f3aa304a2105d5d0"
+      },
+      "cases": [
+        "running",
+        "paused"
+      ],
+      "method": "WEBGL_lose_context on actual SwiftShader context; trusted loss events and isContextLost observed; not a physical GPU fault",
+      "distinctEngineCanvasPairs": [
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "finalCreatedAndDisposed": 4,
+      "finishedAt": "2026-10-04T22:49:38.161Z",
+      "warnings": [
+        "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+        "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+        "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+        "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+      ],
+      "limitation": "Failed DOM may retain data-motion=running while engine.running=false; no claim that the DOM motion attribute became paused."
+    },
+    "motionOnlyPixels": {
+      "status": "UNRUN",
+      "prerequisiteAttemptExitCode": 1,
+      "reason": "Unchanged original motion-proof rejects failed lifecycle verification before creating preview/browser; zero pixel checks, no bypass",
+      "report": {
+        "file": "static-redraw/MOTION_STATUS.json",
+        "sha256": "f9dbe31e6a0afacd9135b5ad1058916eed596d4c51a150050f4a67acad4b06e4"
+      }
+    },
+    "typecheck": {
+      "status": "PASSED",
+      "exitCode": 0,
+      "log": {
+        "file": "static-redraw/evidence/tooling/typecheck.log",
+        "sha256": "f351d6cc7f837f6090b2d50736a5ed84cc07aee8c71a95acdbdeca9a31a22ceb"
+      }
+    },
+    "unitTests": {
+      "status": "PASSED",
+      "exitCode": 0,
+      "tests": 163,
+      "files": 25,
+      "newBehavioralTests": 13,
+      "log": {
+        "file": "static-redraw/evidence/tooling/unit-tests.log",
+        "sha256": "20792f918488171cf9663ddad2c8c1198a4dbb92900605a5e3fdb91f23e1af6a"
+      }
+    },
+    "applicationBuild": {
+      "status": "PASSED",
+      "exitCode": 0,
+      "log": {
+        "file": "static-redraw/evidence/tooling/build.log",
+        "sha256": "88255dab067375662e6903624c4da9f1293035158c5d0225c6d42829ef67e771"
+      }
+    },
+    "bundleBudget": {
+      "status": "PASSED",
+      "exitCode": 0,
+      "initialJSKiB": 402.6,
+      "jsLimitKiB": 410,
+      "cssKiB": 99.5,
+      "cssLimitKiB": 135,
+      "log": {
+        "file": "static-redraw/evidence/tooling/bundle-budget.log",
+        "sha256": "641c2dd8d786742e25c33ce221f1f704e13febc42f4d77eb9c0d60f7cb8db2c8"
+      }
+    },
+    "realPNGs": {
+      "status": "PASSED",
+      "imagesInspected": 11,
+      "approvedColdImagesByteIdentical": 10,
+      "dynamicChromeComparedAsCold": false,
+      "report": {
+        "file": "static-redraw/PNG_MANIFEST.json",
+        "sha256": "53d617631c8c172b372549871b6bc319bec99f34b23cb626fe1093fff31afe51"
+      }
+    },
+    "remoteRequiredCI": {
+      "status": "PENDING_PUBLICATION",
+      "tracking": "Record actual published commit CI and deployment status in PR65; local gate failures remain blocking regardless of CI color."
+    }
+  },
+  "diagnosticComparison": {
+    "productionSourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "coveredAndControlBundleSHA256": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+    "firstAttempt": "INVALIDATED by late zero draw; separately browser cleanup failed",
+    "coveredDrain": "ALTERED_DIAGNOSTIC_PASS",
+    "undrainedControl": "26 sequence checks passed; OVERALL_DIAGNOSTIC_FAIL from browser cleanup10s",
+    "oldCompletionObservationMs": 110616.6,
+    "oldLastSubmitToSignalMs": 108310.1,
+    "freshRenderCoveredMs": 684.9,
+    "freshRenderUndrainedMs": 51116.8,
+    "reconciledEvents": [
+      668,
+      1180,
+      926
+    ],
+    "report": {
+      "file": "gl-boundary/COMPARISON.json",
+      "sha256": "e01d8441550162b8f4924024e6c656420576cfc7fd8dfc83faf7f34271f9d3d6"
+    },
+    "diagnosis": {
+      "file": "gl-boundary/DIAGNOSIS.md",
+      "sha256": "ea82ae398cef122a335ee77502e17a4c3a3eb90d2395d287df802b35bee4697c"
+    },
+    "interpretation": "Supports relevance of outstanding old-context work and one redundant-static candidate; unequal workloads, added wait/flush and instrumentation prevent precise causal/driver-only conclusions. Does not clear final uninstrumented failure."
+  },
+  "preservedPreviousFailures": [
+    {
+      "file": "followup/evidence/final-original/nature-winter_lodge/verification.json",
+      "sha256": "a6a71e845471bed01139503caa2417990f1735d490cb38e92020cc2b5272575b"
+    },
+    {
+      "file": "followup/evidence/final-winter-retry/verification.json",
+      "sha256": "f525604822ea078f74e1eae28104f2ea56eb2242f3ccbc7934d8c63312118d5e"
+    },
+    {
+      "file": "recreation/evidence/final-original/nature-winter_lodge/verification.json",
+      "sha256": "f0ee8a3cd221f41be3fa0521793f1dd0146c59a32b578d2bf978d5ad24652b9a"
+    }
+  ],
+  "limitations": [
+    "Final failed original suite has no phase probes: its old submission counts, caught host status/error and exact first-render boundary are unmeasured. Do not copy earlier-source diagnostic counters into this failure.",
+    "Five-second host retention grace, synchronous dispose return, fence completion of pre-disposal commands and physical GPU reclamation are separate; physical reclamation remains unmeasured.",
+    "Original PointerEvent/visibility/cancel/blur checks are synthetic; accessible Enter and original chrome button click use native browser input. Context-loss events are trusted actual extension-driven events.",
+    "SwiftShader, original DPR1 harness and viewport emulation; no hardware FPS/thermal, physical context fault, actual tab hiding, hardware DPR change or integrated app routing/fullscreen/audio acceptance.",
+    "No shared-host defect or driver-only cause established. No shared-host patch proposed."
+  ],
+  "coordinatorHandoff": "Keep PR65 draft; do not merge or waive the original120s gate. The minimal duplicate-static correction is reviewable but not a recreation fix. Next diagnosis must localize the retained untraced GL boundary on final source while preserving the original gate. Main14940149/sea51, originalPR59 and all other owners remain untouched."
+}

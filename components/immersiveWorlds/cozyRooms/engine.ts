@@ -11,6 +11,7 @@ export class CozyEngine implements LiveSceneEngine {
   private look=new THREE.Vector2(); private aim=new THREE.Vector2();
   private rotation=new THREE.Quaternion();
   private rendererSize=new THREE.Vector2();
+  private staticFrameCurrent=false;
   private frames=0; private aspect=1;private taps=0;private lastHit='none';
   private ray=new THREE.Raycaster();
   readonly instance=++serial;
@@ -25,32 +26,38 @@ export class CozyEngine implements LiveSceneEngine {
     lifetime.created++;
   }
   private contextLost=(event:Event)=>{event.preventDefault();this.onLost();};
-  async init(){this.world=this.factory();this.world.resize(this.aspect);this.rotation.copy(this.world.camera.quaternion);this.world.update(this.time,0);}
+  async init(){this.staticFrameCurrent=false;this.world=this.factory();this.world.resize(this.aspect);this.rotation.copy(this.world.camera.quaternion);this.world.update(this.time,0);}
   setSize(width:number,height:number,dpr:number){
     const w=Math.max(1,width),h=Math.max(1,height),ratio=Math.min(2,Math.max(1,dpr));
     this.aspect=w/h;
     // Three r186 setPixelRatio already calls setSize, and setSize rewrites the
     // backing buffer even for identical values. Keep real resize/DPR changes,
     // but do not reset it again on same-size holder/ResizeObserver callbacks.
-    if(this.renderer.getPixelRatio()!==ratio)this.renderer.setPixelRatio(ratio);
+    if(this.renderer.getPixelRatio()!==ratio){this.staticFrameCurrent=false;this.renderer.setPixelRatio(ratio);}
     this.renderer.getSize(this.rendererSize);
-    if(this.rendererSize.x!==w||this.rendererSize.y!==h)this.renderer.setSize(w,h,false);
+    if(this.rendererSize.x!==w||this.rendererSize.y!==h){this.staticFrameCurrent=false;this.renderer.setSize(w,h,false);}
     if(this.world){this.world.resize(this.aspect);this.world.camera.aspect=this.aspect;this.world.camera.updateProjectionMatrix();this.rotation.copy(this.world.camera.quaternion);}
   }
   renderFrame(dt:number){
     if(!this.world||this.dead)return;
+    // A delayed same-size ResizeObserver can request the frame just submitted
+    // by attachTop. Skip only a settled, unchanged zero-delta frame. The first
+    // zero after animation still updates (sleep uses it to settle its state).
+    if(dt===0&&this.staticFrameCurrent&&this.look.x===0&&this.look.y===0&&this.aim.x===0&&this.aim.y===0)return;
+    this.staticFrameCurrent=false;
     const delta=Math.min(.05,Math.max(0,dt)); this.time+=delta;
     this.look.lerp(this.aim,delta===0?1:1-Math.exp(-delta*5));
     this.world.update(this.time,delta);
     this.world.camera.quaternion.copy(this.rotation).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(this.look.y,this.look.x,0,'YXZ')));
     this.renderer.render(this.world.scene,this.world.camera);
     this.frames++;this.canvas.dataset.frames=String(this.frames);this.canvas.dataset.instance=String(this.instance);
+    this.staticFrameCurrent=dt===0;
   }
   start(){if(this.raf||this.dead)return;this.last=performance.now();const frame=(now:number)=>{this.raf=0;if(this.dead)return;this.renderFrame((now-this.last)/1000);this.last=now;this.raf=requestAnimationFrame(frame);};this.raf=requestAnimationFrame(frame);}
   stop(){cancelAnimationFrame(this.raf);this.raf=0;this.last=0;}
   drag(dx:number,dy:number){this.aim.set(THREE.MathUtils.clamp(-dx*.22,-.18,.18),THREE.MathUtils.clamp(-dy*.17,-.11,.11));}
-  releaseDrag(){this.aim.set(0,0);}
-  interact(action:string){const event=this.world?.interact(action);if(event){this.renderFrame(0);return {...event,intensity:THREE.MathUtils.clamp(event.intensity,0,.35)};}return null;}
+  releaseDrag(){this.staticFrameCurrent=false;this.aim.set(0,0);}
+  interact(action:string){const event=this.world?.interact(action);if(event){this.staticFrameCurrent=false;this.renderFrame(0);return {...event,intensity:THREE.MathUtils.clamp(event.intensity,0,.35)};}return null;}
   tap(clientX:number,clientY:number){
     if(!this.world)return null;this.taps++;this.lastHit='none';
     const rect=this.canvas.getBoundingClientRect();

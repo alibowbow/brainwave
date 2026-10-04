@@ -1,0 +1,146 @@
+{
+  "passed": true,
+  "worlds": [
+    "sleep_prep"
+  ],
+  "timestamp": "2026-10-04T21:44:35.331Z",
+  "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+    "files": [
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/CozyWorld-ytSbzKp7.js",
+      "assets/CozyWorld-ytSbzKp7.js.map",
+      "assets/HearthWorld-Bhp1wYZq.js",
+      "assets/HearthWorld-Bhp1wYZq.js.map",
+      "assets/NapTerraceWorld-CJEFGunM.js",
+      "assets/NapTerraceWorld-CJEFGunM.js.map",
+      "assets/SleepRoomWorld-CwSgMfOq.js",
+      "assets/SleepRoomWorld-CwSgMfOq.js.map",
+      "assets/WinterLodgeWorld-6ksoT8O-.js",
+      "assets/WinterLodgeWorld-6ksoT8O-.js.map",
+      "assets/fireDetail-CHpiNEXL.js",
+      "assets/fireDetail-CHpiNEXL.js.map",
+      "assets/index-CLDB1DB6.js",
+      "assets/index-CLDB1DB6.js.map",
+      "assets/materials-Di5W0wSt.js",
+      "assets/materials-Di5W0wSt.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [
+    {
+      "world": "sleep_prep",
+      "snapshots": [
+        {
+          "file": "sleep_prep-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+        },
+        {
+          "file": "sleep_prep-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-curtain",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 11,
+        "time": 8.115299999999255,
+        "running": false,
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    }
+  ],
+  "errors": []
+}

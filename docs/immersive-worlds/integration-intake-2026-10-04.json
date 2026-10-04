@@ -1,23 +1,21 @@
 {
   "schemaVersion": 3,
-  "observedAtUTC": "2026-10-04T21:45:04.750437+00:00",
-  "mode": "read_only_local_coverage_refresh",
-  "coreCheckpoint": "7abc25ab91fda8ec544ba1b8318a644b4ac81228",
+  "observedAtUTC": "2026-10-04T23:10:00Z",
+  "mode": "local_integration",
+  "coreCheckpoint": "693f49529e0d5194710dbd8df10c59058491019c",
   "worktreeUncommitted": true,
   "mainBaseline": "14940149cc5c0fccb778b58d4d755a04aea55e53",
-  "sharedWriter": "root only; this reviewer did not edit repository source",
-  "mergeAuthorizedNow": false,
-  "mergeCondition": "All30 gates and Rain dependency resolved AND user confirms final merge release",
-  "remoteObservation": "Uses recorded exact owner heads plus root latest CI refresh; no new remote query in this ledger. Owner Work termination is not inferred.",
+  "mergeCondition": "All30 scene and shared App technical release gates complete; Rain visual refinement and final acceptance pending.",
+  "remoteObservation": "2026-10-04T22:51Z read: core693f495/main14940149, Quiet215f9c8/Cozyf154065/Korean174aa43 unchanged.",
   "coverage": {
     "targetScenes": 30,
     "registered": 30,
     "notRegistered": 0,
     "registeredOwnedRootsExact": 14,
-    "registeredOwnerFilesExact": 893,
-    "userVisualAccepted": 26,
+    "registeredOwnerFilesExact": 1161,
     "rainVisualHeld": 4,
-    "finalSharedAppAcceptance": "pending"
+    "finalSharedAppAcceptance": "pending",
+    "visualEvidenceAccepted": 26
   },
   "registry": {
     "path": "components/immersiveWorlds/registry.ts",
@@ -91,9 +89,22 @@
     "exact": true
   },
   "sharedValidation": {
-    "basis": "Latest root instruction; this reviewer did not execute tests/build/browser/GPU.",
-    "currentFullUnitSuite": "pending_root_after_PR67_and_host_guard",
-    "currentFullTypecheckBuildBudgetPwa": "pending_root_after_PR67_and_host_guard",
+    "basis": "Root executed current local tests/build and read their logs; latest runtime index-DFSibu4A.js. Current browser evidence is separate.",
+    "currentFullUnitSuite": {
+      "status": "passed",
+      "tests": 639,
+      "files": 67,
+      "basis": "root executed after final Korean intake"
+    },
+    "currentFullTypecheckBuildBudgetPwa": {
+      "typecheck": "passed",
+      "build": "passed",
+      "bundle": "passed",
+      "indexChunk": "index-BIpQoT7O.js",
+      "initialJSKiB": 408.9,
+      "initialCSSKiB": 101.0,
+      "pwa": "worlds absent from initial and precache"
+    },
     "lastCompletedCheckpoint": {
       "unitTestsPassed": 497,
       "typecheck": "passed",
@@ -104,10 +115,10 @@
       "initialCSSKiB": 101.0,
       "initialCSSLimitKiB": 135,
       "pwaFinalGuard": "passed; actual optional world/protected renderer CSS and JS excluded from precache",
-      "limit": "Historical checkpoint; not a pass for latest30entry worktree."
+      "limit": "Historical497-test checkpoint, superseded by current618/66 validation. Not current native App acceptance."
     },
-    "nativeApp": "pending on newly frozen current source/build; preserve previous native failures and diagnostic evidence",
-    "audioBridge": "implemented from PR61 cc5b47f with existing context/bgBus; clean cold-autoplay and native end-to-end verification pending",
+    "nativeApp": "Current source-bound native App acceptance remains pending/incomplete; historical public693 cold gallery and failed/current diagnostic attempts are retained.",
+    "audioBridge": "Run6 latest9 passed with normal cleanup on DFSibu4A. Current BIpQoT7O run7 Scops source PCM direction passed, browser process close15s failed; application teardown not verified in that run.",
     "realDeviceFPSHeatListening": "not verified"
   },
   "audioOwnerHead": "cc5b47fea7989b60f5ffb9a17ad4c16264508901",
@@ -142,9 +153,9 @@
       ],
       "entrySha256": "5a59184586da62dfe27d80a27897ffa84b444de20ca0ba52772dc0ed50f6b71d",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Owner isolated evidence accepted; shared App native input/lifecycle pending.",
@@ -158,7 +169,13 @@
         "basis": "root latest independent refresh"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "cafe",
@@ -190,9 +207,9 @@
       ],
       "entrySha256": "0011837fcdafb857a1259e551f7ff578d56fdb4b0177b0ee94c450e79a82e67c",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Owner visual/compatibility evidence accepted. Prior core native attempts retained; latest integrated source/build native/audio verification still pending.",
@@ -206,7 +223,13 @@
         "basis": "pilots-current audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "cosmic",
@@ -238,9 +261,9 @@
       ],
       "entrySha256": "b7cacdbc7eabc4320f180c2aeabccd0c1cfe133864757c02850cef87bdc01dba",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted_preserved_after_bounded_fix",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "c9383 owner compatibility/lifecycle evidence received; shared App native gate pending.",
@@ -254,15 +277,21 @@
         "basis": "cosmic-c9383-review exact final-head audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "waterEdge",
       "id": "amb:night_pond",
       "entry": "components/immersiveWorlds/waterEdge/NightPondWorld.tsx",
       "pr": 64,
-      "ownerHead": "c6cad439abbaae54884292c6cc6ea60c76587e32",
-      "runtimeSource": "8b906c4e23f18984804659e9213292b84204500b",
+      "ownerHead": "d5f00475ad86cde3e489157e25e0aa14b400c9e8",
+      "runtimeSource": "e4a11dd135c7979b644d667755f6a68fa4ea529d",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -273,41 +302,49 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/waterEdge",
-          "tree": "5e9e8e58466bdf45cdea2ef9847c68b3cabd9870",
-          "files": 93,
+          "tree": "452ca7e26d6bdef933385833f6738d60548e5b8a",
+          "files": 162,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "228aa758d21ace5711838ddaa722bf47d74beab3b618ebf6fe26801742a518e3",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted_preserved",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "Pond normal and shore normal/byte clean cycles pass; Valley normal/byte fixed20s cleanup fails; group final lifecycle blocked.",
-        "sharedApp": "pending",
+        "isolated": "Fixed20s source-bound lifecycle gate resolved by finald5;24finalreports pass/28PNG. Historicalc6twofails anddedupactivefail remain.",
+        "sharedApp": "Responsiveness and integrated transitions/cleanup pending; normal firstdispose11.249s synchronous/heartbeat11.2445s is a separate observed limit.",
         "sourceOrEvidenceFollowup": "",
-        "sceneSpecific": "No direct failure in published clean cycles; shared group release remains blocked by Valley."
+        "sceneSpecific": "Finalclean normal16.2501/7.7436s;byte5.0389/5.3272s;active2frame5.0204/5.0186s. No smoothUI/physicalGPUclaim."
       },
       "ci": {
-        "run": 37234305610,
-        "status": "in_progress_at_last_audit",
-        "conclusion": null,
-        "basis": "wateredge-followup-current audit; not re-polled"
+        "run": 37238657908,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "independently fetched exactd5 workflow"
       },
       "finalMergeReady": false,
       "blockers": [
-        "waterEdge.valley_cleanup_group_gate"
-      ]
+        "waterEdge.app_responsiveness"
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "c6cad439abbaae54884292c6cc6ea60c76587e32",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "waterEdge",
       "id": "nature:summer_valley",
       "entry": "components/immersiveWorlds/waterEdge/SummerValleyWorld.tsx",
       "pr": 64,
-      "ownerHead": "c6cad439abbaae54884292c6cc6ea60c76587e32",
-      "runtimeSource": "8b906c4e23f18984804659e9213292b84204500b",
+      "ownerHead": "d5f00475ad86cde3e489157e25e0aa14b400c9e8",
+      "runtimeSource": "e4a11dd135c7979b644d667755f6a68fa4ea529d",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -318,41 +355,49 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/waterEdge",
-          "tree": "5e9e8e58466bdf45cdea2ef9847c68b3cabd9870",
-          "files": 93,
+          "tree": "452ca7e26d6bdef933385833f6738d60548e5b8a",
+          "files": 162,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "7009d7f90583239861f3cc224d1f1abb04a49767e271cf982d0acb2ae56c8129",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted_preserved",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "Pond normal and shore normal/byte clean cycles pass; Valley normal/byte fixed20s cleanup fails; group final lifecycle blocked.",
-        "sharedApp": "pending",
+        "isolated": "Fixed20s source-bound lifecycle gate resolved by finald5;24finalreports pass/28PNG. Historicalc6twofails anddedupactivefail remain.",
+        "sharedApp": "Responsiveness and integrated transitions/cleanup pending; normal firstdispose11.249s synchronous/heartbeat11.2445s is a separate observed limit.",
         "sourceOrEvidenceFollowup": "",
-        "sceneSpecific": "Direct cleanup failure:36.8076s normal/45.4897s byte>20s; secondcycle/remount unrun."
+        "sceneSpecific": "Finalclean normal16.2501/7.7436s;byte5.0389/5.3272s;active2frame5.0204/5.0186s. No smoothUI/physicalGPUclaim."
       },
       "ci": {
-        "run": 37234305610,
-        "status": "in_progress_at_last_audit",
-        "conclusion": null,
-        "basis": "wateredge-followup-current audit; not re-polled"
+        "run": 37238657908,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "independently fetched exactd5 workflow"
       },
       "finalMergeReady": false,
       "blockers": [
-        "waterEdge.valley_cleanup_group_gate"
-      ]
+        "waterEdge.app_responsiveness"
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "c6cad439abbaae54884292c6cc6ea60c76587e32",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "waterEdge",
       "id": "nature:pebble_shore",
       "entry": "components/immersiveWorlds/waterEdge/PebbleShoreWorld.tsx",
       "pr": 64,
-      "ownerHead": "c6cad439abbaae54884292c6cc6ea60c76587e32",
-      "runtimeSource": "8b906c4e23f18984804659e9213292b84204500b",
+      "ownerHead": "d5f00475ad86cde3e489157e25e0aa14b400c9e8",
+      "runtimeSource": "e4a11dd135c7979b644d667755f6a68fa4ea529d",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -363,33 +408,41 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/waterEdge",
-          "tree": "5e9e8e58466bdf45cdea2ef9847c68b3cabd9870",
-          "files": 93,
+          "tree": "452ca7e26d6bdef933385833f6738d60548e5b8a",
+          "files": 162,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "4ccd204582fff58a80161dcfa32d58cb43392076ae3c28ee71d49bfd034f95aa",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted_preserved",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "Pond normal and shore normal/byte clean cycles pass; Valley normal/byte fixed20s cleanup fails; group final lifecycle blocked.",
-        "sharedApp": "pending",
+        "isolated": "Fixed20s source-bound lifecycle gate resolved by finald5;24finalreports pass/28PNG. Historicalc6twofails anddedupactivefail remain.",
+        "sharedApp": "Responsiveness and integrated transitions/cleanup pending; normal firstdispose11.249s synchronous/heartbeat11.2445s is a separate observed limit.",
         "sourceOrEvidenceFollowup": "",
-        "sceneSpecific": "No direct failure in published clean cycles; shared group release remains blocked by Valley."
+        "sceneSpecific": "Finalclean normal16.2501/7.7436s;byte5.0389/5.3272s;active2frame5.0204/5.0186s. No smoothUI/physicalGPUclaim."
       },
       "ci": {
-        "run": 37234305610,
-        "status": "in_progress_at_last_audit",
-        "conclusion": null,
-        "basis": "wateredge-followup-current audit; not re-polled"
+        "run": 37238657908,
+        "status": "completed",
+        "conclusion": "success",
+        "basis": "independently fetched exactd5 workflow"
       },
       "finalMergeReady": false,
       "blockers": [
-        "waterEdge.valley_cleanup_group_gate"
-      ]
+        "waterEdge.app_responsiveness"
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "c6cad439abbaae54884292c6cc6ea60c76587e32",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "deepWater",
@@ -415,9 +468,9 @@
       ],
       "entrySha256": "55c26be9b6f693f6292dc051fb33f648b87fef641fe69b79cffda1086b2751d5",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Owner followup ready; shared App native input/lifecycle/audio pending.",
@@ -431,7 +484,13 @@
         "basis": "water-current audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "deepWater",
@@ -457,9 +516,9 @@
       ],
       "entrySha256": "7944214ad0837208e3df69d1df8641f82cb4c1d2efe885b0d354341d38760fed",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Owner followup ready; shared App native input/lifecycle/audio pending.",
@@ -473,7 +532,13 @@
         "basis": "water-current audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "deepWater",
@@ -499,9 +564,9 @@
       ],
       "entrySha256": "2d97b5301a9ac922cfd4937ed51e09da1c2f40ce317e9be6bed97724917059ab",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Owner followup ready; shared App native input/lifecycle/audio pending.",
@@ -515,15 +580,21 @@
         "basis": "water-current audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "cozyRooms",
       "id": "relax",
       "entry": "components/immersiveWorlds/cozyRooms/HearthWorld.tsx",
       "pr": 65,
-      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
-      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "ownerHead": "f1540653283a09ddb91427a2e1692466275db2c7",
+      "runtimeSource": "f1540653283a09ddb91427a2e1692466275db2c7",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -534,41 +605,49 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/cozyRooms",
-          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
-          "files": 140,
+          "tree": "257c67b4dd01b805944d11df2656690bc9f45859",
+          "files": 218,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "",
+        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
         "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
       },
       "ci": {
-        "run": 37234961723,
+        "run": 37238237316,
         "status": "completed",
         "conclusion": "success",
-        "basis": "cozy65-current audit"
+        "basis": "independentread-only intake audit; doesnotclearfailedoriginalharness"
       },
       "finalMergeReady": false,
       "blockers": [
         "cozyRooms.winter_recreation_group_gate"
-      ]
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "cozyRooms",
       "id": "sleep_prep",
       "entry": "components/immersiveWorlds/cozyRooms/SleepRoomWorld.tsx",
       "pr": 65,
-      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
-      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "ownerHead": "f1540653283a09ddb91427a2e1692466275db2c7",
+      "runtimeSource": "f1540653283a09ddb91427a2e1692466275db2c7",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -579,41 +658,49 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/cozyRooms",
-          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
-          "files": 140,
+          "tree": "257c67b4dd01b805944d11df2656690bc9f45859",
+          "files": 218,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "",
+        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
         "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
       },
       "ci": {
-        "run": 37234961723,
+        "run": 37238237316,
         "status": "completed",
         "conclusion": "success",
-        "basis": "cozy65-current audit"
+        "basis": "independentread-only intake audit; doesnotclearfailedoriginalharness"
       },
       "finalMergeReady": false,
       "blockers": [
         "cozyRooms.winter_recreation_group_gate"
-      ]
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "cozyRooms",
       "id": "power_nap",
       "entry": "components/immersiveWorlds/cozyRooms/NapTerraceWorld.tsx",
       "pr": 65,
-      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
-      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "ownerHead": "f1540653283a09ddb91427a2e1692466275db2c7",
+      "runtimeSource": "f1540653283a09ddb91427a2e1692466275db2c7",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -624,41 +711,49 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/cozyRooms",
-          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
-          "files": 140,
+          "tree": "257c67b4dd01b805944d11df2656690bc9f45859",
+          "files": 218,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "",
+        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
         "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
       },
       "ci": {
-        "run": 37234961723,
+        "run": 37238237316,
         "status": "completed",
         "conclusion": "success",
-        "basis": "cozy65-current audit"
+        "basis": "independentread-only intake audit; doesnotclearfailedoriginalharness"
       },
       "finalMergeReady": false,
       "blockers": [
         "cozyRooms.winter_recreation_group_gate"
-      ]
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "cozyRooms",
       "id": "nature:winter_lodge",
       "entry": "components/immersiveWorlds/cozyRooms/WinterLodgeWorld.tsx",
       "pr": 65,
-      "ownerHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
-      "runtimeSource": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "ownerHead": "f1540653283a09ddb91427a2e1692466275db2c7",
+      "runtimeSource": "f1540653283a09ddb91427a2e1692466275db2c7",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -669,33 +764,41 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/cozyRooms",
-          "tree": "fb24fab582e8c7f20d22ea6da5a901261ce931de",
-          "files": 140,
+          "tree": "257c67b4dd01b805944d11df2656690bc9f45859",
+          "files": 218,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "Native isolated4checks/world pass; winter recreated-ready120s failure repeats; group final lifecycle blocked.",
+        "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "",
+        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
         "sceneSpecific": "Repeated120s recreated-ready failure; cause undetermined."
       },
       "ci": {
-        "run": 37234961723,
+        "run": 37238237316,
         "status": "completed",
         "conclusion": "success",
-        "basis": "cozy65-current audit"
+        "basis": "independentread-only intake audit; doesnotclearfailedoriginalharness"
       },
       "finalMergeReady": false,
       "blockers": [
         "cozyRooms.winter_recreation_group_gate"
-      ]
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "rainShelters",
@@ -721,15 +824,15 @@
       ],
       "entrySha256": "8bf04614cdf7f81821ffb791b24235fb22ff65613aa3a4a2eebb1d61fd9d9a18",
       "visualGate": {
-        "status": "held_user_dependency",
-        "previousReviewStatus": "held_user_dependency",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "status": "pending",
+        "previousReviewStatus": "pending",
+        "scope": "visual refinement and final acceptance pending"
       },
       "functionGate": {
-        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "isolated": "Published source evidence only; remaining compatibility gates are recorded separately.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
-        "sceneSpecific": "Public original isolated evidence only; no final Rain quality approval."
+        "sourceOrEvidenceFollowup": "visual refinement and final acceptance pending",
+        "sceneSpecific": "visual refinement and final acceptance pending"
       },
       "ci": {
         "run": 37231021218,
@@ -739,8 +842,14 @@
       },
       "finalMergeReady": false,
       "blockers": [
-        "rainShelters.rejected_upload_access_and_quality_dependency"
-      ]
+        "rainShelters.visual_refinement_and_final_acceptance"
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "rainShelters",
@@ -766,15 +875,15 @@
       ],
       "entrySha256": "df8818e9365eaac5adc8e734679d96326ade00635c970ff82f62941fbbbef653",
       "visualGate": {
-        "status": "held_user_dependency",
-        "previousReviewStatus": "held_user_dependency",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "status": "pending",
+        "previousReviewStatus": "pending",
+        "scope": "visual refinement and final acceptance pending"
       },
       "functionGate": {
-        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "isolated": "Published source evidence only; remaining compatibility gates are recorded separately.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
-        "sceneSpecific": "GardenWindow compatibility pending."
+        "sourceOrEvidenceFollowup": "visual refinement and final acceptance pending",
+        "sceneSpecific": "visual refinement and final acceptance pending"
       },
       "ci": {
         "run": 37231021218,
@@ -784,8 +893,14 @@
       },
       "finalMergeReady": false,
       "blockers": [
-        "rainShelters.rejected_upload_access_and_quality_dependency"
-      ]
+        "rainShelters.visual_refinement_and_final_acceptance"
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "rainShelters",
@@ -811,15 +926,15 @@
       ],
       "entrySha256": "e24ee1a3d6cb415e53cb7579c7ea50aadb1789656e5cdf3dc9a76b986aeb3ae7",
       "visualGate": {
-        "status": "held_user_dependency",
-        "previousReviewStatus": "held_user_dependency",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "status": "pending",
+        "previousReviewStatus": "pending",
+        "scope": "visual refinement and final acceptance pending"
       },
       "functionGate": {
-        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "isolated": "Published source evidence only; remaining compatibility gates are recorded separately.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
-        "sceneSpecific": "Public original isolated evidence only; no final Rain quality approval."
+        "sourceOrEvidenceFollowup": "visual refinement and final acceptance pending",
+        "sceneSpecific": "visual refinement and final acceptance pending"
       },
       "ci": {
         "run": 37231021218,
@@ -829,8 +944,14 @@
       },
       "finalMergeReady": false,
       "blockers": [
-        "rainShelters.rejected_upload_access_and_quality_dependency"
-      ]
+        "rainShelters.visual_refinement_and_final_acceptance"
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "rainShelters",
@@ -856,15 +977,15 @@
       ],
       "entrySha256": "b83c5fd2966f2a1263312db2f0ad475305fe9ba0044c04404163f12fcd975d3b",
       "visualGate": {
-        "status": "held_user_dependency",
-        "previousReviewStatus": "held_user_dependency",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "status": "pending",
+        "previousReviewStatus": "pending",
+        "scope": "visual refinement and final acceptance pending"
       },
       "functionGate": {
-        "isolated": "Public original source only; rejected uploads not accessed. GardenWindow compatibility and final quality pending.",
+        "isolated": "Published source evidence only; remaining compatibility gates are recorded separately.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "No new art correction/final Rain approval until authorized accessible handoff.",
-        "sceneSpecific": "Public original isolated evidence only; no final Rain quality approval."
+        "sourceOrEvidenceFollowup": "visual refinement and final acceptance pending",
+        "sceneSpecific": "visual refinement and final acceptance pending"
       },
       "ci": {
         "run": 37231021218,
@@ -874,8 +995,14 @@
       },
       "finalMergeReady": false,
       "blockers": [
-        "rainShelters.rejected_upload_access_and_quality_dependency"
-      ]
+        "rainShelters.visual_refinement_and_final_acceptance"
+      ],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "livingWoods",
@@ -901,9 +1028,9 @@
       ],
       "entrySha256": "68b13118c86592bd94d417e77e34dad7bef0b3a72e90040b4f9ed17c212e203e",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "awaiting_owner_followup",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
@@ -918,7 +1045,13 @@
         "basis": "living67-intake exact final-head audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "livingWoods",
@@ -944,9 +1077,9 @@
       ],
       "entrySha256": "b73a6c1116ca61f1655e6d19857814be4ef9378f1c3d4179b981e71fbe802fc4",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "awaiting_owner_followup",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
@@ -961,7 +1094,13 @@
         "basis": "living67-intake exact final-head audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "livingWoods",
@@ -987,9 +1126,9 @@
       ],
       "entrySha256": "8e3c0fa0d8732511952bc680d37dfc6b74ef63da90ad3709d750a2c672553932",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "awaiting_owner_followup",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
@@ -1004,7 +1143,13 @@
         "basis": "living67-intake exact final-head audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "livingWoods",
@@ -1030,9 +1175,9 @@
       ],
       "entrySha256": "f3c26503fef49fb4db89160c221dd26ca76282650c0f8ad49496ec5294c8cbd8",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "awaiting_owner_followup",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
@@ -1047,15 +1192,21 @@
         "basis": "living67-intake exact final-head audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "koreanPlaces",
       "id": "nature:temple_dawn",
       "entry": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
       "pr": 66,
-      "ownerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
-      "runtimeSource": "b72ed33ec990b7bf0e1414a381fb80437bb5d855",
+      "ownerHead": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
+      "runtimeSource": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -1066,38 +1217,62 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/koreanPlaces",
-          "tree": "e20ad790629bece2774ffe78aa7d0b432b06f1b9",
-          "files": 88,
+          "tree": "1a2ef94f0fc4446d181dd5bf64e56d80b9f393de",
+          "files": 182,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "PR66 all3 isolated runs pass; core clean native lifecycle/Player/Immersive/audio pending.",
+        "isolated": "Final sourcecb0e122: normal/byte Temple+Scops4fullruns pass/errors0; fixed20sdisposal/60scapture thresholds retained; Rural3normalstills identical, no new Rural fullrun claim.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Rural-only toon exception retained; bounded correction is not full photorealism approval."
+        "sourceOrEvidenceFollowup": "Narrow environment compatibility resolved; Three r186 private PMREM adapter requires upgrade revalidation."
       },
       "ci": {
-        "run": 37235352339,
+        "run": 37241927168,
+        "head": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
         "status": "completed",
-        "conclusion": "success",
-        "basis": "root latest independent refresh"
+        "conclusion": "success"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "currentOwnerRequiresTargetedRecheck": true
+      },
+      "previousOwnerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "compatibilityGate": {
+        "status": "resolved_narrow_owner_scope",
+        "source": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+        "dimensions": {
+          "Temple": [
+            384,
+            512
+          ],
+          "Scops": [
+            336,
+            256
+          ]
+        },
+        "evidence": "qa/evidence/environment-retained/verification-summary.json",
+        "limits": "actual owner harness on software Chromium; integrated App and physical unsupported devices separate"
+      }
     },
     {
       "group": "koreanPlaces",
       "id": "nature:scops_night",
       "entry": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
       "pr": 66,
-      "ownerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
-      "runtimeSource": "b72ed33ec990b7bf0e1414a381fb80437bb5d855",
+      "ownerHead": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
+      "runtimeSource": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -1108,38 +1283,62 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/koreanPlaces",
-          "tree": "e20ad790629bece2774ffe78aa7d0b432b06f1b9",
-          "files": 88,
+          "tree": "1a2ef94f0fc4446d181dd5bf64e56d80b9f393de",
+          "files": 182,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "PR66 all3 isolated runs pass; core clean native lifecycle/Player/Immersive/audio pending.",
+        "isolated": "Final sourcecb0e122: normal/byte Temple+Scops4fullruns pass/errors0; fixed20sdisposal/60scapture thresholds retained; Rural3normalstills identical, no new Rural fullrun claim.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Rural-only toon exception retained; bounded correction is not full photorealism approval."
+        "sourceOrEvidenceFollowup": "Narrow environment compatibility resolved; Three r186 private PMREM adapter requires upgrade revalidation."
       },
       "ci": {
-        "run": 37235352339,
+        "run": 37241927168,
+        "head": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
         "status": "completed",
-        "conclusion": "success",
-        "basis": "root latest independent refresh"
+        "conclusion": "success"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "currentOwnerRequiresTargetedRecheck": true
+      },
+      "previousOwnerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "compatibilityGate": {
+        "status": "resolved_narrow_owner_scope",
+        "source": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+        "dimensions": {
+          "Temple": [
+            384,
+            512
+          ],
+          "Scops": [
+            336,
+            256
+          ]
+        },
+        "evidence": "qa/evidence/environment-retained/verification-summary.json",
+        "limits": "actual owner harness on software Chromium; integrated App and physical unsupported devices separate"
+      }
     },
     {
       "group": "koreanPlaces",
       "id": "nature:rural_summer_night",
       "entry": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
       "pr": 66,
-      "ownerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
-      "runtimeSource": "b72ed33ec990b7bf0e1414a381fb80437bb5d855",
+      "ownerHead": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
+      "runtimeSource": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -1150,30 +1349,54 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/koreanPlaces",
-          "tree": "e20ad790629bece2774ffe78aa7d0b432b06f1b9",
-          "files": 88,
+          "tree": "1a2ef94f0fc4446d181dd5bf64e56d80b9f393de",
+          "files": 182,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "PR66 all3 isolated runs pass; core clean native lifecycle/Player/Immersive/audio pending.",
+        "isolated": "Final sourcecb0e122: normal/byte Temple+Scops4fullruns pass/errors0; fixed20sdisposal/60scapture thresholds retained; Rural3normalstills identical, no new Rural fullrun claim.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Rural-only toon exception retained; bounded correction is not full photorealism approval."
+        "sourceOrEvidenceFollowup": "Narrow environment compatibility resolved; Three r186 private PMREM adapter requires upgrade revalidation."
       },
       "ci": {
-        "run": 37235352339,
+        "run": 37241927168,
+        "head": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
         "status": "completed",
-        "conclusion": "success",
-        "basis": "root latest independent refresh"
+        "conclusion": "success"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "currentOwnerRequiresTargetedRecheck": true
+      },
+      "previousOwnerHead": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "compatibilityGate": {
+        "status": "resolved_narrow_owner_scope",
+        "source": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+        "dimensions": {
+          "Temple": [
+            384,
+            512
+          ],
+          "Scops": [
+            336,
+            256
+          ]
+        },
+        "evidence": "qa/evidence/environment-retained/verification-summary.json",
+        "limits": "actual owner harness on software Chromium; integrated App and physical unsupported devices separate"
+      }
     },
     {
       "group": "nightFires",
@@ -1199,14 +1422,14 @@
       ],
       "entrySha256": "dcedb12e8ad9b0a39dd467e6e9ce336499abd40afefbb49d6700a35c89621870",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Final3ad evidence source6623:67isolated checks,24PNG/16source hashes; shared App native gates pending.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+        "sourceOrEvidenceFollowup": "Stockr186 transmission used byDeepNight/Lakeside lanterns already has extension-based byte selection; normalowner evidence accepted. Actualtarget FBOstatus andforced-byte transmission unmeasured; nonblocking inventory, no demonstrated sourcefailure."
       },
       "ci": {
         "run": 37234116444,
@@ -1215,7 +1438,13 @@
         "basis": "final exact3ad intake audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "nightFires",
@@ -1241,14 +1470,14 @@
       ],
       "entrySha256": "4e0535895df72608d1fa7a387b16390e4bf22decddea8102376d25b7fc2d95dd",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Final3ad evidence source6623:67isolated checks,24PNG/16source hashes; shared App native gates pending.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+        "sourceOrEvidenceFollowup": "Stockr186 transmission used byDeepNight/Lakeside lanterns already has extension-based byte selection; normalowner evidence accepted. Actualtarget FBOstatus andforced-byte transmission unmeasured; nonblocking inventory, no demonstrated sourcefailure."
       },
       "ci": {
         "run": 37234116444,
@@ -1257,7 +1486,13 @@
         "basis": "final exact3ad intake audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "nightFires",
@@ -1283,14 +1518,14 @@
       ],
       "entrySha256": "2dae5a14734e34986df014dd717761025e750c68b892bab61a2db8908b647b3d",
       "visualGate": {
-        "status": "user_accepted",
+        "status": "coordinator_pixel_accepted",
         "previousReviewStatus": "bounded_correction_accepted",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
         "isolated": "Final3ad evidence source6623:67isolated checks,24PNG/16source hashes; shared App native gates pending.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+        "sourceOrEvidenceFollowup": "Stockr186 transmission used byDeepNight/Lakeside lanterns already has extension-based byte selection; normalowner evidence accepted. Actualtarget FBOstatus andforced-byte transmission unmeasured; nonblocking inventory, no demonstrated sourcefailure."
       },
       "ci": {
         "run": 37234116444,
@@ -1299,15 +1534,21 @@
         "basis": "final exact3ad intake audit"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json"
+      }
     },
     {
       "group": "quietSanctuaries",
       "id": "meditation",
       "entry": "components/immersiveWorlds/quietSanctuaries/MeditationCourtWorld.tsx",
       "pr": 55,
-      "ownerHead": "c5a100794084e6230e9fdc8a4c036a02a5813176",
-      "runtimeSource": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+      "ownerHead": "215f9c849c96f54421495d55d346e90975fb6402",
+      "runtimeSource": "af147afa0c0565dbc0fa5afcfc98fd5c4fc4e408",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -1318,38 +1559,46 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/quietSanctuaries",
-          "tree": "919ea59c8626d7dec42a44f2ce0c07287ee9ebe1",
-          "files": 43,
+          "tree": "b1ed9bacfbd19c68f81bd3eef87b5ebbaf21999c",
+          "files": 70,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "f8b8275259d899af60b40af3ce0fb4013de926df8def6b8228db5b2f4754b673",
       "visualGate": {
-        "status": "user_accepted",
-        "previousReviewStatus": "user_accepted_limited_correction",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "status": "coordinator_pixel_accepted",
+        "previousReviewStatus": "accepted_limited_correction",
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "c5 evidence source5fc:45isolated checks,14PNG/18source hashes; shared App native gates pending.",
+        "isolated": "Narrow target compatibility resolved:normal/byte each15life groups;23source/12PNG/6preserved acceptedstills verified, actual fullsize FBO36053GL0 andallocatorstate restoration.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+        "sourceOrEvidenceFollowup": "r186privatePMREM adapter mustretestonThreeupgrade. ActualReflectorcallbacknondefaultface/mipthrowhardening remainsnonblocking inventory; sharedApp gates separate."
       },
       "ci": {
-        "run": 37232191690,
+        "run": 37240253507,
         "status": "completed",
         "conclusion": "success",
-        "basis": "quiet-night exactc5 audit"
+        "basis": "independentexact215headconnectorresponse"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "c5a100794084e6230e9fdc8a4c036a02a5813176",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "quietSanctuaries",
       "id": "nature:womb",
       "entry": "components/immersiveWorlds/quietSanctuaries/WarmHeartWorld.tsx",
       "pr": 55,
-      "ownerHead": "c5a100794084e6230e9fdc8a4c036a02a5813176",
-      "runtimeSource": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+      "ownerHead": "215f9c849c96f54421495d55d346e90975fb6402",
+      "runtimeSource": "af147afa0c0565dbc0fa5afcfc98fd5c4fc4e408",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -1360,38 +1609,46 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/quietSanctuaries",
-          "tree": "919ea59c8626d7dec42a44f2ce0c07287ee9ebe1",
-          "files": 43,
+          "tree": "b1ed9bacfbd19c68f81bd3eef87b5ebbaf21999c",
+          "files": 70,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7",
       "visualGate": {
-        "status": "user_accepted",
-        "previousReviewStatus": "user_accepted_limited_correction",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "status": "coordinator_pixel_accepted",
+        "previousReviewStatus": "accepted_limited_correction",
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "c5 evidence source5fc:45isolated checks,14PNG/18source hashes; shared App native gates pending.",
+        "isolated": "Narrow target compatibility resolved:normal/byte each15life groups;23source/12PNG/6preserved acceptedstills verified, actual fullsize FBO36053GL0 andallocatorstate restoration.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+        "sourceOrEvidenceFollowup": "r186privatePMREM adapter mustretestonThreeupgrade. ActualReflectorcallbacknondefaultface/mipthrowhardening remainsnonblocking inventory; sharedApp gates separate."
       },
       "ci": {
-        "run": 37232191690,
+        "run": 37240253507,
         "status": "completed",
         "conclusion": "success",
-        "basis": "quiet-night exactc5 audit"
+        "basis": "independentexact215headconnectorresponse"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "c5a100794084e6230e9fdc8a4c036a02a5813176",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     },
     {
       "group": "quietSanctuaries",
       "id": "amb:snowy_night",
       "entry": "components/immersiveWorlds/quietSanctuaries/SnowVillageWorld.tsx",
       "pr": 55,
-      "ownerHead": "c5a100794084e6230e9fdc8a4c036a02a5813176",
-      "runtimeSource": "5fcfafcbaf87cc66db825ad4d7117532c0e0a17f",
+      "ownerHead": "215f9c849c96f54421495d55d346e90975fb6402",
+      "runtimeSource": "af147afa0c0565dbc0fa5afcfc98fd5c4fc4e408",
       "integrated": true,
       "requiredProps": {
         "active": "boolean"
@@ -1402,50 +1659,58 @@
       "ownedRoots": [
         {
           "path": "components/immersiveWorlds/quietSanctuaries",
-          "tree": "919ea59c8626d7dec42a44f2ce0c07287ee9ebe1",
-          "files": 43,
+          "tree": "b1ed9bacfbd19c68f81bd3eef87b5ebbaf21999c",
+          "files": 70,
           "exactInWorktree": true
         }
       ],
       "entrySha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261",
       "visualGate": {
-        "status": "user_accepted",
-        "previousReviewStatus": "user_accepted_limited_correction",
-        "scope": "User accepts26 non-Rain visuals; Rain4 remain on hold. Source-matched isolated-image review is not shared App functional/lifecycle approval."
+        "status": "coordinator_pixel_accepted",
+        "previousReviewStatus": "accepted_limited_correction",
+        "scope": "Actual scene pixels reviewed; shared App functional and lifecycle gates remain separate."
       },
       "functionGate": {
-        "isolated": "c5 evidence source5fc:45isolated checks,14PNG/18source hashes; shared App native gates pending.",
+        "isolated": "Narrow target compatibility resolved:normal/byte each15life groups;23source/12PNG/6preserved acceptedstills verified, actual fullsize FBO36053GL0 andallocatorstate restoration.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+        "sourceOrEvidenceFollowup": "r186privatePMREM adapter mustretestonThreeupgrade. ActualReflectorcallbacknondefaultface/mipthrowhardening remainsnonblocking inventory; sharedApp gates separate."
       },
       "ci": {
-        "run": 37232191690,
+        "run": 37240253507,
         "status": "completed",
         "conclusion": "success",
-        "basis": "quiet-night exactc5 audit"
+        "basis": "independentexact215headconnectorresponse"
       },
       "finalMergeReady": false,
-      "blockers": []
+      "blockers": [],
+      "integratedColdPortrait": {
+        "status": "passed",
+        "head": "693f49529e0d5194710dbd8df10c59058491019c",
+        "scope": "Normal390x844 pausedfirstframe, activationfalse/input0, nativePNG source/buildbound; not active/lifecycle/byte approval",
+        "evidence": "integration-qa/cold-693/results.json",
+        "ownerHeadAtRun": "c5a100794084e6230e9fdc8a4c036a02a5813176",
+        "currentOwnerRequiresTargetedRecheck": true
+      }
     }
   ],
   "blockers": [
-    {
-      "id": "waterEdge.valley_cleanup_group_gate",
-      "directScene": "nature:summer_valley",
-      "detail": "Clean normal36.8076s/byte45.4897s detach-to-context-loss exceed fixed20s; secondcycle/remount not reached; preserve failed outcomes."
-    },
     {
       "id": "cozyRooms.winter_recreation_group_gate",
       "directScene": "nature:winter_lodge",
       "detail": "Original full suite and isolated retry both fail recreated-ready120s; no proven cause; do not replace with separate disposal timings."
     },
     {
-      "id": "rainShelters.rejected_upload_access_and_quality_dependency",
-      "detail": "Rejected two uploads remain inaccessible and were not read, acquired inline, or retrieved via another access path. Public original53 only; new art/final Rain quality remains on hold. GardenWindow compatibility pending."
+      "id": "rainShelters.visual_refinement_and_final_acceptance",
+      "detail": "visual refinement and final acceptance pending"
     },
     {
       "id": "shared_app_acceptance",
-      "detail": "Visible/hidden chrome native tap/drag, controls/keyboard focus,1tap=1callback, routing, lifecycle, audio and regression gates remain open."
+      "detail": "Current App lifecycle, normal browser process cleanup and remaining route/history/protected regression acceptance incomplete. Cafe15functional checks and currentScops PCM direction passed; cleanup timeouts remain failures. Latest9audio passed on precedingKorean build."
+    },
+    {
+      "id": "waterEdge.app_responsiveness",
+      "directScene": "nature:summer_valley",
+      "detail": "Fixed20slifecyclegate resolved on d5; independentApptransition/cleanup impacts of normal11.249ssyncdispose remainunverified."
     }
   ],
   "remainingSourceEvidenceFollowups": [
@@ -1455,11 +1720,15 @@
     },
     {
       "group": "quietSanctuaries",
-      "note": "Global target inventory still flags pool/implicitPMREM and Reflector restoration coverage; source followup separate from accepted art."
+      "note": "Narrow actual-target/byte PMREM compatibility resolved by215f9c8 sourceaf147af:23source/12PNG,normal-bytefullsizeFBO/restoration. Remainingr186privateadapter upgrade retest and stockReflector callback nondefaultface/mip/throw are nonblocking inventory."
     },
     {
       "group": "nightFires",
-      "note": "Implicit transmission target actual-FBO/forced-byte evidence remains limited; no source-critical bug established."
+      "note": "Stockr186 transmission used byDeepNight/Lakeside lanterns already has extension-based byte selection; normalowner evidence accepted. Actualtarget FBOstatus andforced-byte transmission unmeasured; nonblocking inventory, no demonstrated sourcefailure."
+    },
+    {
+      "group": "koreanPlaces",
+      "note": "Narrow environment compatibility resolved on4b5f23a/sourcecb0e122; integratedApp/physicalunsupporteddevice and futureThreeupgrade checks separate."
     }
   ],
   "supportingReports": [
@@ -1477,7 +1746,7 @@
     "Source/registry counts and standalone CI do not certify shared App function or final visual quality.",
     "Prior isolated actual-image audits are retained; this refresh did not render or open new images.",
     "Some built evidence bundles were not published as bytes; recorded bundle manifests are not independent rebuilds.",
-    "Source/CI publication does not prove an owner Work has stopped.",
+    "A source publication does not establish completed integration validation.",
     "Owner harness wrappers/QA scheduling and selected passing jobs are not actual current App acceptance."
   ],
   "sharedSourceDelta": {
@@ -1487,7 +1756,7 @@
     "testPath": "components/liveScene/liveSceneHost.test.ts",
     "testObserved": "keeps first-render synchronous failure failed instead of publishing ready without a canvas",
     "testSha256": "b3dfcb3eff7211fa9b64c48d48db4f9dc9420de34ec5586de7d6b705b840bc86",
-    "currentFullValidation": "pending_root"
+    "currentFullValidation": "passed as part of root-reported618tests/66files, typecheck/build/bundle on index-DFSibu4A.js; actual App gates remain open"
   },
   "retainedFailureEvidence": [
     {
@@ -1497,23 +1766,121 @@
     }
   ],
   "rootValidationUpdate": {
-    "source": "current integration working tree after Living intake and host/focus/retry fixes",
-    "unitTests": 535,
-    "testFiles": 60,
+    "source": "Current local tree including Korean4b5f23a checked-PMREM intake",
+    "unitTests": 639,
+    "testFiles": 67,
     "typecheck": "pass",
     "build": "pass",
     "bundle": "pass",
-    "initialJavaScriptKiB": 408.8,
-    "cssKiB": 101.0,
-    "initialJsAsset": "index-DE69dX8D.js",
-    "initialCssAsset": "index-D2nj3flF.css",
-    "sharedAppFinalGate": "pending",
-    "nativeCafeLatest": "failed hidden chrome touch180s; cleanup10s",
-    "audioLiveLatest": "2passed; later control visibility60s and cleanup15s failed",
+    "initialJsAsset": "index-BIpQoT7O.js",
+    "sharedAppFinalGate": "pending current source-bound native run",
+    "nativeCafeLatest": {
+      "status": "15 functional and pixel steps passed; overall failed on owned-browser graceful-close10s",
+      "evidence": "integration-qa/native-cafe-full/results.json",
+      "runtime": "index-DFSibu4A; HEAD693 with current owner intakes and central bridge/layout changes",
+      "sourceStable": true,
+      "limits": "No clean-lifecycle pass. Native input and recorded source hash are preserved. Served byte binding independently checked after run; do not relabel older runs."
+    },
+    "audioLiveLatest": {
+      "status": "functional_PCM_pass_cleanup_failed",
+      "evidence": "integration-qa/audio-run7-scops/results.json",
+      "runtime": "index-BIpQoT7O.js after Korean4b5 intake",
+      "sourceFiles": 17,
+      "servedHashesMatched": 18,
+      "PCM": {
+        "primaryCalls": 2,
+        "primarySamples": 4,
+        "internalRightOverLeft": 5.828,
+        "outerScopsLeftOverRight": 1.463,
+        "streamRightOverLeft": 2.065,
+        "streamWindows": 103,
+        "streamAudioSeconds": 4.899
+      },
+      "failure": "Browser process graceful cleanup exceeded15s. Context.close returned; app graph teardown was not established.",
+      "limits": "No listening or physical device claim; no causal attribution to Korean PMREM update."
+    },
     "newCompatibilityFollowups": [
-      "Quiet actual FBO and environment PMREM",
-      "Korean Temple/Scops implicit PMREM"
+      "Rain GardenWindow compatibility pending; released private PMREM adapters must be revalidated on Three upgrade."
     ],
-    "mainMerge": "held"
-  }
+    "mainMerge": "held pending completion of all30 scene and shared App technical release gates",
+    "coldPortrait30": {
+      "status": "passed",
+      "scenes": 30,
+      "nativePngs": 30,
+      "checks": 391,
+      "sourceStable": true,
+      "distStable": true,
+      "evidence": "integration-qa/cold-693/results.json"
+    },
+    "ci693": {
+      "run": 37238088035,
+      "conclusion": "failure",
+      "passed": [
+        "typecheck",
+        "535unit/60files",
+        "build",
+        "bundle/PWA",
+        "forest"
+      ],
+      "failed": [
+        "Nature20sallobservedcontextslost",
+        "Audio initialautoplay observation",
+        "Cafe initialautoplay observation",
+        "Cosmic initialautoplay observation"
+      ],
+      "notRun": [
+        "protectedfocus",
+        "protectedsea",
+        "links: precedingNaturecommandfailed"
+      ]
+    },
+    "mixerClipping": {
+      "baseline": "actual nativewheel bottomclipsPinkslider byparentaside; retainedaudio-clip-run2",
+      "fix": "desktopflexcolumnallocation; inner524px fitsaside; Pinkcenter721 actuallyhitsINPUT",
+      "verification": "audio-clip-run3-fixed passed; runtimePlayerdirty4lines on693; no independent renderer edits"
+    },
+    "winterRuralContextObservation": {
+      "evidence": "integration-qa/winter-rural-context-loss-proof.json",
+      "runtime": "index-Bh0VMtiw; HEAD693+Playerlayout+Waterd5+Cozyf154; beforeQuiet/spatialintake",
+      "winter": "notlost21.3233safterdetach",
+      "rural": "trustedcontextlost5.0094safterdetach",
+      "disposition": "explicitcontextlosscontractmismatch; currentCozydisposeintentionallyleavescontexttobrowser; observerholdsstrongcanvasGLrefs, noGC-basedreleaseproof; nofailuretodispose/physicalGPUleakclaim; original120sremount remainsblocked"
+    },
+    "scopsPositions": {
+      "status": "Actual source path and PCM direction verified; application teardown and browser process close remain separate pending gates",
+      "scope": "scops.20 -> outer-.39 with unchanged internal+.5; stream.75 ->+.325. Owner23files/defaultvolumes/customrestores/other29/protected unchanged.",
+      "evidence": "integration-qa/audio-run7-scops/results.json"
+    },
+    "historicalPublicValidation": {
+      "head": "693f49529e0d5194710dbd8df10c59058491019c",
+      "unitTests": 535,
+      "testFiles": 60,
+      "ci": "See preservedci693; it is historical and did not pass allnative commands.",
+      "initialJsAsset": "index-DE69dX8D.js",
+      "initialJavaScriptKiB": 408.8,
+      "initialCssAsset": "index-D2nj3flF.css",
+      "cssKiB": 101.0,
+      "scope": "Historical535/60 build; native cold and CI details retained below, notcurrent acceptance."
+    },
+    "initialJavaScriptKiB": 408.9,
+    "cssKiB": 101.0,
+    "initialCssAsset": "index-BXP0utCv.css",
+    "audioLatestNine": {
+      "status": "passed",
+      "checks": 9,
+      "errors": 0,
+      "evidence": "integration-qa/audio-run6-latest9/results.json",
+      "sourceScope": "index-DFSibu4A before final Korean intake;17trackedsource and82servedhashesstable; normalcleanup",
+      "notCovered": "Scops PCM direction, all30listening, current Korean renderer"
+    }
+  },
+  "acceptanceClarification": "Visual evidence acceptance and shared App functional/lifecycle acceptance are separate. Rain visual refinement and final acceptance pending.",
+  "ownerUpdatesPendingPublication": {
+    "quietKorean": "Quiet215 final intaken+narrowcompatresolved. Korean sameownerinvestigates initiallongTemple20sfail vsnormal/byte2recreations; finaltreepending.",
+    "water": "Finald5 exactownedtree now intaken locally, fixed20sgate resolved; shared App responsiveness remains.",
+    "cozy": "Publishedf154 exactownedtree now intaken locally, validnoopresize; original120sfail retained. SameownerGL investigation stillactive."
+  },
+  "firstRenderIdentityGate": "resolved: code and synchronous failure regression9 independently confirmed",
+  "remotePublicationHold": false,
+  "releaseReady": false
 }

@@ -1,5 +1,7 @@
 # WaterEdge bounded material/compatibility follow-up
 
+**Historical c6 checkpoint report.** The findings, failed lifecycle gates and raw evidence below remain unchanged. The separately authorized PR64 disposal/submission continuation is documented in [LIFECYCLE.md](LIFECYCLE.md); its new source-bound results do not relabel these earlier failures.
+
 This continuation starts from original draft PR #58 at exact head `299a18911b2b7818149e4997dc2101b9c760bef5`. The original remote branch was verified before the isolated checkout. It is not written, merged or force-pushed. The follow-up branch is `codex/water-edge-material-compat`; its PR targets `codex/water-edge-three-worlds` to show only this correction.
 
 ## Result and source identity

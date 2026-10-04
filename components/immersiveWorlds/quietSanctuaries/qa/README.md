@@ -1,4 +1,33 @@
-# Isolated visual and lifecycle QA
+# Actual render-target compatibility verification
+
+The current compatibility check is `verify-target-compatibility.mjs`. It uses the built scene and native WebGL APIs throughout. Its normal meditation case uses the production entry. The explicit QA-only `?world=meditation&targets=byte` case selects unsigned-byte targets through the builder configuration; it does not mask extensions, patch GL methods, or claim to emulate hardware that lacks float support. Production entry props remain unchanged.
+
+From the repository root:
+
+```sh
+npx vite build --config components/immersiveWorlds/quietSanctuaries/qa/vite.config.ts
+SANCTUARY_QA_SERVE=1 SCENE_BROWSER_PATH=/tmp/cosmic-browser-bin/chromium node components/immersiveWorlds/quietSanctuaries/qa/verify-target-compatibility.mjs
+```
+
+Use an existing compatible Chromium path on other machines, or omit `SCENE_BROWSER_PATH` if Playwright's configured browser is installed. `SANCTUARY_QA_SERVE=1` serves and tests the built bundle in one process, avoiding this executor's separate loopback namespaces. The browser and owned preview server close in `finally`. Do not run concurrent GPU verification while scene sources are changing.
+
+The output is separate: `qa/compat-evidence/target-compatibility.json` plus 12 PNGs. `SANCTUARY_QA_OUTPUT` overrides that directory; `SANCTUARY_QA_MODE=visual` captures only the eight full-size images and explicitly omits lifecycle verification. The full run captures:
+
+- Meditation normal and explicit byte targets, each at native desktop 1280×800 and portrait 390×844. Normal images must exactly match the approved historical meditation PNG hashes.
+- Warm heart and snow village at both native viewports, with exact PNG hash equality against the approved historical evidence in commit `c5a100794084e6230e9fdc8a4c036a02a5813176`.
+- Meditation normal and byte motion plus genuine post-interaction frames at native 640×480.
+
+Each meditation first frame must retain a real reflection and non-null CubeUV environment. The report records actual allocation dimensions, texture storage, framebuffer status, GL errors and renderer-state restoration from every checked target, including PMREM output and scratch targets. Normal selection is based on capability policy and real framebuffer completeness, not the extension advertisement alone. Forced-byte must use byte storage for reflection and both environment targets. The byte QA builder also binds a real complete 64×64 cube target at face 4, mip 1 (32×32 attachment), then probes a separate byte target while viewport, scissor, XR, auto-clear, tone mapping and clear state are non-default. It requires the exact native framebuffer and renderer state to return, with the cube fixture still complete, and disposes both fixtures before building the scene. The browser additionally checks its existing WebGL2 context for loss/errors and measures nonuniform pixels in the desktop basin. Pixel measurements establish usable rendered content; visual approval requires inspecting the PNGs. Missing-extension, half-only, advertised-but-incomplete and byte-failure policy cases are separate deterministic unit tests, not simulated device claims in this browser verifier.
+
+Both meditation configurations run genuine tap, drag, out-and-back drag and synthetic pointer-cancel checks; active/reduced-motion/static and explicitly simulated hidden pause; exact canvas reuse between holders; three quick remounts within the shared five-second grace; static first mount; and actual released GPU context loss after grace followed by a new renderer. Motion requires real counter progression and changed captured pixels. This is SwiftShader browser viewport evidence, not a hardware, thermal or FPS measurement.
+
+Source-file, built-file and PNG SHA-256 manifests bind every capture to exact content and Git HEAD. The verifier fetches every served build file and verifies its hash, then confirms source and bundle content stayed unchanged until completion. It checks the two unrelated scene implementations, the old verifier, and every historical evidence file against the baseline commit without modifying them. `compat-evidence`, historical `evidence`, and generated `.build` are excluded from source hashing. Checkpoints retain `passed: false` until all required checks finish.
+
+## Historical extension-mask verification
+
+The material below documents the earlier `verify.mjs` run and `qa/evidence/` files. Those files remain unchanged for provenance. The old extension-mask experiment is **not** evidence for the current checked-target compatibility patch; use the real-target verifier above for that claim.
+
+### Isolated visual and lifecycle QA
 
 This harness imports the actual three scene entries. It neither changes shared routing nor bundles a duplicate scene implementation. Its toolbar is excluded from every evidence PNG. These are browser viewport tests, including a Fold-inner-like viewport, not hardware/thermal/FPS measurements.
 

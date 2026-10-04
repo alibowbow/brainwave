@@ -50,9 +50,24 @@ jobs:
           SCENE_SCREENSHOT_DIR: qa/screenshots
         run: |
           npm run verify:scenes
-          npm run verify:focus
-          npm run verify:sea
-          npm run verify:links
+
+      - name: Verify protected focus scene
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:focus
+
+      - name: Verify protected sea scene
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:sea
+
+      - name: Verify links and history
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:links
 
       - name: Preserve protected and existing scene screenshots
         if: always()
@@ -61,6 +76,8 @@ jobs:
           name: scene-core
           path: |
             qa/screenshots/*.png
+            qa/screenshots/*.json
+            qa/screenshots/links
           if-no-files-found: ignore
           retention-days: 14
 
@@ -68,7 +85,7 @@ jobs:
         if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
         env:
           SCENE_SCREENSHOT_DIR: qa/screenshots
-        run: npm run verify:audio
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:audio
 
       - name: Preserve audio screenshots and results
         if: always()
@@ -85,7 +102,7 @@ jobs:
         env:
           SCENE_SCREENSHOT_DIR: qa/screenshots
           SCENE_FOREST_HARNESS_URL: http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
-        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:worlds
+        run: timeout --signal=TERM --kill-after=40s 20m npm run verify:worlds
 
       - name: Preserve forest screenshots and results
         if: always()
@@ -102,7 +119,7 @@ jobs:
         if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
         env:
           SCENE_SCREENSHOT_DIR: qa/screenshots
-        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cafe
+        run: timeout --signal=TERM --kill-after=40s 20m npm run verify:cafe
 
       - name: Preserve cafe screenshots and results
         if: always()
@@ -118,7 +135,7 @@ jobs:
         if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
         env:
           SCENE_SCREENSHOT_DIR: qa/screenshots
-        run: timeout --signal=TERM --kill-after=10s 20m npm run verify:cosmic
+        run: timeout --signal=TERM --kill-after=40s 20m npm run verify:cosmic
 
       - name: Preserve cosmic screenshots and results
         if: always()

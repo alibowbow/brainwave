@@ -1,0 +1,4218 @@
+{
+  "schema": 3,
+  "world": "night-pond",
+  "mode": "normal",
+  "stage": "lifecycle",
+  "tag": "final",
+  "drainBeforeDispose": false,
+  "activeFrames": 0,
+  "viewportName": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "dpr": 1,
+  "generatedAt": "2026-10-04T21:57:08.929Z",
+  "scope": "Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.",
+  "limitations": [
+    "SwiftShader software GPU; no physical touch device or sustained hardware performance certification.",
+    "Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.",
+    "render-js-return duration includes synchronous driver/compiler stalls; it is not pure JavaScript CPU time.",
+    "Configured shared-host retention is 5000 ms; disposal entry/exit and actual context loss are separate measured events."
+  ],
+  "gitHead": "d5f7530228d69664df42b3e4901ede6215aeba22",
+  "gitStatus": "M qa/FOLLOWUP.md\n?? qa/LIFECYCLE.md\n?? qa/build-lifecycle-manifest.py\n?? qa/lifecycle-publication.json\n?? qa/submission-evidence/",
+  "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+  "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+  "bundleSha256": "789f1cf31ce3840e71a9a50a283f1d811dc4f2f888124ebd10d5768e7eb4d91b",
+  "scriptSha256": "93af8cef0201bf870f2546d20165ef2be12ff8f93305f207514213c9a4e9d963",
+  "status": "passed",
+  "checks": {
+    "initialPaused": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "holderTransfer": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "second": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "secondary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "secondary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "returned": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "method": "Actual production shared-host transfer in harness; native fullscreen/app Escape unrun"
+    },
+    "disposalCycles": [
+      {
+        "cycle": 1,
+        "status": "passed",
+        "configuredRetentionMs": 5000,
+        "eventualObservationDeadlineMs": 20000,
+        "removal": {
+          "kind": "canvas-detached-observed",
+          "atMs": 1179.300000000745,
+          "canvasId": 1
+        },
+        "entry": {
+          "kind": "dispose-entry",
+          "atMs": 6179.699999999255,
+          "canvasId": 1
+        },
+        "exit": {
+          "kind": "dispose-exit",
+          "atMs": 6196.699999999255,
+          "canvasId": 1
+        },
+        "lost": {
+          "kind": "context-loss-observed",
+          "atMs": 6196.699999999255,
+          "canvasId": 1,
+          "trusted": true
+        },
+        "removalToDisposeEntryMs": 5000.39999999851,
+        "disposeSynchronousDurationMs": 17,
+        "removalToContextLossObservationMs": 5017.39999999851,
+        "claim": "Clean cycle with no added capture or diagnostic fence reached zero engine/canvas counters and observed context loss within recorded elapsed time; production completion fences remain active. Not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.",
+        "disposed": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 1,
+            "live": 0
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [],
+          "canvases": [],
+          "events": []
+        },
+        "heartbeat": {
+          "samples": [
+            {
+              "atMs": 1193.8999999985099,
+              "lagMs": 0
+            },
+            {
+              "atMs": 1243.8999999985099,
+              "lagMs": 0
+            },
+            {
+              "atMs": 1294.199999999255,
+              "lagMs": 0.30000000074505806
+            },
+            {
+              "atMs": 1343.8999999985099,
+              "lagMs": -0.30000000074505806
+            },
+            {
+              "atMs": 1393.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 1444,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 1493.8999999985099,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 1544,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 1593.8999999985099,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 1643.8999999985099,
+              "lagMs": 0
+            },
+            {
+              "atMs": 1693.8999999985099,
+              "lagMs": 0
+            },
+            {
+              "atMs": 1743.8999999985099,
+              "lagMs": 0
+            },
+            {
+              "atMs": 1793.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 1843.8999999985099,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 1893.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 1943.8999999985099,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 1993.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 2043.8999999985099,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 2093.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2143.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2193.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2243.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2293.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2343.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2393.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 2444,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 2493.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 2543.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 2593.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 2643.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 2693.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 2743.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 2793.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 2843.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 2893.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 2944,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 2993.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 3043.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 3093.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 3143.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 3193.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3244,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 3293.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 3344,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 3393.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 3443.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 3493.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 3544,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 3593.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 3643.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 3693.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3743.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3793.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3843.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3893.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3943.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3993.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4044,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 4093.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 4143.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4193.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 4244,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 4294,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4343.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 4393.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 4443.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 4493.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4544,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 4593.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 4643.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 4693.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 4744,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 4793.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 4843.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 4893.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4944,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 4993.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 5043.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 5093.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 5143.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 5193.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 5244,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 5293.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 5343.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 5393.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 5445.800000000745,
+              "lagMs": 2
+            },
+            {
+              "atMs": 5493.800000000745,
+              "lagMs": -2
+            },
+            {
+              "atMs": 5543.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 5593.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5643.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5693.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 5744,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 5793.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 5843.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 5893.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5943.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5993.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 6043.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 6093.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 6143.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 6196.89999999851,
+              "lagMs": 3
+            },
+            {
+              "atMs": 6243.89999999851,
+              "lagMs": -3
+            }
+          ],
+          "note": "Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.",
+          "maxLagMs": 3
+        },
+        "remounted": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 2,
+            "disposed": 1,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 2,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        }
+      },
+      {
+        "cycle": 2,
+        "status": "passed",
+        "configuredRetentionMs": 5000,
+        "eventualObservationDeadlineMs": 20000,
+        "removal": {
+          "kind": "canvas-detached-observed",
+          "atMs": 6592,
+          "canvasId": 2
+        },
+        "entry": {
+          "kind": "dispose-entry",
+          "atMs": 11592.300000000745,
+          "canvasId": 2
+        },
+        "exit": {
+          "kind": "dispose-exit",
+          "atMs": 11600.39999999851,
+          "canvasId": 2
+        },
+        "lost": {
+          "kind": "context-loss-observed",
+          "atMs": 11600.5,
+          "canvasId": 2,
+          "trusted": true
+        },
+        "removalToDisposeEntryMs": 5000.300000000745,
+        "disposeSynchronousDurationMs": 8.099999997764826,
+        "removalToContextLossObservationMs": 5008.5,
+        "claim": "Clean cycle with no added capture or diagnostic fence reached zero engine/canvas counters and observed context loss within recorded elapsed time; production completion fences remain active. Not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.",
+        "disposed": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 2,
+            "disposed": 2,
+            "live": 0
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [],
+          "canvases": [],
+          "events": []
+        },
+        "heartbeat": {
+          "samples": [
+            {
+              "atMs": 6593.800000000745,
+              "lagMs": -32.19999999925494
+            },
+            {
+              "atMs": 6643.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 6693.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 6744,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 6793.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 6844,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 6893.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 6943.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 6993.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 7043.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 7093.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7143.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7193.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 7243.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 7294.199999999255,
+              "lagMs": 0.30000000074505806
+            },
+            {
+              "atMs": 7343.89999999851,
+              "lagMs": -0.30000000074505806
+            },
+            {
+              "atMs": 7393.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7444,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 7493.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 7543.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 7593.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7643.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7693.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7744,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 7794,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7844,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7894,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7943.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 7993.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8043.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 8093.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 8143.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8193.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8243.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8293.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8344,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 8394,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8444,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8493.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 8543.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8593.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8643.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8694,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 8743.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 8793.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8844,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 8894,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8944,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8994,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9044,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9093.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9143.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9194,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9244,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9293.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9343.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9394,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9444.099999997765,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 9494,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 9543.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 9593.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 9643.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9694,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9743.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9793.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9843.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9893.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9943.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9994,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10044,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10093.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10143.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 10193.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 10243.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10294,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10343.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10394.099999997765,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 10444,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 10494,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10543.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10594,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10643.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10694,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10743.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10793.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10843.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10894,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10943.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10993.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11043.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11093.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11143.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11193.89999999851,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11244,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 11293.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 11344,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 11394,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11444.699999999255,
+              "lagMs": 0.6999999992549419
+            },
+            {
+              "atMs": 11494,
+              "lagMs": -0.6999999992549419
+            },
+            {
+              "atMs": 11544,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11600.5,
+              "lagMs": 6.5
+            },
+            {
+              "atMs": 11643.89999999851,
+              "lagMs": -6.600000001490116
+            }
+          ],
+          "note": "Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.",
+          "maxLagMs": 6.5
+        },
+        "remounted": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 3,
+            "disposed": 2,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 3,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        }
+      }
+    ]
+  },
+  "captures": [],
+  "errors": [],
+  "warnings": [],
+  "unrun": [
+    "Lifecycle rendering/visual correctness deliberately not inferred from no-capture test."
+  ],
+  "browser": "153.0.8010.0",
+  "initial": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "night-pond",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 58,
+        "triangles": 330272,
+        "targets": null,
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "graphics": {
+    "canvasId": 1,
+    "width": 1280,
+    "height": 800,
+    "frames": "1",
+    "time": "0.0000",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "extColorBufferFloat": true,
+    "extColorBufferHalfFloat": true,
+    "targetAudit": null
+  },
+  "beforeDisposalTelemetry": {
+    "timeline": [
+      {
+        "kind": "set-size-request",
+        "atMs": 70.09999999776483,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 70.30000000074506,
+        "canvasId": 1
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 462.19999999925494,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 167.80000000074506,
+        "elapsedMs": 294.3999999985099,
+        "exclusiveDrawCalls": 58,
+        "inclusiveDrawCalls": 58,
+        "cumulativeDrawCalls": 58,
+        "drawTargets": {
+          "canvas": {
+            "calls": 58,
+            "submittedElements": 991082
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 463.0999999977648,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 70.09999999776483,
+          "same": false
+        },
+        "drawCalls": 58,
+        "startMs": 167.59999999776483,
+        "elapsedMs": 295.5,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 463.5,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 463.80000000074506,
+        "canvasId": 1,
+        "elapsedMs": 393.5,
+        "drawCalls": 58
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 463.8999999985099,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 463.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 463.8999999985099,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 464.30000000074506,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 464.3999999985099,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 464.30000000074506,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 464.30000000074506,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-secondary",
+        "atMs": 1161.199999999255
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1162.5,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1162.5999999977648,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1162.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1162.5,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "canvas-holder-move-observed",
+        "atMs": 1162.5999999977648,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1162.800000000745,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1162.800000000745,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1162.800000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1162.800000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-primary",
+        "atMs": 1165.800000000745
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 1166.199999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1166.5,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1166.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1166.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1166.5,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1168,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1168.0999999977648,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1168,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1168,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "unmount-request",
+        "atMs": 1178.699999999255
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 1179.300000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "dispose-entry",
+        "atMs": 6179.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 6181.39999999851,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "elapsedMs": 0.10000000149011612,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "renderer-dispose-entry",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "renderer-dispose-exit",
+        "atMs": 6181.599999997765,
+        "canvasId": 1,
+        "elapsedMs": 0.09999999776482582,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "force-context-loss-entry",
+        "atMs": 6181.599999997765,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "force-context-loss-exit",
+        "atMs": 6196.699999999255,
+        "canvasId": 1,
+        "elapsedMs": 15.100000001490116,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "dispose-exit",
+        "atMs": 6196.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "context-loss-observed",
+        "atMs": 6196.699999999255,
+        "canvasId": 1,
+        "trusted": true
+      },
+      {
+        "kind": "mount-request",
+        "atMs": 6269.699999999255
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6278.5,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 6278.599999997765,
+        "canvasId": 2
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 6573.099999997765,
+        "canvasId": 2,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 6378.800000000745,
+        "elapsedMs": 194.29999999701977,
+        "exclusiveDrawCalls": 58,
+        "inclusiveDrawCalls": 58,
+        "cumulativeDrawCalls": 58,
+        "drawTargets": {
+          "canvas": {
+            "calls": 58,
+            "submittedElements": 991082
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6574,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6278.5,
+          "same": false
+        },
+        "drawCalls": 58,
+        "startMs": 6378.699999999255,
+        "elapsedMs": 195.30000000074506,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6574.39999999851,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 6574.39999999851,
+        "canvasId": 2,
+        "elapsedMs": 295.80000000074506,
+        "drawCalls": 58
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6574.599999997765,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6574.39999999851,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6574.5,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6574.800000000745,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6574.800000000745,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6574.800000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6574.800000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      }
+    ],
+    "input": [],
+    "maxHeartbeatLagMs": 380.19999999925494,
+    "heartbeats": [
+      {
+        "atMs": 473.8999999985099,
+        "lagMs": 380.19999999925494
+      },
+      {
+        "atMs": 493.80000000074506,
+        "lagMs": -30.099999997764826
+      },
+      {
+        "atMs": 543.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 594,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 643.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 693.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 743.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 794.0999999977648,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 844,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 894,
+        "lagMs": 0
+      },
+      {
+        "atMs": 943.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 994,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1043.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1093.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1143.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1193.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1243.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1294.199999999255,
+        "lagMs": 0.30000000074505806
+      },
+      {
+        "atMs": 1343.8999999985099,
+        "lagMs": -0.30000000074505806
+      },
+      {
+        "atMs": 1393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1444,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 1493.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1544,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1593.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1643.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1693.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1743.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1793.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1843.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 1893.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1943.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 1993.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2043.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2093.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2193.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2243.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2293.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2343.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2444,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 2493.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 2543.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2593.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2643.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2693.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2743.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2793.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2843.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2893.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2944,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 2993.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3043.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3093.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 3143.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3193.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3244,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3293.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3344,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3393.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3443.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3493.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 3544,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 3593.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3643.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3693.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3743.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3793.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3843.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3893.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3943.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3993.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4044,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4093.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 4143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4193.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4244,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 4294,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4343.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 4393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4443.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4493.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4544,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4593.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 4643.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4693.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4744,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 4793.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 4843.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4893.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4944,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4993.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 5043.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5093.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5143.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5193.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5244,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 5293.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 5343.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5445.800000000745,
+        "lagMs": 2
+      },
+      {
+        "atMs": 5493.800000000745,
+        "lagMs": -2
+      },
+      {
+        "atMs": 5543.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5593.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5643.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5693.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5744,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 5793.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 5843.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5893.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5943.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5993.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6043.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6093.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6143.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6196.89999999851,
+        "lagMs": 3
+      },
+      {
+        "atMs": 6243.89999999851,
+        "lagMs": -3
+      },
+      {
+        "atMs": 6576,
+        "lagMs": 282.1000000014901
+      }
+    ],
+    "countingMethod": "Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls."
+  },
+  "final": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 3,
+      "disposed": 2,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "night-pond",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 3,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 58,
+        "triangles": 330272,
+        "targets": null,
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "telemetry": {
+    "timeline": [
+      {
+        "kind": "set-size-request",
+        "atMs": 70.09999999776483,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 70.30000000074506,
+        "canvasId": 1
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 462.19999999925494,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 167.80000000074506,
+        "elapsedMs": 294.3999999985099,
+        "exclusiveDrawCalls": 58,
+        "inclusiveDrawCalls": 58,
+        "cumulativeDrawCalls": 58,
+        "drawTargets": {
+          "canvas": {
+            "calls": 58,
+            "submittedElements": 991082
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 463.0999999977648,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 70.09999999776483,
+          "same": false
+        },
+        "drawCalls": 58,
+        "startMs": 167.59999999776483,
+        "elapsedMs": 295.5,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 463.5,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 463.80000000074506,
+        "canvasId": 1,
+        "elapsedMs": 393.5,
+        "drawCalls": 58
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 463.8999999985099,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 463.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 463.8999999985099,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 464.30000000074506,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 464.3999999985099,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 464.30000000074506,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 464.30000000074506,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-secondary",
+        "atMs": 1161.199999999255
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1162.5,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1162.5999999977648,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1162.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1162.5,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "canvas-holder-move-observed",
+        "atMs": 1162.5999999977648,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1162.800000000745,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1162.800000000745,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1162.800000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1162.800000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-primary",
+        "atMs": 1165.800000000745
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 1166.199999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1166.5,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1166.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1166.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1166.5,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1168,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1168.0999999977648,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1168,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1168,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "unmount-request",
+        "atMs": 1178.699999999255
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 1179.300000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "dispose-entry",
+        "atMs": 6179.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 6181.39999999851,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "elapsedMs": 0.10000000149011612,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "renderer-dispose-entry",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 6181.5,
+        "canvasId": 1,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "renderer-dispose-exit",
+        "atMs": 6181.599999997765,
+        "canvasId": 1,
+        "elapsedMs": 0.09999999776482582,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "force-context-loss-entry",
+        "atMs": 6181.599999997765,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "force-context-loss-exit",
+        "atMs": 6196.699999999255,
+        "canvasId": 1,
+        "elapsedMs": 15.100000001490116,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "dispose-exit",
+        "atMs": 6196.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "context-loss-observed",
+        "atMs": 6196.699999999255,
+        "canvasId": 1,
+        "trusted": true
+      },
+      {
+        "kind": "mount-request",
+        "atMs": 6269.699999999255
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6278.5,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 6278.599999997765,
+        "canvasId": 2
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 6573.099999997765,
+        "canvasId": 2,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 6378.800000000745,
+        "elapsedMs": 194.29999999701977,
+        "exclusiveDrawCalls": 58,
+        "inclusiveDrawCalls": 58,
+        "cumulativeDrawCalls": 58,
+        "drawTargets": {
+          "canvas": {
+            "calls": 58,
+            "submittedElements": 991082
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6574,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6278.5,
+          "same": false
+        },
+        "drawCalls": 58,
+        "startMs": 6378.699999999255,
+        "elapsedMs": 195.30000000074506,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6574.39999999851,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 6574.39999999851,
+        "canvasId": 2,
+        "elapsedMs": 295.80000000074506,
+        "drawCalls": 58
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6574.599999997765,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6574.39999999851,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6574.5,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 6574.800000000745,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 6574.800000000745,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 6574.800000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 6574.800000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "unmount-request",
+        "atMs": 6591.5
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 6592,
+        "canvasId": 2
+      },
+      {
+        "kind": "dispose-entry",
+        "atMs": 11592.300000000745,
+        "canvasId": 2
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 11593.300000000745,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 11593.300000000745,
+        "canvasId": 2,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "renderer-dispose-entry",
+        "atMs": 11593.300000000745,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 11593.300000000745,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 11593.300000000745,
+        "canvasId": 2,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "renderer-dispose-exit",
+        "atMs": 11593.300000000745,
+        "canvasId": 2,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "force-context-loss-entry",
+        "atMs": 11593.300000000745,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "force-context-loss-exit",
+        "atMs": 11600.39999999851,
+        "canvasId": 2,
+        "elapsedMs": 7.099999997764826,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 0
+        }
+      },
+      {
+        "kind": "dispose-exit",
+        "atMs": 11600.39999999851,
+        "canvasId": 2
+      },
+      {
+        "kind": "context-loss-observed",
+        "atMs": 11600.5,
+        "canvasId": 2,
+        "trusted": true
+      },
+      {
+        "kind": "mount-request",
+        "atMs": 11680.199999999255
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 11689,
+        "canvasId": 3,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 11689,
+        "canvasId": 3
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 11969.5,
+        "canvasId": 3,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 11779.599999997765,
+        "elapsedMs": 189.90000000223517,
+        "exclusiveDrawCalls": 58,
+        "inclusiveDrawCalls": 58,
+        "cumulativeDrawCalls": 58,
+        "drawTargets": {
+          "canvas": {
+            "calls": 58,
+            "submittedElements": 991082
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 11970.39999999851,
+        "canvasId": 3,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 11689,
+          "same": false
+        },
+        "drawCalls": 58,
+        "startMs": 11779.599999997765,
+        "elapsedMs": 190.80000000074506,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 11970.599999997765,
+        "canvasId": 3,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 11970.599999997765,
+        "canvasId": 3,
+        "elapsedMs": 281.5999999977648,
+        "drawCalls": 58
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 11970.699999999255,
+        "canvasId": 3,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 11970.599999997765,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 11970.599999997765,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 11971,
+        "canvasId": 3,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 11971,
+        "canvasId": 3,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 11971,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 11971,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      }
+    ],
+    "input": [],
+    "maxHeartbeatLagMs": 380.19999999925494,
+    "heartbeats": [
+      {
+        "atMs": 473.8999999985099,
+        "lagMs": 380.19999999925494
+      },
+      {
+        "atMs": 493.80000000074506,
+        "lagMs": -30.099999997764826
+      },
+      {
+        "atMs": 543.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 594,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 643.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 693.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 743.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 794.0999999977648,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 844,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 894,
+        "lagMs": 0
+      },
+      {
+        "atMs": 943.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 994,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1043.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1093.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1143.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1193.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1243.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1294.199999999255,
+        "lagMs": 0.30000000074505806
+      },
+      {
+        "atMs": 1343.8999999985099,
+        "lagMs": -0.30000000074505806
+      },
+      {
+        "atMs": 1393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1444,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 1493.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1544,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1593.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1643.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1693.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1743.8999999985099,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1793.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1843.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 1893.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1943.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 1993.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2043.8999999985099,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2093.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2193.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2243.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2293.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2343.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2444,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 2493.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 2543.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2593.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2643.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2693.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2743.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2793.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2843.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 2893.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2944,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 2993.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3043.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3093.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 3143.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3193.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3244,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3293.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3344,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3393.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3443.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3493.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 3544,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 3593.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3643.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3693.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3743.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3793.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3843.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3893.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3943.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3993.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4044,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4093.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 4143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4193.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4244,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 4294,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4343.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 4393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4443.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4493.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4544,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4593.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 4643.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4693.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4744,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 4793.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 4843.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4893.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4944,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4993.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 5043.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5093.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5143.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5193.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5244,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 5293.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 5343.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5393.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5445.800000000745,
+        "lagMs": 2
+      },
+      {
+        "atMs": 5493.800000000745,
+        "lagMs": -2
+      },
+      {
+        "atMs": 5543.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5593.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5643.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5693.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5744,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 5793.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 5843.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5893.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5943.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5993.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6043.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6093.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6143.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6196.89999999851,
+        "lagMs": 3
+      },
+      {
+        "atMs": 6243.89999999851,
+        "lagMs": -3
+      },
+      {
+        "atMs": 6576,
+        "lagMs": 282.1000000014901
+      },
+      {
+        "atMs": 6593.800000000745,
+        "lagMs": -32.19999999925494
+      },
+      {
+        "atMs": 6643.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6693.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6744,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 6793.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 6844,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 6893.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 6943.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6993.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 7043.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 7093.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7193.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 7243.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 7294.199999999255,
+        "lagMs": 0.30000000074505806
+      },
+      {
+        "atMs": 7343.89999999851,
+        "lagMs": -0.30000000074505806
+      },
+      {
+        "atMs": 7393.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7444,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 7493.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 7543.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 7593.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7643.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7693.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7744,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 7794,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7844,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7894,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7943.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 7993.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8043.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 8093.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 8143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8193.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8243.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8293.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8344,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8394,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8444,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8493.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 8543.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8593.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8643.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8694,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8743.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 8793.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8844,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8894,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8944,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8994,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9044,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9093.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9194,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9244,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9293.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9343.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9394,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9444.099999997765,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 9494,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 9543.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 9593.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 9643.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9694,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9743.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9793.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9843.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9893.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9943.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9994,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10044,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10093.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10143.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 10193.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 10243.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10294,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10343.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10394.099999997765,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 10444,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 10494,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10543.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10594,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10643.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10694,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10743.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10793.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10843.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10894,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10943.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10993.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11043.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11093.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11143.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11193.89999999851,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11244,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 11293.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 11344,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 11394,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11444.699999999255,
+        "lagMs": 0.6999999992549419
+      },
+      {
+        "atMs": 11494,
+        "lagMs": -0.6999999992549419
+      },
+      {
+        "atMs": 11544,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11600.5,
+        "lagMs": 6.5
+      },
+      {
+        "atMs": 11643.89999999851,
+        "lagMs": -6.600000001490116
+      },
+      {
+        "atMs": 11971.89999999851,
+        "lagMs": 278
+      }
+    ],
+    "countingMethod": "Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls."
+  },
+  "finishedAt": "2026-10-04T21:57:21.032Z"
+}

@@ -1,0 +1,458 @@
+{
+  "schema": "korean-environment-artifact-manifest-v1",
+  "createdAt": "2026-10-04T22:52:20.065343+00:00",
+  "testedSource": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+  "scope": "All this compatibility follow-up evidence including retained failures; self excluded to avoid circular hash.",
+  "files": [
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/ENVIRONMENT_COMPATIBILITY_REPORT.md",
+      "bytes": 12752,
+      "sha256": "33a9b6880264bb2f1f46cc77a263d4b1674fb3f01b02db9e1cd9bbbd644874b5"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/ENVIRONMENT_PRIOR_RUNS.md",
+      "bytes": 13323,
+      "sha256": "b7761239577369e4961f19ea76c6047f7cdd39f838023cb1b271ba22cfd3a017"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-scops.json",
+      "bytes": 75488,
+      "sha256": "8777ed6178f7a8ce90691bc888fc8722b09a796ddc958a2496271a760127d202"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-temple.json",
+      "bytes": 75560,
+      "sha256": "27c1fecc7beed6e1bb74b4bb7803b2ef6627a41864d178523a5c46ada75dd60e"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/scops-run.log",
+      "bytes": 308,
+      "sha256": "35611973da335f620645de812df71ab37dbfd8764c79a4d160a3e14280f919d6"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/temple-run.log",
+      "bytes": 314,
+      "sha256": "7041d2aed340e521de9b0b22a184e820d430e2a4aa6b8b92f28d59291fcb107b"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/cleanup-rapid-temple.json",
+      "bytes": 81694,
+      "sha256": "488293fbd91682bc2c29ec2ca98ec84e9bc3680f40ab3857d5da1de5d81dd528"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/temple-run.log",
+      "bytes": 314,
+      "sha256": "a9682468d7de611c3f04fb02f40fb7acb4278433ac668d1e3ac59afe005332f4"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-scops.json",
+      "bytes": 75358,
+      "sha256": "c4a693137336d3dd37a4da709908469517cb448a2a8bec366cbe7287429ee649"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-temple.json",
+      "bytes": 75425,
+      "sha256": "fe249ab2937a921179b98ecbcf1f29d025888179a0c59aca9c5762e162b5da7a"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/scops-run.log",
+      "bytes": 303,
+      "sha256": "86170a5457fd28173e135f5fa98a7cab5fee7a8ce728f273bb35127ea20140d7"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/temple-run.log",
+      "bytes": 309,
+      "sha256": "80798a1318c7cbf10f6f1a9318d27c936ae98ed9e081a021cf362bf85c143221"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/cleanup-rapid-temple.json",
+      "bytes": 81342,
+      "sha256": "1a647f9796581e8157fa8894338b16300991c0da5ff5a46c81068fb9bffa51cd"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/temple-run.log",
+      "bytes": 309,
+      "sha256": "1b8e250d9f47482ae4380c93ff4372f527d6446f50f70b80394f07e16dd80d82"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/cleanup-rapid-drained-temple.json",
+      "bytes": 82131,
+      "sha256": "0b8c6860e761100a44539059de01ed7873214e30ac9435479177a3e2a9286557"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/temple-run.log",
+      "bytes": 341,
+      "sha256": "9cbfab76054c26981a7576d31a4e9e8df55940d1fee3ea7833abb623925e0f80"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/build-gates.log",
+      "bytes": 5345,
+      "sha256": "a88f0bf67bcc3fb6d55fcc3ad6873be962e424ce992247fe3a74a77c1d225ec9"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/debug-failure.png",
+      "bytes": 1905,
+      "sha256": "e1db120bdb6820f98167e4e3868b35763423681c568eb836be4c56f7f241d366"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-chrome.png",
+      "bytes": 1236285,
+      "sha256": "cd874b3e90d83fea61b33ca3617b1f0d65c6aa61c293a1afce319a9501df7b27"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-desktop.png",
+      "bytes": 1236780,
+      "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-fold.png",
+      "bytes": 705103,
+      "sha256": "169559a1dd5957125cc530ef16c36b83828ed0432ea560b7c8c98a25831007c6"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-portrait.png",
+      "bytes": 287657,
+      "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-run.log",
+      "bytes": 1511,
+      "sha256": "8652b32f7a29800ae7d01d9e84c9610850e50e62f1b53fbe167296b570fb9285"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/verification-temple.json",
+      "bytes": 68041,
+      "sha256": "f2583d52f692e663d618314c38805c6b9d9851dc41d676808faa95e9a90ec011"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/screenshots-temple.json",
+      "bytes": 26070,
+      "sha256": "2aca7f2559447cb024b930fcde4726ffa7659ad6a1298c17896a42f81af13fbb"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-desktop.png",
+      "bytes": 1236865,
+      "sha256": "e12f953eacadc10755136cf0680e7629d89d8c07c93de20db87cc53db5f9f46f"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-fold.png",
+      "bytes": 704741,
+      "sha256": "7b5476dc53a85859ebc13a82a43e48d138eb0138b7e60cdd14693f702893f17d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-portrait.png",
+      "bytes": 287691,
+      "sha256": "2aef90e1fe8303de049553ba6d5a339f559fcd0b7ef5098142f93ffff1ad3a87"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/screenshots-temple.json",
+      "bytes": 25807,
+      "sha256": "06528d032ca74f164cf096a7bf7bb54a7085ef9a9dcb56922bdb0183a3568faa"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-desktop.png",
+      "bytes": 1236780,
+      "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-fold.png",
+      "bytes": 705103,
+      "sha256": "169559a1dd5957125cc530ef16c36b83828ed0432ea560b7c8c98a25831007c6"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-portrait.png",
+      "bytes": 287657,
+      "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/build-gates.log",
+      "bytes": 5333,
+      "sha256": "197a1366ff6f81bfca2db46ac827388e0a3d373e42ec90a147ae186dae38441a"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparison-artifact-repair.json",
+      "bytes": 945,
+      "sha256": "1365ba5783640515265c6833e20f14424561fb5a3130c18acbc465e21c734b79"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/comparison-manifest.json",
+      "bytes": 26407,
+      "sha256": "1079d67531fc668580f41b18eb38e48e8cd41624ba9dbca182050c61137aba3e"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-desktop-baseline-normal-byte.png",
+      "bytes": 1463298,
+      "sha256": "0f688db6d3b44aedd0d3969cf6dc68a78ae9fd33099a2fea04f7fb5e46690d52"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-portrait-baseline-normal-byte.png",
+      "bytes": 344144,
+      "sha256": "3cbaf0f2048c10ae9f8994416485a9954f1c485f478905be3c1aa22839d91342"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-desktop-baseline-normal-byte.png",
+      "bytes": 1618229,
+      "sha256": "043fba101c90ec0d37c77578323535de85b28afb4939c150b8fa07a0a51f4ac6"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-portrait-baseline-normal-byte.png",
+      "bytes": 394533,
+      "sha256": "68860f06ab9e554ff1c39aa1539039bd4b83c8fd6b0758b1b93d4be32cbcb5b9"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-chrome.png",
+      "bytes": 1105804,
+      "sha256": "ce9b5835f89e6f7ee887719e8df58229896cc9240979e6b3f5c39bd0b53b9743"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-desktop.png",
+      "bytes": 1105181,
+      "sha256": "fb16ec9c76307758d3cec2ec6b2c1ae6d6675a2711fdb2cb17d7bba5929d8a18"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-fold.png",
+      "bytes": 640608,
+      "sha256": "4c8c0ee2ed515861782f5dc166e1471b0abe367a0d3afd8cf29e567b8c040abd"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-portrait.png",
+      "bytes": 259654,
+      "sha256": "7e932d69712fae7536c85a93ab5f55bc20b27e92688568513d74306912891c3b"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-chrome.png",
+      "bytes": 1236298,
+      "sha256": "8ff02b985995b3d4542459e4f993c9a788f6b69d89f809e7416d66bc2923e11d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-desktop.png",
+      "bytes": 1236865,
+      "sha256": "e12f953eacadc10755136cf0680e7629d89d8c07c93de20db87cc53db5f9f46f"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-fold.png",
+      "bytes": 704741,
+      "sha256": "7b5476dc53a85859ebc13a82a43e48d138eb0138b7e60cdd14693f702893f17d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-portrait.png",
+      "bytes": 287691,
+      "sha256": "2aef90e1fe8303de049553ba6d5a339f559fcd0b7ef5098142f93ffff1ad3a87"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-scops.json",
+      "bytes": 74346,
+      "sha256": "0ee7c05e4821e8d1503497608c0667a40665da2dadae85daa5fee7d7b5220388"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-temple.json",
+      "bytes": 74146,
+      "sha256": "3d21fa5cacc8a4b622f49ac7bf76df2d6059a99f35f3691f9fc5829669cb194c"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-chrome.png",
+      "bytes": 1105692,
+      "sha256": "3f1c83ec41c4f01964cef9fc0b5ddc924c94b878e377ce7eb0ac78918560ccbf"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-desktop.png",
+      "bytes": 1105310,
+      "sha256": "4287596d57b76d13cc7dbafafb077328fc2f1b8febe20056522a381fe90fe596"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-fold.png",
+      "bytes": 640696,
+      "sha256": "c6fb5e2d070b433bf057bbcec0a7e9aafeb2536e8b3dad7a7a24973ea1427520"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-portrait.png",
+      "bytes": 259718,
+      "sha256": "aa6eebfdf3d80397b5d02b3dca96fe80d8676a0bedc9a18f390a5272f7dcc195"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-chrome.png",
+      "bytes": 1236285,
+      "sha256": "cd874b3e90d83fea61b33ca3617b1f0d65c6aa61c293a1afce319a9501df7b27"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-desktop.png",
+      "bytes": 1236780,
+      "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-fold.png",
+      "bytes": 705103,
+      "sha256": "169559a1dd5957125cc530ef16c36b83828ed0432ea560b7c8c98a25831007c6"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-portrait.png",
+      "bytes": 287657,
+      "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-scops.json",
+      "bytes": 74255,
+      "sha256": "3e40e73df06ebc2cb8287034920acbe2e0f7a152a78246ac200bf898a6648c83"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-temple.json",
+      "bytes": 74088,
+      "sha256": "86839f1ec399ef435d0ab02ef5bf5478a9f3b195492f2ad4a72829ffd20388e9"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-desktop.png",
+      "bytes": 915493,
+      "sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-fold.png",
+      "bytes": 563404,
+      "sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-portrait.png",
+      "bytes": 245178,
+      "sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/screenshots-rural.json",
+      "bytes": 15045,
+      "sha256": "2f1d721979449867e16856073f8ff72a00ebea9145416e1ef74f04bf19707251"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/scope-preservation.json",
+      "bytes": 17487,
+      "sha256": "5877636c23cdc20b9f5a9879dfbc5ad9eefc48d822eb183d04001ffc5d13e828"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/verification-summary.json",
+      "bytes": 71211,
+      "sha256": "ea5c55e5e0ee5d51988bffe87233f3df0ae68c491215a0e024d3cc9467a0d783"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/build-gates.log",
+      "bytes": 5404,
+      "sha256": "953f9d4ff64a006e710121dfc107f662b4f6796e9cbe619c787b9efb8b0c633a"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-chrome.png",
+      "bytes": 1105804,
+      "sha256": "ce9b5835f89e6f7ee887719e8df58229896cc9240979e6b3f5c39bd0b53b9743"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-desktop.png",
+      "bytes": 1105181,
+      "sha256": "fb16ec9c76307758d3cec2ec6b2c1ae6d6675a2711fdb2cb17d7bba5929d8a18"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-fold.png",
+      "bytes": 640608,
+      "sha256": "4c8c0ee2ed515861782f5dc166e1471b0abe367a0d3afd8cf29e567b8c040abd"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-portrait.png",
+      "bytes": 259654,
+      "sha256": "7e932d69712fae7536c85a93ab5f55bc20b27e92688568513d74306912891c3b"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-run.log",
+      "bytes": 1278,
+      "sha256": "ba6897d4394b97ba765542595c83ac0b7b6fb53965284f5286ed2055cdaa3ca4"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-chrome.png",
+      "bytes": 1236298,
+      "sha256": "8ff02b985995b3d4542459e4f993c9a788f6b69d89f809e7416d66bc2923e11d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-desktop.png",
+      "bytes": 1236865,
+      "sha256": "e12f953eacadc10755136cf0680e7629d89d8c07c93de20db87cc53db5f9f46f"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-fold.png",
+      "bytes": 704741,
+      "sha256": "7b5476dc53a85859ebc13a82a43e48d138eb0138b7e60cdd14693f702893f17d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-portrait.png",
+      "bytes": 287691,
+      "sha256": "2aef90e1fe8303de049553ba6d5a339f559fcd0b7ef5098142f93ffff1ad3a87"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-run.log",
+      "bytes": 1306,
+      "sha256": "11572b3b58d668917bf4a88d70c48ae91600799aa60f42d88a41e05b065fd7a1"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-scops.json",
+      "bytes": 74436,
+      "sha256": "6fe3545eaf422acac167245ed29aff448db8c98fb66dd4cf3f445109765ec5d7"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-temple.json",
+      "bytes": 74192,
+      "sha256": "e7aebe3a1f3895f7c81519dc9c8a444ac380637aea6c8373693059b468f30eac"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-chrome.png",
+      "bytes": 1105692,
+      "sha256": "3f1c83ec41c4f01964cef9fc0b5ddc924c94b878e377ce7eb0ac78918560ccbf"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-desktop.png",
+      "bytes": 1105310,
+      "sha256": "4287596d57b76d13cc7dbafafb077328fc2f1b8febe20056522a381fe90fe596"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-fold.png",
+      "bytes": 640696,
+      "sha256": "c6fb5e2d070b433bf057bbcec0a7e9aafeb2536e8b3dad7a7a24973ea1427520"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-portrait.png",
+      "bytes": 259718,
+      "sha256": "aa6eebfdf3d80397b5d02b3dca96fe80d8676a0bedc9a18f390a5272f7dcc195"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-run.log",
+      "bytes": 1273,
+      "sha256": "1564f575e8844b42c02a9353356292d74af24c4c026e1f1fd485abb6e3552ece"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-chrome.png",
+      "bytes": 1236285,
+      "sha256": "cd874b3e90d83fea61b33ca3617b1f0d65c6aa61c293a1afce319a9501df7b27"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-desktop.png",
+      "bytes": 1236780,
+      "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-fold.png",
+      "bytes": 705103,
+      "sha256": "169559a1dd5957125cc530ef16c36b83828ed0432ea560b7c8c98a25831007c6"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-portrait.png",
+      "bytes": 287657,
+      "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-run.log",
+      "bytes": 1508,
+      "sha256": "cb5ea544f6620dc8876a3c4910e804c494805b90eb250b93fa61c6c0a6df255b"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-scops.json",
+      "bytes": 74372,
+      "sha256": "254c53a12202d10aae5ccbab6fd8f4c229084e861a1f7a221c66fd3c8f056b3c"
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-temple.json",
+      "bytes": 62997,
+      "sha256": "ca600b3c4cb1d677c131309500ec608829b6627d04b517c23b5c433d2550359a"
+    }
+  ]
+}

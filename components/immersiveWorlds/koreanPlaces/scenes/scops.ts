@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import type { SceneContent, WorldInteraction } from '../types';
+import { createCheckedEnvironment } from '../environment';
 
 /** Original procedural Korean forest-edge porch. All textures are authored here. */
-export function createScopsScene(): SceneContent {
+export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
   let seed = 78219;
   const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   const scene = new THREE.Scene();
@@ -85,7 +86,8 @@ export function createScopsScene(): SceneContent {
   const envCanvas=document.createElement('canvas');envCanvas.width=256;envCanvas.height=128;
   const envCtx=envCanvas.getContext('2d')!;const envGradient=envCtx.createLinearGradient(0,0,0,128);
   envGradient.addColorStop(0,'#60748d');envGradient.addColorStop(.48,'#8b9d9f');envGradient.addColorStop(.58,'#4e6059');envGradient.addColorStop(1,'#30392e');envCtx.fillStyle=envGradient;envCtx.fillRect(0,0,256,128);
-  const envTexture=new THREE.CanvasTexture(envCanvas);envTexture.colorSpace=THREE.SRGBColorSpace;envTexture.mapping=THREE.EquirectangularReflectionMapping;scene.environment=envTexture;scene.environmentIntensity=.28;
+  const envTexture=new THREE.CanvasTexture(envCanvas);envTexture.colorSpace=THREE.SRGBColorSpace;envTexture.mapping=THREE.EquirectangularReflectionMapping;
+  const checkedEnvironment=createCheckedEnvironment(renderer,envTexture,'scops');scene.environment=checkedEnvironment.texture;scene.environmentIntensity=.28;
 
   // A full-scale wood floor, old edge beam and roof framing put the eye inside a place.
   const nailMatrices: THREE.Matrix4[] = [];
@@ -390,5 +392,5 @@ export function createScopsScene(): SceneContent {
     const p=new THREE.Vector3();lantern.getWorldPosition(p);
     return {scene:'nature:scops_night',type:'lantern',strength:targetBrightness/1.35,position:p.toArray() as [number,number,number]};
   }
-  return {scene,camera,resize,update,interact,audioEvent(type:'scops-call'){if(type==='scops-call')callStart=lastTime;}};
+  return {scene,camera,resize,update,interact,dispose:checkedEnvironment.dispose,audioEvent(type:'scops-call'){if(type==='scops-call')callStart=lastTime;}};
 }

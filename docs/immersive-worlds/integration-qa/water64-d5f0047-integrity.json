@@ -1,0 +1,778 @@
+{
+  "observedAt": "2026-10-04T22:17:27.744039+00:00",
+  "head": "d5f00475ad86cde3e489157e25e0aa14b400c9e8",
+  "baseline": "c6cad439abbaae54884292c6cc6ea60c76587e32",
+  "tree": "35d21cd88fc6ebe9ce12e9df3e45297bbd0d1c41",
+  "ownedTree": "452ca7e26d6bdef933385833f6738d60548e5b8a",
+  "changedPaths": 75,
+  "outsideScope": [],
+  "runtimeChanged": [
+    "components/immersiveWorlds/waterEdge/gpuSubmission.ts",
+    "components/immersiveWorlds/waterEdge/runtime.ts"
+  ],
+  "sourceCheckpointPublished": "e4a11dd135c7979b644d667755f6a68fa4ea529d",
+  "runtimeChangedSinceSource": [],
+  "sourceFiles": {
+    "count": 13,
+    "mismatches": []
+  },
+  "harnessFiles": {
+    "count": 5,
+    "mismatches": []
+  },
+  "verifierHelpers": {
+    "count": 2,
+    "mismatches": []
+  },
+  "manifestSha256": "23ab398c71283330eecd9437369becb39c67f9acc682fe2974b4f800a3224f83",
+  "aggregates": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42"
+  },
+  "bundleSha256": "789f1cf31ce3840e71a9a50a283f1d811dc4f2f888124ebd10d5768e7eb4d91b",
+  "bundleBytesPresent": false,
+  "finalReports": [
+    {
+      "file": "submission-evidence/final-active-summer-valley-byte-desktop-diagnostic.json",
+      "status": "passed",
+      "stage": "diagnostic",
+      "world": "summer-valley",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 0,
+      "cycles": [
+        {
+          "cycle": 1,
+          "actualContextLossMs": 5018.599999997765,
+          "disposeMs": 18,
+          "heartbeatMaxLagMs": 2.199999999254942
+        }
+      ]
+    },
+    {
+      "file": "submission-evidence/final-active-summer-valley-normal-desktop-diagnostic.json",
+      "status": "passed",
+      "stage": "diagnostic",
+      "world": "summer-valley",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 0,
+      "cycles": [
+        {
+          "cycle": 1,
+          "actualContextLossMs": 5020.39999999851,
+          "disposeMs": 19.800000000745058,
+          "heartbeatMaxLagMs": 2.399999998509884
+        }
+      ]
+    },
+    {
+      "file": "submission-evidence/final-night-pond-normal-desktop-behavior.json",
+      "status": "passed",
+      "stage": "behavior",
+      "world": "night-pond",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 2,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-night-pond-normal-desktop-lifecycle.json",
+      "status": "passed",
+      "stage": "lifecycle",
+      "world": "night-pond",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 0,
+      "cycles": [
+        {
+          "cycle": 1,
+          "actualContextLossMs": 5017.39999999851,
+          "disposeMs": 17,
+          "heartbeatMaxLagMs": 3
+        },
+        {
+          "cycle": 2,
+          "actualContextLossMs": 5008.5,
+          "disposeMs": 8.099999997764826,
+          "heartbeatMaxLagMs": 6.5
+        }
+      ]
+    },
+    {
+      "file": "submission-evidence/final-night-pond-normal-desktop-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "night-pond",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-night-pond-normal-portrait-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "night-pond",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-desktop-behavior.json",
+      "status": "passed",
+      "stage": "behavior",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 2,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-desktop-lifecycle.json",
+      "status": "passed",
+      "stage": "lifecycle",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 0,
+      "cycles": [
+        {
+          "cycle": 1,
+          "actualContextLossMs": 5022.29999999702,
+          "disposeMs": 21.699999999254942,
+          "heartbeatMaxLagMs": 3.5
+        },
+        {
+          "cycle": 2,
+          "actualContextLossMs": 5010.800000000745,
+          "disposeMs": 10.5,
+          "heartbeatMaxLagMs": 3.199999999254942
+        }
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-desktop-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-portrait-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-desktop-behavior.json",
+      "status": "passed",
+      "stage": "behavior",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 2,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-desktop-lifecycle.json",
+      "status": "passed",
+      "stage": "lifecycle",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 0,
+      "cycles": [
+        {
+          "cycle": 1,
+          "actualContextLossMs": 5022.10000000149,
+          "disposeMs": 21.5,
+          "heartbeatMaxLagMs": 3.5
+        },
+        {
+          "cycle": 2,
+          "actualContextLossMs": 5011.89999999851,
+          "disposeMs": 11,
+          "heartbeatMaxLagMs": 11
+        }
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-desktop-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-portrait-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-behavior.json",
+      "status": "passed",
+      "stage": "behavior",
+      "world": "summer-valley",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 2,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-lifecycle.json",
+      "status": "passed",
+      "stage": "lifecycle",
+      "world": "summer-valley",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 0,
+      "cycles": [
+        {
+          "cycle": 1,
+          "actualContextLossMs": 5038.89999999851,
+          "disposeMs": 38.19999999925494,
+          "heartbeatMaxLagMs": 34.599999997764826
+        },
+        {
+          "cycle": 2,
+          "actualContextLossMs": 5327.199999999255,
+          "disposeMs": 326.80000000074506,
+          "heartbeatMaxLagMs": 322.30000000074506
+        }
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-static.json",
+      "status": "passed",
+      "stage": "static",
+      "world": "summer-valley",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 4,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "summer-valley",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-portrait-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "summer-valley",
+      "mode": "byte",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-behavior.json",
+      "status": "passed",
+      "stage": "behavior",
+      "world": "summer-valley",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 2,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-lifecycle.json",
+      "status": "passed",
+      "stage": "lifecycle",
+      "world": "summer-valley",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 0,
+      "cycles": [
+        {
+          "cycle": 1,
+          "actualContextLossMs": 16250.10000000149,
+          "disposeMs": 11249,
+          "heartbeatMaxLagMs": 11244.5
+        },
+        {
+          "cycle": 2,
+          "actualContextLossMs": 7743.599999997765,
+          "disposeMs": 2743.199999999255,
+          "heartbeatMaxLagMs": 2699.199999999255
+        }
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-static.json",
+      "status": "passed",
+      "stage": "static",
+      "world": "summer-valley",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 4,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "summer-valley",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-portrait-visual.json",
+      "status": "passed",
+      "stage": "visual",
+      "world": "summer-valley",
+      "mode": "normal",
+      "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+      "capturedImages": 1,
+      "cycles": []
+    }
+  ],
+  "images": [
+    {
+      "file": "submission-evidence/final-night-pond-normal-desktop-behavior-chrome-initial.png",
+      "sha256": "8eb92a1f4fbef243a1f738232608a5db5ffc91fc48a72bb69b9613b3b88e4ab4",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-night-pond-normal-desktop-behavior-post-native-input.png",
+      "sha256": "ebae52d697bab57d944983ae4b10209f530e724dd0e1e9ce74479a351ef173b4",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-night-pond-normal-desktop-visual-initial.png",
+      "sha256": "ce4001fd5db266a24e3b1ff5fc5f357ec4c8af885cc253abd254e69a0e6ff9ae",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-night-pond-normal-portrait-visual-initial.png",
+      "sha256": "66e0dbd01c23a2b5af25880c0cd2d1df1b11f208bfef46790e64a3ff0c447725",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-desktop-behavior-chrome-initial.png",
+      "sha256": "f7f92aa644112329f204009d26d51163351f0cd237635412562e9f4f1e700c88",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-desktop-behavior-post-native-input.png",
+      "sha256": "9e4941cc519843c17d9fb4ff309c1c1161bb8346ca35c375eb872b9d050e089e",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-desktop-visual-initial.png",
+      "sha256": "24ce5ece13dac48400d65d2e0abdb9bdfcc6c29353e9a2b3ce560751d63d95ff",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-byte-portrait-visual-initial.png",
+      "sha256": "70e606241c5fadffbccdbb0f45e70079a2fae6b5cfb58ad001d87343420487a5",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-desktop-behavior-chrome-initial.png",
+      "sha256": "9f8a6dcf4fc63ec639a245e254a12ea942b7f5ca085b5e4e8cd7cb0df25163b3",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-desktop-behavior-post-native-input.png",
+      "sha256": "182fd3c5033a293d16e1be4c13e1ce50f85ced541a28589ba33f3069e1121b9b",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-desktop-visual-initial.png",
+      "sha256": "b3ac35013258ebd2ca10a48d908c60ab8742994be7e3d387d243945e48851d8c",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-pebble-shore-normal-portrait-visual-initial.png",
+      "sha256": "1e57227b662d49d518d103402d7f51e378583c74ae78cd775d7ce825f4815c15",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-behavior-chrome-initial.png",
+      "sha256": "100291ffcc5ddde796f071b384635f90fbeb4f5eaf4cf58e7416d40331db8db9",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-behavior-post-native-input.png",
+      "sha256": "7e9407bc21cbec2842b779f0a8f83ea05c0d93e9d3ef59ddeb6cba99a1f8a808",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-static-initial-desktop.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-static-after-holder-roundtrips.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-static-portrait.png",
+      "sha256": "729181280ac8fee817088a7b6d5934f902e4d3dc8bfc9e075e6369fd4cdb7096",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-static-restored-desktop.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-desktop-visual-initial.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-byte-portrait-visual-initial.png",
+      "sha256": "729181280ac8fee817088a7b6d5934f902e4d3dc8bfc9e075e6369fd4cdb7096",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-behavior-chrome-initial.png",
+      "sha256": "8a2e6fcec731fced6d15ac64ca3083e7eca496b4e00790332622d21d0d7ea7a3",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-behavior-post-native-input.png",
+      "sha256": "98f79689e4a459bdd566ca217226447479b7ba16b050e2e63211da9dcfeaaf89",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-static-initial-desktop.png",
+      "sha256": "832444efb03ed37605e8c263835eb97d2a74dc661fd6dbe751c78b45a0d89b7e",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-static-after-holder-roundtrips.png",
+      "sha256": "832444efb03ed37605e8c263835eb97d2a74dc661fd6dbe751c78b45a0d89b7e",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-static-portrait.png",
+      "sha256": "401de2d2154a843cefc2631d1e027e47c4d1a1081db6bb815286b446a507d6fb",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-static-restored-desktop.png",
+      "sha256": "832444efb03ed37605e8c263835eb97d2a74dc661fd6dbe751c78b45a0d89b7e",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-desktop-visual-initial.png",
+      "sha256": "832444efb03ed37605e8c263835eb97d2a74dc661fd6dbe751c78b45a0d89b7e",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "file": "submission-evidence/final-summer-valley-normal-portrait-visual-initial.png",
+      "sha256": "401de2d2154a843cefc2631d1e027e47c4d1a1081db6bb815286b446a507d6fb",
+      "size": [
+        390,
+        844
+      ]
+    }
+  ],
+  "acceptedStillPairs": [
+    {
+      "world": "summer-valley",
+      "mode": "normal",
+      "view": "desktop",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "summer-valley",
+      "mode": "normal",
+      "view": "portrait",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "summer-valley",
+      "mode": "byte",
+      "view": "desktop",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "summer-valley",
+      "mode": "byte",
+      "view": "portrait",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "pebble-shore",
+      "mode": "normal",
+      "view": "desktop",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "pebble-shore",
+      "mode": "normal",
+      "view": "portrait",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "pebble-shore",
+      "mode": "byte",
+      "view": "desktop",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "pebble-shore",
+      "mode": "byte",
+      "view": "portrait",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "night-pond",
+      "mode": "normal",
+      "view": "desktop",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    },
+    {
+      "world": "night-pond",
+      "mode": "normal",
+      "view": "portrait",
+      "byteIdentical": true,
+      "RGBAIdentical": true
+    }
+  ],
+  "preservedOriginalFiles": 40,
+  "preservedOriginalFailures": [
+    {
+      "file": "followup-evidence/summer-valley-normal-desktop-lifecycle.json",
+      "status": "failed",
+      "failure": "page.waitForFunction: Timeout 20000ms exceeded.\n    at /workspace/scratch/fce391ff1294/brainwave-wateredge-followup/components/immersiveWorlds/waterEdge/qa/followup-verify.mjs:253:18"
+    },
+    {
+      "file": "followup-evidence/summer-valley-byte-desktop-lifecycle.json",
+      "status": "failed",
+      "failure": "page.waitForFunction: Timeout 20000ms exceeded.\n    at /workspace/scratch/fce391ff1294/brainwave-wateredge-followup/components/immersiveWorlds/waterEdge/qa/followup-verify.mjs:253:18"
+    }
+  ],
+  "retainedEarlierAttempts": [
+    {
+      "file": "followup-lifecycle-evidence/baseline-clean-byte-summer-valley-byte-desktop-diagnostic.json",
+      "status": "passed"
+    },
+    {
+      "file": "followup-lifecycle-evidence/baseline-clean-normal-summer-valley-normal-desktop-diagnostic.json",
+      "status": "passed"
+    },
+    {
+      "file": "followup-lifecycle-evidence/baseline-drained-normal-summer-valley-normal-desktop-diagnostic.json",
+      "status": "blocked"
+    },
+    {
+      "file": "followup-lifecycle-evidence/baseline-drained-settled-byte-summer-valley-byte-desktop-diagnostic.json",
+      "status": "passed"
+    },
+    {
+      "file": "followup-lifecycle-evidence/baseline-drained-settled-normal-summer-valley-normal-desktop-diagnostic.json",
+      "status": "passed"
+    },
+    {
+      "file": "followup-lifecycle-evidence/final-active-summer-valley-normal-desktop-diagnostic.json",
+      "status": "failed"
+    },
+    {
+      "file": "followup-lifecycle-evidence/final-summer-valley-byte-desktop-lifecycle.json",
+      "status": "passed"
+    },
+    {
+      "file": "followup-lifecycle-evidence/final-summer-valley-normal-desktop-lifecycle.json",
+      "status": "passed"
+    }
+  ],
+  "publicationTreeMappings": [
+    {
+      "published": "3ae152a0bb6759837c07e85e723a26e14704dd16",
+      "tree": "6d5a16aa1d7eea76fad24e720bada96d9e63e6fb",
+      "mappedLocal": "9b79a2a927336fd699aa164b8432d6dc62591586",
+      "publishedTreeMatches": true
+    },
+    {
+      "published": "65cbbe2bcfbd27f434f79b6da1e7edab1df98d85",
+      "tree": "a2321d9d6db89de0a9e8ff75a5459c99de53ecd9",
+      "mappedLocal": "60e9543c67d25b4dbf93eed4351d21bddd25c91f",
+      "publishedTreeMatches": true
+    },
+    {
+      "published": "26de60a9220629ef53ae7317a42896aeee14492b",
+      "tree": "40c297581fa012b0156b0faa068abd8a8aac7f22",
+      "mappedLocal": "6f47bdc08f2780ec6c14a40a7ffbc55aad1630ff",
+      "publishedTreeMatches": true
+    },
+    {
+      "published": "1dfea3a69bd9a14fea89eaeb7e41a0656d0cfd78",
+      "tree": "6d22924e95b0c805eb5db4a7002ccb9e1c441e12",
+      "mappedLocal": "1b143ae0e82bc1115bbe95f29e9afabc6246d029",
+      "publishedTreeMatches": true
+    },
+    {
+      "published": "3ba532efb435a63e2ba4117b48663917fa58fa41",
+      "tree": "d0ac1e7acf102be78d7d3db205e4a4be6b3565df",
+      "mappedLocal": "7b90628032cd87a8fe60b1b5fdf7a440b842ef9c",
+      "publishedTreeMatches": true
+    },
+    {
+      "published": "d19e77b0b20c999d039bd7a6e735c7580fdfa450",
+      "tree": "b0ec90efe5e6d1e2cf0a96aa0c66137ffd5a6a87",
+      "mappedLocal": "2de4ca3898f09f334e316647b0e506ae42ef7531",
+      "publishedTreeMatches": true
+    },
+    {
+      "published": "e4a11dd135c7979b644d667755f6a68fa4ea529d",
+      "tree": "190163fdc5818130b6998dbad586908f697eb1f3",
+      "mappedLocal": "3b372ec1b7ca7b0f04c57d5de120e50f4b2220ee",
+      "publishedTreeMatches": true
+    },
+    {
+      "published": "8482c3fef3bcf0448a0ed92b39f931253b1146f5",
+      "tree": "f293b89237666dc584eec1bfba302fe3052c9788",
+      "mappedLocal": "d5f7530228d69664df42b3e4901ede6215aeba22",
+      "publishedTreeMatches": true
+    }
+  ],
+  "errorCount": 0,
+  "errors": [],
+  "reviewMode": "read_only; no GPU/tests/build/source edits",
+  "ci": {
+    "run": 37238657908,
+    "name": "CI",
+    "status": "completed",
+    "conclusion": "success",
+    "runNumber": 309,
+    "workflowId": 296618122,
+    "verifiedBy": "github_fetch_commit_workflow_runs exact head; structuredContent response"
+  },
+  "imagesPersonallyOpenedThisRefresh": [
+    "final-night-pond-normal-desktop-behavior-post-native-input.png",
+    "final-pebble-shore-byte-desktop-behavior-post-native-input.png",
+    "final-summer-valley-normal-desktop-behavior-post-native-input.png",
+    "final-summer-valley-normal-desktop-static-portrait.png",
+    "final-summer-valley-byte-desktop-static-portrait.png"
+  ],
+  "disposition": {
+    "candidate": "ready_for_exact_owned_tree_intake_after_root_freeze",
+    "fixed20SecondOwnerGate": "cleared_for_corrected_source",
+    "userIndependentAcceptance": "reported by root;20s gate clears; responsiveness remains separate",
+    "responsiveness": "not approved; normal cycle1 dispose11249.0ms and heartbeat11244.5ms must remain explicit App measurement limitation",
+    "integratedApp": "pending; source not imported by this reviewer",
+    "requiredSourceFixFound": false,
+    "nonblockingHardening": "An active render exception still propagates with running=true/RAF already0; partial work is fenced. Restart/fault recovery hardening is optional, not intake blocker, no action performed."
+  }
+}

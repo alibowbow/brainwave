@@ -1,0 +1,54 @@
+{
+  "scope": "Same-document actual #/play/nature/winter_lodge \u2192 #/play/nature/rural_summer_night \u2192 #/guide navigation in a fresh browser. This isolates shared player-host release; it is not the complete Nature-studio persistence sequence.",
+  "status": "failed",
+  "startedAt": "2026-10-04T22:26:27.675Z",
+  "finishedAt": "2026-10-04T22:26:56.065Z",
+  "checkoutHead": "693f49529e0d5194710dbd8df10c59058491019c",
+  "sourceDigest": "1eb71d8301fc1c57ab8269b40c6572a42a27c5eea3aff1e9ad93f6cb3b7218fa",
+  "distDigest": "1a145dd9340bb4554a8a02980ff6bf5c4f9ec1293208d38159aaee8f3452ce64",
+  "sourceStable": true,
+  "distStable": true,
+  "servedApplicationBytesBound": true,
+  "actualGateMs": 20003.099999997765,
+  "nodeWallFromGuideMs": 20020,
+  "configuredGateMs": 20000,
+  "resultsSha256": "1b105a2c8ccd6960223b0ac57de8007ed6c26468f2e858d669a24623886bad5f",
+  "sourceHashes": {
+    "components/immersiveWorlds/cozyRooms/engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+    "components/immersiveWorlds/koreanPlaces/WorldEngine.ts": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade",
+    "scripts/verify-scenes.mjs": "c9726b91b34f74011d208d2e3b6077a2d963825b68502307b943f5e48cd02f31"
+  },
+  "contexts": [
+    {
+      "id": 1,
+      "worldId": "nature:winter_lodge",
+      "className": "cozy-world-canvas",
+      "connected": false,
+      "lost": false,
+      "createdAtBrowserMs": 1797.7999999970198,
+      "detachedAtBrowserMs": 4796.79999999702,
+      "finalElapsedSinceDetachMs": 21323.300000000745,
+      "nativeEvents": []
+    },
+    {
+      "id": 2,
+      "worldId": "nature:rural_summer_night",
+      "className": "korean-world-canvas",
+      "connected": false,
+      "lost": true,
+      "createdAtBrowserMs": 5102.89999999851,
+      "detachedAtBrowserMs": 6117,
+      "finalElapsedSinceDetachMs": 20003.099999997765,
+      "nativeEvents": [
+        {
+          "kind": "webglcontextlost",
+          "isTrusted": true,
+          "atMs": 11126.39999999851
+        }
+      ]
+    }
+  ],
+  "ownerDisposeEntryReturnObserved": false,
+  "physicalGpuMemoryMeasured": false,
+  "newExecutionSinceOriginalRun": false
+}

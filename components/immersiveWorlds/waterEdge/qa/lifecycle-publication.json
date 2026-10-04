@@ -1,0 +1,45 @@
+{
+  "note": "GitHub connector commit metadata differs. Each mapped Git tree is byte-identical. Raw reports retain actual local capture checkout IDs.",
+  "commits": [
+    {
+      "local": "9b79a2a927336fd699aa164b8432d6dc62591586",
+      "published": "3ae152a0bb6759837c07e85e723a26e14704dd16",
+      "tree": "6d5a16aa1d7eea76fad24e720bada96d9e63e6fb"
+    },
+    {
+      "local": "60e9543c67d25b4dbf93eed4351d21bddd25c91f",
+      "published": "65cbbe2bcfbd27f434f79b6da1e7edab1df98d85",
+      "tree": "a2321d9d6db89de0a9e8ff75a5459c99de53ecd9"
+    },
+    {
+      "local": "6f47bdc08f2780ec6c14a40a7ffbc55aad1630ff",
+      "published": "26de60a9220629ef53ae7317a42896aeee14492b",
+      "tree": "40c297581fa012b0156b0faa068abd8a8aac7f22"
+    },
+    {
+      "local": "1b143ae0e82bc1115bbe95f29e9afabc6246d029",
+      "published": "1dfea3a69bd9a14fea89eaeb7e41a0656d0cfd78",
+      "tree": "6d22924e95b0c805eb5db4a7002ccb9e1c441e12"
+    },
+    {
+      "local": "7b90628032cd87a8fe60b1b5fdf7a440b842ef9c",
+      "published": "3ba532efb435a63e2ba4117b48663917fa58fa41",
+      "tree": "d0ac1e7acf102be78d7d3db205e4a4be6b3565df"
+    },
+    {
+      "local": "2de4ca3898f09f334e316647b0e506ae42ef7531",
+      "published": "d19e77b0b20c999d039bd7a6e735c7580fdfa450",
+      "tree": "b0ec90efe5e6d1e2cf0a96aa0c66137ffd5a6a87"
+    },
+    {
+      "local": "3b372ec1b7ca7b0f04c57d5de120e50f4b2220ee",
+      "published": "e4a11dd135c7979b644d667755f6a68fa4ea529d",
+      "tree": "190163fdc5818130b6998dbad586908f697eb1f3"
+    },
+    {
+      "local": "d5f7530228d69664df42b3e4901ede6215aeba22",
+      "published": "8482c3fef3bcf0448a0ed92b39f931253b1146f5",
+      "tree": "f293b89237666dc584eec1bfba302fe3052c9788"
+    }
+  ]
+}

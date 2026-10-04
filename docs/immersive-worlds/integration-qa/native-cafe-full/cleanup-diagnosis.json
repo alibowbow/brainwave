@@ -1,0 +1,243 @@
+{
+  "run": "native-cafe-full-queued-20261004T225217Z",
+  "verdict": "Context close completed; BrowserServer process graceful-exit deadline failed. App engine dispose execution not observed by this run; root cause not established.",
+  "contextClose": {
+    "resolved": true,
+    "basis": "Sequential diagnostic.stop -> bounded context.close -> persist -> ownedBrowser.close; only global error is owned browser server close timeout.",
+    "diagnosticStopISO": "2026-10-04T22:56:30.802Z",
+    "serverCloseSendISO": "2026-10-04T22:56:30.844Z",
+    "combinedDetachContextClosePersistUpperBoundMs": 41.89516499999445
+  },
+  "lastDOMObservation": {
+    "kind": "heartbeat-ack",
+    "nodeMs": 252366.345077,
+    "wallISO": "2026-10-04T22:56:30.414Z",
+    "id": 128,
+    "durationMs": 252.32623600002262,
+    "exception": null,
+    "state": {
+      "performanceMs": 251581.5,
+      "wallMs": 1791154590413,
+      "readyState": "complete",
+      "hidden": false,
+      "scrollY": 0,
+      "state": "ready",
+      "motion": "running",
+      "callbacks": 3,
+      "canvas": {
+        "engine": "three-webgl2",
+        "lifecycle": "ready",
+        "targets": "{\"capability\":{\"type\":1016,\"preference\":\"auto\",\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"probes\":[{\"label\":\"capability-probe\",\"width\":4,\"height\":4,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true}]},\"fallbackReason\":null,\"targets\":[{\"label\":\"refraction\",\"width\":390,\"height\":776,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"width\":254,\"height\":504,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"pcf-shadow\",\"width\":2048,\"height\":2048,\"type\":1009,\"format\":1023,\"internalFormat\":\"RGBA8\",\"samples\":0,\"depthTextureType\":1014,\"status\":36053,\"complete\":true}],\"environment\":{\"kind\":\"baked-cubeuv\",\"type\":1016,\"internalFormat\":\"RGBA16F\",\"mapping\":306,\"width\":768,\"height\":1024,\"runtimePmrem\":false}}",
+        "frames": "392",
+        "time": "16.0899",
+        "yaw": "0.00544",
+        "cupPulse": "0.000",
+        "lamp": "1.000",
+        "wipeAge": "1.400",
+        "drawCalls": "165",
+        "triangles": "26730",
+        "running": "false"
+      },
+      "chrome": {
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "active": {
+        "tag": "BUTTON",
+        "label": "\uc804\uccb4 \ud654\uba74 \ubcf4\uae30"
+      },
+      "inputTail": [
+        {
+          "type": "click",
+          "trusted": true,
+          "pointerType": "mouse",
+          "eventTimeStamp": 227694.90000000596,
+          "wallTime": 1791154566529,
+          "x": 290,
+          "y": 793,
+          "time": 227697.70000000298,
+          "tag": "svg"
+        },
+        {
+          "type": "pointermove",
+          "trusted": true,
+          "pointerType": "mouse",
+          "eventTimeStamp": 239798.1000000015,
+          "wallTime": 1791154578630,
+          "x": 290,
+          "y": 793,
+          "time": 239798.40000000596,
+          "tag": "path"
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "pointerType": "mouse",
+          "eventTimeStamp": 239798.20000000298,
+          "wallTime": 1791154578630,
+          "x": 290,
+          "y": 793,
+          "time": 239799,
+          "tag": "path"
+        },
+        {
+          "type": "pointerup",
+          "trusted": true,
+          "pointerType": "mouse",
+          "eventTimeStamp": 239798.20000000298,
+          "wallTime": 1791154578630,
+          "x": 290,
+          "y": 793,
+          "time": 239799.20000000298,
+          "tag": "path"
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "pointerType": "mouse",
+          "eventTimeStamp": 239798.20000000298,
+          "wallTime": 1791154578631,
+          "x": 290,
+          "y": 793,
+          "time": 239799.20000000298,
+          "tag": "path"
+        },
+        {
+          "type": "pointerdown",
+          "trusted": true,
+          "pointerType": "touch",
+          "eventTimeStamp": 249853.90000000596,
+          "wallTime": 1791154589121,
+          "x": 195,
+          "y": 506.3999938964844,
+          "time": 250289.90000000596,
+          "tag": "CANVAS"
+        },
+        {
+          "type": "keydown",
+          "trusted": true,
+          "eventTimeStamp": 250296.1000000015,
+          "wallTime": 1791154589128,
+          "key": "Escape",
+          "code": "Escape",
+          "time": 250296.5,
+          "tag": "DIV"
+        },
+        {
+          "type": "keyup",
+          "trusted": true,
+          "eventTimeStamp": 250297.80000000447,
+          "wallTime": 1791154589130,
+          "key": "Escape",
+          "code": "Escape",
+          "time": 250298.40000000596,
+          "tag": "DIV"
+        }
+      ],
+      "callbackTail": [
+        {
+          "slot": 2,
+          "world": "amb:focus_cafe",
+          "delta": 1,
+          "connected": true,
+          "time": 153400.70000000298
+        },
+        {
+          "slot": 2,
+          "world": "amb:focus_cafe",
+          "delta": 1,
+          "connected": true,
+          "time": 164402.20000000298
+        },
+        {
+          "slot": 2,
+          "world": "amb:focus_cafe",
+          "delta": 1,
+          "connected": true,
+          "time": 179554.1000000015
+        },
+        {
+          "slot": 2,
+          "world": "amb:focus_cafe",
+          "delta": 1,
+          "connected": true,
+          "time": 221157.70000000298
+        }
+      ]
+    }
+  },
+  "browserExit": {
+    "pid": 42,
+    "launchedAt": "2026-10-04T22:52:18.747Z",
+    "terminationConfirmed": true,
+    "forcedKill": true,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T22:52:18.747Z",
+        "pid": 42
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T22:56:30.844Z"
+      },
+      {
+        "kind": "owned-browser-cleanup-error",
+        "at": "2026-10-04T22:56:40.852Z",
+        "stage": "graceful-close",
+        "message": "Error: owned browser server close exceeded 10000ms"
+      },
+      {
+        "kind": "owned-browser-kill-send",
+        "at": "2026-10-04T22:56:40.852Z",
+        "pid": 42
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T22:56:40.868Z",
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      {
+        "kind": "owned-browser-kill-ack",
+        "at": "2026-10-04T22:56:40.902Z"
+      }
+    ],
+    "exitCode": null,
+    "signal": "SIGKILL",
+    "finishedAt": "2026-10-04T22:56:40.902Z"
+  },
+  "appSourceFacts": [
+    "CafeWorld acquisition effect cleanup calls host release, removes tap/window listeners on effect cleanup.",
+    "Escape removes only Immersive holder; remaining Player holder receives the same canvas, so this is not last-holder release.",
+    "CafeHost does not override disposeDelayMs; last-holder release stops RAF, disconnects ResizeObserver, removes canvas, and schedules teardown after default5000ms.",
+    "Teardown clears host ownership before engine.dispose. CafeEngine.dispose stops RAF, removes context-loss listener, disposes reflector/refraction/environment/world/renderer, forces context loss, marks lifecycle disposed.",
+    "Native session stop selects list/feedback and playback idle; Player rendering is conditional on viewMode player, so it supplies an observable actual unmount path."
+  ],
+  "evidenceLimits": [
+    "Diagnostic selector remained Player during Immersive, so canvas:null/motion:paused are holder-transfer observations, not live-renderer state.",
+    "Final DOM observation was ready and frame392/time16.0899; lifecycle disposed was never observed.",
+    "Document/context destruction is not proof that React last-holder release or the5000ms teardown timer executed.",
+    "No protocol Browser.close ack/browser stderr/renderer dispose timeline was recorded; cannot assign delay to app, GPU driver, WebSocket connection or Chromium subsystem.",
+    "Current verifier has changed after run; exact executed script hash is retained in results/sourceBefore. Owner app renderer/host files and owned-browser helper remain hash-identical to run."
+  ],
+  "primaryInstalledPlaywright": {
+    "version": "1.61.1",
+    "facts": [
+      "Client context.close awaits channel close and its closed promise.",
+      "BrowserServer.close maps to owned browserProcess.close; Chromium graceful close sends Browser.close on its pipe transport, then waits child close and temporary-directory cleanup.",
+      "The public close has its own default30000ms closeOrKill path; this suite enforces the explicit shorter10000ms gate, which was not relaxed.",
+      "BrowserServer.kill maps to recorded detached own process-group SIGKILL and waits cleanup; own child exit plus kill acknowledgement were recorded.",
+      "connect() marks browser.close as disconnect-only; it is distinct from BrowserServer.close."
+    ]
+  },
+  "oneProposedComparison": {
+    "notExecuted": true,
+    "description": "Keep the same binary/flags/build/context+server close bounds. After a short normal Cafe startup, retain only a read-only canvas handle, use actual visible Session End button, observe disconnected canvas and stopped frame counter, wait through documented5000ms idle retention for lifecycle=disposed; then context.close and server.close with separate send/ack timestamps and own PID/exit logging. No synthetic dispatch, engine calls, renderer/quality edits or larger cleanup deadline.",
+    "discriminators": [
+      "If native unmount never reaches lifecycle disposed, that is a concrete application lifecycle failure requiring owner review.",
+      "If lifecycle disposed is observed but the same BrowserServer timeout remains, the failure is demonstrably after the application teardown path completed; it is not evidence that dispose never ran.",
+      "If both app teardown and server close pass, evidence only shows this explicit-unmount sequence differs from the completed abrupt document-close sequence; it does not prove an application bug or erase the prior failure."
+    ]
+  }
+}

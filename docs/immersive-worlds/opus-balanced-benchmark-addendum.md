@@ -47,7 +47,7 @@ Keep the approved first-person morning resting spot, dew, sunlight and small bir
   - Observed: close dark grass, mist across the meadow, layered treeline/hills, rose-indigo sky and sparse glowing fireflies. Better direct match for night scenes than morning forest.
   - Source: spring-damped grass with coherent wind; fireflies and mist interleaved among vegetation depths.
   - Transfer depth occlusion and living grass to the morning forest; use its nocturnal atmosphere for rural night, night pond, scops night and campfire clearings.
-  - Remove phase-synchronized mass flashing, meteors, cursor attraction and fast scattering. The user rejected approaching/attention-grabbing life.
+  - Remove phase-synchronized mass flashing, meteors, cursor attraction and fast scattering. Avoid approaching or attention-grabbing life.
   - Source: https://github.com/MiaAI-Lab/Claude-Opus-5.5-100-HTML-Files/blob/86ad33f7928bd6289b84ef9049c39a6d5bbc4fe0/061-firefly-meadow.html#L334
 
 ### Cosmic floating garden: Opus 066 is a stronger planetary material reference

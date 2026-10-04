@@ -1,9 +1,12 @@
+import { ownBrowserServer } from './owned-browser.mjs';
+import { beginVerificationProvenance } from './verification-provenance.mjs';
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { captureScenePng } from './capture-scene.mjs';
 import { verifySceneStill } from './verify-scene-still.mjs';
+import { createColdObserver, installColdInputProbe, installNativeStartupAudioProbe } from './cold-autoplay.mjs';
 
 const BASE = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:4173').replace(/\/?$/, '/');
 const output = path.join(process.env.SCENE_SCREENSHOT_DIR || 'artifacts', 'worlds');
@@ -13,9 +16,12 @@ const viewports = [
   { name: 'fold-inner', width: 768, height: 1024 },
   { name: 'landscape', width: 1024, height: 768 },
 ];
+const provenance = await beginVerificationProvenance({ baseUrl: BASE, outputDirs: [process.env.SCENE_SCREENSHOT_DIR || 'artifacts'] });
 const report = {
+  provenance: provenance.data,
+  cleanupErrors: [],
   startedAt: new Date().toISOString(), baseUrl: BASE,
-  pilotHead: 'a0178faaf919a07cd04bdf53a5efa476b58b8e5e',
+  historicalOwnerCheckpoint: 'a0178faaf919a07cd04bdf53a5efa476b58b8e5e',
   renderer: 'Headless Chromium with SwiftShader; no physical device or FPS claim.',
   captureMethod: 'Native Chromium compositor, lossless PNG fast encoding, unchanged viewport and rendering quality.',
   renderEvidence: 'Frame/draw/triangle counters demonstrate submitted rendering, not GPU completion. PNG capture and human visual review are separate evidence.',
@@ -25,10 +31,12 @@ const report = {
   contextScope: 'Native WebGL contexts are observed without replacing rendering; one live cosmic scene context is required and disposal must actually lose it.',
   audioScope: 'Only existing session playback gating is tested. No touch-to-audio callback, new sound, or audio audition is claimed.',
   visualReview: 'Saved PNGs require human visual review; no automated artistic-quality or audio-audition claim.',
-  checks: [], screenshots: [], captureAttempts: [], captureErrors: [], errors: [], functionalStatus: 'running', visualEvidenceStatus: 'pending', status: 'running',
+  coldObservations: [], checks: [], screenshots: [], captureAttempts: [], captureErrors: [], errors: [], functionalStatus: 'running', visualEvidenceStatus: 'pending', status: 'running',
 };
 let browser;
+let owned;
 let currentPage;
+const coldObservers = new WeakMap();
 let step = 'launch browser';
 let consecutiveCaptureFailures = 0;
 const blockedCapturePages = new WeakSet();
@@ -110,10 +118,30 @@ const createPage = async (surface) => {
       }
       return result;
     };
+    window.__coldSceneSnapshot = () => {
+      const root = document.querySelector('.cosmic-world'), canvas = document.querySelector('.cosmic-world-canvas');
+      const rect = canvas?.getBoundingClientRect();
+      return { state: root?.dataset.state ?? null, count: document.querySelectorAll('.cosmic-world-canvas').length,
+        landscapeCount: document.querySelectorAll('.landscape').length,
+        data: canvas ? { ...canvas.dataset, width: canvas.width, height: canvas.height, cssWidth: rect.width, cssHeight: rect.height,
+          devicePixelRatio, motion: root?.dataset.motion } : null,
+        contexts: window.__cosmicVerificationContexts.map(({ canvas, context }) => ({
+          kind: canvas.classList.contains('cosmic-world-canvas') ? 'scene' : 'capability-probe-or-other',
+          className: canvas.className, connected: canvas.isConnected, lost: context.isContextLost(), disposed: canvas.dataset.disposed ?? null,
+        })),
+      };
+    };
   });
+  await context.addInitScript(installNativeStartupAudioProbe);
+  await context.addInitScript(installColdInputProbe);
   const page = await context.newPage();
+  provenance.attach(page, surface);
   currentPage = page;
   page.setDefaultTimeout(120_000);
+  coldObservers.set(page, await createColdObserver(page, async observation => {
+    report.coldObservations.push({ surface, at: new Date().toISOString(), ...observation });
+    await saveReport();
+  }));
   page.on('pageerror', (error) => report.errors.push({ surface, kind: 'runtime', message: error.message }));
   page.on('console', (message) => {
     if (message.type() === 'error' && /three|webgl|shader|program|framebuffer/i.test(message.text())) report.errors.push({ surface, kind: 'renderer', message: message.text() });
@@ -133,17 +161,26 @@ const snapshot = (page) => page.evaluate(() => {
     devicePixelRatio, motion: canvas.closest('.cosmic-world')?.dataset.motion,
   };
 });
-const ready = async (page) => {
-  await page.waitForFunction(() => ['ready', 'failed'].includes(document.querySelector('.cosmic-world')?.dataset.state), undefined, { timeout: 240_000 });
-  assert.equal(await page.locator('.cosmic-world').first().getAttribute('data-state'), 'ready', 'cosmic must render instead of showing unsupported fallback');
-  assert.equal(await page.locator('.cosmic-world-canvas').count(), 1);
-  const data = await snapshot(page);
+const ready = async (page, coldStart = false) => {
+  let data, gpu, landscapeCount;
+  if (coldStart) {
+    // Preserve the existing 240s scene-readiness budget without injected polling.
+    const observed = await coldObservers.get(page).waitUntil(s => ['ready', 'failed'].includes(s.scene?.state),
+      'cosmic cold renderer readiness', { pristine: true, timeoutMs: 240_000 });
+    assert.equal(observed.scene.state, 'ready', 'cosmic must render instead of showing unsupported fallback');
+    assert.equal(observed.scene.count, 1);
+    data = observed.scene.data; gpu = observed.scene.contexts; landscapeCount = observed.scene.landscapeCount;
+  } else {
+    await page.waitForFunction(() => ['ready', 'failed'].includes(document.querySelector('.cosmic-world')?.dataset.state), undefined, { timeout: 240_000 });
+    assert.equal(await page.locator('.cosmic-world').first().getAttribute('data-state'), 'ready', 'cosmic must render instead of showing unsupported fallback');
+    assert.equal(await page.locator('.cosmic-world-canvas').count(), 1);
+    data = await snapshot(page); gpu = await contexts(page);
+  }
   assert.equal(data.renderer, 'three-webgl2');
   assert.ok(Number(data.frame) > 0 && Number(data.drawCalls) > 0 && Number(data.triangles) > 0, 'real geometry draw calls must be submitted');
-  const gpu = await contexts(page);
   assert.equal(gpu.filter((entry) => entry.kind === 'scene' && !entry.lost).length, 1);
   assert.ok(gpu.filter((entry) => entry.kind !== 'scene').every((entry) => entry.lost), 'capability probes must release their contexts');
-  return { data, contexts: gpu };
+  return { data, contexts: gpu, ...(coldStart ? { landscapeCount } : {}) };
 };
 const frozen = async (page) => {
   await page.waitForFunction(() => {
@@ -161,7 +198,17 @@ const running = async (page) => {
   await page.waitForFunction((frame) => Number(document.querySelector('.cosmic-world-canvas')?.dataset.frame) > frame, Number(before.frame));
   return { before, after: await snapshot(page) };
 };
-const press = (page, name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first().dispatchEvent('click');
+const revealChrome = async page => {
+  const surface = page.locator('section[data-scene-surface]').first();
+  if (await surface.count()) {
+    const box = await surface.boundingBox();
+    if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  }
+};
+const press = async (page, name) => {
+  await revealChrome(page);
+  await page.getByRole('button', { name, exact: true, includeHidden: true }).first().click();
+};
 const remember = (page) => page.evaluate(() => { window.__savedCosmicVerificationCanvas = document.querySelector('.cosmic-world-canvas'); });
 const finalDisposal = async (page) => {
   await page.waitForFunction(() => !document.querySelector('.cosmic-world-canvas'));
@@ -174,53 +221,76 @@ const finalDisposal = async (page) => {
   return { waitedAfterRemovalMs: Date.now() - start, disposed: await page.evaluate(() => window.__savedCosmicVerificationCanvas.dataset.disposed), contexts: gpu };
 };
 const drag = async (page, visible) => {
-  if (visible) await page.locator('section[data-scene-surface]').first().dispatchEvent('pointermove');
+  // A real click on the non-interactive title clears transport focus; no blur
+  // dispatch/focus() is used. Position the mouse BEFORE waiting for auto-hide,
+  // so the first native down genuinely starts with the requested chrome state.
+  await page.getByRole('heading', { level: 1 }).first().click();
+  const box = await page.locator('.cosmic-world-canvas').boundingBox();
+  assert.ok(box, 'actual scene canvas must be visible');
+  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  await page.mouse.move(point.x - 1, point.y);
+  await page.mouse.move(point.x, point.y);
   await page.waitForFunction((shown) => {
     const chrome = document.querySelector('section[data-scene-surface] > [data-scene-drag]');
     return chrome && (getComputedStyle(chrome).visibility !== 'hidden') === shown;
   }, visible);
-  const evidence = await page.evaluate((shown) => {
+  const evidence = await page.evaluate(({ shown, point }) => {
     const root = document.querySelector('.cosmic-world');
-    const rect = root.getBoundingClientRect();
-    const point = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
     const target = document.elementFromPoint(point.x, point.y);
     if (!(root.contains(target) && !target?.closest('button, input, select, textarea, a'))) throw new Error('Unexpected cosmic drag hit target');
-    const event = { bubbles: true, isPrimary: true, pointerId: 71, pointerType: 'mouse', button: 0, clientX: point.x, clientY: point.y };
-    target.dispatchEvent(new PointerEvent('pointerdown', event));
-    const frameBefore = Number(root.querySelector('canvas').dataset.frame);
-    window.dispatchEvent(new PointerEvent('pointermove', { ...event, clientX: point.x + (shown ? 100 : -100) }));
-    return { chromeVisibleAtStart: shown, target: target.tagName, look: root.dataset.look, frameBefore, direction: shown ? 1 : -1 };
-  }, visible);
-  assert.equal(evidence.look, 'drag');
-  await page.waitForFunction(({ frameBefore, direction }) => {
-    const data = document.querySelector('.cosmic-world-canvas')?.dataset;
-    return Number(data?.frame) > frameBefore && Number(data?.yaw) * direction > 0.00001;
-  }, evidence);
-  const yaw = (await snapshot(page)).yaw;
-  await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 71, pointerType: 'mouse', button: 0 })));
+    return { chromeVisibleAtStart: shown, target: target.tagName, point,
+      frameBefore: Number(root.querySelector('canvas').dataset.frame), direction: shown ? 1 : -1 };
+  }, { shown: visible, point });
+  let yaw;
+  await page.mouse.down();
+  try {
+    await page.mouse.move(point.x + (visible ? 100 : -100), point.y, { steps: 8 });
+    evidence.look = await page.locator('.cosmic-world').getAttribute('data-look');
+    assert.equal(evidence.look, 'drag');
+    await page.waitForFunction(({ frameBefore, direction }) => {
+      const data = document.querySelector('.cosmic-world-canvas')?.dataset;
+      return Number(data?.frame) > frameBefore && Number(data?.yaw) * direction > 0.00001;
+    }, evidence);
+    yaw = (await snapshot(page)).yaw;
+  } finally { await page.mouse.up(); }
   assert.equal(await page.locator('.cosmic-world').getAttribute('data-look'), null);
-  return { ...evidence, yaw, events: 'synthetic pointer events on the actual hit-tested target' };
+  return { ...evidence, yaw, events: 'native mouse move/down/up on the actual hit-tested target' };
 };
 
 try {
-  browser = await chromium.launch({ executablePath: process.env.SCENE_BROWSER_PATH || undefined, headless: true,
+  await saveReport();
+  const browserServer = await chromium.launchServer({ executablePath: process.env.SCENE_BROWSER_PATH || undefined, headless: true,
     args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-dev-shm-usage', '--autoplay-policy=document-user-activation-required'] });
+  owned = ownBrowserServer(browserServer, {
+    closeTimeoutMs: 30_000,
+    onError: error => { report.cleanupErrors.push(error); report.status = 'failed'; process.exitCode = 1; },
+  });
+  report.browserOwnership = owned.state;
+  const interrupted = signal => {
+    report.interrupted = signal; report.status = 'failed'; process.exitCode = 1;
+    void saveReport().catch(error => report.cleanupErrors.push({ stage: 'signal-report', message: String(error) })).finally(() => owned.close());
+  };
+  process.once('SIGTERM', () => interrupted('SIGTERM'));
+  process.once('SIGINT', () => interrupted('SIGINT'));
+  browser = await bounded(chromium.connect(browserServer.wsEndpoint()), 10_000, 'owned browser connect');
   const app = await createPage('application');
   const page = app.page;
   await check('cosmic application route loads a real scene and requires one playback tap', async () => {
     await page.goto(`${BASE}#/play/amb/cosmic`);
-    await page.getByRole('heading', { name: '우주 명상', exact: true }).waitFor();
-    await page.locator('[data-playback-hint="blocked"]').waitFor();
-    assert.equal(await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).count(), 0);
-    const initialTimer = await page.locator('[aria-label^="남은 시간"]').first().getAttribute('aria-label');
-    await page.waitForTimeout(1300);
-    assert.equal(await page.locator('[aria-label^="남은 시간"]').first().getAttribute('aria-label'), initialTimer);
-    const rendered = await ready(page);
-    assert.equal(await page.locator('.landscape').count(), 0);
-    await page.getByRole('button', { name: '눌러서 재생', exact: true }).click();
+    const cold = coldObservers.get(page);
+    const blocked = await cold.blocked('우주 명상');
+    assert.equal(blocked.lastSession, null);
+    await cold.frozenTimer(blocked, 1300);
+    const rendered = await ready(page, true);
+    assert.equal(rendered.landscapeCount, 0);
+    const nativeInput = await cold.firstClick();
     const motion = await running(page);
     assert.equal(await page.getByRole('dialog').count(), 0, 'one tap must not open a second confirmation');
-    return { route: await page.evaluate(() => location.hash), oneTrustedTap: true, rendered, motion };
+    const audio = (await cold.read('audio after native first playback')).audio;
+    assert.equal(audio.contexts, 1); assert.deepEqual(audio.states, ['running']);
+    assert.equal(audio.analyserGraphs, 1);
+    assert.ok(audio.resumeCalls.some(call => call.activeGesture === true));
+    return { route: blocked.hash, oneTrustedTap: true, nativeInput, audio, rendered, motion };
   });
   // Capture before the longer live drag/motion sequence can queue software-GPU work.
   await check('cosmic application pause freezes rendering', async () => { await press(page, '일시정지'); return frozen(page); });
@@ -259,9 +329,19 @@ try {
     const resumed = await running(page);
     const visible = await drag(page, true);
     const hidden = await drag(page, false);
-    await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first().dispatchEvent('pointerdown', { isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 });
+    await revealChrome(page);
+    const control = page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first();
+    await control.hover();
+    await page.mouse.down();
+    try {
     assert.equal(await page.locator('.cosmic-world').getAttribute('data-look'), null, 'transport button pointerdown must not begin look drag');
-    await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 72, pointerType: 'mouse', button: 0 })));
+    } finally {
+      // Move away before releasing to avoid activating Pause while testing only
+      // its down/exclusion path. The complete stream is native mouse input.
+      const box = await page.locator('.cosmic-world-canvas').boundingBox();
+      if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.up();
+    }
     return { resumed, visible, hidden, transportControlsStartDrag: false };
   });
   await check('cosmic application respects OS and app reduced motion', async () => {
@@ -343,6 +423,8 @@ try {
   report.failure = { step, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined, code: error?.code };
   await saveReport(); // Preserve the actual failure before any browser diagnostic can stall.
   if (currentPage && !currentPage.isClosed()) {
+    try { report.failure.cold = await coldObservers.get(currentPage)?.read('failure before injected diagnostics'); await saveReport(); }
+    catch (observationError) { report.failure.coldObservationError = String(observationError); }
     // Do not spend another capture timeout diagnosing a previous compositor stall.
     if (!report.captureErrors.length && error?.code !== 'SCENE_CHECK_TIMEOUT') {
       try { await capture(currentPage, 'cosmic-failure'); } catch (captureError) { report.failure.captureError = String(captureError); }
@@ -354,15 +436,12 @@ try {
   console.error(`FAIL: ${step}: ${report.failure.message}`);
   process.exitCode = 1;
 } finally {
+  await owned?.close();
+  try { if (!await provenance.finish()) { report.status = 'failed'; process.exitCode = 1; } }
+  catch (error) { report.provenance.errors.push({ phase: 'final snapshot', message: String(error) }); report.status = 'failed'; process.exitCode = 1; }
+  if (report.interrupted || report.cleanupErrors.length || !owned?.state.terminationConfirmed) { report.status = 'failed'; process.exitCode = 1; }
   report.finishedAt = new Date().toISOString();
   if (report.visualEvidenceStatus === 'pending') report.visualEvidenceStatus = 'incomplete';
   await saveReport();
-  try { if (browser) await bounded(browser.close(), 15_000, 'browser close'); }
-  catch (closeError) {
-    report.status = 'failed';
-    report.cleanupFailure = String(closeError);
-    process.exitCode = 1;
-    await saveReport();
-  }
-  console.log(`Cosmic verification report: ${path.join(output, 'cosmic-verification.json')}`);
+  console.log(`Cosmic verification report: ${path.join(output, 'cosmic-verification.json')} · ${report.status}`);
 }

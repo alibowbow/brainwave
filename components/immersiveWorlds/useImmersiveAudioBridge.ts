@@ -39,7 +39,7 @@ export function useImmersiveAudioBridge(state: State) {
     });
     const key = !s.pending && s.holder && s.playing && s.engine.isPlaybackReady() ? `${profile?.id ?? ''}:${Object.keys(playback).sort().join(',')}` : '';
     if (key !== positionKey.current) {
-      if (key && (profile || positionKey.current)) s.engine.setScenePositions({ ...profile?.positions });
+      if (key && (profile || positionKey.current)) s.engine.setScenePositions({ ...loaded.current?.resolveScenePositions(s.worldId) });
       positionKey.current = key;
     }
   }, []);

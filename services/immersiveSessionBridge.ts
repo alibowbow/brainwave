@@ -5,6 +5,17 @@ import type { SoundLayer, SoundPlaybackSnapshot } from './audioEngine';
 export { initialImmersivePresetMix, resolveImmersiveAudioProfile };
 export { createSceneAccentController } from './immersiveAudio/controller';
 
+/** Current scene composition review, kept outside the audio owner's module.
+ * Scops' primary generator already pans right internally; .20 moves its
+ * combined layer left without changing calls, levels or the answer scheduler.
+ * Actual source-pan/PCM evidence is required for this reviewed override. */
+export function resolveScenePositions(id: string | undefined) {
+  const profile = resolveImmersiveAudioProfile(id);
+  if (!profile) return undefined;
+  if (id !== 'nature:scops_night') return profile.positions;
+  return Object.freeze({ ...profile.positions, scops: .20, stream: .75 });
+}
+
 const unit = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0 && v <= 1;
 
 /** Translate only reviewed semantic callbacks. Ambient events, brightness,

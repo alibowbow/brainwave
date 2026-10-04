@@ -1,3 +1,5 @@
+import { ownBrowserServer } from './owned-browser.mjs';
+import { beginVerificationProvenance } from './verification-provenance.mjs';
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -16,20 +18,22 @@ const viewports = [
   { name: 'fold-inner', width: 768, height: 1024 },
   { name: 'landscape', width: 1024, height: 768 },
 ];
+const provenance = await beginVerificationProvenance({ baseUrl: BASE, outputDirs: [process.env.SCENE_SCREENSHOT_DIR || 'artifacts'] });
 const report = {
+  provenance: provenance.data,
+  cleanupErrors: [],
   startedAt: new Date().toISOString(),
   baseUrl: BASE,
   renderer: 'Chromium headless with SwiftShader',
   captureMethod: 'Bounded native Chromium compositor capture, lossless PNG, unchanged viewport and rendering quality. GPU readback can still fail; capture failures remain failures.',
-  applicationPilotHead: '1925398f9c1eaf2319bf624d4f17e68e17d745dd',
-  standalonePilotHead: '1925398f9c1eaf2319bf624d4f17e68e17d745dd',
+  historicalOwnerCheckpoint: '1925398f9c1eaf2319bf624d4f17e68e17d745dd',
   standaloneUrl: HARNESS,
   deviceScope: 'Desktop and Fold-like CSS viewport checks; no physical Fold or FPS measurement.',
   visibilityScope: 'Simulated document.hidden getter and visibilitychange event; not a real background-tab test.',
   fullscreenScope: 'One canvas across the harness second holder and application CSS immersive overlay; not browser Fullscreen API.',
   sourceScope: process.env.SCENE_FOREST_HARNESS_URL
-    ? 'Both the source standalone harness and production-built application use reviewed 1925398 source and current integration helpers. The owner-built public QA bundle is not used in this run.'
-    : 'Public standalone QA matches the owner source hashes recorded at 1925398, but embeds its original shared helpers; the application uses current integration helpers. These are distinct surfaces.',
+    ? 'The source standalone harness uses current working-tree source and helpers; application response bytes must match the captured production dist. The public owner bundle is not used.'
+    : 'The public standalone QA bundle and current application are distinct surfaces. Each served script is hashed separately; the historical checkpoint is not the current application identity.',
   visualReview: 'PNG artifacts require human visual inspection; this script does not grade artistic quality.',
   checks: [],
   errors: [],
@@ -38,6 +42,7 @@ const report = {
   status: 'running',
 };
 let browser;
+let owned;
 let currentPage;
 let currentStep = 'launch browser';
 
@@ -72,6 +77,7 @@ const check = async (name, run) => {
 };
 
 const watch = (page, surface) => {
+  provenance.attach(page, surface);
   page.setDefaultTimeout(120_000);
   page.on('pageerror', (error) => report.errors.push({ surface, kind: 'runtime', message: error.message }));
   page.on('console', (message) => {
@@ -134,10 +140,18 @@ const frozen = async (page) => {
   return verifySceneStill(page, '.forest-world-canvas', snapshot);
 };
 
-const pressHarness = (page, testId) => page.getByTestId(testId).dispatchEvent('click');
-// Existing scene controls fade out. Dispatching their click checks their handler
-// without an actionability wait spending minutes on software-rendered frames.
-const pressApp = (page, name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first().dispatchEvent('click');
+const revealChrome = async page => {
+  const surface = page.locator('section[data-scene-surface]').first();
+  if (await surface.count()) {
+    const box = await surface.boundingBox();
+    if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  }
+};
+const pressHarness = (page, testId) => page.getByTestId(testId).click();
+const pressApp = async (page, name) => {
+  await revealChrome(page);
+  await page.getByRole('button', { name, exact: true, includeHidden: true }).first().click();
+};
 
 const stalledCapturePages = new WeakSet();
 const capture = async (page, name) => {
@@ -211,45 +225,62 @@ const disposedAfterRelease = async (page) => {
 };
 
 const dragThroughChrome = async (page, visible) => {
-  if (visible) {
-    await page.locator('section[data-scene-surface]').first().dispatchEvent('pointermove');
-  }
+  // A real click on the non-interactive title clears transport focus; no blur
+  // dispatch/focus() is used. Position the mouse BEFORE waiting for auto-hide,
+  // so the first native down genuinely starts with the requested chrome state.
+  await page.getByRole('heading', { level: 1 }).first().click();
+  const box = await page.locator('.forest-world-canvas').boundingBox();
+  assert.ok(box, 'actual scene canvas must be visible');
+  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  await page.mouse.move(point.x - 1, point.y);
+  await page.mouse.move(point.x, point.y);
   await page.waitForFunction((shown) => {
     const chrome = document.querySelector('section[data-scene-surface] > [data-scene-drag]');
     return chrome && (getComputedStyle(chrome).visibility !== 'hidden') === shown;
   }, visible);
-  const hit = await page.evaluate((shown) => {
-    const world = document.querySelector('.forest-world');
-    const canvas = world.querySelector('.forest-world-canvas');
-    const rect = canvas.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const target = document.elementFromPoint(x, y);
-    const expectedTarget = world.contains(target) && !target?.closest('button, input, select, textarea, a');
-    if (!expectedTarget) throw new Error(`Unexpected ${shown ? 'visible' : 'hidden'} chrome hit target: ${target?.tagName} ${target?.className}`);
-    const event = { bubbles: true, isPrimary: true, pointerId: 41, pointerType: 'mouse', button: 0, clientX: x, clientY: y };
-    target.dispatchEvent(new PointerEvent('pointerdown', event));
-    const frameBefore = Number(canvas.dataset.frames);
-    window.dispatchEvent(new PointerEvent('pointermove', { ...event, clientX: x + (shown ? 100 : -100) }));
-    return { chromeVisibleAtStart: shown, hitTag: target.tagName, hitWasDragSurface: target.hasAttribute('data-scene-drag'), lookState: world.dataset.look, frameBefore, direction: shown ? 1 : -1 };
-  }, visible);
-  assert.equal(hit.lookState, 'drag', 'hit-tested scene or visible chrome must start look drag');
-  await page.waitForFunction(({ frameBefore, direction }) => {
-    const data = document.querySelector('.forest-world-canvas')?.dataset;
-    return Number(data?.frames) > frameBefore && Number(data?.lookYaw) * direction > 0.00001;
-  }, hit);
-  await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, isPrimary: true, pointerId: 41, pointerType: 'mouse', button: 0 })));
+  const hit = await page.evaluate(({ shown, point }) => {
+    const root = document.querySelector('.forest-world');
+    const target = document.elementFromPoint(point.x, point.y);
+    if (!(root.contains(target) && !target?.closest('button, input, select, textarea, a'))) throw new Error('Unexpected forest drag hit target');
+    return { chromeVisibleAtStart: shown, hitTag: target.tagName, hitWasDragSurface: target.hasAttribute('data-scene-drag'), point,
+      frameBefore: Number(root.querySelector('canvas').dataset.frames), direction: shown ? 1 : -1 };
+  }, { shown: visible, point });
+  let yaw;
+  await page.mouse.down();
+  try {
+    await page.mouse.move(point.x + (visible ? 100 : -100), point.y, { steps: 8 });
+    hit.lookState = await page.locator('.forest-world').getAttribute('data-look');
+    assert.equal(hit.lookState, 'drag', 'hit-tested scene or visible chrome must start look drag');
+    await page.waitForFunction(({ frameBefore, direction }) => {
+      const data = document.querySelector('.forest-world-canvas')?.dataset;
+      return Number(data?.frames) > frameBefore && Number(data?.lookYaw) * direction > 0.00001;
+    }, hit);
+    yaw = (await snapshot(page)).lookYaw;
+  } finally { await page.mouse.up(); }
   assert.equal(await page.locator('.forest-world').getAttribute('data-look'), null);
-  return { ...hit, yawAfterDrag: await page.locator('.forest-world-canvas').getAttribute('data-look-yaw') };
+  return { ...hit, yawAfterDrag: await page.locator('.forest-world-canvas').getAttribute('data-look-yaw'), events: 'native mouse move/down/up on the actual hit-tested target' };
 };
 
 try {
-  browser = await chromium.launch({
+  await persist();
+  const browserServer = await chromium.launchServer({
     executablePath: process.env.SCENE_BROWSER_PATH || undefined,
     headless: true,
     args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=document-user-activation-required'],
   });
 
+  owned = ownBrowserServer(browserServer, {
+    closeTimeoutMs: 30_000,
+    onError: error => { report.cleanupErrors.push(error); report.status = 'failed'; process.exitCode = 1; },
+  });
+  report.browserOwnership = owned.state;
+  const interrupted = signal => {
+    report.interrupted = signal; report.status = 'failed'; process.exitCode = 1;
+    void persist().catch(error => report.cleanupErrors.push({ stage: 'signal-report', message: String(error) })).finally(() => owned.close());
+  };
+  process.once('SIGTERM', () => interrupted('SIGTERM'));
+  process.once('SIGINT', () => interrupted('SIGINT'));
+  browser = await bounded(() => chromium.connect(browserServer.wsEndpoint()), 10_000, 'owned browser connect');
   const harnessContext = await browser.newContext({ viewport: { width: viewports[0].width, height: viewports[0].height }, serviceWorkers: 'block' });
   const harness = await harnessContext.newPage();
   currentPage = harness;
@@ -359,12 +390,13 @@ try {
     await running(app);
     const visibleChrome = await dragThroughChrome(app, true);
     const hiddenChrome = await dragThroughChrome(app, false);
-    await app.evaluate(() => {
-      const control = document.querySelector('[aria-label^="남은 시간"]');
-      control.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, pointerId: 42, pointerType: 'mouse', button: 0 }));
-    });
+    await revealChrome(app);
+    await app.locator('[aria-label^="남은 시간"]').first().hover();
+    await app.mouse.down();
+    try {
     assert.equal(await app.locator('.forest-world').getAttribute('data-look'), null, 'transport controls must not start look drag');
-    return { visibleChrome, hiddenChrome, transportControlsStartDrag: false, events: 'synthetic pointer events dispatched to actual hit-tested targets' };
+    } finally { await app.mouse.up(); }
+    return { visibleChrome, hiddenChrome, transportControlsStartDrag: false, events: 'native mouse move/down/up on actual hit-tested targets' };
   });
   await check('application respects OS reduced motion while the session plays', async () => {
     await running(app);
@@ -422,8 +454,11 @@ try {
   console.error(`FAIL: ${currentStep}: ${report.failure.message}`);
   process.exitCode = 1;
 } finally {
+  await owned?.close();
+  try { if (!await provenance.finish()) { report.status = 'failed'; process.exitCode = 1; } }
+  catch (error) { report.provenance.errors.push({ phase: 'final snapshot', message: String(error) }); report.status = 'failed'; process.exitCode = 1; }
+  if (report.interrupted || report.cleanupErrors.length || !owned?.state.terminationConfirmed) { report.status = 'failed'; process.exitCode = 1; }
   report.finishedAt = new Date().toISOString();
   await persist();
-  try { await bounded(() => browser?.close(), 10_000, 'browser cleanup'); } catch (error) { report.cleanupError = String(error); report.status = 'failed'; process.exitCode = 1; await persist(); }
-  console.log(`Forest verification report: ${path.join(output, 'forest-verification.json')}`);
+  console.log(`Forest verification report: ${path.join(output, 'forest-verification.json')} · ${report.status}`);
 }

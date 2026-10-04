@@ -8,15 +8,18 @@
  * Never calls engine interaction/render methods or dispatches DOM PointerEvents.
  * Only observational DOM reads/listeners; mouse/keyboard/CDP trusted touch do all input.
  * Source provenance includes dirty working bytes AND actual served JS/CSS response hashes.
- * A stale build cannot be certified by HEAD alone; the owner must also match served hashes.
+ * Served JS/CSS must match the frozen dist bytes; a retained build log must also bind that dist to source.
  */
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { createPhaseDiagnostic } from './phase-diagnostic.mjs';
+import { ownBrowserServer } from './owned-browser.mjs';
+import { sourceSnapshot as snapshotVerificationFiles } from './verification-provenance.mjs';
+import { verifyNativeDetailsPanY, verifyNativeModalCycle, verifyNativeWorldKeys } from './native-core-regressions.mjs';
 
 if (process.argv.includes('--help')) {
   console.log('Set SCENE_QA_SERVER_READY=1 only after server-ready instruction. See source header for options.');
@@ -33,6 +36,7 @@ assert.ok(!OUTPUT.startsWith(REPO + path.sep), 'This draft writes evidence outsi
 const [width, height] = (process.env.SCENE_INPUT_VIEWPORT || '1280x850').split('x').map(Number);
 assert.ok(width >= 320 && height >= 320 && width <= 2560 && height <= 2560, 'Viewport must be explicit, valid native CSS pixels.');
 const VIEWPORT = { width, height };
+const FOCUSED_HIDDEN = process.env.SCENE_INPUT_FOCUS === 'hidden';
 const TIMEOUT = 60_000, CAPTURE_TIMEOUT = 30_000;
 const COMMON = [[.5,.72],[.5,.86],[.28,.78],[.72,.78],[.5,.55],[.3,.5],[.7,.5]];
 const WATER = [[.5,.68],[.5,.60],[.65,.63],[.36,.65],[.5,.75],[.65,.73],[.35,.75],[.52,.55]];
@@ -46,23 +50,38 @@ let CASES = [
 ];
 if (process.env.SCENE_INPUT_CONFIG) CASES = JSON.parse(await readFile(process.env.SCENE_INPUT_CONFIG, 'utf8'));
 if (process.env.SCENE_INPUT_CASES) { const wanted = new Set(process.env.SCENE_INPUT_CASES.split(',')); CASES = CASES.filter(c => wanted.has(c.key)); }
+if(FOCUSED_HIDDEN){CASES=CASES.filter(c=>c.key==='cafe'&&c.mode==='player');assert.equal(CASES.length,1,'Focused hidden diagnostic is Cafe player only.');}
 assert.ok(CASES.length, 'No cases selected.');
 for (const c of CASES) assert.ok(c.id && c.key && c.route && c.candidates?.length, 'Each case needs id/key/route/candidates.');
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
-const git = (...args) => execFileSync('git', ['-C', REPO, ...args], { encoding:'utf8' }).trim();
 async function sourceSnapshot() {
-  const files = git('ls-files', '--cached', '--others', '--exclude-standard').split('\n')
-    .filter(f => /\.(?:tsx?|mjs|css|json)$/.test(f) && !/^(?:public|artifacts|dist)\//.test(f)).sort();
-  const hashes = {};
-  for (const file of files) { try { hashes[file] = sha(await readFile(path.join(REPO, file))); } catch (e) { if (e.code !== 'ENOENT') throw e; hashes[file] = 'DELETED'; } }
-  return { head:git('rev-parse','HEAD'), tree:git('rev-parse','HEAD^{tree}'), status:git('status','--porcelain'), workingSourceSha256:sha(JSON.stringify(hashes)), files:hashes };
+  // Reuse the existing source/public/dist inventory; no runtime bytes are
+  // omitted by the former TS/JS-only filter. Evidence is outside the repo.
+  const snapshot = await snapshotVerificationFiles(REPO);
+  return { ...snapshot, workingSourceSha256:snapshot.sourceDigest, files:snapshot.sourceFiles };
 }
-const report = { status:'running', startedAt:new Date().toISOString(), baseUrl:BASE, viewport:VIEWPORT, sourceBefore:await sourceSnapshot(), scriptSha256:sha(await readFile(fileURLToPath(import.meta.url))),
+function matchServedBuild(records, snapshot) {
+  const base=new URL(BASE),prefix=decodeURIComponent(base.pathname),matches=[],mismatches=[];
+  for(const record of records){
+    const url=new URL(record.url),pathname=decodeURIComponent(url.pathname);
+    const file=url.origin===base.origin&&pathname.startsWith(prefix)?pathname.slice(prefix.length):null;
+    const expected=file?snapshot.distFiles[file]:undefined;
+    const match={...record,distFile:file,expectedSha256:expected??null};
+    (record.status===200&&expected===record.sha256?matches:mismatches).push(match);
+  }
+  const missingCases=CASES.filter(c=>!matches.some(r=>r.case===c.key&&/\.m?js$/.test(r.distFile))).map(c=>c.key);
+  return {checked:records.length,matches,mismatches,missingCases,valid:records.length>0&&!mismatches.length&&!missingCases.length,
+    scope:'Every observed application JS/CSS response equals its BASE-relative frozen dist file; source/public/dist must remain unchanged.',
+    buildCausality:'A separately retained build log must establish that the frozen source bytes produced this dist; matching files alone do not prove that causality.'};
+}
+const report = { status:'running', startedAt:new Date().toISOString(), baseUrl:BASE, viewport:VIEWPORT, sourceBefore:await sourceSnapshot(), scriptSha256:sha(await readFile(fileURLToPath(import.meta.url))),nativeHelperSha256:sha(await readFile(new URL('./native-core-regressions.mjs',import.meta.url))),phaseHelperSha256:sha(await readFile(new URL('./phase-diagnostic.mjs',import.meta.url))),ownedBrowserHelperSha256:sha(await readFile(new URL('./owned-browser.mjs',import.meta.url))),focusedHidden:FOCUSED_HIDDEN,
   environment:{input:'Playwright mouse/keyboard and Chromium CDP Input.dispatchTouchEvent; no DOM synthetic pointer events', physicalDevice:false, nativeFullscreen:'Observed when Nature requests it; app immersive is CSS dialog', visibility:'Chrome hide only; no injected document.hidden', rendering:'Production source/buffer quality unchanged'}, cases:[], errors:[], servedResources:[], limitations:['Candidate raycasts are verified through real callback counters; misses are recorded, never converted to success.','Software GPU timing is not physical device performance.','Source/served-byte fingerprints identify the run; HEAD alone does not prove a production build matches dirty source.'] };
 await mkdir(OUTPUT, { recursive:true });
 const persist = () => writeFile(path.join(OUTPUT,'results.json'), JSON.stringify(report,null,2)+'\n');
 await persist();
-let browser, currentPage;
+const diagnostic=createPhaseDiagnostic(OUTPUT);
+const phase=diagnostic.phase;
+let browser, browserServer, ownedBrowser, currentPage;
 const resourceTasks = new Set();
 async function bounded(task, ms, label) { let timer; try { return await Promise.race([task(),new Promise((_,reject) => { timer=setTimeout(()=>reject(new Error(`${label} exceeded ${ms}ms`)),ms); })]); } finally { clearTimeout(timer); } }
 async function closeBounded(context) { await bounded(()=>context.close(),10_000,'context close').catch(e=>report.errors.push({kind:'cleanup',message:String(e)})); }
@@ -88,9 +107,11 @@ async function waitMotion(page,c,mode,running) {
   await page.waitForFunction(({selector,running})=>document.querySelector(selector)?.querySelector('[data-motion]')?.getAttribute('data-motion')===(running?'running':'paused'),{selector:slotSelector(c,mode),running},{timeout:TIMEOUT});
 }
 async function advance(page,c,mode,seconds=.75) {
-  const before=await read(page,c,mode);
-  await page.waitForFunction(({selector,t,seconds})=>{const d=document.querySelector(selector)?.querySelector('canvas')?.dataset;return Number(d?.time??d?.elapsed??0)>=t+seconds;},{selector:slotSelector(c,mode),t:before.time,seconds},{timeout:TIMEOUT});
-  await page.waitForTimeout(750); // Also respect wall-clock guarded owners. No clock override.
+  return phase('advance',async()=>{
+    const before=await phase('advance.read-before',()=>read(page,c,mode));
+    await phase('advance.wait-scene-time',()=>page.waitForFunction(({selector,t,seconds})=>{const d=document.querySelector(selector)?.querySelector('canvas')?.dataset;return Number(d?.time??d?.elapsed??0)>=t+seconds;},{selector:slotSelector(c,mode),t:before.time,seconds},{timeout:TIMEOUT}));
+    await phase('advance.wall-delay750',()=>page.waitForTimeout(750));
+  });
 }
 async function chromeState(page,mode) {
   return page.evaluate(({surface,mode})=>{
@@ -108,11 +129,16 @@ async function reveal(page,c,mode) {
   const cs=await chromeState(page,mode);assert.equal(cs?.visible,true,`Reveal must reach chrome: ${JSON.stringify({p,cs,hit:await inspectHit(page,c,mode,p),diagnostics:await read(page,c,mode)})}`);return p;
 }
 async function hide(page,c,mode) {
-  // Native click on scene blurs focused chrome. Its callback, if any, is setup only.
-  const p=await point(page,c,mode,.10,.36),hit=await inspectHit(page,c,mode,p);assert.ok(hit.inside&&!hit.control,'Unfocus point must hit scene');
-  await page.mouse.click(p.x,p.y);const began=Date.now();await page.waitForTimeout(1000);assert.equal((await chromeState(page,mode))?.visible,true,'Not a tap-to-hide toggle');
-  await page.waitForFunction(({surface,mode})=>{if(mode==='nature')return document.querySelector('.sound-studio')?.getAttribute('data-controls')==='hidden';const e=document.querySelector(`${surface} > [data-scene-drag]`);return e&&getComputedStyle(e).visibility==='hidden';},{surface:surfaceSelector(mode),mode},{timeout:10_000});
-  const elapsedMs=Date.now()-began;assert.ok(elapsedMs>=3000,'Chrome must hide by its3.6s timer, not immediately');return {elapsedMs,expectedTimerMs:3600,...await chromeState(page,mode)};
+  return phase('hide',async()=>{
+    const p=await phase('hide.point',()=>point(page,c,mode,.10,.36));
+    const hit=await phase('hide.hit',()=>inspectHit(page,c,mode,p));assert.ok(hit.inside&&!hit.control,'Unfocus point must hit scene');
+    await phase('hide.mouse-click',()=>page.mouse.click(p.x,p.y));const began=Date.now();
+    await phase('hide.wall-delay1000',()=>page.waitForTimeout(1000));
+    assert.equal((await phase('hide.chrome-after1s',()=>chromeState(page,mode)))?.visible,true,'Not a tap-to-hide toggle');
+    await phase('hide.wait-hidden',()=>page.waitForFunction(({surface,mode})=>{if(mode==='nature')return document.querySelector('.sound-studio')?.getAttribute('data-controls')==='hidden';const e=document.querySelector(`${surface} > [data-scene-drag]`);return e&&getComputedStyle(e).visibility==='hidden';},{surface:surfaceSelector(mode),mode},{timeout:10_000}));
+    const elapsedMs=Date.now()-began;assert.ok(elapsedMs>=3000,'Chrome must hide by its3.6s timer, not immediately');
+    return {elapsedMs,expectedTimerMs:3600,...await phase('hide.chrome-final',()=>chromeState(page,mode))};
+  });
 }
 function cafeProjected(r) {
   const aspect=r.width/r.height,p=1-THREE.MathUtils.smoothstep(aspect,.48,1.35),cam=new THREE.PerspectiveCamera(43+7*p,aspect,.04,80);
@@ -129,19 +155,36 @@ async function touch(page,type,p) {
   // cancels that stream and does not represent a physical gesture.
   await cdp.send('Input.dispatchTouchEvent',{type,touchPoints:['touchEnd','touchCancel'].includes(type)?[]:[{x:p.x,y:p.y,id:1,radiusX:1,radiusY:1,force:1}]});
 }
-async function tapOnce(page,c,mode,hidden=false,nativeTouch=false) {
+async function tapOnce(page,c,mode,hidden=false,nativeTouch=false,targetPoint) {
   await advance(page,c,mode);if(hidden){await hide(page,c,mode);await advance(page,c,mode);}else await reveal(page,c,mode);
-  const r=(await read(page,c,mode)).rect,candidates=c.family==='cafe'?[...cafeProjected(r),...c.candidates]:c.candidates,attempts=[];
+  const r=(await read(page,c,mode)).rect,candidates=targetPoint?[[targetPoint.nx,targetPoint.ny]]:c.family==='cafe'?[...cafeProjected(r),...c.candidates]:c.candidates,attempts=[];
   for(const [nx,ny] of candidates){
     if(!(nx>.03&&nx<.97&&ny>.03&&ny<.92))continue;
     if(hidden&&attempts.length){await hide(page,c,mode);await advance(page,c,mode);}
     const p=await point(page,c,mode,nx,ny),hit=await inspectHit(page,c,mode,p);if(!hit.inside||hit.control){attempts.push({nx,ny,skip:'covered or control',hit});continue;}
     const before=await read(page,c,mode),chromeBefore=await chromeState(page,mode);
     assert.equal(chromeBefore.visible,!hidden,'Chrome precondition must hold immediately before input');
-    if(nativeTouch){await touch(page,'touchStart',p);await touch(page,'touchEnd',p);}else await page.mouse.click(p.x,p.y);
-    await page.waitForTimeout(180);const after=await read(page,c,mode),delta=after.callbacks-before.callbacks;
-    attempts.push({nx,ny,hit,chromeBefore,delta});assert.ok(delta===0||delta===1,'One native tap must never emit duplicate callbacks');
-    if(delta===1)return {point:p,attempts,input:nativeTouch?'CDP native touch':'Playwright mouse',before,after};
+    let marker,nativeTiming;
+    if(nativeTouch){
+      marker=await phase('native-tap.trace-marker',()=>page.evaluate(()=>({performanceMs:performance.now(),wallMs:Date.now()})));
+      // Public Playwright tap queues same-client touchStart/touchEnd together.
+      // Intentional held drag/cancel still uses the existing sequential touch().
+      await phase('native-touchscreen.tap-send-to-ack',()=>page.touchscreen.tap(p.x,p.y));
+    }else await page.mouse.click(p.x,p.y);
+    await phase('tap.callback-settle180',()=>page.waitForTimeout(180));
+    const after=await phase('tap.read-after',()=>read(page,c,mode)),delta=after.callbacks-before.callbacks;
+    if(delta!==0&&delta!==1){const error=new Error('One native input emitted an invalid callback delta: '+delta);error.evidence={point:p,before,after,callbackDelta:delta,attempts};throw error;}
+    if(nativeTouch){
+      const events=await phase('native-tap.event-trace',()=>page.evaluate(since=>window.__integrationNativeInputAudit.events.filter(e=>e.time>=since&&e.pointerType==='touch'),marker.performanceMs));
+      const down=events.find(e=>e.type==='pointerdown'),up=events.find(e=>e.type==='pointerup'&&(!down||e.time>=down.time));
+      const duration=down&&up?up.time-down.time:null,budgetMs=c.nativeTapMaxMs??600;
+      nativeTiming={events,durationPerformanceMs:duration,durationEventTimeStampMs:down&&up?up.eventTimeStamp-down.eventTimeStamp:null,durationWallMs:down&&up?up.wallTime-down.wallTime:null,budgetMs,
+        shortTrusted:!!down&&!!up&&down.trusted&&up.trusted&&duration>=0&&duration<budgetMs,publicAPI:'page.touchscreen.tap',internalRequestTiming:'not exposed by public API'};
+      diagnostic.log('native-tap-evidence',{point:p,marker,before,after,callbackDelta:delta,nativeTiming});
+      if(!nativeTiming.shortTrusted){const error=new Error('No proven trusted tap shorter than'+budgetMs+'ms; input fixture is inconclusive');error.name='InconclusiveNativeTap';error.evidence={point:p,before,after,nativeTiming,attempts};throw error;}
+    }
+    attempts.push({nx,ny,hit,chromeBefore,delta,...(nativeTiming?{nativeTiming}:{})});
+    if(delta===1)return {point:p,attempts,input:nativeTouch?'Playwright queued native touch':'Playwright mouse',before,after};
   }
   throw new Error(`No callback-producing raycast target: ${JSON.stringify(attempts)}`);
 }
@@ -169,7 +212,7 @@ async function controlButtons(page,c,mode) {
   for(let i=0;i<45;i++){await page.keyboard.press('Tab');focused=await page.evaluate(({surface,pauseName})=>{const e=document.activeElement;return !!document.querySelector(surface)?.contains(e)&&e?.tagName==='BUTTON'&&(e.getAttribute('aria-label')||e.textContent.trim())===pauseName;},{surface:mode==='nature'?'.sound-studio':surfaceSelector(mode),pauseName});focusTrace.push(await page.evaluate(()=>({tag:document.activeElement?.tagName,label:document.activeElement?.getAttribute('aria-label'),text:document.activeElement?.textContent?.trim().slice(0,50)})));if(focused)break;}
   assert.ok(focused,`Pause control reachable by native Tab: ${JSON.stringify(focusTrace)}`);await page.waitForTimeout(4100);assert.equal((await chromeState(page,mode)).visible,true,'Focused controls stay visible beyond hide deadline');
   await page.keyboard.press('Space');await waitMotion(page,c,mode,false);assert.equal((await read(page,c,mode)).callbacks,before.callbacks,'Keyboard Space control emits zero callbacks');
-  await page.keyboard.press('Space');await waitMotion(page,c,mode,true);return {callbacksUnchanged:true,keyboard:'Tab + Space',focusHeldMs:4100};
+  await page.keyboard.press('Space');await waitMotion(page,c,mode,true);assert.equal((await read(page,c,mode)).callbacks,before.callbacks,'Keyboard Space resume emits zero callbacks');return {callbacksUnchanged:true,keyboard:'Tab + Space',focusHeldMs:4100};
 }
 async function screenshot(page,c,mode,label) {
   await reveal(page,c,mode);const surface=page.locator(mode==='nature'?'.sound-studio':surfaceSelector(mode));
@@ -180,18 +223,25 @@ async function screenshot(page,c,mode,label) {
   await surface.getByRole('button',{name:'재생',exact:true}).first().click();await waitMotion(page,c,mode,true);return entry;
 }
 async function details(page,c) {
-  await reveal(page,c,'player');const before=await read(page,c,'player');await page.getByRole('button',{name:'세션 세부 조절 열기',exact:true}).click();
+  await reveal(page,c,'player');const before=await read(page,c,'player');const restoreScrollY=await page.evaluate(()=>document.scrollingElement?.scrollTop??scrollY);await page.getByRole('button',{name:'세션 세부 조절 열기',exact:true}).click();
   const opened=await read(page,c,'player');assert.equal(opened.touchAction,'pan-y');assert.equal(opened.worldTouchAction,'pan-y','Owned root must not suppress vertical scroll');assert.equal(opened.canvasTouchAction,'pan-y','Canvas must preserve vertical scroll');assert.equal(opened.callbacks,before.callbacks);
-  await page.getByRole('button',{name:'세션 조절 닫기',exact:true}).click();assert.equal((await read(page,c,'player')).touchAction,'none');assert.equal((await read(page,c,'player')).callbacks,before.callbacks);return {opened:'pan-y',closed:'none',callbacksUnchanged:true};
+  const nativeScroll=await verifyNativeDetailsPanY(page,{selector:slotSelector(c,'player'),sendTouch:(type,p)=>touch(page,type,p),restoreScrollY});
+  assert.equal((await read(page,c,'player')).touchAction,'none');assert.equal((await read(page,c,'player')).callbacks,before.callbacks);return {opened:'pan-y',closed:'none',callbacksUnchanged:true,nativeScroll};
 }
-async function step(result,name,fn) { const s={name,status:'running',startedAt:new Date().toISOString()};result.checks.push(s);await persist();try{s.evidence=await bounded(fn,180_000,name);s.status='passed';return s.evidence;}catch(e){s.status='failed';s.error=String(e);throw e;}finally{s.finishedAt=new Date().toISOString();await persist();} }
+async function step(result,name,fn) { const s={name,status:'running',startedAt:new Date().toISOString()};result.checks.push(s);await persist();try{s.evidence=await bounded(fn,180_000,name);s.status='passed';return s.evidence;}catch(e){s.status=e.name==='InconclusiveNativeTap'?'inconclusive':'failed';s.error=String(e);s.evidence=e.evidence??s.evidence;s.pendingCallsAtFailure=diagnostic.pending();diagnostic.log('step-failure',{name,pending:s.pendingCallsAtFailure,error:String(e)});throw e;}finally{s.finishedAt=new Date().toISOString();await persist();} }
 async function auditSurface(page,c,mode,result) {
   await waitReady(page,c,mode);await waitMotion(page,c,mode,true);
   if(mode!=='nature')assert.equal((await chromeState(page,mode)).pointerEvents,'none','Cover must pass through; controls override locally');
-  await step(result,`${mode}: visible chrome1tap1callback`,()=>tapOnce(page,c,mode));
-  const hidden=await step(result,`${mode}:3.6s hidden chrome native touch1tap1callback`,()=>tapOnce(page,c,mode,true,true));
+  const visible=await step(result,`${mode}: visible chrome1tap1callback`,()=>phase('visible-reference-tap',()=>tapOnce(page,c,mode)));
+  const hidden=await step(result,`${mode}:3.6s hidden chrome native touch1tap1callback`,()=>phase('hidden-native-tap',()=>tapOnce(page,c,mode,true,true,FOCUSED_HIDDEN?visible.point:undefined)));
+  if(FOCUSED_HIDDEN)return;
   await step(result,`${mode}: out-and-back drag and native cancel callback0`,()=>dragAndCancel(page,c,mode,hidden.point));
   await step(result,`${mode}: controls+keyboard+focus callback0`,()=>controlButtons(page,c,mode));
+  if(mode==='immersive'){
+    const worldSelector=c.family==='water-edge'?'.water-edge':undefined;
+    await step(result,'immersive: native modal Tab/Shift+Tab cycle',async()=>{await hide(page,c,mode);const before=(await read(page,c,mode)).callbacks;const cycle=await verifyNativeModalCycle(page,{worldSelector});assert.equal((await read(page,c,mode)).callbacks,before,'Native Tab cycle emits zero scene callbacks');return cycle;});
+    if(worldSelector)await step(result,'immersive: owned Enter/Space1key1callback',()=>verifyNativeWorldKeys(page,{selector:slotSelector(c,mode),worldSelector,cooldown:()=>advance(page,c,mode)}));
+  }
   await step(result,`${mode}: source-bound actual-app PNG`,()=>screenshot(page,c,mode,'chrome'));
 }
 async function setupObserver(context) {
@@ -199,7 +249,7 @@ async function setupObserver(context) {
     const trace={events:[],callbacks:[]};window.__integrationNativeInputAudit=trace;const seen=new WeakSet();let slotId=0;
     const attach=()=>document.querySelectorAll('[data-immersive-world-id]').forEach(el=>{if(seen.has(el))return;seen.add(el);const id=++slotId;let last=Number(el.getAttribute('data-world-callbacks')||0);new MutationObserver(()=>{const next=Number(el.getAttribute('data-world-callbacks')||0);if(next>last)trace.callbacks.push({slot:id,world:el.getAttribute('data-immersive-world-id'),delta:next-last,connected:el.isConnected,time:performance.now()});last=next;}).observe(el,{attributes:true,attributeFilter:['data-world-callbacks']});});
     new MutationObserver(attach).observe(document,{subtree:true,childList:true});
-    for(const type of ['pointermove','pointerdown','pointerup','pointercancel','click'])document.addEventListener(type,e=>{trace.events.push({type,trusted:e.isTrusted,pointerType:e.pointerType,x:e.clientX,y:e.clientY,time:performance.now(),tag:e.target?.tagName});if(trace.events.length>500)trace.events.shift();},true);
+    for(const type of ['pointermove','pointerdown','pointerup','pointercancel','click','keydown','keyup'])document.addEventListener(type,e=>{trace.events.push({type,trusted:e.isTrusted,pointerType:e.pointerType,eventTimeStamp:e.timeStamp,wallTime:Date.now(),key:e.key,code:e.code,x:e.clientX,y:e.clientY,time:performance.now(),tag:e.target?.tagName});if(trace.events.length>500)trace.events.shift();},true);
   });
 }
 async function openCase(page,c) {
@@ -216,15 +266,20 @@ async function openCase(page,c) {
   }
 }
 try {
-  browser=await chromium.launch({executablePath:process.env.SCENE_BROWSER_PATH||undefined,headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--disable-dev-shm-usage','--autoplay-policy=document-user-activation-required']});
+  browserServer=await chromium.launchServer({host:'127.0.0.1',executablePath:process.env.SCENE_BROWSER_PATH||undefined,headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--disable-dev-shm-usage','--autoplay-policy=document-user-activation-required']});
+  ownedBrowser=ownBrowserServer(browserServer,{onError:error=>report.errors.push(error),onLog:event=>diagnostic.log(event.kind,event)});
+  report.ownedBrowser=ownedBrowser.state;await persist();
+  browser=await chromium.connect(browserServer.wsEndpoint(),{timeout:TIMEOUT});
   for(const c of CASES){
     const result={key:c.key,worldId:c.id,status:'running',checks:[],errors:[]};report.cases.push(result);await persist();
     const context=await browser.newContext({viewport:VIEWPORT,deviceScaleFactor:1,hasTouch:true,serviceWorkers:'block'});await setupObserver(context);const page=await context.newPage();currentPage=page;page.setDefaultTimeout(TIMEOUT);
     page.on('pageerror',e=>result.errors.push({kind:'runtime',message:e.message}));page.on('console',m=>{if(m.type()==='error')result.errors.push({kind:'console',message:m.text()});});
-    page.on('response',response=>{if(!/\.(?:m?js|[cm]?tsx?|css)(?:\?|$)/.test(response.url())||!response.ok())return;const task=bounded(async()=>{const b=await response.body();report.servedResources.push({case:c.key,url:response.url(),status:response.status(),bytes:b.length,sha256:sha(b)});},15_000,'served resource hash').catch(e=>result.errors.push({kind:'resource-fingerprint',message:String(e)}));resourceTasks.add(task);task.finally(()=>resourceTasks.delete(task));});
+    page.on('response',response=>{if(!/\.(?:m?js|[cm]?tsx?|css)(?:\?|$)/.test(response.url()))return;const task=bounded(async()=>{const b=await response.body();report.servedResources.push({case:c.key,url:response.url(),status:response.status(),bytes:b.length,sha256:sha(b)});},15_000,'served resource hash').catch(e=>result.errors.push({kind:'resource-fingerprint',message:String(e)}));resourceTasks.add(task);task.finally(()=>resourceTasks.delete(task));});
     try{
       await step(result,'native route+playback startup',()=>openCase(page,c));
+      await diagnostic.start(page,slotSelector(c,c.mode));
       await auditSurface(page,c,c.mode,result);
+      if(!FOCUSED_HIDDEN){
       if(c.mode==='player'){
         await step(result,'detailsOpen retains pan-y',()=>details(page,c));
         const canvas=await slot(page,c,'player').locator('canvas').elementHandle();
@@ -243,15 +298,19 @@ try {
           await touch(page,'touchStart',p);await page.goBack({waitUntil:'domcontentloaded',timeout:TIMEOUT});await page.getByRole('dialog',{name:'자연 장면만 보기',exact:true}).waitFor({state:'detached'});await touch(page,'touchEnd',p);await page.waitForTimeout(250);
           assert.equal((await read(page,c,'nature')).callbacks,before);return {callbacksUnchanged:true,hash:await page.evaluate(()=>location.hash)};});
       }
+      }
       result.inputTrace=await page.evaluate(()=>window.__integrationNativeInputAudit);assert.ok(result.inputTrace.events.length);assert.ok(result.inputTrace.events.every(e=>e.trusted),'Every observed pointer/click must be browser-trusted');assert.equal(result.errors.length,0,JSON.stringify(result.errors));result.status='passed';
-    }catch(e){result.status='failed';result.failure=String(e);try{result.inputTrace=await bounded(()=>page.evaluate(()=>window.__integrationNativeInputAudit),3000,'failure trace');}catch{} }
-    finally{await closeBounded(context);await persist();}
+    }catch(e){result.status=e.name==='InconclusiveNativeTap'?'inconclusive':'failed';result.failure=String(e);result.pendingCallsAtFailure=diagnostic.pending();try{result.inputTrace=await bounded(()=>page.evaluate(()=>window.__integrationNativeInputAudit),3000,'failure trace');}catch{} }
+    finally{await diagnostic.stop();await closeBounded(context);await persist();}
   }
 } catch(e) {report.errors.push({kind:'fatal',message:String(e)});}
 finally {
-  if(browser)await bounded(()=>browser.close(),10_000,'browser close').catch(e=>report.errors.push({kind:'cleanup',message:String(e)}));
+  if(ownedBrowser)await ownedBrowser.close();
   await Promise.allSettled([...resourceTasks]);report.sourceAfter=await sourceSnapshot();report.sourceStable=report.sourceAfter.workingSourceSha256===report.sourceBefore.workingSourceSha256;
-  report.status=report.cases.length===CASES.length&&report.cases.every(c=>c.status==='passed')&&!report.errors.length&&report.sourceStable?'passed':'failed';
+  report.distStable=report.sourceAfter.distDigest===report.sourceBefore.distDigest;report.servedBuildMatch=matchServedBuild(report.servedResources,report.sourceBefore);
+  if(!report.distStable||!report.servedBuildMatch.valid)report.errors.push({kind:'evidence',message:'Frozen dist changed or observed runtime responses were missing/unmapped/non-200/mismatched',distStable:report.distStable,missingCases:report.servedBuildMatch.missingCases,mismatches:report.servedBuildMatch.mismatches});
+  const failed=report.errors.length>0||!report.sourceStable||report.cases.length!==CASES.length||report.cases.some(c=>c.errors.length>0||!['passed','inconclusive'].includes(c.status));
+  report.status=failed?'failed':report.cases.some(c=>c.status==='inconclusive')?'inconclusive':'passed';
   report.finishedAt=new Date().toISOString();await persist();console.log(JSON.stringify({status:report.status,cases:report.cases.map(c=>({key:c.key,status:c.status,failure:c.failure})),output:OUTPUT,sourceStable:report.sourceStable},null,2));
-  process.exitCode=report.status==='passed'?0:1;
+  process.exitCode=report.status==='passed'?0:report.status==='inconclusive'?2:1;
 }

@@ -1,7 +1,7 @@
 /** Bounded follow-up evidence, never overwrites PR58 evidence.
  * npx vite build --config components/immersiveWorlds/waterEdge/dev/vite.config.ts
  * node components/immersiveWorlds/waterEdge/qa/followup-verify.mjs --serve --stage=visual --world=pebble-shore --mode=normal --viewport=desktop
- * Stages run in independent browser processes. lifecycle never invokes screenshot/readPixels/fence.
+ * Stages run in independent browser processes. lifecycle never adds screenshot/readPixels/diagnostic fence.
  */
 import { chromium } from 'playwright-core';
 import { createHash } from 'node:crypto';
@@ -10,15 +10,30 @@ import { execFileSync } from 'node:child_process';
 import { readFile, readdir, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateTargetAudit } from './followup-target-assertions.mjs';
 
 const qa = path.dirname(fileURLToPath(import.meta.url)), owned = path.dirname(qa);
 const args = process.argv.slice(2), arg = (name, fallback) => args.find(x => x.startsWith(`--${name}=`))?.slice(name.length + 3) || fallback;
 const stage = arg('stage', 'visual'), world = arg('world', 'pebble-shore'), mode = arg('mode', 'normal'), viewportName = arg('viewport', 'desktop');
 const viewport = ({ desktop: { width: 1280, height: 800 }, portrait: { width: 390, height: 844 } })[viewportName];
-if (!viewport || !['visual', 'behavior', 'lifecycle'].includes(stage) || !['normal', 'byte'].includes(mode)) throw new Error('Invalid stage/mode/viewport');
+if (!viewport || !['visual', 'behavior', 'lifecycle', 'diagnostic', 'static'].includes(stage) || !['normal', 'byte'].includes(mode)) throw new Error('Invalid stage/mode/viewport');
+if (stage === 'static' && viewportName !== 'desktop') throw new Error('Static roundtrip starts at the native desktop viewport');
+const tag = arg('tag', 'final');
+if (!/^[a-z0-9-]+$/.test(tag)) throw new Error('Invalid evidence tag');
+const drainBeforeDispose = args.includes('--drain-before-dispose');
+if (drainBeforeDispose && stage !== 'diagnostic') throw new Error('GPU-drained lifecycle must be a separately labelled diagnostic stage');
+const activeFrames = Number(arg('active-frames', '0'));
+if (![0, 2].includes(activeFrames) || (activeFrames && (stage !== 'diagnostic' || drainBeforeDispose))) throw new Error('The bounded two-frame diagnostic requires stage=diagnostic with no GPU drain');
 const base = process.env.WATER_EDGE_URL || 'http://127.0.0.1:4188';
-const output = path.join(qa, 'followup-evidence'); await mkdir(output, { recursive: true });
-const stem = `${world}-${mode}-${viewportName}-${stage}`;
+const evidenceName = arg('evidence', 'submission-evidence');
+if (!/^[a-z0-9-]+$/.test(evidenceName) || evidenceName === 'followup-evidence') throw new Error('Use a new owned evidence directory; original followup-evidence is immutable');
+const output = path.join(qa, evidenceName); await mkdir(output, { recursive: true });
+const stem = `${tag}-${world}-${mode}-${viewportName}-${stage}`;
+const reportAlreadyExists = await readFile(path.join(output, `${stem}.json`)).then(() => true, error => {
+  if (error.code === 'ENOENT') return false;
+  throw error;
+});
+if (reportAlreadyExists) throw new Error(`Evidence ${stem}.json already exists; choose a fresh tag or evidence directory. Prior results are immutable.`);
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 async function treeHash(root, keep = () => true, sourceOnly = false) {
   const digest = createHash('sha256');
@@ -33,7 +48,7 @@ async function treeHash(root, keep = () => true, sourceOnly = false) {
   await walk(root); return digest.digest('hex');
 }
 const report = {
-  schema: 2, world, mode, stage, viewportName, viewport, dpr: 1, generatedAt: new Date().toISOString(),
+  schema: 3, world, mode, stage, tag, drainBeforeDispose, activeFrames, viewportName, viewport, dpr: 1, generatedAt: new Date().toISOString(),
   scope: 'Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.',
   limitations: ['SwiftShader software GPU; no physical touch device or sustained hardware performance certification.',
     'Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.',
@@ -62,12 +77,32 @@ if (server) await new Promise((resolve, reject) => { server.once('error', reject
 let browser, context, page, tainted = false;
 const inspect = () => page.evaluate(() => window.__waterEdgeQA.inspect());
 const paused = () => page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
-async function ready() { await page.waitForFunction(() => window.__waterEdgeQA?.inspect().roots.some(root => root.state === 'ready'), null, { timeout: 60000 }); }
+async function ready() { await page.waitForFunction(() => {
+  const state = window.__waterEdgeQA?.inspect();
+  return state?.roots.some(root => root.state === 'ready') && state.canvases[0]?.frames > 0;
+}, null, { timeout: 60000 }); }
+async function settlePendingStatic(budgetMs = 30000) {
+  const before = await inspect(), began = Date.now(), time = before.canvases[0]?.time;
+  assert(before.roots.every(root => root.motion === 'paused'), 'Static settling requires paused motion');
+  await page.waitForFunction(time => {
+    const canvas = window.__waterEdgeQA.inspect().canvases[0];
+    if (!canvas || canvas.time !== time) throw new Error('Paused simulation time changed while its genuine final static frame settled');
+    if (!canvas.submission) throw new Error('Missing production submission-state diagnostics');
+    if (typeof canvas.submission.dirty !== 'boolean') throw new Error('Missing boolean production dirty-state diagnostic');
+    if (canvas.submission.fault) throw new Error(`Production submission fault: ${canvas.submission.fault}`);
+    // This deliberately does NOT await pending GPU completion. Only a genuine
+    // deferred static redraw must be submitted before the no-submission window.
+    return !canvas.submission.dirty;
+  }, time, { timeout: budgetMs, polling: 25 });
+  const after = await inspect();
+  assert(after.canvases[0].time === time, 'Paused time advanced during static settling');
+  return { before, after, elapsedMs: Date.now() - began, method: 'Read-only production dirty-state observation; no added fence, flush, readback or draw' };
+}
 async function freeze(label, operation) {
-  await operation(); await paused(); await page.waitForTimeout(150);
+  await operation(); await paused(); const staticSettling = await settlePendingStatic(); await page.waitForTimeout(150);
   const before = await inspect(); await page.waitForTimeout(500); const after = await inspect();
   assert(before.canvases[0].frames === after.canvases[0].frames && before.canvases[0].time === after.canvases[0].time, `${label}: paused submissions or time advanced`);
-  report.checks[label] = { status: 'passed', before, after }; await save();
+  report.checks[label] = { status: 'passed', staticSettling, before, after }; await save();
 }
 async function drain(label, budgetMs = 60000) {
   const start = Date.now();
@@ -80,7 +115,10 @@ async function capture(label) {
   // One combined bounded budget. Never launch another capture on a contaminated page.
   assert(!tainted, 'Page is tainted by an earlier GPU/capture failure');
   const began = Date.now(), budget = 90000;
-  const fence = await drain(`${label}-gpuDrain`, 60000);
+  const staticSettling = await settlePendingStatic(Math.min(30000, budget));
+  const fenceBudget = Math.min(60000, budget - (Date.now() - began) - 1000);
+  assert(fenceBudget > 0, 'Capture budget consumed while a pending static view settled');
+  const fence = await drain(`${label}-gpuDrain`, fenceBudget);
   const before = await inspect(); const remaining = budget - (Date.now() - began);
   if (remaining < 1000) { tainted = true; throw new Error(`${label}: capture budget consumed by GPU drain`); }
   const file = `${stem}-${label}.png`, screenshotStart = Date.now();
@@ -88,11 +126,33 @@ async function capture(label) {
   try { png = await page.screenshot({ path: path.join(output, file), fullPage: false, timeout: remaining }); }
   catch (error) { tainted = true; throw error; }
   const screenshotElapsedMs = Date.now() - screenshotStart, after = await inspect();
-  assert(png.readUInt32BE(16) === viewport.width && png.readUInt32BE(20) === viewport.height, 'Native PNG dimensions do not match viewport');
+  const capturedViewport = page.viewportSize();
+  assert(png.readUInt32BE(16) === capturedViewport.width && png.readUInt32BE(20) === capturedViewport.height, 'Native PNG dimensions do not match viewport');
   assert(before.canvases[0].frames === after.canvases[0].frames && before.canvases[0].time === after.canvases[0].time, 'Frame/time changed during paused capture');
   report.captures.push({ file, sha256: sha(png), bytes: png.length, captureMethod: 'Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition',
-    screenshotElapsedMs, combinedElapsedMs: Date.now() - began, fence, before, after }); await save();
+    viewport: capturedViewport, screenshotElapsedMs, combinedElapsedMs: Date.now() - began, staticSettling, fence, before, after }); await save();
   console.log(`${stem}: ${label} PNG; GPU drain ${fence.elapsedMs.toFixed(0)} ms; screenshot ${screenshotElapsedMs} ms`);
+  return png;
+}
+async function comparePixels(first, second) {
+  return page.evaluate(async ({ first, second }) => {
+    async function pixels(base64) {
+      const bitmap = await createImageBitmap(new Blob([Uint8Array.from(atob(base64), char => char.charCodeAt(0))], { type: 'image/png' }));
+      const canvas = new OffscreenCanvas(bitmap.width, bitmap.height), context = canvas.getContext('2d');
+      context.drawImage(bitmap, 0, 0);
+      return { width: bitmap.width, height: bitmap.height, rgba: context.getImageData(0, 0, bitmap.width, bitmap.height).data };
+    }
+    const a = await pixels(first), b = await pixels(second);
+    if (a.width !== b.width || a.height !== b.height) return { sameDimensions: false, changedPixels: null };
+    let changedPixels = 0, firstDifferentPixel = null;
+    for (let offset = 0; offset < a.rgba.length; offset += 4) {
+      if (a.rgba[offset] !== b.rgba[offset] || a.rgba[offset + 1] !== b.rgba[offset + 1] || a.rgba[offset + 2] !== b.rgba[offset + 2] || a.rgba[offset + 3] !== b.rgba[offset + 3]) {
+        changedPixels++;
+        firstDifferentPixel ??= { x: (offset / 4) % a.width, y: Math.floor(offset / 4 / a.width) };
+      }
+    }
+    return { sameDimensions: true, changedPixels, firstDifferentPixel, totalPixels: a.width * a.height };
+  }, { first: first.toString('base64'), second: second.toString('base64') });
 }
 async function activate() {
   await page.evaluate(() => window.__waterEdgeQA.setActive(true));
@@ -121,21 +181,49 @@ try {
   assert(report.errors.length === 0, 'Initial console/shader/page errors');
   if (world !== 'night-pond') {
     const audit = report.graphics.targetAudit;
-    assert(audit && audit.forcedByte === (mode === 'byte') && audit.checks.length > 0, 'Missing/mismatched render-target mode audit');
-    assert(audit.checks.every(check => check.complete && check.faces.length >= 1 && check.faces.every(status => status === 36053)), 'An actual target framebuffer check failed');
-    if (mode === 'byte') {
-      assert(audit.checks.every(check => check.type === 'unsigned-byte'), 'Forced-byte path allocated a checked half-float target');
-      if (world === 'pebble-shore') assert(audit.environment === 'byte-ggx-cube-uv', 'Byte shore did not select the pre-generation GGX environment alternative');
-    } else if (audit.colorBufferFloat || audit.colorBufferHalfFloat) {
-      const expected = world === 'summer-valley' ? 'valley-reflection-cube' : 'pebble-pmrem-output';
-      assert(audit.checks.some(check => check.label === expected && check.type === 'half-float'), 'Supported normal path did not regress a real half-float output');
-      if (world === 'pebble-shore') assert(audit.environment === 'three-pmrem-half-float', 'Normal shore failed to exercise supported Three PMREM');
-    }
-    report.checks.targetCompatibility = { status: 'passed', audit, note: mode === 'byte' ? 'Legitimate format selection was forced before initialization; reported extensions remained genuine.' : 'Normal capability-selected target path and actual framebuffer checks.' };
+    report.checks.targetCompatibility = { ...validateTargetAudit(audit, { world, mode }), audit };
   }
   if (stage === 'visual') {
     await capture('initial');
     report.unrun.push('Behavior/lifecycle are separate clean stages; no inference from a still PNG.');
+  } else if (stage === 'static') {
+    const initialState = await inspect(), initialPNG = await capture('initial-desktop');
+    const transferStates = [];
+    for (let cycle = 1; cycle <= 3; cycle++) {
+      await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('static-transfer-secondary'); window.__waterEdgeQA.setSecondHolder(true); });
+      await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'secondary');
+      const secondary = await inspect();
+      await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('static-transfer-primary'); window.__waterEdgeQA.setSecondHolder(false); });
+      await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'primary');
+      await freeze(`sameSizeHolderRoundtrip-${cycle}`, async () => {});
+      const returned = await inspect();
+      assert(secondary.canvases[0].id === initialState.canvases[0].id && returned.canvases[0].id === initialState.canvases[0].id && returned.diagnostics.created === initialState.diagnostics.created, 'Static holder transfer replaced canvas/context');
+      assert(returned.canvases[0].frames === initialState.canvases[0].frames && returned.canvases[0].time === 0, 'Unchanged-size paused holder transfer submitted a redundant frame or advanced time');
+      transferStates.push({ cycle, secondary, returned });
+    }
+    const holderPNG = await capture('after-holder-roundtrips');
+    const holderPixels = await comparePixels(initialPNG, holderPNG);
+    assert(holderPixels.sameDimensions && holderPixels.changedPixels === 0, 'Native pixels changed after same-size static holder roundtrips');
+    report.checks.staticHolderRoundtrips = { status: 'passed', transferStates, pixelComparison: holderPixels };
+    const resizeStates = [];
+    let restoredPNG;
+    for (const [label, size] of [['portrait', { width: 390, height: 844 }], ['restored-desktop', viewport]]) {
+      const before = await inspect();
+      await page.evaluate(label => window.__waterEdgeQA.markTelemetry(`static-resize-${label}`), label);
+      await page.setViewportSize(size);
+      await page.waitForFunction(({ width, height }) => {
+        const canvas = window.__waterEdgeQA.inspect().canvases[0]; return canvas?.width === width && canvas?.height === height;
+      }, size);
+      await freeze(`pausedActualResize-${label}`, async () => {});
+      const after = await inspect();
+      assert(after.canvases[0].id === initialState.canvases[0].id && after.canvases[0].time === 0 && after.canvases[0].frames > before.canvases[0].frames, 'Actual paused resize lost identity/time or did not submit its final view');
+      const png = await capture(label); if (label === 'restored-desktop') restoredPNG = png;
+      resizeStates.push({ label, before, after });
+    }
+    const restoredPixels = await comparePixels(initialPNG, restoredPNG);
+    assert(restoredPixels.sameDimensions && restoredPixels.changedPixels === 0, 'Final native desktop pixels were not restored after portrait roundtrip');
+    report.checks.staticResizeRoundtrip = { status: 'passed', resizeStates, pixelComparison: restoredPixels };
+    report.unrun.push('This paused static regression is not active-motion performance or a clean no-capture lifecycle run.');
   } else if (stage === 'behavior') {
     await capture('chrome-initial');
     // No sibling drag overlay: trusted input lands directly in the production scene subtree.
@@ -235,23 +323,48 @@ try {
     await page.evaluate(() => { window.__waterEdgeQA.setActive(false); window.__waterEdgeQA.setSyntheticHidden(null); }); await paused();
     report.unrun.push('Physical hardware touch; true operating-system background/foreground; sustained GPU throughput; full-app production chrome.');
   } else {
-    // Clean no-capture run: no screenshots, toDataURL, readPixels or diagnostic fence before/after teardown.
+    // Clean no-capture run: no added screenshots, toDataURL, readPixels or diagnostic fence.
+    // Production completion fences are intrinsic runtime behavior and remain active.
     const before = await inspect();
-    await page.evaluate(() => window.__waterEdgeQA.setSecondHolder(true));
+    await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('holder-transfer-secondary'); window.__waterEdgeQA.setSecondHolder(true); });
     await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'secondary');
     const second = await inspect();
-    await page.evaluate(() => window.__waterEdgeQA.setSecondHolder(false));
+    await page.evaluate(() => { window.__waterEdgeQA.markTelemetry('holder-transfer-primary'); window.__waterEdgeQA.setSecondHolder(false); });
     await page.waitForFunction(() => window.__waterEdgeQA.inspect().canvases[0]?.holder === 'primary');
     const returned = await inspect();
     assert(before.canvases[0].id === second.canvases[0].id && before.canvases[0].id === returned.canvases[0].id && before.diagnostics.created === returned.diagnostics.created && returned.canvases.length === 1, 'Holder transfer created/replaced engine/canvas');
     report.checks.holderTransfer = { status: 'passed', before, second, returned, method: 'Actual production shared-host transfer in harness; native fullscreen/app Escape unrun' };
     report.checks.disposalCycles = [];
-    for (let cycle = 1; cycle <= 2; cycle++) {
+    const cycleCount = stage === 'diagnostic' ? 1 : 2;
+    for (let cycle = 1; cycle <= cycleCount; cycle++) {
+      if (drainBeforeDispose) {
+        // A holder return can still have a scheduled ResizeObserver callback.
+        // Require strict static stability before observing the GPU; do not mask a frame change inside the fence.
+        await freeze(`diagnosticHolderSettled-${cycle}`, async () => {});
+        await drain(`diagnostic-pre-disposal-${cycle}-gpuDrain`);
+      }
+      if (activeFrames) {
+        await freeze('diagnosticPreBurstSettled', async () => {});
+        const beforeBurst = await inspect();
+        await activate();
+        await page.waitForFunction(({ before, count }) => window.__waterEdgeQA.inspect().canvases[0].frames >= before + count,
+          { before: beforeBurst.canvases[0].frames, count: activeFrames }, { timeout: 30000, polling: 10 });
+        await page.evaluate(() => window.__waterEdgeQA.setActive(false)); await paused();
+        const afterBurst = await inspect();
+        assert(afterBurst.canvases[0].frames >= beforeBurst.canvases[0].frames + activeFrames && afterBurst.canvases[0].time > beforeBurst.canvases[0].time, 'Diagnostic active burst did not submit real advancing frames');
+        report.checks.noDrainActiveBurst = { status: 'passed', beforeBurst, afterBurst, requestedMinimumFrames: activeFrames,
+          method: 'Harness active toggle through real production motion policy/RAF, then pause and immediate unmount. No added screenshot, readback, diagnostic GPU fence or post-burst settling wait. Production completion fences remain intrinsic. Trusted native input is independently exercised by the behavior stage.' };
+      }
       const prior = await inspect();
+      report.beforeDisposalTelemetry = await page.evaluate(() => window.__waterEdgeQA.inspectTelemetry());
+      await save();
       const cycleStart = await page.evaluate(() => performance.now());
       await page.evaluate(() => window.__waterEdgeQA.unmount());
       await page.waitForFunction(() => window.__waterEdgeQA.inspect().diagnostics.live === 0, null, { timeout: 20000, polling: 100 });
       await page.waitForFunction(start => window.__waterEdgeQA.inspectTelemetry().timeline.some(x => x.kind === 'context-loss-observed' && x.atMs >= start), cycleStart, { timeout: 2000 });
+      // Let one overdue heartbeat record any disposal stall. The acceptance gate
+      // below still uses actual removal/context-loss event timestamps, not this wait.
+      await page.waitForTimeout(60);
       const disposed = await inspect(), telemetry = await page.evaluate(() => window.__waterEdgeQA.inspectTelemetry());
       assert(disposed.diagnostics.created === disposed.diagnostics.disposed && disposed.canvases.length === 0, 'Engine/canvas leaked after grace');
       const event = kind => telemetry.timeline.find(x => x.kind === kind && x.atMs >= cycleStart);
@@ -259,7 +372,13 @@ try {
       const disposal = { cycle, status: 'passed', configuredRetentionMs: 5000, eventualObservationDeadlineMs: 20000, removal, entry, exit, lost,
         removalToDisposeEntryMs: entry.atMs - removal.atMs, disposeSynchronousDurationMs: exit.atMs - entry.atMs,
         removalToContextLossObservationMs: lost.atMs - removal.atMs,
-        claim: 'Clean no-capture cycle reached zero engine/canvas counters and observed context loss within recorded elapsed time; not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.', disposed };
+        claim: `${drainBeforeDispose ? 'GPU-drained no-capture diagnostic' : 'Clean cycle with no added capture or diagnostic fence'} reached zero engine/canvas counters and observed context loss within recorded elapsed time; production completion fences remain active. Not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.`, disposed };
+      disposal.removalToContextLossObservationMs = lost.atMs - removal.atMs;
+      disposal.heartbeat = { samples: telemetry.heartbeats.filter(item => item.atMs >= removal.atMs && item.atMs <= lost.atMs + 100),
+        note: 'Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.' };
+      disposal.heartbeat.maxLagMs = Math.max(0, ...disposal.heartbeat.samples.map(item => item.lagMs));
+      assert(disposal.heartbeat.samples.length > 0 && Number.isFinite(disposal.heartbeat.maxLagMs), 'Missing event-loop responsiveness measurements during removal/disposal');
+      assert(disposal.removalToContextLossObservationMs <= 20000, 'Actual recorded removal-to-context-loss duration exceeded the fixed20s gate');
       await page.evaluate(() => window.__waterEdgeQA.mount()); await ready();
       const remounted = await inspect(); assert(remounted.canvases.length === 1 && remounted.diagnostics.live === 1 && remounted.canvases[0].id !== prior.canvases[0].id, 'Remount failed to create exactly one fresh engine');
       report.checks.disposalCycles.push({ ...disposal, remounted }); await save();

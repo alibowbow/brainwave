@@ -1,6 +1,6 @@
 # Draft pilot review — 2026-10-04
 
-This record separates owner-supplied evidence, actual image review by the integration team, local integration checks and remote CI. Admission means available for draft testing, not final artistic approval. Final main merge remains on hold until the user's later instruction.
+This record separates supplied evidence, actual image review, local integration checks and remote CI. Draft admission is not final artistic acceptance. Main merge remains held pending technical release gates.
 
 ## Exact source and integration state
 
@@ -208,4 +208,4 @@ Both committed reports explicitly record `actualTabVisibilityTested: false`: the
 
 The integration reviewer opened all four current JPGs; the coordinator also personally viewed the latest desktop and portrait. Compared with the `f4d24d6` recovery, added trunks fill more of the wide side openings; smooth wet stones, pool reflections and depth layers remain visible. Repetitive trunk/bark forms, sparse bare branch silhouettes at the far sides, flat-looking foreground leaves/dew and uniform pale distance still warrant artistic review. The landscape/motion pair supports a changed rendered frame, not a continuous-motion comfort judgment. No final quality acceptance follows from the green owner CI or these stills.
 
-Remaining evidence: exact newer shared-integration checks with successful app PNGs, forest application lifecycle/disposal, native browser/visibility boundaries where supported, and owner responses to the outstanding quality/source findings. Preserve the approved 30-world plan; the other 27 remain outside this Work's implementation ownership. Keep the PR draft until the user's later instruction.
+Remaining evidence: exact newer shared-integration checks with successful App PNGs, Forest lifecycle/disposal, native visibility boundaries and outstanding source/quality findings. Preserve the30-world design and isolated renderer ownership. Keep the PR draft until technical release gates are complete.

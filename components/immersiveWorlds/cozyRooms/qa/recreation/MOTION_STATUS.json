@@ -1,0 +1,13 @@
+{
+  "pixelProof": "UNRUN",
+  "preconditionAttempt": "REJECTED as required",
+  "nodeExitCode": 1,
+  "originalScriptUnchanged": true,
+  "originalScriptSHA256": "e59372d22b411f232de2712093e9f6e452b5b6d4379b77dea48ecb0b8467cf38",
+  "command": "COZY_OUTPUT=components/immersiveWorlds/cozyRooms/qa/recreation/evidence/final-original/nature-winter_lodge COZY_BUNDLE=/tmp/cozy-followup-bundle node components/immersiveWorlds/cozyRooms/qa/motion-proof.mjs",
+  "sourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+  "bundleSHA256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+  "reason": "Current winter verification passed=false; original assertion rejects before browser creation or screenshots. No false passing report or prerequisite bypass. Historical motion-only UNRUN record preserved.",
+  "log": "evidence/motion-precondition.log",
+  "logSHA256": "c894e3f9aa31b8bd7c68e7d012a4fd39674f9c9f1cb1eaca11c9247c11e48e23"
+}

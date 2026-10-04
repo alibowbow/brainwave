@@ -1,0 +1,5711 @@
+{
+  "schema": 3,
+  "world": "summer-valley",
+  "mode": "byte",
+  "stage": "lifecycle",
+  "tag": "final",
+  "drainBeforeDispose": false,
+  "activeFrames": 0,
+  "viewportName": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "dpr": 1,
+  "generatedAt": "2026-10-04T21:49:20.645Z",
+  "scope": "Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.",
+  "limitations": [
+    "SwiftShader software GPU; no physical touch device or sustained hardware performance certification.",
+    "Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.",
+    "render-js-return duration includes synchronous driver/compiler stalls; it is not pure JavaScript CPU time.",
+    "Configured shared-host retention is 5000 ms; disposal entry/exit and actual context loss are separate measured events."
+  ],
+  "gitHead": "d5f7530228d69664df42b3e4901ede6215aeba22",
+  "gitStatus": "?? qa/build-lifecycle-manifest.py\n?? qa/submission-evidence/",
+  "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+  "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+  "bundleSha256": "789f1cf31ce3840e71a9a50a283f1d811dc4f2f888124ebd10d5768e7eb4d91b",
+  "scriptSha256": "93af8cef0201bf870f2546d20165ef2be12ff8f93305f207514213c9a4e9d963",
+  "status": "passed",
+  "checks": {
+    "initialPaused": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 11,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "targetCompatibility": {
+      "status": "passed",
+      "selectedTargets": [
+        {
+          "label": "valley-reflection-cube",
+          "type": "unsigned-byte",
+          "width": 128,
+          "height": 128,
+          "faces": [
+            36053,
+            36053,
+            36053,
+            36053,
+            36053,
+            36053
+          ],
+          "complete": true
+        },
+        {
+          "label": "valley-refraction-depth",
+          "type": "unsigned-byte",
+          "width": 1280,
+          "height": 800,
+          "faces": [
+            36053
+          ],
+          "complete": true
+        }
+      ],
+      "failedProbes": [],
+      "selection": "unsigned-byte",
+      "note": "Final selected targets are complete; discarded failed capability probes do not invalidate a legitimate byte fallback. Actual rendered-frame/no-error checks remain separate mandatory gates.",
+      "audit": {
+        "forcedByte": true,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "checks": [
+          {
+            "label": "valley-reflection-cube",
+            "type": "unsigned-byte",
+            "width": 128,
+            "height": 128,
+            "faces": [
+              36053,
+              36053,
+              36053,
+              36053,
+              36053,
+              36053
+            ],
+            "complete": true
+          },
+          {
+            "label": "valley-refraction-depth",
+            "type": "unsigned-byte",
+            "width": 1280,
+            "height": 800,
+            "faces": [
+              36053
+            ],
+            "complete": true
+          }
+        ]
+      }
+    },
+    "holderTransfer": {
+      "status": "passed",
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "second": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          },
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "secondary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "secondary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "returned": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "summer-valley",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 163,
+            "triangles": 5474754,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "valley-reflection-cube",
+                  "type": "unsigned-byte",
+                  "width": 128,
+                  "height": 128,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "valley-refraction-depth",
+                  "type": "unsigned-byte",
+                  "width": 1280,
+                  "height": 800,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ]
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "method": "Actual production shared-host transfer in harness; native fullscreen/app Escape unrun"
+    },
+    "disposalCycles": [
+      {
+        "cycle": 1,
+        "status": "passed",
+        "configuredRetentionMs": 5000,
+        "eventualObservationDeadlineMs": 20000,
+        "removal": {
+          "kind": "canvas-detached-observed",
+          "atMs": 2090.5,
+          "canvasId": 1
+        },
+        "entry": {
+          "kind": "dispose-entry",
+          "atMs": 7091,
+          "canvasId": 1
+        },
+        "exit": {
+          "kind": "dispose-exit",
+          "atMs": 7129.199999999255,
+          "canvasId": 1
+        },
+        "lost": {
+          "kind": "context-loss-observed",
+          "atMs": 7129.39999999851,
+          "canvasId": 1,
+          "trusted": true
+        },
+        "removalToDisposeEntryMs": 5000.5,
+        "disposeSynchronousDurationMs": 38.19999999925494,
+        "removalToContextLossObservationMs": 5038.89999999851,
+        "claim": "Clean cycle with no added capture or diagnostic fence reached zero engine/canvas counters and observed context loss within recorded elapsed time; production completion fences remain active. Not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.",
+        "disposed": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 1,
+            "live": 0
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [],
+          "canvases": [],
+          "events": []
+        },
+        "heartbeat": {
+          "samples": [
+            {
+              "atMs": 2094.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 2144.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2194.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2244.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 2294.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 2344.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 2394.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 2444.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 2494.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2544.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 2594.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 2644.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 2694.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 2744.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 2794.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 2844.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 2894.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 2944.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 2994.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 3044.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 3094.599999997765,
+              "lagMs": -0.20000000298023224
+            },
+            {
+              "atMs": 3144.800000000745,
+              "lagMs": 0.20000000298023224
+            },
+            {
+              "atMs": 3194.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3244.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3294.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 3344.699999999255,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 3394.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 3444.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3494.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3544.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 3594.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 3644.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 3694.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 3745,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 3794.699999999255,
+              "lagMs": -0.30000000074505806
+            },
+            {
+              "atMs": 3844.89999999851,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 3894.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 3944.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 3994.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4045.099999997765,
+              "lagMs": 0.29999999701976776
+            },
+            {
+              "atMs": 4094.800000000745,
+              "lagMs": -0.29999999701976776
+            },
+            {
+              "atMs": 4144.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 4194.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 4244.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4294.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4344.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4394.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4444.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 4494.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 4544.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4594.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4644.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4694.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4744.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4794.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 4844.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 4894.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4944.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 4994.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5044.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5094.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5144.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5194.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5244.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5294.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5344.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5394.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5444.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 5494.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 5544.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5594.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5644.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 5694.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 5744.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5794.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5844.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 5894.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 5944.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 5995.099999997765,
+              "lagMs": 0.29999999701976776
+            },
+            {
+              "atMs": 6044.800000000745,
+              "lagMs": -0.29999999701976776
+            },
+            {
+              "atMs": 6094.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6144.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6194.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 6244.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 6294.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6344.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6394.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6444.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6494.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 6544.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 6594.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6644.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6694.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 6744.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 6794.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6844.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6894.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 6944.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 6994.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 7044.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 7129.39999999851,
+              "lagMs": 34.599999997764826
+            },
+            {
+              "atMs": 7144.699999999255,
+              "lagMs": -34.69999999925494
+            },
+            {
+              "atMs": 7194.800000000745,
+              "lagMs": 0.10000000149011612
+            }
+          ],
+          "note": "Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.",
+          "maxLagMs": 34.599999997764826
+        },
+        "remounted": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 2,
+            "disposed": 1,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 2,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        }
+      },
+      {
+        "cycle": 2,
+        "status": "passed",
+        "configuredRetentionMs": 5000,
+        "eventualObservationDeadlineMs": 20000,
+        "removal": {
+          "kind": "canvas-detached-observed",
+          "atMs": 8239.800000000745,
+          "canvasId": 2
+        },
+        "entry": {
+          "kind": "dispose-entry",
+          "atMs": 13240,
+          "canvasId": 2
+        },
+        "exit": {
+          "kind": "dispose-exit",
+          "atMs": 13566.800000000745,
+          "canvasId": 2
+        },
+        "lost": {
+          "kind": "context-loss-observed",
+          "atMs": 13567,
+          "canvasId": 2,
+          "trusted": true
+        },
+        "removalToDisposeEntryMs": 5000.199999999255,
+        "disposeSynchronousDurationMs": 326.80000000074506,
+        "removalToContextLossObservationMs": 5327.199999999255,
+        "claim": "Clean cycle with no added capture or diagnostic fence reached zero engine/canvas counters and observed context loss within recorded elapsed time; production completion fences remain active. Not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.",
+        "disposed": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 2,
+            "disposed": 2,
+            "live": 0
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [],
+          "canvases": [],
+          "events": []
+        },
+        "heartbeat": {
+          "samples": [
+            {
+              "atMs": 8244.699999999255,
+              "lagMs": -7.899999998509884
+            },
+            {
+              "atMs": 8294.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 8344.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 8394.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8444.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8494.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 8544.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 8594.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 8645,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 8694.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 8746.89999999851,
+              "lagMs": 2.099999997764826
+            },
+            {
+              "atMs": 8794.800000000745,
+              "lagMs": -2.099999997764826
+            },
+            {
+              "atMs": 8844.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8894.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8944.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 8994.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9044.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9094.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9144.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9194.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9244.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9294.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9344.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9394.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9446.800000000745,
+              "lagMs": 2
+            },
+            {
+              "atMs": 9494.699999999255,
+              "lagMs": -2.100000001490116
+            },
+            {
+              "atMs": 9544.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9594.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9644.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9694.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9744.699999999255,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9794.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9844.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 9894.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 9944.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 9994.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10045,
+              "lagMs": 0.30000000074505806
+            },
+            {
+              "atMs": 10094.89999999851,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10144.699999999255,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 10194.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10244.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10295,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 10344.800000000745,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 10396.599999997765,
+              "lagMs": 1.7999999970197678
+            },
+            {
+              "atMs": 10446.89999999851,
+              "lagMs": 0.30000000074505806
+            },
+            {
+              "atMs": 10494.800000000745,
+              "lagMs": -2.099999997764826
+            },
+            {
+              "atMs": 10544.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10594.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10644.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10694.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10744.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10794.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10844.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 10894.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 10944.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 10994.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11045.099999997765,
+              "lagMs": 0.29999999701976776
+            },
+            {
+              "atMs": 11094.800000000745,
+              "lagMs": -0.29999999701976776
+            },
+            {
+              "atMs": 11146.800000000745,
+              "lagMs": 2
+            },
+            {
+              "atMs": 11194.800000000745,
+              "lagMs": -2
+            },
+            {
+              "atMs": 11244.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11294.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 11344.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 11394.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11444.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 11495.800000000745,
+              "lagMs": 1.1000000014901161
+            },
+            {
+              "atMs": 11544.800000000745,
+              "lagMs": -1
+            },
+            {
+              "atMs": 11594.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11644.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11694.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11745,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 11795.599999997765,
+              "lagMs": 0.5999999977648258
+            },
+            {
+              "atMs": 11844.699999999255,
+              "lagMs": -0.8999999985098839
+            },
+            {
+              "atMs": 11894.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 11944.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 11994.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 12044.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 12094.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 12146.800000000745,
+              "lagMs": 2
+            },
+            {
+              "atMs": 12194.89999999851,
+              "lagMs": -1.9000000022351742
+            },
+            {
+              "atMs": 12246.699999999255,
+              "lagMs": 1.800000000745058
+            },
+            {
+              "atMs": 12294.800000000745,
+              "lagMs": -1.8999999985098839
+            },
+            {
+              "atMs": 12345.5,
+              "lagMs": 0.6999999992549419
+            },
+            {
+              "atMs": 12394.800000000745,
+              "lagMs": -0.6999999992549419
+            },
+            {
+              "atMs": 12444.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 12494.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 12544.89999999851,
+              "lagMs": 0.09999999776482582
+            },
+            {
+              "atMs": 12594.699999999255,
+              "lagMs": -0.19999999925494194
+            },
+            {
+              "atMs": 12644.800000000745,
+              "lagMs": 0.10000000149011612
+            },
+            {
+              "atMs": 12694.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 12745,
+              "lagMs": 0.19999999925494194
+            },
+            {
+              "atMs": 12795.699999999255,
+              "lagMs": 0.6999999992549419
+            },
+            {
+              "atMs": 12844.89999999851,
+              "lagMs": -0.8000000007450581
+            },
+            {
+              "atMs": 12894.800000000745,
+              "lagMs": -0.09999999776482582
+            },
+            {
+              "atMs": 12944.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 12994.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 13044.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 13094.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 13144.800000000745,
+              "lagMs": 0
+            },
+            {
+              "atMs": 13194.699999999255,
+              "lagMs": -0.10000000149011612
+            },
+            {
+              "atMs": 13567,
+              "lagMs": 322.30000000074506
+            },
+            {
+              "atMs": 13594.699999999255,
+              "lagMs": -22.300000000745058
+            },
+            {
+              "atMs": 13645.199999999255,
+              "lagMs": 0.5
+            }
+          ],
+          "note": "Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.",
+          "maxLagMs": 322.30000000074506
+        },
+        "remounted": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 3,
+            "disposed": 2,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "summer-valley",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 3,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 163,
+              "triangles": 5474754,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "valley-reflection-cube",
+                    "type": "unsigned-byte",
+                    "width": 128,
+                    "height": 128,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "valley-refraction-depth",
+                    "type": "unsigned-byte",
+                    "width": 1280,
+                    "height": 800,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ]
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        }
+      }
+    ]
+  },
+  "captures": [],
+  "errors": [],
+  "warnings": [
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+  ],
+  "unrun": [
+    "Lifecycle rendering/visual correctness deliberately not inferred from no-capture test."
+  ],
+  "browser": "153.0.8010.0",
+  "initial": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "summer-valley",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 163,
+        "triangles": 5474754,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "valley-reflection-cube",
+              "type": "unsigned-byte",
+              "width": 128,
+              "height": 128,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "valley-refraction-depth",
+              "type": "unsigned-byte",
+              "width": 1280,
+              "height": 800,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ]
+        },
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "graphics": {
+    "canvasId": 1,
+    "width": 1280,
+    "height": 800,
+    "frames": "1",
+    "time": "0.0000",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "extColorBufferFloat": true,
+    "extColorBufferHalfFloat": true,
+    "targetAudit": {
+      "forcedByte": true,
+      "colorBufferFloat": true,
+      "colorBufferHalfFloat": true,
+      "checks": [
+        {
+          "label": "valley-reflection-cube",
+          "type": "unsigned-byte",
+          "width": 128,
+          "height": 128,
+          "faces": [
+            36053,
+            36053,
+            36053,
+            36053,
+            36053,
+            36053
+          ],
+          "complete": true
+        },
+        {
+          "label": "valley-refraction-depth",
+          "type": "unsigned-byte",
+          "width": 1280,
+          "height": 800,
+          "faces": [
+            36053
+          ],
+          "complete": true
+        }
+      ]
+    }
+  },
+  "beforeDisposalTelemetry": {
+    "timeline": [
+      {
+        "kind": "set-size-request",
+        "atMs": 75.30000000074506,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 75.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 661.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 416.5999999977648,
+        "elapsedMs": 244.90000000223517,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 11,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face0:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 663.1999999992549,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 661.5999999977648,
+        "elapsedMs": 1.6000000014901161,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 22,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face1:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 663.8000000007451,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 663.1999999992549,
+        "elapsedMs": 0.6000000014901161,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 32,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face2:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 664.1999999992549,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 663.8000000007451,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 42,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face3:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 664.5999999977648,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 664.1999999992549,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 57,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face4:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 665.0999999977648,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 664.5999999977648,
+        "elapsedMs": 0.5,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 72,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face5:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 1323.199999999255,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 1,
+        "startMs": 1010.1999999992549,
+        "elapsedMs": 313,
+        "exclusiveDrawCalls": 37,
+        "inclusiveDrawCalls": 37,
+        "cumulativeDrawCalls": 161,
+        "drawTargets": {
+          "fba34b91-6153-4465-8560-90cae7043e16:1280x800:type1009:face0:mip0": {
+            "calls": 37,
+            "submittedElements": 1936686
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 1280,
+          "height": 800,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 1362.8999999985099,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 677.8000000007451,
+        "elapsedMs": 685.0999999977648,
+        "exclusiveDrawCalls": 54,
+        "inclusiveDrawCalls": 91,
+        "cumulativeDrawCalls": 163,
+        "drawTargets": {
+          "0a3a7034-56c1-47cc-8c15-669a3f9fd3f1:2048x2048:type1009:face0:mip0": {
+            "calls": 15,
+            "submittedElements": 978078
+          },
+          "canvas": {
+            "calls": 39,
+            "submittedElements": 1991506
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1364.199999999255,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 75.30000000074506,
+          "same": false
+        },
+        "drawCalls": 91,
+        "startMs": 677.3999999985099,
+        "elapsedMs": 686.8000000007451,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1364.5999999977648,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 1365.0999999977648,
+        "canvasId": 1,
+        "elapsedMs": 1289.5999999977648,
+        "drawCalls": 163
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1365.199999999255,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1364.5999999977648,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1365.199999999255,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1365.800000000745,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1365.8999999985099,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1365.800000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1365.800000000745,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-secondary",
+        "atMs": 2068.599999997765
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2070.5,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2070.599999997765,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2070.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2070.5,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "canvas-holder-move-observed",
+        "atMs": 2070.599999997765,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2070.89999999851,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2071,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2070.89999999851,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2070.89999999851,
+        "elapsedMs": 0.10000000149011612,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-primary",
+        "atMs": 2076
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 2076.300000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2076.39999999851,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2076.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2076.39999999851,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2076.39999999851,
+        "elapsedMs": 0.10000000149011612,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2089.699999999255,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2089.699999999255,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2089.699999999255,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2089.699999999255,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "unmount-request",
+        "atMs": 2090.099999997765
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 2090.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "dispose-entry",
+        "atMs": 7091,
+        "canvasId": 1
+      },
+      {
+        "kind": "world-dispose-entry",
+        "atMs": 7091.300000000745,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 14,
+          "textures": 6,
+          "programs": 30
+        }
+      },
+      {
+        "kind": "world-dispose-exit",
+        "atMs": 7091.599999997765,
+        "canvasId": 1,
+        "elapsedMs": 0.29999999701976776,
+        "jsResourceBookkeeping": {
+          "geometries": 14,
+          "textures": 3,
+          "programs": 30
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 7093,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 7093,
+        "canvasId": 1,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "renderer-dispose-entry",
+        "atMs": 7093,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 7093.099999997765,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 7093.099999997765,
+        "canvasId": 1,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "renderer-dispose-exit",
+        "atMs": 7093.199999999255,
+        "canvasId": 1,
+        "elapsedMs": 0.19999999925494194,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "force-context-loss-entry",
+        "atMs": 7093.199999999255,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "force-context-loss-exit",
+        "atMs": 7129.199999999255,
+        "canvasId": 1,
+        "elapsedMs": 36,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "dispose-exit",
+        "atMs": 7129.199999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "context-loss-observed",
+        "atMs": 7129.39999999851,
+        "canvasId": 1,
+        "trusted": true
+      },
+      {
+        "kind": "mount-request",
+        "atMs": 7205
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7213.300000000745,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 7213.39999999851,
+        "canvasId": 2
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7680.800000000745,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7479.39999999851,
+        "elapsedMs": 201.40000000223517,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 11,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face0:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7681.5,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7680.800000000745,
+        "elapsedMs": 0.6999999992549419,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 22,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face1:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7681.800000000745,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7681.5,
+        "elapsedMs": 0.30000000074505806,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 32,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face2:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7682.199999999255,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7681.800000000745,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 42,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face3:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7682.5,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7682.199999999255,
+        "elapsedMs": 0.30000000074505806,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 57,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face4:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7682.89999999851,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7682.5,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 72,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face5:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 8168.800000000745,
+        "canvasId": 2,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 1,
+        "startMs": 7947.800000000745,
+        "elapsedMs": 221,
+        "exclusiveDrawCalls": 37,
+        "inclusiveDrawCalls": 37,
+        "cumulativeDrawCalls": 161,
+        "drawTargets": {
+          "b3e989bc-5922-4fea-ac6c-66772bad5070:1280x800:type1009:face0:mip0": {
+            "calls": 37,
+            "submittedElements": 1936686
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 1280,
+          "height": 800,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 8200.199999999255,
+        "canvasId": 2,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7687.599999997765,
+        "elapsedMs": 512.6000000014901,
+        "exclusiveDrawCalls": 54,
+        "inclusiveDrawCalls": 91,
+        "cumulativeDrawCalls": 163,
+        "drawTargets": {
+          "1703a019-99cc-4c4d-b0e9-eda72eb49a1d:2048x2048:type1009:face0:mip0": {
+            "calls": 15,
+            "submittedElements": 978078
+          },
+          "canvas": {
+            "calls": 39,
+            "submittedElements": 1991506
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 8201,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7213.300000000745,
+          "same": false
+        },
+        "drawCalls": 91,
+        "startMs": 7687.599999997765,
+        "elapsedMs": 513.4000000022352,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 8201.199999999255,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 8201.300000000745,
+        "canvasId": 2,
+        "elapsedMs": 987.9000000022352,
+        "drawCalls": 163
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 8201.300000000745,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 8201.199999999255,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 8201.300000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 8201.599999997765,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 8201.599999997765,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 8201.599999997765,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 8201.599999997765,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      }
+    ],
+    "input": [],
+    "maxHeartbeatLagMs": 1283.199999999255,
+    "heartbeats": [
+      {
+        "atMs": 1377.699999999255,
+        "lagMs": 1283.199999999255
+      },
+      {
+        "atMs": 1396.8999999985099,
+        "lagMs": -30.800000000745058
+      },
+      {
+        "atMs": 1444.800000000745,
+        "lagMs": -2.099999997764826
+      },
+      {
+        "atMs": 1494.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1544.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1644.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1694.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1744.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1794.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1844.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1894.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1945,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 1994.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2044.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2094.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2144.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2194.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2244.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2294.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2344.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2394.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2444.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2494.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2544.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2594.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2644.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2694.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2744.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2794.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2844.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2894.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2944.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2994.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3044.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3094.599999997765,
+        "lagMs": -0.20000000298023224
+      },
+      {
+        "atMs": 3144.800000000745,
+        "lagMs": 0.20000000298023224
+      },
+      {
+        "atMs": 3194.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3294.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3344.699999999255,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3394.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3444.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3494.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3544.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3594.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3644.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3694.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3745,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 3794.699999999255,
+        "lagMs": -0.30000000074505806
+      },
+      {
+        "atMs": 3844.89999999851,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 3894.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 3944.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4045.099999997765,
+        "lagMs": 0.29999999701976776
+      },
+      {
+        "atMs": 4094.800000000745,
+        "lagMs": -0.29999999701976776
+      },
+      {
+        "atMs": 4144.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4194.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4294.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4344.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4444.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 4494.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4544.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4644.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4694.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4744.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4794.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4844.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4894.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4944.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5044.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5094.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5144.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5194.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5294.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5344.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5444.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 5494.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 5544.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5644.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 5694.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 5744.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5794.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5844.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5894.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5944.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5995.099999997765,
+        "lagMs": 0.29999999701976776
+      },
+      {
+        "atMs": 6044.800000000745,
+        "lagMs": -0.29999999701976776
+      },
+      {
+        "atMs": 6094.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6144.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6194.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6244.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6294.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6344.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6444.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6494.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6544.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6644.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6694.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6744.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6794.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6844.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6894.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6944.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 6994.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 7044.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7129.39999999851,
+        "lagMs": 34.599999997764826
+      },
+      {
+        "atMs": 7144.699999999255,
+        "lagMs": -34.69999999925494
+      },
+      {
+        "atMs": 7194.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8202.599999997765,
+        "lagMs": 957.7999999970198
+      }
+    ],
+    "countingMethod": "Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls."
+  },
+  "final": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 3,
+      "disposed": 2,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "summer-valley",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 3,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 163,
+        "triangles": 5474754,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "valley-reflection-cube",
+              "type": "unsigned-byte",
+              "width": 128,
+              "height": 128,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "valley-refraction-depth",
+              "type": "unsigned-byte",
+              "width": 1280,
+              "height": 800,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ]
+        },
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "telemetry": {
+    "timeline": [
+      {
+        "kind": "set-size-request",
+        "atMs": 75.30000000074506,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 75.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 661.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 416.5999999977648,
+        "elapsedMs": 244.90000000223517,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 11,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face0:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 663.1999999992549,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 661.5999999977648,
+        "elapsedMs": 1.6000000014901161,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 22,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face1:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 663.8000000007451,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 663.1999999992549,
+        "elapsedMs": 0.6000000014901161,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 32,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face2:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 664.1999999992549,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 663.8000000007451,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 42,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face3:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 664.5999999977648,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 664.1999999992549,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 57,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face4:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 665.0999999977648,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 664.5999999977648,
+        "elapsedMs": 0.5,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 72,
+        "drawTargets": {
+          "152490a7-50be-49e5-a52e-db348a36eda8:128x128:type1009:face5:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 1323.199999999255,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 1,
+        "startMs": 1010.1999999992549,
+        "elapsedMs": 313,
+        "exclusiveDrawCalls": 37,
+        "inclusiveDrawCalls": 37,
+        "cumulativeDrawCalls": 161,
+        "drawTargets": {
+          "fba34b91-6153-4465-8560-90cae7043e16:1280x800:type1009:face0:mip0": {
+            "calls": 37,
+            "submittedElements": 1936686
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 1280,
+          "height": 800,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 1362.8999999985099,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 677.8000000007451,
+        "elapsedMs": 685.0999999977648,
+        "exclusiveDrawCalls": 54,
+        "inclusiveDrawCalls": 91,
+        "cumulativeDrawCalls": 163,
+        "drawTargets": {
+          "0a3a7034-56c1-47cc-8c15-669a3f9fd3f1:2048x2048:type1009:face0:mip0": {
+            "calls": 15,
+            "submittedElements": 978078
+          },
+          "canvas": {
+            "calls": 39,
+            "submittedElements": 1991506
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1364.199999999255,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 75.30000000074506,
+          "same": false
+        },
+        "drawCalls": 91,
+        "startMs": 677.3999999985099,
+        "elapsedMs": 686.8000000007451,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1364.5999999977648,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 1365.0999999977648,
+        "canvasId": 1,
+        "elapsedMs": 1289.5999999977648,
+        "drawCalls": 163
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1365.199999999255,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1364.5999999977648,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1365.199999999255,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 1365.800000000745,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 1365.8999999985099,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 1365.800000000745,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 1365.800000000745,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-secondary",
+        "atMs": 2068.599999997765
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2070.5,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2070.599999997765,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2070.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2070.5,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "canvas-holder-move-observed",
+        "atMs": 2070.599999997765,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2070.89999999851,
+        "canvasId": 1,
+        "action": "holder-transfer-secondary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2071,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-secondary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2070.89999999851,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2070.89999999851,
+        "elapsedMs": 0.10000000149011612,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "holder-transfer-primary",
+        "atMs": 2076
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 2076.300000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2076.39999999851,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2076.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2076.39999999851,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2076.39999999851,
+        "elapsedMs": 0.10000000149011612,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 2089.699999999255,
+        "canvasId": 1,
+        "action": "holder-transfer-primary",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 2089.699999999255,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "holder-transfer-primary",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 2089.699999999255,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 2089.699999999255,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "unmount-request",
+        "atMs": 2090.099999997765
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 2090.5,
+        "canvasId": 1
+      },
+      {
+        "kind": "dispose-entry",
+        "atMs": 7091,
+        "canvasId": 1
+      },
+      {
+        "kind": "world-dispose-entry",
+        "atMs": 7091.300000000745,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 14,
+          "textures": 6,
+          "programs": 30
+        }
+      },
+      {
+        "kind": "world-dispose-exit",
+        "atMs": 7091.599999997765,
+        "canvasId": 1,
+        "elapsedMs": 0.29999999701976776,
+        "jsResourceBookkeeping": {
+          "geometries": 14,
+          "textures": 3,
+          "programs": 30
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 7093,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 7093,
+        "canvasId": 1,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "renderer-dispose-entry",
+        "atMs": 7093,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 7093.099999997765,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 7093.099999997765,
+        "canvasId": 1,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "renderer-dispose-exit",
+        "atMs": 7093.199999999255,
+        "canvasId": 1,
+        "elapsedMs": 0.19999999925494194,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "force-context-loss-entry",
+        "atMs": 7093.199999999255,
+        "canvasId": 1,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "force-context-loss-exit",
+        "atMs": 7129.199999999255,
+        "canvasId": 1,
+        "elapsedMs": 36,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "dispose-exit",
+        "atMs": 7129.199999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "context-loss-observed",
+        "atMs": 7129.39999999851,
+        "canvasId": 1,
+        "trusted": true
+      },
+      {
+        "kind": "mount-request",
+        "atMs": 7205
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 7213.300000000745,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 7213.39999999851,
+        "canvasId": 2
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7680.800000000745,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7479.39999999851,
+        "elapsedMs": 201.40000000223517,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 11,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face0:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7681.5,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7680.800000000745,
+        "elapsedMs": 0.6999999992549419,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 22,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face1:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7681.800000000745,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7681.5,
+        "elapsedMs": 0.30000000074505806,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 32,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face2:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7682.199999999255,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7681.800000000745,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 42,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face3:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7682.5,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7682.199999999255,
+        "elapsedMs": 0.30000000074505806,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 57,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face4:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 7682.89999999851,
+        "canvasId": 2,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7682.5,
+        "elapsedMs": 0.3999999985098839,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 72,
+        "drawTargets": {
+          "9252b187-6d9f-4f3d-abd0-0ee4d205bd1f:128x128:type1009:face5:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 8168.800000000745,
+        "canvasId": 2,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 1,
+        "startMs": 7947.800000000745,
+        "elapsedMs": 221,
+        "exclusiveDrawCalls": 37,
+        "inclusiveDrawCalls": 37,
+        "cumulativeDrawCalls": 161,
+        "drawTargets": {
+          "b3e989bc-5922-4fea-ac6c-66772bad5070:1280x800:type1009:face0:mip0": {
+            "calls": 37,
+            "submittedElements": 1936686
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 1280,
+          "height": 800,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 8200.199999999255,
+        "canvasId": 2,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 7687.599999997765,
+        "elapsedMs": 512.6000000014901,
+        "exclusiveDrawCalls": 54,
+        "inclusiveDrawCalls": 91,
+        "cumulativeDrawCalls": 163,
+        "drawTargets": {
+          "1703a019-99cc-4c4d-b0e9-eda72eb49a1d:2048x2048:type1009:face0:mip0": {
+            "calls": 15,
+            "submittedElements": 978078
+          },
+          "canvas": {
+            "calls": 39,
+            "submittedElements": 1991506
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 8201,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 7213.300000000745,
+          "same": false
+        },
+        "drawCalls": 91,
+        "startMs": 7687.599999997765,
+        "elapsedMs": 513.4000000022352,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 8201.199999999255,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 8201.300000000745,
+        "canvasId": 2,
+        "elapsedMs": 987.9000000022352,
+        "drawCalls": 163
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 8201.300000000745,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 8201.199999999255,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 8201.300000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 8201.599999997765,
+        "canvasId": 2,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 8201.599999997765,
+        "canvasId": 2,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 8201.599999997765,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 8201.599999997765,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "unmount-request",
+        "atMs": 8239.199999999255
+      },
+      {
+        "kind": "canvas-detached-observed",
+        "atMs": 8239.800000000745,
+        "canvasId": 2
+      },
+      {
+        "kind": "dispose-entry",
+        "atMs": 13240,
+        "canvasId": 2
+      },
+      {
+        "kind": "world-dispose-entry",
+        "atMs": 13240.199999999255,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 14,
+          "textures": 6,
+          "programs": 30
+        }
+      },
+      {
+        "kind": "world-dispose-exit",
+        "atMs": 13240.300000000745,
+        "canvasId": 2,
+        "elapsedMs": 0.10000000149011612,
+        "jsResourceBookkeeping": {
+          "geometries": 14,
+          "textures": 3,
+          "programs": 30
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 13241.099999997765,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 13241.099999997765,
+        "canvasId": 2,
+        "elapsedMs": 0,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "renderer-dispose-entry",
+        "atMs": 13241.099999997765,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-entry",
+        "atMs": 13241.099999997765,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "render-lists-dispose-exit",
+        "atMs": 13241.199999999255,
+        "canvasId": 2,
+        "elapsedMs": 0.10000000149011612,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "renderer-dispose-exit",
+        "atMs": 13241.199999999255,
+        "canvasId": 2,
+        "elapsedMs": 0.10000000149011612,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "force-context-loss-entry",
+        "atMs": 13241.199999999255,
+        "canvasId": 2,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "force-context-loss-exit",
+        "atMs": 13566.800000000745,
+        "canvasId": 2,
+        "elapsedMs": 325.6000000014901,
+        "jsResourceBookkeeping": {
+          "geometries": 0,
+          "textures": 1,
+          "programs": 3
+        }
+      },
+      {
+        "kind": "dispose-exit",
+        "atMs": 13566.800000000745,
+        "canvasId": 2
+      },
+      {
+        "kind": "context-loss-observed",
+        "atMs": 13567,
+        "canvasId": 2,
+        "trusted": true
+      },
+      {
+        "kind": "mount-request",
+        "atMs": 13662.300000000745
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 13672.800000000745,
+        "canvasId": 3,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 13672.800000000745,
+        "canvasId": 3
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14180,
+        "canvasId": 3,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 13931.89999999851,
+        "elapsedMs": 248.10000000149012,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 11,
+        "drawTargets": {
+          "e01ebe2a-20f4-4075-8001-27f819a7a472:128x128:type1009:face0:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14180.599999997765,
+        "canvasId": 3,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 14180,
+        "elapsedMs": 0.5999999977648258,
+        "exclusiveDrawCalls": 11,
+        "inclusiveDrawCalls": 11,
+        "cumulativeDrawCalls": 22,
+        "drawTargets": {
+          "e01ebe2a-20f4-4075-8001-27f819a7a472:128x128:type1009:face1:mip0": {
+            "calls": 11,
+            "submittedElements": 1918182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14180.89999999851,
+        "canvasId": 3,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 14180.599999997765,
+        "elapsedMs": 0.30000000074505806,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 32,
+        "drawTargets": {
+          "e01ebe2a-20f4-4075-8001-27f819a7a472:128x128:type1009:face2:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14181.099999997765,
+        "canvasId": 3,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 14181,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 10,
+        "inclusiveDrawCalls": 10,
+        "cumulativeDrawCalls": 42,
+        "drawTargets": {
+          "e01ebe2a-20f4-4075-8001-27f819a7a472:128x128:type1009:face3:mip0": {
+            "calls": 10,
+            "submittedElements": 1916682
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14181.39999999851,
+        "canvasId": 3,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 14181.099999997765,
+        "elapsedMs": 0.30000000074505806,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 57,
+        "drawTargets": {
+          "e01ebe2a-20f4-4075-8001-27f819a7a472:128x128:type1009:face4:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14181.599999997765,
+        "canvasId": 3,
+        "scope": "engine-initialization",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 14181.39999999851,
+        "elapsedMs": 0.19999999925494194,
+        "exclusiveDrawCalls": 15,
+        "inclusiveDrawCalls": 15,
+        "cumulativeDrawCalls": 72,
+        "drawTargets": {
+          "e01ebe2a-20f4-4075-8001-27f819a7a472:128x128:type1009:face5:mip0": {
+            "calls": 15,
+            "submittedElements": 1924182
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 128,
+          "height": 128,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14699.800000000745,
+        "canvasId": 3,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 1,
+        "startMs": 14471.699999999255,
+        "elapsedMs": 228.10000000149012,
+        "exclusiveDrawCalls": 37,
+        "inclusiveDrawCalls": 37,
+        "cumulativeDrawCalls": 161,
+        "drawTargets": {
+          "a6feecba-ef99-4b65-91bd-1f9057b0b132:1280x800:type1009:face0:mip0": {
+            "calls": 37,
+            "submittedElements": 1936686
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 1280,
+          "height": 800,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 14733.199999999255,
+        "canvasId": 3,
+        "scope": "initial-static",
+        "action": "mount-request",
+        "nestedDepth": 0,
+        "startMs": 14188.699999999255,
+        "elapsedMs": 544.5,
+        "exclusiveDrawCalls": 54,
+        "inclusiveDrawCalls": 91,
+        "cumulativeDrawCalls": 163,
+        "drawTargets": {
+          "b651dbdc-b76a-424f-8054-7456314e6360:2048x2048:type1009:face0:mip0": {
+            "calls": 15,
+            "submittedElements": 978078
+          },
+          "canvas": {
+            "calls": 39,
+            "submittedElements": 1991506
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 14733.89999999851,
+        "canvasId": 3,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 13672.800000000745,
+          "same": false
+        },
+        "drawCalls": 91,
+        "startMs": 14188.699999999255,
+        "elapsedMs": 545.1999999992549,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 14734.199999999255,
+        "canvasId": 3,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 14734.199999999255,
+        "canvasId": 3,
+        "elapsedMs": 1061.3999999985099,
+        "drawCalls": 163
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 14734.300000000745,
+        "canvasId": 3,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 14734.199999999255,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 14734.300000000745,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 14734.5,
+        "canvasId": 3,
+        "action": "mount-request",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 14734.5,
+        "canvasId": 3,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "mount-request",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 14734.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 14734.5,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      }
+    ],
+    "input": [],
+    "maxHeartbeatLagMs": 1283.199999999255,
+    "heartbeats": [
+      {
+        "atMs": 1377.699999999255,
+        "lagMs": 1283.199999999255
+      },
+      {
+        "atMs": 1396.8999999985099,
+        "lagMs": -30.800000000745058
+      },
+      {
+        "atMs": 1444.800000000745,
+        "lagMs": -2.099999997764826
+      },
+      {
+        "atMs": 1494.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1544.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1644.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1694.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1744.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1794.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1844.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1894.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1945,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 1994.8999999985099,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2044.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 2094.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2144.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2194.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2244.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2294.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2344.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2394.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2444.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2494.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2544.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 2594.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2644.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2694.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2744.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2794.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2844.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2894.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 2944.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 2994.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3044.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3094.599999997765,
+        "lagMs": -0.20000000298023224
+      },
+      {
+        "atMs": 3144.800000000745,
+        "lagMs": 0.20000000298023224
+      },
+      {
+        "atMs": 3194.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3294.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 3344.699999999255,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 3394.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3444.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3494.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3544.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3594.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3644.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 3694.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 3745,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 3794.699999999255,
+        "lagMs": -0.30000000074505806
+      },
+      {
+        "atMs": 3844.89999999851,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 3894.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 3944.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 3994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4045.099999997765,
+        "lagMs": 0.29999999701976776
+      },
+      {
+        "atMs": 4094.800000000745,
+        "lagMs": -0.29999999701976776
+      },
+      {
+        "atMs": 4144.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4194.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4294.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4344.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4444.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 4494.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 4544.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4644.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4694.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4744.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4794.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 4844.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 4894.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4944.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 4994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5044.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5094.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5144.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5194.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5294.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5344.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5444.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 5494.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 5544.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5644.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 5694.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 5744.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5794.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5844.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 5894.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 5944.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 5995.099999997765,
+        "lagMs": 0.29999999701976776
+      },
+      {
+        "atMs": 6044.800000000745,
+        "lagMs": -0.29999999701976776
+      },
+      {
+        "atMs": 6094.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6144.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6194.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6244.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6294.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6344.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6444.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6494.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6544.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6644.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6694.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 6744.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 6794.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6844.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6894.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 6944.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 6994.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 7044.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 7129.39999999851,
+        "lagMs": 34.599999997764826
+      },
+      {
+        "atMs": 7144.699999999255,
+        "lagMs": -34.69999999925494
+      },
+      {
+        "atMs": 7194.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8202.599999997765,
+        "lagMs": 957.7999999970198
+      },
+      {
+        "atMs": 8244.699999999255,
+        "lagMs": -7.899999998509884
+      },
+      {
+        "atMs": 8294.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8344.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 8394.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8444.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8494.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8544.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 8594.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 8645,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 8694.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 8746.89999999851,
+        "lagMs": 2.099999997764826
+      },
+      {
+        "atMs": 8794.800000000745,
+        "lagMs": -2.099999997764826
+      },
+      {
+        "atMs": 8844.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8894.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8944.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 8994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9044.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9094.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9144.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9194.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9244.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9294.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9344.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9446.800000000745,
+        "lagMs": 2
+      },
+      {
+        "atMs": 9494.699999999255,
+        "lagMs": -2.100000001490116
+      },
+      {
+        "atMs": 9544.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9594.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9644.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9694.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9744.699999999255,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9794.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9844.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 9894.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 9944.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 9994.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10045,
+        "lagMs": 0.30000000074505806
+      },
+      {
+        "atMs": 10094.89999999851,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10144.699999999255,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 10194.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10295,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 10344.800000000745,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 10396.599999997765,
+        "lagMs": 1.7999999970197678
+      },
+      {
+        "atMs": 10446.89999999851,
+        "lagMs": 0.30000000074505806
+      },
+      {
+        "atMs": 10494.800000000745,
+        "lagMs": -2.099999997764826
+      },
+      {
+        "atMs": 10544.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10594.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10644.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10694.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10744.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10794.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10844.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 10894.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 10944.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 10994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11045.099999997765,
+        "lagMs": 0.29999999701976776
+      },
+      {
+        "atMs": 11094.800000000745,
+        "lagMs": -0.29999999701976776
+      },
+      {
+        "atMs": 11146.800000000745,
+        "lagMs": 2
+      },
+      {
+        "atMs": 11194.800000000745,
+        "lagMs": -2
+      },
+      {
+        "atMs": 11244.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11294.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 11344.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 11394.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11444.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 11495.800000000745,
+        "lagMs": 1.1000000014901161
+      },
+      {
+        "atMs": 11544.800000000745,
+        "lagMs": -1
+      },
+      {
+        "atMs": 11594.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11644.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11694.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11745,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 11795.599999997765,
+        "lagMs": 0.5999999977648258
+      },
+      {
+        "atMs": 11844.699999999255,
+        "lagMs": -0.8999999985098839
+      },
+      {
+        "atMs": 11894.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 11944.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 11994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12044.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 12094.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 12146.800000000745,
+        "lagMs": 2
+      },
+      {
+        "atMs": 12194.89999999851,
+        "lagMs": -1.9000000022351742
+      },
+      {
+        "atMs": 12246.699999999255,
+        "lagMs": 1.800000000745058
+      },
+      {
+        "atMs": 12294.800000000745,
+        "lagMs": -1.8999999985098839
+      },
+      {
+        "atMs": 12345.5,
+        "lagMs": 0.6999999992549419
+      },
+      {
+        "atMs": 12394.800000000745,
+        "lagMs": -0.6999999992549419
+      },
+      {
+        "atMs": 12444.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12494.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12544.89999999851,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 12594.699999999255,
+        "lagMs": -0.19999999925494194
+      },
+      {
+        "atMs": 12644.800000000745,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 12694.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12745,
+        "lagMs": 0.19999999925494194
+      },
+      {
+        "atMs": 12795.699999999255,
+        "lagMs": 0.6999999992549419
+      },
+      {
+        "atMs": 12844.89999999851,
+        "lagMs": -0.8000000007450581
+      },
+      {
+        "atMs": 12894.800000000745,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 12944.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 12994.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 13044.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 13094.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 13144.800000000745,
+        "lagMs": 0
+      },
+      {
+        "atMs": 13194.699999999255,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 13567,
+        "lagMs": 322.30000000074506
+      },
+      {
+        "atMs": 13594.699999999255,
+        "lagMs": -22.300000000745058
+      },
+      {
+        "atMs": 13645.199999999255,
+        "lagMs": 0.5
+      },
+      {
+        "atMs": 14735.699999999255,
+        "lagMs": 1040.5
+      },
+      {
+        "atMs": 14746.800000000745,
+        "lagMs": -38.899999998509884
+      }
+    ],
+    "countingMethod": "Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls."
+  },
+  "finishedAt": "2026-10-04T21:49:35.547Z"
+}

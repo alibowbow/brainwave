@@ -1,0 +1,6 @@
+Testing scops
+Loaded scops; waiting for scene ready
+Ready scops
+Lifecycle scops: clean cleanup diagnostic cycle 1/2
+Lifecycle scops: clean cleanup diagnostic cycle 2/2
+Evidence: components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-scops.json; pass=true

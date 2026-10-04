@@ -1,0 +1,3248 @@
+{
+  "schema": 3,
+  "world": "pebble-shore",
+  "mode": "byte",
+  "stage": "visual",
+  "tag": "final",
+  "drainBeforeDispose": false,
+  "activeFrames": 0,
+  "viewportName": "portrait",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "dpr": 1,
+  "generatedAt": "2026-10-04T21:55:24.983Z",
+  "scope": "Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.",
+  "limitations": [
+    "SwiftShader software GPU; no physical touch device or sustained hardware performance certification.",
+    "Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.",
+    "render-js-return duration includes synchronous driver/compiler stalls; it is not pure JavaScript CPU time.",
+    "Configured shared-host retention is 5000 ms; disposal entry/exit and actual context loss are separate measured events."
+  ],
+  "gitHead": "d5f7530228d69664df42b3e4901ede6215aeba22",
+  "gitStatus": "M qa/FOLLOWUP.md\n?? qa/LIFECYCLE.md\n?? qa/build-lifecycle-manifest.py\n?? qa/lifecycle-publication.json\n?? qa/submission-evidence/",
+  "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+  "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+  "bundleSha256": "789f1cf31ce3840e71a9a50a283f1d811dc4f2f888124ebd10d5768e7eb4d91b",
+  "scriptSha256": "93af8cef0201bf870f2546d20165ef2be12ff8f93305f207514213c9a4e9d963",
+  "status": "passed",
+  "checks": {
+    "initialPaused": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "pebble-shore",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 112,
+              "triangles": 843294,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "pebble-byte-sky-cube",
+                    "type": "unsigned-byte",
+                    "width": 256,
+                    "height": 256,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "pebble-byte-cube-uv",
+                    "type": "unsigned-byte",
+                    "width": 768,
+                    "height": 1024,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ],
+                "environment": "byte-ggx-cube-uv"
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "pebble-shore",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 112,
+              "triangles": 843294,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "pebble-byte-sky-cube",
+                    "type": "unsigned-byte",
+                    "width": 256,
+                    "height": 256,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "pebble-byte-cube-uv",
+                    "type": "unsigned-byte",
+                    "width": 768,
+                    "height": 1024,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ],
+                "environment": "byte-ggx-cube-uv"
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 4,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 112,
+            "triangles": 843294,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 112,
+            "triangles": 843294,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "targetCompatibility": {
+      "status": "passed",
+      "selectedTargets": [
+        {
+          "label": "pebble-byte-sky-cube",
+          "type": "unsigned-byte",
+          "width": 256,
+          "height": 256,
+          "faces": [
+            36053,
+            36053,
+            36053,
+            36053,
+            36053,
+            36053
+          ],
+          "complete": true
+        },
+        {
+          "label": "pebble-byte-cube-uv",
+          "type": "unsigned-byte",
+          "width": 768,
+          "height": 1024,
+          "faces": [
+            36053
+          ],
+          "complete": true
+        }
+      ],
+      "failedProbes": [],
+      "selection": "byte-ggx-cube-uv",
+      "note": "Final selected targets are complete; discarded failed capability probes do not invalidate a legitimate byte fallback. Actual rendered-frame/no-error checks remain separate mandatory gates.",
+      "audit": {
+        "forcedByte": true,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "checks": [
+          {
+            "label": "pebble-byte-sky-cube",
+            "type": "unsigned-byte",
+            "width": 256,
+            "height": 256,
+            "faces": [
+              36053,
+              36053,
+              36053,
+              36053,
+              36053,
+              36053
+            ],
+            "complete": true
+          },
+          {
+            "label": "pebble-byte-cube-uv",
+            "type": "unsigned-byte",
+            "width": 768,
+            "height": 1024,
+            "faces": [
+              36053
+            ],
+            "complete": true
+          }
+        ],
+        "environment": "byte-ggx-cube-uv"
+      }
+    },
+    "initial-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 390,
+        "height": 844,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 390,
+        "height": 844,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "polls": 4,
+      "waitStatus": 37148,
+      "elapsedMs": 81.89999999850988,
+      "automationElapsedMs": 84
+    }
+  },
+  "captures": [
+    {
+      "file": "final-pebble-shore-byte-portrait-visual-initial.png",
+      "sha256": "70e606241c5fadffbccdbb0f45e70079a2fae6b5cfb58ad001d87343420487a5",
+      "bytes": 205364,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotElapsedMs": 102,
+      "combinedElapsedMs": 200,
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "pebble-shore",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 112,
+              "triangles": 843294,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "pebble-byte-sky-cube",
+                    "type": "unsigned-byte",
+                    "width": 256,
+                    "height": 256,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "pebble-byte-cube-uv",
+                    "type": "unsigned-byte",
+                    "width": 768,
+                    "height": 1024,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ],
+                "environment": "byte-ggx-cube-uv"
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "pebble-shore",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 390,
+              "height": 844
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 390,
+              "height": 844,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 112,
+              "triangles": 843294,
+              "targets": {
+                "forcedByte": true,
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true,
+                "checks": [
+                  {
+                    "label": "pebble-byte-sky-cube",
+                    "type": "unsigned-byte",
+                    "width": 256,
+                    "height": 256,
+                    "faces": [
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053,
+                      36053
+                    ],
+                    "complete": true
+                  },
+                  {
+                    "label": "pebble-byte-cube-uv",
+                    "type": "unsigned-byte",
+                    "width": 768,
+                    "height": 1024,
+                    "faces": [
+                      36053
+                    ],
+                    "complete": true
+                  }
+                ],
+                "environment": "byte-ggx-cube-uv"
+              },
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  390,
+                  844,
+                  1
+                ],
+                "appliedSize": [
+                  390,
+                  844,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 4,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 390,
+          "height": 844,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 390,
+          "height": 844,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "polls": 4,
+        "waitStatus": 37148,
+        "elapsedMs": 81.89999999850988
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 112,
+            "triangles": 843294,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "pebble-shore",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 390,
+            "height": 844,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 112,
+            "triangles": 843294,
+            "targets": {
+              "forcedByte": true,
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true,
+              "checks": [
+                {
+                  "label": "pebble-byte-sky-cube",
+                  "type": "unsigned-byte",
+                  "width": 256,
+                  "height": 256,
+                  "faces": [
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053,
+                    36053
+                  ],
+                  "complete": true
+                },
+                {
+                  "label": "pebble-byte-cube-uv",
+                  "type": "unsigned-byte",
+                  "width": 768,
+                  "height": 1024,
+                  "faces": [
+                    36053
+                  ],
+                  "complete": true
+                }
+              ],
+              "environment": "byte-ggx-cube-uv"
+            },
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                390,
+                844,
+                1
+              ],
+              "appliedSize": [
+                390,
+                844,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+  ],
+  "unrun": [
+    "Behavior/lifecycle are separate clean stages; no inference from a still PNG."
+  ],
+  "browser": "153.0.8010.0",
+  "initial": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "pebble-shore",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 390,
+        "height": 844,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 112,
+        "triangles": 843294,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "pebble-byte-sky-cube",
+              "type": "unsigned-byte",
+              "width": 256,
+              "height": 256,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "pebble-byte-cube-uv",
+              "type": "unsigned-byte",
+              "width": 768,
+              "height": 1024,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ],
+          "environment": "byte-ggx-cube-uv"
+        },
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            390,
+            844,
+            1
+          ],
+          "appliedSize": [
+            390,
+            844,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "graphics": {
+    "canvasId": 1,
+    "width": 390,
+    "height": 844,
+    "frames": "1",
+    "time": "0.0000",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "extColorBufferFloat": true,
+    "extColorBufferHalfFloat": true,
+    "targetAudit": {
+      "forcedByte": true,
+      "colorBufferFloat": true,
+      "colorBufferHalfFloat": true,
+      "checks": [
+        {
+          "label": "pebble-byte-sky-cube",
+          "type": "unsigned-byte",
+          "width": 256,
+          "height": 256,
+          "faces": [
+            36053,
+            36053,
+            36053,
+            36053,
+            36053,
+            36053
+          ],
+          "complete": true
+        },
+        {
+          "label": "pebble-byte-cube-uv",
+          "type": "unsigned-byte",
+          "width": 768,
+          "height": 1024,
+          "faces": [
+            36053
+          ],
+          "complete": true
+        }
+      ],
+      "environment": "byte-ggx-cube-uv"
+    }
+  },
+  "final": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "pebble-shore",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 390,
+        "height": 844,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 112,
+        "triangles": 843294,
+        "targets": {
+          "forcedByte": true,
+          "colorBufferFloat": true,
+          "colorBufferHalfFloat": true,
+          "checks": [
+            {
+              "label": "pebble-byte-sky-cube",
+              "type": "unsigned-byte",
+              "width": 256,
+              "height": 256,
+              "faces": [
+                36053,
+                36053,
+                36053,
+                36053,
+                36053,
+                36053
+              ],
+              "complete": true
+            },
+            {
+              "label": "pebble-byte-cube-uv",
+              "type": "unsigned-byte",
+              "width": 768,
+              "height": 1024,
+              "faces": [
+                36053
+              ],
+              "complete": true
+            }
+          ],
+          "environment": "byte-ggx-cube-uv"
+        },
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            390,
+            844,
+            1
+          ],
+          "appliedSize": [
+            390,
+            844,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "telemetry": {
+    "timeline": [
+      {
+        "kind": "set-size-request",
+        "atMs": 69.70000000298023,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 390,
+        "height": 844,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 69.90000000223517,
+        "canvasId": 1
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 90.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 79.40000000223517,
+        "elapsedMs": 10.699999999254942,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 1,
+        "drawTargets": {
+          "2cce9e03-f6b1-4c9e-88be-f287ffc641de:256x256:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 2880
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 256,
+          "height": 256,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 90.20000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 90.10000000149012,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 2,
+        "drawTargets": {
+          "2cce9e03-f6b1-4c9e-88be-f287ffc641de:256x256:type1009:face1:mip0": {
+            "calls": 1,
+            "submittedElements": 2880
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 256,
+          "height": 256,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 90.40000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 90.20000000298023,
+        "elapsedMs": 0.19999999925494194,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 3,
+        "drawTargets": {
+          "2cce9e03-f6b1-4c9e-88be-f287ffc641de:256x256:type1009:face2:mip0": {
+            "calls": 1,
+            "submittedElements": 2880
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 256,
+          "height": 256,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 90.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 90.40000000223517,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 4,
+        "drawTargets": {
+          "2cce9e03-f6b1-4c9e-88be-f287ffc641de:256x256:type1009:face3:mip0": {
+            "calls": 1,
+            "submittedElements": 2880
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 256,
+          "height": 256,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 90.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 90.5,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 5,
+        "drawTargets": {
+          "2cce9e03-f6b1-4c9e-88be-f287ffc641de:256x256:type1009:face4:mip0": {
+            "calls": 1,
+            "submittedElements": 2880
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 256,
+          "height": 256,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 90.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 90.60000000149012,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 6,
+        "drawTargets": {
+          "2cce9e03-f6b1-4c9e-88be-f287ffc641de:256x256:type1009:face5:mip0": {
+            "calls": 1,
+            "submittedElements": 2880
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": {
+          "width": 256,
+          "height": 256,
+          "type": 1009,
+          "cube": true
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 90.80000000074506,
+        "elapsedMs": 4.199999999254942,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 7,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.20000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.10000000149012,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 8,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.40000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.20000000298023,
+        "elapsedMs": 0.19999999925494194,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 9,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.40000000223517,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 10,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.5,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 11,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.5,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 12,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.60000000149012,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 13,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.70000000298023,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 14,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.70000000298023,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 15,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.80000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.70000000298023,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 16,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 17,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 18,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 19,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 95.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 95.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 20,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.40000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96,
+        "elapsedMs": 0.4000000022351742,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 21,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.40000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.40000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 22,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.40000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.40000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 23,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.40000000223517,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 24,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.5,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 25,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.60000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 26,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.60000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 27,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.60000000149012,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 28,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.70000000298023,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 29,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.70000000298023,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 30,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.70000000298023,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 31,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.80000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.70000000298023,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 32,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.80000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.80000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 33,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.80000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.80000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 34,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.80000000074506,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 35,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 36,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 37,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 38,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 39,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 96.90000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.90000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 40,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 96.90000000223517,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 41,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 42,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 43,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 44,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.10000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 45,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.10000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 46,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.10000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 47,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.10000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 48,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.10000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.10000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 49,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.20000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.10000000149012,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 50,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.20000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.20000000298023,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 51,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.20000000298023,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 52,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 53,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 54,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 55,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 56,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 57,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 58,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 59,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.30000000074506,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 60,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.40000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.30000000074506,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 61,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.40000000223517,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.40000000223517,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 62,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.40000000223517,
+        "elapsedMs": 0.09999999776482582,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 63,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.5,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 64,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.5,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.5,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 65,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.5,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 66,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.60000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 67,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.60000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 68,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.60000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 69,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.60000000149012,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.60000000149012,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 70,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.60000000149012,
+        "elapsedMs": 0.10000000149011612,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 71,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 97.70000000298023,
+        "canvasId": 1,
+        "scope": "engine-initialization",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 97.70000000298023,
+        "elapsedMs": 0,
+        "exclusiveDrawCalls": 1,
+        "inclusiveDrawCalls": 1,
+        "cumulativeDrawCalls": 72,
+        "drawTargets": {
+          "4062f270-a562-437e-9588-abee7b2b513b:768x1024:type1009:face0:mip0": {
+            "calls": 1,
+            "submittedElements": 6
+          }
+        },
+        "sceneName": "Mesh",
+        "cameraType": "OrthographicCamera",
+        "destination": {
+          "width": 768,
+          "height": 1024,
+          "type": 1009,
+          "cube": false
+        }
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 458.5,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 131.70000000298023,
+        "elapsedMs": 326.79999999701977,
+        "exclusiveDrawCalls": 40,
+        "inclusiveDrawCalls": 40,
+        "cumulativeDrawCalls": 112,
+        "drawTargets": {
+          "9ab4e772-8c1c-40ee-b6a6-1cca7a5dfe30:2048x2048:type1009:face0:mip0": {
+            "calls": 21,
+            "submittedElements": 1184490
+          },
+          "canvas": {
+            "calls": 19,
+            "submittedElements": 1327716
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 459.80000000074506,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 390,
+          "height": 844,
+          "dpr": 1,
+          "atMs": 69.70000000298023,
+          "same": false
+        },
+        "drawCalls": 40,
+        "startMs": 131.5,
+        "elapsedMs": 328.20000000298023,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 460.20000000298023,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 390,
+        "height": 844,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 460.4000000022352,
+        "canvasId": 1,
+        "elapsedMs": 390.5,
+        "drawCalls": 112
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 460.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 390,
+          "height": 844,
+          "dpr": 1,
+          "atMs": 460.20000000298023,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 460.5,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 461,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 390,
+        "height": 844,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 461,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 390,
+          "height": 844,
+          "dpr": 1,
+          "atMs": 461,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 461,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 1167.300000000745,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 1249,
+        "canvasId": 1
+      }
+    ],
+    "input": [],
+    "maxHeartbeatLagMs": 378.0999999977648,
+    "heartbeats": [
+      {
+        "atMs": 469.30000000074506,
+        "lagMs": 378.0999999977648
+      },
+      {
+        "atMs": 491.4000000022352,
+        "lagMs": -27.899999998509884
+      },
+      {
+        "atMs": 544.7000000029802,
+        "lagMs": 3.300000000745058
+      },
+      {
+        "atMs": 591.5,
+        "lagMs": -3.2000000029802322
+      },
+      {
+        "atMs": 641.9000000022352,
+        "lagMs": 0.4000000022351742
+      },
+      {
+        "atMs": 691.5,
+        "lagMs": -0.4000000022351742
+      },
+      {
+        "atMs": 741.6000000014901,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 791.5,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 843,
+        "lagMs": 1.5
+      },
+      {
+        "atMs": 891.5,
+        "lagMs": -1.5
+      },
+      {
+        "atMs": 941.6000000014901,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 991.7000000029802,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1041.5,
+        "lagMs": -0.20000000298023224
+      },
+      {
+        "atMs": 1091.6000000014901,
+        "lagMs": 0.10000000149011612
+      },
+      {
+        "atMs": 1141.5,
+        "lagMs": -0.10000000149011612
+      },
+      {
+        "atMs": 1191.4000000022352,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 1249.300000000745,
+        "lagMs": 7.899999998509884
+      },
+      {
+        "atMs": 1291.5,
+        "lagMs": -7.800000000745058
+      },
+      {
+        "atMs": 1341.6000000014901,
+        "lagMs": 0.10000000149011612
+      }
+    ],
+    "countingMethod": "Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls."
+  },
+  "finishedAt": "2026-10-04T21:55:26.482Z"
+}

@@ -1,12 +1,12 @@
 # Immersive worlds integration contract
 
-> **Current 30-world draft:** [intake and gate ledger](./integration-status-2026-10-04.md). All30 are now registered; user visual acceptance covers26, Rain4 remains held. Audio/input/compatibility integration and exact-head CI are in progress. The three-pilot checkpoint and failed runs below are historical, not the current completion status. Final main merge remains held until the user confirms all30 gates and the Rain dependency.
+> **Current30-world draft:** [intake and gate ledger](./integration-status-2026-10-04.md). All30 are registered;26 visual evidence sets are accepted. Rain: visual refinement and final acceptance pending. Audio/input/compatibility and exact-head CI remain separate gates. Historical three-pilot results do not establish current completion; main merge remains held pending technical release gates.
 
 Original foundation base: `1bb79ac572e8568676881bbc7b4404f1bac443e8` (remote main checked 2026-10-04).
 Current local integration baseline: `14940149cc5c0fccb778b58d4d755a04aea55e53`, incorporating the independently merged sea PR #51. Both protected renderer directories are exactly equal to this remote main; they were not edited during pilot integration.
-Branch: `codex/immersive-worlds-integration-20261004`. Draft only; **do not merge until the user's later instruction**.
-Last completed integration CI is `a2ff7f99258de0a7fd9d8885b91dd31c45f5c245`, containing main `14940149`, forest `f4d24d6`, café `8b9383b` and cosmic `a0178fa`. It failed overall; detailed pass/fail/not-run evidence and the next draft revision are recorded below. See [pilot review and evidence](./pilot-review-2026-10-04.md).
-The [complete supplied brief](./scene-upgrade-implementation-brief.md) fixes all 30 world directions, audio directions, JEV references and license limits. Its exact canonical IDs are checked against the 32-card catalog minus the two protected worlds in unit tests. This foundation does not implement or register the remaining 27 worlds.
+Branch: `codex/immersive-worlds-integration-20261004`. Draft; main merge remains held pending technical release gates.
+Historical pilot CI was `a2ff7f99258de0a7fd9d8885b91dd31c45f5c245`, containing main `14940149`, forest `f4d24d6`, café `8b9383b` and cosmic `a0178fa`. It failed overall; detailed pass/fail/not-run evidence and the next draft revision are recorded below. See [pilot review and evidence](./pilot-review-2026-10-04.md).
+The [complete supplied brief](./scene-upgrade-implementation-brief.md) fixes all 30 world directions, audio directions, JEV references and license limits. Its exact canonical IDs are checked against the 32-card catalog minus the two protected worlds in unit tests. That historical foundation did not register the remaining27; the current30-world draft does, as recorded in the current ledger.
 
 Later [confirmed design updates](./confirmed-design-updates.md) override the initial brief: only `nature:rural_summer_night` combines the preserved original countryside composition/palette with Ghibli-inspired atmosphere and actual original 3D Zelda-inspired toon shading, without heavy outlines or copied characters/game assets. Its implementation remains assigned later to a separate Work.
 
@@ -40,7 +40,7 @@ Only `active: boolean` is required. `contract.ts` additionally offers **optional
 - Suggested diagnostics on the world root: `data-world-id`, `data-state="loading|ready|failed"`, `data-motion="running|paused"`. These allow integration QA without reading engine internals. They are attributes, not extra required props.
 - A meaningful first-frame/loading/error fallback is required inside each actual scene. Shared chunk failure falls back to the old experience. Neither fallback nor a synthetic QA fixture counts as an upgraded world.
 - Assets resolve under the existing Vite base URL. Supply source/license records or original-generation provenance. Do not copy JEV/MiaAI code or assets where reuse permission is not established; the brief's technique references are inspiration only.
-- Supplemental textures/plants/materials/nebula images may use the built-in image generator when they materially improve quality (user approval 2026-10-04). They must not replace the 3D world with a flat picture. Record generator/date/prompt/provenance, actual local asset paths and build inclusion; paid external services, subscriptions, extra credit spending and new permissions are outside that approval. No generated assets are needed for this core foundation.
+- Supplemental generated textures/plants/materials/nebula images must materially improve quality without replacing the3D world with a flat picture. Record generation provenance, local asset paths and build inclusion.
 
 ## Routing and sequential admission
 
@@ -57,7 +57,7 @@ Vite names scene-directory chunks `world-*`; the service worker excludes those a
 1. Record exact PR head/base, changed files and asset licenses. Verify its changes stay within worker-owned paths. Review unexpected shared edits rather than overwriting them.
 2. Apply the reviewed pilot commit(s) to this integration branch, preserving other Work changes. Add only its exact static import callback to `approvedLoaders`; no protected IDs.
 3. Run the gates below on that exact integrated head. Review actual pixels and movement against the supplied direction and protected focus benchmark. Report a poster fallback as a fallback, never successful 3D.
-4. Share the verified preview URL. Wait for the user's pilot quality decision before distributing the other 27 worlds. Keep this PR draft and do not merge main yet.
+4. Record verified previews and exact-source quality results. Keep the PR draft until technical release gates are complete.
 
 ## Fixed QA gate
 

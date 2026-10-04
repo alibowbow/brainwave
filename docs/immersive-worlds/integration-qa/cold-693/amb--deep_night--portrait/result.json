@@ -1,0 +1,841 @@
+{
+  "id": "amb:deep_night",
+  "group": "nightFires",
+  "entry": "components/immersiveWorlds/nightFires/DeepNightWorld.tsx",
+  "route": "#/play/amb/deep_night",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "viewportName": "portrait",
+  "status": "passed",
+  "stage": "finish",
+  "startedAt": "2026-10-04T22:10:12.773Z",
+  "cold": {
+    "freshBrowser": true,
+    "freshContext": true,
+    "storageSeeded": false,
+    "userInputSent": false
+  },
+  "sourceDigest": "f3e935fdecfd2ced1621a9f80739afb483411bb422d04d5b55aba9433229bf11",
+  "distDigest": "d2eb4b588acb0c67d2eec593aa9102fd208efbc33c7e8dedef3aa83b15502d7f",
+  "checks": [
+    {
+      "name": "exact cold route",
+      "pass": true,
+      "details": "http://127.0.0.1:4177/#/play/amb/deep_night"
+    },
+    {
+      "name": "no input or browser activation before/after first capture",
+      "pass": true,
+      "details": {
+        "before": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "after": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "still": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "fresh empty storage",
+      "pass": true,
+      "details": {
+        "local": 0,
+        "session": 0
+      }
+    },
+    {
+      "name": "real owned world ready",
+      "pass": true,
+      "details": {
+        "slot": true,
+        "state": "ready",
+        "worldClass": "night-world ",
+        "fallback": null
+      }
+    },
+    {
+      "name": "exact owner telemetry fields",
+      "pass": true,
+      "details": {
+        "expected": {
+          "stateAttribute": "data-state",
+          "motionAttribute": "data-motion",
+          "frameDatasetKey": "renderCount",
+          "timeDatasetKey": "time"
+        },
+        "actual": {
+          "state": "data-state",
+          "frame": "renderCount",
+          "time": "time"
+        }
+      }
+    },
+    {
+      "name": "one nonempty real canvas frame",
+      "pass": true,
+      "details": {
+        "width": 390,
+        "height": 776,
+        "frame": 2,
+        "frameField": "renderCount",
+        "time": 0,
+        "timeField": "time",
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "renderCount": "2",
+          "time": "0.00000",
+          "targets": "[{\"kind\":\"lantern-brightness\",\"x\":311.6394038154804,\"y\":596.9637822286331}]"
+        },
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": 189,
+          "width": 390,
+          "height": 776
+        }
+      }
+    },
+    {
+      "name": "paused before first capture and never observed running",
+      "pass": true,
+      "details": [
+        {
+          "at": 1690.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2687.699999999255,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ]
+    },
+    {
+      "name": "paused still does not advance scene time",
+      "pass": true,
+      "details": {
+        "before": 0,
+        "after": 0,
+        "still": 0,
+        "frames": [
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "name": "canvas visible without style override",
+      "pass": true,
+      "details": {
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block"
+      }
+    },
+    {
+      "name": "native PNG has requested viewport",
+      "pass": true,
+      "details": {
+        "file": "cold-first-frame.png",
+        "sha256": "660efeca66e23a753af4ab37c8e6e90755c17483b3cf565649b66117a9192102",
+        "bytes": 140335,
+        "width": 390,
+        "height": 844,
+        "method": "CDP Page.captureScreenshot; no CSS/animation/surface modifications"
+      }
+    },
+    {
+      "name": "zero scene callbacks before input",
+      "pass": true,
+      "details": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "served bytes match snapshotted production build",
+      "pass": true,
+      "details": []
+    },
+    {
+      "name": "no runtime or resource errors",
+      "pass": true,
+      "details": []
+    }
+  ],
+  "errors": [],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:4177/",
+      "status": 200,
+      "mimeType": "text/html",
+      "type": "Document",
+      "bytes": 2026,
+      "sha256": "89db36955093760a372918f0a7ba0e4c238979f270df7e9b4bbce71b6a68bedb",
+      "distFile": "index.html",
+      "expectedDistSha256": "89db36955093760a372918f0a7ba0e4c238979f270df7e9b4bbce71b6a68bedb",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/index-D2nj3flF.css",
+      "status": 200,
+      "mimeType": "text/css",
+      "type": "Stylesheet",
+      "bytes": 103375,
+      "sha256": "d1e8ad411e4b456b8b9041f1a0c292445df892f1bfcac089e98760422169ae55",
+      "distFile": "assets/index-D2nj3flF.css",
+      "expectedDistSha256": "d1e8ad411e4b456b8b9041f1a0c292445df892f1bfcac089e98760422169ae55",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/index-DE69dX8D.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 418646,
+      "sha256": "2b7d960c7a3f0c580a33fe1d8afa7957080b2489640411146050f56829ee843e",
+      "distFile": "assets/index-DE69dX8D.js",
+      "expectedDistSha256": "2b7d960c7a3f0c580a33fe1d8afa7957080b2489640411146050f56829ee843e",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/nature/backgrounds/rural-ghibli-v9.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 246052,
+      "sha256": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+      "distFile": "images/nature/backgrounds/rural-ghibli-v9.webp",
+      "expectedDistSha256": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/PretendardVariable-CJuje-Rk.woff2",
+      "status": 200,
+      "mimeType": "font/woff2",
+      "type": "Font",
+      "bytes": 2057688,
+      "sha256": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+      "distFile": "assets/PretendardVariable-CJuje-Rk.woff2",
+      "expectedDistSha256": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 5748,
+      "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+      "distFile": "assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "expectedDistSha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/presets/relax.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 28944,
+      "sha256": "9fa43bccfd8f996fbed3f8a5a1aa9c489681265e7f6e2f2923fc4e71cf9ed379",
+      "distFile": "images/presets/relax.webp",
+      "expectedDistSha256": "9fa43bccfd8f996fbed3f8a5a1aa9c489681265e7f6e2f2923fc4e71cf9ed379",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/presets/focus.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 27052,
+      "sha256": "2d9f030307ebe13047570e200e0a8adb42e11fb40f7606f54b42ea5dd24dc46e",
+      "distFile": "images/presets/focus.webp",
+      "expectedDistSha256": "2d9f030307ebe13047570e200e0a8adb42e11fb40f7606f54b42ea5dd24dc46e",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/immersiveSessionBridge-CjXM2rFV.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 22844,
+      "sha256": "ac5baa700213db11f5cbe57555ad8ad2348d0096cc6286dd2a6b1fb672ab690c",
+      "distFile": "assets/immersiveSessionBridge-CjXM2rFV.js",
+      "expectedDistSha256": "ac5baa700213db11f5cbe57555ad8ad2348d0096cc6286dd2a6b1fb672ab690c",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/presets/morning.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 36768,
+      "sha256": "58ea6a38ce98f7299ec0e29977db988921cd3dcdf31294baaf025924a5d13ff5",
+      "distFile": "images/presets/morning.webp",
+      "expectedDistSha256": "58ea6a38ce98f7299ec0e29977db988921cd3dcdf31294baaf025924a5d13ff5",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/Toggle-CeJH3ZmS.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 590,
+      "sha256": "0e36f0ec2e9647983050132e2c83cef692dd3f7ec1bbf4187b2531873da51f08",
+      "distFile": "assets/Toggle-CeJH3ZmS.js",
+      "expectedDistSha256": "0e36f0ec2e9647983050132e2c83cef692dd3f7ec1bbf4187b2531873da51f08",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "status": 200,
+      "mimeType": "text/css",
+      "type": "Stylesheet",
+      "bytes": 3799,
+      "sha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+      "distFile": "assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "expectedDistSha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/Player-BSuNDBnE.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 23650,
+      "sha256": "22742f7e50414447cdc563baa63c269d5ff863c50971a77399ed9a01333cd2ff",
+      "distFile": "assets/Player-BSuNDBnE.js",
+      "expectedDistSha256": "22742f7e50414447cdc563baa63c269d5ff863c50971a77399ed9a01333cd2ff",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/VolumeSlider-Zpvp0n61.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 1496,
+      "sha256": "be84ba7559259fadfe5fca3794750a6b821e71c7db3bf53c6e786ea8d454b0b3",
+      "distFile": "assets/VolumeSlider-Zpvp0n61.js",
+      "expectedDistSha256": "be84ba7559259fadfe5fca3794750a6b821e71c7db3bf53c6e786ea8d454b0b3",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/SoundLayerPicker-U-BHsjuy.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 2936,
+      "sha256": "9627f3ed4b4d145f52a48a3e98e4aea8f55095274c6e1079b361e17d983dbc1c",
+      "distFile": "assets/SoundLayerPicker-U-BHsjuy.js",
+      "expectedDistSha256": "9627f3ed4b4d145f52a48a3e98e4aea8f55095274c6e1079b361e17d983dbc1c",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/SoundFailureNotice-BRx7v_HJ.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 7375,
+      "sha256": "4fd44993a4b10a28fa9c3d40a308295e8c169c6071cea53868544efd4a43534e",
+      "distFile": "assets/SoundFailureNotice-BRx7v_HJ.js",
+      "expectedDistSha256": "4fd44993a4b10a28fa9c3d40a308295e8c169c6071cea53868544efd4a43534e",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/ImmersiveWorldSlot-YgM7QLQ7.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 12083,
+      "sha256": "157d0057ee1c38600777c2b941ef34881fd4391c14cd3dda7cfb4ac0147d01b4",
+      "distFile": "assets/ImmersiveWorldSlot-YgM7QLQ7.js",
+      "expectedDistSha256": "157d0057ee1c38600777c2b941ef34881fd4391c14cd3dda7cfb4ac0147d01b4",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/world-DeepNightWorld-C93Yf139.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 232,
+      "sha256": "07cc608bdd57d469ec892b1b7545ea2134c73011628d9eeae29b8d458fbad8e7",
+      "distFile": "assets/world-DeepNightWorld-C93Yf139.js",
+      "expectedDistSha256": "07cc608bdd57d469ec892b1b7545ea2134c73011628d9eeae29b8d458fbad8e7",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/NightWorld-ZuciVTVz.css",
+      "status": 200,
+      "mimeType": "text/css",
+      "type": "Stylesheet",
+      "bytes": 1155,
+      "sha256": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c",
+      "distFile": "assets/NightWorld-ZuciVTVz.css",
+      "expectedDistSha256": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/nature/backgrounds/scops-night.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 72208,
+      "sha256": "83b516791162ded3a21d93725797a69efedd225ed8a93133748c3444ec22b5d7",
+      "distFile": "images/nature/backgrounds/scops-night.webp",
+      "expectedDistSha256": "83b516791162ded3a21d93725797a69efedd225ed8a93133748c3444ec22b5d7",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/world-NightWorld-C1Rzc4oZ.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 59249,
+      "sha256": "6094cda4f98e182e5f8d997c602801dd1cfa7d5ba56c36fd3638e8e71b2a4923",
+      "distFile": "assets/world-NightWorld-C1Rzc4oZ.js",
+      "expectedDistSha256": "6094cda4f98e182e5f8d997c602801dd1cfa7d5ba56c36fd3638e8e71b2a4923",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/three-D97_sr9c.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 600456,
+      "sha256": "54a988dd8340588e474943c1b5c5c3ce9e7bcaed1bd109e4fe594ef1bc7e9d32",
+      "distFile": "assets/three-D97_sr9c.js",
+      "expectedDistSha256": "54a988dd8340588e474943c1b5c5c3ce9e7bcaed1bd109e4fe594ef1bc7e9d32",
+      "matchesDist": true
+    }
+  ],
+  "samples": [
+    {
+      "at": 10.799999997019768,
+      "href": "http://127.0.0.1:4177/#/play/amb/deep_night",
+      "documentState": "loading",
+      "visibility": "visible",
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "slotPresent": false,
+      "state": null,
+      "stateAttribute": null,
+      "worldDataset": null,
+      "callbackCount": 0,
+      "hint": null,
+      "canvas": null,
+      "slotCanvasCount": 0,
+      "pageCanvasCount": 0,
+      "trace": {
+        "events": [],
+        "motion": [],
+        "initialActivation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "initialStorage": {
+          "local": 0,
+          "session": 0
+        }
+      }
+    },
+    {
+      "at": 2686.699999999255,
+      "href": "http://127.0.0.1:4177/#/play/amb/deep_night",
+      "documentState": "complete",
+      "visibility": "visible",
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "slotPresent": true,
+      "worldId": "amb:deep_night",
+      "worldClass": "night-world ",
+      "state": "loading",
+      "stateAttribute": "data-state",
+      "motion": "paused",
+      "worldDataset": {
+        "world": "deep",
+        "state": "loading",
+        "motion": "paused"
+      },
+      "callbackCount": 0,
+      "hint": "starting",
+      "fallbackText": null,
+      "canvas": {
+        "width": 390,
+        "height": 776,
+        "frame": 2,
+        "frameField": "renderCount",
+        "time": 0,
+        "timeField": "time",
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "renderCount": "2",
+          "time": "0.00000",
+          "targets": "[{\"kind\":\"lantern-brightness\",\"x\":311.6394038154804,\"y\":596.9637822286331}]"
+        },
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": 133,
+          "width": 390,
+          "height": 776
+        }
+      },
+      "slotCanvasCount": 1,
+      "pageCanvasCount": 1,
+      "trace": {
+        "events": [],
+        "motion": [
+          {
+            "at": 1690.3999999985099,
+            "motion": "paused",
+            "state": "loading"
+          }
+        ],
+        "initialActivation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "initialStorage": {
+          "local": 0,
+          "session": 0
+        }
+      }
+    },
+    {
+      "at": 2842.099999997765,
+      "href": "http://127.0.0.1:4177/#/play/amb/deep_night",
+      "documentState": "complete",
+      "visibility": "visible",
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "slotPresent": true,
+      "worldId": "amb:deep_night",
+      "worldClass": "night-world ",
+      "state": "ready",
+      "stateAttribute": "data-state",
+      "motion": "paused",
+      "worldDataset": {
+        "world": "deep",
+        "state": "ready",
+        "motion": "paused"
+      },
+      "callbackCount": 0,
+      "hint": "blocked",
+      "fallbackText": null,
+      "canvas": {
+        "width": 390,
+        "height": 776,
+        "frame": 2,
+        "frameField": "renderCount",
+        "time": 0,
+        "timeField": "time",
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "renderCount": "2",
+          "time": "0.00000",
+          "targets": "[{\"kind\":\"lantern-brightness\",\"x\":311.6394038154804,\"y\":596.9637822286331}]"
+        },
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": 189,
+          "width": 390,
+          "height": 776
+        }
+      },
+      "slotCanvasCount": 1,
+      "pageCanvasCount": 1,
+      "trace": {
+        "events": [],
+        "motion": [
+          {
+            "at": 1690.3999999985099,
+            "motion": "paused",
+            "state": "loading"
+          },
+          {
+            "at": 2687.699999999255,
+            "motion": "paused",
+            "state": "ready"
+          }
+        ],
+        "initialActivation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "initialStorage": {
+          "local": 0,
+          "session": 0
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "claim": "Browser/context closure isolates cases; it does not prove React/engine dispose lifecycle.",
+    "contextClosed": true,
+    "browserClosed": true
+  },
+  "browserVersion": "153.0.8010.0",
+  "beforeCapture": {
+    "at": 2842.099999997765,
+    "href": "http://127.0.0.1:4177/#/play/amb/deep_night",
+    "documentState": "complete",
+    "visibility": "visible",
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "slotPresent": true,
+    "worldId": "amb:deep_night",
+    "worldClass": "night-world ",
+    "state": "ready",
+    "stateAttribute": "data-state",
+    "motion": "paused",
+    "worldDataset": {
+      "world": "deep",
+      "state": "ready",
+      "motion": "paused"
+    },
+    "callbackCount": 0,
+    "hint": "blocked",
+    "fallbackText": null,
+    "canvas": {
+      "width": 390,
+      "height": 776,
+      "frame": 2,
+      "frameField": "renderCount",
+      "time": 0,
+      "timeField": "time",
+      "dataset": {
+        "engine": "three.js r186",
+        "engineId": "1",
+        "renderCount": "2",
+        "time": "0.00000",
+        "targets": "[{\"kind\":\"lantern-brightness\",\"x\":311.6394038154804,\"y\":596.9637822286331}]"
+      },
+      "opacity": "1",
+      "visibility": "visible",
+      "display": "block",
+      "rect": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 776
+      }
+    },
+    "slotCanvasCount": 1,
+    "pageCanvasCount": 1,
+    "trace": {
+      "events": [],
+      "motion": [
+        {
+          "at": 1690.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2687.699999999255,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ],
+      "initialActivation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "initialStorage": {
+        "local": 0,
+        "session": 0
+      }
+    }
+  },
+  "firstCapture": {
+    "file": "cold-first-frame.png",
+    "sha256": "660efeca66e23a753af4ab37c8e6e90755c17483b3cf565649b66117a9192102",
+    "bytes": 140335,
+    "width": 390,
+    "height": 844,
+    "method": "CDP Page.captureScreenshot; no CSS/animation/surface modifications"
+  },
+  "afterCapture": {
+    "at": 4170.79999999702,
+    "href": "http://127.0.0.1:4177/#/play/amb/deep_night",
+    "documentState": "complete",
+    "visibility": "visible",
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "slotPresent": true,
+    "worldId": "amb:deep_night",
+    "worldClass": "night-world ",
+    "state": "ready",
+    "stateAttribute": "data-state",
+    "motion": "paused",
+    "worldDataset": {
+      "world": "deep",
+      "state": "ready",
+      "motion": "paused"
+    },
+    "callbackCount": 0,
+    "hint": "blocked",
+    "fallbackText": null,
+    "canvas": {
+      "width": 390,
+      "height": 776,
+      "frame": 2,
+      "frameField": "renderCount",
+      "time": 0,
+      "timeField": "time",
+      "dataset": {
+        "engine": "three.js r186",
+        "engineId": "1",
+        "renderCount": "2",
+        "time": "0.00000",
+        "targets": "[{\"kind\":\"lantern-brightness\",\"x\":311.6394038154804,\"y\":596.9637822286331}]"
+      },
+      "opacity": "1",
+      "visibility": "visible",
+      "display": "block",
+      "rect": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 776
+      }
+    },
+    "slotCanvasCount": 1,
+    "pageCanvasCount": 1,
+    "trace": {
+      "events": [],
+      "motion": [
+        {
+          "at": 1690.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2687.699999999255,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ],
+      "initialActivation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "initialStorage": {
+        "local": 0,
+        "session": 0
+      }
+    }
+  },
+  "afterStillWindow": {
+    "at": 5174.599999997765,
+    "href": "http://127.0.0.1:4177/#/play/amb/deep_night",
+    "documentState": "complete",
+    "visibility": "visible",
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "slotPresent": true,
+    "worldId": "amb:deep_night",
+    "worldClass": "night-world ",
+    "state": "ready",
+    "stateAttribute": "data-state",
+    "motion": "paused",
+    "worldDataset": {
+      "world": "deep",
+      "state": "ready",
+      "motion": "paused"
+    },
+    "callbackCount": 0,
+    "hint": "blocked",
+    "fallbackText": null,
+    "canvas": {
+      "width": 390,
+      "height": 776,
+      "frame": 2,
+      "frameField": "renderCount",
+      "time": 0,
+      "timeField": "time",
+      "dataset": {
+        "engine": "three.js r186",
+        "engineId": "1",
+        "renderCount": "2",
+        "time": "0.00000",
+        "targets": "[{\"kind\":\"lantern-brightness\",\"x\":311.6394038154804,\"y\":596.9637822286331}]"
+      },
+      "opacity": "1",
+      "visibility": "visible",
+      "display": "block",
+      "rect": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 776
+      }
+    },
+    "slotCanvasCount": 1,
+    "pageCanvasCount": 1,
+    "trace": {
+      "events": [],
+      "motion": [
+        {
+          "at": 1690.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2687.699999999255,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ],
+      "initialActivation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "initialStorage": {
+        "local": 0,
+        "session": 0
+      }
+    }
+  },
+  "finishedAt": "2026-10-04T22:10:18.074Z",
+  "worker": {
+    "code": 0,
+    "signal": null,
+    "timedOut": false,
+    "stdout": "",
+    "stderr": ""
+  }
+}

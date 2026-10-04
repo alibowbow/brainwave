@@ -1,0 +1,67 @@
+{
+  "sourceResultSha256": "f0e9477f958a3489d36fb89b3bb3f11628fab28e05e40145b77c60761f72b677",
+  "status": "original180s failure preserved; shorttap precondition invalid",
+  "touchPairs": [
+    {
+      "durationMs": 1288.3999999985099,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 707.8999999985099,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 1283.0,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 1774.1000000014901,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 1343.0,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 1534.6000000014901,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 1817.300000000745,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 1488.5,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    },
+    {
+      "durationMs": 1351.1000000014901,
+      "downTrusted": true,
+      "upTrusted": true,
+      "samePoint": true
+    }
+  ],
+  "ownerTapMaxMs": 600,
+  "fixPlan": "Use public Playwright touchscreen.tap, which queues native start/end viaPromise.all ononeCDPclient; record actual trusted eventduration. Keep renderer cutoff unchanged. Held/cancel gestures remain separately controlled.",
+  "notProven": [
+    "short native tap callback failure",
+    "rootcause of delayed input acknowledgement",
+    "physicaldevice/FPS/heat performance"
+  ]
+}

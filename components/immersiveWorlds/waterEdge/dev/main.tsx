@@ -43,7 +43,8 @@ function inspect() {
       return { id: canvasIds.get(canvas), holder: canvas.closest<HTMLElement>('[data-holder]')?.dataset.holder,
         width: canvas.width, height: canvas.height, frames: Number(canvas.dataset.frames),
         time: Number(canvas.dataset.time), drawCalls: Number(canvas.dataset.drawCalls), triangles: Number(canvas.dataset.triangles),
-        targets: canvas.dataset.waterEdgeRenderTargets ? JSON.parse(canvas.dataset.waterEdgeRenderTargets) : null };
+        targets: canvas.dataset.waterEdgeRenderTargets ? JSON.parse(canvas.dataset.waterEdgeRenderTargets) : null,
+        submission: canvas.dataset.waterEdgeSubmission ? JSON.parse(canvas.dataset.waterEdgeSubmission) : null };
     }),
     events: events.map((event) => ({ ...event, position: { ...event.position } })),
   };
@@ -60,7 +61,7 @@ function Harness() {
       setActive, setStatic, setSecondHolder, setOverlay, setWorld: setKind,
       mount: () => { markTelemetry('mount-request'); setMounted(true); }, unmount: () => { markTelemetry('unmount-request'); setSecondHolder(false); setMounted(false); },
       inspect, events, clearEvents: () => { events.length = 0; }, setSyntheticHidden,
-      drainGpu, graphicsInfo, inspectTelemetry,
+      drainGpu, graphicsInfo, inspectTelemetry, markTelemetry,
       pauseAfterNextPointerUp: () => window.addEventListener('pointerup', () => queueMicrotask(() => setActive(false)), { once: true }),
     };
     return () => { setSyntheticHidden(null); delete window.__waterEdgeQA; };
@@ -85,6 +86,7 @@ interface WaterEdgeQA {
   setWorld(value: WaterEdgeKind): void; mount(): void; unmount(): void; inspect: typeof inspect;
   events: WaterEdgeInteraction[]; clearEvents(): void; setSyntheticHidden(value: boolean | null): void;
   drainGpu: typeof drainGpu; graphicsInfo: typeof graphicsInfo; inspectTelemetry: typeof inspectTelemetry;
+  markTelemetry: typeof markTelemetry;
   pauseAfterNextPointerUp(): void;
 }
 declare global { interface Window { __waterEdgeQA?: WaterEdgeQA } }

@@ -10,6 +10,7 @@ export class CozyEngine implements LiveSceneEngine {
   private raf=0; private time=8; private last=0; private dead=false;
   private look=new THREE.Vector2(); private aim=new THREE.Vector2();
   private rotation=new THREE.Quaternion();
+  private rendererSize=new THREE.Vector2();
   private frames=0; private aspect=1;private taps=0;private lastHit='none';
   private ray=new THREE.Raycaster();
   readonly instance=++serial;
@@ -26,9 +27,14 @@ export class CozyEngine implements LiveSceneEngine {
   private contextLost=(event:Event)=>{event.preventDefault();this.onLost();};
   async init(){this.world=this.factory();this.world.resize(this.aspect);this.rotation.copy(this.world.camera.quaternion);this.world.update(this.time,0);}
   setSize(width:number,height:number,dpr:number){
-    this.aspect=Math.max(1,width)/Math.max(1,height);
-    this.renderer.setPixelRatio(Math.min(2,Math.max(1,dpr)));
-    this.renderer.setSize(Math.max(1,width),Math.max(1,height),false);
+    const w=Math.max(1,width),h=Math.max(1,height),ratio=Math.min(2,Math.max(1,dpr));
+    this.aspect=w/h;
+    // Three r186 setPixelRatio already calls setSize, and setSize rewrites the
+    // backing buffer even for identical values. Keep real resize/DPR changes,
+    // but do not reset it again on same-size holder/ResizeObserver callbacks.
+    if(this.renderer.getPixelRatio()!==ratio)this.renderer.setPixelRatio(ratio);
+    this.renderer.getSize(this.rendererSize);
+    if(this.rendererSize.x!==w||this.rendererSize.y!==h)this.renderer.setSize(w,h,false);
     if(this.world){this.world.resize(this.aspect);this.world.camera.aspect=this.aspect;this.world.camera.updateProjectionMatrix();this.rotation.copy(this.world.camera.quaternion);}
   }
   renderFrame(dt:number){

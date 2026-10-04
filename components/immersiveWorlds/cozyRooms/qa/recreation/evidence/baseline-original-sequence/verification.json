@@ -1,0 +1,184 @@
+{
+  "passed": true,
+  "worlds": [
+    "nature:winter_lodge"
+  ],
+  "timestamp": "2026-10-04T21:34:11.756Z",
+  "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "source": {
+    "sha256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "990417b07961d9a91d647dc42603a28323ba673cfbf01d92046fb817ba60961f",
+    "files": [
+      "assets/CozyWorld-D7c77W9L.js",
+      "assets/CozyWorld-D7c77W9L.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-CWgadvA8.js",
+      "assets/HearthWorld-CWgadvA8.js.map",
+      "assets/NapTerraceWorld-cw0Gvlvj.js",
+      "assets/NapTerraceWorld-cw0Gvlvj.js.map",
+      "assets/SleepRoomWorld-C0iRkHIE.js",
+      "assets/SleepRoomWorld-C0iRkHIE.js.map",
+      "assets/WinterLodgeWorld-DcrmfGQn.js",
+      "assets/WinterLodgeWorld-DcrmfGQn.js.map",
+      "assets/fireDetail-B6fYrNWK.js",
+      "assets/fireDetail-B6fYrNWK.js.map",
+      "assets/index-IF3GCWUM.js",
+      "assets/index-IF3GCWUM.js.map",
+      "assets/main-WBmL1Dou.js",
+      "assets/main-WBmL1Dou.js.map",
+      "assets/materials-_T2_KIYv.js",
+      "assets/materials-_T2_KIYv.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [
+    {
+      "world": "nature:winter_lodge",
+      "snapshots": [
+        {
+          "file": "nature-winter_lodge-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+        },
+        {
+          "file": "nature-winter_lodge-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+        },
+        {
+          "file": "nature-winter_lodge-landscape-viewport.png",
+          "width": 915,
+          "height": 412,
+          "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-cup",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 14,
+        "time": 8.133299999999998,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 393,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    }
+  ],
+  "errors": []
+}

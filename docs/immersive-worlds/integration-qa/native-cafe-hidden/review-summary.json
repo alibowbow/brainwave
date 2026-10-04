@@ -1,0 +1,273 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-04T22:43:07.231Z",
+  "finishedAt": "2026-10-04T22:43:59.823Z",
+  "sourceStable": true,
+  "scriptSha256": "23cd9eceb0f0e737870e0844e61c610636ff2efc14f14fdc55b2b8490b331be7",
+  "nativeHelperSha256": "72626658a6fcd30ef06000805aa789b3747e2c57b22d7bd28b413c84817b3ca4",
+  "phaseHelperSha256": "d1eba1ce7e81a5e2c7f6cab2f7922131609e7d3fa7d7fce4427fc25f13a18daa",
+  "errors": [],
+  "sourceSHA256": "75dc7eef1eb4a355b6e1c1e0d539f2719d1f31c962ae2c1eb4e363d8f5435f19",
+  "checks": [
+    {
+      "name": "native route+playback startup",
+      "status": "passed",
+      "evidence": null
+    },
+    {
+      "name": "player: visible chrome1tap1callback",
+      "status": "passed",
+      "evidence": {
+        "point": {
+          "x": 192.1616828128467,
+          "y": 633.1895950511446,
+          "nx": 0.49272226362268384,
+          "ny": 0.7283371070246708
+        },
+        "attempts": [
+          {
+            "nx": 0.49272226362268384,
+            "ny": 0.7283371070246708,
+            "hit": {
+              "inside": true,
+              "tag": "CANVAS",
+              "control": false,
+              "trace": "cafe-world-canvas"
+            },
+            "chromeBefore": {
+              "visible": true,
+              "pointerEvents": "none",
+              "visibility": "visible",
+              "opacity": "1",
+              "className": "pointer-events-none absolute inset-0 z-20 visible opacity-100"
+            },
+            "delta": 1
+          }
+        ],
+        "input": "Playwright mouse",
+        "before": {
+          "callbacks": 0,
+          "state": "ready",
+          "motion": "running",
+          "look": null,
+          "canvas": {
+            "engine": "three-webgl2",
+            "lifecycle": "ready",
+            "targets": "{\"capability\":{\"type\":1016,\"preference\":\"auto\",\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"probes\":[{\"label\":\"capability-probe\",\"width\":4,\"height\":4,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true}]},\"fallbackReason\":null,\"targets\":[{\"label\":\"refraction\",\"width\":390,\"height\":776,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"width\":254,\"height\":504,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"pcf-shadow\",\"width\":2048,\"height\":2048,\"type\":1009,\"format\":1023,\"internalFormat\":\"RGBA8\",\"samples\":0,\"depthTextureType\":1014,\"status\":36053,\"complete\":true}],\"environment\":{\"kind\":\"baked-cubeuv\",\"type\":1016,\"internalFormat\":\"RGBA16F\",\"mapping\":306,\"width\":768,\"height\":1024,\"runtimePmrem\":false}}",
+            "frames": "41",
+            "time": "1.0499",
+            "yaw": "0.00000",
+            "cupPulse": "0.000",
+            "lamp": "1.000",
+            "wipeAge": "100.050",
+            "drawCalls": "164",
+            "triangles": "26718",
+            "running": "true"
+          },
+          "time": 1.0499,
+          "frame": 41,
+          "touchAction": "none",
+          "canvasTouchAction": "auto",
+          "worldTouchAction": "none",
+          "rect": {
+            "x": 0,
+            "y": 68,
+            "width": 390,
+            "height": 776
+          }
+        },
+        "after": {
+          "callbacks": 1,
+          "state": "ready",
+          "motion": "running",
+          "look": null,
+          "canvas": {
+            "engine": "three-webgl2",
+            "lifecycle": "ready",
+            "targets": "{\"capability\":{\"type\":1016,\"preference\":\"auto\",\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"probes\":[{\"label\":\"capability-probe\",\"width\":4,\"height\":4,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true}]},\"fallbackReason\":null,\"targets\":[{\"label\":\"refraction\",\"width\":390,\"height\":776,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"width\":254,\"height\":504,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"pcf-shadow\",\"width\":2048,\"height\":2048,\"type\":1009,\"format\":1023,\"internalFormat\":\"RGBA8\",\"samples\":0,\"depthTextureType\":1014,\"status\":36053,\"complete\":true}],\"environment\":{\"kind\":\"baked-cubeuv\",\"type\":1016,\"internalFormat\":\"RGBA16F\",\"mapping\":306,\"width\":768,\"height\":1024,\"runtimePmrem\":false}}",
+            "frames": "41",
+            "time": "1.0499",
+            "yaw": "0.00000",
+            "cupPulse": "0.000",
+            "lamp": "1.000",
+            "wipeAge": "100.050",
+            "drawCalls": "164",
+            "triangles": "26718",
+            "running": "true"
+          },
+          "time": 1.0499,
+          "frame": 41,
+          "touchAction": "none",
+          "canvasTouchAction": "auto",
+          "worldTouchAction": "none",
+          "rect": {
+            "x": 0,
+            "y": 68,
+            "width": 390,
+            "height": 776
+          }
+        }
+      }
+    },
+    {
+      "name": "player: hidden native short-tap focused diagnostic",
+      "status": "passed",
+      "evidence": {
+        "hidden": {
+          "elapsedMs": 3845,
+          "expectedTimerMs": 3600,
+          "visible": false,
+          "pointerEvents": "none",
+          "visibility": "hidden",
+          "opacity": "0",
+          "className": "pointer-events-none absolute inset-0 z-20 invisible opacity-0"
+        },
+        "point": {
+          "x": 192.1616828128467,
+          "y": 633.1895950511446,
+          "nx": 0.49272226362268384,
+          "ny": 0.7283371070246708
+        },
+        "hit": {
+          "inside": true,
+          "tag": "CANVAS",
+          "control": false,
+          "trace": "cafe-world-canvas"
+        },
+        "chromeBefore": {
+          "visible": false,
+          "pointerEvents": "none",
+          "visibility": "hidden",
+          "opacity": "0",
+          "className": "pointer-events-none absolute inset-0 z-20 invisible opacity-0"
+        },
+        "marker": {
+          "performanceMs": 41932.5,
+          "wallMs": 1791153829428
+        },
+        "before": {
+          "callbacks": 2,
+          "state": "ready",
+          "motion": "running",
+          "look": null,
+          "canvas": {
+            "engine": "three-webgl2",
+            "lifecycle": "ready",
+            "targets": "{\"capability\":{\"type\":1016,\"preference\":\"auto\",\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"probes\":[{\"label\":\"capability-probe\",\"width\":4,\"height\":4,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true}]},\"fallbackReason\":null,\"targets\":[{\"label\":\"refraction\",\"width\":390,\"height\":776,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"width\":254,\"height\":504,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"pcf-shadow\",\"width\":2048,\"height\":2048,\"type\":1009,\"format\":1023,\"internalFormat\":\"RGBA8\",\"samples\":0,\"depthTextureType\":1014,\"status\":36053,\"complete\":true}],\"environment\":{\"kind\":\"baked-cubeuv\",\"type\":1016,\"internalFormat\":\"RGBA16F\",\"mapping\":306,\"width\":768,\"height\":1024,\"runtimePmrem\":false}}",
+            "frames": "77",
+            "time": "2.8499",
+            "yaw": "0.00000",
+            "cupPulse": "0.280",
+            "lamp": "1.000",
+            "wipeAge": "1.050",
+            "drawCalls": "164",
+            "triangles": "26718",
+            "running": "true"
+          },
+          "time": 2.8499,
+          "frame": 77,
+          "touchAction": "none",
+          "canvasTouchAction": "auto",
+          "worldTouchAction": "none",
+          "rect": {
+            "x": 0,
+            "y": 68,
+            "width": 390,
+            "height": 776
+          }
+        },
+        "after": {
+          "callbacks": 3,
+          "state": "ready",
+          "motion": "running",
+          "look": null,
+          "canvas": {
+            "engine": "three-webgl2",
+            "lifecycle": "ready",
+            "targets": "{\"capability\":{\"type\":1016,\"preference\":\"auto\",\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"probes\":[{\"label\":\"capability-probe\",\"width\":4,\"height\":4,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true}]},\"fallbackReason\":null,\"targets\":[{\"label\":\"refraction\",\"width\":390,\"height\":776,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"width\":254,\"height\":504,\"type\":1016,\"format\":1023,\"internalFormat\":\"RGBA16F\",\"samples\":0,\"depthTextureType\":null,\"status\":36053,\"complete\":true},{\"label\":\"pcf-shadow\",\"width\":2048,\"height\":2048,\"type\":1009,\"format\":1023,\"internalFormat\":\"RGBA8\",\"samples\":0,\"depthTextureType\":1014,\"status\":36053,\"complete\":true}],\"environment\":{\"kind\":\"baked-cubeuv\",\"type\":1016,\"internalFormat\":\"RGBA16F\",\"mapping\":306,\"width\":768,\"height\":1024,\"runtimePmrem\":false}}",
+            "frames": "79",
+            "time": "2.9499",
+            "yaw": "0.00000",
+            "cupPulse": "0.240",
+            "lamp": "1.000",
+            "wipeAge": "1.150",
+            "drawCalls": "164",
+            "triangles": "26718",
+            "running": "true"
+          },
+          "time": 2.9499,
+          "frame": 79,
+          "touchAction": "none",
+          "canvasTouchAction": "auto",
+          "worldTouchAction": "none",
+          "rect": {
+            "x": 0,
+            "y": 68,
+            "width": 390,
+            "height": 776
+          }
+        },
+        "events": [
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "pointerType": "touch",
+            "eventTimeStamp": 41933.39999999851,
+            "wallTime": 1791153830216,
+            "x": 192.16168212890625,
+            "y": 633.1895751953125,
+            "time": 42720.5,
+            "tag": "CANVAS"
+          },
+          {
+            "type": "pointerup",
+            "trusted": true,
+            "pointerType": "touch",
+            "eventTimeStamp": 41933.39999999851,
+            "wallTime": 1791153830217,
+            "x": 192.16168212890625,
+            "y": 633.1895751953125,
+            "time": 42721.70000000298,
+            "tag": "CANVAS"
+          },
+          {
+            "type": "click",
+            "trusted": true,
+            "pointerType": "touch",
+            "eventTimeStamp": 41933.39999999851,
+            "wallTime": 1791153830221,
+            "x": 192,
+            "y": 633,
+            "time": 42726,
+            "tag": "CANVAS"
+          }
+        ],
+        "callbackDelta": 1,
+        "touchDurationPerformanceMs": 1.2000000029802322,
+        "touchDurationEventTimeStampMs": 0,
+        "touchDurationWallMs": 1,
+        "deadlineMs": 600,
+        "publicAPI": "page.touchscreen.tap",
+        "internalRequestTiming": "not exposed; no private Playwright patch",
+        "pending": []
+      }
+    }
+  ],
+  "servedEntry": [
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:36089/assets/index-Dxjefzym.css",
+      "status": 200,
+      "bytes": 103359,
+      "sha256": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:36089/assets/index-DFSibu4A.js",
+      "status": 200,
+      "bytes": 418683,
+      "sha256": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05"
+    }
+  ],
+  "scope": "Only startup, visible mouse1callback, one hidden short trusted touch1callback; no full flow/capture."
+}

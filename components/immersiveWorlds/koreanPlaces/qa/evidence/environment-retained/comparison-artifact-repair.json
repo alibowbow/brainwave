@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-10-04T22:55:14.261851+00:00",
+  "stage": "Prepublication artifact review; no remote ref was updated",
+  "artifact": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-desktop-baseline-normal-byte.png",
+  "badBytes": 1114345,
+  "badSha256": "b1a1277c249010ed453d20a148795852ea6068500ad9d0129315534ee9eb8dde",
+  "failure": "PIL image file is truncated; comparison manifest mismatch",
+  "action": "Regenerated exact-pixel comparison panels from the unchanged baseline/normal/forced-byte PNGs using the same comparison script. Verified all four decoded RGB crops against originals and all current file hashes.",
+  "replacementSha256": "0f688db6d3b44aedd0d3969cf6dc68a78ae9fd33099a2fea04f7fb5e46690d52",
+  "replacementBytes": 1463298,
+  "sourceCaptureImpact": "None: 19 original captured PNGs and raw source/bundle-bound run records verified unchanged",
+  "cause": "Not established"
+}

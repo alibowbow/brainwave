@@ -1,0 +1,107 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-04T22:16:40.484Z",
+  "finishedAt": "2026-10-04T22:21:08.110Z",
+  "sourceHead": "693f49529e0d5194710dbd8df10c59058491019c",
+  "sourceBuildUnchanged": true,
+  "servedBuildMatch": {
+    "checked": 82,
+    "mismatches": []
+  },
+  "errors": [],
+  "checks": [
+    {
+      "name": "new built-in cafe applies profile to both UI and persisted snapshot",
+      "status": "passed",
+      "elapsedMs": 5448
+    },
+    {
+      "name": "one real semantic cup callback starts one bounded cue through existing bg/master/safety graph",
+      "status": "passed",
+      "elapsedMs": 2543
+    },
+    {
+      "name": "master zero suppresses eligible tap after cooldown, native restoration reopens same graph",
+      "status": "passed",
+      "elapsedMs": 17002
+    },
+    {
+      "name": "source zero suppresses cue while transport keeps running; restored fader allows it",
+      "status": "passed",
+      "elapsedMs": 38524
+    },
+    {
+      "name": "pause makes scene tap and cue silent; edited layers survive native resume without defaults",
+      "status": "passed",
+      "elapsedMs": 28427
+    },
+    {
+      "name": "user restore retains built-in worldId but preserves custom layers, mute and mix",
+      "status": "passed",
+      "elapsedMs": 7767
+    },
+    {
+      "name": "last restore retains built-in worldId but preserves custom layers, mute and mix",
+      "status": "passed",
+      "elapsedMs": 10142
+    },
+    {
+      "name": "HTTP503 source fixture: real window failure suppresses touch despite audible pink bed",
+      "status": "passed",
+      "elapsedMs": 5228
+    },
+    {
+      "name": "held-resume fixture: native minimize cancels pending start and late running context creates no graph",
+      "status": "passed",
+      "elapsedMs": 2785
+    }
+  ],
+  "editedResume": {
+    "layers": [
+      {
+        "type": "window",
+        "volume": 0.17
+      },
+      {
+        "type": "pink",
+        "volume": 0.04
+      }
+    ],
+    "contexts": 1,
+    "pausedCallbackDelta": 0,
+    "resumedCueCount": 1
+  },
+  "failedSource": {
+    "requestCount": 2,
+    "masterPcm": {
+      "peak": 0.0006825018208473921,
+      "rms": 0.000246910940833273
+    },
+    "contexts": 1,
+    "accentCount": 0,
+    "callbackDelta": 1
+  },
+  "cancel": {
+    "nativeMinimize": {
+      "trusted": true,
+      "hint": "starting",
+      "elapsedSinceResumeMs": 412.19999999925494,
+      "lastResumeHeld": true,
+      "wall": 1006.1999999992549
+    },
+    "after": {
+      "contexts": 1,
+      "states": [
+        "running"
+      ],
+      "graphs": 0,
+      "starts": [],
+      "accents": []
+    }
+  },
+  "limitations": [
+    "Café semantic tap is the representative end-to-end audio bridge; this is not listening approval of30 mixes.",
+    "Source buffer/path measurements do not establish perceived loudness, naturalness or physical device output.",
+    "No screenshot or GPU performance pass is inferred from this run."
+  ]
+}

@@ -2,7 +2,7 @@
 
 Updated 2026-10-04 UTC. This is a planning/research artifact, not a code change. Implementation is now owned by the coordinating worker. Recheck main before branching because the reference inventory below was verified at commit `1bb79ac572e8568676881bbc7b4404f1bac443e8`.
 
-## 1. Confirmed user decisions
+## 1. Scene design requirements
 
 - Upgrade ALL remaining 30 cards into independent spaces matching their names. Shared rendering technology is welcome; visually identical shared landscapes or palette-only variants are not.
 - Preserve existing high-quality 3D **깊은 집중** and **파도 해변**. Their quality is the benchmark, not a mandate to copy their setting.
@@ -14,7 +14,7 @@ Updated 2026-10-04 UTC. This is a planning/research artifact, not a code change.
 - Life/presence and audio improvements are wanted. Living things should belong to the space, rather than demand attention.
 - No sudden loud sounds, strong flashes, fast camera motion, or people/animals approaching the viewer or monopolizing attention.
 - Three exact pilot directions approved: (1) 카페 집중 = rainy evening window seat, coffee, warm lights, distant quiet patrons; (2) 아침 숲 = morning forest resting spot with dew, sunlight and a small bird; (3) 우주 명상 = floating garden with planets, nebulae and responsive light particles. **The spaceship-window alternative is discarded.**
-- Parent reports implementation and main merge are approved. Parent/coordinator owns the exact authorization evidence and publication workflow. User specified GPT Work Astra Ultra, Fast off, multiple windows in parallel.
+
 
 ## 2. Verified current code and inventory
 

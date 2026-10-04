@@ -1,70 +1,71 @@
-# Brainwave 30장면 인수·검증 현황
+# Brainwave 30장면 통합 현황
 
-UTC 2026-10-04T21:45:04.750437+00:00. Core `7abc25ab` 이후 **미커밋 작업 트리**를 읽었다. main `14940149`/PR51을 보존한다. root가 단독 공유 코어 writer다. 이 표의 owner 무결성 감사와 아래 실제 App 검증을 구분한다.
+검증 기준 부모 core는 `693f49529e0d5194710dbd8df10c59058491019c`이며, 이 문서는 그 이후 통합 checkpoint의 증거와 남은 게이트를 기록한다. main `14940149`와 protected rainyWindow/oilSea44파일·두poster, 총46파일은 정확히 보존됐다. **최종 main merge는30장면과 공유 App의 기술 릴리스 게이트 완료까지 보류한다.**
 
-**30/30 등록, 사용자 시각 수용26개·Rain4개 보류.** Living#67 `02fa38c6`의4개도 반영됐다.11그룹 소유폴더14곳·893파일의 내용/파일모드와 경로 집합이 각 정확한 owner head에 일치한다. 보호 rainyWindow/oilSea44파일+두poster, 총46파일도 main과 바이트 동일하다. 기본 경로는 `components/immersiveWorlds/`이며 모든 entry의 필수 prop은 `active:boolean` 하나다. 전체SHA/tree/entry해시는 동명JSON에 있다.
+**30/30 lazy 연결. 26장면 실제 시각 증거를 수용했다. Rain: visual refinement and final acceptance pending.** 11그룹 소유폴더14곳·1161파일이 아래 최종 수령 owner tree에 정확히 일치한다. 모든 default entry의 유일한 필수 prop은 `active:boolean`이다. 전체 SHA/tree/파일수와 이전 실패는 [JSON](./integration-intake-2026-10-04.json)에 보존한다.
 
-| ID | Default entry | 수령PR / exact head | 소스/등록 | 시각 상태 | 남은 기능·소스 게이트 |
-|---|---|---|---|---|---|
-| `amb:morning_forest` | `forest/ForestWorld.tsx` | #63 `7382d7c8` | 정확 일치·등록 | 사용자 수용 | App 통합 대기 |
-| `amb:focus_cafe` | `cafe/CafeWorld.tsx` | #50 `e2cc261c` | 정확 일치·등록 | 사용자 수용 | App native/audio 대기 |
-| `amb:cosmic` | `cosmic/CosmicWorld.tsx` | #52 `c9383a07` | 정확 일치·등록 | 사용자 수용 | App native/lifecycle 대기 |
-| `amb:night_pond` | `waterEdge/NightPondWorld.tsx` | #64 `c6cad439` | 정확 일치·등록 | 사용자 수용 | Valley 정리 실패로 그룹 보류 |
-| `nature:summer_valley` | `waterEdge/SummerValleyWorld.tsx` | #64 `c6cad439` | 정확 일치·등록 | 사용자 수용 | Valley 정리 실패로 그룹 보류 |
-| `nature:pebble_shore` | `waterEdge/PebbleShoreWorld.tsx` | #64 `c6cad439` | 정확 일치·등록 | 사용자 수용 | Valley 정리 실패로 그룹 보류 |
-| `amb:waterfall_valley` | `deepWater/WaterfallWorld.tsx` | #62 `3ecff289` | 정확 일치·등록 | 사용자 수용 | App native/lifecycle 대기 |
-| `amb:cave_meditation` | `deepWater/CaveWorld.tsx` | #62 `3ecff289` | 정확 일치·등록 | 사용자 수용 | App native/lifecycle 대기 |
-| `nature:deep_sea` | `deepWater/DeepSeaWorld.tsx` | #62 `3ecff289` | 정확 일치·등록 | 사용자 수용 | App native/lifecycle 대기 |
-| `relax` | `cozyRooms/HearthWorld.tsx` | #65 `6ba4eee6` | 정확 일치·등록 | 사용자 수용 | Winter 재생성 실패로 그룹 보류 |
-| `sleep_prep` | `cozyRooms/SleepRoomWorld.tsx` | #65 `6ba4eee6` | 정확 일치·등록 | 사용자 수용 | Winter 재생성 실패로 그룹 보류 |
-| `power_nap` | `cozyRooms/NapTerraceWorld.tsx` | #65 `6ba4eee6` | 정확 일치·등록 | 사용자 수용 | Winter 재생성 실패로 그룹 보류 |
-| `nature:winter_lodge` | `cozyRooms/WinterLodgeWorld.tsx` | #65 `6ba4eee6` | 정확 일치·등록 | 사용자 수용 | Winter 재생성 실패로 그룹 보류 |
-| `nature:tent_rain` | `rainShelters/RainTentWorld.tsx` | #53 `0dc8e935` | 정확 일치·등록 | 보류 | 접근/승인 보류; Window 호환성 |
-| `nature:window_rain` | `rainShelters/GardenWindowWorld.tsx` | #53 `0dc8e935` | 정확 일치·등록 | 보류 | 접근/승인 보류; Window 호환성 |
-| `nature:monsoon_eaves` | `rainShelters/MonsoonPorchWorld.tsx` | #53 `0dc8e935` | 정확 일치·등록 | 보류 | 접근/승인 보류; Window 호환성 |
-| `amb:summer_storm` | `rainShelters/SummerStormWorld.tsx` | #53 `0dc8e935` | 정확 일치·등록 | 보류 | 접근/승인 보류; Window 호환성 |
-| `country_morning` | `livingWoods/MorningPorchWorld.tsx` | #67 `02fa38c6` | 정확 일치·등록 | 사용자 수용 | App cold/native 대기 |
-| `amb:rainy_forest` | `livingWoods/RainyForestWorld.tsx` | #67 `02fa38c6` | 정확 일치·등록 | 사용자 수용 | App cold/native 대기 |
-| `amb:deep_forest` | `livingWoods/AncientForestWorld.tsx` | #67 `02fa38c6` | 정확 일치·등록 | 사용자 수용 | App cold/native 대기 |
-| `nature:bamboo_grove` | `livingWoods/BambooWorld.tsx` | #67 `02fa38c6` | 정확 일치·등록 | 사용자 수용 | App cold/native 대기 |
-| `nature:temple_dawn` | `koreanPlaces/TempleWorld.tsx` | #66 `174aa43b` | 정확 일치·등록 | 사용자 수용 | App native/PMREM 호환 경로 대기 |
-| `nature:scops_night` | `koreanPlaces/ScopsNightWorld.tsx` | #66 `174aa43b` | 정확 일치·등록 | 사용자 수용 | App native/PMREM 호환 경로 대기 |
-| `nature:rural_summer_night` | `koreanPlaces/RuralSummerNightWorld.tsx` | #66 `174aa43b` | 정확 일치·등록 | 사용자 수용 | App native/PMREM 호환 경로 대기 |
-| `amb:campfire_night` | `nightFires/MountainCampfireWorld.tsx` | #60 `3ad1292f` | 정확 일치·등록 | 사용자 수용 | App; transmission 증거한계 |
-| `amb:deep_night` | `nightFires/DeepNightWorld.tsx` | #60 `3ad1292f` | 정확 일치·등록 | 사용자 수용 | App; transmission 증거한계 |
-| `nature:campfire` | `nightFires/LakesideCampWorld.tsx` | #60 `3ad1292f` | 정확 일치·등록 | 사용자 수용 | App; transmission 증거한계 |
-| `meditation` | `quietSanctuaries/MeditationCourtWorld.tsx` | #55 `c5a10079` | 정확 일치·등록 | 사용자 수용 | App; target 소스검토 |
-| `nature:womb` | `quietSanctuaries/WarmHeartWorld.tsx` | #55 `c5a10079` | 정확 일치·등록 | 사용자 수용 | App; target 소스검토 |
-| `amb:snowy_night` | `quietSanctuaries/SnowVillageWorld.tsx` | #55 `c5a10079` | 정확 일치·등록 | 사용자 수용 | App; target 소스검토 |
+| ID | Default entry | 수령 PR / exact head | 시각 상태 | 남은 기능·소스 게이트 |
+|---|---|---|---|---|
+| `amb:morning_forest` | `forest/ForestWorld.tsx` | #63 `7382d7c8` | 코디네이터 픽셀 수용 | App native 회귀 대기; CI Forest 통과 |
+| `amb:focus_cafe` | `cafe/CafeWorld.tsx` | #50 `e2cc261c` | 코디네이터 픽셀 수용 | App 오디오9검사 통과; native 전체 흐름 대기 |
+| `amb:cosmic` | `cosmic/CosmicWorld.tsx` | #52 `c9383a07` | 코디네이터 픽셀 수용 | App cold 관측 CI 수정 검증 대기 |
+| `amb:night_pond` | `waterEdge/NightPondWorld.tsx` | #64 `d5f00475` | 코디네이터 픽셀 수용 | 20s owner lifecycle 해소; App 전환 응답성 대기 |
+| `nature:summer_valley` | `waterEdge/SummerValleyWorld.tsx` | #64 `d5f00475` | 코디네이터 픽셀 수용 | 20s owner lifecycle 해소; App 전환 응답성 대기 |
+| `nature:pebble_shore` | `waterEdge/PebbleShoreWorld.tsx` | #64 `d5f00475` | 코디네이터 픽셀 수용 | 20s owner lifecycle 해소; App 전환 응답성 대기 |
+| `amb:waterfall_valley` | `deepWater/WaterfallWorld.tsx` | #62 `3ecff289` | 코디네이터 픽셀 수용 | App native/lifecycle 대기 |
+| `amb:cave_meditation` | `deepWater/CaveWorld.tsx` | #62 `3ecff289` | 코디네이터 픽셀 수용 | App native/lifecycle 대기 |
+| `nature:deep_sea` | `deepWater/DeepSeaWorld.tsx` | #62 `3ecff289` | 코디네이터 픽셀 수용 | App native/lifecycle 대기 |
+| `relax` | `cozyRooms/HearthWorld.tsx` | #65 `f1540653` | 코디네이터 픽셀 수용 | Winter120s 재생성 실패; 같은 owner 진단 중 |
+| `sleep_prep` | `cozyRooms/SleepRoomWorld.tsx` | #65 `f1540653` | 코디네이터 픽셀 수용 | Winter120s 재생성 실패; 같은 owner 진단 중 |
+| `power_nap` | `cozyRooms/NapTerraceWorld.tsx` | #65 `f1540653` | 코디네이터 픽셀 수용 | Winter120s 재생성 실패; 같은 owner 진단 중 |
+| `nature:winter_lodge` | `cozyRooms/WinterLodgeWorld.tsx` | #65 `f1540653` | 코디네이터 픽셀 수용 | Winter120s 재생성 실패; 같은 owner 진단 중 |
+| `nature:tent_rain` | `rainShelters/RainTentWorld.tsx` | #53 `0dc8e935` | 보류 | visual refinement and final acceptance pending |
+| `nature:window_rain` | `rainShelters/GardenWindowWorld.tsx` | #53 `0dc8e935` | 보류 | visual refinement and final acceptance pending |
+| `nature:monsoon_eaves` | `rainShelters/MonsoonPorchWorld.tsx` | #53 `0dc8e935` | 보류 | visual refinement and final acceptance pending |
+| `amb:summer_storm` | `rainShelters/SummerStormWorld.tsx` | #53 `0dc8e935` | 보류 | visual refinement and final acceptance pending |
+| `country_morning` | `livingWoods/MorningPorchWorld.tsx` | #67 `02fa38c6` | 코디네이터 픽셀 수용 | App native/lifecycle 대기 |
+| `amb:rainy_forest` | `livingWoods/RainyForestWorld.tsx` | #67 `02fa38c6` | 코디네이터 픽셀 수용 | App native/lifecycle 대기 |
+| `amb:deep_forest` | `livingWoods/AncientForestWorld.tsx` | #67 `02fa38c6` | 코디네이터 픽셀 수용 | App native/lifecycle 대기 |
+| `nature:bamboo_grove` | `livingWoods/BambooWorld.tsx` | #67 `02fa38c6` | 코디네이터 픽셀 수용 | App native/lifecycle 대기 |
+| `nature:temple_dawn` | `koreanPlaces/TempleWorld.tsx` | #66 `4b5f23ae` | 코디네이터 픽셀 수용 | 좁은 PMREM 호환성 해소; App 게이트 대기 |
+| `nature:scops_night` | `koreanPlaces/ScopsNightWorld.tsx` | #66 `4b5f23ae` | 코디네이터 픽셀 수용 | 좁은 PMREM 호환성 해소; App 게이트 대기 |
+| `nature:rural_summer_night` | `koreanPlaces/RuralSummerNightWorld.tsx` | #66 `4b5f23ae` | 코디네이터 픽셀 수용 | Rural은 PMREM 교정 대상 제외; App 전환/해제 대기 |
+| `amb:campfire_night` | `nightFires/MountainCampfireWorld.tsx` | #60 `3ad1292f` | 코디네이터 픽셀 수용 | App native/lifecycle·transmission 관측 대기 |
+| `amb:deep_night` | `nightFires/DeepNightWorld.tsx` | #60 `3ad1292f` | 코디네이터 픽셀 수용 | App native/lifecycle·transmission 관측 대기 |
+| `nature:campfire` | `nightFires/LakesideCampWorld.tsx` | #60 `3ad1292f` | 코디네이터 픽셀 수용 | App native/lifecycle·transmission 관측 대기 |
+| `meditation` | `quietSanctuaries/MeditationCourtWorld.tsx` | #55 `215f9c84` | 코디네이터 픽셀 수용 | 좁은 호환성 해소; App native/lifecycle 대기 |
+| `nature:womb` | `quietSanctuaries/WarmHeartWorld.tsx` | #55 `215f9c84` | 코디네이터 픽셀 수용 | 좁은 호환성 해소; App native/lifecycle 대기 |
+| `amb:snowy_night` | `quietSanctuaries/SnowVillageWorld.tsx` | #55 `215f9c84` | 코디네이터 픽셀 수용 | 좁은 호환성 해소; App native/lifecycle 대기 |
 
-## 현재 검증 상태
+## 완료한 실제 App 검증
 
-- **최신 typecheck, 535 tests / 60 files, build, bundle/PWA guard 통과.** 초기JS408.8KiB/410, CSS101.0KiB/135. Living4개, 첫 render의 host 동일성 재검사, Tab 순환과 이전 세션 재시도의 선택 취소 수정까지 포함한다. served entry는 `index-DE69dX8D.js`다.
-- 실제 공유 host에서 첫 `renderFrame(0)` 직후 engine identity를 다시 검사하여 동기 실패/해제 뒤 `ready`를 내보내지 않도록 한 코드와 회귀 테스트가 추가된 것을 읽었다. 동기 첫 render 실패 callback 회귀를 포함한 host9개 검사도 통과했다.
-- Living#67 CI37235908064, Forest#63 CI37234134896, Korean#66 CI37235352339, Cosmic#52 CI37235011440의 exact-head success가 확인된 기록을 반영했다. 다른CI도JSON의 관측시점 상태만 기록한다.
-- Cafe를 포함한 **실제 최신 App native/audio·30장면 cold 검증은 미완료**다. owner의 standalone harness·wrapper·QA scheduler 및 선택된 passing jobs는 현재 App의 visible/hidden chrome, focus, routing, history, audio와 clean lifecycle 검증을 대체하지 않는다.
+- 현재 Quiet215/Waterd5/Cozyf154/Korean4b5 및 중앙 위치 보정의 **639 tests/67files·typecheck·build·bundle/PWA gate 통과**. 초기 JS408.9/410KiB, CSS101.0/135KiB, `index-BIpQoT7O.js`. [단위검사](./integration-qa/korean-final-unit.log) · [빌드](./integration-qa/korean-final-build.log). 공개693의535개 검사는 과거 checkpoint로 분리한다. first-render identity 재검사와 동기 실패9회귀는 독립 검수에서도 해소.
+- **Cafe portrait 실제 입력·촬영15단계 통과, 전체 실행은 종료 실패 유지.** Player/몰입의 visible mouse와 hidden native touch는 각각1callback, 왕복 drag/cancel과 controls는0callback, detailsOpen은 실제205px 스크롤·callback0·원위치 복귀, modal은 실제5개 focus 대상의 Tab/Shift+Tab 순환, held touch 중 Escape는 같은 canvas를 유지하며0callback이다. 실제 PNG2장을 열었고19개 응답은 고정 dist와 별도 비교해 일치했다. 마지막 browser graceful close가10초를 넘겨 소유 process의 종료만 강제 확인했다. 정상 lifecycle/실기기 성능 통과로 확대하지 않는다. [원본](./integration-qa/native-cafe-full/results.json) · [요약](./integration-qa/native-cafe-full/review-summary.json) · [별도 build 비교](./integration-qa/native-cafe-full/served-build-comparison.json).
+- **30/30 normal portrait390×844 cold 첫 정지 프레임,391검사·30nativePNG 통과.** 사용자 활성화 false, 입력/scene callback0, source/dist/served hashes 일치. 모든 실제 이미지를 열어 빈 화면·오류 fallback·동일 placeholder를 찾지 못했다. [갤러리](./integration-qa/cold-693/gallery.html) · [결과](./integration-qa/cold-693/results.json) · [픽셀 검수](./integration-qa/cold-693/visual-review.json). 이는693 runtime의 증거이며 새 Water/Cozy tree의 현재 실행으로 바꾸어 표시하지 않는다. Desktop/forced-byte/active/lifecycle 통과도 뜻하지 않는다.
+- **실제 App 오디오9/9 통과**: 하나의 기존 AudioContext/bgBus, 실제 컵1tap→1callback→quiet cue, 전체/출처 음소거와 복원, 편집한 Window.17/Pink.04의 정지·재개 보존, 사용자 저장/최근 세션의 커스텀·mute 보존, 실제503 음원 실패와 남은 pinkPCM, pending-start 중 native축소 및 늦은 context복귀 무반응. source/build 안정,82served해시 일치, page/cleanup error0. [결과](./integration-qa/audio-full-run4-fixed.json). 실행 소스는693+Player의 아래 layout 수정이며 이후 Water/Cozy 인수 이전이다.30믹스 청음 승인은 아니다.
+- **중앙 믹서 clipping 해결**: nativewheel 최하단에서도 안 눌리던 Pink는 부모 aside가 내부 viewport53px를 자르는 실제 결함이었다. desktop flex 높이 배분으로 내부524px가 부모 안에 맞으며 Pink중앙 y721이 실제 INPUT을 hit한다. [수정 전 실패](./integration-qa/audio-clip-run2.json) · [수정 후 통과](./integration-qa/audio-clip-run3-fixed.json). 렌더러/재질/해상도 변경 없음.
 
-## 보류 및 남은 검토
+## 실패와 남은 경로
 
-1. **WaterEdge#64 / Valley**: clean normal36.8076s·byte45.4897s가 기존20s 정리 gate를 초과한다. secondcycle/remount 미실행. Pond/shore의 기록된 clean 성공과 분리하며 그룹 최종 승인은 보류한다. 동일 owner가 후속을 맡는다.
-2. **Cozy#65 / Winter**: full suite와 단독 retry 모두 recreated-ready120s 실패. 나머지3장면의 완료된 검사와 분리한다. CI나 별도 disposal 시간으로 실패를 해제하지 않으며 동일 owner 후속을 기다린다.
-3. **Rain#53**: 거절된 업로드2개는 접근하지 않았고 인라인·다른 경로로도 취득하지 않았다. 공개 원본만 등록했다. 새 미감 교정·최종 품질승인은 접근/승인 의존성이 풀릴 때까지 보류하며 GardenWindow 호환성도 미완료다.
-4. **Living#67**: 같은 runtime의 morning15s cold GPU settlement 실패가 보존되어 있다. 후속 선택 작업의 성공을 모든 시도 성공이나 안정적 cold-load 증명으로 바꾸지 않는다. 실제 통합 cold 검증에서 다시 확인한다.
-5. **소스/증거 검토**: Quiet pool의 실제 FBO 검사와 환경 PMREM, Korean Temple/Scops의 암묵적 HalfFloat PMREM에 호환 경로가 남아 있다. Forest/Cosmic/Living의 기존 allocation+byte 증거는 유지하며 stock Reflector callback의 추가 상태 복원은 현 default-target 흐름에서 비차단 보강이다. Night implicit transmission은 Three의 extension OR/byte 경로가 있으며 실제 FBO 관측 증거가 남아 있다. 사용자 수용26개의 미감을 재설계하거나 수용을 철회하는 근거로 사용하지 않는다.
+1. **693 CI37238088035 전체 실패**: unit/build/bundle와 Forest는 통과했다. Nature13장면·세로/가로 이미지·편집/복원·rural 기능을 마친 뒤20초 context-loss gate 실패. 누락된 context별 증거 때문에 특정 owner에 귀속하지 않는다. 같은 페이지 reload 뒤 만들어진 context들만 해당하므로 모든13의 정리 실패라고도 표현하지 않는다. Audio/Cafe/Cosmic은 최초 blocked-autoplay 관측에서 실패했다. 실제 입력 전 Playwright 관측이 활성화를 준 증거가 있어 rawCDP 관측으로 QA를 보정 중이며 기존 PCM/retry/history/renderer 게이트는 유지한다. Nature 첫 명령 실패로 보호focus/sea/links는 이 CI에서 실행되지 않았다. 다음 workflow는 독립 step과 JSON artifact를 보존한다.
+2. **Waterd5 fixed20s lifecycle 해소**: 소스13/harness5/최종24보고서·28PNG·보존40증거 해시 확인, 승인10stills 바이트 동일. normal16.2501/7.7436s, byte5.0389/5.3272s; active2frame 정상/byte5.0204/5.0186s. 과거c6의36.8076/45.4897초 실패와 중간23.8308초 실패는 삭제하지 않는다. **normal 첫dispose11.249초 동기 정체/heartbeat11.2445초는 별도 App 응답성 한계**이며 smoothUI/실기기 성능으로 해석하지 않는다. [인수 감사](./integration-qa/water64-d5f0047-intake.md).
+3. **Cozyf154 원래 Winter120초 실패 유지**: 동일 DPR/size 생략은 유효하고10coldPNG 동일. 앞3장면78검사 후 원래 긴sequence 재생성 실패는 별도 clean2cycle 성공으로 해소되지 않는다. 기존 구현의 oldGPU완료/새context firstdraw의 좁은 GL 진단을 계속한다. [인수 감사](./integration-qa/cozy65-f154-readonly.md).
+4. **Quiet215 / Korean4b5의 좁은 호환성 해소**: Quiet의23source·12PNG와6acceptedstills 바이트 보존, normal/byte 실제 fullsize FBO36053/GL0·state복원·각15life묶음을 독립 확인하고 인수했다. r186private adapter는 Three업그레이드 때 재검증한다. Korean sourcecb0e122의 normal/byte Temple·Scops4fullrun은 오류0, output/ping-pong fullsizeFBO36053·상태복원을 기록했다. 정상4stills와 Rural3stills는 이전과 동일하며 실제byte4뷰의 RGB최대차이는1/255다. 이전20초폐기·60초캡처 실패는 보존한다. Rural의 새 full lifecycle 검증은 아니다. Forest/Cosmic/Living의 기존 byte 증거를 취소하지 않는다.
+5. **Rain4**: visual refinement and final acceptance pending.
+6. **실제 native 전체 흐름**: Cafe의 위15개 단계는 확인했지만 정상 browser 종료와 다른 owner/Nature 경로의 최종 App 게이트는 남아 있다. Back/Forward·저장/rename·retry·급한교체/lateinit/disposal과 보호2의 최종 회귀도 별도 완료가 필요하다. 과거 hidden touch180초 및 최신cleanup10초 실패는 모두 보존한다. 한 세계의 통과를30개 전체로 확대하지 않는다.
 
-## 남은 순서
 
-1. root가 최신30개+host 수정의 전체 단위 검사·typecheck/build/budget/PWA를 완료하고 source/build를 고정한다.
-2. 실제 App cold gallery와 native Player/Nature/Immersive 검증을 진행한다. visible/hidden chrome, 제어섬·keyboard focus, tap/drag,1tap=1callback,3.6초 hide, 늦은 초기화/holder/dispose를 확인한다. synthetic pointer dispatch로 대체하지 않는다.
-3. autoplay 관찰은 첫 실제 입력 전 사용자 활성화를 만들지 않도록 검증하고, 기존AudioContext/output 주입·custom/restore/edited mix·source/global mute·late-start 취소를 확인한다. 보호2/PR45 autoplay, Back/Forward, save/restore/rename, retry 회귀도 남아 있다.
-4. Water/Cozy owner 후속과 Rain 보류, 남은 소스 검토를 해소한 뒤 exact-head guard로 인수문서를 갱신한다. 전체 실제 게이트와 기존 최종merge 해제 조건 충족 전 main merge/운영 완료로 표시하지 않는다.
+물리기기·실제FPS/발열·실청음은 수행하지 않았다. 독립 harness/wrapper 증거와 실제 App 게이트를 구분한다. 전체30장면 기술 릴리스 게이트는 별도로 완료해야 한다.
 
-물리기기/FPS/발열·30믹스 실청음은 수행하지 않았다. 일부 owner bundle은 manifest만 공개된 한계도 유지한다. 최종 handoff/PR이 게시됐다는 사실만으로 owner Work 종료를 추측하지 않는다.
+## 후속 사실 정정과 좁은 관측
 
-## 실제 App 검사 — 완료와 실패를 분리
+- 실제 Winter→Rural→이탈에서 Winter는21.3233초에 context가 살아 있고 Rural은5.0094초에 trustedcontextloss를 냈다. Cozy의 현재dispose는 자원/renderer.dispose를 호출하고 **context를 browser에 맡기는 의도된 경로**다. 관찰자가 canvas/GL의 강한 참조를 유지하므로 GC반환을 이 테스트의 성공 경로로 삼을 수 없다. 이 결과는 명시적 context-loss 계약과의 불일치이며 dispose미실행·물리GPU누수를 입증하지 않는다. 원래 Winter120초 실패를 면제하거나20초기준을 완화하지 않는다. [증거](./integration-qa/winter-rural-context-loss-proof.json).
+- 최신 nativeCafe 실패에는9touch의 실제 hold시간708–1817ms가 기록됐다. 모두 기존600ms tapcutoff보다 길어0callback은 현재계약과 맞는다. start응답을 기다리는 검사 대신 설치된 Playwright공식구현처럼 짧은native start/end를 큐에 넣고 실제이벤트시간을 검증한다. 기준을 늘리거나 실패를 소급pass로 바꾸지 않는다. [원래실패](./integration-qa/native-cafe-afterlayout-failed.json)·[triage](./integration-qa/native-cafe-touch-triage.json).
+- Scops의 실제 새가 왼쪽·물이 오른쪽인 구도에 맞춰 lazy 중앙 bridge만 보정했다. owner프로필23파일과 초기음량/저장믹스/보호2를 보존하며7unit이 통과했다. 최신 run5에서 실제 primary 내부+.5/외부−.38769, 독립적으로 식별한 stream+.32287을 확인했으나 PCM 관측5초·정상 browser 종료15초 제한을 넘겼다. 방향성 PCM·청음·최종 오디오 완료로 표시하지 않는다. [실패 원본](./integration-qa/audio-run5-scops/results.json) · [해석](./integration-qa/scops-retention-and-next-gates.md).
+- Night의 약한 transmission은 DeepNight/Lakeside 랜턴 유리에만 있다. Three r186은 half/float 확장이 모두 없으면 byte를 선택하고 target/face/mip를 정상 복원한다. 실제 불완전 FBO는 관측되지 않았으며, 별도 forced-byte/FBO 증거는 미검증 목록에 남긴다. 새 renderer 교정이나 미감 차단 사유로 확대하지 않는다. [소스별 범위](./integration-qa/night-transmission-inventory.md).
 
-- 오디오 `audio-live-run2`: 최초 입력 전 raw CDP 관측에서 userActivation=false, suspended AudioContext1개, graph/start0. 실제 Play 후 초기믹스 UI/저장 일치와 실제 컵1tap→1callback→기존bg/master/safety graph의 제한된 cue가 통과했다. 출처별/전체 mute 검사는 이후 조절 버튼이 보이지 않아60s에서 중단됐고 cleanup15s도 실패했다. 18개 served asset은 해당 build와 일치. 전체 오디오 통과가 아니다.
-- 입력 `native-cafe-30-focusfixed`: route/실제재생 및 visible chrome의1tap=1callback은 통과했지만 hidden chrome native touch가180s 제한에서 실패했고 cleanup10s도 실패했다. source는 실행 전후 동일. 이 실패를 새 focus 수정의 통과로 바꾸지 않는다.
-- 이전 `native-cafe-portrait-final`은 Player의 visible/hidden touch·drag/cancel·controls·details pan-y와 Immersive의 visible/hidden touch·drag/cancel까지 통과한 뒤 키보드 순환에서 실패했다. 해당 중앙 버그는 이후 수정했지만 새 exact-source 전체 통과는 아직 없다.
-- 검사도 실제 기능과 맞추어 갱신 중이다. 오래된 SVG/video 배경, full-cover drag chrome, 이전 믹스 개수 기대를 새3D/투명 chrome/초기프로필에 맞추며 보호 장면·history·오디오 실패/복구 게이트는 유지한다.
-- 개별 과거 실패 JSON을 삭제하거나 기한 확대만으로 통과 처리하지 않는다. 아래 보존 JSON은 원래 실행 당시 체크포인트·dirty source hashes를 그대로 갖는다.
+- 최신 공유 오디오9/9도 정상 종료했다. [run6](./integration-qa/audio-run6-latest9/results.json) · [검증 범위](./integration-qa/audio-latest9-checkpoint.md). 실행은 최종 Korean 인수 전 `index-DFSibu4A.js`이며 현재 새 빌드로 소급 표시하지 않는다. 17개 추적 소스와82응답 해시가 일치했고 page/cleanup 오류0이다.
+
+- 현재 Korean4b5를 포함한 `index-BIpQoT7O.js`에서 Scops 실제 PCM 방향 검사를 통과했다. 자연 호출2회/표본4개에서 내부R/L5.828, 외부L/R1.463, 물소리103window·4.899초에서R/L2.065였다. source17개·응답18개 해시가 일치했다. 마지막 browser process close15초는 실패했고 앱 graph teardown은 입증하지 못했다. [run7 원본](./integration-qa/audio-run7-scops/results.json) · [범위와 한계](./integration-qa/scops-run7-checkpoint.md).
+
+Korean 최종 [인수 검토](./integration-qa/korean4b5-intake.md)는23source·90artifact·19PNG를 독립 대조했다. qa/dist의6개 번들 바이너리는 저장소에 없어 raw report의 manifest 일관성까지만 확인했다. 정확한 owner head CI37241927168은 성공이다.

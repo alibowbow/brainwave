@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-10-04T21:54:58.324014+00:00",
+  "status": "BLOCKED \u2014 original winter recreation unresolved",
+  "baseCommit": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "testedWorkingTreeSourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+  "originalEntryBundleSHA256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+  "productionChangedFiles": [
+    "components/immersiveWorlds/cozyRooms/engine.ts"
+  ],
+  "approvedVisualSourcesAndHistoricalEvidenceUnchanged": true,
+  "checks": {
+    "typecheck": "PASS",
+    "unitTests": {
+      "status": "PASS",
+      "tests": 150,
+      "files": 24
+    },
+    "applicationBuild": "PASS",
+    "bundleBudget": {
+      "status": "PASS",
+      "initialJSKiB": 402.6,
+      "initialJSBudgetKiB": 410,
+      "CSSKiB": 99.5,
+      "CSSBudgetKiB": 135
+    },
+    "originalFourWorldSuite": {
+      "status": "FAILED",
+      "completeWorlds": [
+        "relax",
+        "sleep_prep",
+        "power_nap"
+      ],
+      "completeCheckLabels": 78,
+      "failedWorld": "nature:winter_lodge",
+      "step": "fresh ready canvas after disposal",
+      "timeoutMs": 120000,
+      "processExitCode": 1,
+      "report": "evidence/final-original/failure.json"
+    },
+    "winterConsecutiveRecreation": {
+      "status": "PASS",
+      "cycles": 2,
+      "engines": [
+        1,
+        2,
+        3
+      ],
+      "distinctCanvasObjects": 3,
+      "trustedKeyboardActions": 2,
+      "finalCreated": 3,
+      "finalDisposed": 3,
+      "browserCleanup": "completed",
+      "processExitCode": 0,
+      "report": "../recreation-cycle/evidence/final/recreation-cycle.json"
+    },
+    "motionOnlyPixels": {
+      "status": "UNRUN",
+      "precondition": "original assertion rejected current failed verification before browser creation",
+      "processExitCode": 1,
+      "report": "MOTION_STATUS.json"
+    },
+    "PNGs": {
+      "status": "PASS",
+      "nativeCapturesInspected": 11,
+      "coldApprovedByteIdentical": 10,
+      "report": "PNG_MANIFEST.json"
+    }
+  },
+  "diagnosis": "Redundant backing writes confirmed and removed. Baseline synchronous first recreated renderer.render measured100195.9ms. Candidate has missing phase events386\u2013396; factory-entry to renderer-return49762.2ms only. InnerGL/driver cause of historical and final failures unresolved. No shared host patch proposed.",
+  "separateDiagnosticLimitations": [
+    "baseline-clean phase assertions passed but browser-close exceeded10000ms",
+    "candidate-original missing11phase records",
+    "instrumented original sequences passed but final uninstrumented sequence failed",
+    "DPRchange preservation source-reviewed; browser runsDPR1"
+  ],
+  "unrunOrUnmeasured": [
+    "original motion-only pixels",
+    "integrated application routing/fullscreen/audio",
+    "real background-tab hiding",
+    "physical touch or Fold device",
+    "hardware performance/thermals",
+    "physical GPU reclamation"
+  ],
+  "retainedHistoricalFailures": [
+    "../followup/evidence/final-original/failure.json",
+    "../followup/evidence/final-winter-retry/failure.json"
+  ],
+  "integration": "Keep PR65draft and no merge; coordinator decision required on unresolved original gate before lifecycle acceptance. No main/shared/other-owner changes."
+}

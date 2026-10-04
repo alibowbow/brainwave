@@ -1,6 +1,6 @@
 # Confirmed design updates — 2026-10-04
 
-These later user decisions take precedence over the initial supplied brief. They do not authorize new scene implementations in the coordinator's Work.
+These design requirements supersede the initial brief where they differ. Scene implementation remains isolated by the documented ownership boundaries.
 
 ## Rural summer night: one explicit style exception
 
@@ -10,7 +10,7 @@ Preserve the original rural-summer-night image's composition, palette and place 
 
 Keep the recognizable moonlit rice field, warm house, field path and gently wind-driven rice. Retain the familiar low seated viewpoint, depth layers, utility pole/wires and calm night sky where they contribute to the original composition. Life remains distant and quiet. The actual rural-insect recording retains its identity and existing recording-only policy.
 
-This single scene is the user's explicit exception to the general nonpainterly direction. It must not spread to the other 29 upgrades or alter the two protected renderers. It is still an immersive 3D space; a flat full-scene image is not the upgrade.
+This style exception applies only to `nature:rural_summer_night`; the other29 upgrades and two protected renderers retain their existing directions. It remains an immersive3D space, not a flat full-scene image.
 
 Assignment: **not implemented by this coordinator**. Distribute to a separate owner after the pilot quality gate.
 
@@ -24,12 +24,12 @@ QA additions for this ID:
 
 ## Broader updates retained in the integration contract
 
-- Supplemental built-in image generation is allowed if it materially improves quality, with provenance/local-file/build checks; no paid external service, new subscription, credit spend or permission is implied.
+- Supplemental generated imagery must improve quality and include provenance, local-file and build checks.
 - Both Sonnet 5.5 HTML 100 and Opus 5.5 HTML 100 inform the final source/render comparison and apply/defer reasoning; the supplied balanced evidence below is now part of the design record, and license limits remain.
 
 ## Balanced Opus/Sonnet reference addendum accepted
 
-The [user-supplied addendum](./opus-balanced-benchmark-addendum.md) is retained verbatim. Its table maps **all 30 upgrade IDs exactly once**, with a unit check against the canonical upgrade catalog. It supplements the approved scene designs rather than changing their names, layouts or ownership. Select the strongest particular effect from either collection; do not force a model preference or replace working pilot art only because it used Sonnet inspiration.
+The [benchmark addendum](./opus-balanced-benchmark-addendum.md) maps all30 upgrade IDs exactly once, with a unit check against the catalog. It supplements the scene designs and ownership. Use the strongest particular effect from either collection; preserve working art and independent implementations.
 
 Provenance is explicit: the **planner** inventoried all 100 Opus entries, inspected actual rendered pixels for eight originals and audited source for nine. This integration Work is recording those supplied findings, not claiming to have rendered the original demos. The eight rendered references are Opus 041, 066 (Earthlike/Gas Giant), 078 (autumn/summer), 061, 051 (lamp/window interaction), 035, 082 and 100 (default field/isolated touch ripple). The additional source-only item is Opus 092; its sound was not auditioned. Catalog descriptions do not substitute for actual rendered observations, and 100 inventoried entries do not mean 100 visual inspections.
 

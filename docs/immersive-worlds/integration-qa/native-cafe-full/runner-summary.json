@@ -1,0 +1,172 @@
+{
+  "startedAt": "2026-10-04T22:52:17Z",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/native-cafe-full-queued-20261004T225217Z",
+  "outerLimitSeconds": 480,
+  "case": "cafe",
+  "viewport": "390x844",
+  "expectedBuild": [
+    "index-DFSibu4A.js",
+    "index-Dxjefzym.css"
+  ],
+  "browser": "/tmp/cosmic-browser-bin/chromium",
+  "gpuGrant": "one full Cafe portrait native-input flow; no retries",
+  "port": 48083,
+  "head": "693f49529e0d5194710dbd8df10c59058491019c",
+  "buildFiles": {
+    "index-DFSibu4A.js": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05",
+    "index-Dxjefzym.css": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593"
+  },
+  "previewPID": 6,
+  "servedIndexSHA256": "878f5f2595630cc637845c65bc4aadb59fdf49d57769c27f45cc60952663c54e",
+  "previewReady": true,
+  "runnerPID": 24,
+  "testScripts": {
+    "verify-integration-input.mjs": "0aa9e3a5b8b063fa2369fbdc74911f938da50de569e0966acf93b30ba8370b0f",
+    "native-core-regressions.mjs": "72626658a6fcd30ef06000805aa789b3747e2c57b22d7bd28b413c84817b3ca4",
+    "phase-diagnostic.mjs": "d1eba1ce7e81a5e2c7f6cab2f7922131609e7d3fa7d7fce4427fc25f13a18daa",
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc"
+  },
+  "ownedBrowser": {
+    "pid": 42,
+    "launchedAt": "2026-10-04T22:52:18.747Z",
+    "terminationConfirmed": true,
+    "forcedKill": true,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T22:52:18.747Z",
+        "pid": 42
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T22:56:30.844Z"
+      },
+      {
+        "kind": "owned-browser-cleanup-error",
+        "at": "2026-10-04T22:56:40.852Z",
+        "stage": "graceful-close",
+        "message": "Error: owned browser server close exceeded 10000ms"
+      },
+      {
+        "kind": "owned-browser-kill-send",
+        "at": "2026-10-04T22:56:40.852Z",
+        "pid": 42
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T22:56:40.868Z",
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      {
+        "kind": "owned-browser-kill-ack",
+        "at": "2026-10-04T22:56:40.902Z"
+      }
+    ],
+    "exitCode": null,
+    "signal": "SIGKILL",
+    "finishedAt": "2026-10-04T22:56:40.902Z"
+  },
+  "exitCode": 1,
+  "elapsedExecutionSeconds": 263.829,
+  "status": "failed",
+  "sourceStable": true,
+  "errors": [
+    {
+      "kind": "cleanup",
+      "stage": "graceful-close",
+      "message": "Error: owned browser server close exceeded 10000ms"
+    }
+  ],
+  "cases": [
+    {
+      "key": "cafe",
+      "status": "passed",
+      "failure": null,
+      "checks": [
+        {
+          "name": "native route+playback startup",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "player: visible chrome1tap1callback",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "player:3.6s hidden chrome native touch1tap1callback",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "player: out-and-back drag and native cancel callback0",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "player: controls+keyboard+focus callback0",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "player: source-bound actual-app PNG",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "detailsOpen retains pan-y",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "native immersive entry preserves canvas/controlcallback0",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "immersive: visible chrome1tap1callback",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "immersive:3.6s hidden chrome native touch1tap1callback",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "immersive: out-and-back drag and native cancel callback0",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "immersive: controls+keyboard+focus callback0",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "immersive: native modal Tab/Shift+Tab cycle",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "immersive: source-bound actual-app PNG",
+          "status": "passed",
+          "error": null
+        },
+        {
+          "name": "Escape during held touch cancels old holder callback0",
+          "status": "passed",
+          "error": null
+        }
+      ]
+    }
+  ],
+  "ownedPids": [
+    6,
+    24
+  ],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 263.851,
+  "finishedAt": "2026-10-04T22:56:41Z"
+}

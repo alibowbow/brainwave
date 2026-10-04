@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { SceneContent, WorldInteraction } from '../types';
+import { createCheckedEnvironment } from '../environment';
 
 /** Original, procedural Korean mountain bell pavilion. No fetched or copied assets. */
-export function createTempleScene(): SceneContent {
+export function createTempleScene(renderer: THREE.WebGLRenderer): SceneContent {
   const scene = new THREE.Scene();
   scene.name = 'Temple dawn — seated bell pavilion';
   scene.background = new THREE.Color('#b4cbd0');
@@ -91,7 +92,8 @@ export function createTempleScene(): SceneContent {
   const ec=envCanvas.getContext('2d')!,eg=ec.createLinearGradient(0,0,0,256);
   eg.addColorStop(0,'#b3cfda');eg.addColorStop(.42,'#dde1cc');eg.addColorStop(.54,'#b3b7a1');eg.addColorStop(1,'#4f5142');ec.fillStyle=eg;ec.fillRect(0,0,512,256);
   const glow=ec.createRadialGradient(325,106,1,325,106,90);glow.addColorStop(0,'rgba(255,235,193,.86)');glow.addColorStop(1,'rgba(255,235,193,0)');ec.fillStyle=glow;ec.fillRect(0,0,512,256);
-  const environment=new THREE.CanvasTexture(envCanvas);environment.colorSpace=THREE.SRGBColorSpace;environment.mapping=THREE.EquirectangularReflectionMapping;scene.environment=environment;scene.environmentIntensity=.7;
+  const environment=new THREE.CanvasTexture(envCanvas);environment.colorSpace=THREE.SRGBColorSpace;environment.mapping=THREE.EquirectangularReflectionMapping;
+  const checkedEnvironment=createCheckedEnvironment(renderer,environment,'temple');scene.environment=checkedEnvironment.texture;scene.environmentIntensity=.7;
 
   const wood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .84, color: '#c0b499' });
   const oldWood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .93, color: '#806d58' });
@@ -590,7 +592,7 @@ export function createTempleScene(): SceneContent {
   };
   resize(16 / 9);
   return {
-    scene, camera, resize,
+    scene, camera, resize, dispose: checkedEnvironment.dispose,
     update(time, dt) {
       bellImpulse *= Math.exp(-dt * .7); chimeImpulse *= Math.exp(-dt * 1.1);
       bellPivot.rotation.z = Math.sin(time * 1.74) * .008 + Math.sin(time * 2.7) * bellImpulse * .018;

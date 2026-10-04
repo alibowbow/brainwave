@@ -40,12 +40,37 @@ const mixButton = (page, name) => page.locator('.sound-mix-grid > button').filte
 async function verifyLiveNature() {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
   await context.addInitScript(() => {
-    window.__natureVerification = { contexts: [], media: [], callbacks: [] };
+    window.__natureVerification = { contexts: [], media: [], callbacks: [], documentStartedAtMs: performance.now() };
+    const identity = item => {
+      const canvas = item.canvas;
+      const slot = canvas.closest('[data-immersive-world-id]');
+      if (slot) item.worldId = slot.dataset.immersiveWorldId;
+      const value = { className: canvas.className, id: canvas.id, worldId: item.worldId ?? null,
+        connected: canvas.isConnected, lifecycle: canvas.dataset.lifecycle ?? null, disposed: canvas.dataset.disposed ?? null,
+        gpuState: canvas.dataset.gpuState ?? null, running: canvas.dataset.running ?? null,
+        disposeStartMs: canvas.dataset.disposeStartMs ?? null, disposeEndMs: canvas.dataset.disposeEndMs ?? null };
+      const key = JSON.stringify(value);
+      if (key !== item.lastIdentityKey) {
+        item.lastIdentityKey = key;
+        item.events.push({ kind: 'identity-or-lifecycle-attribute-observed', atMs: performance.now(), ...value });
+      }
+      return value;
+    };
+    // Observe owner-provided lifecycle attributes without calling engine methods.
+    // Attribute observation is not proof of an unexposed dispose() entry/return.
+    new MutationObserver(() => window.__natureVerification.contexts.forEach(identity)).observe(document, {
+      subtree: true, childList: true, attributes: true,
+      attributeFilter: ['class', 'id', 'data-immersive-world-id', 'data-lifecycle', 'data-disposed', 'data-gpu-state', 'data-running', 'data-dispose-start-ms', 'data-dispose-end-ms'],
+    });
     const getContext = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (...args) {
       const gl = getContext.apply(this, args);
       if (gl && /^(webgl2?|experimental-webgl)$/.test(args[0]) && !window.__natureVerification.contexts.some(x => x.gl === gl)) {
-        const item = { gl, canvas: this, draws: 0 };
+        const item = { id: window.__natureVerification.contexts.length + 1, gl, canvas: this, draws: 0,
+          createdAtMs: performance.now(), events: [] };
+        this.addEventListener('webglcontextlost', event => item.events.push({ kind: 'webglcontextlost', isTrusted: event.isTrusted, atMs: performance.now() }));
+        this.addEventListener('webglcontextrestored', event => item.events.push({ kind: 'webglcontextrestored', isTrusted: event.isTrusted, atMs: performance.now() }));
+        identity(item);
         window.__natureVerification.contexts.push(item);
         for (const key of ['drawArrays', 'drawElements', 'drawArraysInstanced', 'drawElementsInstanced']) {
           if (typeof gl[key] !== 'function') continue;
@@ -181,7 +206,34 @@ async function verifyLiveNature() {
     await check('leaving Nature releases every observed renderer context after host retention', async () => {
       await page.evaluate(() => { location.hash = '#/guide'; });
       await page.waitForFunction(() => !document.querySelector('.sound-stage canvas'));
-      await page.waitForFunction(() => window.__natureVerification.contexts.every(x => x.gl.isContextLost()), null, { timeout: 20_000 });
+      const startedAt = Date.now();
+      try {
+        await page.waitForFunction(() => window.__natureVerification.contexts.every(x => x.gl.isContextLost()), null, { timeout: 20_000 });
+        const actualWaitElapsedMs = Date.now() - startedAt;
+        report.contextRelease = { configuredTimeoutMs: 20_000, actualWaitElapsedMs };
+        assert.ok(actualWaitElapsedMs <= 20_000, `Context-loss observation exceeded actual20s: ${actualWaitElapsedMs}ms`);
+      } catch (error) {
+        // Preserve the unchanged 20 s failure before bounded diagnostics.
+        report.contextReleaseFailure = { configuredTimeoutMs: 20_000, actualWaitElapsedMs: Date.now() - startedAt, message: String(error) };
+        await saveReport();
+        let cdp;
+        try {
+          cdp = await context.newCDPSession(page);
+          const result = await bounded(cdp.send('Runtime.evaluate', {
+            expression: `JSON.stringify({ sampledAtMs: performance.now(), documentStartedAtMs: window.__natureVerification.documentStartedAtMs,
+              contexts: window.__natureVerification.contexts.map(x => ({ id: x.id, createdAtMs: x.createdAtMs,
+                className: x.canvas.className, canvasId: x.canvas.id, worldId: x.worldId ?? null,
+                connected: x.canvas.isConnected, data: {...x.canvas.dataset}, lost: x.gl.isContextLost(),
+                draws: x.draws, events: x.events })) })`,
+            returnByValue: true, userGesture: false,
+          }), 5000, 'context-release failure diagnostics');
+          if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+          report.contextReleaseFailure.observed = JSON.parse(result.result.value);
+        } catch (diagnosticError) { report.contextReleaseFailure.diagnosticError = String(diagnosticError); }
+        finally { if (cdp) await bounded(cdp.detach(), 1000, 'diagnostic CDP detach').catch(() => {}); }
+        await saveReport();
+        throw error;
+      }
     });
   } finally { await closeContext(context); }
 }

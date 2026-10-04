@@ -343,19 +343,19 @@ export const Player: React.FC<PlayerProps> = ({
           )}
         </section>
 
-        {(visualMode === 'graphics' || detailsOpen) ? <aside ref={detailsRef} className="rounded-[28px] border border-white/8 bg-[#101522] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] lg:max-h-[calc(100dvh-134px)] lg:overflow-hidden">
+        {(visualMode === 'graphics' || detailsOpen) ? <aside ref={detailsRef} className="rounded-[28px] border border-white/8 bg-[#101522] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] lg:flex lg:max-h-[calc(100dvh-134px)] lg:flex-col lg:overflow-hidden">
           {visualMode === 'nature' ? (
-            <div className="mb-3 flex min-h-11 items-center justify-between px-2">
+            <div className="mb-3 flex min-h-11 shrink-0 items-center justify-between px-2">
               <div><p className="text-[9px] font-black tracking-[0.14em] text-emerald-300/70">SESSION</p><h2 className="mt-0.5 text-sm font-black">세션 조절</h2></div>
               <button type="button" onClick={() => setDetailsOpen(false)} aria-label="세션 조절 닫기" className="grid h-11 w-11 place-items-center rounded-full bg-white/6 text-white/58 transition-colors hover:bg-white/10 hover:text-white"><X size={17} /></button>
             </div>
           ) : null}
-          <div className="grid grid-cols-2 gap-1 rounded-[18px] bg-white/[0.035] p-1">
+          <div className="grid shrink-0 grid-cols-2 gap-1 rounded-[18px] bg-white/[0.035] p-1">
             <button type="button" onClick={() => setPanel('controls')} aria-pressed={panel === 'controls'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'controls' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><Activity size={14} /> 세션</button>
             <button type="button" onClick={() => setPanel('sounds')} aria-pressed={panel === 'sounds'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'sounds' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><SlidersHorizontal size={14} /> 믹서</button>
           </div>
 
-          <div className="mt-3 space-y-3 lg:max-h-[calc(100dvh-210px)] lg:overflow-y-auto lg:pr-1 scrollbar-hide">
+          <div className="mt-3 space-y-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 scrollbar-hide">
             {panel === 'controls' ? (
               <>
                 <section className="rounded-[20px] bg-white/[0.035] p-4">

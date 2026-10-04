@@ -1,30 +1,41 @@
+import { ownBrowserServer } from './owned-browser.mjs';
+import { beginVerificationProvenance } from './verification-provenance.mjs';
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { createColdObserver, installColdInputProbe } from './cold-autoplay.mjs';
 
 const BASE = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:4173').replace(/\/?$/, '/');
 const output = path.join(process.env.SCENE_SCREENSHOT_DIR || 'artifacts', 'audio');
 const audioPattern = '**/audio/nature/**';
-const report = {
+const provenance = await beginVerificationProvenance({ baseUrl: BASE, outputDirs: [process.env.SCENE_SCREENSHOT_DIR || 'artifacts'] });
+const report = { provenance: provenance.data, cleanupErrors: [],
   startedAt: new Date().toISOString(),
   baseUrl: BASE,
   scope: 'Existing application routes, native Web Audio and controlled HTTP 503 audio responses in isolated browser contexts.',
   evidenceScope: 'PCM measured at the existing pre-limiter master analyser. No human audition, speaker/headphone, perceptual quality, or output loudness claim.',
   policy: 'Browser autoplay policy remains enabled. Native AudioContext methods are observed, not replaced with successful fake playback.',
   recordingScope: 'Existing monsoon-eaves preset with every non-rain layer removed through its actual picker, leaving only the approved rain recording and disabled brainwave tone.',
-  checks: [], errors: [], screenshots: [], requests: [], status: 'running',
+  checks: [], errors: [], screenshots: [], requests: [], coldObservations: [], status: 'running',
 };
 let browser;
+let owned;
 let currentPage;
 let currentStep = 'launch browser';
 await mkdir(output, { recursive: true });
+const coldObservers = new WeakMap();
+const persist = () => writeFile(path.join(output, 'audio-failure-verification.json'), `${JSON.stringify(report, null, 2)}\n`);
+await persist();
 
 const check = async (name, run) => {
   currentStep = name;
+  report.currentStep = name;
+  await persist();
   const start = Date.now();
   const evidence = await run();
   report.checks.push({ name, status: 'passed', elapsedMs: Date.now() - start, evidence });
+  await persist();
   console.log(`PASS: ${name}`);
   return evidence;
 };
@@ -40,6 +51,16 @@ const observeNativeAudio = () => {
   const NativeContext = window.AudioContext;
   const evidence = { contexts: [], analysers: [], decodes: 0, decodeFailures: 0, bufferStarts: 0, media: [], resumes: [] };
   window.__audioFailureEvidence = evidence;
+  window.__coldAudioSnapshot = () => ({
+    contexts: evidence.contexts.length,
+    states: evidence.contexts.map((context) => context.state),
+    analyserGraphs: evidence.analysers.length,
+    successfulDecodes: evidence.decodes,
+    failedDecodes: evidence.decodeFailures,
+    bufferSourceStarts: evidence.bufferStarts,
+    resumeCalls: [...evidence.resumes],
+    media: evidence.media.map(({ element, ...record }) => ({ ...record, currentTime: element.currentTime, paused: element.paused, readyState: element.readyState })),
+  });
   window.AudioContext = class extends NativeContext {
     constructor(...args) { super(...args); evidence.contexts.push(this); }
     resume() {
@@ -76,19 +97,8 @@ const observeNativeAudio = () => {
   };
 };
 
-const audioSnapshot = (page) => page.evaluate(() => {
-  const evidence = window.__audioFailureEvidence;
-  return {
-    contexts: evidence.contexts.length,
-    states: evidence.contexts.map((context) => context.state),
-    analyserGraphs: evidence.analysers.length,
-    successfulDecodes: evidence.decodes,
-    failedDecodes: evidence.decodeFailures,
-    bufferSourceStarts: evidence.bufferStarts,
-    resumeCalls: evidence.resumes,
-    media: evidence.media.map(({ element, ...record }) => ({ ...record, currentTime: element.currentTime, paused: element.paused, readyState: element.readyState })),
-  };
-});
+// Raw CDP preserves the initial autoplay precondition and failure diagnostics.
+const audioSnapshot = async (page) => (await coldObservers.get(page).read()).audio;
 
 const measurePcm = async (page, samples = 12) => {
   const measurements = [];
@@ -111,9 +121,15 @@ const measurePcm = async (page, samples = 12) => {
 const newCase = async (name) => {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce', serviceWorkers: 'block' });
   await context.addInitScript(observeNativeAudio);
+  await context.addInitScript(installColdInputProbe);
   const page = await context.newPage();
+  provenance.attach(page, 'application');
   currentPage = page;
   page.setDefaultTimeout(60_000);
+  coldObservers.set(page, await createColdObserver(page, async (observation) => {
+    report.coldObservations.push({ case: name, at: new Date().toISOString(), ...observation });
+    await persist();
+  }));
   page.on('pageerror', (error) => report.errors.push({ case: name, message: error.message }));
   page.on('response', (response) => {
     if (response.url().includes('/audio/nature/')) report.requests.push({ case: name, kind: 'response', status: response.status(), url: response.url() });
@@ -131,18 +147,14 @@ const newCase = async (name) => {
 
 const startWithGesture = async (page, route, title) => {
   await page.goto(`${BASE}${route}`);
-  await page.getByRole('heading', { name: title, exact: true }).waitFor();
-  await page.locator('[data-playback-hint="blocked"]').waitFor();
-  const before = await audioSnapshot(page);
-  assert.equal(before.contexts, 1);
-  assert.deepEqual(before.states, ['suspended']);
-  assert.equal(before.analyserGraphs, 0, 'blocked autoplay must not construct a session graph');
-  assert.equal(before.bufferSourceStarts, 0);
-  const initialTimer = await page.locator('[aria-label^="남은 시간"]').first().getAttribute('aria-label');
-  await page.waitForTimeout(1300);
-  assert.equal(await page.locator('[aria-label^="남은 시간"]').first().getAttribute('aria-label'), initialTimer);
-  // This is a trusted browser click, not dispatchEvent or a mocked resume().
-  await page.getByRole('button', { name: '눌러서 재생', exact: true }).click();
+  const cold = coldObservers.get(page);
+  // Even locator waits can grant activation via injected Runtime.callFunctionOn.
+  // Only raw Runtime.evaluate(userGesture:false) may inspect this cold document.
+  const blocked = await cold.blocked(title);
+  const before = blocked.audio;
+  assert.equal(blocked.lastSession, null, 'cold isolated route must not persist a session before playback');
+  await cold.frozenTimer(blocked, 1300);
+  const nativeInput = await cold.firstClick();
   await page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first().waitFor({ state: 'attached' });
   await page.waitForFunction(() => window.__audioFailureEvidence.contexts[0]?.state === 'running' && window.__audioFailureEvidence.analysers.length === 1);
   assert.equal(await page.getByRole('dialog').count(), 0, 'one playback tap must not introduce a second dialog');
@@ -150,10 +162,15 @@ const startWithGesture = async (page, route, title) => {
   assert.equal(after.contexts, 1);
   assert.ok(after.resumeCalls.some((call) => call.activeGesture === true), 'native resume must occur within the actual user gesture');
   assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('mc_brain_last')).brainwaveEnabled), false, 'nature-only fixture must have no audible brainwave tone');
-  return { before, after, route, oneTrustedTap: true };
+  return { before, after, route, nativeInput, oneTrustedTap: true };
 };
 
-const press = (page, name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first().dispatchEvent('click');
+const press = async (page, name) => {
+  const control = page.getByRole('button', { name, exact: true, includeHidden: true }).first();
+  const box = await control.boundingBox();
+  if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await control.click();
+};
 const waitForRequests = async (page, blocked, required) => {
   for (let attempt = 0; attempt < 100; attempt++) {
     if (required.every((file) => blocked.some((request) => new URL(request.url).pathname.endsWith(`/${file}`)))) return;
@@ -162,12 +179,31 @@ const waitForRequests = async (page, blocked, required) => {
   assert.fail(`Expected injected failures did not occur for: ${required.join(', ')}`);
 };
 
+const bounded = async (run, timeoutMs, label) => {
+  let timer;
+  try { return await Promise.race([run(), new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`${label} exceeded ${timeoutMs}ms`)), timeoutMs); })]); }
+  finally { clearTimeout(timer); }
+};
+
 try {
-  browser = await chromium.launch({
+  const browserServer = await chromium.launchServer({
     executablePath: process.env.SCENE_BROWSER_PATH || undefined,
     headless: true,
     args: ['--no-sandbox', '--autoplay-policy=document-user-activation-required'],
   });
+
+  owned = ownBrowserServer(browserServer, {
+    onError: error => { report.cleanupErrors.push(error); report.status = 'failed'; process.exitCode = 1; },
+  });
+  report.browserOwnership = owned.state;
+const interrupted = signal => {
+  report.interrupted = signal; report.status = 'failed'; process.exitCode = 1;
+  void persist().catch(error => report.cleanupErrors.push({ stage: 'signal-report', message: String(error) })).finally(() => owned.close());
+};
+process.once('SIGTERM', () => interrupted('SIGTERM'));
+process.once('SIGINT', () => interrupted('SIGINT'));
+
+  browser = await bounded(() => chromium.connect(browserServer.wsEndpoint()), 10_000, 'owned browser connect');
 
   const hybrid = await newCase('hybrid procedural fallback');
   await check('hybrid session waits for one trusted gesture before creating its graph', () => startWithGesture(hybrid.page, '#/play/nature/bamboo_grove', '대나무숲'));
@@ -185,7 +221,7 @@ try {
     assert.ok(pcm.maxRms > 0.000001, `procedural mix must produce nonzero PCM after sample failure (${pcm.maxRms})`);
     return { failedFiles: expected, audio, pcm, screenshot: await capture(hybrid.page, 'hybrid-fallback') };
   });
-  await hybrid.context.close();
+  await bounded(() => hybrid.context.close(), 10_000, 'hybrid context close');
 
   const recording = await newCase('recording-only rain');
   const page = recording.page;
@@ -269,20 +305,29 @@ try {
     assert.deepEqual(report.errors, []);
     return { errors: [], injectedResponsesAreExpected: true };
   });
-  await recording.context.close();
+  await bounded(() => recording.context.close(), 10_000, 'recording context close');
   report.status = 'passed';
 } catch (error) {
   report.status = 'failed';
   report.failure = { step: currentStep, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined };
   if (currentPage && !currentPage.isClosed()) {
+    // Preserve the non-gesture state before screenshot/diagnostic work.
+    try {
+      report.failure.cold = await coldObservers.get(currentPage)?.read('failure before screenshot');
+      report.failure.audio = report.failure.cold?.audio;
+      await persist();
+    } catch (observationError) { report.failure.observationError = String(observationError); }
     try { await capture(currentPage, 'audio-failure'); } catch (captureError) { report.failure.captureError = String(captureError); }
-    try { report.failure.audio = await audioSnapshot(currentPage); } catch { /* navigation or launch may have failed */ }
   }
   console.error(`FAIL: ${currentStep}: ${report.failure.message}`);
   process.exitCode = 1;
 } finally {
+  await persist();
+  await owned?.close();
+  try { if (!await provenance.finish()) { report.status = 'failed'; process.exitCode = 1; } }
+  catch (error) { report.provenance.errors.push({ phase: 'final snapshot', message: String(error) }); report.status = 'failed'; process.exitCode = 1; }
+  if (report.interrupted || report.cleanupErrors.length || !owned?.state.terminationConfirmed) { report.status = 'failed'; process.exitCode = 1; }
   report.finishedAt = new Date().toISOString();
-  await writeFile(path.join(output, 'audio-failure-verification.json'), `${JSON.stringify(report, null, 2)}\n`);
-  await browser?.close();
+  await persist();
   console.log(`Audio failure report: ${path.join(output, 'audio-failure-verification.json')}`);
 }

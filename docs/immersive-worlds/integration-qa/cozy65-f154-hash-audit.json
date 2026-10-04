@@ -1,0 +1,487 @@
+{
+  "head": "f1540653283a09ddb91427a2e1692466275db2c7",
+  "base": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "tree": "778af9c04fafeb0c521be68e88e766a6551fdc64",
+  "changedCount": 79,
+  "outsideOwned": [],
+  "runtimeChanged": [
+    "components/immersiveWorlds/cozyRooms/engine.ts"
+  ],
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "match": true,
+    "files": [
+      {
+        "file": "CozyWorld.tsx",
+        "sha256": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+        "match": true
+      },
+      {
+        "file": "HearthWorld.tsx",
+        "sha256": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+        "match": true
+      },
+      {
+        "file": "NapTerraceWorld.tsx",
+        "sha256": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+        "match": true
+      },
+      {
+        "file": "SleepRoomWorld.tsx",
+        "sha256": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+        "match": true
+      },
+      {
+        "file": "WinterLodgeWorld.tsx",
+        "sha256": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+        "match": true
+      },
+      {
+        "file": "contracts.ts",
+        "sha256": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+        "match": true
+      },
+      {
+        "file": "cozyRooms.css",
+        "sha256": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+        "match": true
+      },
+      {
+        "file": "engine.ts",
+        "sha256": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+        "match": true
+      },
+      {
+        "file": "fireDetail.ts",
+        "sha256": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+        "match": true
+      },
+      {
+        "file": "hearth.ts",
+        "sha256": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+        "match": true
+      },
+      {
+        "file": "materials.ts",
+        "sha256": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+        "match": true
+      },
+      {
+        "file": "napTerrace.ts",
+        "sha256": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+        "match": true
+      },
+      {
+        "file": "sleepRoom.ts",
+        "sha256": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+        "match": true
+      },
+      {
+        "file": "winterLodge.ts",
+        "sha256": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f",
+        "match": true
+      }
+    ]
+  },
+  "artifacts": {
+    "manifestSha256": "e9c3cd4f640e3d8c84f43a4d87f89d42e544f5652d83f59f635d8816ee111e67",
+    "count": 77,
+    "allMatch": true,
+    "files": [
+      {
+        "file": "recreation/DIAGNOSIS.md",
+        "match": true
+      },
+      {
+        "file": "recreation/FINAL_RESULTS.json",
+        "match": true
+      },
+      {
+        "file": "recreation/HANDOFF.md",
+        "match": true
+      },
+      {
+        "file": "recreation/MOTION_STATUS.json",
+        "match": true
+      },
+      {
+        "file": "recreation/PNG_MANIFEST.json",
+        "match": true
+      },
+      {
+        "file": "recreation/README.md",
+        "match": true
+      },
+      {
+        "file": "recreation/clean.mjs",
+        "match": true
+      },
+      {
+        "file": "recreation/comparison.json",
+        "match": true
+      },
+      {
+        "file": "recreation/entry.mjs",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-clean/diagnostic.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-clean/execution.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-clean/phases.jsonl",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/execution.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/instrumentation-manifest.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/nature-winter_lodge-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/nature-winter_lodge-landscape-viewport.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/nature-winter_lodge-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/phases.jsonl",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/runner-provenance.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/runner-source.mjs",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/runner.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/baseline-original-sequence/verification.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-build.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-bundle-manifest.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-gates/application-build.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-gates/bundle-budget.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-gates/execution.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-gates/gates.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-gates/typecheck.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-gates/unit-tests.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/checkpoint.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/execution.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/failure.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/nature-winter_lodge/nature-winter_lodge-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/nature-winter_lodge/nature-winter_lodge-landscape-viewport.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/nature-winter_lodge/nature-winter_lodge-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/nature-winter_lodge/verification.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/power_nap/power_nap-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/power_nap/power_nap-fold-inner-viewport.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/power_nap/power_nap-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/power_nap/verification.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/power_nap-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/power_nap-fold-inner-viewport.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/power_nap-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/relax/relax-chrome-visible.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/relax/relax-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/relax/relax-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/relax/verification.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/relax-chrome-visible.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/relax-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/relax-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/sleep_prep/sleep_prep-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/sleep_prep/sleep_prep-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/sleep_prep/verification.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/sleep_prep-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/final-original/sleep_prep-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/motion-precondition.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-clean/diagnostic.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-clean/execution.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-clean/phases.jsonl",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/execution.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/instrumentation-manifest.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/nature-winter_lodge-desktop.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/nature-winter_lodge-landscape-viewport.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/nature-winter_lodge-portrait.png",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/phases.jsonl",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/runner-provenance.json",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/runner-source.mjs",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/runner.log",
+        "match": true
+      },
+      {
+        "file": "recreation/evidence/size-guard-original-sequence/verification.json",
+        "match": true
+      },
+      {
+        "file": "recreation/instrumentation.mjs",
+        "match": true
+      },
+      {
+        "file": "recreation/original-sequence.mjs",
+        "match": true
+      },
+      {
+        "file": "recreation-cycle/README.md",
+        "match": true
+      },
+      {
+        "file": "recreation-cycle/evidence/final/execution.log",
+        "match": true
+      },
+      {
+        "file": "recreation-cycle/evidence/final/progress.jsonl",
+        "match": true
+      },
+      {
+        "file": "recreation-cycle/evidence/final/recreation-cycle.json",
+        "match": true
+      },
+      {
+        "file": "recreation-cycle/verify.mjs",
+        "match": true
+      }
+    ]
+  },
+  "images": {
+    "count": 11,
+    "allMatch": true,
+    "coldIdenticalCount": 10,
+    "files": [
+      {
+        "file": "evidence/final-original/relax/relax-chrome-visible.png",
+        "sha256": "2ae198a6dbe0b47adc6761f460f9f711aee5b4721e6850e2275fb6f4abd23b6a",
+        "match": true
+      },
+      {
+        "file": "evidence/final-original/relax/relax-desktop.png",
+        "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/relax/relax-portrait.png",
+        "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/sleep_prep/sleep_prep-desktop.png",
+        "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/sleep_prep/sleep_prep-portrait.png",
+        "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/power_nap/power_nap-desktop.png",
+        "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/power_nap/power_nap-fold-inner-viewport.png",
+        "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/power_nap/power_nap-portrait.png",
+        "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-desktop.png",
+        "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-landscape-viewport.png",
+        "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00",
+        "match": true,
+        "approvedByteIdentical": true
+      },
+      {
+        "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-portrait.png",
+        "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7",
+        "match": true,
+        "approvedByteIdentical": true
+      }
+    ]
+  },
+  "oldFailuresUnchanged": {
+    "qa/followup/evidence/final-original/failure.json": true,
+    "qa/followup/evidence/final-winter-retry/failure.json": true
+  },
+  "unchangedOriginalHarness": {
+    "components/liveScene/liveSceneHost.ts": true,
+    "components/immersiveWorlds/cozyRooms/qa/verify.mjs": true,
+    "components/immersiveWorlds/cozyRooms/qa/verify-group.mjs": true,
+    "components/immersiveWorlds/cozyRooms/qa/main.tsx": true,
+    "components/immersiveWorlds/cozyRooms/qa/index.html": true
+  },
+  "cycleManifestMatch": true,
+  "bundleSHA256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+  "installedThreeRendererSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+}

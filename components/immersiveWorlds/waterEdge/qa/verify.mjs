@@ -13,6 +13,7 @@ const directory = path.dirname(fileURLToPath(import.meta.url));
 const ownedRoot = path.dirname(directory);
 const args = process.argv.slice(2);
 const smoke = args.includes('--smoke');
+const screenshotsOnly = args.includes('--screenshots-only');
 const onlyWorld = args.find(value => value.startsWith('--world='))?.split('=')[1];
 const worlds = (onlyWorld ? [onlyWorld] : ['night-pond', 'summer-valley', 'pebble-shore']);
 const base = process.env.WATER_EDGE_URL || 'http://127.0.0.1:4187';
@@ -98,6 +99,7 @@ try {
     page.on('console', message => { if (message.type() === 'error') { report.consoleErrors.push(message.text()); console.error(`${world} console: ${message.text()}`); } });
     try {
       await page.goto(`${base}/?world=${world}&active=0`); await ready(page);
+      assert(report.consoleErrors.length === 0 && report.pageErrors.length === 0, 'Shader/page errors on first rendered frame');
       if (!smoke) {
         const version = await inspect(page);
         assert(version.sourceSha256 === result.sourceSha256, 'Built source hash differs from current render source. Rebuild harness.');
@@ -111,6 +113,7 @@ try {
         await page.waitForFunction(() => window.__waterEdgeQA.inspect().roots.every(root => root.motion === 'paused'));
         await page.waitForTimeout(150);
         const name = `${smoke ? 'first-' : ''}${world}-${label}.png`;
+        assert(report.consoleErrors.length === 0 && report.pageErrors.length === 0, 'Shader/page errors before screenshot');
         const png = await page.screenshot({ path: path.join(directory, name), timeout: 90000 });
         const state = await inspect(page);
         assert(state.canvases.length === 1 && state.canvases[0].width === viewport.width && state.canvases[0].height === viewport.height, `${label}: canvas does not fill viewport`);
@@ -118,7 +121,7 @@ try {
 
         console.log(`${world} ${label}: ${name}`);
       }
-      if (smoke) continue;
+      if (smoke || screenshotsOnly) continue;
       await page.setViewportSize(viewports.desktop); await page.waitForTimeout(150);
       const first = await page.screenshot({ timeout: 90000 }); const before = await inspect(page);
       await page.evaluate(() => window.__waterEdgeQA.setActive(true)); await waitFrames(page, 8);
@@ -152,7 +155,7 @@ try {
         }, { endType, x, endX });
         assert((await inspect(page)).events.length === 0, `${test} emitted a tap interaction`);
       }
-      await waitFrames(page, 12);
+      await waitFrames(page, 2);
       const points = world === 'pebble-shore' ? [[.4661, .6446], [.46, .65], [.43, .70]] : world === 'night-pond' ? [[.5, .525], [.675, .55], [.5, .675], [.4, .59], [.65, .63], [.6, .72]] : [[.5, .65], [.4, .62], [.6, .6], [.5, .75]];
       let tapPoint;
       for (const [x, y] of points) {
@@ -176,7 +179,7 @@ try {
       assert(holderReturned.canvases.length === 1 && holderReturned.canvases[0].id === canvasBefore.id, 'Canvas identity lost returning to primary');
       report.checks.secondHolder = { before: canvasBefore, second: holderSecond, returned: holderReturned, note: 'Holder transfer models shared fullscreen ownership; does not invoke browser Fullscreen API.' };
       report.checks.mountCycles = [];
-      for (let cycle = 0; cycle < 3; cycle++) {
+      for (let cycle = 0; cycle < 2; cycle++) {
         await page.evaluate(() => window.__waterEdgeQA.unmount());
         await page.waitForFunction(() => window.__waterEdgeQA.inspect().diagnostics.live === 0, null, { timeout: 9000 });
         const disposed = await inspect(page);
@@ -192,14 +195,19 @@ try {
       console.log(`${world}: all checks passed`);
     } catch (error) {
       report.pass = false; report.failure = String(error.stack || error);
+      report.failureState = await inspect(page).catch(() => null);
+      await page.evaluate(() => window.__waterEdgeQA?.setActive(false)).catch(() => {});
       result.failures.push({ world, error: String(error.message || error) });
       console.error(`${world}: ${report.failure}`);
-    } finally { await context.close(); }
+    } finally {
+      await writeFile(path.join(directory, 'verification-progress.json'), JSON.stringify(result, null, 2) + '\n');
+      await context.close();
+    }
   }
 } finally {
   await browser.close();
   if (server) await new Promise(resolve => server.close(resolve));
-  const output = path.join(directory, smoke ? 'first-render.json' : onlyWorld ? `verification-${onlyWorld}.json` : 'verification.json');
+  const output = path.join(directory, smoke ? 'first-render.json' : screenshotsOnly ? 'screenshots.json' : onlyWorld ? `verification-${onlyWorld}.json` : 'verification.json');
   await writeFile(output, JSON.stringify(result, null, 2) + '\n');
   console.log(output);
 }

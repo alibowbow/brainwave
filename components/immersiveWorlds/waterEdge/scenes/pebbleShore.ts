@@ -192,6 +192,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
   scene.add(rollPebble);
   let rollStarted = -100;
   let rollBaseX = rollPebblePosition.x;
+  let rollBaseRotation = rollPebble.rotation.z;
   let rollDirection = 1;
   let nextDirection = 1;
 
@@ -328,7 +329,7 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
       const rocking = Math.sin(t * Math.PI * 5) * (1 - t) * .035;
       rollPebble.position.x = rollBaseX + rollDirection * .19 * ease;
       rollPebble.position.y = bedHeight(rollPebble.position.x, rollPebble.position.z) + .076 + Math.sin(t * Math.PI) * .027;
-      rollPebble.rotation.z = .06 - rollDirection * ease * .62 + rocking;
+      rollPebble.rotation.z = rollBaseRotation - rollDirection * ease * .62 + rocking;
     }
   }
   function interact(x: number, y: number, time: number): WaterEdgeInteraction | null {
@@ -336,7 +337,8 @@ export function createPebbleShore(renderer: THREE.WebGLRenderer): WorldScene {
     camera.updateMatrixWorld(); scene.updateMatrixWorld(true);
     raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
     if (!raycaster.intersectObject(rollPebble, false).length) return null;
-    rollStarted = time; rollBaseX = rollPebble.position.x; rollDirection = nextDirection; nextDirection *= -1;
+    rollStarted = time; rollBaseX = rollPebble.position.x; rollBaseRotation = rollPebble.rotation.z;
+    rollDirection = nextDirection; nextDirection *= -1;
     return { world: 'pebble-shore', kind: 'pebble-roll', strength: .24,
       position: { x: rollPebble.position.x, z: rollPebble.position.z } };
   }

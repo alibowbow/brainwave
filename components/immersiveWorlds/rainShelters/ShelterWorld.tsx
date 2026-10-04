@@ -82,8 +82,9 @@ export function ShelterWorld({ active, onInteraction, static3D = false, kind, bu
       pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
       window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel);
     };
-    root.addEventListener('pointerdown', down); window.addEventListener('blur', cancel);
-    return () => { root.removeEventListener('pointerdown', down); window.removeEventListener('blur', cancel); cancel(); };
+    const blur = () => cancel();
+    root.addEventListener('pointerdown', down); window.addEventListener('blur', blur);
+    return () => { root.removeEventListener('pointerdown', down); window.removeEventListener('blur', blur); cancel(); };
   }, [active, host, running, status]);
 
   return <div ref={rootRef} className={`rain-shelter rain-shelter-${kind}`} data-world={kind} data-state={status} data-motion={running ? 'running' : 'paused'} data-interaction-value={lastValue ?? ''} role="group" aria-label={`${labels[kind][0]} 3D 풍경`}>

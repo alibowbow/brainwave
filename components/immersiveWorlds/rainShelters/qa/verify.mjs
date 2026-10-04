@@ -183,6 +183,19 @@ try {
       assert.equal((await events()).length, countBeforeGesture, 'cancelled pointer cannot trigger tap interaction');
       assert.equal(await scene().getAttribute('data-look'), null, 'cancelled drag releases view');
       result.checks.push({ name: 'drag is not tap and pointer cancellation releases gesture', pass: true, method: 'synthetic pointerdown/move/up and pointerdown/cancel/up' });
+      const lookAfterBlur = await canvas().evaluate((c) => {
+        const r=c.getBoundingClientRect(); const p={bubbles:true,isPrimary:true,pointerId:43,pointerType:'touch',button:0,clientX:r.left+r.width*.5,clientY:r.top+r.height*.6};
+        c.dispatchEvent(new PointerEvent('pointerdown',p));
+        window.dispatchEvent(new PointerEvent('pointermove',{...p,clientX:p.clientX+90}));
+        window.dispatchEvent(new FocusEvent('blur'));
+        const afterBlur = c.closest('.rain-shelter')?.getAttribute('data-look');
+        window.dispatchEvent(new PointerEvent('pointerup',p));
+        return afterBlur;
+      });
+      assert.equal(lookAfterBlur,null,'window blur clears drag immediately, before pointerup');
+      assert.equal((await events()).length,countBeforeGesture,'window blur cannot leave a later tap armed');
+      assert.equal(await scene().getAttribute('data-look'),null,'window blur clears drag look state');
+      result.checks.push({name:'window blur cancels active gesture and subsequent pointerup emits no interaction',pass:true,method:'synthetic FocusEvent blur during pointer drag'});
 
       await clickControl('#qa-active');
       await motion('paused');

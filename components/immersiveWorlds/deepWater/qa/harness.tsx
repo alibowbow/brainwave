@@ -5,6 +5,7 @@ import CaveWorld from '../CaveWorld';
 import DeepSeaWorld from '../DeepSeaWorld';
 import type { DeepWaterInteraction, WorldKind } from '../engine/types';
 import './harness.css';
+import { deepWaterHosts } from '../host';
 
 declare global {
   interface Window {
@@ -13,6 +14,7 @@ declare global {
       setStatic(value: boolean): void;
       setSecondHolder(value: boolean): void;
       setMounted(value: boolean): void;
+      diagnostics(): Record<string, unknown>;
       interactions: DeepWaterInteraction[];
       scene: WorldKind;
       state: { active: boolean; static3D: boolean; secondHolder: boolean; mounted: boolean };
@@ -25,6 +27,10 @@ const kind: WorldKind = requested === 'cave' || requested === 'sea' ? requested 
 const scenes = { waterfall: WaterfallWorld, cave: CaveWorld, sea: DeepSeaWorld };
 const Scene = scenes[kind];
 const interactions: DeepWaterInteraction[] = [];
+const diagnostics = () => {
+  const host = deepWaterHosts[kind] as unknown as { holders: { mount: HTMLElement; running: boolean }[]; engine: { disposed: boolean } | null; status: string; disposeTimer: number; canvas: HTMLCanvasElement | null };
+  return { holders: host.holders.length, holderRunning: host.holders.map(h => h.running), hasEngine: !!host.engine, engineDisposed: host.engine?.disposed, status: host.status, disposeTimer: host.disposeTimer, topConnected: host.holders.at(-1)?.mount.isConnected ?? null, canvasConnected: host.canvas?.isConnected ?? null, hidden: document.hidden, visibility: document.visibilityState, time: performance.now() };
+};
 const onInteraction = (event: DeepWaterInteraction) => interactions.push({ ...event });
 function Harness() {
   const [active, setActive] = useState(params.get('active') === '1');
@@ -32,7 +38,7 @@ function Harness() {
   const [secondHolder, setSecondHolder] = useState(false);
   const [mounted, setMounted] = useState(true);
   useEffect(() => {
-    window.__deepWaterQA = { setActive, setStatic, setSecondHolder, setMounted, interactions, scene: kind, state: { active, static3D, secondHolder, mounted } };
+    window.__deepWaterQA = { setActive, setStatic, setSecondHolder, setMounted, diagnostics, interactions, scene: kind, state: { active, static3D, secondHolder, mounted } };
   }, [active, static3D, secondHolder, mounted]);
   return <>
     <main id="primary-holder">{mounted && <Scene active={active} static3D={static3D} onInteraction={onInteraction} />}</main>

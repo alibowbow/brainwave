@@ -97,6 +97,33 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   cavern.receiveShadow = true;
   scene.add(cavern);
 
+  // A locally refined stone lip covers the coarse shell grid at the opening.
+  // Its inner contour is an uneven continuous curve; all points remain real 3D limestone.
+  const rimSegments=72,rimRings=7,rimPositions:number[]=[],rimUvs:number[]=[],rimIndices:number[]=[];
+  for(let ring=0;ring<=rimRings;ring++) {
+    const t=ring/rimRings;
+    for(let i=0;i<=rimSegments;i++) {
+      const a=i/rimSegments*Math.PI*2;
+      const irregular=1+.085*Math.sin(a*3+.7)+.045*Math.sin(a*7-1.2);
+      const angularRadius=THREE.MathUtils.lerp(.058*irregular,.149,t);
+      const depthRadius=THREE.MathUtils.lerp(1.34*(1+.075*Math.sin(a*5+.4)),2.93,t);
+      const theta=1.285+Math.cos(a)*angularRadius;
+      const z=-18.2+Math.sin(a)*depthRadius;
+      const point=wallPoint(theta,z);
+      const lip=.055+.17*(1-t)+.23*Math.sin(t*Math.PI)*(1+.15*Math.sin(a*6));
+      point.y-=lip;
+      rimPositions.push(point.x,point.y,point.z);rimUvs.push(i/rimSegments,t);
+      if(ring<rimRings&&i<rimSegments){const n=ring*(rimSegments+1)+i;rimIndices.push(n,n+1,n+rimSegments+1,n+1,n+rimSegments+2,n+rimSegments+1);}
+    }
+  }
+  const rimGeometry=new THREE.BufferGeometry();
+  rimGeometry.setAttribute('position',new THREE.Float32BufferAttribute(rimPositions,3));
+  rimGeometry.setAttribute('uv',new THREE.Float32BufferAttribute(rimUvs,2));
+  rimGeometry.setIndex(rimIndices);rimGeometry.computeVertexNormals();
+  const apertureRim=new THREE.Mesh(rimGeometry,limestone);
+  apertureRim.name='cave-daylight-stone-rim';apertureRim.receiveShadow=true;
+  scene.add(apertureRim);
+
   // Submerged stone bed with a deep centre and shallow, irregular side shelves.
   const bedGeometry = new THREE.PlaneGeometry(34,82,72,140);
   bedGeometry.rotateX(-Math.PI/2);
@@ -180,11 +207,13 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   }
 
   const aperture=wallPoint(1.285,-18.2);
-  const skylight=new THREE.Mesh(new THREE.PlaneGeometry(9,10),new THREE.MeshBasicMaterial({color:'#e7eddf',side:THREE.DoubleSide}));
+  const skylight=new THREE.Mesh(new THREE.PlaneGeometry(120,160),new THREE.MeshBasicMaterial({color:'#e7eddf',side:THREE.DoubleSide}));
   skylight.rotation.x=-Math.PI/2;
-  skylight.name='cave-daylight-aperture';
-  skylight.position.copy(aperture).add(new THREE.Vector3(0,1.2,0));
+  skylight.name='cave-daylight-sky';
+  skylight.position.set(aperture.x,25,aperture.z);
   scene.add(skylight);
+  const openingMarker=new THREE.Object3D();openingMarker.name='cave-daylight-aperture';
+  openingMarker.position.copy(aperture);scene.add(openingMarker);
   const spot=new THREE.SpotLight('#fff3c5',210,44,.255,.95,1.5);
   spot.castShadow=true;spot.shadow.mapSize.set(1024,1024);
   spot.shadow.camera.near=.2;spot.shadow.camera.far=44;spot.shadow.bias=-.0001;spot.shadow.normalBias=.035;

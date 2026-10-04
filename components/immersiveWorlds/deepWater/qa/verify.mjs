@@ -66,8 +66,15 @@ try {
   await control('setActive',false);await control('setStatic',false);
   await frozen(scene,'active=false freezes renderer and simulation');
   await control('setActive',true);await waitRunning();await waitFrames();
-  const frameA=await page.screenshot();const timeA=Number((await data()).time);await waitFrames(3);const frameB=await page.screenshot();
+  // Pause only for each readback so software WebGL does not accumulate an
+  // unbounded queue while Chromium encodes PNGs. Both images follow real RAF
+  // frames advanced with active=true; production rendering is unchanged.
+  await control('setActive',false);await waitPaused();
+  const frameA=await page.screenshot();const timeA=Number((await data()).time);
+  await control('setActive',true);await waitRunning();await waitFrames(3);
+  await control('setActive',false);await waitPaused();const frameB=await page.screenshot();
   check(scene,'active=true advances simulation and changes real pixels',Number((await data()).time)>timeA&&!frameA.equals(frameB));
+  await control('setActive',true);await waitRunning();await waitFrames();
   // Find a visible interaction target using ordinary screen coordinates. No engine
   // interact call or synthetic callback is used: every attempt runs pointer handlers
   // and the scene raycaster. Failed target taps do not emit an event.
@@ -111,8 +118,10 @@ try {
    check(scene,`rapid mount cycle ${i+1} reuses original canvas`,await page.evaluate(()=>document.querySelector('canvas')===window.__savedDeepWaterCanvas));
   }
   await control('setMounted',false);await page.waitForFunction(()=>!document.querySelector('canvas'));
-  await page.waitForFunction(()=>window.__savedDeepWaterCanvas.dataset.disposed==='true',null,{polling:100,timeout:20000});
-  check(scene,'last holder release disposes GPU renderer after grace period',true);
+  result.scenes[scene].beforeDisposal=await page.evaluate(()=>({host:window.__deepWaterQA.diagnostics(),state:window.__deepWaterQA.state,savedCanvas:{...window.__savedDeepWaterCanvas.dataset}}));
+  await page.waitForFunction(()=>window.__savedDeepWaterCanvas.dataset.disposed==='true',null,{polling:100,timeout:120000});
+  result.scenes[scene].afterDisposal=await page.evaluate(()=>({host:window.__deepWaterQA.diagnostics(),savedCanvas:{...window.__savedDeepWaterCanvas.dataset}}));
+  check(scene,'last holder release disposes GPU renderer after grace period',!result.scenes[scene].afterDisposal.host.hasEngine,{observedSoftwareElapsedMs:result.scenes[scene].afterDisposal.host.time-result.scenes[scene].beforeDisposal.host.time});
   await control('setMounted',true);await page.waitForSelector('.deepwater-world[data-state="ready"]');
   check(scene,'post-disposal remount creates new working canvas',await page.evaluate(()=>document.querySelector('canvas')!==window.__savedDeepWaterCanvas)&&Number((await data()).triangles)>0);
   result.scenes[scene].finalRenderer=await data();
@@ -121,5 +130,5 @@ try {
  result.sourceManifestAfter=await manifest(owned,true);
  check('all','rendered source remained unchanged during QA',JSON.stringify(result.sourceManifest)===JSON.stringify(result.sourceManifestAfter));
  result.status='passed';
-} catch(error){result.status='failed';result.failure=String(error?.stack||error);throw error;}
+} catch(error){result.status='failed';result.failure=String(error?.stack||error);result.failureDiagnostics=await page.evaluate(()=>({host:window.__deepWaterQA?.diagnostics?.(),state:window.__deepWaterQA?.state,savedCanvas:window.__savedDeepWaterCanvas?{...window.__savedDeepWaterCanvas.dataset}:null})).catch(()=>null);console.log('FAILURE DIAGNOSTICS',JSON.stringify(result.failureDiagnostics));throw error;}
 finally{await writeFile(resolve(output,'results.json'),JSON.stringify(result,null,2));await browser.close();if(server)await new Promise(resolve=>server.httpServer.close(resolve));console.log(`EVIDENCE ${resolve(output,'results.json')}`);}

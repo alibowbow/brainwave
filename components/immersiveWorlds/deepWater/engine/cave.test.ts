@@ -41,7 +41,8 @@ describe('cavern world spatial contracts',()=>{
     const origin=new THREE.Vector3(-2,.03,-12.3);
     const direction=aperture.position.clone().sub(origin);
     const ray=new THREE.Raycaster(origin,direction.clone().normalize(),0,direction.length());
-    expect(ray.intersectObject(shell,false)).toHaveLength(0);
+    const rim=w.scene.getObjectByName('cave-daylight-stone-rim')!;
+    expect(ray.intersectObjects([shell,rim],false)).toHaveLength(0);
   });
 
   it('accepts a visible pool touch but rejects a foreground ledge touch',()=>{

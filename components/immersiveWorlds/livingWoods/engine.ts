@@ -36,7 +36,7 @@ export class WoodsEngine implements LiveSceneEngine {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
     canvas.dataset.engineId = String(++engineSerial);
     canvas.addEventListener('webglcontextlost', this.contextLost);

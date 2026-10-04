@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type { WorldContent } from '../types';
 
 /** Original, deterministic geometry. No downloaded scene, texture, or gallery code. */
@@ -22,7 +23,7 @@ function bambooTexture() {
     const stain = Math.sin(x * 0.21 + Math.sin(y * 0.033)) * 0.065;
     const bloom = Math.pow(Math.max(0, Math.sin(y * 0.11 + x * 0.097)), 9) * 0.09;
     const edge = y < 13 ? (13 - y) / 13 * 0.16 : 0;
-    const value = 0.72 + grain + stain + bloom - edge;
+    const value = THREE.MathUtils.clamp(0.72 + grain + stain + bloom - edge, 0.3, 0.985);
     bytes[i] = 255 * value; bytes[i + 1] = 254 * value;
     bytes[i + 2] = 235 * value; bytes[i + 3] = 255;
   }
@@ -35,12 +36,30 @@ function bambooTexture() {
   return texture;
 }
 
+function groundTexture() {
+  const size = 128, data = new Uint8Array(size * size * 4), random = randomSource(621);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const i = (y * size + x) * 4;
+    const coarse = Math.sin(x * 0.098 + Math.sin(y * 0.13) * 1.8) * Math.sin(y * 0.112 + Math.cos(x * 0.08));
+    const fine = Math.sin(x * 0.62 + y * 0.82) * Math.sin(y * 0.58 - x * 0.34);
+    const value = Math.floor((0.72 + coarse * 0.12 + fine * 0.045 + random() * 0.055) * 255);
+    data[i] = data[i + 1] = data[i + 2] = value; data[i + 3] = 255;
+  }
+  const texture = new THREE.DataTexture(data, size, size);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.magFilter = THREE.LinearFilter; texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.generateMipmaps = true; texture.needsUpdate = true;
+  return texture;
+}
+
+const forestFloor = (x: number, z: number) => -0.035 + 0.10 * Math.sin(x * 0.27 + z * 0.12) + 0.03 * Math.sin(x * 3.7 + z);
+
 function leafGeometry() {
   const positions: number[] = [], uv: number[] = [], indices: number[] = [];
-  const steps = 8;
+  const steps = 6;
   for (let i = 0; i <= steps; i++) {
     const t = i / steps;
-    const width = Math.sin(Math.PI * t) ** 0.7 * 0.055 * (1 - t * 0.22);
+    const width = Math.sin(Math.PI * t) ** 0.7 * 0.041 * (1 - t * 0.22);
     const y = t * 0.62, bend = -Math.sin(t * Math.PI * 0.72) * 0.07;
     positions.push(-width, y, bend, 0, y, bend + width * 0.22, width, y, bend);
     uv.push(0, t, 0.5, t, 1, t);
@@ -100,8 +119,9 @@ function ribbonGeometry(left: number, right: number, y: number, water = false) {
     }
     if (i < slices) {
       const k = i * 2;
-      if (water) indices.push(k, k + 1, k + 2, k + 1, k + 3, k + 2);
-      else indices.push(k, k + 2, k + 1, k + 1, k + 2, k + 3);
+      // Both XY water and XZ banks face their visible surface: +Z before
+      // water's -PI/2 rotation, +Y for banks whose z decreases per slice.
+      indices.push(k, k + 1, k + 2, k + 1, k + 3, k + 2);
     }
   }
   const g = new THREE.BufferGeometry();
@@ -115,8 +135,8 @@ function ribbonGeometry(left: number, right: number, y: number, water = false) {
 export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera): WorldContent {
   const rng = randomSource(241016), range = (a: number, b: number) => a + rng() * (b - a);
   const root = new THREE.Group(); root.name = 'Bamboo grove beside a clear stream'; scene.add(root);
-  scene.background = new THREE.Color('#b8ccb6');
-  scene.fog = new THREE.FogExp2('#a6bfaa', 0.027);
+  scene.background = new THREE.Color('#c3d5bd');
+  scene.fog = new THREE.FogExp2('#aec7af', 0.023);
   const sky = new THREE.HemisphereLight('#dce9d0', '#344735', 2.05); root.add(sky);
   const sun = new THREE.DirectionalLight('#fff0b9', 3.8);
   sun.position.set(-7, 17, -12); sun.target.position.set(0, 0, -4);
@@ -129,14 +149,15 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   const bounce = new THREE.DirectionalLight('#b8d7d7', 0.55);
   bounce.position.set(4, 5, 7); root.add(bounce);
 
-  const groundMaterial = new THREE.MeshStandardMaterial({ color: '#6b6850', roughness: 1, vertexColors: true });
+  const earthTexture = groundTexture(); earthTexture.repeat.set(22, 28);
+  const groundMaterial = new THREE.MeshStandardMaterial({ color: '#b1b097', map: earthTexture, bumpMap: earthTexture, bumpScale: 0.055, roughness: 1, vertexColors: true });
   const groundGeometry = new THREE.PlaneGeometry(80, 95, 40, 44); groundGeometry.rotateX(-Math.PI / 2);
   const pos = groundGeometry.attributes.position;
   const groundColors: number[] = [];
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i), z = pos.getZ(i) - 20;
     pos.setZ(i, z);
-    pos.setY(i, -0.035 + 0.10 * Math.sin(x * 0.27 + z * 0.12) + 0.03 * Math.sin(x * 3.7 + z));
+    pos.setY(i, forestFloor(x, z));
     const c = new THREE.Color('#827652').lerp(new THREE.Color('#435844'), (Math.sin(x * 0.75 + z * 0.2) + 1) * 0.3);
     groundColors.push(c.r, c.g, c.b);
   }
@@ -179,11 +200,13 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   water.renderOrder = 2; root.add(water);
 
   const rockRecords: Instance[] = [], pebbleRecords: Instance[] = [], mossRecords: Instance[] = [];
-  const rockGeometry = new THREE.IcosahedronGeometry(1, 1);
+  const rockSource = new THREE.IcosahedronGeometry(1, 2);
+  rockSource.deleteAttribute('normal'); rockSource.deleteAttribute('uv');
+  const rockGeometry = mergeVertices(rockSource); rockSource.dispose();
   const rp = rockGeometry.attributes.position;
   for (let i = 0; i < rp.count; i++) {
     const x = rp.getX(i), y = rp.getY(i), z = rp.getZ(i);
-    const wobble = 1 + Math.sin(x * 8.2 + y * 6.7 + z * 7.9) * 0.08;
+    const wobble = 1 + Math.sin(x * 3.2 + y * 2.7 + z * 3.9) * 0.09;
     rp.setXYZ(i, x * wobble, y * wobble, z * wobble);
   }
   rockGeometry.computeVertexNormals();
@@ -191,7 +214,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     const z = range(-53, 8), side = rng() > 0.5 ? 1 : -1;
     const x = streamCenter(z) + side * (streamWidth(z) + range(-0.07, 0.63));
     const size = range(0.14, 0.49) * (z < -27 ? 1.15 : 1);
-    const color = new THREE.Color().setHSL(range(0.10, 0.18), range(0.06, 0.17), range(0.23, 0.42));
+    const color = new THREE.Color().setHSL(range(0.12, 0.20), range(0.055, 0.13), range(0.19, 0.32));
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(range(-0.2, 0.2), range(0, 6.28), range(-0.1, 0.1)));
     rockRecords.push({ position: new THREE.Vector3(x, size * 0.22, z), quaternion: q, scale: new THREE.Vector3(size * 1.3, size * 0.61, size), color });
     if (rng() > 0.2) mossRecords.push({ position: new THREE.Vector3(x - 0.02, size * 0.44, z), quaternion: q, scale: new THREE.Vector3(size * 1.06, size * 0.32, size * 0.84), color: new THREE.Color().setHSL(range(0.21, 0.27), 0.3, range(0.18, 0.3)) });
@@ -224,6 +247,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
 
   const culms: Instance[] = [], nodes: Instance[] = [], nodeShadows: Instance[] = [], distantNodes: Instance[] = [], distantNodeShadows: Instance[] = [], sheaths: Instance[] = [], twigs: Instance[] = [], leaves: Instance[] = [];
   const cylinder = new THREE.CylinderGeometry(0.96, 1, 1, 12, 1);
+  const twigGeometry = new THREE.CylinderGeometry(0.90, 1, 1, 6, 1);
   const nodeGeometry = new THREE.TorusGeometry(1, 0.055, 4, 12); nodeGeometry.rotateX(Math.PI / 2);
   const sheathGeometry = new THREE.BufferGeometry();
   sheathGeometry.setAttribute('position', new THREE.Float32BufferAttribute([-0.075, 0, 0, 0.07, 0, 0, 0.035, 0.19, 0.026, -0.01, 0.29, 0.05], 3));
@@ -284,7 +308,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   root.add(instances(distantNodeGeometry, nodeMaterial, distantNodes));
   root.add(instances(distantNodeGeometry, nodeShadeMaterial, distantNodeShadows));
   root.add(instances(sheathGeometry, sheathMaterial, sheaths));
-  const branchMesh = instances(cylinder, twigMaterial, twigs); root.add(branchMesh);
+  const branchMesh = instances(twigGeometry, twigMaterial, twigs); root.add(branchMesh);
   const leafMesh = instances(leafGeo, leafMaterial, leaves); root.add(leafMesh);
   const windUniform = { value: 0 };
   for (const mat of [twigMaterial, leafMaterial]) {
@@ -309,16 +333,16 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
 
   // Near streamside grasses and fallen leaves make the forest floor legible.
   const grassRecords: Instance[] = [], litterRecords: Instance[] = [];
-  for (let i = 0; i < 850; i++) {
+  for (let i = 0; i < 1600; i++) {
     const z = range(-34, 7), side = rng() > 0.5 ? 1 : -1;
     const x = streamCenter(z) + side * (streamWidth(z) + range(0.42, 3.5));
     const scale = range(0.3, 0.65);
-    grassRecords.push({ position: new THREE.Vector3(x, 0.07, z), quaternion: new THREE.Quaternion().setFromEuler(new THREE.Euler(range(-0.38, 0.38), range(0, 6.28), range(-0.6, 0.6))), scale: new THREE.Vector3(scale * 0.65, scale, scale), color: new THREE.Color().setHSL(range(0.19, 0.25), 0.36, range(0.26, 0.43)) });
+    grassRecords.push({ position: new THREE.Vector3(x, forestFloor(x, z) + 0.025, z), quaternion: new THREE.Quaternion().setFromEuler(new THREE.Euler(range(-0.38, 0.38), range(0, 6.28), range(-0.6, 0.6))), scale: new THREE.Vector3(scale * 0.65, scale, scale), color: new THREE.Color().setHSL(range(0.19, 0.25), 0.36, range(0.26, 0.43)) });
   }
-  for (let i = 0; i < 370; i++) {
+  for (let i = 0; i < 1350; i++) {
     const z = range(-27, 9), side = rng() > 0.5 ? 1 : -1;
     const x = streamCenter(z) + side * (streamWidth(z) + range(0.3, 8));
-    litterRecords.push({ position: new THREE.Vector3(x, 0.075, z), quaternion: new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, range(0, 6.28))), scale: new THREE.Vector3(0.5, range(0.6, 0.85), 0.5), color: new THREE.Color().setHSL(range(0.09, 0.15), 0.28, range(0.37, 0.55)) });
+    litterRecords.push({ position: new THREE.Vector3(x, forestFloor(x, z) + 0.016, z), quaternion: new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, range(0, 6.28))), scale: new THREE.Vector3(0.8, range(0.6, 1.0), 0.5), color: new THREE.Color().setHSL(range(0.09, 0.15), 0.28, range(0.29, 0.46)) });
   }
   root.add(instances(leafGeo, new THREE.MeshStandardMaterial({ color: '#ffffff', side: THREE.DoubleSide, roughness: 0.95 }), grassRecords));
   root.add(instances(leafGeo, new THREE.MeshStandardMaterial({ color: '#ffffff', side: THREE.DoubleSide, roughness: 1 }), litterRecords, false));
@@ -330,19 +354,23 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   const nearLeaves: Instance[] = [], nearTwigs: Instance[] = [];
   const stemEnd = new THREE.Vector3(-1.1, 0.56, -0.12);
   nearTwigs.push(orientedSegment(new THREE.Vector3(0.84, -0.33, 0.15), stemEnd, 0.018));
-  for (let k = 0; k < 7; k++) {
-    const p = new THREE.Vector3(0.55, -0.15, 0.10).lerp(stemEnd, k / 6);
+  for (let k = 0; k < 5; k++) {
+    const p = new THREE.Vector3(0.55, -0.15, 0.10).lerp(stemEnd, k / 4);
     const dir = k % 2 ? 1 : -1;
-    const end = p.clone().add(new THREE.Vector3(-0.17, dir * 0.18, 0.1));
+    const end = p.clone().add(new THREE.Vector3(-0.25, dir * 0.12, range(0.07, 0.22)));
     nearTwigs.push(orientedSegment(p, end, 0.005));
     for (let j = 0; j < 3; j++) {
-      const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(0.8 + j * 0.22, -0.5 + j * 0.5, dir * 0.8 + j * 0.17));
-      nearLeaves.push({ position: end.clone().add(new THREE.Vector3(j * -0.07, j * 0.018, 0)), quaternion: q, scale: new THREE.Vector3(1.04, 1.02, 1), color: new THREE.Color().setHSL(0.235 + rng() * 0.025, 0.48, range(0.29, 0.43)) });
+      const direction = new THREE.Vector3(-0.85 + j * 0.64, range(-0.32, -0.09), range(-0.1, 0.35)).normalize();
+      const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+      q.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), range(-0.5, 0.5)));
+      const scale = range(0.64, 0.98);
+      nearLeaves.push({ position: end.clone().add(new THREE.Vector3(j * -0.035, j * 0.018, 0)), quaternion: q, scale: new THREE.Vector3(scale, scale, scale), color: new THREE.Color().setHSL(0.235 + rng() * 0.025, 0.48, range(0.29, 0.43)) });
     }
   }
   const nearLeafMesh = instances(leafGeo, leafMaterial, nearLeaves);
   nearLeafMesh.name = 'Touch bamboo leaves';
   const heroLeafMaterial = leafMaterial.clone();
+  heroLeafMaterial.defines = { ...leafMaterial.defines };
   heroLeafMaterial.color.set('#688a36');
   heroLeafMaterial.onBeforeCompile = leafMaterial.onBeforeCompile;
   const heroLeaf = new THREE.Mesh(leafGeo, heroLeafMaterial);
@@ -351,7 +379,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   heroLeaf.rotation.set(0.94, -0.38, 0.68);
   heroLeaf.scale.set(1.25, 1.18, 1.18);
   heroLeaf.castShadow = true; heroLeaf.receiveShadow = true;
-  touchBranch.add(instances(cylinder, twigMaterial, nearTwigs), nearLeafMesh, heroLeaf);
+  touchBranch.add(instances(twigGeometry, twigMaterial, nearTwigs), nearLeafMesh, heroLeaf);
   root.add(touchBranch); touchTargets.push(heroLeaf, nearLeafMesh);
 
   // Soft projected patches drift with the canopy, not a flashing/fullscreen effect.

@@ -9,17 +9,17 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   const range = (a: number, b: number) => a + random() * (b - a);
   const root = new THREE.Group();
   scene.add(root);
-  scene.background = new THREE.Color('#d5e4de');
-  scene.fog = new THREE.FogExp2('#ccddd3', 0.021);
+  scene.background = new THREE.Color('#dcebef');
+  scene.fog = new THREE.FogExp2('#d1e2db', 0.013);
   camera.position.set(0, 1.68, 4.8);
   camera.fov = 53;
   camera.lookAt(0, 1.25, -8);
   camera.updateProjectionMatrix();
 
-  const hemi = new THREE.HemisphereLight('#e2eff3', '#817a53', 2.0);
+  const hemi = new THREE.HemisphereLight('#e4f3ff', '#b2b699', 2.5);
   scene.add(hemi);
-  const sunlight = new THREE.DirectionalLight('#ffe6b0', 3.35);
-  sunlight.position.set(-12, 10, -9);
+  const sunlight = new THREE.DirectionalLight('#fff0cb', 3.8);
+  sunlight.position.set(-9, 13, 1);
   sunlight.castShadow = true;
   sunlight.shadow.mapSize.set(2048, 2048);
   Object.assign(sunlight.shadow.camera, { left: -14, right: 14, top: 17, bottom: -10, near: 0.5, far: 55 });
@@ -78,7 +78,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     }
   });
   const earthMap = canvasTexture(256, (ctx, n) => {
-    ctx.fillStyle = '#687a43'; ctx.fillRect(0, 0, n, n);
+    ctx.fillStyle = '#82915e'; ctx.fillRect(0, 0, n, n);
     for (let i = 0; i < 9000; i++) {
       ctx.fillStyle = random() > .45 ? 'rgba(43,56,25,.16)' : 'rgba(178,170,104,.2)';
       ctx.fillRect(random() * n, random() * n, range(1, 4), range(1, 4));
@@ -93,7 +93,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     }
   });
   const leafVeinMap = canvasTexture(256, (ctx, n) => {
-    ctx.fillStyle = '#e1e9c8'; ctx.fillRect(0, 0, n, n);
+    ctx.fillStyle = '#f0f2e6'; ctx.fillRect(0, 0, n, n);
     const gradient = ctx.createLinearGradient(0, 0, n, 0);
     gradient.addColorStop(0, 'rgba(85,117,58,.2)'); gradient.addColorStop(.48, 'rgba(246,246,200,.18)'); gradient.addColorStop(1, 'rgba(72,100,46,.15)');
     ctx.fillStyle = gradient; ctx.fillRect(0, 0, n, n);
@@ -107,13 +107,14 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
       }
     }
   });
-  const wood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .82, color: '#c8b299', bumpMap: woodMap, bumpScale: .012 });
+  const wood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .72, color: '#eee4d6', bumpMap: woodMap, bumpScale: .014 });
   const darkWood = new THREE.MeshStandardMaterial({ map: woodMap, color: '#766552', roughness: .91, bumpMap: woodMap, bumpScale: .018 });
   const stone = new THREE.MeshStandardMaterial({ map: stoneMap, color: '#b7b6a0', roughness: .98, bumpMap: stoneMap, bumpScale: .043 });
   const groundMaterial = new THREE.MeshStandardMaterial({ map: earthMap, roughness: 1 });
-  const leafMaterial = new THREE.MeshStandardMaterial({ color: '#6c8b37', map: leafVeinMap, bumpMap: leafVeinMap, bumpScale: .003, side: THREE.DoubleSide, roughness: .57, metalness: .02 });
-  const paleLeafMaterial = new THREE.MeshStandardMaterial({ color: '#9daa46', map: leafVeinMap, side: THREE.DoubleSide, roughness: .48 });
-  const leafDark = new THREE.MeshStandardMaterial({ color: '#526a32', map: leafVeinMap, bumpMap: leafVeinMap, bumpScale: .008, side: THREE.DoubleSide, roughness: .69 });
+  const leafMaterial = new THREE.MeshStandardMaterial({ color: '#d6dfb9', map: leafVeinMap, bumpMap: leafVeinMap, bumpScale: .003, side: THREE.DoubleSide, roughness: .57, metalness: .02, emissive: '#567338', emissiveIntensity: .1 });
+  const paleLeafMaterial = new THREE.MeshStandardMaterial({ color: '#b9c478', map: leafVeinMap, side: THREE.DoubleSide, roughness: .48, emissive: '#59753c', emissiveIntensity: .12 });
+  const leafDark = new THREE.MeshStandardMaterial({ color: '#b6c697', map: leafVeinMap, bumpMap: leafVeinMap, bumpScale: .008, side: THREE.DoubleSide, roughness: .69, emissive: '#567c3c', emissiveIntensity: .12 });
+  const bark = new THREE.MeshStandardMaterial({ map: woodMap, color: '#b8b4a2', roughness: .94, bumpMap: woodMap, bumpScale: .035 });
   const dummy = new THREE.Object3D();
 
   function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, position: number[] = [0, 0, 0], parent: THREE.Object3D = root) {
@@ -125,11 +126,23 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   function box(w: number, h: number, d: number, material: THREE.Material, position: number[], parent = root) {
     return mesh(new THREE.BoxGeometry(w, h, d), material, position, parent);
   }
-  function branch(a: THREE.Vector3, b: THREE.Vector3, r1: number, r2: number, material = darkWood, parent: THREE.Object3D = root) {
+  function branch(a: THREE.Vector3, b: THREE.Vector3, r1: number, r2: number, material: THREE.MeshStandardMaterial = bark, parent: THREE.Object3D = root) {
     const length = a.distanceTo(b);
-    const piece = mesh(new THREE.CylinderGeometry(r2, r1, length, 7), material, a.clone().add(b).multiplyScalar(.5).toArray(), parent);
-    piece.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
-    if (parent === root && material === darkWood) piece.userData.morningBark = true;
+    const bend = new THREE.Vector3(Math.sin(a.x * 2.1 + b.y), 0, Math.cos(a.z + b.x)) .multiplyScalar(length * .048);
+    const curve = new THREE.CatmullRomCurve3([a, a.clone().lerp(b, .33).add(bend), a.clone().lerp(b, .68).addScaledVector(bend, .72), b]);
+    const geometry = new THREE.TubeGeometry(curve, 8, r1, 8, false);
+    const points = geometry.attributes.position;
+    for (let i = 0; i <= 8; i++) {
+      const t = i / 8, center = curve.getPointAt(t);
+      const scale = (r1 * (1 - t) + r2 * t) / r1 * (1 + .16 * Math.exp(-t * 15));
+      for (let j = 0; j <= 8; j++) {
+        const index = i * 9 + j;
+        points.setXYZ(index, center.x + (points.getX(index) - center.x) * scale, center.y + (points.getY(index) - center.y) * scale, center.z + (points.getZ(index) - center.z) * scale);
+      }
+    }
+    geometry.computeVertexNormals();
+    const piece = mesh(geometry, material, [0, 0, 0], parent);
+    if (parent === root && material === bark) piece.userData.morningBark = true;
     return piece;
   }
   /** Folded botanical blade: raised midrib and non-flat gently curling tip. */
@@ -159,9 +172,9 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   // A pale eastern sky surrounds the environment, with no planar backdrop.
   const sky = new THREE.Mesh(new THREE.SphereGeometry(140, 32, 16), new THREE.ShaderMaterial({
     side: THREE.BackSide, depthWrite: false,
-    uniforms: { zenith: { value: new THREE.Color('#a8ced1') }, horizon: { value: new THREE.Color('#f4e5ca') } },
+    uniforms: { zenith: { value: new THREE.Color('#a8d8ee') }, horizon: { value: new THREE.Color('#fff0da') } },
     vertexShader: 'varying vec3 vPosition; void main(){vPosition=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-    fragmentShader: 'uniform vec3 zenith;uniform vec3 horizon;varying vec3 vPosition;void main(){vec3 d=normalize(vPosition);float h=pow(max(d.y,0.),.58);vec3 c=mix(horizon,zenith,h);float sun=pow(max(dot(d,normalize(vec3(-.72,.29,-.64))),0.),38.);c+=vec3(.12,.075,.014)*sun;gl_FragColor=vec4(c,1.);}',
+    fragmentShader: 'uniform vec3 zenith;uniform vec3 horizon;varying vec3 vPosition;void main(){vec3 d=normalize(vPosition);float h=pow(max(d.y,0.),.45);vec3 c=mix(horizon,zenith,h);float sun=pow(max(dot(d,normalize(vec3(-.72,.29,-.64))),0.),38.);c+=vec3(.09,.04,.005)*sun;gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}',
   }));
   root.add(sky);
 
@@ -191,7 +204,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   for (let i = 0; i < 19; i++) {
     const plank = box(10.8, .075, .385, wood, [0, .09 + range(-.004, .004), .45 + i * .397]);
     plank.material = wood.clone();
-    (plank.material as THREE.MeshStandardMaterial).color.setHSL(.09, range(.14, .21), range(.53, .64));
+    (plank.material as THREE.MeshStandardMaterial).color.setHSL(.09, range(.05, .09), range(.8, .9));
   }
   box(10.9, .16, .17, darkWood, [0, .01, .2]);
   box(4.8, .18, .72, wood, [-.2, -.17, -.23]);
@@ -220,7 +233,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   // Lichen-covered boundary wall, broken by a little slatted gate on the right.
   box(18.2, .89, .6, new THREE.MeshStandardMaterial({ color: '#898c73', roughness: 1 }), [-3.3, .23, -12.4]);
   box(7.8, .89, .6, new THREE.MeshStandardMaterial({ color: '#898c73', roughness: 1 }), [11.8, .23, -12.4]);
-  const wallStones = instances(new THREE.IcosahedronGeometry(1, 0), stone, 153);
+  const wallStones = instances(new THREE.IcosahedronGeometry(1, 1), stone, 153);
   for (let i = 0; i < 153; i++) {
     const row = Math.floor(i / 51), col = i % 51;
     let x = -12.2 + col * .55;
@@ -245,15 +258,15 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   box(1.95, .1, .08, darkWood, [6.36, .78, -12.05]);
 
   // Thousands of individually folded leaves make spatial foliage, not solid blobs.
-  const grass = instances(bladeGeometry(.024, .54, .11, 3), leafMaterial, 6500);
+  const grass = instances(bladeGeometry(.018, .33, .095, 2), leafMaterial, 10000);
   for (let i = 0; i < grass.count; i++) {
     let x = range(-14, 14), z = range(-15, .1);
     const center = .15 + Math.sin(Math.max(0, Math.min(1, (-z - .8) / 10.5)) * 4) * 1.6;
     if (Math.abs(x - center) < .7 && z > -11.6) x += x < center ? -.9 : .9;
     dummy.position.set(x, -.16, z);
     dummy.rotation.set(range(-1.75, -.75), range(0, 6.28), range(-.5, .5));
-    dummy.scale.setScalar(range(.3, .85)); dummy.updateMatrix(); grass.setMatrixAt(i, dummy.matrix);
-    grass.setColorAt(i, new THREE.Color().setHSL(range(.19, .27), range(.3, .5), range(.47, .77)));
+    dummy.scale.setScalar(range(.35, .94)); dummy.updateMatrix(); grass.setMatrixAt(i, dummy.matrix);
+    grass.setColorAt(i, new THREE.Color().setHSL(range(.19, .27), range(.3, .48), range(.54, .78)));
   }
   const fieldGrass = instances(bladeGeometry(.028, 1.2, .2, 3), paleLeafMaterial, 2700);
   for (let i = 0; i < fieldGrass.count; i++) {
@@ -261,16 +274,16 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     dummy.rotation.set(-range(1.2, 1.6), range(0, 6.28), range(-.1, .1));
     dummy.scale.setScalar(range(.5, 1.1)); dummy.updateMatrix(); fieldGrass.setMatrixAt(i, dummy.matrix);
   }
-  const gardenLeaves = instances(bladeGeometry(.19, .9, .3), leafDark, 940);
+  const gardenLeaves = instances(bladeGeometry(.165, .8, .26), leafDark, 940);
   for (let i = 0; i < gardenLeaves.count; i++) {
     const clump = Math.floor(i / 17), j = i % 17;
     const side = clump % 2 ? -1 : 1;
-    const z = -.65 - Math.floor(clump / 2) * .36;
-    const x = side * (1.8 + Math.sin(clump * 1.32) * .65 + Math.floor(clump / 22) * 1.3);
+    const z = -.7 - Math.floor(clump / 2) * .36 + Math.sin(clump * 8.71) * .35;
+    const x = side * (2.0 + Math.sin(clump * 1.32) * .75 + Math.floor(clump / 22) * 1.3);
     dummy.position.set(x, -.08 + j * .002, z);
     dummy.rotation.set(-range(.12, .8), j * 2.4, range(-.2, .2));
-    dummy.scale.setScalar(range(.5, 1.35)); dummy.updateMatrix(); gardenLeaves.setMatrixAt(i, dummy.matrix);
-    gardenLeaves.setColorAt(i, new THREE.Color().setHSL(range(.2, .28), range(.25, .55), range(.55, .92)));
+    dummy.scale.setScalar(range(.48, 1.2) * (.8 + Math.sin(clump * 9.2) * .2)); dummy.updateMatrix(); gardenLeaves.setMatrixAt(i, dummy.matrix);
+    gardenLeaves.setColorAt(i, new THREE.Color().setHSL(range(.21, .29), range(.18, .4), range(.65, .86)));
   }
   // Dew is sparse and restricted to visible large leaves, never screen-space sparkles.
   const dewdrops = instances(new THREE.SphereGeometry(.016, 6, 4), new THREE.MeshPhysicalMaterial({ color: '#eef8de', roughness: .06, metalness: .13, transparent: true, opacity: .7, clearcoat: 1 }), 75);
@@ -278,7 +291,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   for (let i = 0; i < 75; i++) {
     gardenLeaves.getMatrixAt(i * 3, leafMatrix);
     const t = range(.28, .72);
-    dummy.position.set(0, .3 * t * t + Math.sin(t * Math.PI) * .19 * .22 + .006, .9 * t).applyMatrix4(leafMatrix);
+    dummy.position.set(0, .26 * t * t + Math.sin(t * Math.PI) * .165 * .22 + .006, .8 * t).applyMatrix4(leafMatrix);
     dummy.rotation.set(0, 0, 0); dummy.scale.set(range(.5, 1), .45, range(.5, 1));
     dummy.updateMatrix(); dewdrops.setMatrixAt(i, dummy.matrix);
   }
@@ -305,28 +318,29 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   const treeLeaves = instances(bladeGeometry(.13, .49, .07, 4), leafMaterial, 8800);
   let leafIndex = 0;
   const trees = [
-    [-5.4, -5.8, 5.9, 1], [6.8, -9, 7.2, .95], [-12.5, -19, 8.6, 1.3],
-    [12, -23, 8.2, 1.5], [-6, -28, 8, 1.2], [1, -34, 8.7, 1.4], [19, -29, 9.2, 1.4],
+    [-5.4, -5.8, 6.7, .9], [6.8, -9, 7.2, .85], [-12.5, -19, 8.6, 1.3],
+    [12, -23, 8.2, 1.5], [-7.2, -28, 7.4, 1.1], [2.8, -39, 10.2, 1.5], [19, -29, 9.2, 1.4],
   ];
   for (let treeIndex = 0; treeIndex < trees.length; treeIndex++) {
     const [x, z, height, spread] = trees[treeIndex];
-    branch(new THREE.Vector3(x, -.2, z), new THREE.Vector3(x + .19, height * .67, z + .07), .24 * spread, .095 * spread);
+    const trunkTop = new THREE.Vector3(x + Math.sin(treeIndex * 1.7) * .62, height * .8, z + Math.cos(treeIndex) * .35);
+    branch(new THREE.Vector3(x, -.2, z), trunkTop, .27 * spread, .028 * spread);
     for (let b = 0; b < 8; b++) {
-      const angle = b * 2.4 + treeIndex;
-      const start = new THREE.Vector3(x + .1, height * range(.4, .7), z);
-      const end = new THREE.Vector3(x + Math.cos(angle) * range(1.5, 2.6) * spread, height * range(.77, 1.02), z + Math.sin(angle) * range(1.5, 2.4) * spread);
-      branch(start, end, .075 * spread, .018 * spread);
+      const angle = b * 2.4 + treeIndex + range(-.3, .3);
+      const start = new THREE.Vector3(x + Math.sin(treeIndex * 1.7) * .3, height * range(.27, .65), z);
+      const end = new THREE.Vector3(x + Math.cos(angle) * range(1.1, 3.1) * spread, height * range(.55, 1.13), z + Math.sin(angle) * range(1.2, 2.7) * spread);
+      branch(start, end, range(.058, .105) * spread, .014 * spread);
       for (let sub = 0; sub < 2; sub++) {
         const tip = end.clone().add(new THREE.Vector3(range(-.7, .7), range(.2, .7), range(-.7, .7)));
         branch(start.clone().lerp(end, .65), tip, .032 * spread, .008 * spread);
       }
       const leavesPerBranch = treeIndex < 2 ? 185 : 144;
       for (let j = 0; j < leavesPerBranch && leafIndex < treeLeaves.count; j++) {
-        const a = random() * Math.PI * 2, radius = Math.pow(random(), .45) * 1.24 * spread;
-        dummy.position.set(end.x + Math.cos(a) * radius, end.y + range(-.55, .65) * spread, end.z + Math.sin(a) * radius);
-        dummy.rotation.set(range(-.7, .5), range(0, 6.28), range(-.45, .45));
-        dummy.scale.setScalar(range(.8, 1.7) * spread); dummy.updateMatrix(); treeLeaves.setMatrixAt(leafIndex, dummy.matrix);
-        treeLeaves.setColorAt(leafIndex, new THREE.Color().setHSL(range(.2, .29), range(.3, .58), range(.55, .88)));
+        const a = random() * Math.PI * 2, radius = Math.pow(random(), .7) * range(.85, 1.5) * spread;
+        dummy.position.set(end.x + Math.cos(a) * radius, end.y + range(-.8, .85) * spread, end.z + Math.sin(a) * radius);
+        dummy.rotation.set(range(-1.1, .7), range(0, 6.28), range(-.65, .65));
+        dummy.scale.setScalar(range(.65, 1.3) * spread); dummy.updateMatrix(); treeLeaves.setMatrixAt(leafIndex, dummy.matrix);
+        treeLeaves.setColorAt(leafIndex, new THREE.Color().setHSL(range(.2, .29), range(.25, .47), range(.57, .83)));
         leafIndex++;
       }
     }
@@ -336,10 +350,21 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   const transformedBranches = treeBranches.map(object => { object.updateMatrix(); return object.geometry.clone().applyMatrix4(object.matrix); });
   const mergedBranches = mergeGeometries(transformedBranches);
   if (mergedBranches) {
-    mesh(mergedBranches, darkWood);
+    mesh(mergedBranches, bark);
     treeBranches.forEach(object => { root.remove(object); object.geometry.dispose(); });
   }
   transformedBranches.forEach(geometry => geometry.dispose());
+  // An irregular distant hedgerow anchors the fields to the landscape's horizon.
+  const hedgeLeaves = instances(bladeGeometry(.13, .42, .08, 3), leafMaterial, 2200);
+  for (let i = 0; i < hedgeLeaves.count; i++) {
+    const x = range(-36, 34);
+    const z = -24 - Math.sin(x * .12) * 2.5 + range(-1.7, 1.7);
+    const height = .6 + Math.sin(x * .3) * .48 + Math.sin(x * .7 + 1) * .25;
+    dummy.position.set(x, range(.1, 1.5) + height, z);
+    dummy.rotation.set(range(-1, .7), range(0, 6.28), range(-.5, .5)); dummy.scale.setScalar(range(1.8, 3.6));
+    dummy.updateMatrix(); hedgeLeaves.setMatrixAt(i, dummy.matrix);
+    hedgeLeaves.setColorAt(i, new THREE.Color().setHSL(range(.22, .3), range(.15, .28), range(.57, .72)));
+  }
 
   // A tactile oiled table, linen and celadon tea set occupy the seated near field.
   const table = new THREE.Group(); root.add(table);
@@ -355,16 +380,20 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   topGeometry.rotateX(-Math.PI / 2);
   const tableTop = mesh(topGeometry, wood, [0, .84, 0], table); tableTop.receiveShadow = true;
   for (const x of [-.7, .7]) for (const z of [-.36, .36]) box(.07, .77, .07, darkWood, [x, .45, z], table);
-  const linenMaterial = new THREE.MeshStandardMaterial({ color: '#d2c6a8', roughness: 1, side: THREE.DoubleSide });
+  const linenMap = canvasTexture(128, (ctx, n) => {
+    ctx.fillStyle = '#e7dfc9'; ctx.fillRect(0, 0, n, n);
+    for (let i = 0; i < n; i += 2) {
+      ctx.fillStyle = 'rgba(120,111,91,.055)'; ctx.fillRect(i, 0, 1, n);
+      ctx.fillStyle = 'rgba(255,255,236,.16)'; ctx.fillRect(0, i, n, 1);
+    }
+  });
+  linenMap.repeat.set(2, 2);
+  const linenMaterial = new THREE.MeshStandardMaterial({ color: '#eee8d9', map: linenMap, bumpMap: linenMap, bumpScale: .0008, roughness: 1, side: THREE.DoubleSide });
   const linen = new THREE.PlaneGeometry(.71, .6, 12, 12);
   const lp = linen.attributes.position;
   for (let i = 0; i < lp.count; i++) lp.setZ(i, Math.sin(lp.getX(i) * 35) * .003 + Math.cos(lp.getY(i) * 24) * .003);
   linen.computeVertexNormals();
-  const cloth = mesh(linen, linenMaterial, [.4, .925, .015], table); cloth.rotation.x = -Math.PI / 2; cloth.rotation.z = .14;
-  const clothThreads = instances(new THREE.BoxGeometry(.0015, .001, .58), new THREE.MeshStandardMaterial({ color: '#a69f83', roughness: 1 }), 31);
-  for (let i = 0; i < 31; i++) {
-    dummy.position.set(.26 + .4 - .3 + i * .02, .934, 3.045); dummy.rotation.set(0, -.14, 0); dummy.scale.set(1, 1, 1); dummy.updateMatrix(); clothThreads.setMatrixAt(i, dummy.matrix);
-  }
+  const cloth = mesh(linen, linenMaterial, [.4, .947, .015], table); cloth.rotation.x = -Math.PI / 2; cloth.rotation.z = .14;
   const glaze = new THREE.MeshPhysicalMaterial({ map: glazeMap, color: '#e0e1c8', roughness: .27, clearcoat: .65, clearcoatRoughness: .21, bumpMap: glazeMap, bumpScale: .0006 });
   const rimMaterial = new THREE.MeshStandardMaterial({ color: '#97815a', roughness: .64 });
   const teaSet = new THREE.Group(); table.add(teaSet); teaSet.position.set(-.15, .94, -.035);
@@ -390,7 +419,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     rippleMaterials.push(mat); ripples.push(ring);
   }
   // A modest book is closed and partly beneath the linen, with independent page edges.
-  const book = new THREE.Group(); table.add(book); book.position.set(.5, .962, -.13); book.rotation.y = -.18;
+  const book = new THREE.Group(); table.add(book); book.position.set(.5, .987, -.13); book.rotation.y = -.18;
   const bookCover = new THREE.MeshStandardMaterial({ color: '#667060', roughness: .95 });
   box(.35, .038, .48, new THREE.MeshStandardMaterial({ color: '#dbd0ae', roughness: 1 }), [0, 0, 0], book);
   box(.37, .007, .5, bookCover, [0, .023, 0], book);
@@ -432,7 +461,6 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
       camera.lookAt(aspect < .8 ? .04 : 0, aspect < .8 ? 1.1 : 1.25, -8);
       camera.updateProjectionMatrix();
       table.position.x = aspect < .8 ? .12 : .26;
-      clothThreads.position.x = aspect < .8 ? -.14 : 0;
     },
     update(time) {
       const elapsed = time - touchedAt;

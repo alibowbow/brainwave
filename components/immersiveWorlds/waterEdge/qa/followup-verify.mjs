@@ -260,7 +260,7 @@ try {
       const disposal = { cycle, status: 'passed', configuredRetentionMs: 5000, eventualObservationDeadlineMs: 20000, removal, entry, exit, lost,
         removalToDisposeEntryMs: entry.atMs - removal.atMs, disposeSynchronousDurationMs: exit.atMs - entry.atMs,
         removalToContextLossObservationMs: lost.atMs - removal.atMs,
-        claim: 'Clean no-capture cycle reached zero engine/canvas counters and observed context loss within recorded elapsed time; not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.', disposed };
+        claim: `${drainBeforeDispose ? 'GPU-drained no-capture diagnostic' : 'Clean no-capture cycle'} reached zero engine/canvas counters and observed context loss within recorded elapsed time; not proof of physical VRAM reclamation or exactly-five-second GPU cleanup.`, disposed };
       disposal.removalToContextLossObservationMs = lost.atMs - removal.atMs;
       disposal.heartbeat = { samples: telemetry.heartbeats.filter(item => item.atMs >= removal.atMs && item.atMs <= lost.atMs + 100),
         note: 'Event-loop lag is separately recorded; a low configured grace does not establish responsive disposal.' };

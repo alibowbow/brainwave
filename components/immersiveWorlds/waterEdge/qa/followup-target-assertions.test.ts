@@ -19,6 +19,9 @@ describe('browser audit distinguishes failed probes from invalid selected target
   it('rejects a selected cube validated on only one face', () => {
     expect(() => validateTargetAudit(audit([check('valley-reflection-cube', 'unsigned-byte'), check('valley-refraction-depth', 'unsigned-byte')]), { world: 'summer-valley', mode: 'normal' })).toThrow('Final selected target');
   });
+  it('rejects an unknown final target type even when a framebuffer was complete', () => {
+    expect(() => validateTargetAudit(audit([check('valley-reflection-cube', 'unknown-type', 6), check('valley-refraction-depth', 'unsigned-byte')]), { world: 'summer-valley', mode: 'normal' })).toThrow('unsupported type');
+  });
   it('requires output completion even when both PMREM preflights succeeded', () => {
     expect(() => validateTargetAudit(audit([check('pmrem-format-preflight-depth', 'half-float'), check('pmrem-format-preflight-color', 'half-float'), check('pebble-pmrem-output', 'half-float', 1, false)], { environment: 'three-pmrem-half-float' }), { world: 'pebble-shore', mode: 'normal' })).toThrow('Final selected target');
   });

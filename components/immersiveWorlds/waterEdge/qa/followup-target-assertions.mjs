@@ -11,6 +11,7 @@ export function validateTargetAudit(audit, { world, mode }) {
     // The last attempt for this final target must itself be complete.
     const check = checks.filter(item => item.label === label).at(-1);
     demand(check && check.complete && check.faces.length === faces && check.faces.every(status => status === 36053), `Final selected target ${label} is missing/incomplete`);
+    demand(['half-float', 'unsigned-byte'].includes(check.type), `Final selected target ${label} has an unsupported type`);
     demand(!type || check.type === type, `Final selected target ${label} has wrong type`);
     demand(mode !== 'byte' || check.type === 'unsigned-byte', `Forced-byte final target ${label} is not unsigned-byte`);
     if (check.type === 'half-float') demand(audit.colorBufferFloat || audit.colorBufferHalfFloat, 'Half-float selected without a permitting color-buffer extension');

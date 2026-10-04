@@ -27,11 +27,11 @@ export function createScopsScene(): SceneContent {
         ctx.beginPath(); ctx.moveTo(x - 34, 256); ctx.lineTo(x + 14, 343 - Math.abs(x - 256) * .25); ctx.stroke();
       }
     } else {
-      const base = kind === 'wood' ? '#846a48' : kind === 'bark' ? '#716b57' : kind === 'stone' ? '#626c68' : '#918677';
+      const base = kind === 'wood' ? '#958878' : kind === 'bark' ? '#8e9080' : kind === 'stone' ? '#85928a' : '#b9b19e';
       ctx.fillStyle = base; ctx.fillRect(0, 0, 512, 512);
       for (let i = 0; i < 4200; i++) {
         const v = random(); const x = random() * 512; const y = random() * 512;
-        ctx.strokeStyle = v < .5 ? `rgba(13,15,11,${.035 + v * .21})` : `rgba(237,227,190,${.035 + (v-.5) * .12})`;
+        ctx.strokeStyle = v < .5 ? `rgba(13,15,11,${.013 + v * .075})` : `rgba(237,227,190,${.018 + (v-.5) * .05})`;
         ctx.lineWidth = kind === 'bark' ? 1 + random() * 3 : .4 + random() * 1.6;
         ctx.beginPath(); ctx.moveTo(x, y);
         if (kind === 'stone') ctx.lineTo(x + random() * 8, y + random() * 5);
@@ -54,25 +54,38 @@ export function createScopsScene(): SceneContent {
   const woodMap = texture('wood'); woodMap.repeat.set(1, 2.5);
   const barkMap = texture('bark'); barkMap.repeat.set(2, 3);
   const leafMap = texture('leaf'); const featherMap = texture('feather'); const stoneMap = texture('stone');
-  const wood = new THREE.MeshStandardMaterial({ color: '#947958', map: woodMap, bumpMap: woodMap, bumpScale: .026, roughness: .88 });
-  const edgeWood = new THREE.MeshStandardMaterial({ color: '#645039', map: woodMap, roughness: .93, bumpMap: woodMap, bumpScale: .04 });
-  const bark = new THREE.MeshStandardMaterial({ color: '#8d8870', map: barkMap, bumpMap: barkMap, bumpScale: .07, roughness: .99 });
-  const stone = new THREE.MeshStandardMaterial({ color: '#626f69', map: stoneMap, roughness: 1, bumpMap: stoneMap, bumpScale: .025 });
+  const wood = new THREE.MeshStandardMaterial({ color: '#c3b6a0', map: woodMap, bumpMap: woodMap, bumpScale: .012, roughness: .89 });
+  const edgeWood = new THREE.MeshStandardMaterial({ color: '#908a74', map: woodMap, roughness: .93, bumpMap: woodMap, bumpScale: .022 });
+  const bark = new THREE.MeshStandardMaterial({ color: '#a4b1a0', map: barkMap, bumpMap: barkMap, bumpScale: .035, roughness: .99 });
+  const stone = new THREE.MeshStandardMaterial({ color: '#929e95', map: stoneMap, roughness: 1, bumpMap: stoneMap, bumpScale: .025 });
   const leafMat = new THREE.MeshStandardMaterial({ color: '#a2bca2', map: leafMap, alphaTest: .55, side: THREE.DoubleSide, roughness: .93 });
   function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, position: [number, number, number], parent: THREE.Object3D = scene) {
     const m = new THREE.Mesh(geometry, material); m.position.set(...position); m.castShadow = m.receiveShadow = true; parent.add(m); return m;
   }
   const box = (w: number, h: number, d: number, material: THREE.Material, p: [number, number, number], parent?: THREE.Object3D) => mesh(new THREE.BoxGeometry(w, h, d), material, p, parent);
   function limb(a: THREE.Vector3, b: THREE.Vector3, r1: number, r2: number, material = bark, parent: THREE.Object3D = scene, sides = 9) {
-    const d = b.clone().sub(a); const m = mesh(new THREE.CylinderGeometry(r2, r1, d.length(), sides), material, a.clone().add(b).multiplyScalar(.5).toArray() as [number, number, number], parent);
-    m.quaternion.setFromUnitVectors(Y, d.normalize()); return m;
+    const delta=b.clone().sub(a),length=delta.length(),mid=a.clone().lerp(b,.5);
+    mid.x+=(random()-.5)*length*.10;mid.z+=(random()-.5)*length*.09;
+    const curve=new THREE.CatmullRomCurve3([a,mid,b]);const positions:number[]=[],uvs:number[]=[],indices:number[]=[];
+    const q=new THREE.Quaternion(),p=new THREE.Vector3(),v=new THREE.Vector3();const rings=length>.3?8:3;
+    for(let ring=0;ring<=rings;ring++){
+      const t=ring/rings;curve.getPoint(t,p);q.setFromUnitVectors(Y,curve.getTangent(t));const radius=THREE.MathUtils.lerp(r1,r2,t);
+      for(let side=0;side<=sides;side++){const a=side/sides*Math.PI*2;v.set(Math.cos(a)*radius,0,Math.sin(a)*radius).applyQuaternion(q).add(p);positions.push(v.x,v.y,v.z);uvs.push(side/sides,t);}
+      if(ring<rings)for(let side=0;side<sides;side++){const n=ring*(sides+1)+side;indices.push(n,n+sides+1,n+1,n+1,n+sides+1,n+sides+2);}
+    }
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));g.setIndex(indices);g.computeVertexNormals();return mesh(g,material,[0,0,0],parent);
   }
-  scene.add(new THREE.HemisphereLight('#aac6dc', '#38452f', 1.1));
-  const moonLight = new THREE.DirectionalLight('#bed8f7', 2.25); moonLight.position.set(-8, 17, -7); moonLight.castShadow = true;
+  scene.add(new THREE.HemisphereLight('#b6c9dd', '#65715c', 1.9));
+  const moonLight = new THREE.DirectionalLight('#bed8f7', 1.6); moonLight.position.set(-8, 17, -7); moonLight.castShadow = false;
   moonLight.shadow.mapSize.set(1024, 1024); moonLight.shadow.camera.left = -12; moonLight.shadow.camera.right = 12;
   moonLight.shadow.camera.top = 12; moonLight.shadow.camera.bottom = -12; moonLight.shadow.normalBias = .035;
   moonLight.shadow.bias = -.0002; scene.add(moonLight); moonLight.target.position.set(0, 0, -7); scene.add(moonLight.target);
-  const porchFill = new THREE.PointLight('#b6cadc', 2.7, 12, 2); porchFill.position.set(-2, 3.8, .2); scene.add(porchFill);
+  const porchFill = new THREE.PointLight('#b6cadc', 2.5, 14, 2); porchFill.position.set(-2, 3.8, .2); scene.add(porchFill);
+  // Original soft sky environment makes aged brass and glass reflect the surrounding night.
+  const envCanvas=document.createElement('canvas');envCanvas.width=256;envCanvas.height=128;
+  const envCtx=envCanvas.getContext('2d')!;const envGradient=envCtx.createLinearGradient(0,0,0,128);
+  envGradient.addColorStop(0,'#60748d');envGradient.addColorStop(.48,'#8b9d9f');envGradient.addColorStop(.58,'#4e6059');envGradient.addColorStop(1,'#30392e');envCtx.fillStyle=envGradient;envCtx.fillRect(0,0,256,128);
+  const envTexture=new THREE.CanvasTexture(envCanvas);envTexture.colorSpace=THREE.SRGBColorSpace;envTexture.mapping=THREE.EquirectangularReflectionMapping;scene.environment=envTexture;scene.environmentIntensity=.28;
 
   // A full-scale wood floor, old edge beam and roof framing put the eye inside a place.
   const nailMatrices: THREE.Matrix4[] = [];
@@ -99,19 +112,26 @@ export function createScopsScene(): SceneContent {
   box(.2, .16, 3.2, edgeWood, [4.08, .81, 1.32]);
 
   // Forest floor uses gentle relief, not a flat platform; stream bed sits beyond its edge.
+  const riverX = (z: number) => 3.3 + Math.sin((-z - 10) * .074) * 2.6 + Math.max(0,z+12)*.22;
   const groundGeo = new THREE.PlaneGeometry(100, 120, 90, 100); groundGeo.rotateX(-Math.PI / 2);
   const gp = groundGeo.attributes.position;
   for (let i = 0; i < gp.count; i++) {
     const x = gp.getX(i), z = gp.getZ(i) - 48;
-    gp.setXYZ(i, x, -.8 + Math.sin(x * .31 + z * .17) * .18 + Math.cos(z * .27) * .12, z);
+    let height=-.8 + Math.sin(x * .31 + z * .17) * .18 + Math.cos(z * .27) * .12;
+    if(z<1&&z>-90){const distance=Math.abs(x-riverX(z));height+=Math.exp(-Math.pow((distance-1.15)/.65,2))*.2;const bed=1-THREE.MathUtils.smoothstep(distance,.57,1.07);height=THREE.MathUtils.lerp(height,-1.1,bed);}
+    gp.setXYZ(i, x, height, z);
   }
-  groundGeo.computeVertexNormals(); mesh(groundGeo, new THREE.MeshStandardMaterial({ color: '#3d5140', map: stoneMap, roughness: 1 }), [0, 0, 0]);
+  const duffCanvas=document.createElement('canvas');duffCanvas.width=duffCanvas.height=512;const duff=duffCanvas.getContext('2d')!;
+  duff.fillStyle='#5f6651';duff.fillRect(0,0,512,512);
+  for(let i=0;i<140;i++){const x=random()*512,y=random()*512,r=12+random()*60,g=duff.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,i%3?'rgba(28,41,23,.22)':'rgba(141,139,85,.18)');g.addColorStop(1,'rgba(30,40,22,0)');duff.fillStyle=g;duff.fillRect(x-r,y-r,r*2,r*2);}
+  for(let i=0;i<2000;i++){const x=random()*512,y=random()*512;duff.strokeStyle=i%2?'rgba(142,137,108,.20)':'rgba(29,37,25,.23)';duff.lineWidth=.4+random()*1.1;duff.beginPath();duff.moveTo(x,y);duff.lineTo(x+random()*8-4,y+random()*10);duff.stroke();}
+  const duffMap=new THREE.CanvasTexture(duffCanvas);duffMap.colorSpace=THREE.SRGBColorSpace;duffMap.wrapS=duffMap.wrapT=THREE.RepeatWrapping;duffMap.repeat.set(16,19);
+  groundGeo.computeVertexNormals(); mesh(groundGeo, new THREE.MeshStandardMaterial({ color: '#88947f', map: duffMap,bumpMap:duffMap,bumpScale:.03, roughness: 1 }), [0, 0, 0]);
   // River meanders left then right into depth. Its visible width decreases by perspective.
-  const riverX = (z: number) => 3.3 + Math.sin((-z - 10) * .074) * 2.6;
   const riverVertices: number[] = [], riverUv: number[] = [], riverIndices: number[] = [];
   for (let i = 0; i <= 120; i++) {
-    const z = -8 - i * .73; const width = 1.2 + Math.sin(i * .021) * .35;
-    riverVertices.push(riverX(z) - width, -.535, z, riverX(z) + width, -.535, z);
+    const z = 1 - i * .73; const width = .82 + Math.sin(i * .091) * .12 + Math.sin(i*.73)*.055;
+    riverVertices.push(riverX(z) - width, -.65, z, riverX(z) + width, -.65, z);
     riverUv.push(0, i / 5, 1, i / 5);
     if (i < 120) { const a = i * 2; riverIndices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
   }
@@ -124,8 +144,8 @@ export function createScopsScene(): SceneContent {
       float rip2=sin(vUv.y*63.-vUv.x*13.+uTime*.38);float m=pow(max(0.,rip*.57+rip2*.43),7.);
       float fres=pow(1.-max(0.,normalize(uCamera-vWorld).y),3.);
       float path=exp(-pow((vUv.x-.46)*2.6,2.));
-      vec3 c=mix(vec3(.06,.13,.17),vec3(.23,.38,.46),fres*.7);
-      c+=vec3(.35,.48,.54)*m*path*.75;float fog=1.-exp(-length(uCamera-vWorld)*.013);c=mix(c,vec3(.075,.145,.19),fog);
+      vec3 c=mix(vec3(.024,.048,.064),vec3(.073,.118,.145),fres*.7);
+      c+=vec3(.115,.16,.175)*m*path*.42;float fog=1.-exp(-length(uCamera-vWorld)*.013);c=mix(c,vec3(.075,.12,.145),fog);
       gl_FragColor=vec4(c,1.); #include <tonemapping_fragment> #include <colorspace_fragment> }`,
     side: THREE.DoubleSide,
   });
@@ -133,27 +153,25 @@ export function createScopsScene(): SceneContent {
   waterMaterial.fragmentShader = waterMaterial.fragmentShader.replace(' #include', '\n#include').replace(' #include', '\n#include').replace('> }', '>\n}');
   mesh(riverGeo, waterMaterial, [0, 0, 0]);
   for (let i = 0; i < 65; i++) {
-    const z = -8 - random() * 58; const side = random() > .5 ? 1 : -1;
-    const rock = mesh(new THREE.IcosahedronGeometry(.17 + random() * .38, 1), stone, [riverX(z) + side * (1.33 + random() * .48), -.47, z]);
+    const z = 1 - random() * 66; const side = random() > .5 ? 1 : -1;
+    const rock = mesh(new THREE.SphereGeometry(.17 + random() * .28, 11,7), stone, [riverX(z) + side * (.85 + random() * .38), -.47, z]);
     rock.scale.set(1.3, .5, .7 + random()); rock.rotation.set(random(), random(), random());
   }
 
   // Distant mountain silhouettes remain actual spatial meshes, with independently shaped profiles.
   for (let layer = 0; layer < 4; layer++) {
-    const vertices: number[] = [], indices: number[] = []; const z = -66 - layer * 21;
-    for (let i = 0; i <= 55; i++) {
-      const x = -125 + i * 4.55;
-      const y = 4 + layer * 2 + Math.sin(i*.18 + layer*2)*2.8 + Math.sin(i*.41 + layer)*1.1 + Math.sin(i*.083+1)*2.6;
-      vertices.push(x, -5, z, x, y, z);
-      if (i < 55) { const a = i*2; indices.push(a,a+1,a+2,a+1,a+3,a+2); }
+    const g=new THREE.PlaneGeometry(250,37,100,18);g.rotateX(-Math.PI/2);const p=g.attributes.position;
+    for(let i=0;i<p.count;i++){
+      const x=p.getX(i),localZ=p.getZ(i),shoulder=Math.pow(Math.max(0,Math.cos(localZ/37*Math.PI)),1.5);
+      const profile=(5+layer*1.25+Math.sin(x*.043+layer*1.6)*2.2+Math.sin(x*.11+layer)*.8+Math.sin(x*.26)*.25);
+      p.setXYZ(i,x,-1+profile*shoulder+Math.sin(x*.33+localZ*.8)*.19,localZ-59-layer*23);
     }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(vertices,3)); g.setIndex(indices); g.computeVertexNormals();
-    const colors = ['#1b353b','#294650','#345461','#3a5a6a']; mesh(g,new THREE.MeshBasicMaterial({color:colors[layer],fog:false,side:THREE.DoubleSide}),[0,0,0]);
+    g.computeVertexNormals();const colors=['#3d5145','#425953','#4f6968','#607e82'];mesh(g,new THREE.MeshStandardMaterial({color:colors[layer],map:duffMap,roughness:1}),[0,0,0]);
   }
   const skyGeo = new THREE.SphereGeometry(155, 36, 24);
   const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false,
     vertexShader: `varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader: `varying vec3 vP;void main(){float h=clamp(normalize(vP).y,0.,1.);vec3 c=mix(vec3(.17,.28,.34),vec3(.018,.045,.09),pow(h,.55));gl_FragColor=vec4(c,1.);}` });
+    fragmentShader: `varying vec3 vP;void main(){vec3 d=normalize(vP);float h=clamp(d.y,0.,1.);vec3 c=mix(vec3(.13,.205,.25),vec3(.018,.038,.068),pow(h,.55));float w=sin(d.x*8.+d.z*6.)*.018+sin(d.x*23.-d.z*11.)*.007;float cloud=exp(-pow((h-.19-w)*32.,2.))*.24+exp(-pow((h-.29+w)*57.,2.))*.10;c=mix(c,vec3(.23,.285,.32),cloud);gl_FragColor=vec4(c,1.);}` });
   const sky = mesh(skyGeo,skyMat,[0,0,0]); sky.renderOrder=-10; sky.castShadow=false; sky.receiveShadow=false;
   const stars: number[] = []; for (let i=0;i<100;i++) { const x=(random()-.5)*210,y=18+random()*88,z=-100-random()*25; stars.push(x,y,z); }
   const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position',new THREE.Float32BufferAttribute(stars,3));
@@ -163,24 +181,28 @@ export function createScopsScene(): SceneContent {
   // Asymmetric trunks and many real leaves layered above, beside and behind the owl.
   const leafGeo = new THREE.PlaneGeometry(1, .5);
   const treePositions: [number,number,number][] = [[-3.7,-.55,-3.8],[-7,-.5,-8],[7.8,-.55,-13],[-11,-.6,-16],[13,-.6,-24],[-9,-.6,-28],[-15,-.6,-40],[17,-.6,-43]];
-  const leafMatrices: THREE.Matrix4[] = []; const leafColors: THREE.Color[] = [];
+  const leafMatrices: THREE.Matrix4[] = []; const leafColors: THREE.Color[] = [];const twigMatrices:THREE.Matrix4[]=[];
   const transform = new THREE.Object3D();
   function addLeafCluster(center: THREE.Vector3, radius: number, count: number, size: number) {
+    const twigEnds:THREE.Vector3[]=[];
+    for(let k=0;k<5;k++){
+      const angle=k*2.4+center.x,end=center.clone().add(new THREE.Vector3(Math.cos(angle)*radius*.88,(random()-.4)*radius*.55,Math.sin(angle)*radius*.60));twigEnds.push(end);
+      const delta=end.clone().sub(center);transform.position.copy(center).lerp(end,.5);transform.quaternion.setFromUnitVectors(Y,delta.clone().normalize());transform.scale.set(.006,delta.length(),.006);transform.updateMatrix();twigMatrices.push(transform.matrix.clone());
+    }
     for (let j=0;j<count;j++) {
-      const a=random()*Math.PI*2,r=Math.sqrt(random())*radius;
-      transform.position.set(center.x+Math.cos(a)*r,center.y+(random()-.5)*radius*.75,center.z+Math.sin(a)*r*.65);
+      const along=.25+random()*.8;transform.position.copy(center).lerp(twigEnds[j%5],along);transform.position.x+=(random()-.5)*radius*.47;transform.position.y+=(random()-.5)*radius*.4;transform.position.z+=(random()-.5)*radius*.36;
       transform.rotation.set(-.35 + random()*1.35,random()*Math.PI*2,random()*.65-.32);
       const s=size*(.6+random()*.9);transform.scale.set(s,s,s);transform.updateMatrix();leafMatrices.push(transform.matrix.clone());leafColors.push(new THREE.Color().setHSL(.26+random()*.055,.2+random()*.2,.28+random()*.18));
     }
   }
   treePositions.forEach(([x,y,z],index)=>{
     const h=index===0?5.8:6+random()*4, r=index===0?.34:.24+random()*.18;
-    const a=new THREE.Vector3(x,y,z),b=new THREE.Vector3(x+.25,y+h*.56,z+.18),c=new THREE.Vector3(x-.08,y+h,z-.23);
+    const a=new THREE.Vector3(x,-1.05,z),b=new THREE.Vector3(x+.25,y+h*.56,z+.18),c=new THREE.Vector3(x-.08,y+h,z-.23);
     limb(a,b,r,r*.72);limb(b,c,r*.72,.10);
     for(let k=0;k<7;k++){
       const level=.36+k*.075;const start=new THREE.Vector3(x+.12,y+h*level,z);const angle=k*2.36+index;
       const end=new THREE.Vector3(x+Math.cos(angle)*(1.7+random()*1.4),y+h*level+1.1,z+Math.sin(angle)*2);
-      limb(start,end,r*.24,.025);addLeafCluster(end,1.6,70,.5+index*.045);
+      limb(start,end,r*.24,.025);addLeafCluster(end,1.2+random()*.7,320,.28+index*.008);
     }
   });
   // Owl's branch is a distinct continuous branch in front of the forest, no animal approach.
@@ -188,27 +210,71 @@ export function createScopsScene(): SceneContent {
   limb(branchA,branchB,.135,.077);limb(branchB,branchC,.077,.025);
   limb(new THREE.Vector3(-2.7,2.05,-4.1),new THREE.Vector3(-2.4,3.4,-4.4),.06,.016);
   limb(new THREE.Vector3(-.1,2.32,-5.5),new THREE.Vector3(.9,2.88,-5.9),.032,.012);
-  addLeafCluster(new THREE.Vector3(.8,2.95,-5.9),.65,40,.42);
-  addLeafCluster(new THREE.Vector3(-2.45,3.25,-4.4),.7,55,.40);
+  addLeafCluster(new THREE.Vector3(.8,2.95,-5.9),.65,210,.25);
+  addLeafCluster(new THREE.Vector3(-2.45,3.25,-4.4),.7,230,.28);
+  const overhangA=new THREE.Vector3(-3.56,3.25,-3.94),overhangB=new THREE.Vector3(-.8,3.98,-5.12),overhangC=new THREE.Vector3(1.4,4.45,-6.2);
+  limb(overhangA,overhangB,.083,.039);limb(overhangB,overhangC,.039,.012);
+  for(let i=0;i<5;i++){
+    const t=.15+i*.19,p=overhangB.clone().lerp(overhangC,t),tip=p.clone().add(new THREE.Vector3(.15,.25+(i%2)*.22,(i%2?.5:-.45)));
+    limb(p,tip,.016,.003);addLeafCluster(tip,.55,170,.26);
+  }
+  // Dense varied understorey closes bare sightlines, while the stream remains a readable opening.
+  for(let i=0;i<38;i++){
+    const x=(random()-.5)*30,z=-2-random()*38;if(Math.abs(x-riverX(z))<1.5)continue;
+    const h=.25+random()*1.15,r=.55+random()*.85;const center=new THREE.Vector3(x,-.52+h*.55,z);
+    limb(new THREE.Vector3(x,-1,z),center.clone().add(new THREE.Vector3(.12,h*.4,.05)),.025,.005);
+    addLeafCluster(center,r,155,.23+random()*.07);
+  }
+  // Fine distant trunks contribute parallax behind the large framing trees.
+  for(let i=0;i<22;i++){
+    const x=(random()-.5)*65,z=-19-random()*37;if(Math.abs(x-riverX(z))<2)continue;
+    const h=3.4+random()*5.0;
+    limb(new THREE.Vector3(x,-1,z),new THREE.Vector3(x+(random()-.5)*.9,h,z+.5),.09+random()*.13,.025);
+    addLeafCluster(new THREE.Vector3(x,h*.72,z),1.6+random(),220,.39);
+    addLeafCluster(new THREE.Vector3(x,h,z),1.2+random(),200,.35);
+  }
+  for(let i=0;i<38;i++){
+    const x=-42+i*2.24,z=-42-random()*14,h=3.3+random()*3.3;
+    addLeafCluster(new THREE.Vector3(x,h,z),1.8+random()*.8,240,.46);
+    addLeafCluster(new THREE.Vector3(x+.6,h-1.4,z-.3),1.9,200,.42);
+  }
   const canopy=new THREE.InstancedMesh(leafGeo,leafMat,leafMatrices.length);
   leafMatrices.forEach((matrix,i)=>{canopy.setMatrixAt(i,matrix);canopy.setColorAt(i,leafColors[i]);});canopy.castShadow=true;canopy.receiveShadow=true;scene.add(canopy);
+  const twigs=new THREE.InstancedMesh(new THREE.CylinderGeometry(.3,1,1,5),bark,twigMatrices.length);twigMatrices.forEach((m,i)=>twigs.setMatrixAt(i,m));scene.add(twigs);
 
   // Individual near blades and compound ferns frame the view below the decking.
   const grassGeo=new THREE.BufferGeometry();grassGeo.setAttribute('position',new THREE.Float32BufferAttribute([-.035,0,0,.035,0,0,.016,.32,-.012,.03,.64,-.065],3));grassGeo.setIndex([0,1,2,1,3,2]);grassGeo.computeVertexNormals();
-  const grassMat=new THREE.MeshStandardMaterial({color:'#56724d',side:THREE.DoubleSide,roughness:1});
-  const grasses=new THREE.InstancedMesh(grassGeo,grassMat,1050);
-  for(let i=0;i<1050;i++){
-    const x=(random()-.5)*32,z=-.6-random()*34;const riverDistance=Math.abs(x-riverX(z));
-    transform.position.set(riverDistance<1.35&&z<-8?x+3.2:x,-.6+Math.sin(x*.31+z*.17)*.16,z);
-    transform.rotation.set(0,random()*Math.PI*2,(random()-.5)*.35);transform.scale.setScalar(.45+random()*.85);transform.updateMatrix();grasses.setMatrixAt(i,transform.matrix);
-    grasses.setColorAt(i,new THREE.Color().setHSL(.24+random()*.07,.25,.28+random()*.1));
+  const grassMat=new THREE.MeshStandardMaterial({color:'#849779',side:THREE.DoubleSide,roughness:1});
+  const grasses=new THREE.InstancedMesh(grassGeo,grassMat,3400);
+  for(let i=0;i<3400;i++){
+    const cluster=Math.floor(i/34),cx=Math.sin(cluster*13.61)*14,cz=-1-(Math.cos(cluster*7.23)*.5+.5)*34;
+    const x=cx+(random()-.5)*2.4,z=cz+(random()-.5)*2;const riverDistance=Math.abs(x-riverX(z));
+    const gx=riverDistance<1.2?x+3.2:x;transform.position.set(gx,-.8+Math.sin(gx*.31+z*.17)*.18+Math.cos(z*.27)*.12,z);
+    transform.rotation.set(0,random()*Math.PI*2,(random()-.5)*.8);transform.scale.setScalar(.3+random()*.7);transform.updateMatrix();grasses.setMatrixAt(i,transform.matrix);
+    grasses.setColorAt(i,new THREE.Color().setHSL(.24+random()*.07,.18,.43+random()*.14));
   }
   scene.add(grasses);
+  const mossGeo=new THREE.SphereGeometry(1,12,8);const mp=mossGeo.attributes.position;
+  for(let i=0;i<mp.count;i++){const r=.88+random()*.22;mp.setXYZ(i,mp.getX(i)*r,mp.getY(i)*r,mp.getZ(i)*r);}mossGeo.computeVertexNormals();
+  const moss=new THREE.InstancedMesh(mossGeo,new THREE.MeshStandardMaterial({color:'#82927a',map:stoneMap,bumpMap:stoneMap,bumpScale:.015,roughness:1}),95);
+  for(let i=0;i<95;i++){
+    let x=(random()-.5)*24;const z=-1-random()*24;if(Math.abs(x-riverX(z))<1.25)x-=2.1;
+    const s=.18+random()*.42;transform.position.set(x,-.79+Math.sin(x*.31+z*.17)*.18+Math.cos(z*.27)*.12,z);transform.rotation.set(0,random()*6.28,0);transform.scale.set(s,.12+random()*.12,s*(.65+random()*.65));transform.updateMatrix();moss.setMatrixAt(i,transform.matrix);
+    moss.setColorAt(i,new THREE.Color().setHSL(.21+random()*.09,.10+random()*.13,.42+random()*.14));
+  }
+  scene.add(moss);
+  const litter=new THREE.InstancedMesh(leafGeo,new THREE.MeshStandardMaterial({color:'#8e9176',map:leafMap,alphaTest:.55,side:THREE.DoubleSide,roughness:1}),1150);
+  for(let i=0;i<1150;i++){
+    let x=(random()-.5)*22;const z=-.4-random()*20;if(Math.abs(x-riverX(z))<1.2)x-=2.0;
+    transform.position.set(x,-.794+Math.sin(x*.31+z*.17)*.18+Math.cos(z*.27)*.12,z);transform.rotation.set(-Math.PI/2+(random()-.5)*.32,0,random()*6.28);const s=.07+random()*.13;transform.scale.set(s,s,s);transform.updateMatrix();litter.setMatrixAt(i,transform.matrix);
+    litter.setColorAt(i,new THREE.Color().setHSL(.12+random()*.13,.16,.48+random()*.16));
+  }
+  scene.add(litter);
   const fernMatrices: THREE.Matrix4[] = [];
   for(const [x,z,s] of [[-2.7,-1.2,1],[2.9,-2,.9],[-4.1,-2.7,1.2],[5,-3.5,1.3],[-1.6,-1.7,.8]]){
     for(let frond=0;frond<6;frond++){
       const a=frond*1.05+.4;
-      const start=new THREE.Vector3(x,-.5,z),end=new THREE.Vector3(x+Math.sin(a)*s,.08+frond*.07,z+Math.cos(a)*s);
+      const start=new THREE.Vector3(x,-.78,z),end=new THREE.Vector3(x+Math.sin(a)*s,.08+frond*.07,z+Math.cos(a)*s);
       limb(start,end,.012,.002,bark);
       for(let k=1;k<9;k++)for(const side of [-1,1]){
         const t=k/10,pos=start.clone().lerp(end,t),sz=Math.sin(t*Math.PI)*.32*s;
@@ -220,7 +286,7 @@ export function createScopsScene(): SceneContent {
   const ferns=new THREE.InstancedMesh(leafGeo,leafMat,fernMatrices.length);fernMatrices.forEach((m,i)=>ferns.setMatrixAt(i,m));ferns.receiveShadow=true;scene.add(ferns);
   // A Korean scops owl is small and bark-coloured: a low-contrast silhouette with restrained eye glints.
   const owl=new THREE.Group();owl.position.set(-1.28,2.29,-4.84);scene.add(owl);
-  const feathers=new THREE.MeshStandardMaterial({color:'#a39884',map:featherMap,bumpMap:featherMap,bumpScale:.02,roughness:1});
+  const feathers=new THREE.MeshStandardMaterial({color:'#b6b09b',map:featherMap,bumpMap:featherMap,bumpScale:.012,roughness:1});
   const wingMat=new THREE.MeshStandardMaterial({color:'#6f695a',map:featherMap,roughness:1});
   const faceMat=new THREE.MeshStandardMaterial({color:'#aaa28f',map:featherMap,roughness:1});
   const body=mesh(new THREE.SphereGeometry(.18,20,16),feathers,[0,.23,0],owl);body.scale.set(.88,1.33,.85);
@@ -243,20 +309,26 @@ export function createScopsScene(): SceneContent {
   const table=new THREE.Group();table.position.set(1.15,0,1.5);scene.add(table);
   box(.84,.085,.69,wood,[0,.4,0],table);
   for(const x of [-.32,.32])for(const z of [-.24,.24])box(.065,.39,.065,edgeWood,[x,.2,z],table);
+  const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=128;const shadowCtx=shadowCanvas.getContext('2d')!;
+  const shadowGradient=shadowCtx.createRadialGradient(64,64,8,64,64,62);shadowGradient.addColorStop(0,'rgba(12,16,15,0.64)');shadowGradient.addColorStop(.55,'rgba(12,16,15,0.26)');shadowGradient.addColorStop(1,'rgba(12,16,15,0)');shadowCtx.fillStyle=shadowGradient;shadowCtx.fillRect(0,0,128,128);
+  const contactMap=new THREE.CanvasTexture(shadowCanvas);const contactMat=new THREE.MeshBasicMaterial({map:contactMap,transparent:true,depthWrite:false,opacity:.8});
+  const tableShadow=mesh(new THREE.PlaneGeometry(1.65,1.37),contactMat,[0,.003,0],table);tableShadow.rotation.x=-Math.PI/2;tableShadow.castShadow=false;
+  const lampShadow=mesh(new THREE.PlaneGeometry(.63,.57),contactMat,[0,.444,0],table);lampShadow.rotation.x=-Math.PI/2;lampShadow.castShadow=false;
   const lantern=new THREE.Group();lantern.position.set(0,.45,0);table.add(lantern);
-  const brass=new THREE.MeshStandardMaterial({color:'#746441',metalness:.72,roughness:.48});
-  const darkMetal=new THREE.MeshStandardMaterial({color:'#30382e',metalness:.6,roughness:.6});
-  const glowing=new THREE.MeshStandardMaterial({color:'#ffd594',emissive:'#ffab43',emissiveIntensity:2,roughness:.8});
+  const brass=new THREE.MeshStandardMaterial({color:'#aca07b',metalness:.64,roughness:.56});
+  const darkMetal=new THREE.MeshStandardMaterial({color:'#5a6255',metalness:.28,roughness:.68});
+  const glowing=new THREE.MeshStandardMaterial({color:'#ffc572',emissive:'#ed942b',emissiveIntensity:.7,roughness:.8});
   mesh(new THREE.CylinderGeometry(.15,.17,.11,24),brass,[0,.05,0],lantern);
-  mesh(new THREE.CylinderGeometry(.11,.115,.07,24),darkMetal,[0,.126,0],lantern);
+  const oilReservoir=new THREE.MeshStandardMaterial({color:'#453c29',roughness:.83,metalness:.07});
+  mesh(new THREE.CylinderGeometry(.11,.115,.07,24),oilReservoir,[0,.126,0],lantern);
   const chimney=mesh(new THREE.CylinderGeometry(.103,.135,.31,24,1,true),new THREE.MeshPhysicalMaterial({color:'#dfceb0',transparent:true,opacity:.14,roughness:.19,metalness:.04,side:THREE.DoubleSide,depthWrite:false}),[0,.3,0],lantern);chimney.castShadow=false;
-  const flame=mesh(new THREE.SphereGeometry(.042,16,12),glowing,[0,.23,0],lantern);flame.scale.set(.72,1.9,.72);flame.castShadow=false;
+  const flame=mesh(new THREE.SphereGeometry(.029,16,12),glowing,[0,.215,0],lantern);flame.scale.set(.6,1.7,.6);flame.castShadow=false;
   for(const side of [-1,1])limb(new THREE.Vector3(side*.165,.08,0),new THREE.Vector3(side*.155,.47,0),.014,.012,darkMetal,lantern,8);
   mesh(new THREE.CylinderGeometry(.065,.17,.095,24),darkMetal,[0,.50,0],lantern);
   mesh(new THREE.CylinderGeometry(.055,.065,.055,16),brass,[0,.575,0],lantern);
   const handle=mesh(new THREE.TorusGeometry(.16,.009,7,32,Math.PI),darkMetal,[0,.58,0],lantern);handle.rotation.z=0;
   const knob=mesh(new THREE.CylinderGeometry(.026,.026,.06,12),brass,[.175,.076,0],lantern);knob.rotation.z=Math.PI/2;
-  const lanternLight=new THREE.PointLight('#ffb767',13,7,1.8);lanternLight.position.set(1.15,.72,1.5);lanternLight.castShadow=true;lanternLight.shadow.mapSize.set(512,512);lanternLight.shadow.normalBias=.025;scene.add(lanternLight);
+  const lanternLight=new THREE.PointLight('#ffc58a',3.8,6,1.8);lanternLight.position.set(1.15,1.3,1.78);lanternLight.castShadow=false;scene.add(lanternLight);
   // A low opaque dish with two worn pebbles makes the foreground inhabited, without clutter.
   const dishMat=new THREE.MeshStandardMaterial({color:'#77847a',roughness:.42,metalness:.03});
   mesh(new THREE.CylinderGeometry(.115,.082,.028,24),dishMat,[-.27,.452,.08],table);
@@ -267,14 +339,14 @@ export function createScopsScene(): SceneContent {
   let brightness=1,targetBrightness=1,brightnessStep=1,lastTime=0,nextBlink=4.1,blinkUntil=-1,callStart=-100;
   function resize(aspect:number){
     camera.aspect=aspect;
-    if(aspect<.8){camera.fov=58;camera.position.set(.22,1.22,3.6);camera.lookAt(.2,1.35,-5.8);table.position.set(.37,0,.84);lanternLight.position.set(.37,.72,.84);}
-    else {camera.fov=52;camera.position.set(0,1.33,4.05);camera.lookAt(.2,1.15,-10);table.position.set(1.15,0,1.5);lanternLight.position.set(1.15,.72,1.5);}
+    if(aspect<.8){camera.fov=58;camera.position.set(.22,1.22,3.6);camera.lookAt(.2,1.35,-5.8);table.position.set(.37,0,.84);lanternLight.position.set(.37,1.3,1.12);}
+    else {camera.fov=52;camera.position.set(0,1.33,4.05);camera.lookAt(.2,1.15,-10);table.position.set(1.15,0,1.5);lanternLight.position.set(1.15,1.3,1.78);}
     camera.updateProjectionMatrix(); scene.updateMatrixWorld(true);
   }
   resize(1.6);
   function update(time:number,dt:number){
     lastTime=time;waterMaterial.uniforms.uTime.value=time;
-    brightness=THREE.MathUtils.damp(brightness,targetBrightness,5,Math.min(dt,.1));lanternLight.intensity=13*brightness;glowing.emissiveIntensity=1.4+brightness*.6;
+    brightness=THREE.MathUtils.damp(brightness,targetBrightness,5,Math.min(dt,.1));lanternLight.intensity=3.8*brightness;glowing.emissiveIntensity=.45+brightness*.25;
     canopy.rotation.z=Math.sin(time*.13)*.0017;grasses.rotation.z=Math.sin(time*.2)*.0018;
     if(time>nextBlink){blinkUntil=time+.16;nextBlink=time+6.3+random()*12;}
     const eyeScale=time<blinkUntil?.08:.87;eyelids.forEach(e=>{e.scale.y=eyeScale;});
@@ -287,7 +359,7 @@ export function createScopsScene(): SceneContent {
     if(!raycaster.intersectObject(touchProxy,false).length)return null;
     brightnessStep=(brightnessStep+1)%3;targetBrightness=[.55,1,1.35][brightnessStep];
     // Immediate adjustment also works when the host is holding a reduced-motion static frame.
-    brightness=targetBrightness;lanternLight.intensity=13*brightness;glowing.emissiveIntensity=1.4+brightness*.6;
+    brightness=targetBrightness;lanternLight.intensity=3.8*brightness;glowing.emissiveIntensity=.45+brightness*.25;
     const p=new THREE.Vector3();lantern.getWorldPosition(p);
     return {scene:'nature:scops_night',type:'lantern',strength:targetBrightness/1.35,position:p.toArray() as [number,number,number]};
   }

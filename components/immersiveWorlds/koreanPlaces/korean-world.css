@@ -3,3 +3,6 @@
 .korean-world-status{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:14px/1.6 system-ui,sans-serif;color:#e8e5d9;text-align:center;max-width:28ch}
 .korean-world-temple{background:#8a9996}
 .korean-world-rural{background:#18345c}
+/* A sibling full-cover chrome layer must share the touch policy. Existing
+   explicit inline pan-y on a shared surface still wins when details scroll. */
+[data-scene-surface]:has(.korean-world){touch-action:none}

@@ -8,8 +8,8 @@ import type { SceneContent } from '../types';
 export function createRuralScene(): SceneContent {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#143b68');
-  scene.fog = new THREE.FogExp2('#244f64', 0.0055);
-  scene.userData.exposure = 1.08;
+  scene.fog = new THREE.FogExp2('#244b60', 0.0045);
+  scene.userData.exposure = .93;
   const camera = new THREE.PerspectiveCamera(55, 1, 0.08, 300);
   const random = seeded(18073);
   const gradient = new THREE.DataTexture(new Uint8Array([75, 126, 186, 244]), 4, 1, THREE.RedFormat);
@@ -20,18 +20,18 @@ export function createRuralScene(): SceneContent {
   const basic = (color: THREE.ColorRepresentation, extra: THREE.MeshBasicMaterialParameters = {}) =>
     new THREE.MeshBasicMaterial({ color, ...extra });
   const material = {
-    soil: toon('#203f31'), road: toon('#7c8771'), wall: toon('#adad83'),
-    wood: toon('#354e43'), roof: toon('#354d69'), ridge: toon('#577080'),
-    dark: toon('#182c31'), pole: toon('#707364'), metal: toon('#394548'),
-    rice: toon('#8fab66', { vertexColors: true, side: THREE.DoubleSide }),
-    leaf: toon('#567d46', { vertexColors: true, side: THREE.DoubleSide }),
+    soil: basic('#153d40', {toneMapped:false}), road: basic('#ffffff', {toneMapped:false}), wall: toon('#8b9997'),
+    wood: basic('#293d40', {toneMapped:false}), roof: basic('#263e58', {toneMapped:false}), ridge: basic('#465d72', {toneMapped:false}),
+    dark: basic('#182c35', {toneMapped:false}), pole: toon('#697981'), metal: toon('#394953'),
+    rice: basic('#ffffff', { vertexColors: true, side: THREE.DoubleSide, toneMapped:false }),
+    leaf: basic('#849da1', { vertexColors: true, side: THREE.DoubleSide, toneMapped:false }),
     window: basic('#ffc86c', { toneMapped: false }),
   };
-  scene.add(new THREE.HemisphereLight('#bed5ec', '#29412f', 2.2));
-  const moonlight = new THREE.DirectionalLight('#b7d0f0', 2.4);
+  scene.add(new THREE.HemisphereLight('#9dbadd', '#163b42', .72));
+  const moonlight = new THREE.DirectionalLight('#abcaf3', .95);
   moonlight.position.set(-24, 45, 20);
   scene.add(moonlight);
-  const blueFill = new THREE.DirectionalLight('#709bbc', 0.7);
+  const blueFill = new THREE.DirectionalLight('#6089af', .28);
   blueFill.position.set(30, 12, -25);
   scene.add(blueFill);
 
@@ -72,26 +72,42 @@ export function createRuralScene(): SceneContent {
   const pathX = (z: number) => 2.8 * Math.exp(-(((z + 1) / 10) ** 2)) - 1.2 * Math.exp(-(((z + 13) / 5) ** 2)) + 5.5 * Math.exp(-(((z + 29) / 8) ** 2));
   const pathWidth = (z: number) => 1.15 + (z + 32) * 0.007;
   const roadPositions: number[] = [], roadColors: number[] = [], roadIndices: number[] = [];
+  const roadColumns=11;
   for (let i = 0; i <= 110; i++) {
-    const z = 18 - i * 0.47, center = pathX(z), width = pathWidth(z);
-    for (let side = -1; side <= 1; side += 2) {
-      roadPositions.push(center + side * (width + random() * 0.12), 0.002 + random() * 0.007, z);
-      const c = new THREE.Color().setHSL(.14, .1, .7 + random() * .12);
-      roadColors.push(c.r, c.g, c.b);
+    const z = 18 - i * .47, center = pathX(z), width = pathWidth(z);
+    for (let column=0;column<roadColumns;column++) {
+      const lateral=-1+2*column/(roadColumns-1);
+      const edgeNoise=Math.abs(lateral)>.98 ? (random()-.5)*.15 : 0;
+      roadPositions.push(center+lateral*width+edgeNoise,.003+random()*.004,z);
+      const track=Math.exp(-(((Math.abs(lateral)-.56)/.23)**2));
+      const edge=Math.pow(Math.abs(lateral),8);
+      const c=new THREE.Color('#647b73').lerp(new THREE.Color('#929b8b'),track*.78).lerp(new THREE.Color('#3d5b58'),edge*.45);
+      c.multiplyScalar(.93+.11*Math.sin(z*.82+lateral*9)+random()*.07);
+      roadColors.push(c.r,c.g,c.b);
+      if(i<110&&column<roadColumns-1){const n=i*roadColumns+column;roadIndices.push(n,n+1,n+roadColumns,n+1,n+roadColumns+1,n+roadColumns);}
     }
-    if (i < 110) { const n = i * 2; roadIndices.push(n, n + 2, n + 1, n + 1, n + 2, n + 3); }
   }
   const roadGeometry = makeGeometry(roadPositions, roadColors, roadIndices);
   material.road.vertexColors = true;
+  material.road.onBeforeCompile=shader=>{
+    shader.vertexShader='varying vec2 vRuralGround;\n'+shader.vertexShader;
+    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvRuralGround=position.xz;');
+    shader.fragmentShader=`varying vec2 vRuralGround;
+      float ruralHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float ruralSoil(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(ruralHash(i),ruralHash(i+vec2(1,0)),f.x),mix(ruralHash(i+vec2(0,1)),ruralHash(i+vec2(1,1)),f.x),f.y);}
+      `+shader.fragmentShader;
+    shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=(.87+ruralSoil(vRuralGround*1.25)*.22)*(.965+ruralSoil(vRuralGround*19.)*.07);');
+  };
+  material.road.customProgramCacheKey=()=> 'rural-worn-earth-v1';
   mesh(roadGeometry, material.road);
   const stoneData = new GeometryBuilder();
-  for (let i = 0; i < 1200; i++) {
+  for (let i = 0; i < 1700; i++) {
     const z = -31 + random() * 50, lateral = (random() - .5) * 1.92;
     const x = pathX(z) + lateral * pathWidth(z);
-    const color = new THREE.Color().setHSL(.15 + random() * .025, .07 + random() * .08, .25 + random() * .24);
-    stoneData.groundPatch(x, z, .022, .025 + random() * .23, .04 + random() * .30, color, random);
+    const color = new THREE.Color().setHSL(.15 + random() * .025, .07 + random() * .08, .43 + random() * .105);
+    stoneData.groundPatch(x, z, .022, .012 + random() * .070, .022 + random() * .095, color, random);
   }
-  mesh(stoneData.geometry(), toon('#bec3ad', { vertexColors: true, side: THREE.DoubleSide }));
+  mesh(stoneData.geometry(), basic('#a7b7b6', { vertexColors: true, side: THREE.DoubleSide, toneMapped:false }));
 
   // Rice uses sculpted three-column, curved lanceolate leaves and drooping grain
   // heads. One instanced mesh carries thousands of individual clumps. Bending is
@@ -111,11 +127,11 @@ export function createRuralScene(): SceneContent {
     const rice = new THREE.InstancedMesh(riceClump(random,lod===0), material.rice, positions.length);
     positions.forEach((p, i) => {
       dummy.position.copy(p);
-      const s = (lod===0?.68:.88) + random() * .41;
+      const s = (lod===0?.83:.98) + random() * .41;
       dummy.scale.set(s, s * (.85 + random() * .26), s);
       dummy.rotation.set(0, random() * Math.PI * 2, 0);
       dummy.updateMatrix(); rice.setMatrixAt(i, dummy.matrix);
-      rice.setColorAt(i, new THREE.Color().setHSL(.23 + random() * .025, .22 + random() * .11, .48 + random() * .15));
+      rice.setColorAt(i, new THREE.Color(['#8fa99a','#bdd0b9','#a7c1c0','#88a9a5'][Math.floor(random()*4)]));
     });
     rice.computeBoundingSphere();
     scene.add(rice);
@@ -141,7 +157,7 @@ export function createRuralScene(): SceneContent {
 
   // Uneven field bunds mark quiet paddy plots without turning the landscape into
   // rigid repeating rows. Low leafy weeds soften the road and utility-pole base.
-  const bankMaterial = toon('#335439');
+  const bankMaterial = basic('#24474b', {toneMapped:false});
   for (const z of [-8, -17, -26, -35]) {
     for (const side of [-1, 1]) {
       const center = pathX(z), edge = center + side * (pathWidth(z) + .22);
@@ -154,11 +170,19 @@ export function createRuralScene(): SceneContent {
     const z = 12 - random() * 45, side = i % 2 ? 1 : -1;
     dummy.position.set(pathX(z) + side * (pathWidth(z) + .1 + random() * .5), .015, z);
     dummy.rotation.set(0, random() * 6.28, 0);
-    dummy.scale.setScalar(.3 + random() * .42); dummy.updateMatrix();
+    dummy.scale.setScalar(.24 + random() * .30); dummy.updateMatrix();
     weeds.setMatrixAt(i, dummy.matrix);
-    weeds.setColorAt(i, new THREE.Color().setHSL(.22 + random() * .06, .27, .5 + random() * .18));
+    weeds.setColorAt(i, new THREE.Color().setScalar(.68 + random() * .25));
   }
   scene.add(weeds);
+  const centerWeeds=new THREE.InstancedMesh(weeds.geometry,material.leaf,85);
+  for(let i=0;i<85;i++){
+    const z=11-random()*41;
+    dummy.position.set(pathX(z)+(random()-.5)*.45,.018,z);
+    dummy.rotation.set(0,random()*6.28,0);dummy.scale.setScalar(.08+random()*.16);dummy.updateMatrix();
+    centerWeeds.setMatrixAt(i,dummy.matrix);
+  }
+  scene.add(centerWeeds);
 
   // Distant mountains and trees have actual spatial silhouettes. Their overlapping
   // irregular crowns retain the original image's enclosing, wooded countryside.
@@ -176,47 +200,51 @@ export function createRuralScene(): SceneContent {
   const canopyGeo = foliageGeometry(random);
   const canopies: { p: THREE.Vector3; scale: THREE.Vector3; color: THREE.Color }[] = [];
   const branches = new GeometryBuilder();
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 108; i++) {
     const x = -67 + random() * 134;
     const z = -42 - random() * 24;
     const centerMass = Math.exp(-(((x-2)/21) ** 2));
     const h = 4.2 + random() * 6.7 + centerMass * 4.5;
-    const trunk = new THREE.Color('#344a39');
+    const trunk = new THREE.Color('#18393f');
     branches.taperedStem(new THREE.Vector3(x,0,z),new THREE.Vector3(x+.25,h*.73,z),.10+.012*h,trunk,5);
     for (let b = 0; b < 7; b++) {
       const a = b * 2.4 + random(), y = h * (.48 + random() * .4);
       const reach = 1.4 + random() * 2.0;
       const tx = x + Math.cos(a) * reach, tz = z + Math.sin(a) * reach;
       branches.taperedStem(new THREE.Vector3(x,y*.78,z), new THREE.Vector3(tx,y,tz), .05, trunk, 4);
-      canopies.push({p:new THREE.Vector3(tx,y,tz),scale:new THREE.Vector3(2+random()*1.4,1.6+random()*1.3,1.7+random()),color:new THREE.Color().setHSL(.29+random()*.045,.25+random()*.12,.14+random()*.08)});
+      canopies.push({p:new THREE.Vector3(tx,y,tz),scale:new THREE.Vector3(2+random()*1.4,1.6+random()*1.3,1.7+random()),color:new THREE.Color(['#163e47','#204c52','#254e4e','#1b4245','#2e5353'][Math.floor(random()*5)])});
     }
-    canopies.push({p:new THREE.Vector3(x,h,z),scale:new THREE.Vector3(2.1,2.4,2),color:new THREE.Color().setHSL(.29,.32,.18+random()*.06)});
+    canopies.push({p:new THREE.Vector3(x,h,z),scale:new THREE.Vector3(2.1,2.4,2),color:new THREE.Color(['#284c53','#1c414c','#2c5255'][Math.floor(random()*3)])});
   }
-  mesh(branches.geometry(), toon('#ffffff',{vertexColors:true}),0,0,0,forest);
-  const treeMesh = new THREE.InstancedMesh(canopyGeo, toon('#ffffff',{vertexColors:true}), canopies.length);
+  for(let x=-62;x<62;x+=2.1){
+    canopies.push({p:new THREE.Vector3(x,.9+random(),-40-random()*5),scale:new THREE.Vector3(1.6+random(),1.2+random()*.8,1.6),color:new THREE.Color(['#173d43','#21494b','#224c4c'][Math.floor(random()*3)])});
+  }
+  mesh(branches.geometry(), basic('#ffffff',{vertexColors:true,toneMapped:false}),0,0,0,forest);
+  const treeMesh = new THREE.InstancedMesh(canopyGeo, basic('#ffffff',{vertexColors:true,toneMapped:false,side:THREE.DoubleSide}), canopies.length);
   canopies.forEach((c,i)=>{dummy.position.copy(c.p);dummy.scale.copy(c.scale);dummy.rotation.set(random()*.3,random()*6.28,random()*.2);dummy.updateMatrix();treeMesh.setMatrixAt(i,dummy.matrix);treeMesh.setColorAt(i,c.color);});
   forest.add(treeMesh);
   // A few taller irregular cedars break the broadleaf skyline above the farmhouse.
   for (let i = 0; i < 7; i++) {
-    const pine = cedarGeometry(random,11+random()*5);
-    mesh(pine,toon('#21483c',{vertexColors:true}),-9+i*2.8,0,-51-random()*5,forest);
+    const pine = cedarGeometry(random,17+random()*7);
+    mesh(pine,basic('#2f5557',{vertexColors:true,toneMapped:false,side:THREE.DoubleSide}),-9+i*2.8,0,-51-random()*5,forest);
   }
 
   const house = new THREE.Group();
   house.position.set(6.4,0,-31);
-  house.rotation.y = -.12;
+  house.rotation.y = -.36;
   scene.add(house);
   // The farmhouse is timber-framed plaster with a real pitched tiled roof and
   // asymmetrical kitchen extension; warm windows have inset mullions and eaves.
   mesh(new THREE.BoxGeometry(6.7,4.0,4.5),material.wall,0,2.12,0,house);
   mesh(new THREE.BoxGeometry(7.0,.28,4.8),toon('#555d49'),0,.14,0,house);
   const gable = new GeometryBuilder();
-  gable.triangle([-3.35,4.12,2.25],[3.35,4.12,2.25],[0,6.2,2.25],new THREE.Color('#a7ab8a'));
-  gable.triangle([3.35,4.12,-2.25],[-3.35,4.12,-2.25],[0,6.2,-2.25],new THREE.Color('#a7ab8a'));
-  mesh(gable.geometry(),toon('#ffffff',{vertexColors:true,side:THREE.DoubleSide}),0,0,0,house);
+  gable.triangle([3.35,4.12,-2.25],[3.35,4.12,2.25],[3.35,6.2,0],new THREE.Color('#788f96'));
+  gable.triangle([-3.35,4.12,2.25],[-3.35,4.12,-2.25],[-3.35,6.2,0],new THREE.Color('#788f96'));
+  mesh(gable.geometry(),basic('#ffffff',{vertexColors:true,side:THREE.DoubleSide,toneMapped:false}),0,0,0,house);
   for (const x of [-3.35,0,3.35]) mesh(new THREE.BoxGeometry(.13,4.15,.16),material.wood,x,2.17,2.29,house);
   for (const y of [.48,2.28,4.1]) mesh(new THREE.BoxGeometry(6.75,.13,.13),material.wood,0,y,2.3,house);
-  roof(house,0,4.13,0,7.7,5.8,2.2,material.roof,material.ridge,mesh,curve);
+  const mainRoof = new THREE.Group(); mainRoof.rotation.y=Math.PI/2; house.add(mainRoof);
+  roof(mainRoof,0,4.13,0,5.8,7.7,2.2,material.roof,material.ridge,mesh,curve);
   function window(x:number,y:number,z:number,w:number,h:number,parent:THREE.Object3D=house) {
     mesh(new THREE.BoxGeometry(w+.22,h+.2,.14),material.wood,x,y,z,parent);
     mesh(new THREE.PlaneGeometry(w,h),material.window,x,y,z+.083,parent);
@@ -225,9 +253,11 @@ export function createRuralScene(): SceneContent {
     mesh(new THREE.BoxGeometry(w+.24,.1,.25),material.dark,x,y-h*.5-.07,z+.04,parent);
   }
   window(-2.1,3.08,2.36,1.02,1.17);window(-.3,3.08,2.36,1.20,1.17);window(1.55,3.08,2.36,.68,.95);
-  window(.03,4.76,2.3,.92,.88);
+  const sideWall = new THREE.Group();sideWall.position.set(3.39,0,0);sideWall.rotation.y=Math.PI/2;house.add(sideWall);
+  window(.05,4.64,.015,.78,.92,sideWall);window(-.65,2.8,.015,.78,1.04,sideWall);
+  for(let y=.6;y<4;y+=.4) mesh(new THREE.BoxGeometry(6.55,.017,.013),basic('#597079',{toneMapped:false}),0,y,2.31,house);
   // Lower kitchen light spills onto steps and the soft greenery around the door.
-  mesh(new THREE.BoxGeometry(2.7,2.22,2.6),toon('#969c77'),2.45,1.23,2.35,house);
+  mesh(new THREE.BoxGeometry(2.7,2.22,2.6),toon('#899a98'),2.45,1.23,2.35,house);
   roof(house,2.45,2.30,2.35,3.4,3.2,.55,material.roof,material.ridge,mesh,curve);
   window(2.57,1.4,3.67,1.36,1.03);
   mesh(new THREE.BoxGeometry(.8,1.78,.14),material.wood,1.05,1.12,3.7,house);
@@ -240,13 +270,13 @@ export function createRuralScene(): SceneContent {
     const s = new THREE.Sprite(new THREE.SpriteMaterial({map:glow,color:'#ffc477',transparent:true,opacity:.15,depthWrite:false,blending:THREE.AdditiveBlending}));
     s.position.set(x,x===2.6?1.4:3.08,x===2.6?3.9:2.5);s.scale.set(2.7,2.7,1);house.add(s);
   }
-  const shrub = new THREE.InstancedMesh(canopyGeo,toon('#5b7844',{vertexColors:true}),28);
+  const shrub = new THREE.InstancedMesh(canopyGeo,basic('#315751',{vertexColors:true,toneMapped:false,side:THREE.DoubleSide}),28);
   for(let i=0;i<28;i++) {dummy.position.set(-5+random()*10,.3+random()*.5,3.2+random()*1.8);dummy.scale.set(.6+random()*.5,.5+random()*.5,.65);dummy.rotation.set(0,random()*6.28,0);dummy.updateMatrix();shrub.setMatrixAt(i,dummy.matrix);}
   house.add(shrub);
 
   // Foreground pole has a tapered shaft, bracket hardware, ceramic insulators,
   // weather lines and sagging overhead conductors, all spatial geometry.
-  const pole = new THREE.Group();pole.position.set(5.1,0,-8.5);scene.add(pole);
+  const pole = new THREE.Group();pole.position.set(7.2,0,-8.5);pole.scale.y=.92;scene.add(pole);
   const poleShaft = mesh(new THREE.CylinderGeometry(.13,.24,11.7,9),material.pole,0,5.85,0,pole);
   poleShaft.rotation.z=-.017;
   mesh(new THREE.BoxGeometry(1.72,.12,.14),material.wood,0,10.60,.06,pole);
@@ -275,21 +305,30 @@ export function createRuralScene(): SceneContent {
   // Textured moon: authored basalt-like maria and fine crater rings. No stock image
   // or copied illustration is used. The disk stays geographically behind clouds.
   const moonTexture = makeMoonTexture();
-  const moon = mesh(new THREE.PlaneGeometry(7.0,7.0),basic('#fff1bb',{map:moonTexture,transparent:true,depthWrite:false,toneMapped:false}),-12,27,-79);
+  const moon = mesh(new THREE.PlaneGeometry(7.0,7.0),basic('#ffffff',{map:moonTexture,transparent:true,depthWrite:false,toneMapped:false}),-12,39,-79);
   moon.lookAt(camera.position);
   const moonHalo = new THREE.Sprite(new THREE.SpriteMaterial({map:glow,color:'#ffe4a0',opacity:.15,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
   moonHalo.position.copy(moon.position).add(new THREE.Vector3(0,0,-.25));moonHalo.scale.set(15,15,1);scene.add(moonHalo);
 
   const clouds = new THREE.Group();scene.add(clouds);
   const cloudGeometry = cloudLobeGeometry(random);
-  const cloudMaterial = new THREE.MeshBasicMaterial({vertexColors:true});
+  const cloudMaterial = new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,
+    vertexShader:`varying vec3 vWorld; varying vec3 vNormalWorld;
+      void main(){vec4 local=instanceMatrix*vec4(position,1.);vWorld=(modelMatrix*local).xyz;vNormalWorld=normalize(mat3(modelMatrix)*mat3(instanceMatrix)*normal);gl_Position=projectionMatrix*viewMatrix*vec4(vWorld,1.);}`,
+    fragmentShader:`varying vec3 vWorld; varying vec3 vNormalWorld;
+      float hash(vec3 p){return fract(sin(dot(p,vec3(17.7,42.3,113.9)))*43758.53);}
+      float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+      void main(){vec3 viewDirection=normalize(cameraPosition-vWorld);float facing=abs(dot(normalize(vNormalWorld),viewDirection));float edge=smoothstep(.04,.40,facing);float n=noise(vWorld*.6)*.65+noise(vWorld*1.9)*.35;float top=smoothstep(15.,39.,vWorld.y);vec3 color=mix(vec3(.24,.34,.46),vec3(.39,.51,.62),top);color+=(n-.5)*.036;gl_FragColor=vec4(color,edge*.82);}`,
+  });
   const cloudLobes: {x:number;y:number;z:number;sx:number;sy:number;sz:number;color:THREE.Color}[]=[];
-  const cloudBanks=[[-45,20,-78,17,10],[-25,12,-87,12,5],[26,18,-79,19,8],[4,31,-93,16,3],[62,15,-91,23,6]];
+  const cloudBanks=[[-44,23,-82,18,21],[-21,16,-90,19,3],[37,20,-84,22,17],[4,31,-96,18,2],[65,15,-98,21,7]];
   for(const [cx,cy,cz,cw,ch] of cloudBanks) {
-    for(let i=0;i<28;i++) {
-      const x=cx+(random()-.5)*cw*2, edge=Math.max(0,1-Math.abs(x-cx)/cw);
-      const y=cy+(random()-.5)*ch*edge;
-      cloudLobes.push({x,y,z:cz+(random()-.5)*4,sx:1.6+random()*4,sy:.6+random()*2.3+edge*1.2,sz:.7+random()*1.8,color:new THREE.Color().setHSL(.57,.27,.29+random()*.11)});
+    for(let i=0;i<32;i++) {
+      const t=-1+2*i/31,arch=Math.pow(Math.max(0,1-t*t),1.4);
+      const x=cx+t*cw*.86+(random()-.5)*1.2;
+      const y=cy+arch*ch*.44+(random()-.5)*ch*.14;
+      cloudLobes.push({x,y,z:cz+(random()-.5)*3,sx:2.7+random()*3.2,sy:ch<4?.4+random()*.7:1.9+random()*2.6,sz:1.6+random()*1.5,color:new THREE.Color('#ffffff')});
     }
   }
   const cloudMesh = new THREE.InstancedMesh(cloudGeometry,cloudMaterial,cloudLobes.length);
@@ -312,9 +351,9 @@ export function createRuralScene(): SceneContent {
     camera.lookAt(portrait?1.1:.45,portrait?4.3:3.6,-31);
     camera.updateProjectionMatrix();
     house.position.x=portrait?4.1:6.4;
-    pole.position.x=portrait?2.9:5.1;
+    pole.position.x=portrait?3.1:7.2;
     moon.position.x=portrait?-8.5:-12;
-    moon.position.y=portrait?27:27;
+    moon.position.y=portrait?35:39;
     moon.lookAt(camera.position);
     moonHalo.position.copy(moon.position).add(new THREE.Vector3(0,0,-.25));
   };
@@ -350,12 +389,12 @@ function riceClump(random:()=>number,detailed=true){
   const g=new GeometryBuilder();
   const segments=detailed?6:4;
   for(let blade=0;blade<(detailed?9:6);blade++){
-    const angle=blade*2.399+random()*.4,h=.69+random()*.74,lean=.2+random()*.32,width=.032+random()*.023;
+    const angle=blade*2.399+random()*.4,h=.69+random()*.74,lean=.44+random()*.37,width=.025+random()*.020;
     const cos=Math.cos(angle),sin=Math.sin(angle),base=g.positions.length/3;
     for(let j=0;j<=segments;j++){
       const t=j/segments,rad=lean*t*t,y=h*(t-.18*t*t*t),w=width*Math.sin(Math.PI*Math.pow(t,.7));
       for(const side of [-1,0,1]){
-        const c=new THREE.Color().setHSL(.23+.025*t,.35,.42+t*.20+(side===0?.055:0));
+        const c=new THREE.Color('#123b3b').lerp(new THREE.Color('#3b6a58'),Math.pow(t,3.4)*.72);if(side===0)c.multiplyScalar(1.11);
         g.vertex([cos*rad-sin*w*side,y+(side===0?.009:0),sin*rad+cos*w*side],c);
       }
       if(j<segments)for(let s=0;s<2;s++){const n=base+j*3+s;g.indices.push(n,n+3,n+1,n+1,n+3,n+4);}
@@ -364,21 +403,97 @@ function riceClump(random:()=>number,detailed=true){
   for(let stalk=0;stalk<(detailed?3:1);stalk++){
     const a=stalk*2.5+.4,h=.87+random()*.37,ca=Math.cos(a),sa=Math.sin(a);
     const pts=[new THREE.Vector3(0,0,0),new THREE.Vector3(ca*.04,h*.64,sa*.04),new THREE.Vector3(ca*.13,h,sa*.13),new THREE.Vector3(ca*.34,h-.14,sa*.34)];
-    for(let i=0;i<3;i++)g.taperedStem(pts[i],pts[i+1],.008,new THREE.Color('#a9ac61'),detailed?4:3);
+    for(let i=0;i<3;i++)g.taperedStem(pts[i],pts[i+1],.008,new THREE.Color('#537b65'),detailed?4:3);
     for(let k=0;k<8;k++){
       const t=k/8,x=ca*(.14+t*.19),z=sa*(.14+t*.19),y=h-.13*t*t;
       const off=k%2?-.02:.02;
-      const c=new THREE.Color(k%3?'#c4bf7a':'#e0d599');
+      const c=new THREE.Color(k%3?'#789a86':'#a5ad86');
       g.quad([x+sa*off-.011,y,z-ca*off],[x+sa*off,y+.035,z-ca*off+.008],[x+sa*off+.013,y,z-ca*off],[x+sa*off,y-.032,z-ca*off-.008],c);
     }
   }
   return g.geometry();
 }
-function weedClump(random:()=>number){const g=new GeometryBuilder();for(let i=0;i<13;i++){const a=i*2.4,h=.4+random()*.6;const c=new THREE.Color().setHSL(.23+random()*.035,.34,.38+random()*.18);const base=new THREE.Vector3(0,.02,0),tip=new THREE.Vector3(Math.cos(a)*h*.7,h*.55,Math.sin(a)*h*.7),mid=base.clone().lerp(tip,.55).add(new THREE.Vector3(0,h*.25,0)),w=.11+random()*.06;const cross=new THREE.Vector3(-Math.sin(a)*w,0,Math.cos(a)*w);g.quad(base.toArray(),mid.clone().add(cross).toArray(),tip.toArray(),mid.clone().sub(cross).toArray(),c);}return g.geometry();}
+function weedClump(random:()=>number){
+  const g=new GeometryBuilder();
+  for(let branch=0;branch<7;branch++){
+    const a=branch*2.4,h=.45+random()*.5;
+    for(let leaf=0;leaf<4;leaf++){
+      const t=.25+leaf*.19,c=new THREE.Color('#325f60').lerp(new THREE.Color('#62877d'),random()*.6);
+      const base=new THREE.Vector3(Math.cos(a)*h*.3*t,h*.45*t,Math.sin(a)*h*.3*t);
+      const direction=a+(leaf%2?1.0:-1.0),len=.17+random()*.16;
+      const tip=base.clone().add(new THREE.Vector3(Math.cos(direction)*len,len*.22,Math.sin(direction)*len));
+      const center=base.clone().lerp(tip,.52).add(new THREE.Vector3(0,.035,0));
+      const axis=tip.clone().sub(base),cross=new THREE.Vector3(-Math.sin(direction),0,Math.cos(direction)).multiplyScalar(len*.26);
+      const top=g.vertex(center.toArray(),c.clone().multiplyScalar(1.08));
+      const ring:number[]=[];
+      for(let k=0;k<8;k++){
+        const u=k/8*Math.PI*2;
+        ring.push(g.vertex(base.clone().lerp(tip,(Math.cos(u)+1)*.5).addScaledVector(cross,Math.sin(u)).toArray(),c));
+      }
+      for(let k=0;k<8;k++)g.indices.push(top,ring[k],ring[(k+1)%8]);
+    }
+  }
+  return g.geometry();
+}
 
-function foliageGeometry(random:()=>number){const geom=new THREE.IcosahedronGeometry(1,2).toNonIndexed();const p=geom.attributes.position;const colors:number[]=[];for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);const noise=1+.12*Math.sin(x*17+y*12)+.075*Math.cos(z*22-x*9)+.045*Math.sin(y*33);p.setXYZ(i,x*noise,y*noise,z*noise);const c=new THREE.Color().setHSL(.27,.20,.63+y*.07+random()*.07);colors.push(c.r,c.g,c.b);}geom.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));geom.computeVertexNormals();return geom;}
-function cedarGeometry(random:()=>number,height:number){const g=new GeometryBuilder();const col=new THREE.Color('#7b9472');g.taperedStem(new THREE.Vector3(0,0,0),new THREE.Vector3(.15,height,0),.13,new THREE.Color('#46563e'),5);for(let l=0;l<12;l++){const y=height*.22+l/12*height*.73,r=(height-y)*.22;for(let i=0;i<11;i++){const a=i/11*Math.PI*2,b=(i+1)/11*Math.PI*2;g.triangle([Math.cos(a)*r*(.8+random()*.4),y,Math.sin(a)*r],[Math.cos(b)*r*(.8+random()*.4),y-.16,Math.sin(b)*r],[.05,y+height*.2,0],col.clone().multiplyScalar(.75+random()*.25));}}return g.geometry();}
-function cloudLobeGeometry(random:()=>number){const g=new THREE.IcosahedronGeometry(1,2).toNonIndexed(),p=g.attributes.position,colors:number[]=[];for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),noise=1+.075*Math.sin(x*19+y*11)+.055*Math.cos(z*23+y*7);p.setXYZ(i,x*noise,y*noise,z*noise);const c=new THREE.Color().setScalar(.65+(y+1)*.145+random()*.07);colors.push(c.r,c.g,c.b);}g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.computeVertexNormals();return g;}
+// Each crown is a volume of hundreds of small leaf contours, not a low-poly ball.
+// Fine, overlapping scalloped edges remain organic when instanced at forest depth.
+function foliageGeometry(random:()=>number){
+  const g=new GeometryBuilder();
+  for(let i=0;i<112;i++){
+    const a=i*2.399963,y=1-2*(i+.5)/112,r=Math.sqrt(Math.max(0,1-y*y));
+    const radial=.74+random()*.32;
+    const center=new THREE.Vector3(Math.cos(a)*r*radial,y*radial,Math.sin(a)*r*radial);
+    center.x+=.09*Math.sin(center.y*13+center.z*8);center.y+=.09*Math.cos(center.x*11);
+    const normal=center.clone().normalize().add(new THREE.Vector3(0,0,.5)).normalize();
+    const axis=new THREE.Vector3(0,1,0).cross(normal).normalize();if(axis.lengthSq()<.1)axis.set(1,0,0);
+    const other=normal.clone().cross(axis).normalize();
+    const size=.19+random()*.14;
+    const color=new THREE.Color().setScalar(.68+(center.y+1)*.12+random()*.12);
+    const top=g.vertex(center.clone().addScaledVector(normal,.026).toArray(),color.clone().multiplyScalar(1.06));
+    const ring:number[]=[];
+    for(let k=0;k<10;k++){
+      const ang=k/10*Math.PI*2,edge=1+.13*Math.sin(k*2.6+i);
+      const p=center.clone().addScaledVector(axis,Math.cos(ang)*size*edge).addScaledVector(other,Math.sin(ang)*size*.72*edge);
+      ring.push(g.vertex(p.toArray(),color));
+    }
+    for(let k=0;k<10;k++)g.indices.push(top,ring[k],ring[(k+1)%10]);
+  }
+  return g.geometry();
+}
+function cedarGeometry(random:()=>number,height:number){
+  const g=new GeometryBuilder();
+  g.taperedStem(new THREE.Vector3(0,0,0),new THREE.Vector3(.1,height,0),.12,new THREE.Color('#435f63'),5);
+  for(let tier=0;tier<22;tier++){
+    const y=height*.22+tier/22*height*.76,reach=(height-y)*.19;
+    for(let branch=0;branch<9;branch++){
+      const a=branch*2.4+tier*.64,r=reach*(.68+random()*.45),lift=.25+random()*.38;
+      const tip=new THREE.Vector3(Math.cos(a)*r,y+lift,Math.sin(a)*r);
+      const base=new THREE.Vector3(0,y-.12,0),c=new THREE.Color('#8caaa9').multiplyScalar(.64+random()*.26);
+      g.taperedStem(base,tip,.018,c,3);
+      for(let twig=1;twig<=4;twig++){
+        const t=twig/4,center=base.clone().lerp(tip,t),width=(.32+random()*.13)*(1-t*.48);
+        for(const side of [-1,1]){
+          const p=center.clone().add(new THREE.Vector3(Math.cos(a+side*.93)*width,.11+random()*.18,Math.sin(a+side*.93)*width));
+          const back=center.clone().add(new THREE.Vector3(-Math.cos(a)*.18,-.13,-Math.sin(a)*.18));
+          g.triangle(back.toArray(),p.toArray(),tip.clone().lerp(center,.6).add(new THREE.Vector3(0,.22,0)).toArray(),c);
+        }
+      }
+    }
+  }
+  return g.geometry();
+}
+function cloudLobeGeometry(random:()=>number){
+  const g=new THREE.SphereGeometry(1,28,18),p=g.attributes.position,colors:number[]=[];
+  for(let i=0;i<p.count;i++){
+    const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+    const n=1+.048*Math.sin(x*13+y*7)*Math.cos(z*11)+.03*Math.cos(y*19+z*9);
+    p.setXYZ(i,x*n,y*n,z*n);
+    const shade=.7+(y+1)*.14+.024*Math.sin(x*18+y*9)*Math.cos(z*16);
+    const c=new THREE.Color().setScalar(shade);colors.push(c.r,c.g,c.b);
+  }
+  g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.computeVertexNormals();return g;
+}
 
 function roof(parent:THREE.Object3D,cx:number,y:number,cz:number,width:number,depth:number,rise:number,mat:THREE.Material,trim:THREE.Material,
   mesh:(g:THREE.BufferGeometry,m:THREE.Material,x?:number,y?:number,z?:number,p?:THREE.Object3D)=>THREE.Mesh,
@@ -395,4 +510,15 @@ function roof(parent:THREE.Object3D,cx:number,y:number,cz:number,width:number,de
   curve([new THREE.Vector3(cx,y+rise+.08,cz-depth/2-.12),new THREE.Vector3(cx,y+rise+.09,cz),new THREE.Vector3(cx,y+rise+.08,cz+depth/2+.12)],.11,trim,parent,10);
 }
 function makeGlowTexture(){const size=64,data=new Uint8Array(size*size*4);for(let y=0;y<size;y++)for(let x=0;x<size;x++){const d=Math.hypot((x-size/2)/(size/2),(y-size/2)/(size/2)),a=Math.max(0,1-d);const i=(y*size+x)*4;data[i]=data[i+1]=data[i+2]=255;data[i+3]=Math.round(a*a*a*255);}const t=new THREE.DataTexture(data,size,size);t.needsUpdate=true;return t;}
-function makeMoonTexture(){const size=256,data=new Uint8Array(size*size*4),r=seeded(2905);const spots=Array.from({length:33},()=>({x:(r()-.5)*1.55,y:(r()-.5)*1.55,s:.055+r()*.21,v:.09+r()*.14}));for(let y=0;y<size;y++)for(let x=0;x<size;x++){const px=(x-size/2)/(size/2),py=(y-size/2)/(size/2),dist=Math.hypot(px,py),i=(y*size+x)*4;let shade=.94;for(const c of spots){const d=Math.hypot(px-c.x,py-c.y)/c.s;if(d<1)shade-=c.v*Math.pow(1-d,.45);else if(d<1.08)shade+=.025;}shade+=Math.sin(px*81+py*42)*Math.cos(py*63)*.013;data[i]=Math.min(255,255*shade);data[i+1]=Math.min(255,245*shade);data[i+2]=Math.min(255,199*shade);data[i+3]=dist<.98?255:Math.max(0,(1-dist)*50*255);}const t=new THREE.DataTexture(data,size,size);t.colorSpace=THREE.SRGBColorSpace;t.needsUpdate=true;return t;}
+function makeMoonTexture(){
+  const size=256,data=new Uint8Array(size*size*4),r=seeded(2905);
+  const spots=Array.from({length:86},(_,i)=>({x:(r()-.5)*1.7,y:(r()-.5)*1.7,s:i<12?.1+r()*.17:.016+r()*.068,v:i<12?.035+r()*.07:.025+r()*.07}));
+  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+    const px=(x-size/2)/(size/2),py=(y-size/2)/(size/2),dist=Math.hypot(px,py),i=(y*size+x)*4;
+    let shade=.97;
+    for(const c of spots){const d=Math.hypot(px-c.x,py-c.y)/c.s;if(d<1)shade-=c.v*Math.pow(1-d,.7);else if(d<1.06)shade+=.008;}
+    shade+=Math.sin(px*121+py*62)*Math.cos(py*103)*.005;
+    data[i]=Math.min(255,255*shade);data[i+1]=Math.min(255,241*shade);data[i+2]=Math.min(255,196*shade);data[i+3]=dist<.98?255:Math.max(0,(1-dist)*50*255);
+  }
+  const t=new THREE.DataTexture(data,size,size);t.colorSpace=THREE.SRGBColorSpace;t.needsUpdate=true;return t;
+}

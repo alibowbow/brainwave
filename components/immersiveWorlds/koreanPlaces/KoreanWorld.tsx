@@ -41,17 +41,20 @@ export default function KoreanWorld({ id, active, static3D = false, onInteractio
   }, [host, motion, subscribeEvents]);
 
   useEffect(() => {
-    const surface = root.current;
+    const element = root.current;
     const current = holder.current;
-    if (!surface || !current || !motion || status !== 'ready') return;
+    if (!element || !current || !motion || status !== 'ready') return;
+    // Player/ImmersiveMode place a transparent, full-cover drag layer beside
+    // the scene. Listen at their common surface, with a strict target guard.
+    const surface = element.closest<HTMLElement>('[data-scene-surface]') ?? element;
     let gesture: { id: number; x: number; y: number; distance: number; started: number } | null = null;
     const move = (e: PointerEvent) => {
       if (!gesture || e.pointerId !== gesture.id) return;
       const dx = e.clientX - gesture.x, dy = e.clientY - gesture.y;
       gesture.distance = Math.max(gesture.distance, Math.hypot(dx, dy));
       if (gesture.distance > 7) {
-        surface.dataset.look = 'drag';
-        const unit = Math.max(1, Math.min(surface.clientWidth, surface.clientHeight));
+        element.dataset.look = 'drag';
+        const unit = Math.max(1, Math.min(element.clientWidth, element.clientHeight));
         host.drag(current, dx / unit, dy / unit);
       }
     };
@@ -59,14 +62,14 @@ export default function KoreanWorld({ id, active, static3D = false, onInteractio
       if (!gesture || (e && gesture.id !== e.pointerId)) return;
       const completed = gesture; gesture = null;
       if (surface.hasPointerCapture(completed.id)) surface.releasePointerCapture(completed.id);
-      delete surface.dataset.look;
+      delete element.dataset.look;
       host.releaseDrag(current);
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', end);
       window.removeEventListener('pointercancel', end);
       window.removeEventListener('blur', cancel);
-      if (e?.type === 'pointerup' && completed.distance <= 7 && Math.hypot(e.clientX-completed.x,e.clientY-completed.y) <= 7 && performance.now() - completed.started < 700) {
-        const box = surface.getBoundingClientRect();
+      if (e?.type === 'pointerup' && completed.distance <= 7 && Math.hypot(e.clientX-completed.x,e.clientY-completed.y) <= 7 && e.timeStamp - completed.started < 700) {
+        const box = element.getBoundingClientRect();
         const x = (e.clientX - box.left) / box.width, y = (e.clientY - box.top) / box.height;
         if (x >= 0 && x <= 1 && y >= 0 && y <= 1) {
           const event = host.tap(current, x * 2 - 1, 1 - y * 2);
@@ -76,8 +79,14 @@ export default function KoreanWorld({ id, active, static3D = false, onInteractio
     };
     const cancel = () => end();
     const down = (e: PointerEvent) => {
-      if (gesture || !e.isPrimary || e.button !== 0 || !(e.target instanceof Element) || e.target.closest('button,a,input,select,textarea')) return;
-      gesture = { id: e.pointerId, x: e.clientX, y: e.clientY, distance: 0, started: performance.now() };
+      const target = e.target instanceof Element ? e.target : null;
+      if (gesture || !host.owns(current) || !e.isPrimary || e.button !== 0 || !target) return;
+      if (target.closest('button,a,input,select,textarea,label,summary,[role="button"],[role="slider"],[role="switch"],[role="checkbox"],[role="textbox"],[contenteditable=""],[contenteditable="true"],[data-scene-interactive]')) return;
+      if (!(element.contains(target) || target.hasAttribute('data-scene-drag'))) return;
+      // Ignore a nested or unrelated scene surface even if this listener sees
+      // the bubbled event. This also prevents lower holders capturing input.
+      if (target.closest('[data-scene-surface]') !== (surface.hasAttribute('data-scene-surface') ? surface : null)) return;
+      gesture = { id: e.pointerId, x: e.clientX, y: e.clientY, distance: 0, started: e.timeStamp };
       // Capture real pointers even if the user drags outside the viewport.
       // Synthetic pointer events in the isolated QA harness have no active pointer.
       try { surface.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ }

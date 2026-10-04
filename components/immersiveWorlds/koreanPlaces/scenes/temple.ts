@@ -18,12 +18,12 @@ export function createTempleScene(): SceneContent {
   const texture = (kind: 'wood' | 'bronze' | 'stone' | 'tile') => {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 256;
     const ctx = canvas.getContext('2d')!;
-    const base = { wood: [96, 61, 39], bronze: [78, 91, 67], stone: [129, 129, 117], tile: [59, 75, 77] }[kind];
+    const base = { wood: [113, 94, 75], bronze: [78, 91, 67], stone: [129, 129, 117], tile: [59, 75, 77] }[kind];
     const pixels = ctx.createImageData(256, 256);
     for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) {
       const p = (y * 256 + x) * 4;
-      let n = (random() - .5) * (kind === 'wood' ? 15 : 23);
-      if (kind === 'wood') n += Math.sin(x * .39 + Math.sin(y * .05) * 1.2) * 8 + Math.sin(x * 1.51 + Math.sin(y * .021)) * 3;
+      let n = (random() - .5) * (kind === 'wood' ? 8 : 23);
+      if (kind === 'wood') n += Math.sin(x * .39 + Math.sin(y * .05) * 1.2) * 2.6 + Math.sin(x * 1.51 + Math.sin(y * .021)) * 1.1;
       if (kind === 'bronze') n += Math.sin(x * .087 + Math.sin(y * .084) * 2) * Math.sin(y * .036) * 23;
       if (kind === 'stone') n += Math.sin(x * .043 + y * .059) * 7;
       for (let c = 0; c < 3; c++) pixels.data[p + c] = Math.max(0, Math.min(255, base[c] + n));
@@ -32,20 +32,27 @@ export function createTempleScene(): SceneContent {
     ctx.putImageData(pixels, 0, 0);
     if (kind === 'wood') {
       for (let i = 0; i < 38; i++) {
-        const x = random() * 256; ctx.strokeStyle = `rgba(27,17,10,${mix(.08, .24)})`; ctx.lineWidth = mix(.4, 1.6);
+        const x = random() * 256; ctx.strokeStyle = `rgba(27,17,10,${mix(.025, .07)})`; ctx.lineWidth = mix(.4, 1.6);
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.bezierCurveTo(x + mix(-4, 4), 80, x + mix(-4, 4), 200, x, 256); ctx.stroke();
       }
-      for (let i = 0; i < 5; i++) { const x = mix(15, 240), y = mix(15, 240); for (let r = 3; r < 14; r += 3) { ctx.strokeStyle = 'rgba(42,23,12,.15)'; ctx.beginPath(); ctx.ellipse(x, y, r * .45, r * 2.1, .12, 0, Math.PI * 2); ctx.stroke(); } }
+      for (let i = 0; i < 5; i++) { const x = mix(15, 240), y = mix(15, 240); for (let r = 3; r < 14; r += 3) { ctx.strokeStyle = 'rgba(42,23,12,.065)'; ctx.beginPath(); ctx.ellipse(x, y, r * .45, r * 2.1, .12, 0, Math.PI * 2); ctx.stroke(); } }
     }
     const result = new THREE.CanvasTexture(canvas); result.colorSpace = THREE.SRGBColorSpace;
     result.wrapS = result.wrapT = THREE.RepeatWrapping; result.anisotropy = 4;
     return result;
   };
   const woodMap = texture('wood'), bronzeMap = texture('bronze'), stoneMap = texture('stone'), tileMap = texture('tile');
-  const wood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .84, color: '#d2b190' });
+  // A broad, soft sky/ground reflection is essential to readable cast bronze in the shaded pavilion.
+  const envCanvas=document.createElement('canvas');envCanvas.width=512;envCanvas.height=256;
+  const ec=envCanvas.getContext('2d')!,eg=ec.createLinearGradient(0,0,0,256);
+  eg.addColorStop(0,'#b3cfda');eg.addColorStop(.42,'#dde1cc');eg.addColorStop(.54,'#b3b7a1');eg.addColorStop(1,'#4f5142');ec.fillStyle=eg;ec.fillRect(0,0,512,256);
+  const glow=ec.createRadialGradient(325,106,1,325,106,90);glow.addColorStop(0,'rgba(255,235,193,.86)');glow.addColorStop(1,'rgba(255,235,193,0)');ec.fillStyle=glow;ec.fillRect(0,0,512,256);
+  const environment=new THREE.CanvasTexture(envCanvas);environment.colorSpace=THREE.SRGBColorSpace;environment.mapping=THREE.EquirectangularReflectionMapping;scene.environment=environment;scene.environmentIntensity=.7;
+
+  const wood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .84, color: '#c0b499' });
   const oldWood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .93, color: '#806d58' });
-  const deckWood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .84, color: '#d9c09c' });
-  const red = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .77, color: '#bd735a' });
+  const deckWood = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .84, color: '#c5bca6' });
+  const red = new THREE.MeshStandardMaterial({ map: woodMap, roughness: .77, color: '#b98c76' });
   const jade = new THREE.MeshStandardMaterial({ color: '#528575', roughness: .85 });
   const darkJade = new THREE.MeshStandardMaterial({ color: '#234f47', roughness: .85 });
   const paintedCream = new THREE.MeshStandardMaterial({ color: '#cfb889', roughness: .83 });
@@ -54,7 +61,7 @@ export function createTempleScene(): SceneContent {
   const tileEdge = new THREE.MeshStandardMaterial({ color: '#414d4c', roughness: .84 });
   const plaster = new THREE.MeshStandardMaterial({ color: '#d4c8ac', roughness: .98 });
   const stone = new THREE.MeshStandardMaterial({ map: stoneMap, color: '#b8b6a7', roughness: .98 });
-  const bronze = new THREE.MeshStandardMaterial({ map: bronzeMap, color: '#a9b38f', roughness: .61, metalness: .7 });
+  const bronze = new THREE.MeshStandardMaterial({ map: bronzeMap, color: '#b9b28a', roughness: .67, metalness: .57 });
   const bronzeEdge = new THREE.MeshStandardMaterial({ color: '#776d43', roughness: .58, metalness: .75 });
   const bronzeDark = new THREE.MeshStandardMaterial({ color: '#34483b', roughness: .7, metalness: .62 });
   const ropeMaterial = new THREE.MeshStandardMaterial({ color: '#b5a080', roughness: 1 });
@@ -83,38 +90,40 @@ export function createTempleScene(): SceneContent {
   const skyGeo = new THREE.SphereGeometry(180, 32, 24);
   const sky = new THREE.Mesh(skyGeo, new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, uniforms: {},
     vertexShader: 'varying vec3 vP; void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-    fragmentShader: 'varying vec3 vP; void main(){vec3 d=normalize(vP); float h=smoothstep(-.05,.6,d.y); vec3 col=mix(vec3(.91,.77,.59),vec3(.44,.65,.71),h); float glow=pow(max(dot(d,normalize(vec3(.52,.18,-.84))),0.),24.); col+=vec3(.18,.11,.035)*glow; gl_FragColor=vec4(col,1.); #include <colorspace_fragment> }' }));
+    fragmentShader: 'varying vec3 vP; void main(){vec3 d=normalize(vP); float h=smoothstep(-.08,.32,d.y); vec3 col=mix(vec3(.86,.70,.51),vec3(.32,.49,.57),h); float glow=pow(max(dot(d,normalize(vec3(.52,.18,-.84))),0.),24.); col+=vec3(.18,.11,.035)*glow; gl_FragColor=vec4(col,1.); #include <colorspace_fragment> }' }));
   sky.material.fragmentShader = sky.material.fragmentShader.replace(' #include <colorspace_fragment> }', '\n#include <colorspace_fragment>\n}');
   sky.frustumCulled = false; scene.add(sky);
-  const hemi = new THREE.HemisphereLight('#dcebf0', '#766750', 2.15); scene.add(hemi);
-  const sun = new THREE.DirectionalLight('#ffe0a7', 3.5); sun.position.set(13, 19, -20); sun.castShadow = true;
+  const hemi = new THREE.HemisphereLight('#dcebf0', '#766750', 2.8); scene.add(hemi);
+  const sun = new THREE.DirectionalLight('#ffe1b2', 1.85); sun.position.set(13, 19, -20); sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048); sun.shadow.camera.left = -15; sun.shadow.camera.right = 15;
   sun.shadow.camera.top = 14; sun.shadow.camera.bottom = -14; sun.shadow.camera.near = .5; sun.shadow.camera.far = 65;
-  sun.shadow.normalBias = .022; sun.shadow.bias = -.00015; sun.target.position.set(-1, 0, -4); scene.add(sun, sun.target);
-  const bounce = new THREE.PointLight('#ffe0b1', 8, 16, 2); bounce.position.set(-1, 2.9, 2); scene.add(bounce);
+  sun.shadow.radius = 4; sun.shadow.normalBias = .022; sun.shadow.bias = -.00015; sun.target.position.set(-1, 0, -4); scene.add(sun, sun.target);
+  const bounce = new THREE.DirectionalLight('#e4e8dd', 1.2); bounce.position.set(0, 8, 15); scene.add(bounce);
   const sunDisk = new THREE.Mesh(new THREE.SphereGeometry(2.3, 24, 16), new THREE.MeshBasicMaterial({ color: '#fff0c7', fog: false })); sunDisk.position.set(37, 15, -100); scene.add(sunDisk);
 
-  // Far mountain silhouettes have irregular continuous ridgelines, not solid cone peaks.
+  // Real sloping mountain strips catch different dawn light. Each crest has its own valleys.
   for (let layer = 0; layer < 4; layer++) {
-    const z = -95 + layer * 14, positions: number[] = [], indices: number[] = [];
-    for (let i = 0; i <= 90; i++) {
-      const x = -105 + i * 2.5;
-      const crest = 12 + layer * 1.1 + Math.sin(i * .099 + layer * 1.1) * 6.7 + Math.sin(i * .241 + layer) * 2.7 + Math.sin(i * .477) * .6;
-      positions.push(x, crest, z + Math.sin(i * .14) * 2, x, -7, z);
-      if (i < 90) { const a = i * 2; indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+    const z = -121 + layer * 16, positions: number[] = [], colors: number[] = [], indices: number[] = [];
+    const steps = 104, rows = 5, color = new THREE.Color(['#9dbbc0', '#8caeb4', '#739b9c', '#668b86'][layer]);
+    for (let row = 0; row < rows; row++) for (let i = 0; i <= steps; i++) {
+      const x = -120 + i * 2.35, t = row / (rows - 1);
+      const crest = 13 - layer * 1.6 + Math.sin(i * .153 + layer * 1.7) * 3.2 + Math.sin(i * .322 + layer * 2) * 1.5 + Math.sin(i * .728) * .3;
+      positions.push(x, crest * (1 - t) - t * 4, z + t * 17 + Math.sin(i * .17 + layer) * 2);
+      const c = color.clone().multiplyScalar(.92 + .08 * Math.sin(i * .18 + row * .8)); colors.push(c.r,c.g,c.b);
+      if (row < rows-1 && i < steps) { const a=row*(steps+1)+i; indices.push(a,a+steps+1,a+1,a+1,a+steps+1,a+steps+2); }
     }
-    const geometry = new THREE.BufferGeometry(); geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); geometry.setIndex(indices); geometry.computeVertexNormals();
-    const ridge = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: ['#a4bfc1', '#90b0b2', '#759c9c', '#587f7c'][layer], roughness: 1, side: THREE.DoubleSide })); scene.add(ridge);
+    const geometry = new THREE.BufferGeometry(); geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions,3)); geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3)); geometry.setIndex(indices); geometry.computeVertexNormals();
+    scene.add(new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,side:THREE.DoubleSide})));
   }
-  const mistCanvas = document.createElement('canvas'); mistCanvas.width = 256; mistCanvas.height = 64;
-  const mc = mistCanvas.getContext('2d')!, mg = mc.createRadialGradient(128, 32, 2, 128, 32, 128);
-  mg.addColorStop(0, 'rgba(238,236,215,.62)'); mg.addColorStop(.4, 'rgba(220,231,224,.34)'); mg.addColorStop(1, 'rgba(218,233,228,0)');
-  mc.fillStyle = mg; mc.fillRect(0, 0, 256, 64);
+  const mistCanvas = document.createElement('canvas'); mistCanvas.width = 256; mistCanvas.height = 128;
+  const mc = mistCanvas.getContext('2d')!, mistPixels=mc.createImageData(256,128);
+  for(let y=0;y<128;y++)for(let x=0;x<256;x++) { const dx=(x-128)/128,dy=(y-64)/64,p=(y*256+x)*4; const envelope=Math.max(0,1-dx*dx)*Math.max(0,1-dy*dy); mistPixels.data[p]=228;mistPixels.data[p+1]=238;mistPixels.data[p+2]=227;mistPixels.data[p+3]=Math.pow(envelope,3)*120; }
+  mc.putImageData(mistPixels,0,0);
   const mistTexture = new THREE.CanvasTexture(mistCanvas); mistTexture.colorSpace = THREE.SRGBColorSpace;
   const mists: THREE.Sprite[] = [];
   for (let i = 0; i < 7; i++) {
-    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTexture, transparent: true, opacity: .35, depthWrite: false, color: '#e2eee5', fog: false }));
-    sprite.position.set(-28 + i * 10, 4 + (i % 3) * 1.6, -46 - (i % 2) * 12); sprite.scale.set(36, 8, 1); scene.add(sprite); mists.push(sprite);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTexture, transparent: true, opacity: .28, depthWrite: false, color: '#e2eee5', fog: false }));
+    sprite.position.set(-28 + i * 10, 4 + (i % 3) * 1.6, -46 - (i % 2) * 12); sprite.scale.set(36, 5, 1); scene.add(sprite); mists.push(sprite);
   }
 
   // Seated eye-level platform: worn boards, end grain, peg heads, and the low stone apron.
@@ -126,7 +135,7 @@ export function createTempleScene(): SceneContent {
   }
   box([11.95, .28, .2], [0, .13, -3.03], oldWood);
   for (let i = 0; i < 3; i++) box([5.2 + i * .5, .19, .55], [1.25, -.07 - i * .16, -3.4 - i * .45], stone);
-  box([140, .45, 110], [0, -.96, -52], new THREE.MeshStandardMaterial({ map: stoneMap, color: '#bcb89c', roughness: 1 }));
+  box([140, .45, 110], [0, -.96, -52], new THREE.MeshStandardMaterial({ map: stoneMap, color: '#aeb6a0', roughness: 1 }));
   const gravel = new THREE.MeshStandardMaterial({ color: '#929888', roughness: .96 });
   for (let i = 0; i < 65; i++) {
     const x = mix(-12, 13), z = mix(-24, -4);
@@ -175,6 +184,7 @@ export function createTempleScene(): SceneContent {
       cylinder(.037, .037, .028, [x, 5.12, z + .015], cinnabar).rotation.x = Math.PI / 2;
     }
   }
+  box([11.55, .085, 9.45], [0, 5.245, .8], oldWood);
   // Swept tiled roof: original continuous curved surface, individually raised half-cylinder tile courses.
   const buildRoof = (parent: THREE.Group, width: number, depth: number, y: number, ridgeRise: number, detailed = true) => {
     const roofSurface = new THREE.BufferGeometry(), p: number[] = [], uv: number[] = [], idx: number[] = [];
@@ -239,15 +249,23 @@ export function createTempleScene(): SceneContent {
     for (let i = 0; i < 5; i++) { const wrap = torus(.153, .012, [x + i * .022, 0, 0], ropeMaterial, striker); wrap.rotation.z = Math.PI / 2; }
     rod(new THREE.Vector3(x, .13, 0), new THREE.Vector3(x, 2.12, 0), .019, ropeMaterial, striker);
   }
-  // A small bench and teacup place the viewer in the timber shelter rather than above a diorama.
-  box([2.7, .09, .49], [3.35, .7, 1.58], wood);
-  for (const x of [2.38, 4.3]) { box([.14, .45, .33], [x, .455, 1.58], oldWood); }
-  const tray = cylinder(.32, .32, .03, [2.58, .773, 1.57], oldWood, staticRoot, 32);
-  tray.scale.set(1.4, 1, 1);
-  const ceramic = new THREE.MeshStandardMaterial({ color: '#9bb0a0', roughness: .3, metalness: .06 });
-  const cup = create(new THREE.LatheGeometry([new THREE.Vector2(.065, 0), new THREE.Vector2(.09, .012), new THREE.Vector2(.104, .14), new THREE.Vector2(.094, .148), new THREE.Vector2(.083, .027)], 28), ceramic); cup.position.set(2.6, .789, 1.57);
-  const tea = cylinder(.086, .086, .001, [2.6, .916, 1.57], new THREE.MeshStandardMaterial({ color: '#8a7f49', roughness: .18, metalness: .05 }), staticRoot, 28);
-  tea.receiveShadow = true;
+  // A near tray, glazed tea bowl and handmade teapot stay tactile in both aspect-ratio compositions.
+  const teaTable=new THREE.Group();scene.add(teaTable);
+  box([1.48,.105,.87],[0,.71,0],wood,teaTable);
+  for(const x of [-.58,.58])for(const z of [-.3,.3])box([.105,.46,.105],[x,.44,z],oldWood,teaTable);
+  const tray=cylinder(.38,.4,.035,[0,.778,0],oldWood,teaTable,48);tray.scale.set(1.37,1,1);
+  torus(.373,.013,[0,.803,0],wood,teaTable).scale.set(1.37,1,1);
+  const glazeCanvas=document.createElement('canvas');glazeCanvas.width=glazeCanvas.height=128;const gc=glazeCanvas.getContext('2d')!;gc.fillStyle='#d2d0bd';gc.fillRect(0,0,128,128);for(let i=0;i<650;i++){gc.fillStyle=`rgba(95,91,64,${mix(.04,.2)})`;gc.beginPath();gc.arc(random()*128,random()*128,mix(.2,.65),0,Math.PI*2);gc.fill();}const glazeMap=new THREE.CanvasTexture(glazeCanvas);glazeMap.colorSpace=THREE.SRGBColorSpace;const ceramic=new THREE.MeshStandardMaterial({map:glazeMap,color:'#a8b9a6',roughness:.42,metalness:.03});
+  const cup=create(new THREE.LatheGeometry([new THREE.Vector2(.075,0),new THREE.Vector2(.115,.014),new THREE.Vector2(.145,.20),new THREE.Vector2(.134,.209),new THREE.Vector2(.117,.041)],36),ceramic,teaTable);cup.position.set(.25,.803,.105);
+  const tea=cylinder(.13,.13,.002,[.25,.994,.105],new THREE.MeshStandardMaterial({color:'#766442',roughness:.19,metalness:.1}),teaTable,36);
+  const potMat=new THREE.MeshStandardMaterial({map:glazeMap,color:'#817f64',roughness:.58,metalness:.03});
+  const beforePot=new Set(teaTable.children); const pot=create(new THREE.LatheGeometry([new THREE.Vector2(.12,0),new THREE.Vector2(.21,.055),new THREE.Vector2(.23,.19),new THREE.Vector2(.18,.30),new THREE.Vector2(.115,.34)],36),potMat,teaTable);pot.position.set(-.22,.803,-.025);
+  cylinder(.13,.15,.04,[-.22,1.155,-.025],potMat,teaTable,28);cylinder(.037,.05,.052,[-.22,1.197,-.025],potMat,teaTable,20);
+  curveRod([new THREE.Vector3(-.37,1.07,-.025),new THREE.Vector3(-.57,1.13,-.025),new THREE.Vector3(-.61,.93,-.025),new THREE.Vector3(-.42,.87,-.025)],.026,potMat,teaTable);
+  curveRod([new THREE.Vector3(-.025,.935,-.025),new THREE.Vector3(.065,1.015,-.025),new THREE.Vector3(.095,1.14,-.025)],.047,potMat,teaTable);
+  const potGroup=new THREE.Group();potGroup.position.set(-.22,.803,-.025);for(const child of [...teaTable.children])if(!beforePot.has(child)){child.position.sub(potGroup.position);potGroup.add(child);}potGroup.scale.setScalar(.78);teaTable.add(potGroup);
+  const wovenMat=new THREE.MeshStandardMaterial({color:'#b2a587',roughness:1});box([.25,.012,.23],[.32,.8,-.17],wovenMat,teaTable);
+  for(let i=0;i<9;i++)box([.23,.004,.006],[.32,.81,-.275+i*.026],ropeMaterial,teaTable);
   // Side railing intentionally stays below the view of the distant courtyard.
   for (const x of [-4.9, 4.9]) {
     for (let i = 0; i < 5; i++) box([.12, .75, .12], [x, .61, -.8 + i * 1.05], wood);
@@ -256,7 +274,7 @@ export function createTempleScene(): SceneContent {
   }
 
   // Across the courtyard: a quiet hall with paper panels, lattice doors and lifted tile eaves.
-  const hall = new THREE.Group(); hall.position.set(.9, -.4, -23); staticRoot.add(hall);
+  const hall = new THREE.Group(); hall.position.set(1.65, -.4, -23); hall.rotation.y=.115; staticRoot.add(hall);
   box([10.4, .42, 5.9], [0, -.03, 0], stone, hall);
   box([9.0, 2.7, 4.45], [0, 1.48, 0], plaster, hall);
   for (let col = -4; col <= 4; col++) {
@@ -267,6 +285,17 @@ export function createTempleScene(): SceneContent {
       for (let k = 0; k < 7; k++) box([.89, .024, .04], [col * 1.06 + .53, .43 + k * .3, 2.326], oldWood, hall);
     }
   }
+
+  for(const x of [-4.52,4.52]) {
+    for(const z of [-2.22,-.74,.74,2.22])cylinder(.115,.14,3,[x,1.5,z],red,hall,12);
+    box([.22,.25,5.1],[x,2.98,0],darkJade,hall);
+    for(const z of [-1.48,0,1.48]) {
+      box([.055,1.92,1.23],[x*1.002,1.44,z],plaster,hall);
+      for(let k=0;k<6;k++)box([.08,.028,1.22],[x*1.007,.51+k*.34,z],oldWood,hall);
+      for(let k=0;k<5;k++)box([.08,1.94,.022],[x*1.008,1.44,z-.5+k*.25],oldWood,hall);
+    }
+  }
+  for(let i=0;i<26;i++){const x=-4.7+i*.376;box([.13,.15,.73],[x,3.13,2.32],jade,hall);cylinder(.072,.072,.02,[x,3.13,2.7],paintedCream,hall,8).rotation.x=Math.PI/2;}
   box([10.2, .28, .23], [0, 2.93, 2.34], darkJade, hall);
   box([10.3, .065, .25], [0, 3.09, 2.34], cinnabar, hall);
   buildRoof(hall, 12.2, 7.2, 3.15, 1.4, false);
@@ -274,8 +303,8 @@ export function createTempleScene(): SceneContent {
 
   // Rounded weathered stones carry lichen patches; no duplicate boulder silhouette.
   const rock = (x: number, y: number, z: number, sx: number, sy: number, sz: number) => {
-    const geo = new THREE.IcosahedronGeometry(1, 1), attr = geo.getAttribute('position');
-    for (let i = 0; i < attr.count; i++) { const s = mix(.85, 1.1); attr.setXYZ(i, attr.getX(i) * s, attr.getY(i) * s, attr.getZ(i) * s); }
+    const geo = new THREE.IcosahedronGeometry(1, 2), attr = geo.getAttribute('position');
+    for (let i = 0; i < attr.count; i++) { const x=attr.getX(i),y=attr.getY(i),z=attr.getZ(i);const s=1+.09*Math.sin(x*5.1+y*3.2)*Math.cos(z*4.8-x*1.4);attr.setXYZ(i,x*s,y*s,z*s); }
     geo.computeVertexNormals(); const obj = create(geo, stone); obj.position.set(x, y, z); obj.scale.set(sx, sy, sz); obj.rotation.y = random() * 6.28;
     const patch = create(new THREE.SphereGeometry(1, 10, 6, 0, Math.PI * 2, 0, Math.PI * .36), moss); patch.position.set(x, y + sy * .54, z); patch.scale.set(sx * .65, sy * .43, sz * .65);
   };
@@ -298,8 +327,31 @@ export function createTempleScene(): SceneContent {
   const needleGeo = new THREE.BufferGeometry();
   needleGeo.setAttribute('position', new THREE.Float32BufferAttribute([-.018, 0, 0, .015, 0, 0, 0, .4, 0, 0, 0, -.016, 0, 0, .017, 0, .4, 0], 3)); needleGeo.computeVertexNormals();
   const needleMatrices: THREE.Matrix4[] = [], needleColors: THREE.Color[] = [];
+  // Independently drawn needle sprays on intersecting, spatially varied branch cards.
+  // These support actual crooked trunk/branch geometry; no opaque pad or generic canopy primitive.
+  const needlesCanvas=document.createElement('canvas');needlesCanvas.width=needlesCanvas.height=256;
+  const nc=needlesCanvas.getContext('2d')!;nc.lineCap='round';
+  const stroke=(ax:number,ay:number,bx:number,by:number,width:number,color:string)=>{nc.strokeStyle=color;nc.lineWidth=width;nc.beginPath();nc.moveTo(ax,ay);nc.lineTo(bx,by);nc.stroke();};
+  stroke(127,244,128,30,3,'#858b77');
+  for(let b=0;b<13;b++) {
+    const by=218-b*14,side=b%2?1:-1,ex=128+side*(52+Math.sin(b*.61)*27),ey=by-37-mix(0,14);
+    stroke(128,by,ex,ey,1.5,'#b1b8a0');
+    for(let j=0;j<22;j++) {
+      const t=j/22,px=128+(ex-128)*t,py=by+(ey-by)*t,len=mix(14,31)*(1-t*.25),tone=Math.round(mix(153,221));
+      const color=`rgb(${tone-5},${tone},${tone-24})`;
+      stroke(px,py,px+side*len*.42+mix(-3,3),py-len, mix(.75,1.65),color);
+      stroke(px,py,px-side*len*.19+mix(-3,3),py-len*.78,mix(.75,1.4),color);
+      stroke(px,py,px+side*len*.78,py+len*.22,mix(.6,1.35),color);
+    }
+  }
+  const crownMap=new THREE.CanvasTexture(needlesCanvas);crownMap.colorSpace=THREE.SRGBColorSpace;crownMap.anisotropy=4;
+  const crownGeo=new THREE.PlaneGeometry(2.05,1.8);
+  const crownMaterial=new THREE.MeshStandardMaterial({map:crownMap,color:'#899769',roughness:1,side:THREE.DoubleSide,alphaTest:.36,alphaToCoverage:true});
+  const crownMatrices:THREE.Matrix4[]=[],crownColors:THREE.Color[]=[];
   const dummy = new THREE.Object3D();
   const tuft = (center: THREE.Vector3, size: number, density: number) => {
+    for(let k=0;k<7;k++){dummy.position.copy(center).add(new THREE.Vector3(mix(-.24,.24)*size,mix(-.14,.17)*size,mix(-.24,.24)*size));dummy.rotation.set(mix(.3,1.15),k*Math.PI/3+random(),mix(-1.1,1.1));dummy.scale.set(size*mix(.84,1.1),size*mix(.86,1.13),1);dummy.updateMatrix();crownMatrices.push(dummy.matrix.clone());crownColors.push(new THREE.Color().setHSL(mix(.23,.26),mix(.09,.19),mix(.66,.8)));}
+
     for (let i = 0; i < density; i++) {
       const a = random() * 6.283, rad = Math.sqrt(random()) * size;
       dummy.position.set(center.x + Math.cos(a) * rad, center.y + mix(-.13, .25), center.z + Math.sin(a) * rad);
@@ -318,7 +370,9 @@ export function createTempleScene(): SceneContent {
     }
     tuft(top, size * .13, 160);
   };
-  for (const v of [[-9, -7, 8, 1.8], [-14, -16, 11, -.9], [-7, -25, 8, 1], [10, -21, 10, -1.1], [16, -30, 13, -.8], [-20, -32, 12, 1.2], [18, -8, 9, -1.6]]) pine(v[0], v[1], v[2], v[3]);
+  for (const v of [[-9, -7, 8, 1.8], [-14, -16, 11, -.9], [-7, -25, 8, 1], [10, -21, 10, -1.1], [16, -30, 13, -.8], [-20, -32, 12, 1.2], [18, -8, 9, -1.6],[-22,-41,13,.9],[-13,-38,10,-.7],[-5,-42,12,1.2],[4,-43,11,-.5],[12,-40,12,1],[22,-43,14,-1],[-28,-25,13,1],[26,-22,12,-.8]]) pine(v[0], v[1], v[2], v[3]);
+
+  const crowns=new THREE.InstancedMesh(crownGeo,crownMaterial,crownMatrices.length);crownMatrices.forEach((m,i)=>{crowns.setMatrixAt(i,m);crowns.setColorAt(i,crownColors[i]);});crowns.castShadow=true;crowns.receiveShadow=true;staticRoot.add(crowns);
   const needles = new THREE.InstancedMesh(needleGeo, needleMat, needleMatrices.length);
   needleMatrices.forEach((m, i) => { needles.setMatrixAt(i, m); needles.setColorAt(i, needleColors[i]); }); needles.castShadow = true; needles.receiveShadow = true; staticRoot.add(needles);
 
@@ -375,17 +429,29 @@ export function createTempleScene(): SceneContent {
   originalGeos.forEach((g) => g.dispose());
   buckets.forEach((list, material) => { const merged = mergeGeometries(list, false); list.forEach((g) => g.dispose()); if (merged) { const mesh = new THREE.Mesh(merged, material); mesh.castShadow = true; mesh.receiveShadow = true; scene.add(mesh); } });
 
+
+  // Measured first render had 314 calls. Keep interactive shells separate and batch decorative casting.
+  const mergeLocal=(group:THREE.Group,preserve:THREE.Mesh[]=[])=>{
+    group.updateMatrixWorld(true);const inverse=new THREE.Matrix4().copy(group.matrixWorld).invert(),groups=new Map<THREE.Material,THREE.BufferGeometry[]>(),removed:THREE.Mesh[]=[];
+    group.traverse(object=>{if(!(object instanceof THREE.Mesh)||object instanceof THREE.InstancedMesh||Array.isArray(object.material)||preserve.includes(object))return;
+      const g=object.geometry.clone().applyMatrix4(new THREE.Matrix4().multiplyMatrices(inverse,object.matrixWorld));for(const key of Object.keys(g.attributes))if(!['position','normal','uv'].includes(key))g.deleteAttribute(key);
+      if(!g.getAttribute('uv'))g.setAttribute('uv',new THREE.Float32BufferAttribute(new Float32Array(g.getAttribute('position').count*2),2));const flat=g.index?g.toNonIndexed():g;if(flat!==g)g.dispose();const list=groups.get(object.material)??[];list.push(flat);groups.set(object.material,list);removed.push(object);
+    });
+    const oldGeos=new Set<THREE.BufferGeometry>();removed.forEach(m=>{m.parent?.remove(m);oldGeos.add(m.geometry);});oldGeos.forEach(g=>g.dispose());
+    groups.forEach((list,material)=>{const geometry=mergeGeometries(list,false);list.forEach(g=>g.dispose());if(geometry)create(geometry,material,group);});
+  };
+  mergeLocal(bellPivot,[bellMesh]);mergeLocal(striker,[log]);mergeLocal(teaTable);mergeLocal(branchGroup);mergeLocal(chimePivot,[chime,fish]);
   const raycaster = new THREE.Raycaster();
-  let bellImpulse = 0, chimeImpulse = 0, elapsed = 0;
+  let bellImpulse = 0, chimeImpulse = 0;
   const hitTargets = [bellMesh, log, chime, fish];
   const resize = (aspect: number) => {
     camera.aspect = aspect;
     if (aspect < .8) {
-      camera.fov = 57; camera.position.set(-1.0, 1.72, 4.9); camera.lookAt(-1.65, 2.2, -8);
+      camera.fov = 54; camera.position.set(-1.8, 1.65, 4.9); camera.lookAt(-1.65, 2.2, -8); teaTable.position.set(-1.8,0,2.25); teaTable.rotation.y=-.22;
     } else if (aspect < 1.25) {
-      camera.fov = 54; camera.position.set(.55, 1.65, 4.6); camera.lookAt(-.25, 2.20, -9.5);
+      camera.fov = 54; camera.position.set(.55, 1.65, 4.6); camera.lookAt(-.25, 2.20, -9.5); teaTable.position.set(2.6,0,1.65); teaTable.rotation.y=-.15;
     } else {
-      camera.fov = 53; camera.position.set(.8, 1.62, 4.8); camera.lookAt(-.05, 2.03, -10.5);
+      camera.fov = 53; camera.position.set(.8, 1.62, 4.8); camera.lookAt(-.05, 2.03, -10.5); teaTable.position.set(2.3,0,1.72); teaTable.rotation.y=-.13;
     }
     camera.updateProjectionMatrix(); camera.updateMatrixWorld();
   };
@@ -393,7 +459,7 @@ export function createTempleScene(): SceneContent {
   return {
     scene, camera, resize,
     update(time, dt) {
-      elapsed = time; bellImpulse *= Math.exp(-dt * .7); chimeImpulse *= Math.exp(-dt * 1.1);
+      bellImpulse *= Math.exp(-dt * .7); chimeImpulse *= Math.exp(-dt * 1.1);
       bellPivot.rotation.z = Math.sin(time * 1.74) * .008 + Math.sin(time * 2.7) * bellImpulse * .018;
       striker.rotation.z = Math.sin(time * 2.7) * bellImpulse * .028;
       chimePivot.rotation.z = Math.sin(time * 1.15) * .025 + Math.sin(time * 3.7) * chimeImpulse * .1;
@@ -410,6 +476,5 @@ export function createTempleScene(): SceneContent {
       // The host/audio integrator owns all audio; position and bounded strength make spatial decay possible.
       return { scene: 'nature:temple_dawn', type: 'bell', strength: isChime ? .2 : .62, position: hits[0].point.toArray() as [number, number, number] };
     },
-    dispose() { void elapsed; },
   };
 }

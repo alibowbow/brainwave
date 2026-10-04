@@ -112,6 +112,8 @@ export class WorldEngine implements LiveSceneEngine {
     const geometries = new Set<THREE.BufferGeometry>();
     const materials = new Set<THREE.Material>();
     const textures = new Set<THREE.Texture>();
+    if (this.content?.scene.environment instanceof THREE.Texture) textures.add(this.content.scene.environment);
+    if (this.content?.scene.background instanceof THREE.Texture) textures.add(this.content.scene.background);
     this.content?.scene.traverse(object => {
       const mesh = object as THREE.Mesh;
       if (mesh.geometry) geometries.add(mesh.geometry);
@@ -134,6 +136,7 @@ export class WorldEngine implements LiveSceneEngine {
 }
 
 export class WorldHost extends LiveSceneHost<WorldEngine> {
+  owns(holder: LiveSceneHolder) { return this.top === holder; }
   tap(holder: LiveSceneHolder, x: number, y: number) {
     return this.top === holder && holder.running ? this.engine?.interact(x, y) ?? null : null;
   }

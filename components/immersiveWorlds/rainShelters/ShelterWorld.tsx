@@ -12,6 +12,18 @@ export interface ShelterWorldProps {
   static3D?: boolean;
 }
 class ShelterHost extends LiveSceneHost<ShelterEngine> {
+  private gestureCancellers = new Map<LiveSceneHolder, () => void>();
+  registerGesture(holder: LiveSceneHolder, cancel: () => void) {
+    this.gestureCancellers.set(holder, cancel);
+    return () => { this.gestureCancellers.delete(holder); };
+  }
+  override acquire(holder: LiveSceneHolder) {
+    // A gesture must never survive the canvas moving into or out of fullscreen.
+    this.gestureCancellers.forEach(cancel => cancel());
+    const release = super.acquire(holder);
+    return () => { this.gestureCancellers.forEach(cancel => cancel()); release(); };
+  }
+  owns(holder: LiveSceneHolder) { return this.top === holder; }
   interact(holder: LiveSceneHolder, x: number, y: number, explicit = false) {
     return this.top === holder ? this.engine?.interact(x, y, explicit) ?? null : null;
   }
@@ -58,9 +70,14 @@ export function ShelterWorld({ active, onInteraction, static3D = false, kind, bu
   useEffect(() => {
     const root = rootRef.current; const holder = holderRef.current;
     if (!root || !holder || !active || status !== 'ready') return;
+    // Player/fullscreen chrome is a sibling covering the scene, so listen at
+    // the closest scene surface and admit only the actual scene or clear layer.
+    const surface = root.closest<HTMLElement>('[data-scene-surface]') ?? root;
+    const controls = 'button, input, select, textarea, a[href], summary, label, [contenteditable]:not([contenteditable="false"]), [role="button"], [role="link"], [role="slider"], [role="switch"], [role="checkbox"], [role="radio"], [tabindex]:not([tabindex="-1"]), [data-scene-control], [data-scene-no-drag], [inert]';
     let pointer: { id: number; x: number; y: number; moved: boolean } | null = null;
     const move = (event: PointerEvent) => {
       if (!pointer || event.pointerId !== pointer.id) return;
+      if (!host.owns(holder)) { cancel(); return; }
       const dx = event.clientX - pointer.x; const dy = event.clientY - pointer.y;
       if (Math.hypot(dx, dy) > 8) pointer.moved = true;
       if (pointer.moved && running) { root.dataset.look = 'drag'; const unit = Math.max(1, Math.min(root.clientWidth, root.clientHeight)); host.drag(holder, dx / unit, dy / unit); }
@@ -69,7 +86,8 @@ export function ShelterWorld({ active, onInteraction, static3D = false, kind, bu
       if (!pointer || (event && event.pointerId !== pointer.id)) return;
       const current = pointer; pointer = null; delete root.dataset.look; host.releaseDrag(holder);
       window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel);
-      if (!cancelled && event && !current.moved && Math.hypot(event.clientX-current.x, event.clientY-current.y) <= 8) {
+      const endTarget = event?.target instanceof Element ? event.target : null;
+      if (!cancelled && event && host.owns(holder) && !endTarget?.closest(controls) && !current.moved && Math.hypot(event.clientX-current.x, event.clientY-current.y) <= 8) {
         const r = root.getBoundingClientRect();
         if (event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom) interactionRef.current((event.clientX-r.left)/r.width*2-1, 1-(event.clientY-r.top)/r.height*2);
       }
@@ -77,14 +95,21 @@ export function ShelterWorld({ active, onInteraction, static3D = false, kind, bu
     const up = (event: PointerEvent) => finish(event, false);
     const cancel = (event?: PointerEvent) => finish(event, true);
     const down = (event: PointerEvent) => {
-      if (pointer || !event.isPrimary || event.button !== 0 || (event.target instanceof Element && event.target.closest('button'))) return;
+      if (pointer || !host.owns(holder) || !event.isPrimary || event.button !== 0) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target || target.closest(controls) || !surface.contains(target)) return;
+      if (surface !== root && target.closest('[data-scene-surface]') !== surface) return;
+      if (!root.contains(target) && !target.hasAttribute('data-scene-drag')) return;
+      const bounds = root.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) return;
       if (event.pointerType === 'mouse') event.preventDefault();
       pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
       window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel);
     };
     const blur = () => cancel();
-    root.addEventListener('pointerdown', down); window.addEventListener('blur', blur);
-    return () => { root.removeEventListener('pointerdown', down); window.removeEventListener('blur', blur); cancel(); };
+    const unregisterGesture = host.registerGesture(holder, blur);
+    surface.addEventListener('pointerdown', down); window.addEventListener('blur', blur);
+    return () => { unregisterGesture(); surface.removeEventListener('pointerdown', down); window.removeEventListener('blur', blur); cancel(); };
   }, [active, host, running, status]);
 
   return <div ref={rootRef} className={`rain-shelter rain-shelter-${kind}`} data-world={kind} data-state={status} data-motion={running ? 'running' : 'paused'} data-interaction-value={lastValue ?? ''} role="group" aria-label={`${labels[kind][0]} 3D 풍경`}>

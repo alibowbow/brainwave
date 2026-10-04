@@ -32,7 +32,7 @@ const report = {
   sourceTreeSHA256: hash(JSON.stringify(sourceHashes)), sourceHashes, bundleHashes,
   mode: Object.keys(bundleHashes).length ? 'isolated-built-QA-bundle' : 'source-dev-server',
   baseURL, browser: null, worlds: [], errors: [],
-  limitations: ['All dimensions are browser viewport tests, not physical Fold hardware.', 'Hidden-state test explicitly overrides document.visibilityState; it is not a real browser-tab switch.', 'SwiftShader results establish rendering and behavior, not device FPS or thermal performance.', 'Second-holder test exercises shared canvas relocation; production App/fullscreen wiring belongs to integration.'],
+  limitations: ['All dimensions are browser viewport tests, not physical Fold hardware.', 'Hidden-state test explicitly overrides document.visibilityState; it is not a real browser-tab switch.', 'SwiftShader results establish rendering and behavior, not device FPS or thermal performance.', 'Second-holder test exercises shared canvas relocation; production App/fullscreen wiring belongs to integration.', 'The baseline shared player applies touch-action:none only to its protected worlds. Integration must extend that policy for these four IDs; this fixture does not mask it. Native mouse and synthetic touch gesture tests do not establish real mobile pan suppression.'],
 };
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({
@@ -72,11 +72,23 @@ try {
     const canvas = () => page.locator('.rain-shelter-canvas');
     const clickControl = (id) => page.locator(id).dispatchEvent('click');
     const events = () => page.locator('#qa-events').getAttribute('data-events').then(JSON.parse);
-    const tapCanvas = async () => {
+    const tapCanvas = async (directCanvas = true) => {
       const [x,y] = tapTargets[world];
       const box = await canvas().boundingBox();
       assert.ok(box, 'canvas has a real nonzero target');
-      await page.mouse.click(box.x+(x+1)*box.width/2, box.y+(1-y)*box.height/2);
+      if (directCanvas) await page.evaluate(() => { document.documentElement.dataset.qaDirectCanvas = 'true'; });
+      try { await page.mouse.click(box.x+(x+1)*box.width/2, box.y+(1-y)*box.height/2); }
+      finally { if (directCanvas) await page.evaluate(() => { delete document.documentElement.dataset.qaDirectCanvas; }); }
+    };
+    const expectOneOverlayTap = async (label) => {
+      const old = (await events()).length;
+      await tapCanvas(false);
+      await page.waitForFunction((count) => Number(document.querySelector('#qa-events')?.getAttribute('data-count')) > count, old);
+      const current = await events();
+      assert.equal(current.length,old+1,label);
+      assert.equal(current.at(-1).action,actions[world]);
+      assert.ok(current.at(-1).value >= 0 && current.at(-1).value <= 1);
+      return current.at(-1);
     };
     const pixelState = async () => {
       await page.evaluate(() => { document.documentElement.dataset.qaCapture = 'true'; });
@@ -87,13 +99,13 @@ try {
     const metric = () => canvas().evaluate((c) => ({ frame: Number(c.dataset.frame), time: Number(c.dataset.time), width: c.width, height: c.height, drawCalls: Number(c.dataset.drawCalls), triangles: Number(c.dataset.triangles), geometries: Number(c.dataset.geometries), textures: Number(c.dataset.textures) }));
     const motion = (value) => page.waitForFunction((v) => [...document.querySelectorAll('.rain-shelter')].at(-1)?.dataset.motion === v, value);
     const ready = () => page.waitForSelector('.rain-shelter[data-state="ready"]', { timeout: 240_000 });
-    const capture = async (name, viewport) => {
+    const capture = async (name, viewport, showChrome = false) => {
       if (viewport) await page.setViewportSize(viewport);
       await page.waitForTimeout(400);
-      await page.evaluate(() => { document.documentElement.dataset.qaCapture = 'true'; });
+      await page.evaluate((chrome) => { document.documentElement.dataset.qaCapture = 'true'; if(chrome) document.documentElement.dataset.qaCaptureChrome = 'true'; },showChrome);
       const file = `${world}-${name}.png`;
       const bytes = await page.screenshot({ path: path.join(output, file), animations: 'disabled' });
-      await page.evaluate(() => { delete document.documentElement.dataset.qaCapture; });
+      await page.evaluate(() => { delete document.documentElement.dataset.qaCapture; delete document.documentElement.dataset.qaCaptureChrome; });
       assert.ok(bytes.byteLength > 10_000, `actual ${name} screenshot has visual detail`);
       result.screenshots.push({ file, bytes: bytes.byteLength, sha256: hash(bytes), viewport: page.viewportSize(), canvas: await metric() });
       return bytes;
@@ -161,6 +173,27 @@ try {
       await clickControl('#qa-active');
       await motion('running');
 
+      const overlayEvent=await expectOneOverlayTap('visible chrome transparent overlay tap emits exactly one bounded scene event');
+      const beforeOverlayDrag=(await events()).length;
+      const overlayBox=await page.locator('.qa-drag-overlay').last().boundingBox();
+      const overlayX=overlayBox.x+overlayBox.width*.45, overlayY=overlayBox.y+overlayBox.height*.52;
+      await page.mouse.move(overlayX,overlayY); await page.mouse.down();
+      await page.mouse.move(overlayX+130,overlayY+20,{steps:2});
+      assert.equal(await scene().getAttribute('data-look'),'drag','native drag starts through sibling transparent overlay');
+      await page.mouse.up();
+      assert.equal((await events()).length,beforeOverlayDrag,'native overlay drag is not a tap');
+      assert.equal(await scene().getAttribute('data-look'),null);
+      const beforeChrome=(await events()).length;
+      await page.locator('[data-qa-chrome-button]').last().click();
+      assert.ok(Number(await page.locator('#qa-events').getAttribute('data-chrome-clicks')) > 0,'native chrome button click was delivered');
+      await page.locator('[data-qa-chrome-input]').last().click({position:{x:80,y:8}});
+      await page.keyboard.press('ArrowLeft');
+      assert.notEqual(await page.locator('[data-qa-chrome-input]').last().inputValue(),'50','native chrome input received interaction');
+      assert.equal((await events()).length,beforeChrome,'interactive button/input chrome must not trigger scene interaction');
+      assert.equal(await scene().getAttribute('data-look'),null,'chrome controls never begin scene look');
+      result.checks.push({name:'visible player chrome overlay supports native bounded tap/drag while button and input stay separate',pass:true,event:overlayEvent});
+      if(world === 'tent') { await clickControl('#qa-active'); await motion('paused'); await capture('player-chrome',undefined,true); await clickControl('#qa-active'); await motion('running'); }
+
       // Synthetic pointer sequences exercise cancellation and movement thresholds,
       // while the interaction button above supplies a real semantic scene action.
       const countBeforeGesture = (await events()).length;
@@ -174,7 +207,7 @@ try {
       });
       assert.equal(dragObserved, 'drag', 'active movement starts bounded look gesture');
       assert.equal((await events()).length, countBeforeGesture, 'drag cannot trigger tap interaction');
-      await canvas().evaluate((c) => {
+      await page.locator('.qa-drag-overlay').last().evaluate((c) => {
         const r=c.getBoundingClientRect(); const p={bubbles:true,isPrimary:true,pointerId:42,pointerType:'touch',button:0,clientX:r.left+r.width*.5,clientY:r.top+r.height*.6};
         c.dispatchEvent(new PointerEvent('pointerdown',p));
         window.dispatchEvent(new PointerEvent('pointercancel',p));
@@ -183,12 +216,12 @@ try {
       assert.equal((await events()).length, countBeforeGesture, 'cancelled pointer cannot trigger tap interaction');
       assert.equal(await scene().getAttribute('data-look'), null, 'cancelled drag releases view');
       result.checks.push({ name: 'drag is not tap and pointer cancellation releases gesture', pass: true, method: 'synthetic pointerdown/move/up and pointerdown/cancel/up' });
-      const lookAfterBlur = await canvas().evaluate((c) => {
+      const lookAfterBlur = await page.locator('.qa-drag-overlay').last().evaluate((c) => {
         const r=c.getBoundingClientRect(); const p={bubbles:true,isPrimary:true,pointerId:43,pointerType:'touch',button:0,clientX:r.left+r.width*.5,clientY:r.top+r.height*.6};
         c.dispatchEvent(new PointerEvent('pointerdown',p));
         window.dispatchEvent(new PointerEvent('pointermove',{...p,clientX:p.clientX+90}));
         window.dispatchEvent(new FocusEvent('blur'));
-        const afterBlur = c.closest('.rain-shelter')?.getAttribute('data-look');
+        const afterBlur = c.closest('[data-scene-surface]')?.querySelector('.rain-shelter')?.getAttribute('data-look');
         window.dispatchEvent(new PointerEvent('pointerup',p));
         return afterBlur;
       });
@@ -201,15 +234,29 @@ try {
       await motion('paused');
       const originalCanvas = await canvas().elementHandle();
       const originalContexts = await page.evaluate(() => window.__rainQA.contexts);
+      await clickControl('#qa-active'); await motion('running');
+      const beforeHolderTransition=(await events()).length;
+      await page.mouse.move(overlayX,overlayY); await page.mouse.down();
+      await page.mouse.move(overlayX+90,overlayY+15,{steps:2});
+      assert.equal(await scene().getAttribute('data-look'),'drag');
       await clickControl('#qa-second');
       await page.waitForSelector('#qa-second-holder .rain-shelter-canvas');
+      assert.equal(await page.locator('#qa-primary-holder .rain-shelter').getAttribute('data-look'),null,'holder transfer immediately cancels old gesture before pointerup');
+      await page.mouse.up();
+      assert.equal((await events()).length,beforeHolderTransition,'pointerup after holder transfer cannot trigger stale tap');
+      await motion('running');
       assert.equal(await canvas().count(), 1);
       assert.equal(await canvas().evaluate((c, original) => c === original, originalCanvas), true);
       assert.equal(await page.evaluate(() => window.__rainQA.contexts), originalContexts);
+      await expectOneOverlayTap('second holder has exactly one active overlay listener');
+      await clickControl('#qa-active'); await motion('paused');
       await clickControl('#qa-second');
       await page.waitForSelector('#qa-primary-holder .rain-shelter-canvas');
       assert.equal(await canvas().evaluate((c, original) => c === original, originalCanvas), true);
-      result.checks.push({ name: 'second holder relocates one identical canvas and returns it', pass: true, sceneContexts: originalContexts });
+      await clickControl('#qa-active'); await motion('running');
+      await expectOneOverlayTap('returning from second holder does not duplicate overlay listeners');
+      await clickControl('#qa-active'); await motion('paused');
+      result.checks.push({ name: 'mid-drag second-holder transfer cancels old gesture, reuses identical canvas and returns with single interaction listeners', pass: true, sceneContexts: originalContexts });
 
       await clickControl('#qa-active');
       await motion('running');
@@ -259,7 +306,10 @@ try {
         assert.equal(await canvas().count(),1);
         assert.equal(await canvas().evaluate((c, original) => c===original, originalCanvas),true);
       }
-      result.checks.push({ name: 'three quick mount/unmount cycles reuse one live scene', pass: true });
+      await clickControl('#qa-active'); await motion('running');
+      await expectOneOverlayTap('three remounts retain exactly one active overlay listener');
+      await clickControl('#qa-active'); await motion('paused');
+      result.checks.push({ name: 'three quick mount/unmount cycles reuse one live scene and one overlay listener', pass: true });
       await clickControl('#qa-mounted');
       await page.waitForFunction(() => document.querySelectorAll('.rain-shelter-canvas').length === 0);
       await page.waitForTimeout(5700);

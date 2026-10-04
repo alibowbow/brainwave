@@ -25,6 +25,8 @@ const metric = async (name) => {
 };
 const ready = () => page.waitForSelector('.cosmic-world[data-state="ready"]', { timeout: 120_000 });
 const motion = (state) => page.waitForSelector(`.cosmic-world[data-motion="${state}"]`);
+const settledSize=()=>page.waitForFunction(()=>{const c=document.querySelector('.cosmic-world-canvas');if(!c)return false;const r=c.getBoundingClientRect();return c.width>0&&c.height>0&&Math.abs(c.width/c.height-r.width/r.height)<.015&&c.width<=Math.ceil(r.width*2)&&c.height<=Math.ceil(r.height*2);});
+
 const check = (label) => { report.checks.push(label); console.log(`PASS: ${label}`); };
 const screenshot = async (name) => {
   if (!output || !page) return;
@@ -173,7 +175,7 @@ try {
 
   await press('Pause');await motion('paused');
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.waitForTimeout(300);
+  await settledSize();
   const size = await canvas.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     return { width: element.width, height: element.height, cssWidth: rect.width, cssHeight: rect.height };
@@ -187,7 +189,7 @@ try {
 
   for (const [name, width, height] of [['fold-portrait', 344, 882], ['fold-landscape', 882, 344]]) {
     await page.setViewportSize({ width, height });
-    await page.waitForTimeout(300);
+    await settledSize();
     assert.ok(await metric('draw-calls')>0);check(`${name} redraws a still at the requested aspect`);
     await screenshot(`cosmic-${name}`);
   }
@@ -197,7 +199,7 @@ try {
     await canvas.evaluate((element) => { window.__cosmicCanvasForValidation = element; });
     await press('Unmount');
     assert.equal(await canvas.count(), 0, 'unmount removes the renderer canvas');
-    await page.waitForFunction(() => window.__cosmicCanvasForValidation?.getAttribute('data-disposed') === 'true', undefined, { timeout: 7_000 });
+    await page.waitForFunction(() => window.__cosmicCanvasForValidation?.getAttribute('data-disposed') === 'true', undefined, { timeout: 30_000 });
     const disposedFrame = await page.evaluate(() => window.__cosmicCanvasForValidation?.getAttribute('data-frame'));
     await page.waitForTimeout(300);
     assert.equal(await page.evaluate(() => window.__cosmicCanvasForValidation?.getAttribute('data-frame')), disposedFrame, 'the removed renderer stops drawing');

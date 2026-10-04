@@ -65,6 +65,7 @@ export class CosmicEngine implements LiveSceneEngine {
   async init(){
     if(this.disposed)return;
     this.sky=createCosmicSky();this.garden=createGarden();this.scene.add(this.sky.group,this.garden.group);
+    this.garden.setAspect(this.width/this.height);this.sky.group.rotation.y=this.width/this.height<.8?.18:0;
     const hemi=new THREE.HemisphereLight('#b9d6e1','#394147',2.05);this.scene.add(hemi);
     this.scene.fog=new THREE.FogExp2('#344b5b',.009);
     const key=new THREE.DirectionalLight('#ffddb0',3.5);key.position.set(-7,12,8);key.castShadow=true;
@@ -108,6 +109,8 @@ export class CosmicEngine implements LiveSceneEngine {
     this.renderer.setPixelRatio(cosmicPixelRatio(this.width,this.height,dpr,this.quality));
     this.renderer.setSize(this.width,this.height,false);
     this.camera.aspect=this.width/this.height;
+    this.garden?.setAspect(this.camera.aspect);if(this.sky)this.sky.group.rotation.y=this.camera.aspect<.8?.18:0;
+    this.renderer.shadowMap.needsUpdate=true;
     this.camera.fov=this.camera.aspect<.8?63:52;
     // Portrait keeps the pond and overhead planet together, without orbiting away from the seat.
     this.camera.position.set(0,1.65,5.8);

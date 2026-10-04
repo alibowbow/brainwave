@@ -84,7 +84,7 @@ export function createGarden() {
   const geometries: THREE.BufferGeometry[] = [];
   const plants: ReturnType<typeof createPlant>[] = [];
   const interactables: THREE.Object3D[] = [];
-  const islands: {object:THREE.Group;y:number;phase:number}[] = [];
+  const islands: {object:THREE.Group;x:number;y:number;phase:number}[] = [];
   const random = seededRandom(81102);
   const rockShapes = Array.from({length:6},(_,i)=>{const g=rockGeometry(31+i);geometries.push(g);return g;});
   const rock = (parent:THREE.Object3D,position:number[],scale:number[],material:THREE.Material=stone,seed=0) => {
@@ -92,7 +92,7 @@ export function createGarden() {
   };
   const plant = (parent:THREE.Object3D,kind:PlantKind,x:number,y:number,z:number,scale:number,seed:number) => {
     const p=createPlant(kind,seed);p.group.position.set(x,y,z);p.group.scale.setScalar(scale);p.group.rotation.y=seed*.79;
-    parent.add(p.group);plants.push(p);interactables.push(...p.interactables);return p;
+    parent.add(p.group);if(parent===group)p.group.userData.nearPosition={x,z};plants.push(p);interactables.push(...p.interactables);return p;
   };
 
   // Continuous irregular terrace and exposed weathered edge. The pool is a real inset.
@@ -153,7 +153,7 @@ export function createGarden() {
       const geo=new THREE.TubeGeometry(curve,22,.026,5,false);geometries.push(geo);const vine=new THREE.Mesh(geo,rootMat);g.add(vine);
       if(k%2===0)plant(g,'fern',rx*.9,-1.1,rz, .36,seed+k+40);
     }
-    islands.push({object:g,y,phase:seed});return g;
+    islands.push({object:g,x,y,phase:seed});return g;
   };
   makeIsland(-10,2.6,-20,1.45,31).rotation.y=.5;
   makeIsland(9.8,.75,-16,1.15,45);
@@ -213,6 +213,11 @@ export function createGarden() {
       islands.forEach(({object,y,phase})=>{object.position.y=y+Math.sin(time*.065+phase)*.055;});
       waterUniforms.uTime.value=time;waterUniforms.uAge.value=pulse?.age??20;
       if(pulse)waterUniforms.uPulse.value.copy(pulse.position);
+    },
+    setAspect(aspect:number){
+      const narrow=aspect<.8;
+      for(const p of plants){const base=p.group.userData.nearPosition;if(base)p.group.position.x=base.x*(narrow?.40:1);}
+      for(const island of islands)island.object.position.x=island.x*(narrow?.58:1);
     },
     setReflectionSize(size:number){water.getRenderTarget().setSize(size,size);},
     dispose(){if(disposed)return;disposed=true;plants.forEach(p=>p.dispose());geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();water.dispose();group.clear();}

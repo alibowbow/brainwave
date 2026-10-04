@@ -81,7 +81,7 @@ repository dependencies or external asset/network requests are introduced.
 Default rendering follows requestAnimationFrame; no fixed 24fps cap. DPR is at most
 2 and raster allocation is bounded to3.6 million pixels. Only sustained measured
 slow frames for8 seconds reduce the quality multiplier to0.8 and reflection target
-from1024 to768. Sustained fast frames restore quality. The camera is seated, with
+from1024 to768. Sustained fast frames restore quality. Narrow portrait layouts retain foreground foliage and recenter the distant sky. The camera is seated, with
 maximum yaw≈6° / pitch≈3.4°, a0.7-second follow and3.2-second settle.
 
 The shared live-scene host cancels RAF and detaches the canvas immediately when
@@ -95,7 +95,7 @@ rendered still, including after resize.
 All harness source and validation records are inside this owned directory; the
 built standalone harness is inside `public/immersive-worlds/cosmic/preview/`; captures stay in `validation/screenshots/` to avoid adding them to the app precache.
 The built harness is reviewable on an existing deployment at:
-`/immersive-worlds/cosmic/preview/index.html` (`?clean` hides validation controls).
+`/immersive-worlds/cosmic/preview/index.html` (`?clean` hides validation controls; `?clean&still` opens a rendered still).
 It is not wired into the main application.
 
 ```bash

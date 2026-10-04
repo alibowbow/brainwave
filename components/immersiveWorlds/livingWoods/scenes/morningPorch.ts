@@ -86,9 +86,9 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   });
   earthMap.repeat.set(22, 30);
   const glazeMap = canvasTexture(256, (ctx, n) => {
-    ctx.fillStyle = '#d1d4b1'; ctx.fillRect(0, 0, n, n);
+    ctx.fillStyle = '#e4e0cf'; ctx.fillRect(0, 0, n, n);
     for (let i = 0; i < 6000; i++) {
-      ctx.fillStyle = random() > .12 ? 'rgba(103,118,81,.035)' : 'rgba(68,63,37,.32)';
+      ctx.fillStyle = random() > .12 ? 'rgba(128,132,103,.025)' : 'rgba(108,93,66,.18)';
       ctx.beginPath(); ctx.arc(random() * n, random() * n, range(.15, .9), 0, 7); ctx.fill();
     }
   });
@@ -376,6 +376,95 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   // A tactile oiled table, linen and celadon tea set occupy the seated near field.
   const table = new THREE.Group(); root.add(table);
   table.position.set(.26, 0, 3.03);
+  // These bounded tabletop maps have their own deterministic noise; adding material
+  // detail must not advance the garden's seeded placement sequence.
+  const materialNoise = (x: number, y: number) => {
+    const value = Math.sin(x * 127.1 + y * 311.7 + 71.2) * 43758.5453;
+    return value - Math.floor(value);
+  };
+  const woodGrowth = (u: number, v: number) => {
+    const knot = Math.exp(-Math.pow((u - .24) / .21, 2) - Math.pow((v - .74) / .12, 2));
+    // Variable annual-ring spacing and a small off-centre knot bend the fibers;
+    // no repeated uniform dark ruled lines across the whole board.
+    return v * 51 + Math.sin(v * 9 + u * 2.3) * 1.25 + Math.sin(v * 24 - u * 5.4) * .47
+      + Math.sin(u * 19 + v * 13) * .17 + knot * Math.sin((v - .74) * 31) * 4;
+  };
+  const tableColor = canvasTexture(512, (ctx, n) => {
+    const pixels = ctx.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const u = x / n, v = y / n;
+      const growth = woodGrowth(u, v);
+      const latewood = Math.pow(.5 + .5 * Math.sin(growth * Math.PI * 2), 21);
+      const fiber = Math.sin(v * 2200 + Math.sin(u * 13 + v * 5) * 4 + Math.sin(u * 43) * .4) * 2;
+      const tone = -2 - latewood * 13 + Math.sin(v * 42 + u * .7) * 2 + fiber + (materialNoise(x, y) - .5) * 5;
+      const index = (y * n + x) * 4;
+      pixels.data.set([166 + tone, 125 + tone * .79, 83 + tone * .57, 255], index);
+    }
+    ctx.putImageData(pixels, 0, 0);
+  });
+  // Red stores shallow pore height; green stores oil/latewood roughness.
+  // Linear data maps keep those quantities independent of display color space.
+  const tableSurface = canvasTexture(512, (ctx, n) => {
+    const pixels = ctx.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const u = x / n, v = y / n;
+      const growth = woodGrowth(u, v);
+      const pore = Math.pow(.5 + .5 * Math.sin(growth * Math.PI * 2), 21);
+      const noise = materialNoise(x, y);
+      pixels.data.set([151 - pore * 37 + noise * 12, 155 + pore * 28 + noise * 12, 128, 255], (y * n + x) * 4);
+    }
+    ctx.putImageData(pixels, 0, 0);
+  });
+  tableSurface.colorSpace = THREE.NoColorSpace;
+  tableColor.wrapS = tableColor.wrapT = tableSurface.wrapS = tableSurface.wrapT = THREE.ClampToEdgeWrapping;
+  const tableWood = new THREE.MeshPhysicalMaterial({
+    map: tableColor, color: '#fff3df', roughness: .9, roughnessMap: tableSurface,
+    bumpMap: tableSurface, bumpScale: .0022, clearcoat: .12, clearcoatRoughness: .6,
+  });
+  const ceramicSurface = canvasTexture(256, (ctx, n) => {
+    const pixels = ctx.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const fine = materialNoise(x * 1.4, y * 1.4);
+      const pooling = .5 + .5 * Math.sin(x * .041 + Math.sin(y * .027) * 2.6);
+      pixels.data.set([118 + fine * 26, 181 + fine * 32 + pooling * 25, 128, 255], (y * n + x) * 4);
+    }
+    ctx.putImageData(pixels, 0, 0);
+  });
+  ceramicSurface.colorSpace = THREE.NoColorSpace;
+  // Short-range porch bounce gives the glaze an actual local reflected-light
+  // highlight without changing the garden lighting or requiring PMREM targets.
+  const tableBounce = new THREE.PointLight('#fff0d4', .8, 2.25, 2);
+  tableBounce.position.set(-.55, 1.88, .69); table.add(tableBounce);
+  // A low, short-range bounce from the sunlit near tabletop can reflect in the
+  // outward-sloping glaze towards the elevated eye; the overhead bounce alone
+  // falls outside that specular angle and only adds diffuse illumination.
+  const glazeBounce = new THREE.PointLight('#fff5dd', .55, 1.5, 2);
+  glazeBounce.position.set(-.38, .962, .72); table.add(glazeBounce);
+
+  const contactMap = canvasTexture(128, (ctx, n) => {
+    const gradient = ctx.createRadialGradient(n / 2, n / 2, n * .13, n / 2, n / 2, n * .5);
+    gradient.addColorStop(0, 'rgba(38,26,15,.68)');
+    gradient.addColorStop(.48, 'rgba(38,26,15,.28)');
+    gradient.addColorStop(1, 'rgba(38,26,15,0)');
+    ctx.fillStyle = gradient; ctx.fillRect(0, 0, n, n);
+  });
+  const bookContactMap = canvasTexture(128, (ctx, n) => {
+    const pixels = ctx.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const edge = Math.max(Math.abs(x / n - .5) / .46, Math.abs(y / n - .5) / .46);
+      const opacity = Math.pow(Math.max(0, Math.min(1, (1 - edge) / .22)), 1.6) * .38;
+      pixels.data.set([40, 31, 22, opacity * 255], (y * n + x) * 4);
+    }
+    ctx.putImageData(pixels, 0, 0);
+  });
+  function contact(width: number, depth: number, x: number, y: number, z: number, parent: THREE.Object3D, map = contactMap, opacity = 1) {
+    const shadow = mesh(new THREE.PlaneGeometry(width, depth), new THREE.MeshBasicMaterial({
+      map, transparent: true, opacity, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1,
+    }), [x, y, z], parent);
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.castShadow = false; shadow.receiveShadow = false;
+    return shadow;
+  }
   const topShape = new THREE.Shape();
   const tw = 1.85, td = 1.08, r = .12;
   topShape.moveTo(-tw / 2 + r, -td / 2);
@@ -385,7 +474,9 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   topShape.lineTo(-tw / 2, -td / 2 + r); topShape.quadraticCurveTo(-tw / 2, -td / 2, -tw / 2 + r, -td / 2);
   const topGeometry = new THREE.ExtrudeGeometry(topShape, { depth: .075, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: .012, bevelThickness: .011, curveSegments: 8 });
   topGeometry.rotateX(-Math.PI / 2);
-  const tableTop = mesh(topGeometry, wood, [0, .84, 0], table); tableTop.receiveShadow = true;
+  const topPositions = topGeometry.attributes.position, topUv = topGeometry.attributes.uv;
+  for (let i = 0; i < topPositions.count; i++) topUv.setXY(i, topPositions.getX(i) / tw + .5, topPositions.getZ(i) / td + .5);
+  const tableTop = mesh(topGeometry, tableWood, [0, .84, 0], table); tableTop.receiveShadow = true;
   for (const x of [-.7, .7]) for (const z of [-.36, .36]) box(.07, .77, .07, darkWood, [x, .45, z], table);
   const linenMap = canvasTexture(128, (ctx, n) => {
     ctx.fillStyle = '#e7dfc9'; ctx.fillRect(0, 0, n, n);
@@ -398,35 +489,46 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   const linenMaterial = new THREE.MeshStandardMaterial({ color: '#eee8d9', map: linenMap, bumpMap: linenMap, bumpScale: .0008, roughness: 1, side: THREE.DoubleSide });
   const linen = new THREE.PlaneGeometry(.71, .6, 12, 12);
   const lp = linen.attributes.position;
-  for (let i = 0; i < lp.count; i++) lp.setZ(i, Math.sin(lp.getX(i) * 35) * .003 + Math.cos(lp.getY(i) * 24) * .003);
+  for (let i = 0; i < lp.count; i++) lp.setZ(i, Math.sin(lp.getX(i) * 35) * .0017 + Math.cos(lp.getY(i) * 24) * .0012);
   linen.computeVertexNormals();
-  const cloth = mesh(linen, linenMaterial, [.4, .947, .015], table); cloth.rotation.x = -Math.PI / 2; cloth.rotation.z = .14;
-  const glaze = new THREE.MeshPhysicalMaterial({ map: glazeMap, color: '#e0e1c8', roughness: .27, clearcoat: .65, clearcoatRoughness: .21, bumpMap: glazeMap, bumpScale: .0006 });
+  const cloth = mesh(linen, linenMaterial, [.4, .93, .015], table); cloth.rotation.x = -Math.PI / 2; cloth.rotation.z = .14;
+  const glaze = new THREE.MeshPhysicalMaterial({
+    map: glazeMap, color: '#f8f2e1', roughness: .29, roughnessMap: ceramicSurface,
+    clearcoat: .86, clearcoatRoughness: .15, bumpMap: ceramicSurface, bumpScale: .0014,
+  });
   const rimMaterial = new THREE.MeshStandardMaterial({ color: '#97815a', roughness: .64 });
-  const teaSet = new THREE.Group(); table.add(teaSet); teaSet.position.set(-.15, .94, -.035);
+  const teaSet = new THREE.Group(); table.add(teaSet); teaSet.position.set(-.15, .92, -.035);
+  // The tabletop top is .926; the saucer's lowest surface is now .928.
+  // Small bound AO decals supplement the garden-scale shadow map at contact.
+  contact(.73, .66, -.132, .927, -.021, table, contactMap, .76);
   const saucerProfile = [[0, .008], [.14, .008], [.2, .012], [.285, .035], [.32, .055], [.315, .069], [.27, .057], [.2, .027], [.14, .025], [0, .025]].map(([x, y]) => new THREE.Vector2(x, y));
   mesh(new THREE.LatheGeometry(saucerProfile, 48), glaze, [0, 0, 0], teaSet);
   const cupProfile = [[.13, .029], [.155, .033], [.168, .06], [.18, .19], [.206, .318], [.203, .33], [.187, .33], [.183, .312], [.16, .17], [.147, .065], [.12, .057], [0, .057], [0, .037]].map(([x, y]) => new THREE.Vector2(x, y));
-  const cup = mesh(new THREE.LatheGeometry(cupProfile, 64), glaze, [0, .02, 0], teaSet);
+  contact(.37, .35, 0, .0256, 0, teaSet, contactMap, .85);
+  const foot = mesh(new THREE.TorusGeometry(.13, .003, 8, 64), new THREE.MeshStandardMaterial({ color: '#b2a189', roughness: .87 }), [0, .028, 0], teaSet);
+  foot.rotation.x = Math.PI / 2;
+  const cup = mesh(new THREE.LatheGeometry(cupProfile, 64), glaze, [0, .001, 0], teaSet);
   cup.name = 'morning-tea-cup';
-  const rim = mesh(new THREE.TorusGeometry(.197, .004, 6, 64), rimMaterial, [0, .352, 0], teaSet); rim.rotation.x = Math.PI / 2;
+  const rim = mesh(new THREE.TorusGeometry(.197, .004, 6, 64), rimMaterial, [0, .333, 0], teaSet); rim.rotation.x = Math.PI / 2;
   const handleCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(.19, .294, 0), new THREE.Vector3(.31, .305, 0), new THREE.Vector3(.356, .224, 0), new THREE.Vector3(.318, .124, 0), new THREE.Vector3(.17, .103, 0),
   ]);
-  const handle = mesh(new THREE.TubeGeometry(handleCurve, 28, .025, 8, false), glaze, [0, .02, 0], teaSet);
+  const handle = mesh(new THREE.TubeGeometry(handleCurve, 28, .025, 8, false), glaze, [0, .001, 0], teaSet);
   handle.name = 'morning-tea-cup-handle';
-  const tea = mesh(new THREE.CircleGeometry(.183, 64), new THREE.MeshPhysicalMaterial({ color: '#748145', roughness: .17, metalness: .11, clearcoat: 1, clearcoatRoughness: .1 }), [0, .328, 0], teaSet);
+  const tea = mesh(new THREE.CircleGeometry(.183, 64), new THREE.MeshPhysicalMaterial({ color: '#748145', roughness: .17, metalness: .11, clearcoat: 1, clearcoatRoughness: .1 }), [0, .309, 0], teaSet);
   tea.rotation.x = -Math.PI / 2; tea.name = 'morning-tea-surface';
-  const meniscus = mesh(new THREE.TorusGeometry(.18, .003, 5, 64), new THREE.MeshPhysicalMaterial({ color: '#c5c69e', roughness: .2, metalness: .2 }), [0, .329, 0], teaSet); meniscus.rotation.x = Math.PI / 2;
+  const meniscus = mesh(new THREE.TorusGeometry(.18, .003, 5, 64), new THREE.MeshPhysicalMaterial({ color: '#c5c69e', roughness: .2, metalness: .2 }), [0, .310, 0], teaSet); meniscus.rotation.x = Math.PI / 2;
   const rippleMaterials: THREE.MeshBasicMaterial[] = [];
   const ripples: THREE.Mesh[] = [];
   for (let i = 0; i < 3; i++) {
     const mat = new THREE.MeshBasicMaterial({ color: '#f0e9c6', transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide });
-    const ring = mesh(new THREE.RingGeometry(.9, 1, 48), mat, [0, .330 + i * .0002, 0], teaSet); ring.rotation.x = -Math.PI / 2;
+    const ring = mesh(new THREE.RingGeometry(.9, 1, 48), mat, [0, .311 + i * .0002, 0], teaSet); ring.rotation.x = -Math.PI / 2;
     rippleMaterials.push(mat); ripples.push(ring);
   }
   // A modest book is closed and partly beneath the linen, with independent page edges.
-  const book = new THREE.Group(); table.add(book); book.position.set(.5, .987, -.13); book.rotation.y = -.18;
+  const book = new THREE.Group(); table.add(book); book.position.set(.5, .9605, -.13); book.rotation.y = -.18;
+  const bookContact = contact(.435, .565, .5, .9331, -.13, table, bookContactMap);
+  bookContact.rotation.z = -.18;
   const bookCover = new THREE.MeshStandardMaterial({ color: '#667060', roughness: .95 });
   box(.35, .038, .48, new THREE.MeshStandardMaterial({ color: '#dbd0ae', roughness: 1 }), [0, 0, 0], book);
   box(.37, .007, .5, bookCover, [0, .023, 0], book);
@@ -442,7 +544,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
       vertexShader: `uniform float time;uniform float phase;varying vec2 vUv;void main(){vUv=uv;vec3 p=position;p.x+=sin(uv.y*8.-time*.55+phase)*.038*uv.y;p.z+=cos(uv.y*7.+time*.4+phase)*.025*uv.y;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,
       fragmentShader: `uniform float time;uniform float phase;uniform float strength;varying vec2 vUv;void main(){float a=exp(-pow((vUv.x-.5)*5.,2.));a*=sin(vUv.y*3.14159)*pow(1.-vUv.y,1.2);a*=.65+.35*sin(vUv.y*22.-time*1.1+phase);gl_FragColor=vec4(.94,.95,.88,a*strength);}`,
     });
-    const steam = mesh(new THREE.PlaneGeometry(.11, .58, 4, 18), material, [(i - 1) * .045, .62 + i * .035, -.015], teaSet);
+    const steam = mesh(new THREE.PlaneGeometry(.11, .58, 4, 18), material, [(i - 1) * .045, .601 + i * .035, -.015], teaSet);
     steam.rotation.y = (i - 1) * .55; steam.castShadow = false; steam.receiveShadow = false;
     steamMaterials.push(material);
   }

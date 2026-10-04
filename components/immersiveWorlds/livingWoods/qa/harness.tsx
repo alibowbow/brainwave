@@ -21,7 +21,7 @@ declare global {
       events: () => unknown[];
       clearEvents: () => void;
       targets: () => Target[];
-      captureCanvas: () => string;
+      captureCanvas: () => Promise<string>;
       world: WorldName;
     };
   }
@@ -49,16 +49,20 @@ function Harness() {
       setSecond: (value) => flushSync(() => setSecond(value)),
       events: () => interactions.slice(),
       clearEvents: () => { interactions.length = 0; },
-      captureCanvas: () => {
+      captureCanvas: async () => {
         // QA only: obtain actual WebGL pixels synchronously in the same task
         // before a non-preserved drawing buffer is cleared by the browser.
         // This avoids a proven headless compositor readback timeout without
         // changing production renderer settings or adding a production hook.
-        const engine = (getWoodsHost(world) as unknown as { engine: { renderFrame: (dt: number) => void } | null }).engine;
+        const engine = (getWoodsHost(world) as unknown as { engine: { captureFrame: () => string } | null }).engine;
         const canvas = document.querySelector<HTMLCanvasElement>('canvas[data-engine-id]');
         if (!engine || !canvas) throw new Error('Scene engine is not mounted');
-        engine.renderFrame(0);
-        return canvas.toDataURL('image/png');
+        const start = performance.now();
+        while (Number(canvas.dataset.pendingSubmissions || 0) > 0 || canvas.dataset.pendingStaticFrame === 'true') {
+          if (performance.now() - start > 55_000) throw new Error('Supplemental readback could not drain pending renderer work');
+          await new Promise(resolve => setTimeout(resolve, 16));
+        }
+        return engine.captureFrame();
       },
       targets: () => {
         const canvas = document.querySelector<HTMLCanvasElement>('canvas[data-engine-id]');

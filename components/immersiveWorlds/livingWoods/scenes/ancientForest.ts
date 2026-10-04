@@ -115,7 +115,7 @@ export function createAncientForest(scene: THREE.Scene, camera: THREE.Perspectiv
     leafContext.beginPath();leafContext.moveTo(128,y);leafContext.quadraticCurveTo(128+side*59,y-30,128+side*124,y-85);leafContext.stroke();
   }
   const leafMap=new THREE.CanvasTexture(leafCanvas);leafMap.colorSpace=THREE.SRGBColorSpace;leafMap.anisotropy=8;
-  const leafMat = new THREE.MeshStandardMaterial({ color: '#c0cba7', side: THREE.DoubleSide, roughness: .84, vertexColors: true, emissive:'#203016',emissiveIntensity:.09 });
+  const leafMat = new THREE.MeshStandardMaterial({ color: '#aab899', side: THREE.DoubleSide, roughness: .78, vertexColors: true, emissive:'#1b2b18',emissiveIntensity:.055 });
   const canopyMat = new THREE.MeshStandardMaterial({ color: '#9ba88a',map:leafMap,side: THREE.DoubleSide, roughness: .87,emissive:'#1e2b19',emissiveIntensity:.13 });
   const twigMat = new THREE.MeshStandardMaterial({ color: '#655942', roughness: 1 });
   const litterMat = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 1, vertexColors: true });
@@ -157,18 +157,32 @@ export function createAncientForest(scene: THREE.Scene, camera: THREE.Perspectiv
   function trunk(x: number, z: number, radius: number, height: number, lean: number, near: boolean) {
     const radial = near ? 52 : 22, levels = near ? 66 : 28;
     const g = new THREE.CylinderGeometry(1, 1, 1, radial, levels, true);
-    const pos = g.getAttribute('position'), colors = new Float32Array(pos.count * 3);
+    const pos = g.getAttribute('position'), uv = g.getAttribute('uv'), colors = new Float32Array(pos.count * 3);
+    // Spatially stable variation keeps the fixed trees and old root composition,
+    // while avoiding identical fluting and repeated bark phases on every trunk.
+    const phase = near ? 0.27 : Math.sin(x * 1.71 + z * .83) * Math.PI;
+    const species = .5 + .5 * Math.sin(x * .79 - z * .41);
     for (let i = 0; i < pos.count; i++) {
       const t = pos.getY(i) + .5;
       const a = Math.atan2(pos.getX(i), pos.getZ(i));
       const flare = .98 + Math.exp(-t * 15) * .73;
-      const ridge = 1 + .07 * Math.sin(a * 9 + t * 8) + .06 * Math.sin(a * 5 - t * 3) + .02 * Math.sin(a * 23 + t * 44);
-      const r = radius * (1 - t * .44) * flare * ridge;
+      const ridge = 1 + .075 * Math.sin(a * (7 + species * 2) + t * 8 + phase)
+        + .075 * Math.sin(a * 5 - t * (2.5 + species * 1.7) + phase * .7)
+        + .02 * Math.sin(a * 23 + t * 44 + phase);
+      const knotAngle = Math.atan2(Math.sin(a - .45 - phase * .3), Math.cos(a - .45 - phase * .3));
+      const healedKnot = Math.exp(-knotAngle * knotAngle * 9 - ((t - .18 - species * .13) / .042) ** 2) * .15;
+      const r = radius * (1 - t * (near ? .44 : .40 + species * .18)) * flare * (ridge + healedKnot);
       const y = t * height + groundY(x, z);
       pos.setXYZ(i, x + Math.sin(a) * r + lean * t * t + Math.sin(t*5.2)*radius*.23, y, z + Math.cos(a) * r + Math.sin(t * 4.6) * radius * .58);
-      const c = new THREE.Color(t < .12 && Math.sin(a * 3 + t * 18) > -.2 ? '#869579' : '#b3aea0');
-      c.multiplyScalar(.82 + .18 * Math.sin(a * 6 + .4) ** 2);
+      const mossBand = t < .16 && Math.sin(a * 3 + t * 18 + phase) > -.15;
+      const c = new THREE.Color(mossBand ? '#829376' : species > .56 ? '#b5b3a8' : '#b8a793');
+      // Broad, broken lichens and damp flanks remain in the bark surface rather
+      // than being a repeated ring or a separate floating geometry shell.
+      const lichen = Math.max(0, Math.sin(a * 3.3 + t * 49 + phase) * Math.sin(a * 7.2 - t * 23) - .56);
+      c.lerp(new THREE.Color('#a9b3a1'), lichen * .48);
+      c.multiplyScalar(.77 + .21 * Math.sin(a * 4 + phase + t * 3) ** 2);
       colors.set([c.r, c.g, c.b], i * 3);
+      uv.setXY(i, uv.getX(i) * (.82 + species * .39) + phase * .17, uv.getY(i) * (.81 + species * .43) + species * .61);
     }
     g.setAttribute('color', new THREE.BufferAttribute(colors, 3)); g.computeVertexNormals();
     (near ? barkPieces : farBarkPieces).push(g);
@@ -234,6 +248,15 @@ export function createAncientForest(scene: THREE.Scene, camera: THREE.Perspectiv
   }
   trees.forEach(([x, z, r, h], i) => {
     trunk(x, z, r, h, (random() - .5) * 2, false);
+    if (i < 4) {
+      const side = x < 0 ? -1 : 1;
+      farBarkPieces.push(tube([
+        new THREE.Vector3(x, h * .19, z),
+        new THREE.Vector3(x + side * r * .85, h * .29, z + r * .31),
+        new THREE.Vector3(x + side * (1.05 + r), h * .42, z - .5),
+        new THREE.Vector3(x + side * (1.9 + r), h * .52, z - 1.4),
+      ], r * .43, 1.25, 20, 9));
+    }
     if (i < 17) {
       for (let b = 0; b < 3; b++) {
         const angle = random() * tau, y = h * (.28 + b * .17), reach = 3 + random() * 4;
@@ -337,24 +360,31 @@ export function createAncientForest(scene: THREE.Scene, camera: THREE.Perspectiv
   }
   function fern(x: number, z: number, size: number, density = 8) {
     const baseY = groundY(x,z) + .03;
+    const plantPhase = x * 1.71 + z * .83;
+    const plantShade = .82 + .15 * Math.sin(plantPhase * .63);
     for (let f = 0; f < density; f++) {
-      const a = f / density * tau + random() * .6;
-      const length = size * (.65 + random() * .5);
+      const a = f / density * tau + random() * .6 + .18 * Math.sin(f * 2.3 + plantPhase);
+      const length = size * (.53 + random() * .68);
+      const arch = .37 + .22 * (.5 + .5 * Math.sin(f * 2.1 + plantPhase));
+      const lean = .18 * Math.sin(f * 1.4 + plantPhase);
+      const curl = .72 + .23 * (.5 + .5 * Math.cos(f * 1.7 + plantPhase));
+      const frondShade = plantShade * (.83 + .18 * Math.sin(f * 2.7 + 1));
       const forward = new THREE.Vector3(Math.cos(a), 0, Math.sin(a));
       const sideways = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a));
       const points: THREE.Vector3[] = [];
       for (let j = 0; j <= 14; j++) {
         const t = j / 14;
-        points.push(new THREE.Vector3(x, baseY + Math.sin(t * Math.PI * .86) * size * .61 + .045, z).addScaledVector(forward, t * length));
+        points.push(new THREE.Vector3(x, baseY + Math.sin(t * Math.PI * curl) * size * arch + .045, z)
+          .addScaledVector(forward, t * length).addScaledVector(sideways, lean * size * t * t));
       }
       for (let j = 1; j < 14; j++) {
         const t = j / 14;
         const p = points[j];
-        const half = size * .23 * Math.sin(Math.PI * t) ** .7;
+        const half = size * (.17 + .05 * Math.sin(f + plantPhase) ** 2) * Math.sin(Math.PI * t) ** .7;
         for (const side of [-1,1]) {
           const tip = p.clone().addScaledVector(sideways, half * side).addScaledVector(forward, length * .075);
           tip.y -= .025 * size;
-          const color = new THREE.Color().setHSL(.215 + random() * .036, .27 + random() * .16, .32 + random() * .17);
+          const color = new THREE.Color().setHSL(.225 + random() * .054, .24 + random() * .18, (.30 + random() * .15) * frondShade);
           const left:THREE.Vector3[]=[],middle:THREE.Vector3[]=[],right:THREE.Vector3[]=[];
           const pinnaSegments=Math.hypot(x,z)<9?8:4;
           for(let k=0;k<=pinnaSegments;k++){
@@ -371,11 +401,11 @@ export function createAncientForest(scene: THREE.Scene, camera: THREE.Perspectiv
           }
         }
         const ribA = p.clone().addScaledVector(sideways, .008 * size), ribB = p.clone().addScaledVector(sideways,-.008*size);
-        triangle(ribA, ribB, points[j+1], new THREE.Color('#b3bd77'));
+        triangle(ribA, ribB, points[j+1], new THREE.Color('#829060').multiplyScalar(.83 + frondShade * .18));
       }
     }
   }
-  fern(1.57, 1.12, 1.27, 10); fern(-1.16, 1.46, .83, 9); fern(2.8, -1.8, 1.0); fern(-.9,-4.3,.81);
+  fern(1.57, 1.12, 1.27, 8); fern(-1.16, 1.46, .83, 7); fern(2.8, -1.8, 1.0); fern(-.9,-4.3,.81);
   for (let i = 0; i < 68; i++) {
     const x = (random() - .5) * 33, z = 2 - random() * 35;
     if (Math.abs(x) < 1.8 && z > -6 && z < .8) continue;

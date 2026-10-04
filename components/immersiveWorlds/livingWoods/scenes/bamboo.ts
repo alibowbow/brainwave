@@ -15,25 +15,33 @@ function randomSource(seed: number) {
 
 function bambooTexture() {
   const w = 128, h = 256, bytes = new Uint8Array(w * h * 4);
+  const roughness = new Uint8Array(bytes.length), relief = new Uint8Array(bytes.length);
   const rng = randomSource(523);
-  const streaks = Array.from({ length: w }, () => rng());
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const i = (y * w + x) * 4;
-    const grain = streaks[x] * 0.16 + rng() * 0.055;
-    const stain = Math.sin(x * 0.21 + Math.sin(y * 0.033)) * 0.065;
-    const bloom = Math.pow(Math.max(0, Math.sin(y * 0.11 + x * 0.097)), 9) * 0.09;
-    const edge = y < 13 ? (13 - y) / 13 * 0.16 : 0;
-    const value = THREE.MathUtils.clamp(0.72 + grain + stain + bloom - edge, 0.3, 0.985);
+    const angle = x / w * Math.PI * 2, noise = rng() - 0.5;
+    // Fine discontinuous fibres and wax bloom, not broad painted vertical stripes.
+    const fibre = Math.sin(angle * 29 + Math.sin(y * 0.041) * 0.28) * 0.006
+      + Math.sin(angle * 47 - y * 0.009) * 0.003;
+    const bloom = Math.sin(angle * 3 + Math.sin(y * 0.037)) * Math.sin(y * 0.021 + angle) * 0.022;
+    const edge = Math.exp(-y / 10) * 0.027;
+    const value = THREE.MathUtils.clamp(0.875 + fibre + bloom + noise * 0.012 - edge, 0.78, 0.94);
     bytes[i] = 255 * value; bytes[i + 1] = 254 * value;
     bytes[i + 2] = 235 * value; bytes[i + 3] = 255;
+    const r = 255 * THREE.MathUtils.clamp(0.87 + bloom * 1.7 + noise * 0.045, 0.78, 0.97);
+    const b = 255 * (0.5 + fibre * 4 + noise * 0.09);
+    roughness[i] = roughness[i + 1] = roughness[i + 2] = r; roughness[i + 3] = 255;
+    relief[i] = relief[i + 1] = relief[i + 2] = b; relief[i + 3] = 255;
   }
-  const texture = new THREE.DataTexture(bytes, w, h);
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.magFilter = THREE.LinearFilter;
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  texture.generateMipmaps = true; texture.needsUpdate = true;
-  return texture;
+  const make = (data: Uint8Array, color = false) => {
+    const texture = new THREE.DataTexture(data, w, h);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    if (color) texture.colorSpace = THREE.SRGBColorSpace;
+    texture.magFilter = THREE.LinearFilter; texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.generateMipmaps = true; texture.needsUpdate = true;
+    return texture;
+  };
+  return { map: make(bytes, true), roughnessMap: make(roughness), bumpMap: make(relief) };
 }
 
 function groundTexture() {
@@ -101,8 +109,9 @@ function orientedSegment(a: THREE.Vector3, b: THREE.Vector3, radius: number, col
 
 const streamCenter = (z: number) => 0.14 + Math.sin(z * 0.103 + 0.6) * 1.26 + Math.sin(z * 0.25) * 0.23;
 const streamWidth = (z: number) => 1.18 + Math.sin(z * 0.15) * 0.2;
+const bankRockPatch = (z: number, side: number) => Math.sin(z * 0.72 + side * 1.7) + Math.sin(z * 1.63 - side * 0.8) * 0.46;
 
-function ribbonGeometry(left: number, right: number, y: number, water = false) {
+function ribbonGeometry(left: number, right: number, y: number, water = false, bank = false) {
   const vertices: number[] = [], indices: number[] = [], uvs: number[] = [], colors: number[] = [];
   const slices = 120;
   for (let i = 0; i <= slices; i++) {
@@ -110,8 +119,9 @@ function ribbonGeometry(left: number, right: number, y: number, water = false) {
     const center = streamCenter(z), width = streamWidth(z);
     for (let side = 0; side < 2; side++) {
       const offset = side === 0 ? left : right;
-      const x = center + width * offset;
-      const h = y + (water ? 0 : Math.sin(z * 0.64 + offset) * 0.03);
+      const edge = bank ? Math.sin(z * 0.73 + offset * 4.1) * 0.105 + Math.sin(z * 1.91 - offset) * 0.045 : 0;
+      const x = center + width * offset + edge;
+      const h = y + (water ? 0 : Math.sin(z * 0.64 + offset) * (bank ? 0.048 : 0.03));
       if (water) vertices.push(x, -z, 0); else vertices.push(x, h, z);
       uvs.push(side, i / slices * 20);
       const light = 0.77 + Math.sin(z * 1.4 + offset * 3.9) * 0.07;
@@ -167,8 +177,10 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
 
   const bed = new THREE.Mesh(ribbonGeometry(-1.04, 1.04, 0.007), new THREE.MeshStandardMaterial({ color: '#8b9a82', roughness: 0.86, vertexColors: true }));
   bed.receiveShadow = true; root.add(bed);
+  const bankTexture = groundTexture(); bankTexture.repeat.set(1.4, 3.1);
+  const bankMaterial = new THREE.MeshStandardMaterial({ color: '#626449', map: bankTexture, bumpMap: bankTexture, bumpScale: 0.026, roughness: 0.98, vertexColors: true });
   for (const side of [-1, 1]) {
-    const bank = new THREE.Mesh(ribbonGeometry(side < 0 ? -1.53 : 0.98, side < 0 ? -0.98 : 1.53, 0.035), new THREE.MeshStandardMaterial({ color: '#525945', roughness: 0.94, vertexColors: true }));
+    const bank = new THREE.Mesh(ribbonGeometry(side < 0 ? -1.64 : 0.98, side < 0 ? -0.98 : 1.64, 0.082, false, true), bankMaterial);
     bank.receiveShadow = true; root.add(bank);
   }
 
@@ -200,6 +212,8 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   water.renderOrder = 2; root.add(water);
 
   const rockRecords: Instance[] = [], pebbleRecords: Instance[] = [], mossRecords: Instance[] = [];
+  // Separate randomness preserves the original culm, canopy and touch-branch layout.
+  const bankRandom = randomSource(90419), bankRange = (a: number, b: number) => a + bankRandom() * (b - a);
   const rockSource = new THREE.IcosahedronGeometry(1, 2);
   rockSource.deleteAttribute('normal'); rockSource.deleteAttribute('uv');
   const rockGeometry = mergeVertices(rockSource); rockSource.dispose();
@@ -216,8 +230,16 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     const size = range(0.14, 0.49) * (z < -27 ? 1.15 : 1);
     const color = new THREE.Color().setHSL(range(0.12, 0.20), range(0.055, 0.13), range(0.19, 0.32));
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(range(-0.2, 0.2), range(0, 6.28), range(-0.1, 0.1)));
-    rockRecords.push({ position: new THREE.Vector3(x, size * 0.22, z), quaternion: q, scale: new THREE.Vector3(size * 1.3, size * 0.61, size), color });
-    if (rng() > 0.2) mossRecords.push({ position: new THREE.Vector3(x - 0.02, size * 0.44, z), quaternion: q, scale: new THREE.Vector3(size * 1.06, size * 0.32, size * 0.84), color: new THREE.Color().setHSL(range(0.21, 0.27), 0.3, range(0.18, 0.3)) });
+    const mossColor = rng() > 0.2 ? new THREE.Color().setHSL(range(0.21, 0.27), 0.3, range(0.18, 0.3)) : null;
+    // Irregular rock pockets leave real soil and vegetation gaps along each shore.
+    if (bankRockPatch(z, side) < -0.16 || bankRandom() < 0.12) continue;
+    const scale = size * bankRange(0.57, 1.38), flatten = bankRange(0.36, 0.73);
+    const edgeX = x + side * bankRange(-0.25, 0.27), submersion = bankRange(-0.075, 0.045);
+    const rockY = scale * 0.19 + submersion;
+    const rockScale = new THREE.Vector3(scale * bankRange(1.04, 1.52), scale * flatten, scale * bankRange(0.72, 1.17));
+    q.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(bankRange(-0.18, 0.18), 0, bankRange(-0.13, 0.13))));
+    rockRecords.push({ position: new THREE.Vector3(edgeX, rockY, z), quaternion: q, scale: rockScale, color });
+    if (mossColor && rockY + rockScale.y > 0.19) mossRecords.push({ position: new THREE.Vector3(edgeX - 0.02, rockY + rockScale.y * 0.49, z), quaternion: q, scale: new THREE.Vector3(rockScale.x * 0.77, rockScale.y * 0.44, rockScale.z * 0.76), color: mossColor });
   }
   for (let i = 0; i < 510; i++) {
     const z = range(-42, 8), x = streamCenter(z) + range(-0.95, 0.95) * streamWidth(z), size = range(0.03, 0.12);
@@ -227,10 +249,10 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   root.add(instances(rockGeometry, new THREE.MeshStandardMaterial({ roughness: 0.92, color: '#ffffff' }), mossRecords));
   root.add(instances(rockGeometry, new THREE.MeshStandardMaterial({ roughness: 0.46, color: '#ffffff' }), pebbleRecords, false));
 
-  const bambooMap = bambooTexture();
-  const culmMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff', map: bambooMap, bumpMap: bambooMap, bumpScale: 0.018, roughness: 0.56, metalness: 0.02 });
-  const nodeMaterial = new THREE.MeshStandardMaterial({ color: '#bdc395', roughness: 0.72 });
-  const nodeShadeMaterial = new THREE.MeshStandardMaterial({ color: '#5c6646', roughness: 0.94 });
+  const bambooMaps = bambooTexture();
+  const culmMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff', ...bambooMaps, bumpScale: 0.0045, roughness: 0.94, metalness: 0 });
+  const nodeMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.88 });
+  const nodeShadeMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.97 });
   const sheathMaterial = new THREE.MeshStandardMaterial({ color: '#9d966c', roughness: 0.98, side: THREE.DoubleSide });
   const twigMaterial = new THREE.MeshStandardMaterial({ color: '#728250', roughness: 0.87 });
   const leafMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.82, side: THREE.DoubleSide });
@@ -276,8 +298,9 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
       const a = pointAt(y0), b = pointAt(y1);
       culms.push(orientedSegment(a, b, radius, baseColor));
       const nearCulm = culm.z > -10 && Math.abs(culm.x) < 6;
-      (nearCulm ? nodes : distantNodes).push({ position: a.clone().add(new THREE.Vector3(0, 0.027, 0)), scale: new THREE.Vector3(radius * 1.036, radius * 1.4, radius * 1.036) });
-      (nearCulm ? nodeShadows : distantNodeShadows).push({ position: a, scale: new THREE.Vector3(radius * 1.02, radius * 0.6, radius * 1.02) });
+      const nodeColor = baseColor.clone().lerp(new THREE.Color('#b1ac76'), 0.23 + Math.sin(ci + k * 1.8) * 0.035);
+      (nearCulm ? nodes : distantNodes).push({ position: a.clone().add(new THREE.Vector3(0, 0.013, 0)), scale: new THREE.Vector3(radius * 1.036, radius * 0.86, radius * 1.036), color: nodeColor });
+      (nearCulm ? nodeShadows : distantNodeShadows).push({ position: a, scale: new THREE.Vector3(radius * 1.02, radius * 0.37, radius * 1.02), color: baseColor.clone().multiplyScalar(0.70) });
       if (y0 < 5.5 && ci % 3 === 0) {
         const angle = range(0, 6.28), q = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, angle, range(-0.15, 0.15)));
         sheaths.push({ position: a.clone().add(new THREE.Vector3(Math.sin(angle) * radius, -0.15, Math.cos(angle) * radius)), quaternion: q, scale: new THREE.Vector3(range(0.8, 1.3), range(0.85, 1.4), 1) });
@@ -343,6 +366,16 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     const z = range(-27, 9), side = rng() > 0.5 ? 1 : -1;
     const x = streamCenter(z) + side * (streamWidth(z) + range(0.3, 8));
     litterRecords.push({ position: new THREE.Vector3(x, forestFloor(x, z) + 0.016, z), quaternion: new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, range(0, 6.28))), scale: new THREE.Vector3(0.8, range(0.6, 1.0), 0.5), color: new THREE.Color().setHSL(range(0.09, 0.15), 0.28, range(0.29, 0.46)) });
+  }
+  // Small rooted sedge groups soften exposed banks; gaps remain between groups.
+  for (const side of [-1, 1]) for (let tuft = 0; tuft < 42; tuft++) {
+    const z = bankRange(-34, 6.5);
+    if (bankRockPatch(z, side) > 0.45) continue;
+    const x = streamCenter(z) + side * (streamWidth(z) + bankRange(0.06, 0.45));
+    for (let blade = 0; blade < 7; blade++) {
+      const scale = bankRange(0.42, 0.86), yaw = bankRange(0, Math.PI * 2);
+      grassRecords.push({ position: new THREE.Vector3(x + bankRange(-0.09, 0.09), Math.max(0.065, forestFloor(x, z)), z + bankRange(-0.12, 0.12)), quaternion: new THREE.Quaternion().setFromEuler(new THREE.Euler(bankRange(-0.42, 0.42), yaw, bankRange(-0.48, 0.48))), scale: new THREE.Vector3(scale * 0.55, scale, scale), color: new THREE.Color().setHSL(bankRange(0.19, 0.24), 0.34, bankRange(0.23, 0.37)) });
+    }
   }
   root.add(instances(leafGeo, new THREE.MeshStandardMaterial({ color: '#ffffff', side: THREE.DoubleSide, roughness: 0.95 }), grassRecords));
   root.add(instances(leafGeo, new THREE.MeshStandardMaterial({ color: '#ffffff', side: THREE.DoubleSide, roughness: 1 }), litterRecords, false));

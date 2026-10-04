@@ -1,0 +1,4372 @@
+{
+  "createdAt": "2026-10-04T20:39:12.964Z",
+  "world": "morning",
+  "scope": "Read-only frozen bundle, native hit diagnostic, no acceptance relaxation",
+  "manifest": {
+    "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f",
+    "harnessHash": "3da4fe53ecfc93941375f43ed0c367cab6732f37f234b896befcffa349222556",
+    "bundleHash": "1a8165fc9bc889338170cd50cb22858c85bd6ca37678972b41ce91fdbf10c98a"
+  },
+  "runnerHash": "0ffb489f9df8d86c3f1f822b9580056c89a046328adf4b0111490742124bc49f",
+  "snapshots": [
+    {
+      "label": "visible-native-tap",
+      "nowMs": 11516.89999999851,
+      "point": {
+        "x": 0.5341813981826969,
+        "y": 0.7852006644235041,
+        "visible": true,
+        "clientX": 682.5900221356404,
+        "clientY": 631.7812677541469
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "activeElement": {
+        "tag": "BUTTON",
+        "id": "",
+        "classes": "grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95",
+        "world": null,
+        "surface": false,
+        "drag": false,
+        "role": null,
+        "label": "일시정지",
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "auto",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 605.7999877929688,
+          "y": 708.7999877929688,
+          "width": 50.4000244140625,
+          "height": 50.4000244140625
+        }
+      },
+      "target": {
+        "tag": "DIV",
+        "id": "",
+        "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+        "world": null,
+        "surface": false,
+        "drag": true,
+        "role": null,
+        "label": null,
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "20",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        }
+      },
+      "ancestry": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": true,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "20",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+          "world": null,
+          "surface": true,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 16,
+            "y": 78,
+            "width": 1248,
+            "height": 706
+          }
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "10",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 78,
+            "width": 1280,
+            "height": 722
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "root",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "HTML",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        }
+      ],
+      "stack": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": true,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "20",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "CANVAS",
+          "id": "",
+          "classes": "living-woods-canvas",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "living-woods-mount",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "living-woods living-woods-morning",
+          "world": "morning",
+          "surface": false,
+          "drag": false,
+          "role": "img",
+          "label": "상쾌한 아침 — 앉아서 바라보는 숲. 천천히 끌어 둘러보고 가까운 찻잔을 눌러 보세요.",
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+          "world": null,
+          "surface": true,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 16,
+            "y": 78,
+            "width": 1248,
+            "height": 706
+          }
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "10",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 78,
+            "width": 1280,
+            "height": 722
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "root",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "HTML",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        }
+      ],
+      "overlays": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": true,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "20",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        }
+      ],
+      "canvas": {
+        "tag": "CANVAS",
+        "id": "",
+        "classes": "living-woods-canvas",
+        "world": null,
+        "surface": false,
+        "drag": false,
+        "role": null,
+        "label": null,
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "auto",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        }
+      },
+      "world": {
+        "tag": "DIV",
+        "id": "",
+        "classes": "living-woods living-woods-morning",
+        "world": "morning",
+        "surface": false,
+        "drag": false,
+        "role": "img",
+        "label": "상쾌한 아침 — 앉아서 바라보는 숲. 천천히 끌어 둘러보고 가까운 찻잔을 눌러 보세요.",
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "auto",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        }
+      },
+      "events": [
+        {
+          "world": "morning",
+          "sceneId": "country_morning",
+          "kind": "tea-ripple",
+          "strength": 0.24
+        }
+      ],
+      "metrics": {
+        "nowMs": 11517.5,
+        "canvasCount": 1,
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "frames": "3",
+          "time": "0.0176",
+          "drawCalls": "107",
+          "triangles": "396058",
+          "geometries": "106",
+          "textures": "14",
+          "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+          "pendingSubmissions": "2",
+          "completedSubmissions": "1",
+          "pendingStaticFrame": "false"
+        },
+        "width": 1246,
+        "height": 704,
+        "css": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        },
+        "dpr": 1,
+        "status": "ready",
+        "motion": "running",
+        "frames": 3,
+        "time": 0.0176,
+        "contextLost": false,
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "maxPendingSubmissions": 2,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "visibility": "visible"
+      }
+    },
+    {
+      "label": "before-hide",
+      "nowMs": 13095.89999999851,
+      "point": {
+        "x": 0.5341813981826969,
+        "y": 0.7852006644235041,
+        "visible": true,
+        "clientX": 682.5900221356404,
+        "clientY": 631.7812677541469
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "activeElement": {
+        "tag": "BUTTON",
+        "id": "",
+        "classes": "grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95",
+        "world": null,
+        "surface": false,
+        "drag": false,
+        "role": null,
+        "label": "일시정지",
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "auto",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 607,
+          "y": 710,
+          "width": 48,
+          "height": 48
+        }
+      },
+      "target": {
+        "tag": "DIV",
+        "id": "",
+        "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+        "world": null,
+        "surface": false,
+        "drag": true,
+        "role": null,
+        "label": null,
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "20",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        }
+      },
+      "ancestry": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": true,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "20",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+          "world": null,
+          "surface": true,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 16,
+            "y": 78,
+            "width": 1248,
+            "height": 706
+          }
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "10",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 78,
+            "width": 1280,
+            "height": 722
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "root",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "HTML",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        }
+      ],
+      "stack": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": true,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "20",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "CANVAS",
+          "id": "",
+          "classes": "living-woods-canvas",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "living-woods-mount",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "living-woods living-woods-morning",
+          "world": "morning",
+          "surface": false,
+          "drag": false,
+          "role": "img",
+          "label": "상쾌한 아침 — 앉아서 바라보는 숲. 천천히 끌어 둘러보고 가까운 찻잔을 눌러 보세요.",
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+          "world": null,
+          "surface": true,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 16,
+            "y": 78,
+            "width": 1248,
+            "height": 706
+          }
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "10",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 78,
+            "width": 1280,
+            "height": 722
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "DIV",
+          "id": "root",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        },
+        {
+          "tag": "HTML",
+          "id": "",
+          "classes": null,
+          "world": null,
+          "surface": false,
+          "drag": false,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "auto",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+          }
+        }
+      ],
+      "overlays": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+          "world": null,
+          "surface": false,
+          "drag": true,
+          "role": null,
+          "label": null,
+          "style": {
+            "visibility": "visible",
+            "pointerEvents": "auto",
+            "zIndex": "20",
+            "opacity": "1"
+          },
+          "box": {
+            "x": 17,
+            "y": 79,
+            "width": 1246,
+            "height": 704
+          }
+        }
+      ],
+      "canvas": {
+        "tag": "CANVAS",
+        "id": "",
+        "classes": "living-woods-canvas",
+        "world": null,
+        "surface": false,
+        "drag": false,
+        "role": null,
+        "label": null,
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "auto",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        }
+      },
+      "world": {
+        "tag": "DIV",
+        "id": "",
+        "classes": "living-woods living-woods-morning",
+        "world": "morning",
+        "surface": false,
+        "drag": false,
+        "role": "img",
+        "label": "상쾌한 아침 — 앉아서 바라보는 숲. 천천히 끌어 둘러보고 가까운 찻잔을 눌러 보세요.",
+        "style": {
+          "visibility": "visible",
+          "pointerEvents": "auto",
+          "zIndex": "auto",
+          "opacity": "1"
+        },
+        "box": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        }
+      },
+      "events": [],
+      "metrics": {
+        "nowMs": 13096.300000000745,
+        "canvasCount": 1,
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "frames": "3",
+          "time": "0.0176",
+          "drawCalls": "107",
+          "triangles": "396058",
+          "geometries": "106",
+          "textures": "14",
+          "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+          "pendingSubmissions": "2",
+          "completedSubmissions": "1",
+          "pendingStaticFrame": "true"
+        },
+        "width": 1246,
+        "height": 704,
+        "css": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        },
+        "dpr": 1,
+        "status": "ready",
+        "motion": "running",
+        "frames": 3,
+        "time": 0.0176,
+        "contextLost": false,
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "maxPendingSubmissions": 2,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "visibility": "visible"
+      }
+    }
+  ],
+  "errors": [
+    "page.waitForFunction: Timeout 6500ms exceeded.\n    at /workspace/scratch/8e4ccef6af68/brainwave-livingwoods-followup/components/immersiveWorlds/livingWoods/qa/followup/diagnose-hit.mjs:90:29"
+  ],
+  "stage": "hidden-hit-observation",
+  "initialReady": {
+    "nowMs": 2607.099999997765,
+    "canvas": {
+      "engine": "three.js r186",
+      "engineId": "1",
+      "frames": "1",
+      "time": "0.0000",
+      "drawCalls": "206",
+      "triangles": "790454",
+      "geometries": "106",
+      "textures": "14",
+      "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+      "pendingSubmissions": "1",
+      "completedSubmissions": "0",
+      "pendingStaticFrame": "false"
+    }
+  },
+  "failureState": {
+    "nowMs": 19620.89999999851,
+    "readyState": "complete",
+    "url": "http://127.0.0.1:41871/?world=morning&mode=player",
+    "visibility": "visible",
+    "bodyText": "축소\n\nNOW PLAYING\n\n상쾌한 아침\n전체 화면\n자연 보기\n그래픽 보기\n\n남은 시간\n\n25:00",
+    "canvasCount": 1,
+    "canvas": {
+      "dataset": {
+        "engine": "three.js r186",
+        "engineId": "1",
+        "frames": "4",
+        "time": "0.0343",
+        "drawCalls": "107",
+        "triangles": "396058",
+        "geometries": "106",
+        "textures": "14",
+        "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+        "pendingSubmissions": "2",
+        "completedSubmissions": "2",
+        "pendingStaticFrame": "false"
+      },
+      "width": 1246,
+      "height": 704
+    },
+    "world": {
+      "dataset": {
+        "world": "morning",
+        "status": "ready",
+        "motion": "running"
+      },
+      "bounds": {
+        "x": 17,
+        "y": 79,
+        "width": 1246,
+        "height": 704,
+        "top": 79,
+        "right": 1263,
+        "bottom": 783,
+        "left": 17
+      }
+    },
+    "trace": {
+      "events": [
+        {
+          "type": "keydown",
+          "timeMs": 10672.800000000745,
+          "trusted": true,
+          "key": "Shift",
+          "target": {
+            "tag": "BODY",
+            "id": "",
+            "classes": null,
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none invisible pointer-events-none opacity-0",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "hidden",
+              "pointerEvents": "none",
+              "zIndex": "20",
+              "opacity": "0"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerover",
+          "timeMs": 10749.800000000745,
+          "trusted": true,
+          "x": 631,
+          "y": 734,
+          "target": {
+            "tag": "path",
+            "id": "",
+            "classes": null,
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 625.875,
+              "y": 726.12451171875,
+              "width": 14.0010986328125,
+              "height": 15.75103759765625
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0.175157"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 10750.300000000745,
+          "trusted": true,
+          "x": 631,
+          "y": 734,
+          "target": {
+            "tag": "path",
+            "id": "",
+            "classes": null,
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 625.875,
+              "y": 726.12451171875,
+              "width": 14.0010986328125,
+              "height": 15.75103759765625
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0.175157"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerdown",
+          "timeMs": 10751.199999999255,
+          "trusted": true,
+          "x": 631,
+          "y": 734,
+          "target": {
+            "tag": "path",
+            "id": "",
+            "classes": null,
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 625.875,
+              "y": 726.12451171875,
+              "width": 14.0010986328125,
+              "height": 15.75103759765625
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0.175157"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "focusin",
+          "timeMs": 10751.800000000745,
+          "trusted": true,
+          "target": {
+            "tag": "BUTTON",
+            "id": "",
+            "classes": "grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95",
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": "재생",
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 607,
+              "y": 710,
+              "width": 48,
+              "height": 48
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0.175157"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerup",
+          "timeMs": 10752,
+          "trusted": true,
+          "x": 631,
+          "y": 734,
+          "target": {
+            "tag": "path",
+            "id": "",
+            "classes": null,
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 625.875,
+              "y": 726.12451171875,
+              "width": 14.0010986328125,
+              "height": 15.75103759765625
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0.175157"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "click",
+          "timeMs": 10752.199999999255,
+          "trusted": true,
+          "x": 631,
+          "y": 734,
+          "target": {
+            "tag": "path",
+            "id": "",
+            "classes": null,
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 625.875,
+              "y": 726.12451171875,
+              "width": 14.0010986328125,
+              "height": 15.75103759765625
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0.175157"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerover",
+          "timeMs": 10757.300000000745,
+          "trusted": true,
+          "x": 631,
+          "y": 734,
+          "target": {
+            "tag": "svg",
+            "id": "",
+            "classes": "lucide lucide-pause",
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 620.5,
+              "y": 723.5,
+              "width": 21,
+              "height": 21
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0.30712"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerout",
+          "timeMs": 11507.39999999851,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "svg",
+            "id": "",
+            "classes": "lucide lucide-pause",
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 619.9749755859375,
+              "y": 722.9749755859375,
+              "width": 22.050048828125,
+              "height": 22.050048828125
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerover",
+          "timeMs": 11508.199999999255,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 11508.800000000745,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerdown",
+          "timeMs": 11510.300000000745,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerup",
+          "timeMs": 11512.800000000745,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "click",
+          "timeMs": 11515.199999999255,
+          "trusted": true,
+          "x": 682,
+          "y": 631,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 12241.599999997765,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerdown",
+          "timeMs": 12244.199999999255,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 12272.199999999255,
+          "trusted": true,
+          "x": 707.5900268554688,
+          "y": 624.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 12290.599999997765,
+          "trusted": true,
+          "x": 732.5900268554688,
+          "y": 617.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 12308.699999999255,
+          "trusted": true,
+          "x": 757.5900268554688,
+          "y": 610.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 12324.099999997765,
+          "trusted": true,
+          "x": 782.5900268554688,
+          "y": 603.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 12343.89999999851,
+          "trusted": true,
+          "x": 807.5900268554688,
+          "y": 596.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointerup",
+          "timeMs": 12351.89999999851,
+          "trusted": true,
+          "x": 807.5900268554688,
+          "y": 596.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "click",
+          "timeMs": 12352.099999997765,
+          "trusted": true,
+          "x": 807,
+          "y": 596,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "pointermove",
+          "timeMs": 13090.5,
+          "trusted": true,
+          "x": 682.5900268554688,
+          "y": 631.78125,
+          "target": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "type": "focusout",
+          "timeMs": 16696.800000000745,
+          "trusted": true,
+          "target": {
+            "tag": "BUTTON",
+            "id": "",
+            "classes": "grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95",
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": "일시정지",
+            "style": {
+              "visibility": "hidden",
+              "pointerEvents": "none",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 607,
+              "y": 710,
+              "width": 48,
+              "height": 48
+            }
+          },
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none invisible pointer-events-none opacity-0",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "hidden",
+              "pointerEvents": "none",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        }
+      ],
+      "classChanges": [
+        {
+          "nowMs": 4420.800000000745,
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none invisible pointer-events-none opacity-0",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "hidden",
+              "pointerEvents": "none",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "hit": null
+        },
+        {
+          "nowMs": 10673.599999997765,
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "0"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "hit": null
+        },
+        {
+          "nowMs": 16695.199999999255,
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none invisible pointer-events-none opacity-0",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "hidden",
+              "pointerEvents": "none",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "hit": {
+            "tag": "CANVAS",
+            "id": "",
+            "classes": "living-woods-canvas",
+            "world": null,
+            "surface": false,
+            "drag": false,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "auto",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        },
+        {
+          "nowMs": 16697.300000000745,
+          "overlay": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          },
+          "hit": {
+            "tag": "DIV",
+            "id": "",
+            "classes": "absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none visible opacity-100",
+            "world": null,
+            "surface": false,
+            "drag": true,
+            "role": null,
+            "label": null,
+            "style": {
+              "visibility": "visible",
+              "pointerEvents": "auto",
+              "zIndex": "20",
+              "opacity": "1"
+            },
+            "box": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            }
+          }
+        }
+      ],
+      "point": {
+        "x": 0.5341813981826969,
+        "y": 0.7852006644235041,
+        "visible": true,
+        "clientX": 682.5900221356404,
+        "clientY": 631.7812677541469
+      },
+      "lifecycleSamples": [
+        {
+          "nowMs": 2585.599999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 2771.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 3021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 3271.599999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 3521.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 3771.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 4021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 4271.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 4521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 4771.39999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 5022.300000000745,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 5271.300000000745,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 5521.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 5771.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 6021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 6271.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 6521,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 6773.599999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 7021.699999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 7271.39999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 7521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 7771.39999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 8021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 8271.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 8521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 8771.39999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 9021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 9271.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 9521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 9771.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 10021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 10271.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 10521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "1",
+              "completedSubmissions": "0",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "paused"
+          }
+        },
+        {
+          "nowMs": 10772.599999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "1",
+              "time": "0.0000",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 11021.89999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 11271.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 11524.699999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 11772.699999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 12022.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 12273.39999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 12521.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 12771.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 13021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 13271.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 13521.599999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 13771.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 14021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 14272.5,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 14521.300000000745,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 14771.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 15022.300000000745,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 15272.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 15521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 15771.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 16021.300000000745,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 16271.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "3",
+              "time": "0.0176",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "1",
+              "pendingStaticFrame": "true"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 16521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 16771.599999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 17021.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 17271.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 17521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 17771.89999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 18021.199999999255,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 18272.300000000745,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 18521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 18773.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 19022.39999999851,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 19271.300000000745,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        },
+        {
+          "nowMs": 19521.099999997765,
+          "readyState": "complete",
+          "canvasCount": 1,
+          "canvas": {
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "4",
+              "time": "0.0343",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "2",
+              "completedSubmissions": "2",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "status": "ready",
+            "motion": "running"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,3496 @@
+{
+  "generatedAt": "2026-10-04T21:01:36.507Z",
+  "phase": "interaction",
+  "sourceRevision": "8c182cdcbf63834ff3e26aeb8e2843872855451f",
+  "sourceFiles": [
+    {
+      "path": "components/ImmersiveMode.tsx",
+      "sha256": "c8b34144dc2156c3910cbfb3969082fe2a8625ee033379f96f57c6e1b35bd2b5"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/AncientForestWorld.tsx",
+      "sha256": "8e3c0fa0d8732511952bc680d37dfc6b74ef63da90ad3709d750a2c672553932"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/BambooWorld.tsx",
+      "sha256": "f3c26503fef49fb4db89160c221dd26ca76282650c0f8ad49496ec5294c8cbd8"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/engine.ts",
+      "sha256": "bce32c1f08f0a07f2935e776798759d2e7d6cc86a3653b0220e3a16978689d9e"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/engineLifecycle.test.ts",
+      "sha256": "63f3f20274b01b2980c1dc58f370e997b96123afcda6b605fc64e193dcef640b"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/gesture.test.ts",
+      "sha256": "8f6294a4cf17ee1b6604f2fb16b3d9bb3857ac393880d06fe25ac7d892deabd2"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/gesture.ts",
+      "sha256": "67a90fae02e72a2233c68191386f0178bfbd764df9c64429592897e2e7b30f3e"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/host.ts",
+      "sha256": "95f11c971c0b2a8acf93e72cf41120aba9d227c5c22a3074c6f3b58c03cd425d"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/hostRetention.test.ts",
+      "sha256": "b58fac0eb7d43d74c5da69be6ceb8a04fcc4b6d71110ea9ac91de3fc223ae03f"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/INTEGRATION.md",
+      "sha256": "d4f365153fd30d3e34808afe87e86ecc6bf352eaaaa96564f83b49e11b61ad8a"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/livingWoods.browser.test.ts",
+      "sha256": "1a1fea8f3471eaaacd503b99bcdc0356b3a85ffb636450677b7cd4447ee3df35"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/livingWoods.css",
+      "sha256": "95d99e6d793ba920789ffcf5bb49133f2d36cb3085884cdfbe7cbc5cde134622"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/MorningPorchWorld.tsx",
+      "sha256": "68b13118c86592bd94d417e77e34dad7bef0b3a72e90040b4f9ed17c212e203e"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/RainyForestWorld.tsx",
+      "sha256": "b73a6c1116ca61f1655e6d19857814be4ef9378f1c3d4179b981e71fbe802fc4"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/REFERENCE_REVIEW.md",
+      "sha256": "0392023fdb283a1e4eddadb85841886df93a3c5afc6dfe8e65a4cee0d08a7ef5"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/reflectorCompatibility.test.ts",
+      "sha256": "7ba2291ce0a78917616eaeaa92bb1028476f8b136555c803a9dc7ee81c3b4733"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/reflectorCompatibility.ts",
+      "sha256": "c4222d0189838a8698d60b14f3248618fdcdcc5f0f9004f5c58572bcb48d7a3a"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/scenes/ancientForest.ts",
+      "sha256": "eaaeaa24e45b185b2981d951e4d7fe92743e59f75d1a28a4de8670490a4b9f22"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/scenes/bamboo.ts",
+      "sha256": "c72671ca392ab38cadd6ec4467db26e5455f95577f3c7fb28e06d88130364b1e"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/scenes/morningPorch.ts",
+      "sha256": "11a483c0aa0b2568ebb59a1fd78e160fc7c8d9e77a55421112feb27417c0f5dd"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/scenes/rainyForest.ts",
+      "sha256": "784082f4238cf5159552832364255a173af6881bc223265fa8265cbf8a46743f"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/submissionGate.test.ts",
+      "sha256": "848652f74c3286d8673709b8dc93c6f6b057e8cb39276a0822696c63436f6e02"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/submissionGate.ts",
+      "sha256": "f7034a434e0568375308167490b66400cad990b9cc8700523a615be5ec4068f6"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/types.ts",
+      "sha256": "56ef46fb22db1f85a332e52830972355ef1d33fda0a145a7fff1b39fccb98375"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/VALIDATION.md",
+      "sha256": "28a87059bce296a5c03ef0c6e5c65aad63cefcd4229f0f1677c37cf6588058d7"
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods/WorldSurface.tsx",
+      "sha256": "948bd36fb0fe6a1b383cd492a2e5cb8ed6045ded9d6597e4d8b6921bf036a51f"
+    },
+    {
+      "path": "components/liveScene/liveSceneHost.ts",
+      "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+    },
+    {
+      "path": "components/Player.tsx",
+      "sha256": "43f3e3e8f3908f2c6104512094e31c29a3dc070a4ba94e7671b0abb2d078f741"
+    },
+    {
+      "path": "components/useSceneMotion.ts",
+      "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+    },
+    {
+      "path": "index.css",
+      "sha256": "168fa23965528d467e13c66012c3e8dd01a6fabf50c52a1d3bc58496d1e27fe0"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "91a7df5bfd528eb4d40d662c4d57ad4938cc9b39f68a0b827f59483b4f5f5b07"
+    },
+    {
+      "path": "package.json",
+      "sha256": "ef504d9c1df7130d534a1d543a67089a7fa10e46b2248c77f1e33aa6caa55553"
+    },
+    {
+      "path": "postcss.config.js",
+      "sha256": "e32657baf631d7c5f4dc67b4b2ee0ec8e7d5b3c41860e09cddce7c0377cd80bc"
+    },
+    {
+      "path": "sound-studio.css",
+      "sha256": "be9511e2d0a35e92e1c05dab46a92a0e051c317f9a52656e5edf460f01fb62de"
+    },
+    {
+      "path": "tailwind.config.js",
+      "sha256": "420cd41fbe0b84d5b216619c52f453cf4cd5532e16bb3d154fd3b7be2ee4058a"
+    }
+  ],
+  "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f",
+  "harnessFiles": [
+    {
+      "path": "index.html",
+      "sha256": "310d50e315a5b1199001de81cb0d033e730c7f6dd03944c1c05e2194ac8ef35f"
+    },
+    {
+      "path": "harness.tsx",
+      "sha256": "8639c1feff247eeb21002158c4381d1839b73b13b1200abc06c3af54cfbd2b60"
+    },
+    {
+      "path": "backdrop.tsx",
+      "sha256": "e18a1bf9cade8cd45b9b1fbe55ba2402da17551204a7ceb683c858d013833089"
+    }
+  ],
+  "harnessHash": "3999fe779d83511add2c90f9bbe06984aa07d4d9229c6c09f9a59dc7d4608c6a",
+  "bundleFiles": [
+    {
+      "path": "apple-touch-icon.png",
+      "sha256": "a353d50358ef99a33d9d74697ae2cf899b6c93b1434eead3181a84fd03fe6975"
+    },
+    {
+      "path": "assets/index-BQ9ZOm2O.js",
+      "sha256": "52c93cf758b382d5b56dae0e6f91d2a41c15f7ec0c5bf336b0f241eb445ac570"
+    },
+    {
+      "path": "assets/index-c-oJo58B.css",
+      "sha256": "ff57c7213dbbf01835258af4788dd93825422716828f6ae4aba34fdb1566d7a9"
+    },
+    {
+      "path": "assets/index-DtHrkFPe.js",
+      "sha256": "c5c961dd11b4b1c80788a1c81ee753d22f0ee61251ef46647a04ddce4b7c8191"
+    },
+    {
+      "path": "assets/PretendardVariable-CJuje-Rk.woff2",
+      "sha256": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4"
+    },
+    {
+      "path": "audio/nature/arctic-wind-cc0-v2.mp3",
+      "sha256": "5f44a7ea070ac301ba04bff481741fd4831cc271d1db92d9e082f5df033e82ab"
+    },
+    {
+      "path": "audio/nature/creek-brook-cc0-v3.mp3",
+      "sha256": "292d85cdf026ac4f02a248006facbf94a21b609f805a3ea92c9ef9309b3c0978"
+    },
+    {
+      "path": "audio/nature/crickets-night-cc0-v2.mp3",
+      "sha256": "1f380ddf267c76577b6bfeaccb49a52d22f74a181662ed143c847999abcaf6e7"
+    },
+    {
+      "path": "audio/nature/fireplace-hearth-cc0-v2.mp3",
+      "sha256": "3caeeb5bb4ef1fa317f18dbf3b77809e27b11e39c9be218ebda0ada376475086"
+    },
+    {
+      "path": "audio/nature/forest-birds-alishan-cc0-v2.mp3",
+      "sha256": "165fc140e0c2d636a5542ec92dc7b5552c4f1ab08964136419c36ffd48d11029"
+    },
+    {
+      "path": "audio/nature/forest-field-cc0-v2.mp3",
+      "sha256": "f6b4edafc65c71633168fdee202c0a764d99366e9fd1df97379f0bc310f1cfa6"
+    },
+    {
+      "path": "audio/nature/mountain-wind-cc0-v2.mp3",
+      "sha256": "3597008fdc94aadddc75fb4e2b8cf8dc36ff796dc3b487a65cb2ebdb14cc0505"
+    },
+    {
+      "path": "audio/nature/ocean-ribeira-cc0-v2.mp3",
+      "sha256": "85edc622c0758d48cc59d118dd06123a69519f6a63d2efb68945b72364745a4c"
+    },
+    {
+      "path": "audio/nature/rain-jun-v1.mp3",
+      "sha256": "0be4a672a3ee099cc2c1c0dc5f5a664ccc5eab82100dea0b93205bc1e8dc1b1a"
+    },
+    {
+      "path": "audio/nature/rural-crickets-jun-v1.mp3",
+      "sha256": "a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c"
+    },
+    {
+      "path": "audio/nature/thunder-distant-cc0-v2.mp3",
+      "sha256": "fffdab0cc338ef90dcef915871fa95a9380eeb05c953f012d999b4ebbe83e398"
+    },
+    {
+      "path": "audio/nature/thunder-near-cc0-v2.mp3",
+      "sha256": "aa70528270e291b89efd85d9d1102cfa91216bd14faaa7312db0e6c5aa56dafc"
+    },
+    {
+      "path": "audio/nature/thunder-storm-cc0-v2.mp3",
+      "sha256": "b3c802a51391affbed5e8ecdaf5ca0f382205a51919aa87879f7c559bd0bcd5e"
+    },
+    {
+      "path": "audio/nature/waterfall-caldeiroes-cc0-v2.mp3",
+      "sha256": "685584b0df0f59da41fec8c14b04e3c639f0bad12cdb7a1ce5d5ee922907c30c"
+    },
+    {
+      "path": "favicon-32x32.png",
+      "sha256": "07011dcc5b0deb9999bf3f92aad088933d7735e10b4fbe5c0a36d0338b23e416"
+    },
+    {
+      "path": "icon.svg",
+      "sha256": "d55c0f62e8f055d963741bb50d484d2265f49133735893a2dc888bb7c57e1719"
+    },
+    {
+      "path": "images/guide/brainwave-guide-hero-v1.webp",
+      "sha256": "7810f0d6acac3145675df63f503feea5249644773cf14ae25773a743c113a5fc"
+    },
+    {
+      "path": "images/nature/backgrounds/bamboo-v5.webp",
+      "sha256": "429ffca66b14359090311fe6695b470094b42b496eb465f68a78a4471298b075"
+    },
+    {
+      "path": "images/nature/backgrounds/campfire-loop-poster-v1.webp",
+      "sha256": "2c26a2571252f05bb779aa99cefed08c71fdec0cc9278fe2fc28baeb0a70d710"
+    },
+    {
+      "path": "images/nature/backgrounds/campfire-loop-poster-v2.webp",
+      "sha256": "79e773af82d5388fbfc6999f4df8db9e8538c44cc69f8e5c2df195e0ac2a5ef2"
+    },
+    {
+      "path": "images/nature/backgrounds/cave-v5.webp",
+      "sha256": "1dd3f33c5cbdcc041cb21417dfd6b22e3a08971c1f841774f1e27afa2f98468f"
+    },
+    {
+      "path": "images/nature/backgrounds/coast-v5.webp",
+      "sha256": "7b6a7b7be04aaa299481aa4f4e2637516fa8b5a990fc8dcad1b57f008eaf06ff"
+    },
+    {
+      "path": "images/nature/backgrounds/deepsea-v5.webp",
+      "sha256": "4dc7af0fe86964466c493965d59b178df7c6c56654c78b92442b6843c617e50d"
+    },
+    {
+      "path": "images/nature/backgrounds/eaves-v5.webp",
+      "sha256": "1a41f210ea52c136810da127eaefb610e5cd88f5900617448b694b251f45aca7"
+    },
+    {
+      "path": "images/nature/backgrounds/focus-window-v1.webp",
+      "sha256": "cfe03b5599fc42bae126084ad2c7fc67e98704ff05e4e7dc23726eb93db5ef8d"
+    },
+    {
+      "path": "images/nature/backgrounds/oil-sea-v2.webp",
+      "sha256": "77f4b7da922a23527ae9f66ea0dca41855b69607e1514ca2d7a7c574c4362fb6"
+    },
+    {
+      "path": "images/nature/backgrounds/rural-ghibli-v9.webp",
+      "sha256": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295"
+    },
+    {
+      "path": "images/nature/backgrounds/scops-night.webp",
+      "sha256": "83b516791162ded3a21d93725797a69efedd225ed8a93133748c3444ec22b5d7"
+    },
+    {
+      "path": "images/nature/backgrounds/summer-valley.webp",
+      "sha256": "336af83396b3d23af64b9f2da6f5275e4d78eaecc909ccb5af30355efe74d090"
+    },
+    {
+      "path": "images/nature/backgrounds/temple-v5.webp",
+      "sha256": "549fc7017631a51fbf45d6faeba88ef64bdb77a88836e686d6ff34f0570907b1"
+    },
+    {
+      "path": "images/nature/backgrounds/tent-v5.webp",
+      "sha256": "585cb07412bba48650a658f55546d12d10316dd98b03bcf59210b25007526740"
+    },
+    {
+      "path": "images/nature/backgrounds/window-v5.webp",
+      "sha256": "34da840578ba8e1fd90ac112eec5b22ce3ed1a95ed5689acce546243d4914ea4"
+    },
+    {
+      "path": "images/nature/backgrounds/winter-v5.webp",
+      "sha256": "6089565422bcf0a043d9ba44376a9436b92e196d165c6f5029bc31fc323595ea"
+    },
+    {
+      "path": "images/nature/fauna/scops-owl-cutout.webp",
+      "sha256": "68cca0c83c234af4593c0e72b7043314546955bda14eff1ebc31a26636857f9a"
+    },
+    {
+      "path": "images/nature/fauna/songbird-cutout.webp",
+      "sha256": "5df7a55df05a69def0c310f31401180d441b19abfdeceedf5707c7dddaad517c"
+    },
+    {
+      "path": "images/nature/motion/bat-behavior-a-v4.webp",
+      "sha256": "ab01c61a33cfacdccb9e99d5e44aea2aa69a1913b7c17b2b76d2df805e74af06"
+    },
+    {
+      "path": "images/nature/motion/bat-behavior-b-v4.webp",
+      "sha256": "3c51e34f48bebe95d32632e5bac9b2d391a447f713b64afc99eee701b0577bb9"
+    },
+    {
+      "path": "images/nature/motion/cicada-behavior-a-v4.webp",
+      "sha256": "972ca0249fb4ec91c3cf5013a11cba17c46d87456d71210195488c09fa1f5cf2"
+    },
+    {
+      "path": "images/nature/motion/cicada-behavior-b-v4.webp",
+      "sha256": "598a6a1a8e532120aac6e0828f6eae80ee788a32e541350268f6412e7a65323f"
+    },
+    {
+      "path": "images/nature/motion/cricket-behavior-a-v4.webp",
+      "sha256": "9cf644c719ea6161653a2b8e42473c60cd5eb4843fbe622a40e75d07dbc16705"
+    },
+    {
+      "path": "images/nature/motion/cricket-behavior-b-v4.webp",
+      "sha256": "5d1ec0d389c9fa6c84ed344e44d7ed46628e40846bb3d3ec1b6dccd2e6f928aa"
+    },
+    {
+      "path": "images/nature/motion/cuckoo-behavior-a-v4.webp",
+      "sha256": "3fb3cd0f211bdcd10a37110868c85cefc43c052b3e06fd9e3f5b568a4e85d1cf"
+    },
+    {
+      "path": "images/nature/motion/cuckoo-behavior-b-v4.webp",
+      "sha256": "df5177683161f80db8fa01537bf0a3f47f576430416b4ba2854628388362b84a"
+    },
+    {
+      "path": "images/nature/motion/deepsea-fish-behavior-a-v4.webp",
+      "sha256": "96092774d1182b319959df5c0b86c0dc29c22017e4e5125ed4ca9a60c7eb434e"
+    },
+    {
+      "path": "images/nature/motion/deepsea-fish-behavior-b-v4.webp",
+      "sha256": "0e782bbc5936ae981627b018f03112ace9d59091dfd3d4d857fe96950a638485"
+    },
+    {
+      "path": "images/nature/motion/duck-behavior-a-v4.webp",
+      "sha256": "c7523d33378b39c3a903f74a55383b62c92d2c4fc4f188475b4c490e846e0a3b"
+    },
+    {
+      "path": "images/nature/motion/duck-behavior-b-v4.webp",
+      "sha256": "50efd0e7112ed47bd70881e056ddc810f5a97cba5f54a493b2ce9d3e245c0b4d"
+    },
+    {
+      "path": "images/nature/motion/scops-owl-behavior-a-v3.webp",
+      "sha256": "4efdc0bf359e5759abc329f642ee6bb717a9167d47a8559b1aa6c13e9c4c7943"
+    },
+    {
+      "path": "images/nature/motion/scops-owl-behavior-b-v3.webp",
+      "sha256": "ef2ebc578c738ffa96b87cbbf3c0d4f775a17f4aad5934ffaa6862d9d63d7b22"
+    },
+    {
+      "path": "images/nature/motion/scops-owl-call-atlas.webp",
+      "sha256": "4a8bf516d7f12f8d61575778e1a941a867c786e8e2caf91ee193173086bea7fa"
+    },
+    {
+      "path": "images/nature/motion/scops-owl-idle-atlas.webp",
+      "sha256": "b0681320bd9901cf14e3d75fa9310d7735df770af6a03f20edf61bfa3f7eb1b4"
+    },
+    {
+      "path": "images/nature/motion/seabird-behavior-a-v4.webp",
+      "sha256": "de78b4fd5a6d0ce3e35dae0054b47500d945f981b3c4c5ec059d356e2c898c4a"
+    },
+    {
+      "path": "images/nature/motion/seabird-behavior-b-v4.webp",
+      "sha256": "0e5ce92619755517efae407bffd78c9b2c0c01ae6063f1bd7080805aee2fd25e"
+    },
+    {
+      "path": "images/nature/motion/songbird-behavior-a-v2.webp",
+      "sha256": "33cdd0030b1bf97f0bc681dcb9de9b57a74c2a0d066f70561550717ddb954aff"
+    },
+    {
+      "path": "images/nature/motion/songbird-behavior-b-v2.webp",
+      "sha256": "1d8692e33ecf54a8f9f74f9ff49b40291738b66881a7b75aed8387b825e4cb71"
+    },
+    {
+      "path": "images/nature/motion/stream-fish-behavior-a-v4.webp",
+      "sha256": "70f6c9f78d883986ff31192fc5210f3101fc97a648b148281adf2885a1678a21"
+    },
+    {
+      "path": "images/nature/motion/stream-fish-behavior-b-v4.webp",
+      "sha256": "7d7f3e142795942e510a38015d378ca22eab7f7b235e18a9de7f9ed153886768"
+    },
+    {
+      "path": "images/nature/motion/woodpecker-behavior-a-v4.webp",
+      "sha256": "718cfc74dad03abaa22d268f2ff5cfb9e3d94391f9a668040128ec9f24d97c61"
+    },
+    {
+      "path": "images/nature/motion/woodpecker-behavior-b-v4.webp",
+      "sha256": "748fbead1e036df28499e928879af2d68851ce390bf73b7d53f06ad8f438ad55"
+    },
+    {
+      "path": "images/nature/objects/organic-objects-atlas-v1.webp",
+      "sha256": "d290bfde46ea0abc62ec1c7189703651986822187afbef66721f4ab01c28ff5b"
+    },
+    {
+      "path": "images/nature/objects/shelter-objects-atlas-v1.webp",
+      "sha256": "b62cad473a86d4f21932e1e5e2b1d03a6f6f4d274655e118b739480462f1951b"
+    },
+    {
+      "path": "images/nature/objects/water-objects-atlas-v1.webp",
+      "sha256": "27719fef4446e160a582374a8825a924192e0bafda7a04ea68e01f772168fcd5"
+    },
+    {
+      "path": "images/nature/objects/weather-objects-atlas-v1.webp",
+      "sha256": "35831718b9c1fc736a98ed03989a69ff763974dd69e1444460c426eb8f4593e8"
+    },
+    {
+      "path": "images/nature/objects/wellness-objects-atlas-v1.webp",
+      "sha256": "a3bcf3ab1816fd557e550a962a6fbc92d9a57a3e8f023261a9e1bc531bacb358"
+    },
+    {
+      "path": "images/presets/focus.webp",
+      "sha256": "2d9f030307ebe13047570e200e0a8adb42e11fb40f7606f54b42ea5dd24dc46e"
+    },
+    {
+      "path": "images/presets/meditation.webp",
+      "sha256": "d2221247ade30ee0ba5d5905ee89ec3926810c1bbdb000a6e7d09d79bb8aefae"
+    },
+    {
+      "path": "images/presets/morning.webp",
+      "sha256": "58ea6a38ce98f7299ec0e29977db988921cd3dcdf31294baaf025924a5d13ff5"
+    },
+    {
+      "path": "images/presets/nap.webp",
+      "sha256": "1c76e93176204ab5abbcb58874ae4186c9f178a5bb3b04319c01579c12390f89"
+    },
+    {
+      "path": "images/presets/relax.webp",
+      "sha256": "9fa43bccfd8f996fbed3f8a5a1aa9c489681265e7f6e2f2923fc4e71cf9ed379"
+    },
+    {
+      "path": "images/presets/sleep.webp",
+      "sha256": "12d1ba9fdf042d5599dda40ee171b65ad97d25e44a24982dca96b86bb88bf032"
+    },
+    {
+      "path": "index.html",
+      "sha256": "56ba8a70e2276b0d891480e51f1a542465c6952e6aee349abdd54a5ef64ef1ee"
+    },
+    {
+      "path": "pwa-192x192.png",
+      "sha256": "fe71fb578dbe72983250e6db59733d410be381d7e11824b1e095d57d3cd8abc6"
+    },
+    {
+      "path": "pwa-512x512.png",
+      "sha256": "0a5afb915602221ec876a893cd94686890425d99e17f09f327e5d9c4944264c5"
+    },
+    {
+      "path": "video/nature/campfire-loop-v1.mp4",
+      "sha256": "cdf14c498c1e07ac6c8884212c9f9560f526c94d0b8b93297d227688af9d7fe6"
+    },
+    {
+      "path": "video/nature/campfire-loop-v2.mp4",
+      "sha256": "dff43230956294a4ef1cf69c777caa01f2921a48901ddcda83c06db03be72525"
+    }
+  ],
+  "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+  "runnerHash": "970ff4d8b663f792bd0b5849d041cae0e082559977063e03fe571fc0c4eb4677",
+  "before": {
+    "originalBranch": "codex/living-woods-four-worlds",
+    "originalHead": "a3ec0ca45fc9e545fbee3791a72e1d90a56c7249",
+    "evidenceRoot": "../evidence",
+    "originalPngs": [
+      {
+        "path": "ancient-desktop.png",
+        "sha256": "a533ca2a9d9a4c26365134247054dcefbff782f0df9c556518958c4075aad511"
+      },
+      {
+        "path": "ancient-fold-inner-viewport.png",
+        "sha256": "183cc824fc99d5214041b53c59553563bd5d8fd21653e6063e9e27e0edf2e049"
+      },
+      {
+        "path": "ancient-portrait.png",
+        "sha256": "0e71f7e1e547bec48c84d3d045484ce67122924b14e12c0485df7944daa943fa"
+      },
+      {
+        "path": "bamboo-desktop.png",
+        "sha256": "27925f36b7e3a76870e337d794b840ba15b79b34d2ed260d8ee21dd20b4cd7ff"
+      },
+      {
+        "path": "bamboo-fold-inner-viewport.png",
+        "sha256": "f95c5dabb8eff8395841213a6cfece85a9598f047ef8c77632aabdcef436d85d"
+      },
+      {
+        "path": "bamboo-portrait.png",
+        "sha256": "900414f759a8950bbe8295d2b27487fbe2b70a2160dee537e3197fc9541352f8"
+      },
+      {
+        "path": "morning-desktop.png",
+        "sha256": "fe146afacc04c5c5055d39aa2865429636e59970dbd6b9b33ff6367e13c621ac"
+      },
+      {
+        "path": "morning-fold-inner-viewport.png",
+        "sha256": "11f467e300d2caed18232fdb9964bd1de8e3d41b10d09a5c7ab2d0d3b3b9f192"
+      },
+      {
+        "path": "morning-portrait.png",
+        "sha256": "35d6939745c8493a510b4ba52d11d5d970f4f2895cf8d8583d80dd999f454570"
+      },
+      {
+        "path": "rainy-desktop.png",
+        "sha256": "aadb0d8c209d2fe4497a044674b3b4bd9b9c717a61b58220e6608ee85b1749e2"
+      },
+      {
+        "path": "rainy-fold-inner-viewport.png",
+        "sha256": "df9ea0ac3822d0babaec7b2e27b2631233e96eedafc2ebe84184aeb3971499ac"
+      },
+      {
+        "path": "rainy-portrait.png",
+        "sha256": "96f551777077dc8580304e8a99578ea6a429cf7c59509b2d204d3400120afe1f"
+      }
+    ]
+  },
+  "environment": {
+    "browserExecutable": "/tmp/cosmic-browser-bin/chromium",
+    "browserVersion": "153.0.8010.0",
+    "backend": "Chromium SwiftShader software WebGL",
+    "dpr": 1,
+    "capture": "Native browser viewport PNG via Playwright; nonblocking completion fence and PNG share a strict 60-second budget. No screenshot is queued after a drain failure.",
+    "scope": "Unmodified production Player/ImmersiveMode wrappers and stylesheet, owned QA-only SessionBackdrop injection. Not actual App/catalog/audio-engine integration; no audio context created.",
+    "hardware": "Viewport emulation only, no physical Fold, hardware FPS, power or thermal claim."
+  },
+  "jobs": [
+    {
+      "world": "morning",
+      "kind": "native-interaction",
+      "forceByte": false,
+      "checks": {
+        "nativeFocusSetup": {
+          "passed": true,
+          "headingHit": {
+            "tag": "H1",
+            "text": "상쾌한 아침",
+            "outsideScene": true
+          },
+          "focusedAfterHeading": {
+            "tag": "BODY",
+            "label": null
+          },
+          "input": "Trusted native click on actual noninteractive Player header heading; no synthetic blur."
+        },
+        "visibleChromeTapAttempts": {
+          "selection": "Original projected target centers",
+          "candidates": [
+            {
+              "x": 0.5341813981826969,
+              "y": 0.7852006644235041,
+              "visible": true,
+              "clientX": 682.5900221356404,
+              "clientY": 631.7812677541469
+            },
+            {
+              "x": 0.5342624651730411,
+              "y": 0.7150776803083456,
+              "visible": true,
+              "clientX": 682.6910316056092,
+              "clientY": 582.4146869370753
+            },
+            {
+              "x": 0.619337901006409,
+              "y": 0.7705076559278634,
+              "visible": true,
+              "clientX": 788.6950246539856,
+              "clientY": 621.4373897732158
+            }
+          ],
+          "attempts": [
+            {
+              "target": {
+                "x": 0.5341813981826969,
+                "y": 0.7852006644235041,
+                "visible": true,
+                "clientX": 682.5900221356404,
+                "clientY": 631.7812677541469
+              },
+              "overlayHit": true,
+              "callbackCount": 1
+            }
+          ]
+        },
+        "visibleChromeTap": {
+          "passed": true,
+          "target": {
+            "x": 0.5341813981826969,
+            "y": 0.7852006644235041,
+            "visible": true,
+            "clientX": 682.5900221356404,
+            "clientY": 631.7812677541469
+          },
+          "events": [
+            {
+              "world": "morning",
+              "sceneId": "country_morning",
+              "kind": "tea-ripple",
+              "strength": 0.24
+            }
+          ],
+          "input": "Playwright native mouse, isTrusted verified in log"
+        },
+        "visibleChromeDrag": {
+          "passed": true,
+          "input": "native mouse"
+        },
+        "hiddenChromeTapAttempts": {
+          "selection": "Original projected target centers",
+          "candidates": [
+            {
+              "x": 0.5341813981826969,
+              "y": 0.7852006644235041,
+              "visible": true,
+              "clientX": 682.5900221356404,
+              "clientY": 631.7812677541469
+            },
+            {
+              "x": 0.5342624651730411,
+              "y": 0.7150776803083456,
+              "visible": true,
+              "clientX": 682.6910316056092,
+              "clientY": 582.4146869370753
+            },
+            {
+              "x": 0.619337901006409,
+              "y": 0.7705076559278634,
+              "visible": true,
+              "clientX": 788.6950246539856,
+              "clientY": 621.4373897732158
+            }
+          ],
+          "attempts": [
+            {
+              "target": {
+                "x": 0.5341813981826969,
+                "y": 0.7852006644235041,
+                "visible": true,
+                "clientX": 682.5900221356404,
+                "clientY": 631.7812677541469
+              },
+              "overlayHit": {
+                "tag": "CANVAS",
+                "scene": true,
+                "ancestry": [
+                  {
+                    "tag": "CANVAS",
+                    "classes": "living-woods-canvas",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "living-woods-mount",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "living-woods living-woods-morning",
+                    "world": "morning",
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none opacity-100",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "SECTION",
+                    "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+                    "world": null,
+                    "surface": true,
+                    "drag": false
+                  },
+                  {
+                    "tag": "MAIN",
+                    "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  }
+                ],
+                "activeElement": {
+                  "tag": "BODY",
+                  "label": null
+                },
+                "overlayVisibility": "hidden"
+              },
+              "callbackCount": 1
+            }
+          ]
+        },
+        "hiddenChromeHitTest": {
+          "passed": true,
+          "hit": {
+            "tag": "CANVAS",
+            "scene": true,
+            "ancestry": [
+              {
+                "tag": "CANVAS",
+                "classes": "living-woods-canvas",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "living-woods-mount",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "living-woods living-woods-morning",
+                "world": "morning",
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none opacity-100",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "SECTION",
+                "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+                "world": null,
+                "surface": true,
+                "drag": false
+              },
+              {
+                "tag": "MAIN",
+                "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+                "world": null,
+                "surface": false,
+                "drag": false
+              }
+            ],
+            "activeElement": {
+              "tag": "BODY",
+              "label": null
+            },
+            "overlayVisibility": "hidden"
+          }
+        },
+        "hiddenChromeTap": {
+          "passed": true,
+          "target": {
+            "x": 0.5341813981826969,
+            "y": 0.7852006644235041,
+            "visible": true,
+            "clientX": 682.5900221356404,
+            "clientY": 631.7812677541469
+          },
+          "events": [
+            {
+              "world": "morning",
+              "sceneId": "country_morning",
+              "kind": "tea-ripple",
+              "strength": 0.24
+            }
+          ],
+          "input": "Playwright native mouse, isTrusted verified in log"
+        },
+        "hiddenChromeDrag": {
+          "passed": true,
+          "input": "native mouse"
+        },
+        "nativePause": {
+          "passed": true,
+          "before": {
+            "nowMs": 22357.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "8",
+              "time": "0.0983",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "8",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 8,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 22872.10000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "8",
+              "time": "0.0983",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "8",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 8,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "still-post-native-interaction-paused": {
+          "passed": true,
+          "before": {
+            "nowMs": 23289.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "8",
+              "time": "0.0983",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "8",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 8,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 23793.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "8",
+              "time": "0.0983",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "8",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 8,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "inputTrust": [
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "path",
+            "dragSurface": false,
+            "timeMs": 5395.300000000745
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "H1",
+            "dragSurface": false,
+            "timeMs": 5476
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 6190.10000000149
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 6923.800000000745
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 11364
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 15712.60000000149
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "svg",
+            "dragSurface": false,
+            "timeMs": 15839.900000002235
+          }
+        ],
+        "pausedAfterNativeHolderTransfer": {
+          "passed": true,
+          "before": {
+            "nowMs": 31325.70000000298,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "10",
+              "time": "0.0983",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "10",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 10,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 31830.70000000298,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "10",
+              "time": "0.0983",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "10",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 10,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "nativeFullscreenEscape": {
+          "passed": true,
+          "identicalCanvas": true,
+          "count": 1,
+          "scope": "Real production wrappers, owned injected backdrop; browser Fullscreen API is not used by this product UI."
+        },
+        "portraitBeforeNativeTap": {
+          "passed": true,
+          "before": {
+            "nowMs": 33550.20000000298,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "11",
+              "time": "0.0983",
+              "drawCalls": "189",
+              "triangles": "790250",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.4683203507513571,\"y\":0.6471171191719515,\"visible\":true},{\"x\":0.46811838738893685,\"y\":0.5914204296655599,\"visible\":true},{\"x\":0.7083730554747,\"y\":0.6353906275569563,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "11",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 11,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 34072,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "11",
+              "time": "0.0983",
+              "drawCalls": "189",
+              "triangles": "790250",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.4683203507513571,\"y\":0.6471171191719515,\"visible\":true},{\"x\":0.46811838738893685,\"y\":0.5914204296655599,\"visible\":true},{\"x\":0.7083730554747,\"y\":0.6353906275569563,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "11",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 11,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "portraitNativeTapAttempts": {
+          "selection": "Original projected target centers",
+          "candidates": [
+            {
+              "x": 0.4683203507513571,
+              "y": 0.6471171191719515,
+              "visible": true,
+              "clientX": 182.64493679302927,
+              "clientY": 570.1628844774343
+            },
+            {
+              "x": 0.46811838738893685,
+              "y": 0.5914204296655599,
+              "visible": true,
+              "clientX": 182.56617108168538,
+              "clientY": 526.9422534204745
+            },
+            {
+              "x": 0.7083730554747,
+              "y": 0.6353906275569563,
+              "visible": true,
+              "clientX": 276.265491635133,
+              "clientY": 561.0631269841981
+            }
+          ],
+          "attempts": [
+            {
+              "target": {
+                "x": 0.4683203507513571,
+                "y": 0.6471171191719515,
+                "visible": true,
+                "clientX": 182.64493679302927,
+                "clientY": 570.1628844774343
+              },
+              "overlayHit": true,
+              "callbackCount": 1
+            }
+          ]
+        },
+        "portraitNativeTap": {
+          "passed": true,
+          "target": {
+            "x": 0.4683203507513571,
+            "y": 0.6471171191719515,
+            "visible": true,
+            "clientX": 182.64493679302927,
+            "clientY": 570.1628844774343
+          },
+          "events": [
+            {
+              "world": "morning",
+              "sceneId": "country_morning",
+              "kind": "tea-ripple",
+              "strength": 0.24
+            }
+          ],
+          "input": "Playwright native mouse, isTrusted verified in log"
+        },
+        "portraitNativePause": {
+          "passed": true,
+          "before": {
+            "nowMs": 36590,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "13",
+              "time": "0.1237",
+              "drawCalls": "90",
+              "triangles": "395854",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.4683203507513571,\"y\":0.6471171191719515,\"visible\":true},{\"x\":0.46811838738893685,\"y\":0.5914204296655599,\"visible\":true},{\"x\":0.7083730554747,\"y\":0.6353906275569563,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "13",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 13,
+            "time": 0.1237,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 37093.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "13",
+              "time": "0.1237",
+              "drawCalls": "90",
+              "triangles": "395854",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.4683203507513571,\"y\":0.6471171191719515,\"visible\":true},{\"x\":0.46811838738893685,\"y\":0.5914204296655599,\"visible\":true},{\"x\":0.7083730554747,\"y\":0.6353906275569563,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "13",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 13,
+            "time": 0.1237,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "portraitInputTrust": [
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "path",
+            "dragSurface": false,
+            "timeMs": 5395.300000000745
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "H1",
+            "dragSurface": false,
+            "timeMs": 5476
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 6190.10000000149
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 6923.800000000745
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 11364
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 15712.60000000149
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "svg",
+            "dragSurface": false,
+            "timeMs": 15839.900000002235
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "SPAN",
+            "dragSurface": false,
+            "timeMs": 24123.400000002235
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "path",
+            "dragSurface": false,
+            "timeMs": 34138.800000000745
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 34879.400000002235
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "svg",
+            "dragSurface": false,
+            "timeMs": 35146
+          }
+        ],
+        "desktopRestoredAfterPortraitTap": {
+          "passed": true,
+          "before": {
+            "nowMs": 40573.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "14",
+              "time": "0.1237",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "14",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 14,
+            "time": 0.1237,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 41076.900000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "14",
+              "time": "0.1237",
+              "drawCalls": "206",
+              "triangles": "790454",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "14",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 14,
+            "time": 0.1237,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "reducedMotionMedia": {
+          "passed": true,
+          "before": {
+            "nowMs": 45788.800000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "16",
+              "time": "0.1403",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "16",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 16,
+            "time": 0.1403,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 46292.60000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "16",
+              "time": "0.1403",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "16",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 16,
+            "time": 0.1403,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "appReducedMotionClass": {
+          "passed": true,
+          "before": {
+            "nowMs": 50288.5,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "18",
+              "time": "0.1569",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "18",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 18,
+            "time": 0.1569,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 50792.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "18",
+              "time": "0.1569",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "18",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 18,
+            "time": 0.1569,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "nativeTabHidden": {
+          "passed": false,
+          "status": "unrun",
+          "reason": "This headless browser keeps background pages visible; no real hidden-state claim."
+        },
+        "syntheticHidden": {
+          "passed": true,
+          "before": {
+            "nowMs": 59307.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "22",
+              "time": "0.2403",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "22",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 22,
+            "time": 0.2403,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "hidden"
+          },
+          "after": {
+            "nowMs": 59811.10000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "22",
+              "time": "0.2403",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "22",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 22,
+            "time": 0.2403,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "hidden"
+          }
+        },
+        "pointerCancelAndBlur": {
+          "passed": true,
+          "input": "Synthetic PointerEvent cancellation and window blur; not native input"
+        },
+        "finalPaused": {
+          "passed": true,
+          "before": {
+            "nowMs": 63705.10000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "24",
+              "time": "0.2570",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "24",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 24,
+            "time": 0.257,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 64210.70000000298,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "24",
+              "time": "0.2570",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "24",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 24,
+            "time": 0.257,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "observedSubmissionBound": {
+          "passed": true,
+          "maxObserved": 2,
+          "observationIntervalMs": 25,
+          "scope": "Browser samples; exhaustive status/state combinations are covered by the owned deterministic submission-gate tests."
+        }
+      },
+      "screenshots": [
+        {
+          "file": "morning-native-interaction-post-native-interaction-paused.png",
+          "sha256": "7ec0367110e640a85309dd8f98ab171dad7078f8b4facf2dc5824bf8e6c652d8",
+          "bytes": 1002930,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 24087.10000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "frames": "8",
+              "time": "0.0983",
+              "drawCalls": "107",
+              "triangles": "396058",
+              "geometries": "106",
+              "textures": "14",
+              "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "8",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 8,
+            "time": 0.0983,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.199999999254942,
+            "polls": 1,
+            "frames": "8",
+            "time": "0.0983",
+            "result": 37148
+          },
+          "durationMs": 294,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ],
+      "errors": [],
+      "passed": true,
+      "initial": {
+        "nowMs": 5324.400000002235,
+        "canvasCount": 1,
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "frames": "1",
+          "time": "0.0000",
+          "drawCalls": "206",
+          "triangles": "790454",
+          "geometries": "106",
+          "textures": "14",
+          "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+          "pendingSubmissions": "0",
+          "completedSubmissions": "1",
+          "pendingStaticFrame": "false"
+        },
+        "width": 1246,
+        "height": 704,
+        "css": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        },
+        "dpr": 1,
+        "status": "ready",
+        "motion": "paused",
+        "frames": 1,
+        "time": 0,
+        "contextLost": false,
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "maxPendingSubmissions": 1,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "visibility": "visible"
+      },
+      "final": {
+        "nowMs": 64222.20000000298,
+        "canvasCount": 1,
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "frames": "24",
+          "time": "0.2570",
+          "drawCalls": "107",
+          "triangles": "396058",
+          "geometries": "106",
+          "textures": "14",
+          "targets": "[{\"x\":0.5341813981826969,\"y\":0.7852006644235041,\"visible\":true},{\"x\":0.5342624651730411,\"y\":0.7150776803083456,\"visible\":true},{\"x\":0.619337901006409,\"y\":0.7705076559278634,\"visible\":true}]",
+          "pendingSubmissions": "0",
+          "completedSubmissions": "24",
+          "pendingStaticFrame": "false"
+        },
+        "width": 1246,
+        "height": 704,
+        "css": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        },
+        "dpr": 1,
+        "status": "ready",
+        "motion": "paused",
+        "frames": 24,
+        "time": 0.257,
+        "contextLost": false,
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "maxPendingSubmissions": 2,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "visibility": "visible"
+      }
+    },
+    {
+      "world": "bamboo",
+      "kind": "native-interaction",
+      "forceByte": false,
+      "checks": {
+        "reflector": {
+          "passed": true,
+          "data": {
+            "textureType": "HalfFloatType",
+            "internalFormat": "RGBA16F",
+            "forcedByte": false,
+            "extensions": {
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true
+            },
+            "framebufferComplete": true,
+            "framebufferStatus": 36053,
+            "width": 512,
+            "height": 512,
+            "samples": 0,
+            "attempts": [
+              {
+                "textureType": "HalfFloatType",
+                "framebufferStatus": 36053
+              }
+            ]
+          },
+          "forcedByteRequested": false
+        },
+        "nativeFocusSetup": {
+          "passed": true,
+          "headingHit": {
+            "tag": "H1",
+            "text": "대나무숲",
+            "outsideScene": true
+          },
+          "focusedAfterHeading": {
+            "tag": "BODY",
+            "label": null
+          },
+          "input": "Trusted native click on actual noninteractive Player header heading; no synthetic blur."
+        },
+        "visibleChromeTapAttempts": {
+          "selection": "Original projected target centers",
+          "candidates": [
+            {
+              "x": 0.6616416128289538,
+              "y": 0.45095330550437207,
+              "visible": true,
+              "clientX": 841.4054495848765,
+              "clientY": 396.47112707507796
+            },
+            {
+              "x": 0.6521921800294497,
+              "y": 0.5948079855302333,
+              "visible": true,
+              "clientX": 829.6314563166943,
+              "clientY": 497.74482181328426
+            }
+          ],
+          "attempts": [
+            {
+              "target": {
+                "x": 0.6616416128289538,
+                "y": 0.45095330550437207,
+                "visible": true,
+                "clientX": 841.4054495848765,
+                "clientY": 396.47112707507796
+              },
+              "overlayHit": true,
+              "callbackCount": 1
+            }
+          ]
+        },
+        "visibleChromeTap": {
+          "passed": true,
+          "target": {
+            "x": 0.6616416128289538,
+            "y": 0.45095330550437207,
+            "visible": true,
+            "clientX": 841.4054495848765,
+            "clientY": 396.47112707507796
+          },
+          "events": [
+            {
+              "world": "bamboo",
+              "sceneId": "nature:bamboo_grove",
+              "kind": "bamboo-leaf",
+              "strength": 0.24
+            }
+          ],
+          "input": "Playwright native mouse, isTrusted verified in log"
+        },
+        "visibleChromeDrag": {
+          "passed": true,
+          "input": "native mouse"
+        },
+        "hiddenChromeTapAttempts": {
+          "selection": "Original projected target centers",
+          "candidates": [
+            {
+              "x": 0.6616416128289538,
+              "y": 0.45095330550437207,
+              "visible": true,
+              "clientX": 841.4054495848765,
+              "clientY": 396.47112707507796
+            },
+            {
+              "x": 0.6521921800294497,
+              "y": 0.5948079855302333,
+              "visible": true,
+              "clientX": 829.6314563166943,
+              "clientY": 497.74482181328426
+            }
+          ],
+          "attempts": [
+            {
+              "target": {
+                "x": 0.6616416128289538,
+                "y": 0.45095330550437207,
+                "visible": true,
+                "clientX": 841.4054495848765,
+                "clientY": 396.47112707507796
+              },
+              "overlayHit": {
+                "tag": "CANVAS",
+                "scene": true,
+                "ancestry": [
+                  {
+                    "tag": "CANVAS",
+                    "classes": "living-woods-canvas",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "living-woods-mount",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "living-woods living-woods-bamboo",
+                    "world": "bamboo",
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none opacity-100",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "SECTION",
+                    "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+                    "world": null,
+                    "surface": true,
+                    "drag": false
+                  },
+                  {
+                    "tag": "MAIN",
+                    "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  },
+                  {
+                    "tag": "DIV",
+                    "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+                    "world": null,
+                    "surface": false,
+                    "drag": false
+                  }
+                ],
+                "activeElement": {
+                  "tag": "BODY",
+                  "label": null
+                },
+                "overlayVisibility": "hidden"
+              },
+              "callbackCount": 1
+            }
+          ]
+        },
+        "hiddenChromeHitTest": {
+          "passed": true,
+          "hit": {
+            "tag": "CANVAS",
+            "scene": true,
+            "ancestry": [
+              {
+                "tag": "CANVAS",
+                "classes": "living-woods-canvas",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "living-woods-mount",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "living-woods living-woods-bamboo",
+                "world": "bamboo",
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none opacity-100",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "SECTION",
+                "classes": "relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]",
+                "world": null,
+                "surface": true,
+                "drag": false
+              },
+              {
+                "tag": "MAIN",
+                "classes": "relative z-10 mx-auto grid w-full lg:grid max-w-none gap-0 p-0 lg:px-4 lg:pb-4",
+                "world": null,
+                "surface": false,
+                "drag": false
+              },
+              {
+                "tag": "DIV",
+                "classes": "relative min-h-[100dvh] overflow-x-hidden bg-[#070a12] text-white",
+                "world": null,
+                "surface": false,
+                "drag": false
+              }
+            ],
+            "activeElement": {
+              "tag": "BODY",
+              "label": null
+            },
+            "overlayVisibility": "hidden"
+          }
+        },
+        "hiddenChromeTap": {
+          "passed": true,
+          "target": {
+            "x": 0.6616416128289538,
+            "y": 0.45095330550437207,
+            "visible": true,
+            "clientX": 841.4054495848765,
+            "clientY": 396.47112707507796
+          },
+          "events": [
+            {
+              "world": "bamboo",
+              "sceneId": "nature:bamboo_grove",
+              "kind": "bamboo-leaf",
+              "strength": 0.24
+            }
+          ],
+          "input": "Playwright native mouse, isTrusted verified in log"
+        },
+        "hiddenChromeDrag": {
+          "passed": true,
+          "input": "native mouse"
+        },
+        "nativePause": {
+          "passed": true,
+          "before": {
+            "nowMs": 16714.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "12",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "12",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 12,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 17218.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "12",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "12",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 12,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "still-post-native-interaction-paused": {
+          "passed": true,
+          "before": {
+            "nowMs": 17626.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "12",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "12",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 12,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 18130.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "12",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "12",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 12,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "inputTrust": [
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "path",
+            "dragSurface": false,
+            "timeMs": 3136.60000000149
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "H1",
+            "dragSurface": false,
+            "timeMs": 3235.199999999255
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 3948.5
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 4679.699999999255
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 9101
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 13451.400000002235
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "svg",
+            "dragSurface": false,
+            "timeMs": 13589.199999999255
+          }
+        ],
+        "pausedAfterNativeHolderTransfer": {
+          "passed": true,
+          "before": {
+            "nowMs": 22298.10000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "14",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "14",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 14,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 22801.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "14",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "14",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 14,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "nativeFullscreenEscape": {
+          "passed": true,
+          "identicalCanvas": true,
+          "count": 1,
+          "scope": "Real production wrappers, owned injected backdrop; browser Fullscreen API is not used by this product UI."
+        },
+        "portraitBeforeNativeTap": {
+          "passed": true,
+          "before": {
+            "nowMs": 24397.10000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "15",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.57565715839397,\"y\":0.42749175319451954,\"visible\":true},{\"x\":0.5203076197356766,\"y\":0.5593490895420486,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "15",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 15,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 24900.800000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "15",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.57565715839397,\"y\":0.42749175319451954,\"visible\":true},{\"x\":0.5203076197356766,\"y\":0.5593490895420486,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "15",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 15,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "portraitNativeTapAttempts": {
+          "selection": "Read-only real triangle interiors verified by scene-target raycast, followed by original center fallback; native input unchanged.",
+          "candidates": [
+            {
+              "x": 0.6051560507945434,
+              "y": 0.43255361914849105,
+              "clientX": 236.0108598098719,
+              "clientY": 403.66160845922906,
+              "object": "Reachable individual bamboo leaf",
+              "triangle": 11,
+              "projectedAreaPx": 94.13914129225111,
+              "preferred": true,
+              "raycastObject": "Reachable individual bamboo leaf",
+              "raycastDistance": 3.3079411825234963,
+              "sourceFrame": "17",
+              "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+            },
+            {
+              "x": 0.5909991869036513,
+              "y": 0.41311690796282996,
+              "clientX": 230.48968289242399,
+              "clientY": 388.578720579156,
+              "object": "Reachable individual bamboo leaf",
+              "triangle": 14,
+              "projectedAreaPx": 93.20806284373803,
+              "preferred": true,
+              "raycastObject": "Reachable individual bamboo leaf",
+              "raycastDistance": 3.2931483276252456,
+              "sourceFrame": "17",
+              "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+            },
+            {
+              "x": 0.6123238371897793,
+              "y": 0.46227124808544334,
+              "clientX": 238.80629650401394,
+              "clientY": 426.722488514304,
+              "object": "Reachable individual bamboo leaf",
+              "triangle": 7,
+              "projectedAreaPx": 87.2161403414289,
+              "preferred": true,
+              "raycastObject": "Reachable individual bamboo leaf",
+              "raycastDistance": 3.3422522947958146,
+              "sourceFrame": "17",
+              "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+            },
+            {
+              "x": 0.6016724373328773,
+              "y": 0.4426539393687617,
+              "clientX": 234.65225055982216,
+              "clientY": 411.4994569501591,
+              "object": "Reachable individual bamboo leaf",
+              "triangle": 10,
+              "projectedAreaPx": 86.93057121385033,
+              "preferred": true,
+              "raycastObject": "Reachable individual bamboo leaf",
+              "raycastDistance": 3.325907231065274,
+              "sourceFrame": "17",
+              "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+            },
+            {
+              "x": 0.5926739222840023,
+              "y": 0.4030434323948759,
+              "clientX": 231.1428296907609,
+              "clientY": 380.7617035384237,
+              "object": "Reachable individual bamboo leaf",
+              "triangle": 15,
+              "projectedAreaPx": 82.4584588988016,
+              "preferred": true,
+              "raycastObject": "Reachable individual bamboo leaf",
+              "raycastDistance": 3.275511945000664,
+              "sourceFrame": "17",
+              "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+            },
+            {
+              "x": 0.575967897705017,
+              "y": 0.38383289161607703,
+              "clientX": 224.62748010495662,
+              "clientY": 365.8543238940758,
+              "object": "Reachable individual bamboo leaf",
+              "triangle": 18,
+              "projectedAreaPx": 81.78961587110348,
+              "preferred": true,
+              "raycastObject": "Reachable individual bamboo leaf",
+              "raycastDistance": 3.2596805279572876,
+              "sourceFrame": "17",
+              "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+            },
+            {
+              "x": 0.57565715839397,
+              "y": 0.42749175319451954,
+              "visible": true,
+              "clientX": 224.50629177364831,
+              "clientY": 399.73360047894715
+            },
+            {
+              "x": 0.5203076197356766,
+              "y": 0.5593490895420486,
+              "visible": true,
+              "clientX": 202.91997169691388,
+              "clientY": 502.05489348462976
+            }
+          ],
+          "attempts": [
+            {
+              "target": {
+                "x": 0.6051560507945434,
+                "y": 0.43255361914849105,
+                "clientX": 236.0108598098719,
+                "clientY": 403.66160845922906,
+                "object": "Reachable individual bamboo leaf",
+                "triangle": 11,
+                "projectedAreaPx": 94.13914129225111,
+                "preferred": true,
+                "raycastObject": "Reachable individual bamboo leaf",
+                "raycastDistance": 3.3079411825234963,
+                "sourceFrame": "17",
+                "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+              },
+              "overlayHit": true,
+              "callbackCount": 1
+            }
+          ]
+        },
+        "portraitNativeTap": {
+          "passed": true,
+          "target": {
+            "x": 0.6051560507945434,
+            "y": 0.43255361914849105,
+            "clientX": 236.0108598098719,
+            "clientY": 403.66160845922906,
+            "object": "Reachable individual bamboo leaf",
+            "triangle": 11,
+            "projectedAreaPx": 94.13914129225111,
+            "preferred": true,
+            "raycastObject": "Reachable individual bamboo leaf",
+            "raycastDistance": 3.3079411825234963,
+            "sourceFrame": "17",
+            "selection": "projected actual triangle centroid; existing interaction-target raycast verified"
+          },
+          "events": [
+            {
+              "world": "bamboo",
+              "sceneId": "nature:bamboo_grove",
+              "kind": "bamboo-leaf",
+              "strength": 0.24
+            }
+          ],
+          "input": "Playwright native mouse, isTrusted verified in log"
+        },
+        "portraitNativePause": {
+          "passed": true,
+          "before": {
+            "nowMs": 28197.800000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "18",
+              "time": "0.2134",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.57565715839397,\"y\":0.42749175319451954,\"visible\":true},{\"x\":0.5203076197356766,\"y\":0.5593490895420486,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "18",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 18,
+            "time": 0.2134,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 28702.199999999255,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "18",
+              "time": "0.2134",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.57565715839397,\"y\":0.42749175319451954,\"visible\":true},{\"x\":0.5203076197356766,\"y\":0.5593490895420486,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "18",
+              "pendingStaticFrame": "false"
+            },
+            "width": 390,
+            "height": 776,
+            "css": {
+              "x": 0,
+              "y": 68,
+              "width": 390,
+              "height": 776
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 18,
+            "time": 0.2134,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "portraitInputTrust": [
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "path",
+            "dragSurface": false,
+            "timeMs": 3136.60000000149
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "H1",
+            "dragSurface": false,
+            "timeMs": 3235.199999999255
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 3948.5
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 4679.699999999255
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 9101
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "CANVAS",
+            "dragSurface": false,
+            "timeMs": 13451.400000002235
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "svg",
+            "dragSurface": false,
+            "timeMs": 13589.199999999255
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "SPAN",
+            "dragSurface": false,
+            "timeMs": 18465.800000000745
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "path",
+            "dragSurface": false,
+            "timeMs": 24933.300000000745
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "DIV",
+            "dragSurface": true,
+            "timeMs": 25698
+          },
+          {
+            "type": "pointerdown",
+            "trusted": true,
+            "tag": "svg",
+            "dragSurface": false,
+            "timeMs": 25950.10000000149
+          }
+        ],
+        "desktopRestoredAfterPortraitTap": {
+          "passed": true,
+          "before": {
+            "nowMs": 30565.900000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "19",
+              "time": "0.2134",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6727291268430655,\"y\":0.43636363046167703,\"visible\":true},{\"x\":0.655100285828273,\"y\":0.5763303897827906,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "19",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 19,
+            "time": 0.2134,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 31068.300000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "19",
+              "time": "0.2134",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6727291268430655,\"y\":0.43636363046167703,\"visible\":true},{\"x\":0.655100285828273,\"y\":0.5763303897827906,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "19",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 19,
+            "time": 0.2134,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "reducedMotionMedia": {
+          "passed": true,
+          "before": {
+            "nowMs": 32713.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "20",
+              "time": "0.2134",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6727291268430655,\"y\":0.43636363046167703,\"visible\":true},{\"x\":0.655100285828273,\"y\":0.5763303897827906,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "20",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 20,
+            "time": 0.2134,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 33216.800000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "20",
+              "time": "0.2134",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6727291268430655,\"y\":0.43636363046167703,\"visible\":true},{\"x\":0.655100285828273,\"y\":0.5763303897827906,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "20",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 20,
+            "time": 0.2134,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "appReducedMotionClass": {
+          "passed": true,
+          "before": {
+            "nowMs": 35930.900000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "22",
+              "time": "0.2300",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6727291268430655,\"y\":0.43636363046167703,\"visible\":true},{\"x\":0.655100285828273,\"y\":0.5763303897827906,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "22",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 22,
+            "time": 0.23,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 36434.699999999255,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "22",
+              "time": "0.2300",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6727291268430655,\"y\":0.43636363046167703,\"visible\":true},{\"x\":0.655100285828273,\"y\":0.5763303897827906,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "22",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 22,
+            "time": 0.23,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "nativeTabHidden": {
+          "passed": false,
+          "status": "unrun",
+          "reason": "This headless browser keeps background pages visible; no real hidden-state claim."
+        },
+        "syntheticHidden": {
+          "passed": true,
+          "before": {
+            "nowMs": 39596.800000000745,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "25",
+              "time": "0.2966",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6766190175076989,\"y\":0.43206493913968014,\"visible\":true},{\"x\":0.6562876205431774,\"y\":0.5702855709605157,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "25",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 25,
+            "time": 0.2966,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "hidden"
+          },
+          "after": {
+            "nowMs": 40100.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "25",
+              "time": "0.2966",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6766190175076989,\"y\":0.43206493913968014,\"visible\":true},{\"x\":0.6562876205431774,\"y\":0.5702855709605157,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "25",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 25,
+            "time": 0.2966,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "hidden"
+          }
+        },
+        "pointerCancelAndBlur": {
+          "passed": true,
+          "input": "Synthetic PointerEvent cancellation and window blur; not native input"
+        },
+        "finalPaused": {
+          "passed": true,
+          "before": {
+            "nowMs": 42629.60000000149,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "27",
+              "time": "0.3132",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6766190175076989,\"y\":0.43206493913968014,\"visible\":true},{\"x\":0.6562876205431774,\"y\":0.5702855709605157,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "27",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 27,
+            "time": 0.3132,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "after": {
+            "nowMs": 43133,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "27",
+              "time": "0.3132",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6766190175076989,\"y\":0.43206493913968014,\"visible\":true},{\"x\":0.6562876205431774,\"y\":0.5702855709605157,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "27",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 27,
+            "time": 0.3132,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          }
+        },
+        "observedSubmissionBound": {
+          "passed": true,
+          "maxObserved": 2,
+          "observationIntervalMs": 25,
+          "scope": "Browser samples; exhaustive status/state combinations are covered by the owned deterministic submission-gate tests."
+        }
+      },
+      "screenshots": [
+        {
+          "file": "bamboo-native-interaction-post-native-interaction-paused.png",
+          "sha256": "77a7b09caf05b872ba4a94e2e400d527f50ab026b232ef0c5c0cf03ea00524f6",
+          "bytes": 907823,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "state": {
+            "nowMs": 18442.400000002235,
+            "canvasCount": 1,
+            "dataset": {
+              "engine": "three.js r186",
+              "engineId": "1",
+              "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+              "frames": "12",
+              "time": "0.1646",
+              "drawCalls": "22",
+              "triangles": "894386",
+              "geometries": "13",
+              "textures": "9",
+              "targets": "[{\"x\":0.6698153210674344,\"y\":0.43985534935137655,\"visible\":true},{\"x\":0.654265394119617,\"y\":0.5810090475965682,\"visible\":true}]",
+              "pendingSubmissions": "0",
+              "completedSubmissions": "12",
+              "pendingStaticFrame": "false"
+            },
+            "width": 1246,
+            "height": 704,
+            "css": {
+              "x": 17,
+              "y": 79,
+              "width": 1246,
+              "height": 704
+            },
+            "dpr": 1,
+            "status": "ready",
+            "motion": "paused",
+            "frames": 12,
+            "time": 0.1646,
+            "contextLost": false,
+            "renderer": "WebKit WebGL",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "maxPendingSubmissions": 2,
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true,
+            "visibility": "visible"
+          },
+          "drain": {
+            "passed": true,
+            "elapsedMs": 16.300000000745058,
+            "polls": 1,
+            "frames": "12",
+            "time": "0.1646",
+            "result": 37148
+          },
+          "durationMs": 315,
+          "captureMethod": "native browser viewport PNG",
+          "bundleHash": "2a76ce74c6a119eb5c04f098ab2710ed73d76b1deb251c754048a55726a4e94f",
+          "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f"
+        }
+      ],
+      "errors": [],
+      "passed": true,
+      "initial": {
+        "nowMs": 3084.5,
+        "canvasCount": 1,
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+          "frames": "1",
+          "time": "0.0000",
+          "drawCalls": "22",
+          "triangles": "894386",
+          "geometries": "13",
+          "textures": "9",
+          "targets": "[{\"x\":0.6616416128289538,\"y\":0.45095330550437207,\"visible\":true},{\"x\":0.6521921800294497,\"y\":0.5948079855302333,\"visible\":true}]",
+          "pendingSubmissions": "0",
+          "completedSubmissions": "1",
+          "pendingStaticFrame": "false"
+        },
+        "width": 1246,
+        "height": 704,
+        "css": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        },
+        "dpr": 1,
+        "status": "ready",
+        "motion": "paused",
+        "frames": 1,
+        "time": 0,
+        "contextLost": false,
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "maxPendingSubmissions": 1,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "visibility": "visible"
+      },
+      "final": {
+        "nowMs": 43135.199999999255,
+        "canvasCount": 1,
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "reflectorCompatibility": "{\"textureType\":\"HalfFloatType\",\"internalFormat\":\"RGBA16F\",\"forcedByte\":false,\"extensions\":{\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true},\"framebufferComplete\":true,\"framebufferStatus\":36053,\"width\":512,\"height\":512,\"samples\":0,\"attempts\":[{\"textureType\":\"HalfFloatType\",\"framebufferStatus\":36053}]}",
+          "frames": "27",
+          "time": "0.3132",
+          "drawCalls": "22",
+          "triangles": "894386",
+          "geometries": "13",
+          "textures": "9",
+          "targets": "[{\"x\":0.6766190175076989,\"y\":0.43206493913968014,\"visible\":true},{\"x\":0.6562876205431774,\"y\":0.5702855709605157,\"visible\":true}]",
+          "pendingSubmissions": "0",
+          "completedSubmissions": "27",
+          "pendingStaticFrame": "false"
+        },
+        "width": 1246,
+        "height": 704,
+        "css": {
+          "x": 17,
+          "y": 79,
+          "width": 1246,
+          "height": 704
+        },
+        "dpr": 1,
+        "status": "ready",
+        "motion": "paused",
+        "frames": 27,
+        "time": 0.3132,
+        "contextLost": false,
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "maxPendingSubmissions": 2,
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true,
+        "visibility": "visible"
+      }
+    }
+  ],
+  "failed": [],
+  "passed": true,
+  "unrun": [
+    "Actual integrated main App/catalog registration, production audio engine/autoplay and Back/history routing: shared integrator scope.",
+    "Physical-device touch and Fold hardware."
+  ],
+  "plannedJobs": [
+    "morning/native-interaction/normal",
+    "bamboo/native-interaction/normal"
+  ],
+  "notRunJobs": []
+}

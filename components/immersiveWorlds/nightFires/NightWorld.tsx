@@ -13,14 +13,14 @@ const labels = {
 const actions: Record<NightWorldId, NightInteractionKind[]> = { mountain: ['log-embers'], deep: ['lantern-brightness'], lakeside: ['log-embers', 'lantern-brightness'] };
 const actionLabels = { 'log-embers': '장작에 작은 불씨 피우기', 'lantern-brightness': '랜턴 밝기 조절' };
 
-export default function NightWorld({ world, active, onInteraction, className = '' }: NightWorldProps & { world: NightWorldId }) {
+export default function NightWorld({ world, active, static3D = false, onInteraction, className = '' }: NightWorldProps & { world: NightWorldId }) {
   const root = useRef<HTMLDivElement>(null);
   const mount = useRef<HTMLDivElement>(null);
   const holder = useRef<LiveSceneHolder | null>(null);
   const callback = useRef(onInteraction);
   callback.current = onInteraction;
   const [status, setStatus] = useState<LiveSceneStatus>('loading');
-  const motion = useSceneMotion(active);
+  const motion = useSceneMotion(active && !static3D);
   const host = getNightHost(world);
 
   useEffect(() => {
@@ -36,16 +36,27 @@ export default function NightWorld({ world, active, onInteraction, className = '
     const element = root.current;
     const entry = holder.current;
     if (!element || !entry || status !== 'ready' || !active) return;
+    const surface = element.closest<HTMLElement>('[data-scene-surface]') ?? element;
+    const chromeSelector = 'button, a, input, select, textarea, label, summary, [role="button"], [role="slider"], [role="textbox"], [role="link"], [contenteditable]:not([contenteditable="false"])';
     let press: { id: number; x: number; y: number; distance: number; at: number } | null = null;
     const cancel = () => {
-      if (press && element.hasPointerCapture?.(press.id)) element.releasePointerCapture(press.id);
+      const pointerId = press?.id;
       press = null;
+      if (pointerId !== undefined && element.hasPointerCapture?.(pointerId)) element.releasePointerCapture(pointerId);
       delete element.dataset.look;
       host.releaseDrag(entry);
     };
     const down = (event: PointerEvent) => {
       if (!event.isPrimary || event.button !== 0 || press || document.hidden) return;
-      if (!(event.target instanceof HTMLCanvasElement)) return;
+      if (!host.ownsInput(entry)) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+      // Player/fullscreen chrome is a sibling full-cover transparent drag surface.
+      // Never cross into nested scene surfaces or turn actual controls into gestures.
+      const targetSurface = target.closest<HTMLElement>('[data-scene-surface]');
+      if (targetSurface && targetSurface !== surface) return;
+      if (!(element.contains(target) || target.hasAttribute('data-scene-drag'))) return;
+      if (target.closest(chromeSelector)) return;
       press = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0, at: performance.now() };
       try { element.setPointerCapture?.(event.pointerId); } catch { /* Synthetic QA pointers have no active browser capture. */ }
       if (event.pointerType === 'mouse') event.preventDefault();
@@ -73,7 +84,7 @@ export default function NightWorld({ world, active, onInteraction, className = '
     };
     const pointerCancel = (event: PointerEvent) => { if (press?.id === event.pointerId) cancel(); };
     const visibility = () => { if (document.hidden) cancel(); };
-    element.addEventListener('pointerdown', down);
+    surface.addEventListener('pointerdown', down);
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', pointerCancel);
@@ -81,7 +92,7 @@ export default function NightWorld({ world, active, onInteraction, className = '
     window.addEventListener('blur', cancel);
     document.addEventListener('visibilitychange', visibility);
     return () => {
-      element.removeEventListener('pointerdown', down);
+      surface.removeEventListener('pointerdown', down);
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', pointerCancel);

@@ -10,6 +10,8 @@ export interface NightInteraction {
 }
 export interface NightWorldProps {
   active: boolean;
+  /** Keep the real first frame, even while the session itself is active. */
+  static3D?: boolean;
   onInteraction?: (event: NightInteraction) => void;
   className?: string;
 }

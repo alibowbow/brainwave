@@ -329,6 +329,11 @@ async function verifyWorld(world) {
     const keyboard = await page.evaluate(() => window.__nightQA.events.at(-1));
     assert.equal(keyboard.world, world); assert.ok(keyboard.value >= 0 && keyboard.value <= 1);
     mark('keyboard Enter activates accessible scene action', keyboard);
+    const keyboardFrame = await canvasState();
+    await waitAdvancement(keyboardFrame, 4, .12);
+    const keyboardProgress = await canvasState();
+    assert.ok(keyboardProgress.frames >= keyboardFrame.frames + 4 && keyboardProgress.time >= keyboardFrame.time + .12);
+    mark('active response advances before reduced-motion snapshot', { before: keyboardFrame, after: keyboardProgress });
 
     await setActive(true); await waitMotion('running');
     await page.emulateMedia({ reducedMotion: 'reduce' }); await waitMotion('paused');
@@ -358,11 +363,11 @@ async function verifyWorld(world) {
       assert.ok(lanternAfter.frames > lanternBefore.frames, 'reduced-motion lantern renders a new static response');
       const lanternAfterPNG = await page.screenshot({ clip: await page.locator('.night-world-canvas').boundingBox(), type: 'png' });
       const lanternDifference = pixelDifference(lanternBeforePNG, lanternAfterPNG);
-      assert.ok(lanternDifference.changedPixels > 20, 'reduced-motion lantern visibly changes actual pixels');
       const files = [`${world}-lantern-before.png`, `${world}-lantern-after.png`];
       await writeFile(path.join(output, files[0]), lanternBeforePNG);
       await writeFile(path.join(output, files[1]), lanternAfterPNG);
       result.reducedLanternEvidence = { before: lanternBefore, after: lanternAfter, event: lanternEvent, difference: lanternDifference, files, sha256: [sha(lanternBeforePNG), sha(lanternAfterPNG)], sourceTreeSha256: report.revision.sourceTreeSha256 };
+      assert.ok(lanternDifference.changedPixels > 20, `reduced-motion lantern visibly changes actual pixels: ${JSON.stringify(lanternDifference)}`);
       mark('reduced-motion keyboard lantern renders changed static pixels without advancing time', result.reducedLanternEvidence);
     }
     await page.emulateMedia({ reducedMotion: 'no-preference' }); await waitMotion('running');
@@ -385,19 +390,127 @@ async function verifyWorld(world) {
     assert.ok(hiddenAfter.frames - hiddenBefore.frames <= 1);
     mark('synthetic hidden document freezes simulation (not real tab switching)', { before: hiddenBefore, after: hiddenAfter });
     await page.evaluate(() => window.__nightRestoreVisibility()); await waitMotion('running');
-    await setActive(false); await waitMotion('paused');
 
-    await page.evaluate(() => { window.__nightOriginalCanvas = document.querySelector('.night-world-canvas'); window.__nightQA.setSecond(true); });
+    await page.evaluate(() => window.__nightQA.setStatic(true)); await waitMotion('paused');
+    await page.waitForTimeout(150);
+    const staticBefore = await canvasState(); await page.waitForTimeout(450); const staticAfter = await canvasState();
+    assert.ok(staticBefore.frames > 0 && staticAfter.frames > 0, 'static3D retains real rendered geometry');
+    assert.equal(staticAfter.time, staticBefore.time, 'explicit static3D does not advance time');
+    assert.ok(staticAfter.frames - staticBefore.frames <= 1, 'explicit static3D does not run a loop');
+    await page.evaluate(() => window.__nightQA.setStatic(false)); await waitMotion('running');
+    await waitAdvancement(staticAfter, 2, .03);
+    mark('explicit optional static3D freezes real frame and resumes', { before: staticBefore, after: staticAfter });
+
+    await page.evaluate(() => { window.__nightOriginalCanvas = document.querySelector('.night-world-canvas'); window.__nightQA.setChrome(true); });
+    await page.waitForSelector('[data-night-qa-chrome]');
+    const lookCount = () => page.locator('.night-world[data-look="drag"]').count();
+    const assertCanvasIdentity = async () => {
+      assert.equal(await page.locator('.night-world-canvas').count(), 1, 'holders share one canvas');
+      assert.ok(await page.evaluate(() => window.__nightOriginalCanvas === document.querySelector('.night-world-canvas')));
+      assert.equal((await diagnostics()).liveEngines, 1);
+      assert.equal(await page.evaluate(() => window.__nightBrowserQA.contextsCreated), 1, 'one WebGL context before disposal');
+    };
+    const dragChrome = async () => {
+      const point = await pointerTarget();
+      const beforeDrag = await canvasState();
+      const count = await eventCount();
+      await page.mouse.move(point.x, point.y); await page.mouse.down();
+      await page.mouse.move(point.x + 70, point.y - 30, { steps: 5 });
+      assert.equal(await lookCount(), 1, 'only the top holder accepts a chrome drag');
+      assert.ok(await page.evaluate(() => document.querySelector('.night-world[data-look="drag"]')?.contains(document.querySelector('.night-world-canvas'))));
+      await waitAdvancement(beforeDrag, 2, .02);
+      const shifted = await pointerTarget();
+      assert.equal(shifted.kind, point.kind, 'compare the same rigid spatial interaction target');
+      const shift = { x: shifted.x - point.x, y: shifted.y - point.y };
+      assert.ok(Math.hypot(shift.x, shift.y) > 1, 'held chrome drag moves the actual 3D camera projection');
+      const viewport = page.viewportSize();
+      assert.ok(Math.abs(shift.x) < viewport.width * .25 && Math.abs(shift.y) < viewport.height * .25, 'look stays bounded inside one quarter viewport');
+      result.chromeLookSamples ??= [];
+      result.chromeLookSamples.push({ before: point, held: shifted, shift, beforeFrame: beforeDrag, heldFrame: await canvasState() });
+      await page.mouse.up();
+      assert.equal(await lookCount(), 0, 'chrome drag releases cleanly');
+      assert.equal(await eventCount(), count, 'chrome drag never becomes a tap');
+    };
+    const tapChromeExactlyOnce = async () => {
+      await page.waitForTimeout(720);
+      const point = await pointerTarget();
+      const count = await eventCount();
+      await page.mouse.click(point.x, point.y);
+      await page.waitForFunction((before) => window.__nightQA.events.length > before, count, { timeout: 20_000 });
+      assert.equal(await eventCount(), count + 1, 'chrome pointer tap emits exactly one scene event');
+      const event = await page.evaluate(() => window.__nightQA.events.at(-1));
+      assert.equal(event.kind, point.kind); assert.equal(event.world, world);
+      assert.ok(Number.isFinite(event.value) && event.value >= 0 && event.value <= 1);
+      return event;
+    };
+    await dragChrome();
+    const chromeTap = await tapChromeExactlyOnce();
+    mark('full-cover sibling chrome receives real drag and exactly one raycast tap', chromeTap);
+
+    for (const control of ['button', 'nested-span', 'range', 'link', 'role-button', 'text']) {
+      const locator = page.locator(`[data-night-qa-chrome] [data-night-control="${control}"]`).last();
+      const box = await locator.boundingBox(); assert.ok(box);
+      const x = box.x + box.width / 2, y = box.y + box.height / 2;
+      const count = await eventCount();
+      await page.mouse.move(x, y); await page.mouse.down();
+      await page.mouse.move(x + 18, y, { steps: 3 });
+      assert.equal(await lookCount(), 0, `${control} drag stays out of scene look handling`);
+      await page.mouse.up();
+      const actionsBefore = await page.evaluate(() => window.__nightQA.chromeActions);
+      await page.mouse.click(x, y);
+      assert.equal(await eventCount(), count, `${control}, including nested chrome, must not emit scene interactions`);
+      assert.equal(await lookCount(), 0);
+      if (['button', 'nested-span', 'link', 'role-button'].includes(control)) {
+        assert.equal(await page.evaluate(() => window.__nightQA.chromeActions), actionsBefore + 1, `${control} native action stays usable`);
+      }
+      if (control === 'range') {
+        const beforeValue = Number(await locator.inputValue());
+        await locator.focus(); await page.keyboard.press(beforeValue >= 100 ? 'ArrowLeft' : 'ArrowRight');
+        assert.notEqual(Number(await locator.inputValue()), beforeValue, 'range control remains keyboard usable');
+        assert.equal(await eventCount(), count);
+      }
+    }
+    mark('chrome native/nested buttons, range, link, rolebutton and text are excluded; controls remain usable', { chromeActions: await page.evaluate(() => window.__nightQA.chromeActions) });
+
+    for (const cancellation of ['pointercancel', 'blur']) {
+      const count = await eventCount();
+      const point = await pointerTarget();
+      await page.evaluate(({ point, cancellation }) => {
+        const overlay = Array.from(document.querySelectorAll('[data-night-qa-chrome]')).at(-1);
+        const init = { bubbles: true, isPrimary: true, pointerId: 79, pointerType: 'touch', button: 0, clientX: point.x, clientY: point.y };
+        overlay.dispatchEvent(new PointerEvent('pointerdown', init));
+        if (cancellation === 'blur') window.dispatchEvent(new Event('blur'));
+        else window.dispatchEvent(new PointerEvent('pointercancel', init));
+        window.dispatchEvent(new PointerEvent('pointerup', init));
+      }, { point, cancellation });
+      assert.equal(await eventCount(), count, `synthetic chrome ${cancellation} never taps`);
+      assert.equal(await lookCount(), 0);
+    }
+    mark('synthetic overlay pointercancel and window blur clear presses without taps');
+
+    await page.evaluate(() => window.__nightQA.setSameSurface(true));
     await page.waitForFunction(() => document.querySelectorAll('.night-world').length === 2);
-    await ready();
-    assert.equal(await page.locator('.night-world-canvas').count(), 1, 'second holder must share one canvas');
-    assert.ok(await page.evaluate(() => window.__nightOriginalCanvas === document.querySelector('.night-world-canvas')));
-    assert.equal((await diagnostics()).liveEngines, 1);
-    assert.equal(await page.evaluate(() => window.__nightBrowserQA.contextsCreated), 1, 'one WebGL context before disposal');
+    await ready(); await waitMotion('running'); await assertCanvasIdentity();
+    assert.equal(await page.locator('[data-scene-surface]').count(), 1, 'covered lower holder and upper holder share nearest surface');
+    await dragChrome(); await tapChromeExactlyOnce();
+    await page.evaluate(() => window.__nightQA.setSameSurface(false));
+    await page.waitForFunction(() => document.querySelectorAll('.night-world').length === 1);
+    await waitMotion('running'); await assertCanvasIdentity(); await tapChromeExactlyOnce();
+    mark('same-surface covered lower holder cannot duplicate input; return preserves exactly-once tap');
+
+    await page.evaluate(() => window.__nightQA.setSecond(true));
+    await page.waitForFunction(() => document.querySelectorAll('.night-world').length === 2);
+    await ready(); await waitMotion('running'); await assertCanvasIdentity();
+    assert.equal(await page.locator('[data-scene-surface]').count(), 2, 'second holder has its distinct nearest surface');
+    await dragChrome(); await tapChromeExactlyOnce();
     await page.evaluate(() => window.__nightQA.setSecond(false));
     await page.waitForFunction(() => document.querySelectorAll('.night-world').length === 1);
-    assert.ok(await page.evaluate(() => window.__nightOriginalCanvas === document.querySelector('.night-world-canvas')));
-    mark('second-holder canvas/context reuse and return', await diagnostics());
+    await waitMotion('running'); await assertCanvasIdentity(); await tapChromeExactlyOnce();
+    mark('distinct-surface second-holder shares canvas/context and preserves exactly-once input on return', await diagnostics());
+    await setActive(false); await waitMotion('paused');
+    await shot('chrome-overlay', { width: 1440, height: 900 });
+    await page.evaluate(() => window.__nightQA.setChrome(false));
+    await page.waitForFunction(() => !document.querySelector('[data-night-qa-chrome]'));
 
     await page.setViewportSize({ width: 390, height: 844 }); await ready(); await page.waitForTimeout(350);
     await shot('portrait', { width: 390, height: 844 });

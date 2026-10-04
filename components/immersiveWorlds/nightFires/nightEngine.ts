@@ -181,6 +181,7 @@ export class NightHost extends LiveSceneHost<NightEngine> {
     super({ canvasClass: 'night-world-canvas', isSupported: () => typeof window !== 'undefined' && 'WebGL2RenderingContext' in window,
       create: (canvas, lost) => new NightEngine(canvas, world, lost) });
   }
+  ownsInput(holder: LiveSceneHolder) { return this.top === holder && this.status === 'ready'; }
   interact(holder: LiveSceneHolder, kind?: NightInteractionKind, point?: [number, number]) {
     if (this.top !== holder || this.status !== 'ready') return null;
     return this.engine?.interact(kind, point) ?? null;

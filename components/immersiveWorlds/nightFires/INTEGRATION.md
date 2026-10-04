@@ -8,7 +8,7 @@ Exclusive worker roots: `components/immersiveWorlds/nightFires/` and `public/imm
 | `amb:deep_night` | `DeepNightWorld.tsx` | Seated worn bench on a stone overlook, grass, lantern, mountain basin and sparse house lights; no fire or lake. |
 | `nature:campfire` | `LakesideCampWorld.tsx` | Violet lake, tensioned canvas tent, chair, table/enamel cup, lantern and low campfire. |
 
-All entries are default React components. **The only required prop is `active: boolean`.** Optional `onInteraction(event)` and `className` are available. Import the entry lazily at the same boundary as the existing protected scenes. Give the component a positioned parent with a real height; its single canvas fills that parent. It has no app navigation, sound player, timekeeper or persistent storage.
+All entries are default React components. **The only required prop is `active: boolean`.** Optional `static3D`, `onInteraction(event)` and `className` are available. `static3D` keeps a real rendered first frame while the audio/session can remain active. Import the entry lazily at the same boundary as the existing protected scenes. Give the component a positioned parent with a real height; its single canvas fills that parent. It has no app navigation, sound player, timekeeper or persistent storage.
 
 ```tsx
 <MountainCampfireWorld active={playing} onInteraction={handleSceneInteraction} />
@@ -21,6 +21,8 @@ All entries are default React components. **The only required prop is `active: b
 ```
 
 The runtime throttles interaction emissions to one per 650 ms. Log taps emit a small bounded ember burst. Lantern taps cycle three quiet brightness levels. Pointer travel over 8 CSS pixels, press longer than 650 ms, pointer cancellation, lost capture, blur, hidden state and inactive session do not count as taps. Slow drag is limited to roughly 9° yaw/5° pitch, then eases home. Keyboard actions are focus-revealed buttons. Reduced-motion interaction changes the static rendered frame without restarting a loop.
+
+Pointerdown is delegated to the nearest guarded `data-scene-surface`. It admits the scene subtree and the exact transparent sibling `data-scene-drag` target, excludes native/ARIA interactive chrome, rejects nested foreign surfaces, and gates input to the top holder before capture. All listeners are removed from the same surface on cleanup. The integration owner should include these worlds in the existing outer live-scene/touch-action classification (retain `detailsOpen` → `pan-y`); a scene subtree’s CSS cannot set touch-action on its sibling chrome.
 
 Each canonical world has one `LiveSceneHost` instance. Multiple player/fullscreen holders move the **same canvas/context** to the top holder and return it on release. Hidden, paused, OS reduced motion and the existing `.reduce-motion` class stop rendering. Initialization/resize still produces a real 3D frame. Last release stops immediately; after the shared host's 5-second grace period, geometry, materials, generated texture maps, light shadow maps, render lists and WebGL context are disposed. A WebGL failure displays an explicit short accessible unavailable message; it is never labeled a successful 3D render.
 

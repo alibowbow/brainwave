@@ -1,7 +1,9 @@
 # Rain shelters — validation and handoff
 
-Draft PR: https://github.com/alibowbow/brainwave/pull/53  
-Branch: `codex/rain-shelters-four-worlds`  
+Draft PR: https://github.com/alibowbow/brainwave/pull/53
+
+Branch: `codex/rain-shelters-four-worlds`
+
 Baseline main: `14940149cc5c0fccb778b58d4d755a04aea55e53`
 
 ## Exact revisions

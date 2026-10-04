@@ -1,0 +1,232 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { chromium } from 'playwright-core';
+
+const qaRoot = path.dirname(fileURLToPath(import.meta.url));
+const ownedRoot = path.dirname(qaRoot);
+const projectRoot = path.resolve(qaRoot, '../../../..');
+const output = process.env.SCENE_SCREENSHOT_DIR || path.join(qaRoot, 'evidence');
+const baseURL = process.env.SCENE_BASE_URL || 'http://127.0.0.1:4175/';
+const sourceExtensions = /\.(?:tsx?|css)$/;
+const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
+async function filesIn(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  return (await Promise.all(entries.sort((a,b) => a.name.localeCompare(b.name)).filter((e) => !['node_modules', 'evidence', '.bundle'].includes(e.name)).map(async (e) => e.isDirectory() ? filesIn(path.join(dir, e.name)) : [path.join(dir, e.name)]))).flat();
+}
+const sourceFiles = (await filesIn(ownedRoot)).filter((p) => sourceExtensions.test(p));
+const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (p) => [path.relative(projectRoot, p), hash(await readFile(p))])));
+let bundleHashes = {};
+try {
+  // The built QA bundle is served, so evidence identifies exact emitted JS/CSS.
+  const assets = await readdir(path.join(qaRoot, '.bundle', 'assets'));
+  bundleHashes = Object.fromEntries(await Promise.all(assets.sort().map(async (f) => [f, hash(await readFile(path.join(qaRoot, '.bundle', 'assets', f)))])));
+} catch { /* Dev-server evidence is still tied to source hashes; marked below. */ }
+let gitHead = null;
+try { gitHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: projectRoot, encoding: 'utf8' }).trim(); } catch { /* optional outside git */ }
+const report = {
+  schema: 'brainwave-rain-shelters-qa-v1', startedAt: new Date().toISOString(), gitHead,
+  sourceTreeSHA256: hash(JSON.stringify(sourceHashes)), sourceHashes, bundleHashes,
+  mode: Object.keys(bundleHashes).length ? 'isolated-built-QA-bundle' : 'source-dev-server',
+  baseURL, browser: null, worlds: [], errors: [],
+  limitations: ['All dimensions are browser viewport tests, not physical Fold hardware.', 'Hidden-state test explicitly overrides document.visibilityState; it is not a real browser-tab switch.', 'SwiftShader results establish rendering and behavior, not device FPS or thermal performance.', 'Second-holder test exercises shared canvas relocation; production App/fullscreen wiring belongs to integration.'],
+};
+await mkdir(output, { recursive: true });
+const browser = await chromium.launch({
+  executablePath: process.env.SCENE_BROWSER_PATH || undefined,
+  headless: true,
+  args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
+});
+report.browser = { version: browser.version(), executable: process.env.SCENE_BROWSER_PATH || 'playwright-default', renderer: 'SwiftShader requested', viewportDeviceScaleFactor: 1 };
+const worlds = (process.env.SCENE_WORLDS || 'tent,window,porch,storm').split(',');
+const captureOnly = process.env.SCENE_CAPTURE_ONLY === '1';
+
+try {
+  for (const world of worlds) {
+    const result = { world, checks: [], screenshots: [], errors: [], renderer: null };
+    report.worlds.push(result);
+    const context = await browser.newContext({ viewport: { width: 1440, height: 960 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
+    const page = await context.newPage();
+    page.setDefaultTimeout(120_000);
+    page.on('pageerror', (error) => result.errors.push(error.message));
+    page.on('console', (message) => { if (message.type() === 'error' && /three|webgl|shader|program|error/i.test(message.text())) result.errors.push(message.text()); });
+    await page.addInitScript(() => {
+      window.__rainQA = { contexts: 0, losses: 0 };
+      const original = HTMLCanvasElement.prototype.getContext;
+      const known = new WeakSet();
+      HTMLCanvasElement.prototype.getContext = function(type, ...args) {
+        const context = original.call(this, type, ...args);
+        if (context && /webgl/.test(type) && this.classList.contains('rain-shelter-canvas') && !known.has(this)) {
+          known.add(this); window.__rainQA.contexts++;
+          this.addEventListener('webglcontextlost', () => { window.__rainQA.losses++; });
+        }
+        return context;
+      };
+    });
+    const scene = () => page.locator('.rain-shelter').last();
+    const canvas = () => page.locator('.rain-shelter-canvas');
+    const clickControl = (id) => page.locator(id).dispatchEvent('click');
+    const events = () => page.locator('#qa-events').getAttribute('data-events').then(JSON.parse);
+    const metric = () => canvas().evaluate((c) => ({ frame: Number(c.dataset.frame), time: Number(c.dataset.time), width: c.width, height: c.height }));
+    const motion = (value) => page.waitForFunction((v) => [...document.querySelectorAll('.rain-shelter')].at(-1)?.dataset.motion === v, value);
+    const ready = () => page.waitForSelector('.rain-shelter[data-state="ready"]', { timeout: 240_000 });
+    const capture = async (name, viewport) => {
+      if (viewport) await page.setViewportSize(viewport);
+      await page.waitForTimeout(400);
+      await page.evaluate(() => { document.documentElement.dataset.qaCapture = 'true'; });
+      const file = `${world}-${name}.png`;
+      const bytes = await page.screenshot({ path: path.join(output, file), animations: 'disabled' });
+      await page.evaluate(() => { delete document.documentElement.dataset.qaCapture; });
+      assert.ok(bytes.byteLength > 10_000, `actual ${name} screenshot has visual detail`);
+      result.screenshots.push({ file, bytes: bytes.byteLength, sha256: hash(bytes), viewport: page.viewportSize(), canvas: await metric() });
+      return bytes;
+    };
+    try {
+      await page.goto(`${baseURL}${baseURL.includes('?') ? '&' : '?'}world=${world}`, { waitUntil: 'networkidle', timeout: 120_000 });
+      await ready();
+      assert.equal(await canvas().count(), 1);
+      result.renderer = await canvas().evaluate((c) => { const gl = c.getContext('webgl2'); const ext = gl?.getExtension('WEBGL_debug_renderer_info'); return { webgl2: !!gl, vendor: ext && gl.getParameter(ext.UNMASKED_VENDOR_WEBGL), renderer: ext && gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) }; });
+      assert.equal(result.renderer.webgl2, true, 'real WebGL2 renderer');
+      await motion('running');
+      const start = await metric();
+      await page.waitForFunction((old) => Number(document.querySelector('.rain-shelter-canvas')?.getAttribute('data-time')) > old.time && Number(document.querySelector('.rain-shelter-canvas')?.getAttribute('data-frame')) > old.frame, start);
+      result.checks.push({ name: 'active animation advances frame and simulation time', pass: true, before: start, after: await metric() });
+      await clickControl('#qa-active');
+      await motion('paused');
+      await page.waitForTimeout(250);
+      const paused = await metric();
+      await page.waitForTimeout(650);
+      const still = await metric();
+      assert.equal(still.time, paused.time, 'pause freezes simulation');
+      assert.equal(still.frame, paused.frame, 'pause stops frame loop');
+      result.checks.push({ name: 'active=false stops motion and preserves rendered frame', pass: true, state: still });
+      await capture('desktop', { width: 1440, height: 960 });
+      await capture('portrait', { width: 390, height: 844 });
+      if (world === 'porch') await capture('fold-inner', { width: 884, height: 768 });
+      if (captureOnly) continue;
+      await page.setViewportSize({ width: 1100, height: 800 });
+      await clickControl('#qa-active');
+      await motion('running');
+      const beforeInteraction = await events();
+      await page.locator('.rain-shelter-action').last().dispatchEvent('click');
+      await page.waitForFunction((old) => Number(document.querySelector('#qa-events')?.getAttribute('data-count')) > old, beforeInteraction.length);
+      const afterInteraction = await events();
+      assert.equal(afterInteraction.length, beforeInteraction.length + 1);
+      assert.equal(afterInteraction.at(-1).world, world);
+      assert.ok(Number.isFinite(afterInteraction.at(-1).value));
+      assert.ok(afterInteraction.at(-1).value >= 0 && afterInteraction.at(-1).value <= 1);
+      result.checks.push({ name: 'accessible scene interaction emits one bounded event', pass: true, event: afterInteraction.at(-1) });
+      await clickControl('#qa-active');
+      await motion('paused');
+      await capture('interaction');
+      await clickControl('#qa-active');
+      await motion('running');
+
+      // Synthetic pointer sequences exercise cancellation and movement thresholds,
+      // while the interaction button above supplies a real semantic scene action.
+      const countBeforeGesture = (await events()).length;
+      const dragObserved = await canvas().evaluate((c) => {
+        const r=c.getBoundingClientRect(); const p={bubbles:true,isPrimary:true,pointerId:41,pointerType:'touch',button:0,clientX:r.left+r.width*.5,clientY:r.top+r.height*.6};
+        c.dispatchEvent(new PointerEvent('pointerdown',p));
+        window.dispatchEvent(new PointerEvent('pointermove',{...p,clientX:p.clientX+130,clientY:p.clientY+20}));
+        const dragging=c.closest('.rain-shelter')?.getAttribute('data-look');
+        window.dispatchEvent(new PointerEvent('pointerup',{...p,clientX:p.clientX+130,clientY:p.clientY+20}));
+        return dragging;
+      });
+      assert.equal(dragObserved, 'drag', 'active movement starts bounded look gesture');
+      assert.equal((await events()).length, countBeforeGesture, 'drag cannot trigger tap interaction');
+      await canvas().evaluate((c) => {
+        const r=c.getBoundingClientRect(); const p={bubbles:true,isPrimary:true,pointerId:42,pointerType:'touch',button:0,clientX:r.left+r.width*.5,clientY:r.top+r.height*.6};
+        c.dispatchEvent(new PointerEvent('pointerdown',p));
+        window.dispatchEvent(new PointerEvent('pointercancel',p));
+        window.dispatchEvent(new PointerEvent('pointerup',p));
+      });
+      assert.equal((await events()).length, countBeforeGesture, 'cancelled pointer cannot trigger tap interaction');
+      assert.equal(await scene().getAttribute('data-look'), null, 'cancelled drag releases view');
+      result.checks.push({ name: 'drag is not tap and pointer cancellation releases gesture', pass: true, method: 'synthetic pointerdown/move/up and pointerdown/cancel/up' });
+
+      await clickControl('#qa-active');
+      await motion('paused');
+      const originalCanvas = await canvas().elementHandle();
+      const originalContexts = await page.evaluate(() => window.__rainQA.contexts);
+      await clickControl('#qa-second');
+      await page.waitForSelector('#qa-second-holder .rain-shelter-canvas');
+      assert.equal(await canvas().count(), 1);
+      assert.equal(await canvas().evaluate((c, original) => c === original, originalCanvas), true);
+      assert.equal(await page.evaluate(() => window.__rainQA.contexts), originalContexts);
+      await clickControl('#qa-second');
+      await page.waitForSelector('#qa-primary-holder .rain-shelter-canvas');
+      assert.equal(await canvas().evaluate((c, original) => c === original, originalCanvas), true);
+      result.checks.push({ name: 'second holder relocates one identical canvas and returns it', pass: true, sceneContexts: originalContexts });
+
+      await clickControl('#qa-active');
+      await motion('running');
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await motion('paused');
+      const reduced = await metric();
+      await page.waitForTimeout(650);
+      assert.equal((await metric()).time, reduced.time);
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await motion('running');
+      result.checks.push({ name: 'prefers-reduced-motion freezes scene and change resumes it', pass: true });
+      await clickControl('#qa-static');
+      await motion('paused');
+      const staticFrame = await metric();
+      await page.waitForTimeout(650);
+      assert.equal((await metric()).time, staticFrame.time);
+      await clickControl('#qa-static');
+      await motion('running');
+      result.checks.push({ name: 'static3D preserves full 3D frame without animation', pass: true });
+      await page.evaluate(() => { Object.defineProperty(document,'visibilityState',{configurable:true,get:()=> 'hidden'}); document.dispatchEvent(new Event('visibilitychange')); });
+      await motion('paused');
+      const hidden = await metric();
+      await page.waitForTimeout(650);
+      assert.equal((await metric()).time, hidden.time);
+      await page.evaluate(() => { delete document.visibilityState; document.dispatchEvent(new Event('visibilitychange')); });
+      await motion('running');
+      result.checks.push({ name: 'synthetic hidden state pauses; visibility restoration resumes', pass: true, actualTabSwitch: false });
+      await clickControl('#qa-active');
+      await motion('paused');
+      for (let i=0; i<3; i++) {
+        await clickControl('#qa-mounted');
+        await page.waitForFunction(() => document.querySelectorAll('.rain-shelter-canvas').length === 0);
+        await clickControl('#qa-mounted');
+        await ready();
+        assert.equal(await canvas().count(),1);
+        assert.equal(await canvas().evaluate((c, original) => c===original, originalCanvas),true);
+      }
+      result.checks.push({ name: 'three quick mount/unmount cycles reuse one live scene', pass: true });
+      await clickControl('#qa-mounted');
+      await page.waitForFunction(() => document.querySelectorAll('.rain-shelter-canvas').length === 0);
+      await page.waitForTimeout(5700);
+      const disposed = await page.evaluate(() => window.__rainQA);
+      assert.ok(disposed.losses >= 1, 'expired host explicitly releases WebGL context');
+      await clickControl('#qa-mounted');
+      await ready();
+      assert.equal(await canvas().count(),1);
+      assert.equal(await canvas().evaluate((c,original)=>c===original,originalCanvas),false,'expired scene creates a fresh canvas');
+      result.checks.push({ name: 'delayed teardown releases WebGL context and later remount is fresh', pass: true, telemetry: disposed });
+      assert.deepEqual(result.errors, []);
+    } catch(error) {
+      result.errors.push(String(error?.stack || error));
+      try { await page.screenshot({ path: path.join(output, `${world}-failure.png`) }); } catch {}
+    } finally {
+      await context.close();
+      result.pass = result.errors.length === 0;
+      await writeFile(path.join(output,'report.json'), JSON.stringify(report,null,2)+'\n');
+      console.log(`${result.pass ? 'PASS' : 'FAIL'} ${world}: ${result.checks.length} checks, ${result.screenshots.length} screenshots`);
+      if (result.errors.length) console.error(result.errors.join('\n'));
+    }
+  }
+} catch(error) {
+  report.errors.push(String(error?.stack || error));
+} finally {
+  await browser.close();
+  report.finishedAt = new Date().toISOString();
+  report.pass = report.errors.length === 0 && report.worlds.length === worlds.length && report.worlds.every((w)=>w.pass);
+  await writeFile(path.join(output,'report.json'), JSON.stringify(report,null,2)+'\n');
+}
+if (!report.pass) process.exitCode=1;

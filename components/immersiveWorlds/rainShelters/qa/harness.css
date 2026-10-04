@@ -1,0 +1,7 @@
+html, body, #root { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #1b272a; }
+* { box-sizing: border-box; }
+#qa-stage, .qa-holder { position: absolute; inset: 0; width: 100%; height: 100%; }
+.qa-second { z-index: 2; }
+#qa-controls { position: fixed; z-index: 20; top: 8px; left: 8px; max-width: calc(100% - 16px); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px; border-radius: 9px; color: #fff; background: #152027ed; font: 12px/1.3 system-ui, sans-serif; }
+#qa-controls button { color: #f0f6f6; background: #304345; border: 1px solid #5b7274; border-radius: 5px; padding: 7px; cursor: pointer; }
+html[data-qa-capture="true"] #qa-controls { visibility: hidden; }

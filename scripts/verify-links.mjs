@@ -14,8 +14,18 @@ await context.addInitScript(() => {
   window.__audioContexts = [];
   window.__oscillatorsCreated = 0;
   window.__sessionGraphsCreated = 0;
+  // Hold only the cancellation fixture in suspended state. History navigation
+  // can legitimately unlock real audio before the next automation command.
+  window.__holdAudio = location.search.includes('hold-audio-test=1');
+  window.__resumeCalls = 0;
+  window.__heldResumes = [];
   window.AudioContext = class extends NativeContext {
     constructor(...args) { super(...args); window.__audioContexts.push(this); }
+    get state() { return window.__holdAudio ? 'suspended' : super.state; }
+    resume() {
+      window.__resumeCalls++;
+      return window.__holdAudio ? new Promise((resolve) => window.__heldResumes.push(resolve)) : super.resume();
+    }
     createAnalyser() { window.__sessionGraphsCreated++; return super.createAnalyser(); }
     createOscillator() { window.__oscillatorsCreated++; return super.createOscillator(); }
   };
@@ -116,15 +126,32 @@ try {
 
   // Leaving while resume is pending cannot later start hidden sound.
   await page.goto('about:blank');
-  await page.goto(`${BASE}#/play/relax`);
+  await page.goto(`${BASE}?hold-audio-test=1#/play/relax`);
   await page.locator('[data-playback-hint="blocked"]').waitFor();
+  const priorLast = await page.evaluate(() => localStorage.getItem('mc_brain_last'));
+  const resumeCalls = await page.evaluate(() => window.__resumeCalls);
   await page.goBack();
   await page.waitForFunction(() => location.hash === '');
   await page.goForward();
-  await page.locator('[data-playback-hint]').waitFor();
+  await page.locator('[data-playback-hint="starting"]').waitFor();
+  assert.ok(await page.evaluate(() => window.__resumeCalls) > resumeCalls);
   await typeLink('#/guide');
+  await page.waitForFunction(() => [...document.querySelectorAll('[aria-current="page"]')].some((item) => item.textContent.includes('뇌파 가이드')) && !document.querySelector('[data-playback-hint]'));
+  // Resolve the old readiness signal only after leaving. It must have no
+  // listeners left that could create a graph or change the current page.
+  await page.evaluate(() => {
+    window.__holdAudio = false;
+    for (const audio of window.__audioContexts) {
+      Object.defineProperty(audio, 'state', { get: () => 'running' });
+      audio.dispatchEvent(new Event('statechange'));
+    }
+    window.__heldResumes.forEach((resolve) => resolve());
+  });
   await page.waitForTimeout(1500);
   assert.equal(await page.evaluate(() => window.__oscillatorsCreated), 0);
+  assert.equal(await page.evaluate(() => window.__sessionGraphsCreated), 0);
+  assert.equal(await page.evaluate(() => localStorage.getItem('mc_brain_last')), priorLast);
+  assert.equal(await button('일시정지').count(), 0);
   assert.equal(await page.locator('[data-playback-hint]').count(), 0);
 
   assert.deepEqual(errors, []);

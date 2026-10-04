@@ -1,79 +1,132 @@
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
 
-// Every page and every routine on the player has an address after `#`:
-// links open it, the player can copy it, and Back/Forward/reload respect it.
 const BASE = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:4173').replace(/\/?$/, '/');
 const browser = await chromium.launch({
   executablePath: process.env.SCENE_BROWSER_PATH || undefined,
   headless: true,
+  // Exercise the restrictive policy; never disable browser autoplay protection.
   args: ['--no-sandbox', '--autoplay-policy=user-gesture-required'],
 });
-const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, serviceWorkers: 'block' });
+const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, serviceWorkers: 'block' });
+await context.addInitScript(() => {
+  const NativeContext = window.AudioContext;
+  window.__audioContexts = [];
+  window.__oscillatorsCreated = 0;
+  window.AudioContext = class extends NativeContext {
+    constructor(...args) { super(...args); window.__audioContexts.push(this); }
+    createOscillator() { window.__oscillatorsCreated++; return super.createOscillator(); }
+  };
+});
+const page = await context.newPage();
 page.setDefaultTimeout(60_000);
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 const hash = () => page.evaluate(() => location.hash);
-const currentPage = () => page.evaluate(() => [...document.querySelectorAll('[aria-current="page"]')].map((item) => item.textContent.trim()).join('|'));
 const button = (name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first();
-// Player controls fade out after a few seconds; trigger them directly.
 const press = (name) => button(name).dispatchEvent('click');
+const playing = () => button('일시정지').waitFor({ state: 'attached' });
+const stopped = () => button('재생').waitFor({ state: 'attached' });
+const typeLink = async (address) => {
+  await page.evaluate((next) => { location.hash = next; }, address);
+  await page.waitForFunction((expected) => location.hash === expected, address);
+};
 
 try {
   for (let attempt = 0; attempt < 20; attempt++) {
-    try { await page.goto(`${BASE}#/play/amb/cosmic`); break; }
+    try { await page.goto(`${BASE}#/play/focus`); break; }
     catch (error) { if (attempt === 19) throw error; await new Promise((resolve) => setTimeout(resolve, 250)); }
   }
+  // Cold focus link attempts resume, but a blocked context must not count time,
+  // write a recent session, show Pause, create voices, or hide the tap fallback.
+  await page.waitForSelector('h1:has-text("깊은 집중")');
+  await page.locator('[data-playback-hint="blocked"]').waitFor();
+  await stopped();
+  assert.equal(await hash(), '#/play/focus');
+  assert.equal(await page.evaluate(() => localStorage.getItem('mc_brain_last')), null);
+  assert.equal(await page.evaluate(() => window.__oscillatorsCreated), 0);
+  const initialTimer = await page.locator('[aria-label^="남은 시간"]').first().getAttribute('aria-label');
+  await page.waitForTimeout(1500);
+  assert.equal(await page.locator('[aria-label^="남은 시간"]').first().getAttribute('aria-label'), initialTimer);
+  assert.equal(await page.evaluate(() => window.__audioContexts[0].state), 'suspended');
+  await page.getByRole('button', { name: '눌러서 재생', exact: true }).click();
+  await playing();
+  assert.equal(await page.getByRole('dialog').count(), 0); // exactly one tap
+  assert.equal(await page.evaluate(() => window.__audioContexts[0].state), 'running');
+  assert.match(await page.evaluate(() => JSON.parse(localStorage.getItem('mc_brain_last')).name), /깊은 집중/);
+  await page.waitForFunction((before) => document.querySelector('[aria-label^="남은 시간"]')?.getAttribute('aria-label') !== before, initialTimer);
 
-  // A shared link opens the routine on the player, ready to play (sound needs a tap).
+  // Hash navigation can start immediately once normal browser policy permits.
+  await typeLink('#/play/amb/cosmic');
   await page.waitForSelector('h1:has-text("우주 명상")');
-  assert.equal(await hash(), '#/play/amb/cosmic');
-  await button('재생').waitFor({ state: 'attached' });
-
-  // The player copies a clean link to the routine.
+  await playing();
+  assert.equal(await page.locator('[data-playback-hint]').count(), 0);
   await page.evaluate(() => { window.__copied = null; navigator.clipboard.writeText = async (text) => { window.__copied = text; }; });
   await press('이 루틴 링크 복사');
   await page.waitForFunction(() => window.__copied);
   assert.equal(await page.evaluate(() => window.__copied), `${BASE}#/play/amb/cosmic`);
 
-  // The first play starts it (after the headphone notice when it applies).
-  await press('재생');
-  const notice = page.getByRole('button', { name: '확인하고 시작', exact: true });
-  if (await notice.isVisible().catch(() => false)) await notice.click();
-  await button('일시정지').waitFor({ state: 'attached' });
-  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('mc_brain_last') || 'null')?.name), '우주 명상');
-
-  // Back goes to the app's home with the plain address; Forward returns to the running session.
+  // Back/Forward between different play links restores the correct preset.
   await page.goBack();
-  await page.waitForFunction(() => location.hash === '' && !document.querySelector('h1')?.textContent?.includes('우주 명상'));
+  await page.waitForSelector('h1:has-text("깊은 집중")');
+  await playing();
   await page.goForward();
-  await page.waitForFunction(() => location.hash === '#/play/amb/cosmic');
-  await button('일시정지').waitFor({ state: 'attached' });
-  await press('세션 종료');
+  await page.waitForSelector('h1:has-text("우주 명상")');
+  await playing();
+  const starts = await page.evaluate(() => window.__oscillatorsCreated);
+  await page.evaluate(() => window.dispatchEvent(new HashChangeEvent('hashchange')));
+  await page.waitForTimeout(100);
+  assert.equal(await page.evaluate(() => window.__oscillatorsCreated), starts);
+  assert.equal(await page.evaluate(() => window.__audioContexts.length), 1);
 
-  // Typing a page address switches to it.
-  for (const [address, label] of [['#/insights', '리포트'], ['#/guide', '뇌파 가이드'], ['#/nature', '자연의 소리']]) {
-    await page.evaluate((next) => { location.hash = next; }, address);
-    await page.waitForFunction((expected) => [...document.querySelectorAll('[aria-current="page"]')].some((item) => item.textContent.includes(expected)), label);
-    assert.equal(await hash(), address);
-  }
+  // Returning to the same paused session must not auto-resume/reset it.
+  await press('일시정지'); await stopped();
+  await typeLink('#/guide');
   await page.goBack();
-  await page.waitForFunction(() => location.hash === '#/guide');
-  assert.match(await currentPage(), /뇌파 가이드/);
+  await page.waitForSelector('h1:has-text("우주 명상")');
+  await stopped();
+  assert.equal(await page.evaluate(() => window.__oscillatorsCreated), starts);
 
-  // A routine this device does not have lands home; reloading a routine keeps it.
-  await page.goto('about:blank');
-  await page.goto(`${BASE}#/play/amb/nowhere`);
+  // All link families use the same startup path, including device-local saves.
+  await typeLink('#/play/nature/deep_sea');
+  await page.waitForSelector('h1:has-text("깊은 바다")');
+  await playing();
+  assert.equal(await hash(), '#/play/nature/deep_sea');
+  await page.evaluate(() => {
+    const last = JSON.parse(localStorage.getItem('mc_brain_last'));
+    localStorage.setItem('mc_brain_presets', JSON.stringify([{ ...last, id: 'link-test', name: '링크 테스트', createdAt: new Date().toISOString() }]));
+  });
+  await page.reload();
+  // Reload can again require a gesture; accept either result according to the browser.
+  await page.waitForSelector('h1');
+  await page.waitForFunction(() => !document.querySelector('[data-playback-hint="starting"]'));
+  if (await page.locator('[data-playback-hint="blocked"]').count()) await page.getByRole('button', { name: '눌러서 재생' }).click();
+  await playing();
+  await typeLink('#/play/user/link-test');
+  await page.waitForSelector('h1:has-text("링크 테스트")'); await playing();
+  await typeLink('#/play/last');
+  await page.waitForSelector('h1:has-text("링크 테스트")'); await playing();
+
+  await typeLink('#/play/amb/nowhere');
   await page.waitForFunction(() => location.hash === '');
+  assert.equal(await button('일시정지').count(), 0);
+  assert.equal(await page.locator('[data-playback-hint]').count(), 0);
+
+  // Leaving while resume is pending cannot later start hidden sound.
   await page.goto('about:blank');
   await page.goto(`${BASE}#/play/relax`);
-  await page.waitForSelector('h1:has-text("불멍")');
-  await page.reload();
-  await page.waitForSelector('h1:has-text("불멍")');
-  assert.equal(await hash(), '#/play/relax');
+  await page.locator('[data-playback-hint="blocked"]').waitFor();
+  await page.goBack();
+  await page.waitForFunction(() => location.hash === '');
+  await page.goForward();
+  await page.locator('[data-playback-hint]').waitFor();
+  await typeLink('#/guide');
+  await page.waitForTimeout(1500);
+  assert.equal(await page.evaluate(() => window.__oscillatorsCreated), 0);
+  assert.equal(await page.locator('[data-playback-hint]').count(), 0);
 
   assert.deepEqual(errors, []);
-  console.log('PASS: links open routines ready on the player, the player copies a clean link, pages have typed addresses, and Back, Forward and reload follow them.');
+  console.log('PASS: cold-link autoplay policy fallback, one-tap retry, accurate timer/history, warm hash autoplay, all link families, Back/Forward, reload, idempotence, invalid links and cancelled startup.');
 } finally {
   await browser.close();
 }

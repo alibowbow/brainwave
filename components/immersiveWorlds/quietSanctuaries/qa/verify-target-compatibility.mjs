@@ -16,7 +16,7 @@ const assetRoot = path.join(repository, 'public/immersive-worlds/quietSanctuarie
 const output = path.resolve(process.env.SANCTUARY_QA_OUTPUT || path.join(here, 'compat-evidence'));
 const base = (process.env.SANCTUARY_QA_URL || 'http://127.0.0.1:4175').replace(/\/?$/, '/');
 const hash = (value) => createHash('sha256').update(value).digest('hex');
-const git = (...args) => execFileSync('git', args, { cwd: repository, encoding: 'utf8' }).trim();
+const git = (...args) => execFileSync('git', args, { cwd: repository, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }).trim();
 const capturesOnly = process.env.SANCTUARY_QA_MODE === 'visual';
 const baselineCommit = 'c5a100794084e6230e9fdc8a4c036a02a5813176';
 const relativeGroup = path.relative(repository, sourceRoot).split(path.sep).join('/');
@@ -323,7 +323,7 @@ try {
     ...git('ls-tree', '-r', '--name-only', baselineCommit, `${relativeGroup}/qa/evidence`).split('\n').filter(Boolean).map((file) => file.slice(relativeGroup.length + 1)),
   ];
   for (const relative of preserved) {
-    const baselineBytes = execFileSync('git', ['show', `${baselineCommit}:${relativeGroup}/${relative}`], { cwd: repository });
+    const baselineBytes = execFileSync('git', ['show', `${baselineCommit}:${relativeGroup}/${relative}`], { cwd: repository, maxBuffer: 32 * 1024 * 1024 });
     const actual = await readFile(path.join(sourceRoot, relative));
     assert.equal(hash(actual), hash(baselineBytes), `baseline source/evidence preserved: ${relative}`);
     report.preservation.sourceFiles.push({ path: `${relativeGroup}/${relative}`, baselineSha256: hash(baselineBytes), actualSha256: hash(actual), identical: true });

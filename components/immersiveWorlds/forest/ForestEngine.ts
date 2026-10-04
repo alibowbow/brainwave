@@ -27,6 +27,7 @@ export class ForestEngine implements LiveSceneEngine {
   private reflection!: Reflector;
   private waterUniforms!: Record<string, THREE.IUniform>;
   private plants: THREE.Group[] = [];
+  private solidSurfaces: THREE.Object3D[] = [];
   private birds: THREE.Group[] = [];
   private leafHitTime = -20;
   private leafHit: THREE.Group | null = null;
@@ -105,13 +106,14 @@ export class ForestEngine implements LiveSceneEngine {
     for (let i = 0; i < gp.count; i++) {
       const x = gp.getX(i), z = gp.getZ(i); gp.setY(i, groundHeight(x, z));
       const moss = (Math.sin(x * 0.72 + z * 0.23) + Math.sin(z * 0.9 - x * .23)) * .25 + .5;
-      const c = new THREE.Color().lerpColors(new THREE.Color('#60523b'), new THREE.Color('#5f7233'), moss);
+      const c = new THREE.Color().lerpColors(new THREE.Color('#b5a787'), new THREE.Color('#a4b773'), moss);
       if (pondRadius(x, z) < 1) c.lerp(new THREE.Color('#3c4538'), .55);
       colors.push(c.r, c.g, c.b);
     }
     ground.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3)); ground.computeVertexNormals();
     const groundMat = materials.ground.clone(); groundMat.color.set('#ffffff'); groundMat.vertexColors = true;
-    const floor = new THREE.Mesh(ground, groundMat); floor.receiveShadow = true; this.scene.add(floor);
+    groundMat.map?.repeat.set(42,42);
+    const floor = new THREE.Mesh(ground, groundMat); floor.receiveShadow = true; this.scene.add(floor);this.solidSurfaces.push(floor);
 
     const treeLayout = [
       [-3.7, -0.2, 13, .60], [3.85, -1.8, 14, .67], [-6.3, -5.8, 16, .63], [5.9, -8, 15, .61],
@@ -128,10 +130,35 @@ export class ForestEngine implements LiveSceneEngine {
       this.scene.add(tree);
     }
 
-    // Root-level leaves move in independent low-amplitude breezes, never cycling seasons.
-    materials.leaf.onBeforeCompile = (shader) => {
+    // Original two-timescale wind: a slow shared woody bend inherited by the
+    // crown, with smaller, phase-shifted motion on individual leaf blades.
+    const inheritBranchWind = (shader: { uniforms: Record<string,THREE.IUniform>; vertexShader: string }) => {
       shader.uniforms.forestTime = this.clock;
       shader.vertexShader = 'uniform float forestTime;\n' + shader.vertexShader;
+      shader.vertexShader = shader.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
+        vec4 branchPosition=vec4(transformed,1.);
+        #ifdef USE_INSTANCING
+          branchPosition=instanceMatrix*branchPosition;
+        #endif
+        float flexibility=pow(clamp(branchPosition.y/16.,0.,1.4),1.65);
+        float trunkPhase=modelMatrix[3].x*.37+modelMatrix[3].z*.19;
+        vec3 bend=vec3(sin(forestTime*.26+trunkPhase),0.,cos(forestTime*.21+trunkPhase))*.035*flexibility;
+        mvPosition.xyz+=(viewMatrix*vec4(bend,0.)).xyz;
+        gl_Position=projectionMatrix*mvPosition;`);
+    };
+    const leafBacklight = (shader: {fragmentShader:string}) => {
+      // Thin-leaf scattering approximation; solid geometry still occludes and
+      // receives shadows. There is no billboard translucency or screen glow.
+      shader.fragmentShader=shader.fragmentShader.replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
+        #if NUM_DIR_LIGHTS > 0
+          float throughLeaf=pow(max(0.,dot(-normal,directionalLights[0].direction)),1.7);
+          reflectedLight.indirectDiffuse+=diffuseColor.rgb*vec3(.34,.42,.15)*throughLeaf;
+        #endif`);
+    };
+    materials.bark.onBeforeCompile = inheritBranchWind;
+    materials.bark.customProgramCacheKey = () => 'forest-inherited-branch-wind-v1';
+    materials.leaf.onBeforeCompile = (shader) => {
+      inheritBranchWind(shader);leafBacklight(shader);
       shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
         vec4 windOrigin=vec4(position,1.);
         #ifdef USE_INSTANCING
@@ -142,7 +169,7 @@ export class ForestEngine implements LiveSceneEngine {
         transformed.x+=sin(forestTime*.63+phase)*.012;
         transformed.z+=sin(forestTime*.47+phase*1.7)*.009;`);
     };
-    materials.leaf.customProgramCacheKey = () => 'forest-leaf-wind-v1';
+    materials.leaf.customProgramCacheKey = () => 'forest-leaf-wind-v2';
 
     this.addRocks(materials.rock);
     this.addWater();
@@ -157,8 +184,13 @@ export class ForestEngine implements LiveSceneEngine {
       this.scene.add(fern);
     }
     // Large, physically near leaves frame the sitting place without blocking the pool.
-    for (const [x,z,s] of [[-1.65,3.22,1.10],[1.95,3.02,.95],[-2.95,1.4,1.2],[2.85,.7,.92],[-2.1,-2.8,.8]]) {
-      const plant = createBroadleafPlant(materials, random, s);
+    const wetLeaf = materials.leaf.clone();
+    // Wet foreground leaves and droplets move together at the stem. Their
+    // separate meshes must not drift apart under the canopy's vertex wind.
+    wetLeaf.onBeforeCompile = leafBacklight;
+    wetLeaf.customProgramCacheKey = () => 'forest-wet-leaf-v2';
+    for (const [x,z,s] of [[-1.65,3.22,1.10],[1.95,3.02,.95],[-.48,3.48,.82],[.66,3.58,.65],[-2.95,1.4,1.2],[2.85,.7,.92],[-2.1,-2.8,.8]]) {
+      const plant = createBroadleafPlant({...materials,leaf:wetLeaf}, random, s);
       plant.position.set(x, groundHeight(x,z), z); plant.rotation.y = random() * 6.28;
       plant.userData.baseRotation = plant.rotation.z;
       this.plants.push(plant); this.scene.add(plant);
@@ -207,7 +239,7 @@ export class ForestEngine implements LiveSceneEngine {
     for(let i=0;i<70;i++){const x=(random()-.5)*4,z=(random()-.5)*5-.5;add(x,z,.035+random()*.09,.6);}
     const g=mergeGeometries(geometries);geometries.forEach(item=>item.dispose());
     const mat=base.clone();mat.color.set('white');mat.vertexColors=true;mat.roughness=.65;
-    const stones=new THREE.Mesh(g,mat);stones.castShadow=true;stones.receiveShadow=true;this.scene.add(stones);
+    const stones=new THREE.Mesh(g,mat);stones.castShadow=true;stones.receiveShadow=true;this.scene.add(stones);this.solidSurfaces.push(stones);
   }
 
   private addWater() {
@@ -226,7 +258,9 @@ export class ForestEngine implements LiveSceneEngine {
         void main(){
           vec2 p=vWorld.xz; float age=time-ripple.z;float dist=length(p-ripple.xy);
           float pulse=sin(dist*26.-age*4.2)*exp(-pow((dist-age*.39)*2.5,2.))*exp(-age*.85)*step(0.,age);
-          vec2 flow=vec2(sin(p.y*8.+time*.52)+sin(p.x*14.+p.y*3.+time*.37),cos(p.x*9.-time*.43))*.0016;
+          // Far reflections retain branch forms; near ripples carry more detail.
+          float nearFlow=mix(.48,1.35,smoothstep(-3.,2.5,p.y));
+          vec2 flow=vec2(sin(p.y*8.+time*.52)+sin(p.x*14.+p.y*3.+time*.37),cos(p.x*9.-time*.43))*.0016*nearFlow;
           vec2 uv=vReflection.xy/vReflection.w+flow+normalize(p-ripple.xy+.0001)*pulse*.004;
           vec3 reflected=texture2D(tDiffuse,uv).rgb;
           vec3 view=normalize(cameraPosition-vWorld);float fresnel=.24+.63*pow(1.-max(0.,view.y),3.);
@@ -249,7 +283,7 @@ export class ForestEngine implements LiveSceneEngine {
   private addFallenWood(material:THREE.MeshStandardMaterial) {
     const g=new THREE.CylinderGeometry(.18,.24,3.6,16,8);g.rotateZ(Math.PI/2);
     const log=new THREE.Mesh(g,material);log.position.set(-2.8,.59,-5.2);log.rotation.y=-.32;
-    log.castShadow=true;log.receiveShadow=true;this.scene.add(log);
+    log.castShadow=true;log.receiveShadow=true;this.scene.add(log);this.solidSurfaces.push(log);
   }
 
   private addBirds() {
@@ -336,6 +370,9 @@ export class ForestEngine implements LiveSceneEngine {
     this.raycaster.setFromCamera(new THREE.Vector2(x,y),this.camera);
     const leaf=this.raycaster.intersectObjects(this.plants,true)[0];
     const water=this.raycaster.intersectObject(this.reflection)[0];
+    const hitDistance=Math.min(leaf?.distance??Infinity,water?.distance??Infinity);
+    const solid=this.raycaster.intersectObjects(this.solidSurfaces,false)[0];
+    if(solid&&solid.distance<hitDistance-.012)return;
     if(leaf&&(!water||leaf.distance<water.distance)){
       let group:THREE.Object3D=leaf.object;while(group.parent&&!this.plants.includes(group as THREE.Group))group=group.parent;
       this.leafHit=group as THREE.Group;this.leafHitTime=this.time;
@@ -354,6 +391,7 @@ export class ForestEngine implements LiveSceneEngine {
     const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>(),textures=new Set<THREE.Texture>();
     this.scene.traverse(object=>{
       const mesh=object as THREE.Mesh;if(mesh.geometry)geometries.add(mesh.geometry);
+      if(object instanceof THREE.InstancedMesh)object.dispose();
       if(mesh.material)for(const m of Array.isArray(mesh.material)?mesh.material:[mesh.material])materials.add(m);
       if(object instanceof THREE.Light&&'shadow' in object)(object as THREE.DirectionalLight).shadow?.dispose();
     });

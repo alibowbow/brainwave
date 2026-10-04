@@ -5,6 +5,7 @@ import MorningPorchWorld from '../MorningPorchWorld';
 import RainyForestWorld from '../RainyForestWorld';
 import AncientForestWorld from '../AncientForestWorld';
 import BambooWorld from '../BambooWorld';
+import { getWoodsHost } from '../host';
 
 const worlds = { morning: MorningPorchWorld, rainy: RainyForestWorld, ancient: AncientForestWorld, bamboo: BambooWorld };
 type WorldName = keyof typeof worlds;
@@ -20,6 +21,7 @@ declare global {
       events: () => unknown[];
       clearEvents: () => void;
       targets: () => Target[];
+      captureCanvas: () => string;
       world: WorldName;
     };
   }
@@ -47,6 +49,17 @@ function Harness() {
       setSecond: (value) => flushSync(() => setSecond(value)),
       events: () => interactions.slice(),
       clearEvents: () => { interactions.length = 0; },
+      captureCanvas: () => {
+        // QA only: obtain actual WebGL pixels synchronously in the same task
+        // before a non-preserved drawing buffer is cleared by the browser.
+        // This avoids a proven headless compositor readback timeout without
+        // changing production renderer settings or adding a production hook.
+        const engine = (getWoodsHost(world) as unknown as { engine: { renderFrame: (dt: number) => void } | null }).engine;
+        const canvas = document.querySelector<HTMLCanvasElement>('canvas[data-engine-id]');
+        if (!engine || !canvas) throw new Error('Scene engine is not mounted');
+        engine.renderFrame(0);
+        return canvas.toDataURL('image/png');
+      },
       targets: () => {
         const canvas = document.querySelector<HTMLCanvasElement>('canvas[data-engine-id]');
         if (!canvas) return [];

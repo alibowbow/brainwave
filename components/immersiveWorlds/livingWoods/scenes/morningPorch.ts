@@ -171,7 +171,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
 
   // A pale eastern sky surrounds the environment, with no planar backdrop.
   const sky = new THREE.Mesh(new THREE.SphereGeometry(140, 32, 16), new THREE.ShaderMaterial({
-    side: THREE.BackSide, depthWrite: false,
+    side: THREE.BackSide, depthWrite: false, toneMapped: false,
     uniforms: { zenith: { value: new THREE.Color('#a8d8ee') }, horizon: { value: new THREE.Color('#fff0da') } },
     vertexShader: 'varying vec3 vPosition; void main(){vPosition=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: 'uniform vec3 zenith;uniform vec3 horizon;varying vec3 vPosition;void main(){vec3 d=normalize(vPosition);float h=pow(max(d.y,0.),.45);vec3 c=mix(horizon,zenith,h);float sun=pow(max(dot(d,normalize(vec3(-.72,.29,-.64))),0.),38.);c+=vec3(.09,.04,.005)*sun;gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}',
@@ -315,7 +315,10 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     }
   }
 
-  const treeLeaves = instances(bladeGeometry(.13, .49, .07, 4), leafMaterial, 8800);
+  const canopyMaterial = leafMaterial.clone();
+  canopyMaterial.color.set('#c6d09f');
+  canopyMaterial.emissiveIntensity = .04;
+  const treeLeaves = instances(bladeGeometry(.13, .49, .07, 4), canopyMaterial, 8800);
   let leafIndex = 0;
   const trees = [
     [-5.4, -5.8, 6.7, .9], [6.8, -9, 7.2, .85], [-12.5, -19, 8.6, 1.3],
@@ -355,13 +358,17 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   }
   transformedBranches.forEach(geometry => geometry.dispose());
   // An irregular distant hedgerow anchors the fields to the landscape's horizon.
-  const hedgeLeaves = instances(bladeGeometry(.13, .42, .08, 3), leafMaterial, 2200);
+  const hedgeLeaves = instances(bladeGeometry(.065, .23, .045, 3), canopyMaterial, 2200);
   for (let i = 0; i < hedgeLeaves.count; i++) {
-    const x = range(-36, 34);
-    const z = -24 - Math.sin(x * .12) * 2.5 + range(-1.7, 1.7);
-    const height = .6 + Math.sin(x * .3) * .48 + Math.sin(x * .7 + 1) * .25;
-    dummy.position.set(x, range(.1, 1.5) + height, z);
-    dummy.rotation.set(range(-1, .7), range(0, 6.28), range(-.5, .5)); dummy.scale.setScalar(range(1.8, 3.6));
+    const clump = Math.floor(i / 130);
+    const centerX = -35 + clump * 4.2 + Math.sin(clump * 5.3) * .8;
+    const offsetX = range(-2.1, 2.1);
+    const x = centerX + offsetX;
+    const z = -24 - Math.sin(centerX * .12) * 2.5 + range(-1.4, 1.4);
+    const dome = Math.sqrt(Math.max(0, 1 - offsetX * offsetX / 4.5));
+    const height = (.55 + Math.sin(clump * 3.7) * .2) * dome;
+    dummy.position.set(x, range(.15, .95) + height, z);
+    dummy.rotation.set(range(-1, .7), range(0, 6.28), range(-.5, .5)); dummy.scale.setScalar(range(1.2, 2.6));
     dummy.updateMatrix(); hedgeLeaves.setMatrixAt(i, dummy.matrix);
     hedgeLeaves.setColorAt(i, new THREE.Color().setHSL(range(.22, .3), range(.15, .28), range(.57, .72)));
   }
@@ -458,7 +465,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     resize(aspect) {
       camera.position.set(0, aspect < .8 ? 1.64 : 1.68, aspect < .8 ? 5 : 4.8);
       camera.fov = aspect < .8 ? 58 : 53;
-      camera.lookAt(aspect < .8 ? .04 : 0, aspect < .8 ? 1.1 : 1.25, -8);
+      camera.lookAt(aspect < .8 ? .04 : 0, aspect < .8 ? .32 : 1.25, -8);
       camera.updateProjectionMatrix();
       table.position.x = aspect < .8 ? .12 : .26;
     },

@@ -135,10 +135,14 @@ export function coastDistance(x: number, z: number) {
   return smoothMin(land, headlandDistance(x, z), 60);
 }
 
-/** How deep the water is at a distance out from the shore, with a sandbar. */
+/**
+ * How deep the water is at a distance out from the shore: a gently
+ * shelving sandy bottom with a bar across it, then the drop to deep water.
+ */
 export function seaDepth(distance: number) {
   const d = Math.max(0, distance);
-  return Math.min(32, 0.35 + 0.045 * d + 0.9 * Math.sin(d * 0.07) * Math.exp(-d / 70));
+  const shelf = 0.25 + 0.02 * d + 0.5 * Math.sin(d * 0.07) * Math.exp(-d / 80);
+  return Math.min(32, shelf + 0.09 * Math.max(0, d - 150) + 0.0001 * d * d);
 }
 
 // Value noise, matching the GLSL below closely enough for colour variation.
@@ -403,7 +407,8 @@ ${FAR_HEADLANDS.map((h) => `  c = max(c, exp(-pow((z - (${h.z.toFixed(1)})) / ${
 }
 float seaDepth(float distance) {
   float d = max(0.0, distance);
-  return min(32.0, 0.35 + 0.045 * d + 0.9 * sin(d * 0.07) * exp(-d / 70.0));
+  float shelf = 0.25 + 0.02 * d + 0.5 * sin(d * 0.07) * exp(-d / 80.0);
+  return min(32.0, shelf + 0.09 * max(0.0, d - 150.0) + 0.0001 * d * d);
 }
 // The field a point lies in: its cell's hash (xy) and the distance to its border in metres (z).
 vec3 fieldAt(vec2 p) {

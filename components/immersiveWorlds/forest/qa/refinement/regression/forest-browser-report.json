@@ -1,0 +1,1561 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-04T20:37:53.817Z",
+  "renderer": "Headless Chromium WebGL2 using SwiftShader; actual Three.js geometry and shaders.",
+  "limitations": [
+    "Software rendering in Linux CI is not representative of physical-phone performance.",
+    "344×800 and 882×344 are layout simulations, not physical Fold hardware tests.",
+    "Motion uses native 882×344 after layout captures; lifecycle runs in a separate fresh browser without screenshots. Rendering quality and resolution scale are unchanged.",
+    "Reduced motion is tested with browser media emulation and the actual app class.",
+    "Native tab/window visibility is observed when supported by headless Chromium; the separate document.hidden override tests only the simulated hook.",
+    "DOM gesture assertions use PointerEvents through the component; they are not physical touchscreen tests.",
+    "This route is the isolated forest harness, not full-app immersive entry/Escape/Back acceptance.",
+    "Direct same-render PNGs, when explicitly requested, are supplemental scene pixels and cannot satisfy the compositor/DOM image gate.",
+    "Actual hidden state was not observed: about:blank tab brought to front: document.hidden remained false; native browser window minimized: document.hidden remained false. Real tab-background pause remains unverified."
+  ],
+  "screenshots": [
+    {
+      "filename": "forest-desktop.png",
+      "bytes": 1431044,
+      "sha256": "b5d8ce1c6e089c64dffd5623e22c2dfec7835917255ceafaa9d63b671b87a091",
+      "width": 1280,
+      "height": 800,
+      "method": "cdp-surface-png",
+      "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+      "time": 0,
+      "frame": 1,
+      "dpr": 1,
+      "elapsedMs": 22953,
+      "budgetMs": 30000
+    },
+    {
+      "filename": "forest-fold-portrait.png",
+      "bytes": 342834,
+      "sha256": "9406de07410bac4f04d8b7314f47b6530787066600cc38b7ef526c8d8be79cc3",
+      "width": 344,
+      "height": 800,
+      "method": "cdp-surface-png",
+      "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+      "time": 0,
+      "frame": 2,
+      "dpr": 1,
+      "elapsedMs": 4861,
+      "budgetMs": 30000
+    },
+    {
+      "filename": "forest-fold-landscape.png",
+      "bytes": 381513,
+      "sha256": "68e18f3dfc06a7c2563aca995418f4ca799f33e338140574fa1f4792726e6a77",
+      "width": 882,
+      "height": 344,
+      "method": "cdp-surface-png",
+      "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+      "time": 0,
+      "frame": 3,
+      "dpr": 1,
+      "elapsedMs": 6854,
+      "budgetMs": 30000
+    },
+    {
+      "filename": "forest-motion.png",
+      "bytes": 381117,
+      "sha256": "9a28204653dde56546cf32fd4ca396da7e2e55f4ebb60be8f03d4cc0eb9ba9e8",
+      "width": 882,
+      "height": 344,
+      "method": "cdp-surface-png",
+      "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+      "time": 0.2768,
+      "frame": 10,
+      "dpr": 1,
+      "elapsedMs": 11429,
+      "budgetMs": 30000
+    }
+  ],
+  "checks": [
+    {
+      "name": "visual: engine ready instead of fallback",
+      "passed": true,
+      "detail": {
+        "state": "ready"
+      }
+    },
+    {
+      "name": "Initial active=false mount draws a static 3D frame",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "gpuSubmitted": "2",
+        "gpuSubmissionAttempts": "2",
+        "gpuInitializationSubmitted": "1",
+        "gpuCompleted": "0",
+        "gpuPending": "2",
+        "gpuAbandoned": "0",
+        "gpuQueued": "false",
+        "gpuCaptures": "0",
+        "gpuFault": "",
+        "running": "false",
+        "frames": "1",
+        "time": "0.0000",
+        "waterHits": "0",
+        "leafHits": "0",
+        "environmentPath": "half-float-pmrem",
+        "dpr": "1",
+        "cpuSubmissionMs": "3174.100",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "233",
+        "triangles": "3663155",
+        "targetMode": "native-half-float",
+        "halfFloatSupported": "true",
+        "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+        "cssWidth": 1280,
+        "cssHeight": 800,
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "name": "Nonzero rendered geometry and full desktop buffer",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "gpuSubmitted": "2",
+        "gpuSubmissionAttempts": "2",
+        "gpuInitializationSubmitted": "1",
+        "gpuCompleted": "0",
+        "gpuPending": "2",
+        "gpuAbandoned": "0",
+        "gpuQueued": "false",
+        "gpuCaptures": "0",
+        "gpuFault": "",
+        "running": "false",
+        "frames": "1",
+        "time": "0.0000",
+        "waterHits": "0",
+        "leafHits": "0",
+        "environmentPath": "half-float-pmrem",
+        "dpr": "1",
+        "cpuSubmissionMs": "3174.100",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "233",
+        "triangles": "3663155",
+        "targetMode": "native-half-float",
+        "halfFloatSupported": "true",
+        "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+        "cssWidth": 1280,
+        "cssHeight": 800,
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "name": "Actual 344×800 layout renders",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "gpuSubmitted": "3",
+        "gpuSubmissionAttempts": "3",
+        "gpuInitializationSubmitted": "1",
+        "gpuCompleted": "3",
+        "gpuPending": "0",
+        "gpuAbandoned": "0",
+        "gpuQueued": "false",
+        "gpuCaptures": "0",
+        "gpuFault": "",
+        "running": "false",
+        "frames": "2",
+        "time": "0.0000",
+        "waterHits": "0",
+        "leafHits": "0",
+        "environmentPath": "half-float-pmrem",
+        "dpr": "1",
+        "cpuSubmissionMs": "10.400",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "144",
+        "triangles": "2624855",
+        "targetMode": "native-half-float",
+        "halfFloatSupported": "true",
+        "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+        "cssWidth": 344,
+        "cssHeight": 800,
+        "width": 344,
+        "height": 800
+      }
+    },
+    {
+      "name": "Actual 882×344 layout renders",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "gpuSubmitted": "4",
+        "gpuSubmissionAttempts": "4",
+        "gpuInitializationSubmitted": "1",
+        "gpuCompleted": "4",
+        "gpuPending": "0",
+        "gpuAbandoned": "0",
+        "gpuQueued": "false",
+        "gpuCaptures": "0",
+        "gpuFault": "",
+        "running": "false",
+        "frames": "3",
+        "time": "0.0000",
+        "waterHits": "0",
+        "leafHits": "0",
+        "environmentPath": "half-float-pmrem",
+        "dpr": "1",
+        "cpuSubmissionMs": "5.100",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "166",
+        "triangles": "2700425",
+        "targetMode": "native-half-float",
+        "halfFloatSupported": "true",
+        "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+        "cssWidth": 882,
+        "cssHeight": 344,
+        "width": 882,
+        "height": 344
+      }
+    },
+    {
+      "name": "Static layout captures preserve the initial inactive simulation",
+      "passed": true,
+      "detail": {
+        "initial": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "2",
+          "gpuSubmissionAttempts": "2",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "0",
+          "gpuPending": "2",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "false",
+          "frames": "1",
+          "time": "0.0000",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "3174.100",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "233",
+          "triangles": "3663155",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 1280,
+          "cssHeight": 800,
+          "width": 1280,
+          "height": 800
+        },
+        "afterThreeLayouts": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "4",
+          "gpuSubmissionAttempts": "4",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "4",
+          "gpuPending": "0",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "false",
+          "frames": "3",
+          "time": "0.0000",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "5.100",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2700425",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        }
+      }
+    },
+    {
+      "name": "Actual rendered motion changes the image",
+      "passed": true,
+      "detail": {
+        "nativeViewport": [
+          882,
+          344
+        ],
+        "before": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "4",
+          "gpuSubmissionAttempts": "4",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "4",
+          "gpuPending": "0",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "false",
+          "frames": "3",
+          "time": "0.0000",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "5.100",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2700425",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "after": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "13",
+          "gpuSubmissionAttempts": "13",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "11",
+          "gpuPending": "2",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "true",
+          "frames": "12",
+          "time": "0.2935",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "8.900",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2700425",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "beforeImage": "68e18f3dfc06a7c2563aca995418f4ca799f33e338140574fa1f4792726e6a77",
+        "afterImage": "9a28204653dde56546cf32fd4ca396da7e2e55f4ebb60be8f03d4cc0eb9ba9e8",
+        "beforeMethod": "cdp-surface-png",
+        "afterMethod": "cdp-surface-png"
+      }
+    },
+    {
+      "name": "clean-functional: engine ready instead of fallback",
+      "passed": true,
+      "detail": {
+        "state": "ready"
+      }
+    },
+    {
+      "name": "Clean no-capture real-component lifecycle and interactions pass",
+      "passed": true,
+      "detail": {
+        "report": {
+          "status": "passed",
+          "startedAt": "2026-10-04T20:39:45.451Z",
+          "method": "In-page DOM PointerEvent assertions through the component handlers. No direct engine calls. Synthetic gestures are not physical-device testing.",
+          "environment": {
+            "viewportPreset": "desktop",
+            "window": [
+              882,
+              344
+            ],
+            "devicePixelRatio": 1,
+            "osReducedMotion": false,
+            "osReducedMotionTest": "Observed actual media query only; OS emulation is not performed by this harness.",
+            "visibilityTest": "Requires a real tab hide/show cycle; see visibilitySamples. No document.hidden override.",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36"
+          },
+          "checks": [
+            {
+              "name": "Actual rendered 3D canvas",
+              "passed": true,
+              "detail": {
+                "engine": "three.js r186",
+                "gpuSubmitted": "2",
+                "gpuSubmissionAttempts": "2",
+                "gpuInitializationSubmitted": "1",
+                "gpuCompleted": "0",
+                "gpuPending": "2",
+                "gpuAbandoned": "0",
+                "gpuQueued": "false",
+                "gpuCaptures": "0",
+                "gpuFault": "",
+                "running": "true",
+                "frames": "1",
+                "time": "0.0000",
+                "waterHits": "0",
+                "leafHits": "0",
+                "environmentPath": "half-float-pmrem",
+                "dpr": "1",
+                "cpuSubmissionMs": "3134.900",
+                "lookYaw": "0.00000",
+                "lookPitch": "0.00000",
+                "drawCalls": "229",
+                "triangles": "3655649",
+                "targetMode": "native-half-float",
+                "halfFloatSupported": "true",
+                "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+                "cssWidth": 882,
+                "cssHeight": 344,
+                "width": 882,
+                "height": 344
+              }
+            },
+            {
+              "name": "Active animation advances",
+              "passed": true,
+              "detail": {
+                "frameDelta": 2,
+                "timeDelta": 0.1,
+                "observedMs": 26537,
+                "observedFPS": 0.1
+              }
+            },
+            {
+              "name": "Water touch through DOM raycast",
+              "passed": true,
+              "detail": {
+                "before": 0,
+                "after": 7,
+                "screenFraction": [
+                  0.7,
+                  0.97
+                ]
+              }
+            },
+            {
+              "name": "Leaf touch through DOM raycast",
+              "passed": true,
+              "detail": {
+                "before": 0,
+                "after": 1,
+                "screenFraction": [
+                  0.85,
+                  0.97
+                ]
+              }
+            },
+            {
+              "name": "Tap pointercancel cancellation rejects callback",
+              "passed": true,
+              "detail": {
+                "before": 8,
+                "after": 8,
+                "simulatedDOMEvent": true
+              }
+            },
+            {
+              "name": "Tap blur cancellation rejects callback",
+              "passed": true,
+              "detail": {
+                "before": 8,
+                "after": 8,
+                "simulatedDOMEvent": true
+              }
+            },
+            {
+              "name": "Active=false freezes animation and rejects touches",
+              "passed": true,
+              "detail": {
+                "before": {
+                  "frames": "3",
+                  "time": "0.1000",
+                  "callbacks": 8
+                },
+                "after": {
+                  "engine": "three.js r186",
+                  "gpuSubmitted": "4",
+                  "gpuSubmissionAttempts": "4",
+                  "gpuInitializationSubmitted": "1",
+                  "gpuCompleted": "2",
+                  "gpuPending": "2",
+                  "gpuAbandoned": "0",
+                  "gpuQueued": "false",
+                  "gpuCaptures": "0",
+                  "gpuFault": "",
+                  "running": "false",
+                  "frames": "3",
+                  "time": "0.1000",
+                  "waterHits": "7",
+                  "leafHits": "1",
+                  "environmentPath": "half-float-pmrem",
+                  "dpr": "1",
+                  "cpuSubmissionMs": "5.200",
+                  "lookYaw": "0.00000",
+                  "lookPitch": "0.00000",
+                  "drawCalls": "166",
+                  "triangles": "2700425",
+                  "targetMode": "native-half-float",
+                  "halfFloatSupported": "true",
+                  "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+                  "cssWidth": 882,
+                  "cssHeight": 344,
+                  "width": 882,
+                  "height": 344,
+                  "callbacks": 8
+                }
+              }
+            },
+            {
+              "name": "App reduced-motion freezes animation and rejects touches",
+              "passed": true,
+              "detail": {
+                "before": {
+                  "frames": "3",
+                  "time": "0.1000",
+                  "callbacks": 8
+                },
+                "after": {
+                  "engine": "three.js r186",
+                  "gpuSubmitted": "4",
+                  "gpuSubmissionAttempts": "4",
+                  "gpuInitializationSubmitted": "1",
+                  "gpuCompleted": "2",
+                  "gpuPending": "2",
+                  "gpuAbandoned": "0",
+                  "gpuQueued": "false",
+                  "gpuCaptures": "0",
+                  "gpuFault": "",
+                  "running": "false",
+                  "frames": "3",
+                  "time": "0.1000",
+                  "waterHits": "7",
+                  "leafHits": "1",
+                  "environmentPath": "half-float-pmrem",
+                  "dpr": "1",
+                  "cpuSubmissionMs": "5.200",
+                  "lookYaw": "0.00000",
+                  "lookPitch": "0.00000",
+                  "drawCalls": "166",
+                  "triangles": "2700425",
+                  "targetMode": "native-half-float",
+                  "halfFloatSupported": "true",
+                  "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+                  "cssWidth": 882,
+                  "cssHeight": 344,
+                  "width": 882,
+                  "height": 344,
+                  "callbacks": 8
+                }
+              }
+            },
+            {
+              "name": "Gentle drag changes view without a tap",
+              "passed": true,
+              "detail": {
+                "peakYaw": 0.0417,
+                "callbacksBefore": 8,
+                "callbacksAfter": 8
+              }
+            },
+            {
+              "name": "View returns gradually after release",
+              "passed": true,
+              "detail": {
+                "peakYaw": 0.0417,
+                "yaw120msAfterRelease": 0.0417,
+                "finalYaw": 0.02385
+              }
+            },
+            {
+              "name": "One shared canvas; only top holder gets callbacks",
+              "passed": true,
+              "detail": {
+                "sameCanvas": true,
+                "ignoredCoveredHolder": true,
+                "before": {
+                  "main": 8,
+                  "second": 0
+                },
+                "after": {
+                  "main": 8,
+                  "second": 1
+                }
+              }
+            },
+            {
+              "name": "Closing second holder returns the same canvas",
+              "passed": true,
+              "detail": {
+                "engine": "three.js r186",
+                "gpuSubmitted": "8",
+                "gpuSubmissionAttempts": "8",
+                "gpuInitializationSubmitted": "1",
+                "gpuCompleted": "6",
+                "gpuPending": "2",
+                "gpuAbandoned": "0",
+                "gpuQueued": "true",
+                "gpuCaptures": "0",
+                "gpuFault": "",
+                "running": "true",
+                "frames": "7",
+                "time": "0.3000",
+                "waterHits": "8",
+                "leafHits": "1",
+                "environmentPath": "half-float-pmrem",
+                "dpr": "1",
+                "cpuSubmissionMs": "2.800",
+                "lookYaw": "0.02385",
+                "lookPitch": "-0.00253",
+                "drawCalls": "165",
+                "triangles": "2678345",
+                "targetMode": "native-half-float",
+                "halfFloatSupported": "true",
+                "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+                "cssWidth": 882,
+                "cssHeight": 344,
+                "width": 882,
+                "height": 344
+              }
+            },
+            {
+              "name": "Clean no-capture lifecycle: host grace and actual disposal events",
+              "passed": true,
+              "detail": {
+                "configuredHostGraceMs": 5000,
+                "removalRequestedAt": 74712,
+                "removalObservedAt": 74806.39999999851,
+                "disposeEntryAt": 79717.89999999851,
+                "disposeExitAt": 89623.10000000149,
+                "contextLostAt": 89623.80000000075,
+                "heartbeatMaxIntervalMs": 9910.400000002235,
+                "observationAt": 89625.69999999925,
+                "engine": "three.js r186",
+                "gpuSubmitted": "8",
+                "gpuSubmissionAttempts": "8",
+                "gpuInitializationSubmitted": "1",
+                "gpuCompleted": "6",
+                "gpuPending": "0",
+                "gpuAbandoned": "2",
+                "gpuQueued": "false",
+                "gpuCaptures": "0",
+                "gpuFault": "",
+                "running": "false",
+                "frames": "7",
+                "time": "0.3000",
+                "waterHits": "8",
+                "leafHits": "1",
+                "environmentPath": "half-float-pmrem",
+                "dpr": "1",
+                "cpuSubmissionMs": "2.800",
+                "lookYaw": "0.02385",
+                "lookPitch": "-0.00253",
+                "drawCalls": "165",
+                "triangles": "2678345",
+                "targetMode": "native-half-float",
+                "halfFloatSupported": "true",
+                "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+                "disposeStartedAt": "79717.89999999851",
+                "disposed": "true",
+                "disposeFinishedAt": "89623.10000000149",
+                "cssWidth": 0,
+                "cssHeight": 0,
+                "width": 882,
+                "height": 344,
+                "meaning": "5000 ms is the host retention timer, not a guarantee of GPU resource completion. The independent unit test proves that timer contract."
+              }
+            },
+            {
+              "name": "Remount creates a fresh working engine",
+              "passed": true,
+              "detail": {
+                "engine": "three.js r186",
+                "gpuSubmitted": "4",
+                "gpuSubmissionAttempts": "4",
+                "gpuInitializationSubmitted": "1",
+                "gpuCompleted": "2",
+                "gpuPending": "2",
+                "gpuAbandoned": "0",
+                "gpuQueued": "false",
+                "gpuCaptures": "0",
+                "gpuFault": "",
+                "running": "true",
+                "frames": "3",
+                "time": "0.1000",
+                "waterHits": "0",
+                "leafHits": "0",
+                "environmentPath": "half-float-pmrem",
+                "dpr": "1",
+                "cpuSubmissionMs": "8.400",
+                "lookYaw": "0.00000",
+                "lookPitch": "0.00000",
+                "drawCalls": "166",
+                "triangles": "2700425",
+                "targetMode": "native-half-float",
+                "halfFloatSupported": "true",
+                "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+                "cssWidth": 882,
+                "cssHeight": 344,
+                "width": 882,
+                "height": 344
+              }
+            }
+          ],
+          "finishedAt": "2026-10-04T20:41:40.067Z"
+        },
+        "visibilitySamples": []
+      }
+    },
+    {
+      "name": "Browser OS reduced-motion emulation freezes frames and time",
+      "passed": true,
+      "detail": {
+        "before": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "4",
+          "gpuSubmissionAttempts": "4",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "2",
+          "gpuPending": "2",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "false",
+          "frames": "3",
+          "time": "0.1000",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "8.400",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2700425",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "after": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "4",
+          "gpuSubmissionAttempts": "4",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "2",
+          "gpuPending": "2",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "false",
+          "frames": "3",
+          "time": "0.1000",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "8.400",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2700425",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        }
+      }
+    },
+    {
+      "name": "Browser OS reduced-motion release resumes",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "gpuSubmitted": "5",
+        "gpuSubmissionAttempts": "5",
+        "gpuInitializationSubmitted": "1",
+        "gpuCompleted": "3",
+        "gpuPending": "2",
+        "gpuAbandoned": "0",
+        "gpuQueued": "false",
+        "gpuCaptures": "0",
+        "gpuFault": "",
+        "running": "true",
+        "frames": "4",
+        "time": "0.1500",
+        "waterHits": "0",
+        "leafHits": "0",
+        "environmentPath": "half-float-pmrem",
+        "dpr": "1",
+        "cpuSubmissionMs": "4.400",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "166",
+        "triangles": "2700425",
+        "targetMode": "native-half-float",
+        "halfFloatSupported": "true",
+        "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+        "cssWidth": 882,
+        "cssHeight": 344,
+        "width": 882,
+        "height": 344
+      }
+    },
+    {
+      "name": "Simulated hidden hook freezes frames and time",
+      "passed": true,
+      "detail": {
+        "simulated": true,
+        "actualTabVisibilityTested": false,
+        "before": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "7",
+          "gpuSubmissionAttempts": "7",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "5",
+          "gpuPending": "2",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "false",
+          "frames": "6",
+          "time": "0.2167",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "2.100",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2700425",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        },
+        "after": {
+          "engine": "three.js r186",
+          "gpuSubmitted": "7",
+          "gpuSubmissionAttempts": "7",
+          "gpuInitializationSubmitted": "1",
+          "gpuCompleted": "5",
+          "gpuPending": "2",
+          "gpuAbandoned": "0",
+          "gpuQueued": "false",
+          "gpuCaptures": "0",
+          "gpuFault": "",
+          "running": "false",
+          "frames": "6",
+          "time": "0.2167",
+          "waterHits": "0",
+          "leafHits": "0",
+          "environmentPath": "half-float-pmrem",
+          "dpr": "1",
+          "cpuSubmissionMs": "2.100",
+          "lookYaw": "0.00000",
+          "lookPitch": "0.00000",
+          "drawCalls": "166",
+          "triangles": "2700425",
+          "targetMode": "native-half-float",
+          "halfFloatSupported": "true",
+          "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+          "cssWidth": 882,
+          "cssHeight": 344,
+          "width": 882,
+          "height": 344
+        }
+      }
+    },
+    {
+      "name": "Simulated hidden release resumes without claiming real visibility",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "gpuSubmitted": "8",
+        "gpuSubmissionAttempts": "8",
+        "gpuInitializationSubmitted": "1",
+        "gpuCompleted": "6",
+        "gpuPending": "2",
+        "gpuAbandoned": "0",
+        "gpuQueued": "false",
+        "gpuCaptures": "0",
+        "gpuFault": "",
+        "running": "true",
+        "frames": "7",
+        "time": "0.2667",
+        "waterHits": "0",
+        "leafHits": "0",
+        "environmentPath": "half-float-pmrem",
+        "dpr": "1",
+        "cpuSubmissionMs": "3.700",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "166",
+        "triangles": "2700425",
+        "targetMode": "native-half-float",
+        "halfFloatSupported": "true",
+        "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+        "cssWidth": 882,
+        "cssHeight": 344,
+        "width": 882,
+        "height": 344
+      }
+    },
+    {
+      "name": "No page or WebGL shader errors",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "Native-resolution capture and motion evidence complete",
+      "passed": true,
+      "detail": {
+        "capturedViews": true,
+        "imageMovementPassed": true,
+        "captureFailures": [],
+        "methods": [
+          {
+            "filename": "forest-desktop.png",
+            "method": "cdp-surface-png"
+          },
+          {
+            "filename": "forest-fold-portrait.png",
+            "method": "cdp-surface-png"
+          },
+          {
+            "filename": "forest-fold-landscape.png",
+            "method": "cdp-surface-png"
+          },
+          {
+            "filename": "forest-motion.png",
+            "method": "cdp-surface-png"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "captureAttempts": [
+    {
+      "filename": "forest-desktop.png",
+      "method": "existing-context-fence",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 21523,
+        "polls": 1284,
+        "status": 37148,
+        "statusName": "CONDITION_SATISFIED",
+        "frame": "1",
+        "time": "0.0000",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "route": "http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html?paused=1"
+      }
+    },
+    {
+      "filename": "forest-desktop.png",
+      "method": "cdp-surface-png",
+      "passed": true,
+      "detail": {
+        "filename": "forest-desktop.png",
+        "bytes": 1431044,
+        "sha256": "b5d8ce1c6e089c64dffd5623e22c2dfec7835917255ceafaa9d63b671b87a091",
+        "width": 1280,
+        "height": 800,
+        "method": "cdp-surface-png",
+        "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+        "time": 0,
+        "frame": 1,
+        "dpr": 1,
+        "elapsedMs": 22953,
+        "budgetMs": 30000
+      }
+    },
+    {
+      "filename": "forest-fold-portrait.png",
+      "method": "existing-context-fence",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 3826.900000002235,
+        "polls": 228,
+        "status": 37148,
+        "statusName": "CONDITION_SATISFIED",
+        "frame": "2",
+        "time": "0.0000",
+        "width": 344,
+        "height": 800,
+        "dpr": 1,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "route": "http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html?paused=1"
+      }
+    },
+    {
+      "filename": "forest-fold-portrait.png",
+      "method": "cdp-surface-png",
+      "passed": true,
+      "detail": {
+        "filename": "forest-fold-portrait.png",
+        "bytes": 342834,
+        "sha256": "9406de07410bac4f04d8b7314f47b6530787066600cc38b7ef526c8d8be79cc3",
+        "width": 344,
+        "height": 800,
+        "method": "cdp-surface-png",
+        "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+        "time": 0,
+        "frame": 2,
+        "dpr": 1,
+        "elapsedMs": 4861,
+        "budgetMs": 30000
+      }
+    },
+    {
+      "filename": "forest-fold-landscape.png",
+      "method": "existing-context-fence",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 5789,
+        "polls": 345,
+        "status": 37148,
+        "statusName": "CONDITION_SATISFIED",
+        "frame": "3",
+        "time": "0.0000",
+        "width": 882,
+        "height": 344,
+        "dpr": 1,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "route": "http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html?paused=1"
+      }
+    },
+    {
+      "filename": "forest-fold-landscape.png",
+      "method": "cdp-surface-png",
+      "passed": true,
+      "detail": {
+        "filename": "forest-fold-landscape.png",
+        "bytes": 381513,
+        "sha256": "68e18f3dfc06a7c2563aca995418f4ca799f33e338140574fa1f4792726e6a77",
+        "width": 882,
+        "height": 344,
+        "method": "cdp-surface-png",
+        "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+        "time": 0,
+        "frame": 3,
+        "dpr": 1,
+        "elapsedMs": 6854,
+        "budgetMs": 30000
+      }
+    },
+    {
+      "filename": "forest-motion.png",
+      "method": "existing-context-fence",
+      "passed": true,
+      "detail": {
+        "elapsedMs": 10379.800000000745,
+        "polls": 624,
+        "status": 37148,
+        "statusName": "CONDITION_SATISFIED",
+        "frame": "10",
+        "time": "0.2768",
+        "width": 882,
+        "height": 344,
+        "dpr": 1,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "route": "http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html?paused=1"
+      }
+    },
+    {
+      "filename": "forest-motion.png",
+      "method": "cdp-surface-png",
+      "passed": true,
+      "detail": {
+        "filename": "forest-motion.png",
+        "bytes": 381117,
+        "sha256": "9a28204653dde56546cf32fd4ca396da7e2e55f4ebb60be8f03d4cc0eb9ba9e8",
+        "width": 882,
+        "height": 344,
+        "method": "cdp-surface-png",
+        "scope": "Native Chromium surface PNG, including the actual harness DOM, controls and CSS composition; this isolated harness is not the full app route.",
+        "time": 0.2768,
+        "frame": 10,
+        "dpr": 1,
+        "elapsedMs": 11429,
+        "budgetMs": 30000
+      }
+    }
+  ],
+  "captureFailures": [],
+  "dependentEvidence": [],
+  "sourceIdentity": {
+    "commit": "7dd22c762fc8af1477257377c349344b2dbd0c37",
+    "workingTree": "M public/immersive-worlds/forest/qa/build-manifest.json\n M public/immersive-worlds/forest/qa/forest-qa.mjs\n?? components/immersiveWorlds/forest/qa/refinement/",
+    "sourceSha256": {
+      "ForestEngine.ts": "628d16f204235d1e9784b3f318b7e547509f94bf4e6f3b42eb9baa9c430d421f",
+      "ForestWorld.tsx": "5a59184586da62dfe27d80a27897ffa84b444de20ca0ba52772dc0ed50f6b71d",
+      "botany.ts": "3ad85ee4e55ae2d09bea6ebbd9ef94dae312abd147e6c7dd6fee8201406f6234",
+      "forest.browser.test.ts": "86551946f6507bc3a7294be735fcf1c426a6f40be49b2a94e8106748d7de3e06",
+      "forest.css": "3fe829475f658cefa32067bd0f9ae487b559cd1d0078785230080abc4ac65bd9",
+      "forestFrameScheduler.ts": "3f2b9441e5977343f30ec94ec9953746805f18c785e8eda27f5e16252a9b75d3",
+      "forestHost.ts": "e835661be9c051c38bdf01587b66fc4d6b0513cf067609a96b175d67ba5865c6",
+      "forestMath.ts": "82067fb3c7c84931de95a546b4115bbc65573c23f2805d7b574e7f3964d18afd",
+      "forestRenderTargets.ts": "035ec97813ada9537e4e077ce053b82edb3848d0202f150018b4326ce1df02c3",
+      "forestStones.ts": "2e58972f0c129a398e5f2d29cc531cb4b97c7089d5b344577658d587100dd82f",
+      "harness.html": "680f40dddda5962693ca6400471480fa7bf52b580321eb0d93b37df716eb53e2",
+      "harness.tsx": "29864275d4781287068f5c2edcf7e28e5192a69aa8dbdcf965ee1b7ec3178041",
+      "harness.vite.config.ts": "afed2bb3d3cdf7b81f5927b55b2b9f41d0ca73d2149e0cdb9484f57fc2b321e2"
+    },
+    "servedModulesSha256": {
+      "visual:/components/immersiveWorlds/forest/harness.html?paused=1": "64862ed91627c0ec2bd255319ac242667d8c49df12e94d2ddb9bb8f33b19d99d",
+      "visual:/components/immersiveWorlds/forest/harness.tsx": "d9f521835925b1988c4d0c64c0d9fc7ef089bbc809b7da41c8c8f66b88bb57fc",
+      "visual:/components/immersiveWorlds/forest/forestHost.ts": "3f3372272ae9bc5dd8616e132ed9f1b06d5324094705811c083af13c61326cd3",
+      "visual:/components/immersiveWorlds/forest/ForestWorld.tsx": "f469b31c84df6fdbb74ed915e5ade2337a3411609228168fbd825ecd8cbd8386",
+      "visual:/components/immersiveWorlds/forest/ForestEngine.ts": "dfbba4322646fdef274fcc63defdd94e3477d6f9f9e05a115136f68ab8d18c3d",
+      "visual:/components/immersiveWorlds/forest/forest.css": "884c730215955e4379991d3c9995ba8e74a1c34904848f6d5740829747c7f2df",
+      "visual:/components/immersiveWorlds/forest/forestStones.ts": "2313fd58c58c39b9c6b25bd637815686cb6de14ce0ac8a552f65502dcc8e066b",
+      "visual:/components/immersiveWorlds/forest/forestMath.ts": "138909371d0158972fdc6d5c77f6a7387bae0900e934de97d7318c40ba7b82d1",
+      "visual:/components/immersiveWorlds/forest/forestRenderTargets.ts": "d0809fa05a80561d432cbf8e7f492348d5cb4780ebd2f598eefa0e6c02d2e70b",
+      "visual:/components/immersiveWorlds/forest/botany.ts": "7c9e5551c4c655467883a9d12e4868cbf2e8098dda9830087012fd1c8db8d349",
+      "visual:/components/immersiveWorlds/forest/forestFrameScheduler.ts": "c2b30aa585916ac41d3f41f7768483fc2769ea1c344bc14314b2e6a39626e5f9",
+      "clean-functional:/components/immersiveWorlds/forest/harness.html?paused=1": "64862ed91627c0ec2bd255319ac242667d8c49df12e94d2ddb9bb8f33b19d99d",
+      "clean-functional:/components/immersiveWorlds/forest/harness.tsx": "d9f521835925b1988c4d0c64c0d9fc7ef089bbc809b7da41c8c8f66b88bb57fc",
+      "clean-functional:/components/immersiveWorlds/forest/ForestWorld.tsx": "f469b31c84df6fdbb74ed915e5ade2337a3411609228168fbd825ecd8cbd8386",
+      "clean-functional:/components/immersiveWorlds/forest/forestHost.ts": "3f3372272ae9bc5dd8616e132ed9f1b06d5324094705811c083af13c61326cd3",
+      "clean-functional:/components/immersiveWorlds/forest/forest.css": "884c730215955e4379991d3c9995ba8e74a1c34904848f6d5740829747c7f2df",
+      "clean-functional:/components/immersiveWorlds/forest/ForestEngine.ts": "dfbba4322646fdef274fcc63defdd94e3477d6f9f9e05a115136f68ab8d18c3d",
+      "clean-functional:/components/immersiveWorlds/forest/forestStones.ts": "2313fd58c58c39b9c6b25bd637815686cb6de14ce0ac8a552f65502dcc8e066b",
+      "clean-functional:/components/immersiveWorlds/forest/botany.ts": "7c9e5551c4c655467883a9d12e4868cbf2e8098dda9830087012fd1c8db8d349",
+      "clean-functional:/components/immersiveWorlds/forest/forestMath.ts": "138909371d0158972fdc6d5c77f6a7387bae0900e934de97d7318c40ba7b82d1",
+      "clean-functional:/components/immersiveWorlds/forest/forestFrameScheduler.ts": "c2b30aa585916ac41d3f41f7768483fc2769ea1c344bc14314b2e6a39626e5f9",
+      "clean-functional:/components/immersiveWorlds/forest/forestRenderTargets.ts": "d0809fa05a80561d432cbf8e7f492348d5cb4780ebd2f598eefa0e6c02d2e70b"
+    },
+    "servingMode": "Vite development harness; hashes cover actual served transformed modules and HTML, not an optimized production bundle."
+  },
+  "browserEnvironment": {
+    "visual": {
+      "version": "153.0.8010.0",
+      "executablePath": "/tmp/cosmic-browser-bin/chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "dpr": 1,
+      "route": "http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html?paused=1",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+    },
+    "clean-functional": {
+      "version": "153.0.8010.0",
+      "executablePath": "/tmp/cosmic-browser-bin/chromium",
+      "viewport": {
+        "width": 882,
+        "height": 344
+      },
+      "dpr": 1,
+      "route": "http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html?paused=1",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+    }
+  },
+  "lifecycleIsolation": {
+    "separateFreshBrowser": true,
+    "screenshotsRequested": 0,
+    "visualPageTainted": false,
+    "status": "passed"
+  },
+  "lifecycleReport": {
+    "report": {
+      "status": "passed",
+      "startedAt": "2026-10-04T20:39:45.451Z",
+      "method": "In-page DOM PointerEvent assertions through the component handlers. No direct engine calls. Synthetic gestures are not physical-device testing.",
+      "environment": {
+        "viewportPreset": "desktop",
+        "window": [
+          882,
+          344
+        ],
+        "devicePixelRatio": 1,
+        "osReducedMotion": false,
+        "osReducedMotionTest": "Observed actual media query only; OS emulation is not performed by this harness.",
+        "visibilityTest": "Requires a real tab hide/show cycle; see visibilitySamples. No document.hidden override.",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36"
+      },
+      "checks": [
+        {
+          "name": "Actual rendered 3D canvas",
+          "passed": true,
+          "detail": {
+            "engine": "three.js r186",
+            "gpuSubmitted": "2",
+            "gpuSubmissionAttempts": "2",
+            "gpuInitializationSubmitted": "1",
+            "gpuCompleted": "0",
+            "gpuPending": "2",
+            "gpuAbandoned": "0",
+            "gpuQueued": "false",
+            "gpuCaptures": "0",
+            "gpuFault": "",
+            "running": "true",
+            "frames": "1",
+            "time": "0.0000",
+            "waterHits": "0",
+            "leafHits": "0",
+            "environmentPath": "half-float-pmrem",
+            "dpr": "1",
+            "cpuSubmissionMs": "3134.900",
+            "lookYaw": "0.00000",
+            "lookPitch": "0.00000",
+            "drawCalls": "229",
+            "triangles": "3655649",
+            "targetMode": "native-half-float",
+            "halfFloatSupported": "true",
+            "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+            "cssWidth": 882,
+            "cssHeight": 344,
+            "width": 882,
+            "height": 344
+          }
+        },
+        {
+          "name": "Active animation advances",
+          "passed": true,
+          "detail": {
+            "frameDelta": 2,
+            "timeDelta": 0.1,
+            "observedMs": 26537,
+            "observedFPS": 0.1
+          }
+        },
+        {
+          "name": "Water touch through DOM raycast",
+          "passed": true,
+          "detail": {
+            "before": 0,
+            "after": 7,
+            "screenFraction": [
+              0.7,
+              0.97
+            ]
+          }
+        },
+        {
+          "name": "Leaf touch through DOM raycast",
+          "passed": true,
+          "detail": {
+            "before": 0,
+            "after": 1,
+            "screenFraction": [
+              0.85,
+              0.97
+            ]
+          }
+        },
+        {
+          "name": "Tap pointercancel cancellation rejects callback",
+          "passed": true,
+          "detail": {
+            "before": 8,
+            "after": 8,
+            "simulatedDOMEvent": true
+          }
+        },
+        {
+          "name": "Tap blur cancellation rejects callback",
+          "passed": true,
+          "detail": {
+            "before": 8,
+            "after": 8,
+            "simulatedDOMEvent": true
+          }
+        },
+        {
+          "name": "Active=false freezes animation and rejects touches",
+          "passed": true,
+          "detail": {
+            "before": {
+              "frames": "3",
+              "time": "0.1000",
+              "callbacks": 8
+            },
+            "after": {
+              "engine": "three.js r186",
+              "gpuSubmitted": "4",
+              "gpuSubmissionAttempts": "4",
+              "gpuInitializationSubmitted": "1",
+              "gpuCompleted": "2",
+              "gpuPending": "2",
+              "gpuAbandoned": "0",
+              "gpuQueued": "false",
+              "gpuCaptures": "0",
+              "gpuFault": "",
+              "running": "false",
+              "frames": "3",
+              "time": "0.1000",
+              "waterHits": "7",
+              "leafHits": "1",
+              "environmentPath": "half-float-pmrem",
+              "dpr": "1",
+              "cpuSubmissionMs": "5.200",
+              "lookYaw": "0.00000",
+              "lookPitch": "0.00000",
+              "drawCalls": "166",
+              "triangles": "2700425",
+              "targetMode": "native-half-float",
+              "halfFloatSupported": "true",
+              "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+              "cssWidth": 882,
+              "cssHeight": 344,
+              "width": 882,
+              "height": 344,
+              "callbacks": 8
+            }
+          }
+        },
+        {
+          "name": "App reduced-motion freezes animation and rejects touches",
+          "passed": true,
+          "detail": {
+            "before": {
+              "frames": "3",
+              "time": "0.1000",
+              "callbacks": 8
+            },
+            "after": {
+              "engine": "three.js r186",
+              "gpuSubmitted": "4",
+              "gpuSubmissionAttempts": "4",
+              "gpuInitializationSubmitted": "1",
+              "gpuCompleted": "2",
+              "gpuPending": "2",
+              "gpuAbandoned": "0",
+              "gpuQueued": "false",
+              "gpuCaptures": "0",
+              "gpuFault": "",
+              "running": "false",
+              "frames": "3",
+              "time": "0.1000",
+              "waterHits": "7",
+              "leafHits": "1",
+              "environmentPath": "half-float-pmrem",
+              "dpr": "1",
+              "cpuSubmissionMs": "5.200",
+              "lookYaw": "0.00000",
+              "lookPitch": "0.00000",
+              "drawCalls": "166",
+              "triangles": "2700425",
+              "targetMode": "native-half-float",
+              "halfFloatSupported": "true",
+              "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+              "cssWidth": 882,
+              "cssHeight": 344,
+              "width": 882,
+              "height": 344,
+              "callbacks": 8
+            }
+          }
+        },
+        {
+          "name": "Gentle drag changes view without a tap",
+          "passed": true,
+          "detail": {
+            "peakYaw": 0.0417,
+            "callbacksBefore": 8,
+            "callbacksAfter": 8
+          }
+        },
+        {
+          "name": "View returns gradually after release",
+          "passed": true,
+          "detail": {
+            "peakYaw": 0.0417,
+            "yaw120msAfterRelease": 0.0417,
+            "finalYaw": 0.02385
+          }
+        },
+        {
+          "name": "One shared canvas; only top holder gets callbacks",
+          "passed": true,
+          "detail": {
+            "sameCanvas": true,
+            "ignoredCoveredHolder": true,
+            "before": {
+              "main": 8,
+              "second": 0
+            },
+            "after": {
+              "main": 8,
+              "second": 1
+            }
+          }
+        },
+        {
+          "name": "Closing second holder returns the same canvas",
+          "passed": true,
+          "detail": {
+            "engine": "three.js r186",
+            "gpuSubmitted": "8",
+            "gpuSubmissionAttempts": "8",
+            "gpuInitializationSubmitted": "1",
+            "gpuCompleted": "6",
+            "gpuPending": "2",
+            "gpuAbandoned": "0",
+            "gpuQueued": "true",
+            "gpuCaptures": "0",
+            "gpuFault": "",
+            "running": "true",
+            "frames": "7",
+            "time": "0.3000",
+            "waterHits": "8",
+            "leafHits": "1",
+            "environmentPath": "half-float-pmrem",
+            "dpr": "1",
+            "cpuSubmissionMs": "2.800",
+            "lookYaw": "0.02385",
+            "lookPitch": "-0.00253",
+            "drawCalls": "165",
+            "triangles": "2678345",
+            "targetMode": "native-half-float",
+            "halfFloatSupported": "true",
+            "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+            "cssWidth": 882,
+            "cssHeight": 344,
+            "width": 882,
+            "height": 344
+          }
+        },
+        {
+          "name": "Clean no-capture lifecycle: host grace and actual disposal events",
+          "passed": true,
+          "detail": {
+            "configuredHostGraceMs": 5000,
+            "removalRequestedAt": 74712,
+            "removalObservedAt": 74806.39999999851,
+            "disposeEntryAt": 79717.89999999851,
+            "disposeExitAt": 89623.10000000149,
+            "contextLostAt": 89623.80000000075,
+            "heartbeatMaxIntervalMs": 9910.400000002235,
+            "observationAt": 89625.69999999925,
+            "engine": "three.js r186",
+            "gpuSubmitted": "8",
+            "gpuSubmissionAttempts": "8",
+            "gpuInitializationSubmitted": "1",
+            "gpuCompleted": "6",
+            "gpuPending": "0",
+            "gpuAbandoned": "2",
+            "gpuQueued": "false",
+            "gpuCaptures": "0",
+            "gpuFault": "",
+            "running": "false",
+            "frames": "7",
+            "time": "0.3000",
+            "waterHits": "8",
+            "leafHits": "1",
+            "environmentPath": "half-float-pmrem",
+            "dpr": "1",
+            "cpuSubmissionMs": "2.800",
+            "lookYaw": "0.02385",
+            "lookPitch": "-0.00253",
+            "drawCalls": "165",
+            "triangles": "2678345",
+            "targetMode": "native-half-float",
+            "halfFloatSupported": "true",
+            "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+            "disposeStartedAt": "79717.89999999851",
+            "disposed": "true",
+            "disposeFinishedAt": "89623.10000000149",
+            "cssWidth": 0,
+            "cssHeight": 0,
+            "width": 882,
+            "height": 344,
+            "meaning": "5000 ms is the host retention timer, not a guarantee of GPU resource completion. The independent unit test proves that timer contract."
+          }
+        },
+        {
+          "name": "Remount creates a fresh working engine",
+          "passed": true,
+          "detail": {
+            "engine": "three.js r186",
+            "gpuSubmitted": "4",
+            "gpuSubmissionAttempts": "4",
+            "gpuInitializationSubmitted": "1",
+            "gpuCompleted": "2",
+            "gpuPending": "2",
+            "gpuAbandoned": "0",
+            "gpuQueued": "false",
+            "gpuCaptures": "0",
+            "gpuFault": "",
+            "running": "true",
+            "frames": "3",
+            "time": "0.1000",
+            "waterHits": "0",
+            "leafHits": "0",
+            "environmentPath": "half-float-pmrem",
+            "dpr": "1",
+            "cpuSubmissionMs": "8.400",
+            "lookYaw": "0.00000",
+            "lookPitch": "0.00000",
+            "drawCalls": "166",
+            "triangles": "2700425",
+            "targetMode": "native-half-float",
+            "halfFloatSupported": "true",
+            "targetChecks": "[{\"label\":\"pmrem-scene-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter-preflight\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-filter\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"pmrem-environment\",\"type\":\"half-float\",\"width\":768,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"reflection\",\"type\":\"half-float\",\"width\":1024,\"height\":1024,\"status\":36053,\"complete\":true},{\"label\":\"directional-pcf-shadow\",\"type\":\"unsigned-byte\",\"width\":2048,\"height\":2048,\"status\":36053,\"complete\":true}]",
+            "cssWidth": 882,
+            "cssHeight": 344,
+            "width": 882,
+            "height": 344
+          }
+        }
+      ],
+      "finishedAt": "2026-10-04T20:41:40.067Z"
+    },
+    "visibilitySamples": []
+  },
+  "actualVisibility": {
+    "actualTabVisibilityTested": false,
+    "attempts": [
+      {
+        "method": "about:blank tab brought to front",
+        "hidden": false
+      },
+      {
+        "method": "native browser window minimized",
+        "hidden": false
+      }
+    ]
+  },
+  "finishedAt": "2026-10-04T20:42:53.061Z"
+}

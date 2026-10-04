@@ -2,6 +2,7 @@ import { readFile, writeFile, readdir, rename, unlink } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { build } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -50,12 +51,14 @@ for (const dependency of ['three', 'react', 'react-dom', 'scheduler']) {
   licenses.push(`\n=== ${metadata.name} ${metadata.version} · ${metadata.license} ===\n${await readFile(path.join(directory, 'LICENSE'), 'utf8')}`);
 }
 await writeFile(path.join(outputDirectory, 'LICENSES.txt'), `${licenses.join('\n\n')}\n`);
-const sourceFiles = ['ForestEngine.ts', 'forestStones.ts', 'ForestWorld.tsx', 'botany.ts', 'forestHost.ts', 'forestMath.ts', 'forest.css', 'harness.tsx'];
+const sourceFiles = (await readdir(sceneDirectory)).filter((name) => /\.(ts|tsx|css)$/.test(name) && !name.endsWith('.test.ts') && !name.includes('.config.')).sort();
 const hashes = {};
 for (const filename of sourceFiles) hashes[filename] = createHash('sha256').update(await readFile(path.join(sceneDirectory, filename))).digest('hex');
+const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repositoryDirectory, encoding: 'utf8' }).trim();
+const sourceDirty = Boolean(execFileSync('git', ['status', '--porcelain', '--', ...sourceFiles.map((name) => path.join(sceneDirectory, name))], { cwd: repositoryDirectory, encoding: 'utf8' }).trim());
 await writeFile(path.join(outputDirectory, 'build-manifest.json'), JSON.stringify({
   source: 'Original procedural Three.js morning forest; no generated/downloaded imagery.',
-  generatedAt: new Date().toISOString(), sourceSha256: hashes,
+  generatedAt: new Date().toISOString(), sourceCommit, sourceDirty, sourceSha256: hashes,
   bundleSha256: createHash('sha256').update(await readFile(path.join(outputDirectory, 'forest-qa.mjs'))).digest('hex'),
 }, null, 2) + '\n');
 console.log(`Forest QA preview written: ${outputDirectory}`);

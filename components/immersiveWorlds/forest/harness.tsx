@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client';
 import ForestWorld, { type ForestInteraction } from './ForestWorld';
 import { forestHost } from './forestHost';
 
+// An explicit byte-path test switch, chosen before renderer construction. It
+// does not hide extensions or replace WebGL functions.
+forestHost.configureDiagnosticTargets(new URLSearchParams(window.location.search).get('byte') === '1');
+
 const harnessStyle = `
   html, body, #forest-harness-root { margin: 0; width: 100%; height: 100%; overflow: hidden; }
   .forest-harness { position: fixed; inset: 0; background: #263a2c; color: #edf0df; font-family: system-ui, sans-serif; }
@@ -216,6 +220,21 @@ function ForestHarness() {
       check('Leaf touch through DOM raycast', Number(canvas.dataset.leafHits) > hitsBefore.leaf, { before: hitsBefore.leaf, after: Number(canvas.dataset.leafHits), screenFraction: points.leaf });
       const touchPoint = points.water ?? points.leaf ?? [.5, .78];
 
+      // Cancellation is exercised through DOM events, without changing any
+      // shared input hook or asking the renderer to synthesize an interaction.
+      const cancelRect = canvas.getBoundingClientRect();
+      const cx = cancelRect.left + cancelRect.width * touchPoint[0];
+      const cy = cancelRect.top + cancelRect.height * touchPoint[1];
+      for (const cancellation of ['pointercancel', 'blur'] as const) {
+        const before = countsRef.current.main;
+        pointer(canvas, 'pointerdown', cx, cy);
+        if (cancellation === 'pointercancel') pointer(window, 'pointercancel', cx, cy);
+        else window.dispatchEvent(new Event('blur'));
+        pointer(window, 'pointerup', cx, cy);
+        await delay(40);
+        check(`Tap ${cancellation} cancellation rejects callback`, countsRef.current.main === before, { before, after: countsRef.current.main, simulatedDOMEvent: true });
+      }
+
       setActive(false);
       await waitFor(() => canvas.dataset.running === 'false', 'Active=false did not stop the engine.');
       await delay(200);
@@ -263,11 +282,28 @@ function ForestHarness() {
       await waitFor(() => document.querySelector('[data-testid="main-holder"] .forest-world-canvas') === canvas && running(), 'Closing the second holder did not return the shared canvas.');
       check('Closing second holder returns the same canvas', document.querySelector('[data-testid="main-holder"] .forest-world-canvas') === canvas, snapshot(canvas));
 
+      let contextLostAt: number | null = null;
+      const lossObserver = () => { contextLostAt = performance.now(); };
+      canvas.addEventListener('webglcontextlost', lossObserver);
+      const removalRequestedAt = performance.now();
+      const heartbeats: number[] = [];
+      let heartbeatAt = performance.now();
+      const heartbeat = window.setInterval(() => { const now = performance.now(); heartbeats.push(now - heartbeatAt); heartbeatAt = now; }, 100);
       setMounted(false);
       await waitFor(() => !canvasNow() && canvas.dataset.running === 'false', 'Unmount did not stop and detach the canvas.');
+      const removalObservedAt = performance.now();
       const detachedFrame = canvas.dataset.frames;
       await delay(5500);
-      check('Last unmount disposes after host reuse window', canvas.dataset.disposed === 'true' && canvas.dataset.running === 'false' && canvas.dataset.frames === detachedFrame, snapshot(canvas));
+      window.clearInterval(heartbeat);
+      canvas.removeEventListener('webglcontextlost', lossObserver);
+      check('Clean no-capture lifecycle: host grace and actual disposal events', canvas.dataset.disposed === 'true' && canvas.dataset.running === 'false' && canvas.dataset.frames === detachedFrame, {
+        configuredHostGraceMs: 5000, removalRequestedAt, removalObservedAt,
+        disposeEntryAt: Number(canvas.dataset.disposeStartedAt) || null,
+        disposeExitAt: Number(canvas.dataset.disposeFinishedAt) || null,
+        contextLostAt, heartbeatMaxIntervalMs: Math.max(0, ...heartbeats),
+        observationAt: performance.now(), ...snapshot(canvas),
+        meaning: '5000 ms is the host retention timer, not a guarantee of GPU resource completion. The independent unit test proves that timer contract.',
+      });
       setMounted(true);
       await waitFor(() => isReady() && running() && canvasNow() !== canvas, 'Remount did not create a fresh ready engine.', 90000);
       const remounted = canvasNow()!;

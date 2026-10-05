@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { LiveSceneEngine } from '../../../liveScene/liveSceneHost';
 import type { ShelterInteraction, WorldBuilder, WorldKind, WorldRecipe } from './types';
+import { prepareRainShadowTargets } from './renderTargets';
 
 export class ShelterEngine implements LiveSceneEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -36,6 +37,7 @@ export class ShelterEngine implements LiveSceneEngine {
 
   async init() {
     this.recipe = this.builder({ scene: this.scene, camera: this.camera, renderer: this.renderer });
+    prepareRainShadowTargets(this.renderer, this.scene);
     this.applyComposition();
   }
 

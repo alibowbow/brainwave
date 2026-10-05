@@ -1,0 +1,130 @@
+{
+  "schema": "rain-followup-start-guard-v1",
+  "checkedAt": "2026-10-04T23:54:10.386Z",
+  "originalBranch": "codex/rain-shelters-four-worlds",
+  "expectedHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "lsRemoteHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "pr53Head": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "main": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+  "followupBranch": "codex/rain-shelters-quality-followup-20261004",
+  "cleanAtCreation": true,
+  "competingRainFollowupFound": false,
+  "openPRs": [
+    {
+      "number": 65,
+      "title": "fix(cozy): bound GPU batches; winter ready passes, static gates blocked",
+      "url": "https://github.com/alibowbow/brainwave/pull/65"
+    },
+    {
+      "number": 48,
+      "title": "Draft: integrate 30 immersive worlds with guarded input and audio",
+      "url": "https://github.com/alibowbow/brainwave/pull/48"
+    },
+    {
+      "number": 66,
+      "title": "KoreanPlaces: 구름·동종·소쩍새의 한정 품질 보정",
+      "url": "https://github.com/alibowbow/brainwave/pull/66"
+    },
+    {
+      "number": 55,
+      "title": "feat: three independent quiet sanctuaries (meditation, warm heart, snow village)",
+      "url": "https://github.com/alibowbow/brainwave/pull/55"
+    },
+    {
+      "number": 64,
+      "title": "WaterEdge: shore material and render-target compatibility follow-up",
+      "url": "https://github.com/alibowbow/brainwave/pull/64"
+    },
+    {
+      "number": 67,
+      "title": "LivingWoods follow-up: material depth and safe bamboo reflections",
+      "url": "https://github.com/alibowbow/brainwave/pull/67"
+    },
+    {
+      "number": 52,
+      "title": "feat(cosmic): seated floating garden 3D pilot (isolated, no core wiring)",
+      "url": "https://github.com/alibowbow/brainwave/pull/52"
+    },
+    {
+      "number": 60,
+      "title": "feat: three independent night and fire worlds (owned scene group)",
+      "url": "https://github.com/alibowbow/brainwave/pull/60"
+    },
+    {
+      "number": 63,
+      "title": "Morning Forest follow-up: near foliage, safe targets and bounded fences",
+      "url": "https://github.com/alibowbow/brainwave/pull/63"
+    },
+    {
+      "number": 62,
+      "title": "fix: bounded DeepWater follow-up — target safety, chrome input and waterfall",
+      "url": "https://github.com/alibowbow/brainwave/pull/62"
+    },
+    {
+      "number": 50,
+      "title": "카페 집중: isolated rainy evening 3D pilot",
+      "url": "https://github.com/alibowbow/brainwave/pull/50"
+    },
+    {
+      "number": 57,
+      "title": "feat: Korean temple dawn, scops night and rural summer 3D worlds",
+      "url": "https://github.com/alibowbow/brainwave/pull/57"
+    },
+    {
+      "number": 49,
+      "title": "feat(forest): add seated morning forest 3D pilot with reviewed native evidence",
+      "url": "https://github.com/alibowbow/brainwave/pull/49"
+    },
+    {
+      "number": 53,
+      "title": "feat: four independent rain-shelter 3D worlds",
+      "url": "https://github.com/alibowbow/brainwave/pull/53"
+    },
+    {
+      "number": 54,
+      "title": "feat: four independent living woods 3D worlds",
+      "url": "https://github.com/alibowbow/brainwave/pull/54"
+    },
+    {
+      "number": 59,
+      "title": "feat: four independent cozy-room worlds (Hearth / Sleep / Nap / Winter)",
+      "url": "https://github.com/alibowbow/brainwave/pull/59"
+    },
+    {
+      "number": 58,
+      "title": "물가 3세계: 여름밤 연못·여름 계곡·몽돌 해변 독립 3D",
+      "url": "https://github.com/alibowbow/brainwave/pull/58"
+    },
+    {
+      "number": 61,
+      "title": "Add quiet immersive audio profiles and bounded touch accents",
+      "url": "https://github.com/alibowbow/brainwave/pull/61"
+    },
+    {
+      "number": 56,
+      "title": "feat: verified waterfall, cave and deep-sea worlds (integration draft)",
+      "url": "https://github.com/alibowbow/brainwave/pull/56"
+    },
+    {
+      "number": 3,
+      "title": "Auto-detect GitHub Pages base path",
+      "url": "https://github.com/alibowbow/brainwave/pull/3"
+    }
+  ],
+  "scope": [
+    "components/immersiveWorlds/rainShelters/**",
+    "public/immersive-worlds/rainShelters/**"
+  ],
+  "instructionsRead": [
+    "upload/rainShelters(1).md",
+    "upload/diagnosis(4).md",
+    "Rain PR53 body",
+    "INTEGRATION.md",
+    "SOURCE_PROVENANCE.md",
+    "VISUAL_REVIEW.md",
+    "qa/README.md",
+    "gamefactory SKILL and validation reference"
+  ],
+  "repositoryAgentsOrSkills": "None tracked or found in applicable ancestor paths",
+  "modelSetting": "User requested GPT-6 Astra Ultra / Fast OFF; tool surface does not expose verification or switching."
+}

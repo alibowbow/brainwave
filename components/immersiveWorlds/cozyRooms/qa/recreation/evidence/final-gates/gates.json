@@ -1,0 +1,98 @@
+{
+  "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "timestamp": "2026-10-04T21:50:57.081Z",
+  "passed": true,
+  "results": [
+    {
+      "name": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 6945.48436,
+      "log": "typecheck.log",
+      "logSHA256": "a152e1addbba51dac86ab313def1339ba26c3a28aca3654a0b21c8fa3679d3a7"
+    },
+    {
+      "name": "unit-tests",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 2410.7159120000006,
+      "log": "unit-tests.log",
+      "logSHA256": "a3a97bdf553939fa564127dcea035b5fac50363a09ca97f1cacd67389af3d941"
+    },
+    {
+      "name": "application-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 6343.841710000001,
+      "log": "application-build.log",
+      "logSHA256": "802b872a28d98fc71a87ec58db97d4a40848d6cefdb9b034934f7ed3fbd0da2b"
+    },
+    {
+      "name": "bundle-budget",
+      "command": [
+        "npm",
+        "run",
+        "check:bundle"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 170.90306800000144,
+      "log": "bundle-budget.log",
+      "logSHA256": "5c4bd8de634a70fe3216a52acee22b78af1e9c75d7d41bdd850efadac8c8eaa5"
+    }
+  ],
+  "sourceUnchanged": true
+}

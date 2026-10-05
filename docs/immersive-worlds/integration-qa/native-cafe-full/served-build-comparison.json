@@ -1,0 +1,181 @@
+{
+  "scope": "Independent post-run comparison to the retained, unreplaced DFSibu4A build. Not an in-run dist stability check; original overall failure unchanged.",
+  "indexJs": "index-DFSibu4A.js",
+  "recordedSourceSha256": "794a5aaa51d5348b738c602b76bc0747732a265bbca04f83eb8556ddacbdcdb3",
+  "matched": 19,
+  "mismatches": [],
+  "matches": [
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/index-Dxjefzym.css",
+      "status": 200,
+      "bytes": 103359,
+      "sha256": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593",
+      "distFile": "assets/index-Dxjefzym.css",
+      "currentFrozenDistSha256": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/index-DFSibu4A.js",
+      "status": 200,
+      "bytes": 418683,
+      "sha256": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05",
+      "distFile": "assets/index-DFSibu4A.js",
+      "currentFrozenDistSha256": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "status": 200,
+      "bytes": 5748,
+      "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+      "distFile": "assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "currentFrozenDistSha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/immersiveSessionBridge-CUQTbsW6.js",
+      "status": 200,
+      "bytes": 22999,
+      "sha256": "cca54daee9c1f9826a02dab1f7d9a2267aefa390cdf177dcab95ed266a717258",
+      "distFile": "assets/immersiveSessionBridge-CUQTbsW6.js",
+      "currentFrozenDistSha256": "cca54daee9c1f9826a02dab1f7d9a2267aefa390cdf177dcab95ed266a717258"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "status": 200,
+      "bytes": 3799,
+      "sha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+      "distFile": "assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "currentFrozenDistSha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/Player-CWroABXs.js",
+      "status": 200,
+      "bytes": 23679,
+      "sha256": "ae4feca6fdf0bec19f5ffd52ad3146c18b5563710799fb4c9f90877ba8468881",
+      "distFile": "assets/Player-CWroABXs.js",
+      "currentFrozenDistSha256": "ae4feca6fdf0bec19f5ffd52ad3146c18b5563710799fb4c9f90877ba8468881"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/Toggle-JnqQKU9_.js",
+      "status": 200,
+      "bytes": 590,
+      "sha256": "21fbb8dbc0c27c4803816367de9a05a5221f1a6228d3a5172f3383566ec34545",
+      "distFile": "assets/Toggle-JnqQKU9_.js",
+      "currentFrozenDistSha256": "21fbb8dbc0c27c4803816367de9a05a5221f1a6228d3a5172f3383566ec34545"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/SoundLayerPicker-fQOwQa1I.js",
+      "status": 200,
+      "bytes": 2936,
+      "sha256": "5e118438294ed98e12d16a7dfa50ce9eb33c3cbc34191cf3330c6092c3f4ec08",
+      "distFile": "assets/SoundLayerPicker-fQOwQa1I.js",
+      "currentFrozenDistSha256": "5e118438294ed98e12d16a7dfa50ce9eb33c3cbc34191cf3330c6092c3f4ec08"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/VolumeSlider-CvfWQ7XM.js",
+      "status": 200,
+      "bytes": 1496,
+      "sha256": "ea88a169e1ba8266f9ba5fdda2cbc29828ba0fc9a93844466d1b3a7d1d6d7ad9",
+      "distFile": "assets/VolumeSlider-CvfWQ7XM.js",
+      "currentFrozenDistSha256": "ea88a169e1ba8266f9ba5fdda2cbc29828ba0fc9a93844466d1b3a7d1d6d7ad9"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/SoundFailureNotice-BPt8attz.js",
+      "status": 200,
+      "bytes": 7375,
+      "sha256": "c849aa400e769ff7ad6738d0a968df6408f48dac38387ae5345757afb6f54fd2",
+      "distFile": "assets/SoundFailureNotice-BPt8attz.js",
+      "currentFrozenDistSha256": "c849aa400e769ff7ad6738d0a968df6408f48dac38387ae5345757afb6f54fd2"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/ImmersiveWorldSlot-DC_rdnzP.js",
+      "status": 200,
+      "bytes": 12083,
+      "sha256": "a7eb31c86136353a2e935e1188506a2f082270873104a3d277416bd27b47c728",
+      "distFile": "assets/ImmersiveWorldSlot-DC_rdnzP.js",
+      "currentFrozenDistSha256": "a7eb31c86136353a2e935e1188506a2f082270873104a3d277416bd27b47c728"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/look-CY0gEWsC.js",
+      "status": 200,
+      "bytes": 933,
+      "sha256": "337f8ea02ddbefb4315478c74e3da5f4a77f00fe58a83ef8675770712820ddeb",
+      "distFile": "assets/look-CY0gEWsC.js",
+      "currentFrozenDistSha256": "337f8ea02ddbefb4315478c74e3da5f4a77f00fe58a83ef8675770712820ddeb"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/useLookDrag-D1QpQtiu.js",
+      "status": 200,
+      "bytes": 1133,
+      "sha256": "e85834289b023af74c340bd643603f0823e02cc17c437732de00ff4e5ca7e18f",
+      "distFile": "assets/useLookDrag-D1QpQtiu.js",
+      "currentFrozenDistSha256": "e85834289b023af74c340bd643603f0823e02cc17c437732de00ff4e5ca7e18f"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/three-BcXOOer8.js",
+      "status": 200,
+      "bytes": 3919,
+      "sha256": "3c06c474494a62811c946e334bff7f9aad317498a2b36d26d1916ac2104a8be2",
+      "distFile": "assets/three-BcXOOer8.js",
+      "currentFrozenDistSha256": "3c06c474494a62811c946e334bff7f9aad317498a2b36d26d1916ac2104a8be2"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/three-B94qB-g_.js",
+      "status": 200,
+      "bytes": 5261,
+      "sha256": "98a917cac242c5609d70faab3e5780a56372800f9a7cc81ad087181364ad7fa0",
+      "distFile": "assets/three-B94qB-g_.js",
+      "currentFrozenDistSha256": "98a917cac242c5609d70faab3e5780a56372800f9a7cc81ad087181364ad7fa0"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/CafeWorld-C9Qt3Lhc.css",
+      "status": 200,
+      "bytes": 561,
+      "sha256": "5f3115f07da313e97d715c3335327d03fc201ef5d257005a61462293eed5b30d",
+      "distFile": "assets/CafeWorld-C9Qt3Lhc.css",
+      "currentFrozenDistSha256": "5f3115f07da313e97d715c3335327d03fc201ef5d257005a61462293eed5b30d"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/world-CafeWorld-f2ykcV2Y.js",
+      "status": 200,
+      "bytes": 45340,
+      "sha256": "6be2bf0b4b2679e71f6e3a2fd7d3fc2779841025d351a112ac5549d83beeeb52",
+      "distFile": "assets/world-CafeWorld-f2ykcV2Y.js",
+      "currentFrozenDistSha256": "6be2bf0b4b2679e71f6e3a2fd7d3fc2779841025d351a112ac5549d83beeeb52"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/three--Qrk24iT.js",
+      "status": 200,
+      "bytes": 600474,
+      "sha256": "29ecb6d7aaa2f0a7c76b85be4ce36af2ad05b02b28d121f74a157e65bdd0e403",
+      "distFile": "assets/three--Qrk24iT.js",
+      "currentFrozenDistSha256": "29ecb6d7aaa2f0a7c76b85be4ce36af2ad05b02b28d121f74a157e65bdd0e403"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/ImmersiveMode-EF3DWvXS.js",
+      "status": 200,
+      "bytes": 5923,
+      "sha256": "43dd749d975b22e05cc1e60cc29723760b945cf135c28f5398206b33a3f6d1ec",
+      "distFile": "assets/ImmersiveMode-EF3DWvXS.js",
+      "currentFrozenDistSha256": "43dd749d975b22e05cc1e60cc29723760b945cf135c28f5398206b33a3f6d1ec"
+    }
+  ],
+  "buildLog": "../local-build.log"
+}

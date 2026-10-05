@@ -1,0 +1,1186 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-10-04T22:28:58.466054+00:00",
+  "auditor": "independent lifecycle_review agent",
+  "method": "Recomputed local byte hashes and decoded PNG pixels; compared git blobs and native FBO/status evidence; no GPU run or source edits.",
+  "sourceCommit": "af147afa0c0565dbc0fa5afcfc98fd5c4fc4e408",
+  "baselineCommit": "c5a100794084e6230e9fdc8a4c036a02a5813176",
+  "headAtAudit": "af147afa0c0565dbc0fa5afcfc98fd5c4fc4e408",
+  "report": {
+    "path": "components/immersiveWorlds/quietSanctuaries/qa/compat-evidence/target-compatibility.json",
+    "sha256": "2aec9fef1fb6bbb9c8ed8ee18cba9125be15bbf8c3049857b42163e5e463d357",
+    "bytes": 303462,
+    "passed": true,
+    "errorCount": 0,
+    "mode": "full-lifecycle-and-visual",
+    "servedBundleVerified": true,
+    "resourcesClosed": {
+      "browser": true,
+      "previewServer": true
+    }
+  },
+  "source": {
+    "sha256": "8f9b63019c1195837fb848d473f166b24ae80a17793f42e7370110280f3ed298",
+    "fileCount": 23,
+    "completeFileSet": true,
+    "files": [
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/.gitignore",
+        "manifestSha256": "3f6c8c458d86bb8dd9eebdcf89b8f3019f76ce4abb54b72dc1d188134d0959e7",
+        "actualSha256": "3f6c8c458d86bb8dd9eebdcf89b8f3019f76ce4abb54b72dc1d188134d0959e7",
+        "bytes": 38,
+        "commitSha256": "3f6c8c458d86bb8dd9eebdcf89b8f3019f76ce4abb54b72dc1d188134d0959e7",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/INTEGRATION.md",
+        "manifestSha256": "13f1af5b8f9b950c96e8af37a2e7aef32810d51da8491bc4e04d10f0e5829bbe",
+        "actualSha256": "13f1af5b8f9b950c96e8af37a2e7aef32810d51da8491bc4e04d10f0e5829bbe",
+        "bytes": 6262,
+        "commitSha256": "13f1af5b8f9b950c96e8af37a2e7aef32810d51da8491bc4e04d10f0e5829bbe",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/meditation.ts",
+        "manifestSha256": "2148bb0187c4b212e3daf12ce26ac12081d7cc5ecd2914eed0f185a9669df470",
+        "actualSha256": "2148bb0187c4b212e3daf12ce26ac12081d7cc5ecd2914eed0f185a9669df470",
+        "bytes": 28151,
+        "commitSha256": "2148bb0187c4b212e3daf12ce26ac12081d7cc5ecd2914eed0f185a9669df470",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/MeditationCourtWorld.tsx",
+        "manifestSha256": "f8b8275259d899af60b40af3ce0fb4013de926df8def6b8228db5b2f4754b673",
+        "actualSha256": "f8b8275259d899af60b40af3ce0fb4013de926df8def6b8228db5b2f4754b673",
+        "bytes": 545,
+        "commitSha256": "f8b8275259d899af60b40af3ce0fb4013de926df8def6b8228db5b2f4754b673",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/meditationEnvironment.ts",
+        "manifestSha256": "3503e795011e6a5a56b6a38defd1f2dae09543727d42909e45225d8d90e99351",
+        "actualSha256": "3503e795011e6a5a56b6a38defd1f2dae09543727d42909e45225d8d90e99351",
+        "bytes": 7554,
+        "commitSha256": "3503e795011e6a5a56b6a38defd1f2dae09543727d42909e45225d8d90e99351",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/meditationTargets.ts",
+        "manifestSha256": "646e1c9dec526341f4f29ebb3ce76e193043eedf109abab022224a134b74535b",
+        "actualSha256": "646e1c9dec526341f4f29ebb3ce76e193043eedf109abab022224a134b74535b",
+        "bytes": 7109,
+        "commitSha256": "646e1c9dec526341f4f29ebb3ce76e193043eedf109abab022224a134b74535b",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/PROVENANCE.md",
+        "manifestSha256": "7b511a00b8e854355b1a62c1ac0d42f8df2bcc8b1ad665d2a43e2d1d753abc98",
+        "actualSha256": "7b511a00b8e854355b1a62c1ac0d42f8df2bcc8b1ad665d2a43e2d1d753abc98",
+        "bytes": 7773,
+        "commitSha256": "7b511a00b8e854355b1a62c1ac0d42f8df2bcc8b1ad665d2a43e2d1d753abc98",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/index.html",
+        "manifestSha256": "cad3936a7ffd64734ac709427df2e6942cce06b193e879aed9459207130ec94e",
+        "actualSha256": "cad3936a7ffd64734ac709427df2e6942cce06b193e879aed9459207130ec94e",
+        "bytes": 361,
+        "commitSha256": "cad3936a7ffd64734ac709427df2e6942cce06b193e879aed9459207130ec94e",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/main.tsx",
+        "manifestSha256": "4b99880152d0b553cb1590b575de1e3bc395c4a2bda232d1dc0594951a6f6f18",
+        "actualSha256": "4b99880152d0b553cb1590b575de1e3bc395c4a2bda232d1dc0594951a6f6f18",
+        "bytes": 6599,
+        "commitSha256": "4b99880152d0b553cb1590b575de1e3bc395c4a2bda232d1dc0594951a6f6f18",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/meditationEnvironment.test.ts",
+        "manifestSha256": "f7f770e904174772295a116ca5eb40c0e7e465d55a5eed379ec17ce7a427d030",
+        "actualSha256": "f7f770e904174772295a116ca5eb40c0e7e465d55a5eed379ec17ce7a427d030",
+        "bytes": 11260,
+        "commitSha256": "f7f770e904174772295a116ca5eb40c0e7e465d55a5eed379ec17ce7a427d030",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/meditationTargets.test.ts",
+        "manifestSha256": "83a6fd6c0f330502d9ecc9e47f57b749587c118358080f6c025c0f45357c0ce1",
+        "actualSha256": "83a6fd6c0f330502d9ecc9e47f57b749587c118358080f6c025c0f45357c0ce1",
+        "bytes": 18455,
+        "commitSha256": "83a6fd6c0f330502d9ecc9e47f57b749587c118358080f6c025c0f45357c0ce1",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/README.md",
+        "manifestSha256": "59ab52f763e12bf537d63bff6f8dd43a09fcff829ae315c276589602014c05ab",
+        "actualSha256": "59ab52f763e12bf537d63bff6f8dd43a09fcff829ae315c276589602014c05ab",
+        "bytes": 11839,
+        "commitSha256": "59ab52f763e12bf537d63bff6f8dd43a09fcff829ae315c276589602014c05ab",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/verify-target-compatibility.mjs",
+        "manifestSha256": "656ccf28264961f21ef69a6ee1cf3dec7f38e46adb5c95f8f3a63a66735b6106",
+        "actualSha256": "656ccf28264961f21ef69a6ee1cf3dec7f38e46adb5c95f8f3a63a66735b6106",
+        "bytes": 35201,
+        "commitSha256": "656ccf28264961f21ef69a6ee1cf3dec7f38e46adb5c95f8f3a63a66735b6106",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/verify.mjs",
+        "manifestSha256": "2d4382fa6eb4781d821903b0f1799fe8d07a52c427b2aa628b478edba15156d0",
+        "actualSha256": "2d4382fa6eb4781d821903b0f1799fe8d07a52c427b2aa628b478edba15156d0",
+        "bytes": 28394,
+        "commitSha256": "2d4382fa6eb4781d821903b0f1799fe8d07a52c427b2aa628b478edba15156d0",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/qa/vite.config.ts",
+        "manifestSha256": "410bedeee3ae9c190b81f39027c2186776996e720d7294089c472cf7f804ebca",
+        "actualSha256": "410bedeee3ae9c190b81f39027c2186776996e720d7294089c472cf7f804ebca",
+        "bytes": 717,
+        "commitSha256": "410bedeee3ae9c190b81f39027c2186776996e720d7294089c472cf7f804ebca",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/sanctuaries.css",
+        "manifestSha256": "c4fb0aad98944929f7246300b47a7a1b23df61092b5b373933c35779bdc1dcc5",
+        "actualSha256": "c4fb0aad98944929f7246300b47a7a1b23df61092b5b373933c35779bdc1dcc5",
+        "bytes": 602,
+        "commitSha256": "c4fb0aad98944929f7246300b47a7a1b23df61092b5b373933c35779bdc1dcc5",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SanctuaryEngine.ts",
+        "manifestSha256": "0b228983ad0e4fe7152be3d7755f2e6a43b1be3d71205f1d2c047109bbc7b9ed",
+        "actualSha256": "0b228983ad0e4fe7152be3d7755f2e6a43b1be3d71205f1d2c047109bbc7b9ed",
+        "bytes": 6683,
+        "commitSha256": "0b228983ad0e4fe7152be3d7755f2e6a43b1be3d71205f1d2c047109bbc7b9ed",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SanctuaryView.tsx",
+        "manifestSha256": "5b736fd5c8f4fc1528b2c0fe585912d7cf0727f44abc2d6fffeb931967b2a27c",
+        "actualSha256": "5b736fd5c8f4fc1528b2c0fe585912d7cf0727f44abc2d6fffeb931967b2a27c",
+        "bytes": 4600,
+        "commitSha256": "5b736fd5c8f4fc1528b2c0fe585912d7cf0727f44abc2d6fffeb931967b2a27c",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/snowVillage.ts",
+        "manifestSha256": "66ab8c3832b95480a9bff43884d61ad6b11b35a50393e8a5855544c8ffbe179b",
+        "actualSha256": "66ab8c3832b95480a9bff43884d61ad6b11b35a50393e8a5855544c8ffbe179b",
+        "bytes": 41960,
+        "commitSha256": "66ab8c3832b95480a9bff43884d61ad6b11b35a50393e8a5855544c8ffbe179b",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/SnowVillageWorld.tsx",
+        "manifestSha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261",
+        "actualSha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261",
+        "bytes": 537,
+        "commitSha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/warmHeart.ts",
+        "manifestSha256": "8fe947130fdfb07a7a5d17b516f551ae4a069c5c15a9d0e902409fcaa01fc7ab",
+        "actualSha256": "8fe947130fdfb07a7a5d17b516f551ae4a069c5c15a9d0e902409fcaa01fc7ab",
+        "bytes": 18421,
+        "commitSha256": "8fe947130fdfb07a7a5d17b516f551ae4a069c5c15a9d0e902409fcaa01fc7ab",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/WarmHeartWorld.tsx",
+        "manifestSha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7",
+        "actualSha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7",
+        "bytes": 539,
+        "commitSha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7",
+        "ok": true
+      },
+      {
+        "path": "components/immersiveWorlds/quietSanctuaries/worldTypes.ts",
+        "manifestSha256": "5ed80797cd8e368dec21dc50cd578d76cd68247c4b56589feabfa5034f47d63b",
+        "actualSha256": "5ed80797cd8e368dec21dc50cd578d76cd68247c4b56589feabfa5034f47d63b",
+        "bytes": 1153,
+        "commitSha256": "5ed80797cd8e368dec21dc50cd578d76cd68247c4b56589feabfa5034f47d63b",
+        "ok": true
+      }
+    ]
+  },
+  "bundle": {
+    "sha256": "c8747c73ff817cb40b7609e9be539e57f0ca918623a88729f2500adefc45f447",
+    "fileCount": 4,
+    "completeFileSet": true,
+    "files": [
+      {
+        "path": "assets/index-D-nNsvgH.js",
+        "manifestSha256": "4e12ef79fa28e09e675cacb74b7f4186ef48678f0d054e87196669f86ab1dd33",
+        "actualSha256": "4e12ef79fa28e09e675cacb74b7f4186ef48678f0d054e87196669f86ab1dd33",
+        "bytes": 261896,
+        "ok": true
+      },
+      {
+        "path": "assets/index-Dfoe_3zm.css",
+        "manifestSha256": "a1918380bdb0ad8b4808d6fb19075a57250366449ad8fd83d3d3a82893a3b143",
+        "actualSha256": "a1918380bdb0ad8b4808d6fb19075a57250366449ad8fd83d3d3a82893a3b143",
+        "bytes": 531,
+        "ok": true
+      },
+      {
+        "path": "assets/three-BLwob634.js",
+        "manifestSha256": "36f3b9b5905a45ef6dd7793eb3018b98f237b373e4563824f36a26b0fd1a9be9",
+        "actualSha256": "36f3b9b5905a45ef6dd7793eb3018b98f237b373e4563824f36a26b0fd1a9be9",
+        "bytes": 589446,
+        "ok": true
+      },
+      {
+        "path": "index.html",
+        "manifestSha256": "c444614ed9a67ec47b2257ad75928f938b8bf91d1edd4c6cecc52206094348d5",
+        "actualSha256": "c444614ed9a67ec47b2257ad75928f938b8bf91d1edd4c6cecc52206094348d5",
+        "bytes": 541,
+        "ok": true
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "file": "meditation-normal-desktop.png",
+      "manifestSha256": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6",
+      "actualSha256": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6",
+      "bytes": 879479,
+      "size": [
+        1280,
+        800
+      ],
+      "ok": true
+    },
+    {
+      "file": "meditation-normal-portrait.png",
+      "manifestSha256": "c2200432b93168bca6e266e8bcfe79527ebafe1bc392fea02d2bb3545ca045ed",
+      "actualSha256": "c2200432b93168bca6e266e8bcfe79527ebafe1bc392fea02d2bb3545ca045ed",
+      "bytes": 250330,
+      "size": [
+        390,
+        844
+      ],
+      "ok": true
+    },
+    {
+      "file": "meditation-forced-byte-desktop.png",
+      "manifestSha256": "96af8c81b6a6789c30b6fc18494d720114dc911cefc3a8aa957bb8ecff1946c6",
+      "actualSha256": "96af8c81b6a6789c30b6fc18494d720114dc911cefc3a8aa957bb8ecff1946c6",
+      "bytes": 880489,
+      "size": [
+        1280,
+        800
+      ],
+      "ok": true
+    },
+    {
+      "file": "meditation-forced-byte-portrait.png",
+      "manifestSha256": "e2f477b1ec222c07950d7854bb4f1f506f468442ccafc98d03d02d7c9ee1b066",
+      "actualSha256": "e2f477b1ec222c07950d7854bb4f1f506f468442ccafc98d03d02d7c9ee1b066",
+      "bytes": 250840,
+      "size": [
+        390,
+        844
+      ],
+      "ok": true
+    },
+    {
+      "file": "warm-heart-desktop.png",
+      "manifestSha256": "a3bb87cb77e6172a7213baa71a89ebdbc329d90faf90d1f3c8f099124e66ceaf",
+      "actualSha256": "a3bb87cb77e6172a7213baa71a89ebdbc329d90faf90d1f3c8f099124e66ceaf",
+      "bytes": 869603,
+      "size": [
+        1280,
+        800
+      ],
+      "ok": true
+    },
+    {
+      "file": "warm-heart-portrait.png",
+      "manifestSha256": "ac75d8d628759a4df5dcab94623f91bf56ab1a928bcf53f9162e7739004fd473",
+      "actualSha256": "ac75d8d628759a4df5dcab94623f91bf56ab1a928bcf53f9162e7739004fd473",
+      "bytes": 245186,
+      "size": [
+        390,
+        844
+      ],
+      "ok": true
+    },
+    {
+      "file": "snow-village-desktop.png",
+      "manifestSha256": "1af71ec65656784312f7783b5dc1911631c82d2b64ac923f14c1c0d869784cc9",
+      "actualSha256": "1af71ec65656784312f7783b5dc1911631c82d2b64ac923f14c1c0d869784cc9",
+      "bytes": 579349,
+      "size": [
+        1280,
+        800
+      ],
+      "ok": true
+    },
+    {
+      "file": "snow-village-portrait.png",
+      "manifestSha256": "5b83656a10edd219e3225bfd8fc608157b506ba07dcb57c96c721111c8a7dec4",
+      "actualSha256": "5b83656a10edd219e3225bfd8fc608157b506ba07dcb57c96c721111c8a7dec4",
+      "bytes": 178160,
+      "size": [
+        390,
+        844
+      ],
+      "ok": true
+    },
+    {
+      "file": "meditation-normal-motion.png",
+      "manifestSha256": "57184faec1b64c7ebb867e1c867d2febafbdba1d3befeef730cff1a402b6952f",
+      "actualSha256": "57184faec1b64c7ebb867e1c867d2febafbdba1d3befeef730cff1a402b6952f",
+      "bytes": 296018,
+      "size": [
+        640,
+        480
+      ],
+      "ok": true
+    },
+    {
+      "file": "meditation-normal-interaction.png",
+      "manifestSha256": "d98276fc980a2b8e39cce2666f478202db899209a0f3e18f4417492f3beec566",
+      "actualSha256": "d98276fc980a2b8e39cce2666f478202db899209a0f3e18f4417492f3beec566",
+      "bytes": 296803,
+      "size": [
+        640,
+        480
+      ],
+      "ok": true
+    },
+    {
+      "file": "meditation-forced-byte-motion.png",
+      "manifestSha256": "78084020789fc53ee36045dc788df8ad846177025605d54a660cbffdfd4f85c5",
+      "actualSha256": "78084020789fc53ee36045dc788df8ad846177025605d54a660cbffdfd4f85c5",
+      "bytes": 296225,
+      "size": [
+        640,
+        480
+      ],
+      "ok": true
+    },
+    {
+      "file": "meditation-forced-byte-interaction.png",
+      "manifestSha256": "c8365f840010b0637695d7615912d62672c6d9a82e00c561894e3873e8145668",
+      "actualSha256": "c8365f840010b0637695d7615912d62672c6d9a82e00c561894e3873e8145668",
+      "bytes": 297214,
+      "size": [
+        640,
+        480
+      ],
+      "ok": true
+    }
+  ],
+  "preservedNormalPixels": [
+    {
+      "file": "meditation-normal-desktop.png",
+      "baselinePath": "components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-desktop.png",
+      "baselineSha256": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6",
+      "actualSha256": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6",
+      "rgbaSha256": "68242dda490de20cff116e03bfebd60cf47c479edc9b088a5853c98b277d158e",
+      "size": [
+        1280,
+        800
+      ],
+      "identicalFileBytes": true,
+      "identicalDecodedPixels": true,
+      "ok": true
+    },
+    {
+      "file": "meditation-normal-portrait.png",
+      "baselinePath": "components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-portrait.png",
+      "baselineSha256": "c2200432b93168bca6e266e8bcfe79527ebafe1bc392fea02d2bb3545ca045ed",
+      "actualSha256": "c2200432b93168bca6e266e8bcfe79527ebafe1bc392fea02d2bb3545ca045ed",
+      "rgbaSha256": "1897693864fec30ed5d75bf4f0f8b57e133931005f6322016fafb4744bc41cb9",
+      "size": [
+        390,
+        844
+      ],
+      "identicalFileBytes": true,
+      "identicalDecodedPixels": true,
+      "ok": true
+    },
+    {
+      "file": "warm-heart-desktop.png",
+      "baselinePath": "components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-desktop.png",
+      "baselineSha256": "a3bb87cb77e6172a7213baa71a89ebdbc329d90faf90d1f3c8f099124e66ceaf",
+      "actualSha256": "a3bb87cb77e6172a7213baa71a89ebdbc329d90faf90d1f3c8f099124e66ceaf",
+      "rgbaSha256": "12af97c8e6054744d0902caa757151b3a24be75bc5fa50c776740dfd7acef9d1",
+      "size": [
+        1280,
+        800
+      ],
+      "identicalFileBytes": true,
+      "identicalDecodedPixels": true,
+      "ok": true
+    },
+    {
+      "file": "warm-heart-portrait.png",
+      "baselinePath": "components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-portrait.png",
+      "baselineSha256": "ac75d8d628759a4df5dcab94623f91bf56ab1a928bcf53f9162e7739004fd473",
+      "actualSha256": "ac75d8d628759a4df5dcab94623f91bf56ab1a928bcf53f9162e7739004fd473",
+      "rgbaSha256": "9ad1780951bbc7677832528b9905867afc9444d6b5bc24527fe220c468e1444d",
+      "size": [
+        390,
+        844
+      ],
+      "identicalFileBytes": true,
+      "identicalDecodedPixels": true,
+      "ok": true
+    },
+    {
+      "file": "snow-village-desktop.png",
+      "baselinePath": "components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-desktop.png",
+      "baselineSha256": "1af71ec65656784312f7783b5dc1911631c82d2b64ac923f14c1c0d869784cc9",
+      "actualSha256": "1af71ec65656784312f7783b5dc1911631c82d2b64ac923f14c1c0d869784cc9",
+      "rgbaSha256": "025cd948957f50f48563184aa0aeb3eb2b4dcdd5270c9b6b7a7d24b8b8bcab00",
+      "size": [
+        1280,
+        800
+      ],
+      "identicalFileBytes": true,
+      "identicalDecodedPixels": true,
+      "ok": true
+    },
+    {
+      "file": "snow-village-portrait.png",
+      "baselinePath": "components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-portrait.png",
+      "baselineSha256": "5b83656a10edd219e3225bfd8fc608157b506ba07dcb57c96c721111c8a7dec4",
+      "actualSha256": "5b83656a10edd219e3225bfd8fc608157b506ba07dcb57c96c721111c8a7dec4",
+      "rgbaSha256": "cbe4d6ef068a73bad11e29981ce531e350c117661e15ab41dc6f87b565d462ce",
+      "size": [
+        390,
+        844
+      ],
+      "identicalFileBytes": true,
+      "identicalDecodedPixels": true,
+      "ok": true
+    }
+  ],
+  "preservedSourceAndHistoricalEvidence": [
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/warmHeart.ts",
+      "sha256": "8fe947130fdfb07a7a5d17b516f551ae4a069c5c15a9d0e902409fcaa01fc7ab",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/WarmHeartWorld.tsx",
+      "sha256": "5a0bd8c7f31b9e1b63e09d0bc424345267e3890f6e660d43a50bb424dc95d7a7",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/snowVillage.ts",
+      "sha256": "66ab8c3832b95480a9bff43884d61ad6b11b35a50393e8a5855544c8ffbe179b",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/SnowVillageWorld.tsx",
+      "sha256": "3b18d68fa17108b7cf070dd7082aa322db70aa1959db0519e2981a7a8df6f261",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/verify.mjs",
+      "sha256": "2d4382fa6eb4781d821903b0f1799fe8d07a52c427b2aa628b478edba15156d0",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/README.md",
+      "sha256": "99d6f2caf164d44b1067471c16361a83b20c60fe7a3bd7ec1ca103ab017075cf",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/meditation-desktop.png",
+      "sha256": "2831afb44df25b1485b73e0b1d7bbc37c959f95b65b6ac2573336574ec7a820a",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/meditation-portrait.png",
+      "sha256": "4c9af397b68d8ded151515f024e07223869ad86cefc258bfd1760d70eacc5d57",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/snow-village-desktop.png",
+      "sha256": "ef87b9fe04c849d03adba1f37831facc944fd542257a6928497c2b6ab65c6782",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/snow-village-fold-inner-viewport.png",
+      "sha256": "7a83fe7d5b77c473c824ebc5771a6602e88321c2efaf6a4c2447aa9167577ef6",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/snow-village-portrait.png",
+      "sha256": "f1a9a9d7d101b7a3380cde714099ef2062f105ac8044d7026f8f124d49d885d2",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/verification.json",
+      "sha256": "4e336ee1e7a4f54a3599ad7254b84ad433f6553d9ae2704428c9f45b0db11666",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/warm-heart-desktop.png",
+      "sha256": "8c49922ebf0f221eb195d865fa6a8da6d0cf07cc5c3367d70f5038f41545f2eb",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/before/warm-heart-portrait.png",
+      "sha256": "95df157f95b96e0879755ad177c2922a0577319fadbaeef1cfac8ca97d757e5f",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/hash-audit.json",
+      "sha256": "b2906839f561d5bb5bd39f7bb83454d150e5989d26300dced6ac139c556b7a36",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-byte-fallback-desktop.png",
+      "sha256": "82d387e3a455d771e031d485741ec73acb25811a6e3fd5884df5eb1e04b29d75",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-desktop.png",
+      "sha256": "b1e04a5aecea959d8c3d40ea380053e17e8f3769e6e8d13f03e9231c27212fb6",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-interaction.png",
+      "sha256": "70a7ef114ef45ecfa7ae025dabcc2eecbe3d5c1bd5a9a9085e487524bc8f56fb",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-motion.png",
+      "sha256": "f42838d0ec106bfbca44659c2626a4bbbfe92f3da83b7a4e9d1f6b3e96d901ea",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/meditation-portrait.png",
+      "sha256": "c2200432b93168bca6e266e8bcfe79527ebafe1bc392fea02d2bb3545ca045ed",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-desktop.png",
+      "sha256": "1af71ec65656784312f7783b5dc1911631c82d2b64ac923f14c1c0d869784cc9",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-fold-inner-viewport.png",
+      "sha256": "2aba671001b43b4dfa2cf1e76825d441309c5015dd493a764db25e56334cffef",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-interaction.png",
+      "sha256": "8de448937e1f21981e9ad7c99e5823b5e93635f4064068c4b6c7c0b2772f5132",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-motion.png",
+      "sha256": "4dc17746672ac2bb427a4627fac67425c9b746ea68c1b75e8dc2e619b93a89ad",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/snow-village-portrait.png",
+      "sha256": "5b83656a10edd219e3225bfd8fc608157b506ba07dcb57c96c721111c8a7dec4",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/verification.json",
+      "sha256": "83539dbc4b4ca223645c37dbd91f41b3c01c9f7d47cfc3f3015c9802e08ce849",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-desktop.png",
+      "sha256": "a3bb87cb77e6172a7213baa71a89ebdbc329d90faf90d1f3c8f099124e66ceaf",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-interaction.png",
+      "sha256": "5187f9dbcb921a60d5f2384ac49d8f4b52ea1fe5c197a2ae0d82dc23361cdb29",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-motion.png",
+      "sha256": "ad483740dfc40759fd052744275a51ac3ba04c8342f1bef4eaf80ff5d2c5c5d5",
+      "identicalBaselineFrozenAndWorkingTree": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries/qa/evidence/warm-heart-portrait.png",
+      "sha256": "ac75d8d628759a4df5dcab94623f91bf56ab1a928bcf53f9162e7739004fd473",
+      "identicalBaselineFrozenAndWorkingTree": true
+    }
+  ],
+  "scope": {
+    "changedBetweenBaselineAndSourceCommit": [
+      "components/immersiveWorlds/quietSanctuaries/INTEGRATION.md",
+      "components/immersiveWorlds/quietSanctuaries/meditation.ts",
+      "components/immersiveWorlds/quietSanctuaries/meditationEnvironment.ts",
+      "components/immersiveWorlds/quietSanctuaries/meditationTargets.ts",
+      "components/immersiveWorlds/quietSanctuaries/qa/README.md",
+      "components/immersiveWorlds/quietSanctuaries/qa/main.tsx",
+      "components/immersiveWorlds/quietSanctuaries/qa/meditationEnvironment.test.ts",
+      "components/immersiveWorlds/quietSanctuaries/qa/meditationTargets.test.ts",
+      "components/immersiveWorlds/quietSanctuaries/qa/verify-target-compatibility.mjs"
+    ],
+    "outsideOwnerChanged": [],
+    "trackedWorkingTreeChanges": [],
+    "stagedChanges": [],
+    "sharedProtectedByteChecks": [
+      {
+        "path": "App.tsx",
+        "sha256": "371ba61489e13b52711ed328b6b579151917cd9f26ec5ca417a39d673e43e555",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/SessionBackdrop.tsx",
+        "sha256": "0492184aa80117c67325a2961fad2b5fc03068280275ccbb65a173f3a4b4593b",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/app/catalog.ts",
+        "sha256": "a651b5cb5c5e7c2aa829232f9dc165316c9b1a58622f53afe55f774289d15dc8",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/liveScene/liveSceneHost.ts",
+        "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/liveScene/look.test.ts",
+        "sha256": "c26b469a4d0a5592a5d9acbfa7a30a4af8bd3288341cc4010befadb64cfc19b0",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/liveScene/look.ts",
+        "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/liveScene/useLookDrag.ts",
+        "sha256": "f6138188c70254cf6cf121397c4113e423de467e48507099d7da35a5ebeca367",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/OilSeaPoster.tsx",
+        "sha256": "8729ce409b8443620efa73a7d1b7ca656c304840c8c97991a50af9005db384d0",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/OilSeaScene.tsx",
+        "sha256": "8ceea227744bed863a2e19b36016966164aa3ac21be236100540c7c6cada8567",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/SeasideEngine.ts",
+        "sha256": "9b41ff4928c8e1e67d11f275d76558594f67e01e925aeb4d090db787d9848d3d",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/boats.ts",
+        "sha256": "21e4ec93143a7089f49d8aec1d15abc9d5a2fad1156cc00d6e2193cc6c06b26b",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/buildings.ts",
+        "sha256": "43c4f90c328496debe49a168a983cc30fef1170f3075f632dd140ac131699e56",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/clouds.ts",
+        "sha256": "5c9c734733ecd8159b1a4435b0f7e9f33b56ea9a153f05bb4106936354fd7ca4",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/grass.ts",
+        "sha256": "12ee3875555faf1b3e5a7c288c9c238b82b6703ccf00f516ffdcc217dd24c5cf",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/gulls.test.ts",
+        "sha256": "b311185ac40b29382324a678fc61d98096bfaa20ef09bbea8c4c568f8a80e009",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/gulls.ts",
+        "sha256": "2038b875f348e795cb894e072fed300a21d6a14e1fa8556814bad3107d1c76c7",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/ocean.ts",
+        "sha256": "8a1dd05cb6bb445e3832f30cd0dc476cbd22a775b5ff498030a6363cef2a64c4",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/pine.ts",
+        "sha256": "1fa439a491ca6e8cb6f31f586c8c5cc8e93a2972d1142dacba541c458a3dfd93",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/post.ts",
+        "sha256": "efa644ea74a34dce0789b78fc345f0fa11e4b40e6c644e72113093e79cabd07a",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/raster.test.ts",
+        "sha256": "050cbdf5d53bb41ceac249bd1557ef6d54fa3b66907efda047a5ceada92dfb35",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/raster.ts",
+        "sha256": "b8dfb953dd01896d615616836034326077e1cee251fad37034ff913f628d7242",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/rocks.ts",
+        "sha256": "faf34c30a051c1edf0941ead220071e14d96a1291de6075d81b5a1ab910ac5f1",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/sky.ts",
+        "sha256": "3175f93caf8b166c41f6b4b1f28aef93e132d189239490d655ae5f5a961d86f5",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/terrain.ts",
+        "sha256": "ce0af0dd0af27b0a32c03da228189dfac5803518dd874c5b310b5a07fa996718",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/trees.ts",
+        "sha256": "235da1d9772145cc8af5e8d76c18d8387e4ff8f7ab6d6e4e25aec26ce72eb4af",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/world.test.ts",
+        "sha256": "6283de173c67de5c273d571fdfd39a413a2d6208a863f9a98e94bf07151e6999",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/engine/world.ts",
+        "sha256": "a12a92319205f4509675e053f322a61003cd51ff3fb3485782182f1b5bed7ca3",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/oil-sea.css",
+        "sha256": "3043c11d163960e99c83f9a36b2ad40c8813a007c44659eb4f83ffef0eeec5ce",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/oilSea/oilSeaHost.ts",
+        "sha256": "e0fb90a712d590781ed9c222a7cfb9137eddfaa09157a48bc602d077b80d9a55",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/RainyWindowPoster.tsx",
+        "sha256": "0c12ea05ec2228d04283aace793994df2f4b3c5a4dab73968d9de9a1f724884f",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/RainyWindowScene.tsx",
+        "sha256": "b5b74985d4ac7728bb95a1adf42a84324993867068565a4ac893d9fc5e3607e0",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/RainyWindowEngine.ts",
+        "sha256": "2bceadad4b2f31f585ea1058af1af954579e163e8bb966ec28617a693782941d",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/city.ts",
+        "sha256": "67b81d45583ca63f1c22d86ceda853858504fced21879ee5a75c000a3ccef196",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/fullscreen.ts",
+        "sha256": "5bb2b668f02f917c8b956507a80ce14bccc396177d366fa21842be9e14f3f131",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/glass.ts",
+        "sha256": "bdac52b00a56baac4c3af3821ed1b779f013219c847ce67376cf620603c4b8a4",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/glsl.ts",
+        "sha256": "c9eb4b8688cdb69400d47638adb0d630abbd9f7229001422aac8dd853e6d18b4",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/interior.ts",
+        "sha256": "e0a43567fb557267f0d27af112512f709ee6a5c492c8fbab310a31c775f8d752",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/layout.test.ts",
+        "sha256": "45f0fba72193581f060fb462b68a59e7256f153341021ec899a1967bfeefb906",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/layout.ts",
+        "sha256": "8e5fd65c71b69626a2293812035ff417479b25c05a1fa9a641db8d5360e73fb8",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/materials.ts",
+        "sha256": "a16f99fa8e6e9ab589a94bdeda02924559e3cf798942aff8655e7a7d54d3be08",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/mirror.ts",
+        "sha256": "c45a8c25523022870516e60d0de36ae1e427951c89d73c8a339930e61b158310",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/post.ts",
+        "sha256": "2c5024e23c1e08e0f1a6343813456549bba47cc576b5be1cf97ec44043fd5324",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/quality.test.ts",
+        "sha256": "a3400f9dd98bb29e315c3b688b6fdd23505af344f4db675962713720db8b7dcb",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/quality.ts",
+        "sha256": "0e111076931e31438b5057ce398034ae695cabe29decd2639ffdb4c069617826",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/rainSimulation.test.ts",
+        "sha256": "d942dcead4271b40f35154abe6ca218afb91df52145a5606d2b116be71ff3bfa",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/rainSimulation.ts",
+        "sha256": "d3fca4e20bc2759afa04e76cc8ce2c7aac4590aa699e0c2bb3b26bf0a675c572",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/random.ts",
+        "sha256": "5d5b688367d35a5037b833045f2a50601641cbb3fdc115c523bac02cbec3fc93",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/textures.ts",
+        "sha256": "53991d3adb547c7f188299f140e958bed18bc300d4be3e470c352d942492844d",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/engine/waterMap.ts",
+        "sha256": "64b7f75c76e8e321aee205dca23d2a2b9b541e47ec70eb91ebd226b0e15a002f",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/rainy-window.css",
+        "sha256": "b5b9941ae441203bec2935d7842fbb293a9852e9caac3937f8a0287dcfddf0e8",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/rainyWindow/rainyWindowHost.ts",
+        "sha256": "2aad9ac9943cab6bfaf42316d192acb971f04b45ff22048011e3a8469a53ce43",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "components/useSceneMotion.ts",
+        "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "91a7df5bfd528eb4d40d662c4d57ad4938cc9b39f68a0b827f59483b4f5f5b07",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "package.json",
+        "sha256": "ef504d9c1df7130d534a1d543a67089a7fa10e46b2248c77f1e33aa6caa55553",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "services/audioEngine.ts",
+        "sha256": "57e1811756d0721df3d91e09b42475c1960c45a90bc6d028cbe228d422c09d8a",
+        "identicalBaselineFrozenAndWorkingTree": true
+      },
+      {
+        "path": "types.ts",
+        "sha256": "cb9f093f8296e12686cf4a8c82877cecf9d1e03f58d03f90c7f343c0c9e626f1",
+        "identicalBaselineFrozenAndWorkingTree": true
+      }
+    ]
+  },
+  "targetEvidence": {
+    "nativeContexts": [
+      {
+        "scenario": "normal",
+        "composition": "desktop",
+        "nativeFunctionMarkers": true,
+        "contextLost": false,
+        "glErrors": []
+      },
+      {
+        "scenario": "normal",
+        "composition": "portrait",
+        "nativeFunctionMarkers": true,
+        "contextLost": false,
+        "glErrors": []
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "desktop",
+        "nativeFunctionMarkers": true,
+        "contextLost": false,
+        "glErrors": []
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "portrait",
+        "nativeFunctionMarkers": true,
+        "contextLost": false,
+        "glErrors": []
+      }
+    ],
+    "sceneFramebufferChecks": [
+      {
+        "scenario": "normal",
+        "composition": "desktop",
+        "label": "environment-output",
+        "width": 336,
+        "height": 256,
+        "storage": "half-float",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "normal",
+        "composition": "desktop",
+        "label": "environment-scratch",
+        "width": 336,
+        "height": 256,
+        "storage": "half-float",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "normal",
+        "composition": "desktop",
+        "label": "reflection",
+        "width": 1024,
+        "height": 1024,
+        "storage": "half-float",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "normal",
+        "composition": "portrait",
+        "label": "environment-output",
+        "width": 336,
+        "height": 256,
+        "storage": "half-float",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "normal",
+        "composition": "portrait",
+        "label": "environment-scratch",
+        "width": 336,
+        "height": 256,
+        "storage": "half-float",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "normal",
+        "composition": "portrait",
+        "label": "reflection",
+        "width": 1024,
+        "height": 1024,
+        "storage": "half-float",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "desktop",
+        "label": "environment-output",
+        "width": 336,
+        "height": 256,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "desktop",
+        "label": "environment-scratch",
+        "width": 336,
+        "height": 256,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "desktop",
+        "label": "reflection",
+        "width": 1024,
+        "height": 1024,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "portrait",
+        "label": "environment-output",
+        "width": 336,
+        "height": 256,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "portrait",
+        "label": "environment-scratch",
+        "width": 336,
+        "height": 256,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "portrait",
+        "label": "reflection",
+        "width": 1024,
+        "height": 1024,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      }
+    ],
+    "nondefaultStateChecks": [
+      {
+        "scenario": "forced-byte",
+        "composition": "desktop",
+        "label": "qa-nondefault-byte-probe",
+        "width": 48,
+        "height": 32,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      },
+      {
+        "scenario": "forced-byte",
+        "composition": "portrait",
+        "label": "qa-nondefault-byte-probe",
+        "width": 48,
+        "height": 32,
+        "storage": "unsigned-byte",
+        "status": 36053,
+        "statusHex": "0x8cd5",
+        "stateRestored": true,
+        "framebufferRestored": true,
+        "beforeAfterIdentical": true,
+        "ok": true
+      }
+    ],
+    "independentlyDecodedDesktopBasinPixels": [
+      {
+        "file": "meditation-normal-desktop.png",
+        "pixelRegion": {
+          "x": 358,
+          "y": 508,
+          "width": 512,
+          "height": 80
+        },
+        "samples": 4617,
+        "uniqueColors": 748,
+        "luminanceRange": 140.94379999999998,
+        "ok": true
+      },
+      {
+        "file": "meditation-forced-byte-desktop.png",
+        "pixelRegion": {
+          "x": 358,
+          "y": 508,
+          "width": 512,
+          "height": 80
+        },
+        "samples": 4617,
+        "uniqueColors": 801,
+        "luminanceRange": 140.2286,
+        "ok": true
+      }
+    ]
+  },
+  "limitations": [
+    "This audit verifies the completed browser report and actual evidence bytes; it is not a fresh GPU run.",
+    "SwiftShader browser viewports are not physical Fold or hardware-performance evidence.",
+    "Forced-byte uses real byte targets; it does not prove physically float-unsupported hardware.",
+    "Remote CI status was not audited; no CI-green claim is made."
+  ],
+  "failures": [],
+  "passed": true
+}

@@ -1,0 +1,4 @@
+.cafe-world{position:absolute;inset:0;overflow:hidden;background:#403a33;isolation:isolate;touch-action:none;user-select:none}
+.cafe-world-mount,.cafe-world-canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.cafe-world-status{position:absolute;inset:0;display:grid;place-items:center;color:#e7d8bd;font:14px system-ui;background:linear-gradient(135deg,#374853,#56432f)}
+.cafe-world[data-state="ready"] .cafe-world-canvas{opacity:1}

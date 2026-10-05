@@ -1,0 +1,168 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-05T00:09:42Z",
+  "case": "cozy-disposal",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261005T000942Z",
+  "report": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261005T000942Z/evidence/nature-verification.json",
+  "outerLimitSeconds": 480,
+  "cleanupReserveSeconds": 25,
+  "gpuGrant": "one separately selected existing verifier; no retries or implicit batch",
+  "browser": "/tmp/cosmic-browser-bin/chromium",
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "gitStatusAtStart": "M components/liveScene/liveSceneHost.test.ts\n M components/liveScene/liveSceneHost.ts\n M scripts/cold-autoplay.mjs\n M scripts/verify-audio-failures.mjs\n M scripts/verify-cafe-world.mjs\n M scripts/verify-cosmic-world.mjs\n M scripts/verify-immersive-worlds.mjs\n M scripts/verify-links.mjs\n M scripts/verify-scenes.mjs\n?? components/liveScene/cozyEngineDisposal.test.ts\n?? components/liveScene/sceneDisposalContract.test.ts\n?? scripts/cold-autoplay.test.ts\n?? scripts/dfg-diagnostic-continuation.test.ts\n?? scripts/expected-dfg.mjs\n?? scripts/native-texture-ledger.mjs\n?? scripts/native-texture-ledger.test.ts\n?? scripts/press-scene-control.mjs\n?? scripts/scene-disposal-contract.mjs",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "948a893498d0fa9bd253796ad86f78e621de775a8a784c72d4f9775ff7d0207e",
+  "wrapperSHA256": "4e1f48a5e4b37339a6c8dc2fd94f28fe60b35c13beccddb7c4c84ae5b17bfd66",
+  "supportScripts": {
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc",
+    "verification-provenance.mjs": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2",
+    "cold-autoplay.mjs": "49e2a08e80c4a6ad9cd9e66e154163fe1c8a57e427cf44e9b0e5668fdc12d561",
+    "scene-disposal-contract.mjs": "f1248d7d15c5ee4c9adc575626c22fe7e28a9a69a3b6fd7c5218519fc624e9f9"
+  },
+  "baseUrl": "http://127.0.0.1:60713/",
+  "previewCommand": [
+    "node",
+    "node_modules/vite/bin/vite.js",
+    "preview",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "60713",
+    "--strictPort"
+  ],
+  "previewPID": 10,
+  "servedIndexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+  "servedEntryAssets": {
+    "assets/index-CkDIijGa.js": {
+      "sha256": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "bytes": 418683
+    },
+    "assets/index-BXP0utCv.css": {
+      "sha256": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3",
+      "bytes": 103383
+    }
+  },
+  "command": [
+    "node",
+    "scripts/verify-scenes.mjs"
+  ],
+  "environmentOverrides": {
+    "SCENE_BASE_URL": "http://127.0.0.1:60713/",
+    "SCENE_BROWSER_PATH": "/tmp/cosmic-browser-bin/chromium",
+    "SCENE_SCREENSHOT_DIR": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261005T000942Z/evidence",
+    "SCENE_VERIFY_SCOPE": "cozy-disposal"
+  },
+  "runnerPID": 28,
+  "browserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-05T00:09:44.530Z",
+    "terminationConfirmed": true,
+    "forcedKill": true,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-05T00:09:44.530Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-05T00:10:37.658Z"
+      },
+      {
+        "kind": "owned-browser-cleanup-error",
+        "at": "2026-10-05T00:10:52.660Z",
+        "stage": "graceful-close",
+        "message": "Error: owned browser server close exceeded 15000ms"
+      },
+      {
+        "kind": "owned-browser-kill-send",
+        "at": "2026-10-05T00:10:52.660Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-05T00:10:52.670Z",
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      {
+        "kind": "owned-browser-kill-ack",
+        "at": "2026-10-05T00:10:52.696Z"
+      }
+    ],
+    "exitCode": null,
+    "signal": "SIGKILL",
+    "finishedAt": "2026-10-05T00:10:52.696Z"
+  },
+  "exitCode": 1,
+  "completedReport": {
+    "path": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261005T000942Z/completed-report.json",
+    "sourcePath": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261005T000942Z/evidence/nature-verification.json",
+    "sha256": "56395e21666e2a63f8efd2497a93a8b823dd866d1925938bf8e70667410b4f46",
+    "bytes": 4677187,
+    "finishedAt": "2026-10-05T00:10:54.000Z",
+    "runnerExitCode": 1,
+    "capturedAfterVerifierExit": true,
+    "fsyncConfirmed": true,
+    "byteIdentityVerified": true,
+    "capturedAt": "2026-10-05T00:10:54Z"
+  },
+  "reportStatus": "failed",
+  "failure": "AssertionError [ERR_ASSERTION]: Independent diagnostics do not waive any failed lifecycle check",
+  "reportErrors": [
+    {
+      "kind": "cleanup",
+      "stage": "graceful-close",
+      "message": "Error: owned browser server close exceeded 15000ms"
+    }
+  ],
+  "cleanupErrors": [],
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "checks": [
+    {
+      "name": "Cozy real disposal postconditions within 20s including retention",
+      "status": "failed",
+      "failure": "Error: renderer disposal observation exceeded 9ms"
+    },
+    {
+      "name": "targeted old Winter: separate post-failure detached-canvas quiet observation",
+      "status": "passed"
+    },
+    {
+      "name": "fresh actual Winter uses new canvas/instance, ready within 120s and native keyboard",
+      "status": "passed"
+    },
+    {
+      "name": "fresh Winter independently disposes once with no further draws",
+      "status": "failed",
+      "failure": "AssertionError [ERR_ASSERTION]: renderer release exceeded fixed 20s including host retention"
+    },
+    {
+      "name": "targeted fresh Winter: separate post-failure detached-canvas quiet observation",
+      "status": "passed"
+    },
+    {
+      "name": "actual fresh owner lifetime created/disposed advances once",
+      "status": "passed"
+    }
+  ],
+  "ownedPids": [
+    10,
+    28
+  ],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 72.636,
+  "finishedAt": "2026-10-05T00:10:54Z"
+}

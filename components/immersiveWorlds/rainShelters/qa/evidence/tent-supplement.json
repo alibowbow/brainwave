@@ -1,0 +1,43 @@
+{
+  "schema": "rain-shelters-tent-supplement-v1",
+  "observedAt": "2026-10-04T19:44:26.947Z",
+  "gitHead": "b0a4e5d668791a9bc826bf54a0890c4b78cc8bba",
+  "originalRunGitHead": "4c0131625bd0ef127f08a0539128abbe00d90d12",
+  "bundleSHA256": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f",
+  "checks": [
+    {
+      "name": "delayed teardown releases actual WebGL context and later remount is a fresh canvas/context",
+      "pass": true,
+      "releasedContext": {
+        "connected": false,
+        "contextLost": true
+      },
+      "telemetry": {
+        "contexts": 1,
+        "lossEvents": 1
+      },
+      "freshCanvasDifferent": true,
+      "sceneContextsAfterRemount": 2
+    },
+    {
+      "name": "fresh static3D first load renders a nonblank full 3D frame with no RAF",
+      "pass": true,
+      "frame": {
+        "frame": 2,
+        "time": 0,
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "file": "tent-static-first.png",
+        "bytes": 307400,
+        "sha256": "f3ee50afe97b0e094c559b00df9d44758cd4117b99a0c10a2f5010fbfd081413",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        }
+      }
+    }
+  ],
+  "pass": true
+}

@@ -1,0 +1,629 @@
+{
+  "createdAt": "2026-10-04T19:33:43.343Z",
+  "baselineGitHead": "75a6121620937baef8a03a7bea985c2207e9a3b8",
+  "sourceManifest": [
+    {
+      "path": "CaveWorld.tsx",
+      "bytes": 295,
+      "sha256": "7944214ad0837208e3df69d1df8641f82cb4c1d2efe885b0d354341d38760fed"
+    },
+    {
+      "path": "DeepSeaWorld.tsx",
+      "bytes": 297,
+      "sha256": "2d97b5301a9ac922cfd4937ed51e09da1c2f40ce317e9be6bed97724917059ab"
+    },
+    {
+      "path": "deepWater.css",
+      "bytes": 593,
+      "sha256": "999b2870a65089515a5ac07396635adc3af707c9512d8c8800643a489b8fe7f6"
+    },
+    {
+      "path": "DeepWaterView.tsx",
+      "bytes": 4295,
+      "sha256": "0192abf5fa0532ebbf1f4ad1fc04ceee4fdb7aabc3dc055c3d85c2b6d13c6beb"
+    },
+    {
+      "path": "engine/cave.test.ts",
+      "bytes": 3390,
+      "sha256": "39b565cde59e1b7432032311a53c4dfe3095e33d187f6ea482434590de5fc450"
+    },
+    {
+      "path": "engine/cave.ts",
+      "bytes": 16583,
+      "sha256": "f7240f9e14769e1fd60152fa9f101b304a077a5c56a328d07fdf1aacdfb57533"
+    },
+    {
+      "path": "engine/DeepWaterEngine.ts",
+      "bytes": 6400,
+      "sha256": "e3ea62b4320c0ca45ceff73fc9466d5533e5ea3d89e016fbf14c990fcbe6b718"
+    },
+    {
+      "path": "engine/environment.ts",
+      "bytes": 6833,
+      "sha256": "0d2a63480967d326947ab5bb2bf559b41640c1273f6c04f4e421029adf852471"
+    },
+    {
+      "path": "engine/sea.test.ts",
+      "bytes": 2254,
+      "sha256": "242cfe0c9ad52fc1250ddd48fb4037277c1f05b76b87454157c251ce47bac110"
+    },
+    {
+      "path": "engine/sea.ts",
+      "bytes": 22471,
+      "sha256": "daca343f2556d0026a3d5713ffb642373712035774670050300394be4dd68d06"
+    },
+    {
+      "path": "engine/types.ts",
+      "bytes": 528,
+      "sha256": "93ba5980914bbb5cb0ce94b6259af447814ee1db8163c56de1d3245fcec17212"
+    },
+    {
+      "path": "engine/waterfall.test.ts",
+      "bytes": 2692,
+      "sha256": "a4db169502490aace2220615030b45aa821e09c541ca60b3ede8444f6108a9d8"
+    },
+    {
+      "path": "engine/waterfall.ts",
+      "bytes": 25515,
+      "sha256": "92d28428cbe34ae494fc3313d6463eb41517e08cd24934868eb7aa2ba99cdbb1"
+    },
+    {
+      "path": "host.ts",
+      "bytes": 940,
+      "sha256": "d41fc7b1ef6f46328ffddd558015274461ef6b1d35c6b94d95ab6e1ad32d1ba8"
+    },
+    {
+      "path": "qa/capture.mjs",
+      "bytes": 2157,
+      "sha256": "48b28715036b0121e68787f7a9229c99805f21cf780f518c98f990788afae8c0"
+    },
+    {
+      "path": "qa/finalize-evidence.mjs",
+      "bytes": 3921,
+      "sha256": "e08f34784ae0d377446378e004fc1ba5afd1860d9de219d59969a44b992cf90e"
+    },
+    {
+      "path": "qa/harness.css",
+      "bytes": 351,
+      "sha256": "108c2a892d5be5e0a99546c17c8bde561df260da6cc88e6a4d8a2f57eb7eef19"
+    },
+    {
+      "path": "qa/harness.tsx",
+      "bytes": 3217,
+      "sha256": "36991d25f47696a6d48e5df90b2f8d84012e4e166945164a5d11674d8532c166"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 265,
+      "sha256": "e5d36bb0fb39ff34d0dc2eea29e9e4ce35965675aa781426f517f3d22ca3b696"
+    },
+    {
+      "path": "qa/probe-disposal.mjs",
+      "bytes": 1540,
+      "sha256": "fe61c0383586cfa40190fec54c60e3e89e19b9e566b7b289057cea4ecac25f98"
+    },
+    {
+      "path": "qa/verify.mjs",
+      "bytes": 13716,
+      "sha256": "54564e7b567ead8437a7a4f69ec2c53dc0b3f8deac93466fdbd4f3d601b13b06"
+    },
+    {
+      "path": "qa/vite.config.ts",
+      "bytes": 550,
+      "sha256": "ffb9dddd1cbec3635febe6ec9442db85b62ce96e009b096d3ffc057b50caadfc"
+    },
+    {
+      "path": "WaterfallWorld.tsx",
+      "bytes": 305,
+      "sha256": "55c26be9b6f693f6292dc051fb33f648b87fef641fe69b79cffda1086b2751d5"
+    }
+  ],
+  "bundleManifest": [
+    {
+      "path": "assets/cave-EeeMEGk0.js",
+      "bytes": 9957,
+      "sha256": "9f2dccfc6e072a3b76b66568b5bbef7939fe93deb72932079f8e2c00186d97bf"
+    },
+    {
+      "path": "assets/environment-DW3RmWm4.js",
+      "bytes": 14064,
+      "sha256": "8b920b50b9ff1bd8ca925a5141968f7e4ae58cf686c37b7a1c9904daa5a8efbf"
+    },
+    {
+      "path": "assets/index-BixWLy6C.js",
+      "bytes": 764553,
+      "sha256": "3944babf580c182f19f906b73d9877846140cba05ddaed6d3307cdd081941541"
+    },
+    {
+      "path": "assets/index-DlHsnxFe.css",
+      "bytes": 982,
+      "sha256": "895a36e1cd556fe891cf9a4304dc942652b32a9f0f67bcf75a0ea34458bf9b87"
+    },
+    {
+      "path": "assets/sea-CgIKWHXH.js",
+      "bytes": 14229,
+      "sha256": "44c10fd999ed9c01b3109694abfa988fc635e82adff6d4620e5d20ae4f1d0aba"
+    },
+    {
+      "path": "assets/waterfall-DqLPNF-8.js",
+      "bytes": 14669,
+      "sha256": "2b2758885b49e3632456c9a54910bbac672de52df72d704f6b4d09b79a816a29"
+    },
+    {
+      "path": "index.html",
+      "bytes": 364,
+      "sha256": "15520e4b10d339a0b5d6f008233ce86908c6f810758cbf1673bcddd86f8e8229"
+    }
+  ],
+  "environment": {
+    "renderer": "Chromium headless / SwiftShader software WebGL2",
+    "deviceScaleFactor": 1,
+    "viewportOnly": true,
+    "physicalFoldHardwareTested": false,
+    "hiddenState": "Synthetic document.hidden + visibilitychange; native tab switching not tested",
+    "pointerInput": "Playwright mouse and dispatched PointerEvent; scene raycasts and actual renderer used",
+    "browserVersion": "153.0.8010.0"
+  },
+  "checks": [
+    {
+      "scene": "cave",
+      "name": "static3D renders real first frame while active=true",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "static3D does not animate",
+      "pass": true,
+      "details": {
+        "frames": "1",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "desktop nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "portrait nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "fold-inner nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "landscape nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "active=false freezes renderer and simulation",
+      "pass": true,
+      "details": {
+        "frames": "5",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "active=true advances simulation and changes real pixels",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "tap reaches actual raycast and bounded interaction callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.00456835232854262
+        }
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "bounded look drag turns real camera",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "pointer cancellation clears drag without tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "completed drag is not treated as a tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "pause after interaction freezes simulation",
+      "pass": true,
+      "details": {
+        "frames": "53",
+        "time": "0.8499"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "paused pointer input emits no interaction",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "second holder reuses exact canvas and one context",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "closing second holder returns original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "prefers-reduced-motion stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "57",
+        "time": "0.8999"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "application reduce-motion class stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "60",
+        "time": "0.9999"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "synthetic document.hidden signal stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "62",
+        "time": "1.0499"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "synthetic visible signal resumes renderer",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapid mount cycle 1 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapid mount cycle 2 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapid mount cycle 3 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "last holder release disposes GPU renderer after grace period",
+      "pass": true,
+      "details": {
+        "observedSoftwareElapsedMs": 40141.20000000298
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "post-disposal remount creates new working canvas",
+      "pass": true
+    },
+    {
+      "scene": "all",
+      "name": "zero JavaScript or shader errors",
+      "pass": true,
+      "details": []
+    },
+    {
+      "scene": "all",
+      "name": "rendered source remained unchanged during QA",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    {
+      "scene": "cave",
+      "name": "desktop",
+      "file": "cave-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "e79054dbd881962686c7b66c52726c11bce8aa90e83a1db4030a13d5137df062",
+      "bytes": 1011823,
+      "renderer": {
+        "engine": "three.js r186",
+        "frames": "1",
+        "time": "0.0000",
+        "calls": "46",
+        "triangles": "105542",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "portrait",
+      "file": "cave-portrait.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "daad354f9d85bd6854e2747fee3029c747c0d922b22b596557b3b40703b16311",
+      "bytes": 303728,
+      "renderer": {
+        "engine": "three.js r186",
+        "frames": "2",
+        "time": "0.0000",
+        "calls": "30",
+        "triangles": "92022",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "fold-inner",
+      "file": "cave-fold-inner.png",
+      "width": 884,
+      "height": 1104,
+      "sha256": "f1610582a8af8cbf0adca5ec974e87d5698421dbd4522aa87d920f53965f178e",
+      "bytes": 841832,
+      "renderer": {
+        "engine": "three.js r186",
+        "frames": "3",
+        "time": "0.0000",
+        "calls": "38",
+        "triangles": "98982",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 884,
+        "height": 1104
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "landscape",
+      "file": "cave-landscape.png",
+      "width": 1104,
+      "height": 884,
+      "sha256": "0de7f1a3401002492ed20c9037f3ad6bc95bafe814a4e6e0ad375719f3609cbe",
+      "bytes": 938855,
+      "renderer": {
+        "engine": "three.js r186",
+        "frames": "4",
+        "time": "0.0000",
+        "calls": "45",
+        "triangles": "104822",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1104,
+        "height": 884
+      }
+    }
+  ],
+  "scenes": {
+    "cave": {
+      "interaction": {
+        "x": 0.5,
+        "y": 0.68,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.00456835232854262
+        }
+      },
+      "beforeDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": true,
+          "engineDisposed": false,
+          "status": "ready",
+          "disposeTimer": 4,
+          "topConnected": null,
+          "canvasConnected": false,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 36556.5
+        },
+        "state": {
+          "active": false,
+          "static3D": false,
+          "secondHolder": false,
+          "mounted": false
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "frames": "67",
+          "time": "1.0999",
+          "calls": "48",
+          "triangles": "106982",
+          "geometries": "59",
+          "yaw": "0.0551",
+          "running": "false"
+        }
+      },
+      "afterDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": false,
+          "status": "loading",
+          "disposeTimer": 4,
+          "topConnected": null,
+          "canvasConnected": null,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 76697.70000000298
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "frames": "67",
+          "time": "1.0999",
+          "calls": "48",
+          "triangles": "106982",
+          "geometries": "59",
+          "yaw": "0.0551",
+          "running": "false",
+          "disposed": "true"
+        }
+      },
+      "finalRenderer": {
+        "engine": "three.js r186",
+        "frames": "1",
+        "time": "0.0000",
+        "calls": "46",
+        "triangles": "105542",
+        "geometries": "57",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 800,
+        "height": 600
+      }
+    }
+  },
+  "errors": [],
+  "sourceManifestAfter": [
+    {
+      "path": "CaveWorld.tsx",
+      "bytes": 295,
+      "sha256": "7944214ad0837208e3df69d1df8641f82cb4c1d2efe885b0d354341d38760fed"
+    },
+    {
+      "path": "DeepSeaWorld.tsx",
+      "bytes": 297,
+      "sha256": "2d97b5301a9ac922cfd4937ed51e09da1c2f40ce317e9be6bed97724917059ab"
+    },
+    {
+      "path": "deepWater.css",
+      "bytes": 593,
+      "sha256": "999b2870a65089515a5ac07396635adc3af707c9512d8c8800643a489b8fe7f6"
+    },
+    {
+      "path": "DeepWaterView.tsx",
+      "bytes": 4295,
+      "sha256": "0192abf5fa0532ebbf1f4ad1fc04ceee4fdb7aabc3dc055c3d85c2b6d13c6beb"
+    },
+    {
+      "path": "engine/cave.test.ts",
+      "bytes": 3390,
+      "sha256": "39b565cde59e1b7432032311a53c4dfe3095e33d187f6ea482434590de5fc450"
+    },
+    {
+      "path": "engine/cave.ts",
+      "bytes": 16583,
+      "sha256": "f7240f9e14769e1fd60152fa9f101b304a077a5c56a328d07fdf1aacdfb57533"
+    },
+    {
+      "path": "engine/DeepWaterEngine.ts",
+      "bytes": 6400,
+      "sha256": "e3ea62b4320c0ca45ceff73fc9466d5533e5ea3d89e016fbf14c990fcbe6b718"
+    },
+    {
+      "path": "engine/environment.ts",
+      "bytes": 6833,
+      "sha256": "0d2a63480967d326947ab5bb2bf559b41640c1273f6c04f4e421029adf852471"
+    },
+    {
+      "path": "engine/sea.test.ts",
+      "bytes": 2254,
+      "sha256": "242cfe0c9ad52fc1250ddd48fb4037277c1f05b76b87454157c251ce47bac110"
+    },
+    {
+      "path": "engine/sea.ts",
+      "bytes": 22471,
+      "sha256": "daca343f2556d0026a3d5713ffb642373712035774670050300394be4dd68d06"
+    },
+    {
+      "path": "engine/types.ts",
+      "bytes": 528,
+      "sha256": "93ba5980914bbb5cb0ce94b6259af447814ee1db8163c56de1d3245fcec17212"
+    },
+    {
+      "path": "engine/waterfall.test.ts",
+      "bytes": 2692,
+      "sha256": "a4db169502490aace2220615030b45aa821e09c541ca60b3ede8444f6108a9d8"
+    },
+    {
+      "path": "engine/waterfall.ts",
+      "bytes": 25515,
+      "sha256": "92d28428cbe34ae494fc3313d6463eb41517e08cd24934868eb7aa2ba99cdbb1"
+    },
+    {
+      "path": "host.ts",
+      "bytes": 940,
+      "sha256": "d41fc7b1ef6f46328ffddd558015274461ef6b1d35c6b94d95ab6e1ad32d1ba8"
+    },
+    {
+      "path": "qa/capture.mjs",
+      "bytes": 2157,
+      "sha256": "48b28715036b0121e68787f7a9229c99805f21cf780f518c98f990788afae8c0"
+    },
+    {
+      "path": "qa/finalize-evidence.mjs",
+      "bytes": 3921,
+      "sha256": "e08f34784ae0d377446378e004fc1ba5afd1860d9de219d59969a44b992cf90e"
+    },
+    {
+      "path": "qa/harness.css",
+      "bytes": 351,
+      "sha256": "108c2a892d5be5e0a99546c17c8bde561df260da6cc88e6a4d8a2f57eb7eef19"
+    },
+    {
+      "path": "qa/harness.tsx",
+      "bytes": 3217,
+      "sha256": "36991d25f47696a6d48e5df90b2f8d84012e4e166945164a5d11674d8532c166"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 265,
+      "sha256": "e5d36bb0fb39ff34d0dc2eea29e9e4ce35965675aa781426f517f3d22ca3b696"
+    },
+    {
+      "path": "qa/probe-disposal.mjs",
+      "bytes": 1540,
+      "sha256": "fe61c0383586cfa40190fec54c60e3e89e19b9e566b7b289057cea4ecac25f98"
+    },
+    {
+      "path": "qa/verify.mjs",
+      "bytes": 13716,
+      "sha256": "54564e7b567ead8437a7a4f69ec2c53dc0b3f8deac93466fdbd4f3d601b13b06"
+    },
+    {
+      "path": "qa/vite.config.ts",
+      "bytes": 550,
+      "sha256": "ffb9dddd1cbec3635febe6ec9442db85b62ce96e009b096d3ffc057b50caadfc"
+    },
+    {
+      "path": "WaterfallWorld.tsx",
+      "bytes": 305,
+      "sha256": "55c26be9b6f693f6292dc051fb33f648b87fef641fe69b79cffda1086b2751d5"
+    }
+  ],
+  "status": "passed"
+}

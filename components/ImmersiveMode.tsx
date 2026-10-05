@@ -1,12 +1,15 @@
 import type { BackgroundSoundType } from '../types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Play, Pause, Square, Minimize2 } from 'lucide-react';
 import type { VisualMode } from '../types';
-import type { SoundLayer } from '../services/audioEngine';
+import type { SoundLayer, SoundPlaybackSnapshot } from '../services/audioEngine';
 import { AuraVisualizer } from './AuraVisualizer';
 import { SessionBackdrop } from './SessionBackdrop';
 import type { SessionBackdropVariant } from './session/sessionBackdrop';
 import { VisualModeSwitch } from './VisualModeSwitch';
+import { immersiveWorldRegistry } from './immersiveWorlds/registry';
+import { SoundFailureNotice } from './session/SoundFailureNotice';
+import type { WorldInteractionHandler } from './immersiveWorlds/contract';
 
 interface Props {
   timeLeft: number;
@@ -22,6 +25,10 @@ interface Props {
   onStop: () => void;
   onExit: () => void;
   backgroundVariant?: SessionBackdropVariant;
+  worldId?: string;
+  onWorldInteraction?: WorldInteractionHandler;
+  playbackStates?: SoundPlaybackSnapshot;
+  onRetrySound?: (type: BackgroundSoundType) => void;
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
 }
 
@@ -31,17 +38,22 @@ const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${
 // explicit alternative selected with the same control used in the player.
 export const ImmersiveMode: React.FC<Props> = ({
   timeLeft, isPlaying, sessionName, color, visualMode, activeLayers, getAnalyser,
-  onVisualModeChange, onPlay, onPause, onStop, onExit, backgroundVariant, subscribeEvents,
+  onVisualModeChange, onPlay, onPause, onStop, onExit, backgroundVariant, worldId, subscribeEvents, playbackStates, onRetrySound, onWorldInteraction,
 }) => {
   const [controlsVisible, setControlsVisible] = useState(true);
   const controlsTimerRef = useRef<number | null>(null);
+  const chromeRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const focusAfterReveal = useRef<HTMLElement | null>(null);
   const onExitRef = useRef(onExit);
   onExitRef.current = onExit;
 
   const revealControls = useCallback(() => {
     setControlsVisible(true);
     if (controlsTimerRef.current != null) window.clearTimeout(controlsTimerRef.current);
-    controlsTimerRef.current = window.setTimeout(() => setControlsVisible(false), 3600);
+    controlsTimerRef.current = window.setTimeout(() => {
+      if (!chromeRef.current?.contains(document.activeElement)) setControlsVisible(false);
+    }, 3600);
   }, []);
 
   const holdControls = useCallback(() => {
@@ -63,38 +75,73 @@ export const ImmersiveMode: React.FC<Props> = ({
     };
   }, [holdControls, revealControls, visualMode]);
 
+  useEffect(() => {
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialogRef.current?.focus({ preventScroll: true });
+    return () => { if (previous?.isConnected) previous.focus({ preventScroll: true }); };
+  }, []);
+
   const chromeVisible = visualMode === 'graphics' || controlsVisible;
+  const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea' || immersiveWorldRegistry.has(worldId);
+  useLayoutEffect(() => {
+    if (!chromeVisible || !focusAfterReveal.current) return;
+    focusAfterReveal.current.focus({ preventScroll: true });
+    focusAfterReveal.current = null;
+  }, [chromeVisible]);
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       className="fixed inset-0 z-[100] flex h-[100dvh] flex-col items-center justify-center overflow-hidden bg-slate-950 text-white animate-fade-in"
       data-scene-surface
-      style={visualMode === 'nature' && (backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea') ? { touchAction: 'none' } : undefined}
+      style={visualMode === 'nature' && liveScene ? { touchAction: 'none' } : undefined}
       onPointerMove={visualMode === 'nature' ? revealControls : undefined}
-      onPointerDown={visualMode === 'nature' ? revealControls : undefined}
+      onPointerDown={visualMode === 'nature' ? (event) => {
+        revealControls();
+        if (event.target instanceof Element && !event.target.closest('button,input,select,textarea,a[href],[role="button"],[contenteditable="true"]')) event.currentTarget.focus({ preventScroll: true });
+      } : undefined}
       role="dialog"
       aria-modal="true"
       aria-label="몰입 화면"
+      onKeyDown={(event) => {
+        if (event.key !== 'Tab') return;
+        holdControls();
+        const controls = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button,input,select,textarea,a[href],[tabindex],[contenteditable="true"]') ?? [])
+          .filter((element) => element.tabIndex >= 0 && !element.matches(':disabled') && !element.closest('[inert]')
+            && element.getClientRects().length > 0
+            && (getComputedStyle(element).visibility !== 'hidden' || chromeRef.current?.contains(element)));
+        const current = controls.indexOf(document.activeElement as HTMLElement);
+        if (current < 0 || (event.shiftKey ? current === 0 : current === controls.length - 1)) {
+          event.preventDefault();
+          const target = event.shiftKey ? controls.at(-1) : controls[0];
+          if (target && chromeVisible) target.focus({ preventScroll: true });
+          else focusAfterReveal.current = target ?? null;
+        }
+      }}
     >
       {visualMode === 'nature' ? (
         <div className="absolute inset-0">
-          <SessionBackdrop variant={backgroundVariant} layers={activeLayers} active={isPlaying} subscribeEvents={subscribeEvents} />
-          <div className={`pointer-events-none absolute inset-0 ${backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea' ? 'bg-gradient-to-b from-transparent via-transparent via-75% to-[#02050b]/45' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60'}`} />
+          <SessionBackdrop variant={backgroundVariant} worldId={worldId} layers={activeLayers} active={isPlaying} subscribeEvents={subscribeEvents} onWorldInteraction={onWorldInteraction} />
+          <div className={`pointer-events-none absolute inset-0 ${liveScene ? 'bg-gradient-to-b from-transparent via-transparent via-75% to-[#02050b]/45' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/60'}`} />
         </div>
       ) : (
         <AuraVisualizer getAnalyser={getAnalyser} active={isPlaying} color={color} className="absolute inset-0 h-full w-full" />
       )}
 
+      <SoundFailureNotice active={isPlaying} layers={activeLayers} playbackStates={playbackStates} onRetrySound={onRetrySound} className="absolute inset-x-3 top-16 max-h-[35dvh] overflow-auto rounded-xl" />
+
       <div
+        ref={chromeRef}
         data-scene-drag
         onFocusCapture={holdControls}
         onBlurCapture={revealControls}
-        className={`absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${chromeVisible ? 'visible opacity-100' : 'invisible pointer-events-none opacity-0'}`}
+        className={`pointer-events-none absolute inset-0 z-20 ${chromeVisible ? 'visible opacity-100' : 'invisible opacity-0'}`}
       >
         <VisualModeSwitch
           value={visualMode}
           onChange={onVisualModeChange}
-          className="absolute left-1/2 top-[max(12px,env(safe-area-inset-top))] -translate-x-1/2"
+          className="pointer-events-auto absolute left-1/2 top-[max(12px,env(safe-area-inset-top))] -translate-x-1/2"
           compact
           quiet
         />
@@ -103,12 +150,12 @@ export const ImmersiveMode: React.FC<Props> = ({
           type="button"
           onClick={onExit}
           aria-label="몰입 모드 종료"
-          className="absolute right-[max(12px,env(safe-area-inset-right))] top-[max(12px,env(safe-area-inset-top))] grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-black/58 backdrop-blur-md transition-colors hover:bg-black/72 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="pointer-events-auto absolute right-[max(12px,env(safe-area-inset-right))] top-[max(12px,env(safe-area-inset-top))] grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-black/58 backdrop-blur-md transition-colors hover:bg-black/72 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
           <Minimize2 size={19} />
         </button>
 
-        <div className="absolute bottom-[max(18px,calc(env(safe-area-inset-bottom)+18px))] left-1/2 flex w-[min(360px,calc(100vw-24px))] -translate-x-1/2 items-center gap-2 rounded-full border border-white/14 bg-black/58 p-1.5 pl-4 shadow-2xl backdrop-blur-md">
+        <div className="pointer-events-auto absolute bottom-[max(18px,calc(env(safe-area-inset-bottom)+18px))] left-1/2 flex w-[min(360px,calc(100vw-24px))] -translate-x-1/2 items-center gap-2 rounded-full border border-white/14 bg-black/58 p-1.5 pl-4 shadow-2xl backdrop-blur-md">
           <div className="min-w-0 flex-1">
             <p className="truncate text-[10px] font-semibold text-white/64">{sessionName}</p>
             <p className="mt-0.5 text-xl font-semibold tabular-nums tracking-tight" aria-label={`남은 시간 ${Math.floor(timeLeft / 60)}분 ${timeLeft % 60}초`}>{fmt(timeLeft)}</p>

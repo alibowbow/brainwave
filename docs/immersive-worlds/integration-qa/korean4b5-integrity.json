@@ -1,0 +1,1603 @@
+{
+  "head": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
+  "testedSource": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+  "testedTree": "6d1a59833493763c69c0cfb396ce2b54a5abab90",
+  "ownedTree": "1a2ef94f0fc4446d181dd5bf64e56d80b9f393de",
+  "auditedAt": "2026-10-04T23:07:36.905783+00:00",
+  "errors": [],
+  "source": {
+    "count": 23,
+    "manifestDigestMatches": true,
+    "sha256": "84843d154aa2e16001ef395ce9c3ebaff459ce0abf104350e86785dc06a2bc57",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+        "matchesPublishedAndTested": true,
+        "sha256": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "matchesPublishedAndTested": true,
+        "sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+        "matchesPublishedAndTested": true,
+        "sha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+        "matchesPublishedAndTested": true,
+        "sha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "37ef6d71fa94d47582c83d0c5ce7dea610e854755b16ebd8b5756aaab0cc8c9c"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/environment.test.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "012b672c2e197d9e39fbcd4896952803f240db47a5cb76e5c6c00d2a7408dece"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/environment.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "ae7cf184ec217e1402b5b2c03170a733f718e19b74ced10b7e45d8f1b5fce92d"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/korean-world.css",
+        "matchesPublishedAndTested": true,
+        "sha256": "8d7610a5096ac40d459aac156ae734534b311b3b9e0b0910602136f21a8547e1"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/environmentQA.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "9bebbdb34c17421b026ee93e4c7a66b72d9541af2290ace418aeef4f12a01a5d"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "matchesPublishedAndTested": true,
+        "sha256": "2230115d8465b08e75a551129ada8f90d43aa3bd200189e5f305ae09d5eb2dfc"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+        "matchesPublishedAndTested": true,
+        "sha256": "9c2a388d45c110f4dd621a63ff9fe4b5ac7c095a1e7c8e9947ee12a504e00ee4"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+        "matchesPublishedAndTested": true,
+        "sha256": "ece350f8939b1ed689e92054fa5c6df9324db318f63d7175c2fbee0e117d3c40"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "9acd6784cb5b6a4adc47fcc732ffce9f8159ff5c943b285a2ab888dc3541c7b7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+        "matchesPublishedAndTested": true,
+        "sha256": "f90eae829c5a9e786bf85af3c097fe2deb08ab586fbca5a55f6d1e1121390652"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "97abe06eb9b074f5b9f1d8e9ab50868b9f46e7e12f848153f8b7579d58aadfa7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "e72a91df76a38ef3b2d0f756189bbfa75b3ac04758b950612c5c1d6c18318800"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "ed4d40a721d640f0ec24abb67e1704f203bb7488e8345e18a3e2a70689db673e"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "86eaac8f10b2f23da10e2f25318215d4999322a4a7785b25db85231ebd1055af"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/types.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "30af4e3e663ed68a5569cd53f1094d26ad4874fd4e82fcb991b5b07f6dc2b25f"
+      },
+      {
+        "path": "components/liveScene/liveSceneHost.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+      },
+      {
+        "path": "components/liveScene/look.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a"
+      },
+      {
+        "path": "components/useSceneMotion.ts",
+        "matchesPublishedAndTested": true,
+        "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+      }
+    ]
+  },
+  "artifacts": {
+    "count": 90,
+    "allBytesMatch": true
+  },
+  "screenshots": [
+    {
+      "scene": "temple",
+      "viewport": "desktop",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-desktop.png",
+      "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d",
+      "bytes": 1236780,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "temple",
+      "viewport": "chrome",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-chrome.png",
+      "sha256": "cd874b3e90d83fea61b33ca3617b1f0d65c6aa61c293a1afce319a9501df7b27",
+      "bytes": 1236285,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "temple",
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-portrait.png",
+      "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0",
+      "bytes": 287657,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "temple",
+      "viewport": "fold",
+      "width": 960,
+      "height": 700,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-fold.png",
+      "sha256": "169559a1dd5957125cc530ef16c36b83828ed0432ea560b7c8c98a25831007c6",
+      "bytes": 705103,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "desktop",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-desktop.png",
+      "sha256": "4287596d57b76d13cc7dbafafb077328fc2f1b8febe20056522a381fe90fe596",
+      "bytes": 1105310,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "chrome",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-chrome.png",
+      "sha256": "3f1c83ec41c4f01964cef9fc0b5ddc924c94b878e377ce7eb0ac78918560ccbf",
+      "bytes": 1105692,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-portrait.png",
+      "sha256": "aa6eebfdf3d80397b5d02b3dca96fe80d8676a0bedc9a18f390a5272f7dcc195",
+      "bytes": 259718,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "fold",
+      "width": 960,
+      "height": 700,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-fold.png",
+      "sha256": "c6fb5e2d070b433bf057bbcec0a7e9aafeb2536e8b3dad7a7a24973ea1427520",
+      "bytes": 640696,
+      "mode": "normal",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "temple",
+      "viewport": "desktop",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-desktop.png",
+      "sha256": "e12f953eacadc10755136cf0680e7629d89d8c07c93de20db87cc53db5f9f46f",
+      "bytes": 1236865,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "temple",
+      "viewport": "chrome",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-chrome.png",
+      "sha256": "8ff02b985995b3d4542459e4f993c9a788f6b69d89f809e7416d66bc2923e11d",
+      "bytes": 1236298,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "temple",
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-portrait.png",
+      "sha256": "2aef90e1fe8303de049553ba6d5a339f559fcd0b7ef5098142f93ffff1ad3a87",
+      "bytes": 287691,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "temple",
+      "viewport": "fold",
+      "width": 960,
+      "height": 700,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-fold.png",
+      "sha256": "7b5476dc53a85859ebc13a82a43e48d138eb0138b7e60cdd14693f702893f17d",
+      "bytes": 704741,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "desktop",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-desktop.png",
+      "sha256": "fb16ec9c76307758d3cec2ec6b2c1ae6d6675a2711fdb2cb17d7bba5929d8a18",
+      "bytes": 1105181,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "chrome",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-chrome.png",
+      "sha256": "ce9b5835f89e6f7ee887719e8df58229896cc9240979e6b3f5c39bd0b53b9743",
+      "bytes": 1105804,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-portrait.png",
+      "sha256": "7e932d69712fae7536c85a93ab5f55bc20b27e92688568513d74306912891c3b",
+      "bytes": 259654,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "scops",
+      "viewport": "fold",
+      "width": 960,
+      "height": 700,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-fold.png",
+      "sha256": "4c8c0ee2ed515861782f5dc166e1471b0abe367a0d3afd8cf29e567b8c040abd",
+      "bytes": 640608,
+      "mode": "forced-byte",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "rural",
+      "viewport": "desktop",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-desktop.png",
+      "sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+      "bytes": 915493,
+      "mode": "preservation-recapture",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "rural",
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-portrait.png",
+      "sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+      "bytes": 245178,
+      "mode": "preservation-recapture",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    },
+    {
+      "scene": "rural",
+      "viewport": "fold",
+      "width": 960,
+      "height": 700,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-fold.png",
+      "sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+      "bytes": 563404,
+      "mode": "preservation-recapture",
+      "decoded": true,
+      "independentlyMatches": true,
+      "visuallyOpened": true
+    }
+  ],
+  "comparisons": [
+    {
+      "scene": "temple",
+      "viewport": "desktop",
+      "normalByteIdenticalToAccepted": true,
+      "comparisonCropsExact": {
+        "baseline": true,
+        "normal": true,
+        "forced_byte": true
+      },
+      "forcedByteMaxChannelDifference": 1,
+      "forcedByteMeanAbsoluteChannelDifference": 0.015266585266585267
+    },
+    {
+      "scene": "temple",
+      "viewport": "portrait",
+      "normalByteIdenticalToAccepted": true,
+      "comparisonCropsExact": {
+        "baseline": true,
+        "normal": true,
+        "forced_byte": true
+      },
+      "forcedByteMaxChannelDifference": 1,
+      "forcedByteMeanAbsoluteChannelDifference": 0.015673228824887593
+    },
+    {
+      "scene": "scops",
+      "viewport": "desktop",
+      "normalByteIdenticalToAccepted": true,
+      "comparisonCropsExact": {
+        "baseline": true,
+        "normal": true,
+        "forced_byte": true
+      },
+      "forcedByteMaxChannelDifference": 1,
+      "forcedByteMeanAbsoluteChannelDifference": 0.013797585130918465
+    },
+    {
+      "scene": "scops",
+      "viewport": "portrait",
+      "normalByteIdenticalToAccepted": true,
+      "comparisonCropsExact": {
+        "baseline": true,
+        "normal": true,
+        "forced_byte": true
+      },
+      "forcedByteMaxChannelDifference": 1,
+      "forcedByteMeanAbsoluteChannelDifference": 0.011453396524486572
+    }
+  ],
+  "ruralPreservation": [
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+      "allByteIdentical": true
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+      "allByteIdentical": true
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+      "allByteIdentical": true
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+      "allByteIdentical": true
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+      "allByteIdentical": true
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png",
+      "allByteIdentical": true
+    }
+  ],
+  "ruralRecapture": [
+    {
+      "viewport": "desktop",
+      "byteIdenticalToAccepted": true
+    },
+    {
+      "viewport": "portrait",
+      "byteIdenticalToAccepted": true
+    },
+    {
+      "viewport": "fold",
+      "byteIdenticalToAccepted": true
+    }
+  ],
+  "bundle": {
+    "sha256": "6836f96e84950d3716c3ac2ecef1cb0442235746929791d9f919328cbb99ff73",
+    "manifestDigestMatches": true,
+    "fileCount": 6,
+    "availableFiles": [],
+    "missingFiles": [
+      "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-B2M8OVfh.js",
+      "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-UnPzUkqC.css",
+      "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rural-CNEbbpm7.js",
+      "components/immersiveWorlds/koreanPlaces/qa/dist/assets/scops-B5439aU4.js",
+      "components/immersiveWorlds/koreanPlaces/qa/dist/assets/temple-BqPLPKXu.js",
+      "components/immersiveWorlds/koreanPlaces/qa/dist/components/immersiveWorlds/koreanPlaces/qa/index.html"
+    ],
+    "independentBuildPerformed": false
+  },
+  "dependencySource": {
+    "version": "0.186.1",
+    "manifestDigestMatches": true,
+    "localInstalledFileMatches": [
+      {
+        "path": "node_modules/three/package.json",
+        "exists": true,
+        "matches": true
+      },
+      {
+        "path": "node_modules/three/src/extras/PMREMGenerator.js",
+        "exists": true,
+        "matches": true
+      },
+      {
+        "path": "node_modules/three/src/renderers/webgl/WebGLEnvironments.js",
+        "exists": true,
+        "matches": true
+      }
+    ]
+  },
+  "fullRuns": [
+    {
+      "scene": "temple",
+      "mode": "normal",
+      "pass": true,
+      "errors": [],
+      "sourceMatches": true,
+      "bundleManifestMatches": true,
+      "targets": [
+        {
+          "role": "output",
+          "type": "half-float",
+          "width": 384,
+          "height": 512,
+          "format": "RGBA",
+          "internalFormat": "RGBA16F",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        },
+        {
+          "role": "ping-pong",
+          "type": "half-float",
+          "width": 384,
+          "height": 512,
+          "format": "RGBA",
+          "internalFormat": "RGBA16F",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        }
+      ],
+      "sentinelStateRestored": true,
+      "mountUnmount": {
+        "pass": true,
+        "rapidRemountCount": 3,
+        "rapidIdentities": [
+          1,
+          1,
+          1
+        ],
+        "hostGraceMsFromSource": 5000,
+        "unmountRequestedAtMs": 49142.30000000447,
+        "detachedObservedAtMs": 49144.10000000149,
+        "cleanup": {
+          "canvasIdentity": 1,
+          "startedAtMs": 54143.20000000298,
+          "completedAtMs": 57757.70000000298,
+          "contextLostAtMs": 57758.40000000596
+        },
+        "cleanupStartAfterUnmountRequestMs": 5000.89999999851,
+        "synchronousCleanupDurationMs": 3614.5,
+        "contextLostAfterUnmountRequestMs": 8616.10000000149,
+        "detachedListeners": [
+          {
+            "holder": "primary",
+            "pointerdown": 0
+          }
+        ],
+        "detachedScheduler": {
+          "held": true,
+          "pendingCallbacks": 0,
+          "controlledFrames": 13
+        },
+        "rebuiltIdentity": 2,
+        "newCanvasAfterDisposal": true,
+        "method": "QA-only wrapper observes real synchronous WorldEngine.dispose entry/return; real webglcontextlost event is observed on the retained detached canvas. Host timer and resource methods are unchanged.",
+        "limitation": "Synchronous cleanup return and browser context loss are distinct from the 5000 ms host grace. No physical GPU driver memory profiler or reclamation latency measurement was available."
+      },
+      "createdAudioContexts": 0,
+      "actualTabVisibility": {
+        "hidden": false,
+        "visibilityState": "visible",
+        "tested": false,
+        "note": "Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified."
+      },
+      "lifecycleRendering": "683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.",
+      "interactionFixture": "Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves",
+      "captureCancellationMethods": [
+        "Real mouse pointer; labelled synthetic pointercancel cancellation then trusted pointermove/up",
+        "Real mouse pointer; labelled synthetic blur cancellation then trusted pointermove/up",
+        "Real mouse pointer; native releasePointerCapture then trusted pointermove/up"
+      ],
+      "gateResults": {
+        "initialEnvironment": true,
+        "motion": true,
+        "pause": true,
+        "interaction": true,
+        "browserTouch": true,
+        "secondHolder": true,
+        "reducedMotion": true,
+        "static3D": true,
+        "syntheticHidden": true,
+        "afterInputEnvironment": true,
+        "rebuiltEnvironment": true,
+        "mountUnmount": true,
+        "staticFirstFrame": true,
+        "staticEnvironment": true
+      },
+      "integrity": {
+        "sourceUnchangedDuringRun": true,
+        "dependencySourceUnchangedDuringRun": true,
+        "bundleUnchangedDuringRun": true
+      }
+    },
+    {
+      "scene": "scops",
+      "mode": "normal",
+      "pass": true,
+      "errors": [],
+      "sourceMatches": true,
+      "bundleManifestMatches": true,
+      "targets": [
+        {
+          "role": "output",
+          "type": "half-float",
+          "width": 336,
+          "height": 256,
+          "format": "RGBA",
+          "internalFormat": "RGBA16F",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        },
+        {
+          "role": "ping-pong",
+          "type": "half-float",
+          "width": 336,
+          "height": 256,
+          "format": "RGBA",
+          "internalFormat": "RGBA16F",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        }
+      ],
+      "sentinelStateRestored": true,
+      "mountUnmount": {
+        "pass": true,
+        "rapidRemountCount": 3,
+        "rapidIdentities": [
+          1,
+          1,
+          1
+        ],
+        "hostGraceMsFromSource": 5000,
+        "unmountRequestedAtMs": 46365.70000000298,
+        "detachedObservedAtMs": 46368.30000000447,
+        "cleanup": {
+          "canvasIdentity": 1,
+          "startedAtMs": 51367.20000000298,
+          "completedAtMs": 53174.70000000298,
+          "contextLostAtMs": 53175.20000000298
+        },
+        "cleanupStartAfterUnmountRequestMs": 5001.5,
+        "synchronousCleanupDurationMs": 1807.5,
+        "contextLostAfterUnmountRequestMs": 6809.5,
+        "detachedListeners": [
+          {
+            "holder": "primary",
+            "pointerdown": 0
+          }
+        ],
+        "detachedScheduler": {
+          "held": true,
+          "pendingCallbacks": 0,
+          "controlledFrames": 13
+        },
+        "rebuiltIdentity": 2,
+        "newCanvasAfterDisposal": true,
+        "method": "QA-only wrapper observes real synchronous WorldEngine.dispose entry/return; real webglcontextlost event is observed on the retained detached canvas. Host timer and resource methods are unchanged.",
+        "limitation": "Synchronous cleanup return and browser context loss are distinct from the 5000 ms host grace. No physical GPU driver memory profiler or reclamation latency measurement was available."
+      },
+      "createdAudioContexts": 0,
+      "actualTabVisibility": {
+        "hidden": false,
+        "visibilityState": "visible",
+        "tested": false,
+        "note": "Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified."
+      },
+      "lifecycleRendering": "683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.",
+      "interactionFixture": "Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves",
+      "captureCancellationMethods": [
+        "Real mouse pointer; labelled synthetic pointercancel cancellation then trusted pointermove/up",
+        "Real mouse pointer; labelled synthetic blur cancellation then trusted pointermove/up",
+        "Real mouse pointer; native releasePointerCapture then trusted pointermove/up"
+      ],
+      "gateResults": {
+        "initialEnvironment": true,
+        "motion": true,
+        "pause": true,
+        "interaction": true,
+        "browserTouch": true,
+        "secondHolder": true,
+        "reducedMotion": true,
+        "static3D": true,
+        "syntheticHidden": true,
+        "externalAudioEvent": true,
+        "afterInputEnvironment": true,
+        "rebuiltEnvironment": true,
+        "mountUnmount": true,
+        "staticFirstFrame": true,
+        "staticEnvironment": true
+      },
+      "integrity": {
+        "sourceUnchangedDuringRun": true,
+        "dependencySourceUnchangedDuringRun": true,
+        "bundleUnchangedDuringRun": true
+      }
+    },
+    {
+      "scene": "temple",
+      "mode": "forced-byte",
+      "pass": true,
+      "errors": [],
+      "sourceMatches": true,
+      "bundleManifestMatches": true,
+      "targets": [
+        {
+          "role": "output",
+          "type": "unsigned-byte",
+          "width": 384,
+          "height": 512,
+          "format": "RGBA",
+          "internalFormat": "RGBA8",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        },
+        {
+          "role": "ping-pong",
+          "type": "unsigned-byte",
+          "width": 384,
+          "height": 512,
+          "format": "RGBA",
+          "internalFormat": "RGBA8",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        }
+      ],
+      "sentinelStateRestored": true,
+      "mountUnmount": {
+        "pass": true,
+        "rapidRemountCount": 3,
+        "rapidIdentities": [
+          1,
+          1,
+          1
+        ],
+        "hostGraceMsFromSource": 5000,
+        "unmountRequestedAtMs": 39593,
+        "detachedObservedAtMs": 39599.59999999404,
+        "cleanup": {
+          "canvasIdentity": 1,
+          "startedAtMs": 44595,
+          "completedAtMs": 48097.09999999404,
+          "contextLostAtMs": 48098
+        },
+        "cleanupStartAfterUnmountRequestMs": 5002,
+        "synchronousCleanupDurationMs": 3502.0999999940395,
+        "contextLostAfterUnmountRequestMs": 8505,
+        "detachedListeners": [
+          {
+            "holder": "primary",
+            "pointerdown": 0
+          }
+        ],
+        "detachedScheduler": {
+          "held": true,
+          "pendingCallbacks": 0,
+          "controlledFrames": 13
+        },
+        "rebuiltIdentity": 2,
+        "newCanvasAfterDisposal": true,
+        "method": "QA-only wrapper observes real synchronous WorldEngine.dispose entry/return; real webglcontextlost event is observed on the retained detached canvas. Host timer and resource methods are unchanged.",
+        "limitation": "Synchronous cleanup return and browser context loss are distinct from the 5000 ms host grace. No physical GPU driver memory profiler or reclamation latency measurement was available."
+      },
+      "createdAudioContexts": 0,
+      "actualTabVisibility": {
+        "hidden": false,
+        "visibilityState": "visible",
+        "tested": false,
+        "note": "Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified."
+      },
+      "lifecycleRendering": "683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.",
+      "interactionFixture": "Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves",
+      "captureCancellationMethods": [
+        "Real mouse pointer; labelled synthetic pointercancel cancellation then trusted pointermove/up",
+        "Real mouse pointer; labelled synthetic blur cancellation then trusted pointermove/up",
+        "Real mouse pointer; native releasePointerCapture then trusted pointermove/up"
+      ],
+      "gateResults": {
+        "initialEnvironment": true,
+        "motion": true,
+        "pause": true,
+        "interaction": true,
+        "browserTouch": true,
+        "secondHolder": true,
+        "reducedMotion": true,
+        "static3D": true,
+        "syntheticHidden": true,
+        "afterInputEnvironment": true,
+        "rebuiltEnvironment": true,
+        "mountUnmount": true,
+        "staticFirstFrame": true,
+        "staticEnvironment": true
+      },
+      "integrity": {
+        "sourceUnchangedDuringRun": true,
+        "dependencySourceUnchangedDuringRun": true,
+        "bundleUnchangedDuringRun": true
+      }
+    },
+    {
+      "scene": "scops",
+      "mode": "forced-byte",
+      "pass": true,
+      "errors": [],
+      "sourceMatches": true,
+      "bundleManifestMatches": true,
+      "targets": [
+        {
+          "role": "output",
+          "type": "unsigned-byte",
+          "width": 336,
+          "height": 256,
+          "format": "RGBA",
+          "internalFormat": "RGBA8",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        },
+        {
+          "role": "ping-pong",
+          "type": "unsigned-byte",
+          "width": 336,
+          "height": 256,
+          "format": "RGBA",
+          "internalFormat": "RGBA8",
+          "status": 36053,
+          "statusName": "FRAMEBUFFER_COMPLETE",
+          "errors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true
+        }
+      ],
+      "sentinelStateRestored": true,
+      "mountUnmount": {
+        "pass": true,
+        "rapidRemountCount": 3,
+        "rapidIdentities": [
+          1,
+          1,
+          1
+        ],
+        "hostGraceMsFromSource": 5000,
+        "unmountRequestedAtMs": 36492.20000000298,
+        "detachedObservedAtMs": 36495,
+        "cleanup": {
+          "canvasIdentity": 1,
+          "startedAtMs": 41493.5,
+          "completedAtMs": 43062.5,
+          "contextLostAtMs": 43063.30000000447
+        },
+        "cleanupStartAfterUnmountRequestMs": 5001.29999999702,
+        "synchronousCleanupDurationMs": 1569,
+        "contextLostAfterUnmountRequestMs": 6571.10000000149,
+        "detachedListeners": [
+          {
+            "holder": "primary",
+            "pointerdown": 0
+          }
+        ],
+        "detachedScheduler": {
+          "held": true,
+          "pendingCallbacks": 0,
+          "controlledFrames": 13
+        },
+        "rebuiltIdentity": 2,
+        "newCanvasAfterDisposal": true,
+        "method": "QA-only wrapper observes real synchronous WorldEngine.dispose entry/return; real webglcontextlost event is observed on the retained detached canvas. Host timer and resource methods are unchanged.",
+        "limitation": "Synchronous cleanup return and browser context loss are distinct from the 5000 ms host grace. No physical GPU driver memory profiler or reclamation latency measurement was available."
+      },
+      "createdAudioContexts": 0,
+      "actualTabVisibility": {
+        "hidden": false,
+        "visibilityState": "visible",
+        "tested": false,
+        "note": "Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified."
+      },
+      "lifecycleRendering": "683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.",
+      "interactionFixture": "Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves",
+      "captureCancellationMethods": [
+        "Real mouse pointer; labelled synthetic pointercancel cancellation then trusted pointermove/up",
+        "Real mouse pointer; labelled synthetic blur cancellation then trusted pointermove/up",
+        "Real mouse pointer; native releasePointerCapture then trusted pointermove/up"
+      ],
+      "gateResults": {
+        "initialEnvironment": true,
+        "motion": true,
+        "pause": true,
+        "interaction": true,
+        "browserTouch": true,
+        "secondHolder": true,
+        "reducedMotion": true,
+        "static3D": true,
+        "syntheticHidden": true,
+        "externalAudioEvent": true,
+        "afterInputEnvironment": true,
+        "rebuiltEnvironment": true,
+        "mountUnmount": true,
+        "staticFirstFrame": true,
+        "staticEnvironment": true
+      },
+      "integrity": {
+        "sourceUnchangedDuringRun": true,
+        "dependencySourceUnchangedDuringRun": true,
+        "bundleUnchangedDuringRun": true
+      }
+    }
+  ],
+  "scope": {
+    "accepted": {
+      "ref": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "changedPathCount": 100,
+      "outsideOwner": [],
+      "unchangedOriginalPaths": 294,
+      "originalPathCount": 300,
+      "changes": [
+        "components/immersiveWorlds/koreanPlaces/ENVIRONMENT_COMPATIBILITY_REPORT.md",
+        "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "components/immersiveWorlds/koreanPlaces/environment.test.ts",
+        "components/immersiveWorlds/koreanPlaces/environment.ts",
+        "components/immersiveWorlds/koreanPlaces/qa/README.md",
+        "components/immersiveWorlds/koreanPlaces/qa/environmentQA.ts",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/ENVIRONMENT_PRIOR_RUNS.md",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/cleanup-rapid-drained-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/debug-failure.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/artifact-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparison-artifact-repair.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/comparison-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/screenshots-rural.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/scope-preservation.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/verification-summary.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+        "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+        "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "components/immersiveWorlds/koreanPlaces/scenes/temple.ts"
+      ]
+    },
+    "original": {
+      "ref": "0e09a28a175b0aab8a52443c14a506f54b6998ee",
+      "changedPathCount": 151,
+      "outsideOwner": [],
+      "unchangedOriginalPaths": 243,
+      "originalPathCount": 250,
+      "changes": [
+        "components/immersiveWorlds/koreanPlaces/ENVIRONMENT_COMPATIBILITY_REPORT.md",
+        "components/immersiveWorlds/koreanPlaces/FOLLOWUP_QUALITY_REPORT.md",
+        "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "components/immersiveWorlds/koreanPlaces/environment.test.ts",
+        "components/immersiveWorlds/koreanPlaces/environment.ts",
+        "components/immersiveWorlds/koreanPlaces/qa/README.md",
+        "components/immersiveWorlds/koreanPlaces/qa/environmentQA.ts",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/ENVIRONMENT_PRIOR_RUNS.md",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/cleanup-rapid-drained-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/debug-failure.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/artifact-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparison-artifact-repair.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/comparison-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/screenshots-rural.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/scope-preservation.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/verification-summary.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/artifact-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/comparison-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/rural-desktop-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/rural-portrait-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/scops-desktop-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/scops-portrait-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/temple-desktop-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/temple-portrait-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/publication-guard.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/publication-map.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-rural.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-summary.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/final-harness-build.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/harness-build.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+        "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+        "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "components/immersiveWorlds/koreanPlaces/scenes/temple.ts"
+      ]
+    },
+    "main": {
+      "ref": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+      "changedPathCount": 182,
+      "outsideOwner": [],
+      "unchangedOriginalPaths": 212,
+      "originalPathCount": 212,
+      "changes": [
+        "components/immersiveWorlds/koreanPlaces/ENVIRONMENT_COMPATIBILITY_REPORT.md",
+        "components/immersiveWorlds/koreanPlaces/FOLLOWUP_QUALITY_REPORT.md",
+        "components/immersiveWorlds/koreanPlaces/INTEGRATION.md",
+        "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+        "components/immersiveWorlds/koreanPlaces/PROVENANCE.md",
+        "components/immersiveWorlds/koreanPlaces/QA_REPORT.md",
+        "components/immersiveWorlds/koreanPlaces/REFERENCE_REVIEW.md",
+        "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+        "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+        "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "components/immersiveWorlds/koreanPlaces/environment.test.ts",
+        "components/immersiveWorlds/koreanPlaces/environment.ts",
+        "components/immersiveWorlds/koreanPlaces/korean-world.css",
+        "components/immersiveWorlds/koreanPlaces/qa/.gitignore",
+        "components/immersiveWorlds/koreanPlaces/qa/README.md",
+        "components/immersiveWorlds/koreanPlaces/qa/environmentQA.ts",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/ENVIRONMENT_PRIOR_RUNS.md",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/cleanup-rapid-drained-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/debug-failure.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/artifact-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparison-artifact-repair.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/comparison-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/screenshots-rural.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/scope-preservation.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/verification-summary.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/artifact-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/comparison-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/rural-desktop-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/rural-portrait-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/scops-desktop-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/scops-portrait-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/temple-desktop-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/temple-portrait-before-after.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/publication-guard.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/publication-map.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-rural.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-summary.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/final-harness-build.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-final/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/harness-build.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup-verified/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/followup/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/rural-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/rural-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/rural-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/rural-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/verification-all.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/verification-attempt-all.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/verification-rural.json",
+        "components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+        "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+        "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+        "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+        "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+        "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+        "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+        "components/immersiveWorlds/koreanPlaces/types.ts"
+      ]
+    },
+    "tested": {
+      "ref": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+      "changedPathCount": 91,
+      "outsideOwner": [],
+      "unchangedOriginalPaths": 303,
+      "originalPathCount": 303,
+      "changes": [
+        "components/immersiveWorlds/koreanPlaces/ENVIRONMENT_COMPATIBILITY_REPORT.md",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/ENVIRONMENT_PRIOR_RUNS.md",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/forced-byte/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/cleanup-clean-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/clean/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/cleanup-rapid-drained-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid-drained/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/cleanup-rapid-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-diagnostics/normal/rapid/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/debug-failure.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-final/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/screenshots-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-preflight/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/artifact-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparison-artifact-repair.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/comparison-manifest.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-desktop-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-portrait-baseline-normal-byte.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/screenshots-rural.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/scope-preservation.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/verification-summary.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/build-gates.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/forced-byte/verification-temple.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/scops-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-chrome.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-desktop.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-fold.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-portrait.png",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/temple-run.log",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-scops.json",
+        "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-verified/normal/verification-temple.json"
+      ]
+    },
+    "protected": {
+      "components/rainyWindow/": {
+        "pathCount": 22,
+        "identicalToMain": true
+      },
+      "components/oilSea/": {
+        "pathCount": 22,
+        "identicalToMain": true
+      },
+      "components/liveScene/": {
+        "pathCount": 4,
+        "identicalToMain": true
+      },
+      "components/nature/": {
+        "pathCount": 2,
+        "identicalToMain": true
+      },
+      "public/": {
+        "pathCount": 75,
+        "identicalToMain": true
+      }
+    }
+  },
+  "sameSourceRunsAllPass": true,
+  "independentIntegrityChecksPass": true
+}

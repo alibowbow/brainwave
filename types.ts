@@ -43,6 +43,8 @@ export type BackgroundSoundType =
 export interface SessionPreset {
   id: string;
   name: string;
+  /** Stable built-in space retained by saved or resumed sessions. */
+  worldId?: string;
   description: string;
   defaultDurationMinutes: number;
   brainWaveType: BrainWaveType;

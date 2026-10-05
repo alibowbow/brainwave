@@ -1,0 +1,884 @@
+{
+  "schema": 3,
+  "world": "night-pond",
+  "mode": "normal",
+  "stage": "visual",
+  "tag": "final",
+  "drainBeforeDispose": false,
+  "activeFrames": 0,
+  "viewportName": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "dpr": 1,
+  "generatedAt": "2026-10-04T21:54:45.837Z",
+  "scope": "Owned standalone production-entry harness; chrome is harness HTML, not integrated Player/ImmersiveMode. No main/shared routing changes.",
+  "limitations": [
+    "SwiftShader software GPU; no physical touch device or sustained hardware performance certification.",
+    "Fence is an observation of the existing command stream, not a GPU timer or measured per-frame GPU cost.",
+    "render-js-return duration includes synchronous driver/compiler stalls; it is not pure JavaScript CPU time.",
+    "Configured shared-host retention is 5000 ms; disposal entry/exit and actual context loss are separate measured events."
+  ],
+  "gitHead": "d5f7530228d69664df42b3e4901ede6215aeba22",
+  "gitStatus": "M qa/FOLLOWUP.md\n?? qa/LIFECYCLE.md\n?? qa/build-lifecycle-manifest.py\n?? qa/lifecycle-publication.json\n?? qa/submission-evidence/",
+  "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+  "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+  "bundleSha256": "789f1cf31ce3840e71a9a50a283f1d811dc4f2f888124ebd10d5768e7eb4d91b",
+  "scriptSha256": "93af8cef0201bf870f2546d20165ef2be12ff8f93305f207514213c9a4e9d963",
+  "status": "passed",
+  "checks": {
+    "initialPaused": {
+      "status": "passed",
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 3,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    },
+    "initial-gpuDrain": {
+      "status": "passed",
+      "before": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "after": {
+        "canvasId": 1,
+        "width": 1280,
+        "height": 800,
+        "frames": "1",
+        "time": "0.0000"
+      },
+      "polls": 2,
+      "waitStatus": 37148,
+      "elapsedMs": 40.5,
+      "automationElapsedMs": 43
+    }
+  },
+  "captures": [
+    {
+      "file": "final-night-pond-normal-desktop-visual-initial.png",
+      "sha256": "ce4001fd5db266a24e3b1ff5fc5f357ec4c8af885cc253abd254e69a0e6ff9ae",
+      "bytes": 817858,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "screenshotElapsedMs": 205,
+      "combinedElapsedMs": 256,
+      "staticSettling": {
+        "before": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "after": {
+          "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+          "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+          "diagnostics": {
+            "created": 1,
+            "disposed": 0,
+            "live": 1
+          },
+          "syntheticHidden": null,
+          "reducedMotion": false,
+          "roots": [
+            {
+              "world": "night-pond",
+              "state": "ready",
+              "motion": "paused",
+              "holder": "primary",
+              "width": 1280,
+              "height": 800
+            }
+          ],
+          "canvases": [
+            {
+              "id": 1,
+              "holder": "primary",
+              "width": 1280,
+              "height": 800,
+              "frames": 1,
+              "time": 0,
+              "drawCalls": 58,
+              "triangles": 330272,
+              "targets": null,
+              "submission": {
+                "pending": true,
+                "dirty": false,
+                "running": false,
+                "disposed": false,
+                "fault": null,
+                "submitted": 1,
+                "completed": 0,
+                "requestedSize": [
+                  1280,
+                  800,
+                  1
+                ],
+                "appliedSize": [
+                  1280,
+                  800,
+                  1
+                ]
+              }
+            }
+          ],
+          "events": []
+        },
+        "elapsedMs": 2,
+        "method": "Read-only production dirty-state observation; no added fence, flush, readback or draw"
+      },
+      "fence": {
+        "status": "passed",
+        "before": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "after": {
+          "canvasId": 1,
+          "width": 1280,
+          "height": 800,
+          "frames": "1",
+          "time": "0.0000"
+        },
+        "polls": 2,
+        "waitStatus": 37148,
+        "elapsedMs": 40.5
+      },
+      "before": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      },
+      "after": {
+        "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+        "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+        "diagnostics": {
+          "created": 1,
+          "disposed": 0,
+          "live": 1
+        },
+        "syntheticHidden": null,
+        "reducedMotion": false,
+        "roots": [
+          {
+            "world": "night-pond",
+            "state": "ready",
+            "motion": "paused",
+            "holder": "primary",
+            "width": 1280,
+            "height": 800
+          }
+        ],
+        "canvases": [
+          {
+            "id": 1,
+            "holder": "primary",
+            "width": 1280,
+            "height": 800,
+            "frames": 1,
+            "time": 0,
+            "drawCalls": 58,
+            "triangles": 330272,
+            "targets": null,
+            "submission": {
+              "pending": true,
+              "dirty": false,
+              "running": false,
+              "disposed": false,
+              "fault": null,
+              "submitted": 1,
+              "completed": 0,
+              "requestedSize": [
+                1280,
+                800,
+                1
+              ],
+              "appliedSize": [
+                1280,
+                800,
+                1
+              ]
+            }
+          }
+        ],
+        "events": []
+      }
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "unrun": [
+    "Behavior/lifecycle are separate clean stages; no inference from a still PNG."
+  ],
+  "browser": "153.0.8010.0",
+  "initial": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "night-pond",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 58,
+        "triangles": 330272,
+        "targets": null,
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "graphics": {
+    "canvasId": 1,
+    "width": 1280,
+    "height": 800,
+    "frames": "1",
+    "time": "0.0000",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "extColorBufferFloat": true,
+    "extColorBufferHalfFloat": true,
+    "targetAudit": null
+  },
+  "final": {
+    "sourceSha256": "27794d8a365d0c32d3396f06849aa8b557908963f7a093495943c42dbd10b9da",
+    "harnessSha256": "5a8c9e998bb6332fa0691d89c369de40c468bfff41f8db8893bc8c8a39371f42",
+    "diagnostics": {
+      "created": 1,
+      "disposed": 0,
+      "live": 1
+    },
+    "syntheticHidden": null,
+    "reducedMotion": false,
+    "roots": [
+      {
+        "world": "night-pond",
+        "state": "ready",
+        "motion": "paused",
+        "holder": "primary",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "canvases": [
+      {
+        "id": 1,
+        "holder": "primary",
+        "width": 1280,
+        "height": 800,
+        "frames": 1,
+        "time": 0,
+        "drawCalls": 58,
+        "triangles": 330272,
+        "targets": null,
+        "submission": {
+          "pending": true,
+          "dirty": false,
+          "running": false,
+          "disposed": false,
+          "fault": null,
+          "submitted": 1,
+          "completed": 0,
+          "requestedSize": [
+            1280,
+            800,
+            1
+          ],
+          "appliedSize": [
+            1280,
+            800,
+            1
+          ]
+        }
+      }
+    ],
+    "events": []
+  },
+  "telemetry": {
+    "timeline": [
+      {
+        "kind": "set-size-request",
+        "atMs": 70.80000000074506,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": false
+      },
+      {
+        "kind": "engine-init-entry",
+        "atMs": 71,
+        "canvasId": 1
+      },
+      {
+        "kind": "renderer-render-return",
+        "atMs": 438.6000000014901,
+        "canvasId": 1,
+        "scope": "initial-static",
+        "action": "initial-mount",
+        "nestedDepth": 0,
+        "startMs": 182.39999999850988,
+        "elapsedMs": 256.20000000298023,
+        "exclusiveDrawCalls": 58,
+        "inclusiveDrawCalls": 58,
+        "cumulativeDrawCalls": 58,
+        "drawTargets": {
+          "canvas": {
+            "calls": 58,
+            "submittedElements": 991082
+          }
+        },
+        "sceneName": "Scene",
+        "cameraType": "PerspectiveCamera",
+        "destination": "canvas"
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 439.80000000074506,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "initial-static",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 70.80000000074506,
+          "same": false
+        },
+        "drawCalls": 58,
+        "startMs": 182.30000000074506,
+        "elapsedMs": 257.5,
+        "submitted": true,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 440.30000000074506,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "engine-init-exit",
+        "atMs": 440.6000000014901,
+        "canvasId": 1,
+        "elapsedMs": 369.6000000014901,
+        "drawCalls": 58
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 440.69999999925494,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 440.30000000074506,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 440.6000000014901,
+        "elapsedMs": 0.09999999776482582,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "set-size-request",
+        "atMs": 441.5,
+        "canvasId": 1,
+        "action": "initial-mount",
+        "width": 1280,
+        "height": 800,
+        "dpr": 1,
+        "same": true
+      },
+      {
+        "kind": "render-js-return",
+        "atMs": 441.5,
+        "canvasId": 1,
+        "dt": 0,
+        "reason": "static-redraw",
+        "action": "initial-mount",
+        "lastSize": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1,
+          "atMs": 441.5,
+          "same": true
+        },
+        "drawCalls": 0,
+        "startMs": 441.5,
+        "elapsedMs": 0,
+        "submitted": false,
+        "frame": 1,
+        "time": "0.0000"
+      },
+      {
+        "kind": "gpu-fence-issued",
+        "atMs": 1159.699999999255,
+        "canvasId": 1
+      },
+      {
+        "kind": "gpu-fence-signaled",
+        "atMs": 1200.1000000014901,
+        "canvasId": 1
+      }
+    ],
+    "input": [],
+    "maxHeartbeatLagMs": 359.70000000298023,
+    "heartbeats": [
+      {
+        "atMs": 453.6000000014901,
+        "lagMs": 359.70000000298023
+      },
+      {
+        "atMs": 494.1000000014901,
+        "lagMs": -9.5
+      },
+      {
+        "atMs": 544.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 594.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 644.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 694.1999999992549,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 744.1000000014901,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 794.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 844.1999999992549,
+        "lagMs": 0.09999999776482582
+      },
+      {
+        "atMs": 894.1000000014901,
+        "lagMs": -0.09999999776482582
+      },
+      {
+        "atMs": 944.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 994.3999999985099,
+        "lagMs": 0.29999999701976776
+      },
+      {
+        "atMs": 1051.1000000014901,
+        "lagMs": 6.700000002980232
+      },
+      {
+        "atMs": 1094.1000000014901,
+        "lagMs": -7
+      },
+      {
+        "atMs": 1144.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1200.300000000745,
+        "lagMs": 6.199999999254942
+      },
+      {
+        "atMs": 1244.1000000014901,
+        "lagMs": -6.199999999254942
+      },
+      {
+        "atMs": 1294.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1344.1000000014901,
+        "lagMs": 0
+      },
+      {
+        "atMs": 1394.1000000014901,
+        "lagMs": 0
+      }
+    ],
+    "countingMethod": "Dev-only Three renderer.info.update pass-through, autoReset=false; exclusive per-render and inclusive/global actual draw submission counters. submittedElements=count*instances, not triangle counts. Legacy canvas drawCalls becomes cumulative. Resource counters are JavaScript bookkeeping, not physical VRAM. No GL function/state monkeypatch. CPU wall durations include synchronous driver stalls."
+  },
+  "finishedAt": "2026-10-04T21:54:47.368Z"
+}

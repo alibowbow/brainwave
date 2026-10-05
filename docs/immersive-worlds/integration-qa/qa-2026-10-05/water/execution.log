@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "key": "water",
+  "mode": "teardown",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/native-app-water-teardown-20261004T232708Z",
+  "checks": [
+    {
+      "name": "native Pause then Session End",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "ownedBrowser": {
+    "pid": 51,
+    "launchedAt": "2026-10-04T23:27:10.367Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:27:10.367Z",
+        "pid": 51
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:27:25.490Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:27:25.514Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:27:25.520Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:27:25.520Z"
+  },
+  "sourceStable": true,
+  "distStable": true
+}

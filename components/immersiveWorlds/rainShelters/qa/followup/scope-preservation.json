@@ -1,0 +1,31 @@
+{
+  "originalHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "sourceHead": "1897ea5295fa1a88777e3aae8f969d888df607d4",
+  "unownedFilesUnchanged": 212,
+  "scopeViolations": [],
+  "unchangedVisualInputSources": {
+    "components/immersiveWorlds/rainShelters/engine/tent.ts": "d28210eb4fa60ae820de7a31f0b6f78e8e345c9e",
+    "components/immersiveWorlds/rainShelters/engine/porch.ts": "c56a9a6ea419ae0c6f48423a859e0be11908b5d4",
+    "components/immersiveWorlds/rainShelters/ShelterWorld.tsx": "ada3e0cdc49637ff1706ba21ae568d33efe7da21",
+    "components/immersiveWorlds/rainShelters/engine/materials.ts": "aa3f0d54f03bce3697d95e8a8be7a8829da24caa"
+  },
+  "mainAncestor": true,
+  "changedPaths": [
+    "components/immersiveWorlds/rainShelters/engine/ShelterEngine.ts",
+    "components/immersiveWorlds/rainShelters/engine/gardenFoliage.ts",
+    "components/immersiveWorlds/rainShelters/engine/renderTargets.test.ts",
+    "components/immersiveWorlds/rainShelters/engine/renderTargets.ts",
+    "components/immersiveWorlds/rainShelters/engine/storm.ts",
+    "components/immersiveWorlds/rainShelters/engine/window.ts",
+    "components/immersiveWorlds/rainShelters/qa/followup/harness.css",
+    "components/immersiveWorlds/rainShelters/qa/followup/harness.tsx",
+    "components/immersiveWorlds/rainShelters/qa/followup/index.html",
+    "components/immersiveWorlds/rainShelters/qa/followup/instrumentation.ts",
+    "components/immersiveWorlds/rainShelters/qa/followup/run.mjs",
+    "components/immersiveWorlds/rainShelters/qa/followup/start-guard.json",
+    "components/immersiveWorlds/rainShelters/qa/followup/verify.mjs",
+    "components/immersiveWorlds/rainShelters/qa/followup/vite.config.ts"
+  ],
+  "originalEvidenceFilesPreserved": 32,
+  "originalEvidenceChanges": []
+}

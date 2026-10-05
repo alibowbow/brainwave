@@ -1,0 +1,699 @@
+{
+  "schema": "korean-places-environment-pixel-comparison-v1",
+  "generated_at_utc": "2026-10-04T22:54:20.434426+00:00",
+  "source_ref": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+  "observed_checkout_head": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+  "baseline_ref": "174aa43",
+  "layout": {
+    "header_height": 48,
+    "horizontal_gutter": 16,
+    "columns": [
+      "baseline",
+      "normal",
+      "forced_byte"
+    ],
+    "resampling": false,
+    "labels_outside_original_pixels": true,
+    "comparison_channels": "RGB",
+    "alpha_policy": "Original RGB bytes are compared and pasted without alpha compositing; alpha range separately recorded."
+  },
+  "comparisons": [
+    {
+      "scene": "temple",
+      "viewport": "desktop",
+      "inputs": {
+        "baseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-desktop.png",
+          "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d",
+          "bytes": 1236780,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "3e34014faf71ad5df35deb763c43e42bb5dfc306750b8304496c1696107a2848",
+          "alpha_range": null
+        },
+        "normal": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-desktop.png",
+          "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d",
+          "bytes": 1236780,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "3e34014faf71ad5df35deb763c43e42bb5dfc306750b8304496c1696107a2848",
+          "alpha_range": null
+        },
+        "forced_byte": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-desktop.png",
+          "sha256": "e12f953eacadc10755136cf0680e7629d89d8c07c93de20db87cc53db5f9f46f",
+          "bytes": 1236865,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "1049fdea5f82119b3181ac0d6d8bce6c574dabffcc5d0c01577bbfc9149b0f5d",
+          "alpha_range": null
+        }
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-desktop-baseline-normal-byte.png",
+        "sha256": "043fba101c90ec0d37c77578323535de85b28afb4939c150b8fa07a0a51f4ac6",
+        "width": 4127,
+        "height": 948,
+        "mode": "RGB",
+        "paste_bounds": {
+          "baseline": {
+            "xyxy_exclusive": [
+              0,
+              48,
+              1365,
+              948
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "normal": {
+            "xyxy_exclusive": [
+              1381,
+              48,
+              2746,
+              948
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "forced_byte": {
+            "xyxy_exclusive": [
+              2762,
+              48,
+              4127,
+              948
+            ],
+            "original_rgb_pixels_preserved": true
+          }
+        }
+      },
+      "normal_vs_baseline": {
+        "rgb_pixel_identical": true,
+        "total_pixel_count": 1228500,
+        "changed_pixel_count": 0,
+        "changed_pixel_fraction": 0.0,
+        "mean_absolute_channel_difference": 0.0,
+        "max_absolute_channel_difference": 0,
+        "rmse_all_rgb_channels": 0.0,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_baseline": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 1228500,
+        "changed_pixel_count": 54947,
+        "changed_pixel_fraction": 0.044726902726902724,
+        "mean_absolute_channel_difference": 0.015266585266585267,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.12355802388588637,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.014021164021164021,
+          0.0162002442002442,
+          0.015578347578347577
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_normal": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 1228500,
+        "changed_pixel_count": 54947,
+        "changed_pixel_fraction": 0.044726902726902724,
+        "mean_absolute_channel_difference": 0.015266585266585267,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.12355802388588637,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.014021164021164021,
+          0.0162002442002442,
+          0.015578347578347577
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_rms_vs_normal": 0.12355802388588637
+    },
+    {
+      "scene": "temple",
+      "viewport": "portrait",
+      "inputs": {
+        "baseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-portrait.png",
+          "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0",
+          "bytes": 287657,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "4a84000a781955f75f44d87f4ad4cd3a0c5050f42fd67a0b0b5340c444e64715",
+          "alpha_range": null
+        },
+        "normal": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/temple-portrait.png",
+          "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0",
+          "bytes": 287657,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "4a84000a781955f75f44d87f4ad4cd3a0c5050f42fd67a0b0b5340c444e64715",
+          "alpha_range": null
+        },
+        "forced_byte": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/temple-portrait.png",
+          "sha256": "2aef90e1fe8303de049553ba6d5a339f559fcd0b7ef5098142f93ffff1ad3a87",
+          "bytes": 287691,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "5063e4ea29122ae5e798198991ba993bc8f996759aa8e6f92539279ccad8185a",
+          "alpha_range": null
+        }
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/temple-portrait-baseline-normal-byte.png",
+        "sha256": "68860f06ab9e554ff1c39aa1539039bd4b83c8fd6b0758b1b93d4be32cbcb5b9",
+        "width": 1202,
+        "height": 892,
+        "mode": "RGB",
+        "paste_bounds": {
+          "baseline": {
+            "xyxy_exclusive": [
+              0,
+              48,
+              390,
+              892
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "normal": {
+            "xyxy_exclusive": [
+              406,
+              48,
+              796,
+              892
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "forced_byte": {
+            "xyxy_exclusive": [
+              812,
+              48,
+              1202,
+              892
+            ],
+            "original_rgb_pixels_preserved": true
+          }
+        }
+      },
+      "normal_vs_baseline": {
+        "rgb_pixel_identical": true,
+        "total_pixel_count": 329160,
+        "changed_pixel_count": 0,
+        "changed_pixel_fraction": 0.0,
+        "mean_absolute_channel_difference": 0.0,
+        "max_absolute_channel_difference": 0,
+        "rmse_all_rgb_channels": 0.0,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_baseline": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 329160,
+        "changed_pixel_count": 15168,
+        "changed_pixel_fraction": 0.046080933284724755,
+        "mean_absolute_channel_difference": 0.015673228824887593,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.125192766663604,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.015606392028192976,
+          0.015384615384615385,
+          0.016028679061854418
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_normal": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 329160,
+        "changed_pixel_count": 15168,
+        "changed_pixel_fraction": 0.046080933284724755,
+        "mean_absolute_channel_difference": 0.015673228824887593,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.125192766663604,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.015606392028192976,
+          0.015384615384615385,
+          0.016028679061854418
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_rms_vs_normal": 0.125192766663604
+    },
+    {
+      "scene": "scops",
+      "viewport": "desktop",
+      "inputs": {
+        "baseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-desktop.png",
+          "sha256": "4287596d57b76d13cc7dbafafb077328fc2f1b8febe20056522a381fe90fe596",
+          "bytes": 1105310,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "6adb7d7f3cf55e21b1883b0eb7e990d5e220cb3368bc7af44f543255fed2272c",
+          "alpha_range": null
+        },
+        "normal": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-desktop.png",
+          "sha256": "4287596d57b76d13cc7dbafafb077328fc2f1b8febe20056522a381fe90fe596",
+          "bytes": 1105310,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "6adb7d7f3cf55e21b1883b0eb7e990d5e220cb3368bc7af44f543255fed2272c",
+          "alpha_range": null
+        },
+        "forced_byte": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-desktop.png",
+          "sha256": "fb16ec9c76307758d3cec2ec6b2c1ae6d6675a2711fdb2cb17d7bba5929d8a18",
+          "bytes": 1105181,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "343c3d3dddea294e3d860ab267f05820579e9cdd22816d36c762d76abaf6d2ac",
+          "alpha_range": null
+        }
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-desktop-baseline-normal-byte.png",
+        "sha256": "0f688db6d3b44aedd0d3969cf6dc68a78ae9fd33099a2fea04f7fb5e46690d52",
+        "width": 4127,
+        "height": 948,
+        "mode": "RGB",
+        "paste_bounds": {
+          "baseline": {
+            "xyxy_exclusive": [
+              0,
+              48,
+              1365,
+              948
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "normal": {
+            "xyxy_exclusive": [
+              1381,
+              48,
+              2746,
+              948
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "forced_byte": {
+            "xyxy_exclusive": [
+              2762,
+              48,
+              4127,
+              948
+            ],
+            "original_rgb_pixels_preserved": true
+          }
+        }
+      },
+      "normal_vs_baseline": {
+        "rgb_pixel_identical": true,
+        "total_pixel_count": 1228500,
+        "changed_pixel_count": 0,
+        "changed_pixel_fraction": 0.0,
+        "mean_absolute_channel_difference": 0.0,
+        "max_absolute_channel_difference": 0,
+        "rmse_all_rgb_channels": 0.0,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_baseline": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 1228500,
+        "changed_pixel_count": 49853,
+        "changed_pixel_fraction": 0.04058038258038258,
+        "mean_absolute_channel_difference": 0.013797585130918465,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.11746312242963093,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.0155002035002035,
+          0.01652910052910053,
+          0.009363451363451363
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_normal": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 1228500,
+        "changed_pixel_count": 49853,
+        "changed_pixel_fraction": 0.04058038258038258,
+        "mean_absolute_channel_difference": 0.013797585130918465,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.11746312242963093,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.0155002035002035,
+          0.01652910052910053,
+          0.009363451363451363
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_rms_vs_normal": 0.11746312242963093
+    },
+    {
+      "scene": "scops",
+      "viewport": "portrait",
+      "inputs": {
+        "baseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-portrait.png",
+          "sha256": "aa6eebfdf3d80397b5d02b3dca96fe80d8676a0bedc9a18f390a5272f7dcc195",
+          "bytes": 259718,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "46c8672048e0805278a171c3d73ea96d84f42e83fa2c7c94bf7f24ea089c5ae3",
+          "alpha_range": null
+        },
+        "normal": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/normal/scops-portrait.png",
+          "sha256": "aa6eebfdf3d80397b5d02b3dca96fe80d8676a0bedc9a18f390a5272f7dcc195",
+          "bytes": 259718,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "46c8672048e0805278a171c3d73ea96d84f42e83fa2c7c94bf7f24ea089c5ae3",
+          "alpha_range": null
+        },
+        "forced_byte": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/forced-byte/scops-portrait.png",
+          "sha256": "7e932d69712fae7536c85a93ab5f55bc20b27e92688568513d74306912891c3b",
+          "bytes": 259654,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "4f8bcc50e44cba7baa24dfb706663f56c075d769f7133f6af98d6afcc4a19cc2",
+          "alpha_range": null
+        }
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/comparisons/scops-portrait-baseline-normal-byte.png",
+        "sha256": "3cbaf0f2048c10ae9f8994416485a9954f1c485f478905be3c1aa22839d91342",
+        "width": 1202,
+        "height": 892,
+        "mode": "RGB",
+        "paste_bounds": {
+          "baseline": {
+            "xyxy_exclusive": [
+              0,
+              48,
+              390,
+              892
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "normal": {
+            "xyxy_exclusive": [
+              406,
+              48,
+              796,
+              892
+            ],
+            "original_rgb_pixels_preserved": true
+          },
+          "forced_byte": {
+            "xyxy_exclusive": [
+              812,
+              48,
+              1202,
+              892
+            ],
+            "original_rgb_pixels_preserved": true
+          }
+        }
+      },
+      "normal_vs_baseline": {
+        "rgb_pixel_identical": true,
+        "total_pixel_count": 329160,
+        "changed_pixel_count": 0,
+        "changed_pixel_fraction": 0.0,
+        "mean_absolute_channel_difference": 0.0,
+        "max_absolute_channel_difference": 0,
+        "rmse_all_rgb_channels": 0.0,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_baseline": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 329160,
+        "changed_pixel_count": 11070,
+        "changed_pixel_fraction": 0.03363106088224572,
+        "mean_absolute_channel_difference": 0.011453396524486572,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.10702054253500387,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.01268987726333698,
+          0.013060517681370763,
+          0.008609794628751975
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_vs_normal": {
+        "rgb_pixel_identical": false,
+        "total_pixel_count": 329160,
+        "changed_pixel_count": 11070,
+        "changed_pixel_fraction": 0.03363106088224572,
+        "mean_absolute_channel_difference": 0.011453396524486572,
+        "max_absolute_channel_difference": 1,
+        "rmse_all_rgb_channels": 0.10702054253500387,
+        "mean_absolute_difference_per_rgb_channel": [
+          0.01268987726333698,
+          0.013060517681370763,
+          0.008609794628751975
+        ],
+        "units": "8-bit channel levels (0..255)"
+      },
+      "forced_byte_rms_vs_normal": 0.10702054253500387
+    }
+  ],
+  "rural_preservation": {
+    "baseline_ref": "174aa43",
+    "source_ref": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+    "all_unchanged": true,
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "baseline_sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22",
+        "source_commit_sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22",
+        "workspace_sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22",
+        "baseline_bytes": 41411,
+        "workspace_bytes": 41411,
+        "unchanged_from_baseline_in_source_and_workspace": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "baseline_sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
+        "source_commit_sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
+        "workspace_sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
+        "baseline_bytes": 204,
+        "workspace_bytes": 204,
+        "unchanged_from_baseline_in_source_and_workspace": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+        "baseline_sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+        "source_commit_sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+        "workspace_sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+        "baseline_bytes": 915493,
+        "workspace_bytes": 915493,
+        "unchanged_from_baseline_in_source_and_workspace": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+        "baseline_sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+        "source_commit_sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+        "workspace_sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+        "baseline_bytes": 245178,
+        "workspace_bytes": 245178,
+        "unchanged_from_baseline_in_source_and_workspace": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+        "baseline_sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+        "source_commit_sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+        "workspace_sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+        "baseline_bytes": 563404,
+        "workspace_bytes": 563404,
+        "unchanged_from_baseline_in_source_and_workspace": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png",
+        "baseline_sha256": "4edbd86b988754cdbef5ac4a45c1bca2b386b1c8503bc567929f82115520ac54",
+        "source_commit_sha256": "4edbd86b988754cdbef5ac4a45c1bca2b386b1c8503bc567929f82115520ac54",
+        "workspace_sha256": "4edbd86b988754cdbef5ac4a45c1bca2b386b1c8503bc567929f82115520ac54",
+        "baseline_bytes": 918291,
+        "workspace_bytes": 918291,
+        "unchanged_from_baseline_in_source_and_workspace": true
+      }
+    ],
+    "scope": "Authored rural scene, default entry, and four approved PNG byte snapshots; not a new rural render claim."
+  },
+  "rural_actual_recapture": {
+    "run": true,
+    "expected_viewports": [
+      "desktop",
+      "portrait",
+      "fold"
+    ],
+    "comparisons": [
+      {
+        "viewport": "desktop",
+        "baseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+          "sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+          "bytes": 915493,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "e5a8e00cadf41142192bc9137059074557bc0416e2d8a5c5063e8a58aabfedc5",
+          "alpha_range": null
+        },
+        "recapture": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-desktop.png",
+          "sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+          "bytes": 915493,
+          "width": 1365,
+          "height": 900,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "e5a8e00cadf41142192bc9137059074557bc0416e2d8a5c5063e8a58aabfedc5",
+          "alpha_range": null
+        },
+        "statistics": {
+          "rgb_pixel_identical": true,
+          "total_pixel_count": 1228500,
+          "changed_pixel_count": 0,
+          "changed_pixel_fraction": 0.0,
+          "mean_absolute_channel_difference": 0.0,
+          "max_absolute_channel_difference": 0,
+          "rmse_all_rgb_channels": 0.0,
+          "mean_absolute_difference_per_rgb_channel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "units": "8-bit channel levels (0..255)"
+        }
+      },
+      {
+        "viewport": "portrait",
+        "baseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+          "sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+          "bytes": 245178,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "10cc64dd17dff4687bb41f91d9e18073d887501fd6cf655e436ffb4e139490a2",
+          "alpha_range": null
+        },
+        "recapture": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-portrait.png",
+          "sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+          "bytes": 245178,
+          "width": 390,
+          "height": 844,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "10cc64dd17dff4687bb41f91d9e18073d887501fd6cf655e436ffb4e139490a2",
+          "alpha_range": null
+        },
+        "statistics": {
+          "rgb_pixel_identical": true,
+          "total_pixel_count": 329160,
+          "changed_pixel_count": 0,
+          "changed_pixel_fraction": 0.0,
+          "mean_absolute_channel_difference": 0.0,
+          "max_absolute_channel_difference": 0,
+          "rmse_all_rgb_channels": 0.0,
+          "mean_absolute_difference_per_rgb_channel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "units": "8-bit channel levels (0..255)"
+        }
+      },
+      {
+        "viewport": "fold",
+        "baseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+          "sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+          "bytes": 563404,
+          "width": 960,
+          "height": 700,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "09f7f46561c5e1b80ee67e48092805ec7aaeed6d76212ca07f1720b5bad24bb1",
+          "alpha_range": null
+        },
+        "recapture": {
+          "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/environment-retained/rural/rural-fold.png",
+          "sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+          "bytes": 563404,
+          "width": 960,
+          "height": 700,
+          "original_mode": "RGB",
+          "comparison_mode": "RGB",
+          "decoded_rgb_sha256": "09f7f46561c5e1b80ee67e48092805ec7aaeed6d76212ca07f1720b5bad24bb1",
+          "alpha_range": null
+        },
+        "statistics": {
+          "rgb_pixel_identical": true,
+          "total_pixel_count": 672000,
+          "changed_pixel_count": 0,
+          "changed_pixel_fraction": 0.0,
+          "mean_absolute_channel_difference": 0.0,
+          "max_absolute_channel_difference": 0,
+          "rmse_all_rgb_channels": 0.0,
+          "mean_absolute_difference_per_rgb_channel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "units": "8-bit channel levels (0..255)"
+        }
+      }
+    ]
+  },
+  "limits": "Pixel statistics and source preservation only; this script does not run browser QA or establish hardware performance."
+}

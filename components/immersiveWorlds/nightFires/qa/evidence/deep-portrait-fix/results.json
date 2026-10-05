@@ -1,0 +1,684 @@
+{
+  "suite": "night-fires-real-webgl",
+  "startedAt": "2026-10-04T20:05:04.461Z",
+  "selectedWorlds": [
+    "deep"
+  ],
+  "revision": {
+    "gitHead": "9fa421b6856756fb47dfb190d5303d2b565f0f9b",
+    "gitBranch": "codex/night-fires-three-worlds",
+    "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/nightFires/DeepNightWorld.tsx",
+        "sha256": "4e0535895df72608d1fa7a387b16390e4bf22decddea8102376d25b7fc2d95dd"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/deepScene.ts",
+        "sha256": "a6ac8243bbf38a07fde563dd958a14578cf2aa463c2f1049fccf074070825ba0"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/LakesideCampWorld.tsx",
+        "sha256": "2dae5a14734e34986df014dd717761025e750c68b892bab61a2db8908b647b3d"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/lakesideScene.ts",
+        "sha256": "4f30240a8c3d0cbd6bac4e518675365e852b29055a4cebf93255ef3ba85074e9"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/lantern.test.ts",
+        "sha256": "007ba757470876fe886441083a8f707e2fcfbefb6be59b2635d0ffd3743716e3"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/MountainCampfireWorld.tsx",
+        "sha256": "dcedb12e8ad9b0a39dd467e6e9ce336499abd40afefbb49d6700a35c89621870"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/mountainScene.ts",
+        "sha256": "75ea0fda9623208085a751ebb1bd27831d8d70794df3e0a6e6869fa5980384d7"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/night-world.css",
+        "sha256": "f16b87a035faf312ecb68591fddbc87ff0de9804fd1f7754fef3f7696b08e1b3"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/nightEngine.ts",
+        "sha256": "89fcd0ab8895f88052b9c30a8ea82d4d784c124666c7d486ff5fc2a28267a397"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/NightWorld.tsx",
+        "sha256": "2f37cdc1f588fd48398c77f30e18b76eb944579aad2f23b6293ccb24729f407c"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/qa/harness.tsx",
+        "sha256": "915c913d1535c89847b6f25dfbd5aecd917e2b3c47b85cf5a568b29ebfe6bb10"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/qa/index.html",
+        "sha256": "c6906dfaf5b4de17a3c29bc208050faa1e9a6edadcae24a0132c7068cdae349f"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/qa/verify-night-fires.mjs",
+        "sha256": "4cecf1824e8d3fbccffbf3dabb8274d089fd461d154d7764c7b39d0a8fd6d04f"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/qa/vite.config.ts",
+        "sha256": "d0833ba9027b41df9036b23102aa769e6c405caa79003d7b341ab3f0bc82fbc4"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/scenery.ts",
+        "sha256": "92864222d7fd558478b06f14bfa7a4ee219703a7aa47672060d32552729e9b1a"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/worldTypes.ts",
+        "sha256": "a593a1beaf39813890c8f49d952eb756924f246121bbcd68dfa6201a3f1b7f42"
+      }
+    ]
+  },
+  "isolatedBuild": {
+    "bundleTreeSha256": "4524526bcfd7ef45eaa6af4da15022a781c3b141d32c15f393c6906b68cac81e",
+    "files": [
+      {
+        "path": "assets/index-BKtx9edC.js",
+        "sha256": "3ef414a9a8dd5064c096005223018d883a6fd17279e2b9adbebc5ee1f0023eea"
+      },
+      {
+        "path": "assets/index-BYa97GcX.js",
+        "sha256": "7dbc7ddf9ccfd28e8077037d153908a2f32b7b754805647554ac8929eb941e4f"
+      },
+      {
+        "path": "assets/index-p-kR-lfB.js",
+        "sha256": "fed6db88c7590fb71099fac6990db957ba7c1f9df78172c84737415843a2bdec"
+      },
+      {
+        "path": "assets/index-ZuciVTVz.css",
+        "sha256": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/qa/index.html",
+        "sha256": "2ece0fb214fa63476991be71ef81a2fffdd3f0a09b5285736d4a8aac653a8a08"
+      }
+    ]
+  },
+  "delivery": "Isolated harness only; exact owned source and available isolated build manifests are recorded. Each world records actual loaded script URLs. This is not an integrated production route claim.",
+  "environment": {
+    "browserPath": "/tmp/cosmic-browser-bin/chromium",
+    "baseURL": "http://127.0.0.1:4190/components/immersiveWorlds/nightFires/qa/index.html",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "deviceScaleFactor": 1,
+    "previewStartedBySuite": true,
+    "browserVersion": "153.0.8010.0"
+  },
+  "limitations": [
+    "Synthetic document.hidden/visibilitychange test is not real browser-tab switching.",
+    "Fold-inner and landscape are viewport tests, not physical device measurements.",
+    "Software-WebGL motion is verified from real pixels; no device FPS, thermal, audio, or integrated fullscreen route claim is made."
+  ],
+  "worlds": [
+    {
+      "world": "deep",
+      "checks": [
+        {
+          "name": "paused first frame / full-resolution real WebGL",
+          "evidence": {
+            "frames": 2,
+            "time": 0,
+            "engineId": "1",
+            "width": 1440,
+            "height": 900,
+            "motion": "paused"
+          }
+        },
+        {
+          "name": "pause freezes time and render loop",
+          "evidence": {
+            "before": {
+              "frames": 2,
+              "time": 0,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "after": {
+              "frames": 2,
+              "time": 0,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            }
+          }
+        },
+        {
+          "name": "active motion changes actual pixels",
+          "evidence": {
+            "captureMode": "Paused real-frame snapshots separated by verified active RAF frame and elapsed-time advancement; screenshots avoid competing with the software renderer loop.",
+            "before": {
+              "frames": 9,
+              "time": 0.1343,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "after": {
+              "frames": 35,
+              "time": 0.551,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "difference": {
+              "changedPixels": 9094,
+              "changedFraction": 0.007016975308641976,
+              "meanAbsoluteChannelDifference": 0.06250077160493828
+            },
+            "files": [
+              "deep-motion-before.png",
+              "deep-motion-after.png"
+            ],
+            "sha256": [
+              "2e0dffb2fdee0ab6d2cfaf6a36bb038495c4d23f5a9abdec0722d7c9ab646f59",
+              "9d868191818aa70dc59a72b6499845dcf239e256ec1b3119f67ba09d9b9a315f"
+            ],
+            "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4"
+          }
+        },
+        {
+          "name": "pointer drag does not activate target",
+          "evidence": true
+        },
+        {
+          "name": "synthetic pointer cancellation does not activate target",
+          "evidence": true
+        },
+        {
+          "name": "real pointer raycast emits bounded interaction",
+          "evidence": {
+            "world": "deep",
+            "kind": "lantern-brightness",
+            "value": 1
+          }
+        },
+        {
+          "name": "keyboard Enter activates accessible scene action",
+          "evidence": {
+            "world": "deep",
+            "kind": "lantern-brightness",
+            "value": 0.38
+          }
+        },
+        {
+          "name": "active response advances before reduced-motion snapshot",
+          "evidence": {
+            "before": {
+              "frames": 63,
+              "time": 1.00096,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "running"
+            },
+            "after": {
+              "frames": 67,
+              "time": 1.16766,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "running"
+            }
+          }
+        },
+        {
+          "name": "reduced motion freezes while retaining real frame",
+          "evidence": {
+            "before": {
+              "frames": 67,
+              "time": 1.16766,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "after": {
+              "frames": 67,
+              "time": 1.16766,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            }
+          }
+        },
+        {
+          "name": "reduced-motion keyboard lantern renders changed static pixels without advancing time",
+          "evidence": {
+            "before": {
+              "frames": 67,
+              "time": 1.16766,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "after": {
+              "frames": 68,
+              "time": 1.16766,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "event": {
+              "world": "deep",
+              "kind": "lantern-brightness",
+              "value": 0.7
+            },
+            "difference": {
+              "changedPixels": 62134,
+              "changedFraction": 0.0479429012345679,
+              "meanAbsoluteChannelDifference": 0.29284825102880657
+            },
+            "files": [
+              "deep-lantern-before.png",
+              "deep-lantern-after.png"
+            ],
+            "sha256": [
+              "a8dc6960bb95c806f7100862d13e5065aa24c9a3598ffa2a804fa3ad27abb43a",
+              "057c3cb457ff7c93292208958a494debf122bb5989fca926b82172a6ef6ac28d"
+            ],
+            "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4"
+          }
+        },
+        {
+          "name": "synthetic hidden document freezes simulation (not real tab switching)",
+          "evidence": {
+            "before": {
+              "frames": 70,
+              "time": 1.1843,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "after": {
+              "frames": 70,
+              "time": 1.1843,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            }
+          }
+        },
+        {
+          "name": "explicit optional static3D freezes real frame and resumes",
+          "evidence": {
+            "before": {
+              "frames": 72,
+              "time": 1.201,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            },
+            "after": {
+              "frames": 72,
+              "time": 1.201,
+              "engineId": "1",
+              "width": 1440,
+              "height": 900,
+              "motion": "paused"
+            }
+          }
+        },
+        {
+          "name": "full-cover sibling chrome receives real drag and exactly one raycast tap",
+          "evidence": {
+            "world": "deep",
+            "kind": "lantern-brightness",
+            "value": 1
+          }
+        },
+        {
+          "name": "chrome native/nested buttons, range, link, rolebutton and text are excluded; controls remain usable",
+          "evidence": {
+            "chromeActions": 12
+          }
+        },
+        {
+          "name": "synthetic overlay pointercancel and window blur clear presses without taps",
+          "evidence": true
+        },
+        {
+          "name": "same-surface covered lower holder cannot duplicate input; return preserves exactly-once tap",
+          "evidence": true
+        },
+        {
+          "name": "distinct-surface second-holder shares canvas/context and preserves exactly-once input on return",
+          "evidence": {
+            "engineCreated": 1,
+            "engineDisposed": 0,
+            "liveEngines": 1,
+            "frames": 143
+          }
+        },
+        {
+          "name": "narrow portrait composed real frame and in-view interaction target",
+          "evidence": {
+            "frames": 144,
+            "time": 3.5679,
+            "engineId": "1",
+            "width": 390,
+            "height": 844,
+            "motion": "paused"
+          }
+        },
+        {
+          "name": "Fold-inner viewport coverage (not physical hardware)",
+          "evidence": true
+        },
+        {
+          "name": "three rapid mount/unmount cycles reuse one engine",
+          "evidence": {
+            "engineCreated": 1,
+            "engineDisposed": 0,
+            "liveEngines": 1,
+            "frames": 151
+          }
+        },
+        {
+          "name": "delayed >5 s disposal and clean recreation",
+          "evidence": {
+            "disposed": {
+              "engineCreated": 1,
+              "engineDisposed": 1,
+              "liveEngines": 0,
+              "frames": 151
+            },
+            "remounted": {
+              "engineCreated": 2,
+              "engineDisposed": 1,
+              "liveEngines": 1,
+              "frames": 153
+            }
+          }
+        },
+        {
+          "name": "final unmount releases engine / no browser errors",
+          "evidence": {
+            "engineCreated": 2,
+            "engineDisposed": 2,
+            "liveEngines": 0,
+            "frames": 153
+          }
+        }
+      ],
+      "errors": [],
+      "status": "passed",
+      "loadedScripts": [
+        "http://127.0.0.1:4190/assets/index-BYa97GcX.js"
+      ],
+      "webgl": {
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "motionEvidence": {
+        "captureMode": "Paused real-frame snapshots separated by verified active RAF frame and elapsed-time advancement; screenshots avoid competing with the software renderer loop.",
+        "before": {
+          "frames": 9,
+          "time": 0.1343,
+          "engineId": "1",
+          "width": 1440,
+          "height": 900,
+          "motion": "paused"
+        },
+        "after": {
+          "frames": 35,
+          "time": 0.551,
+          "engineId": "1",
+          "width": 1440,
+          "height": 900,
+          "motion": "paused"
+        },
+        "difference": {
+          "changedPixels": 9094,
+          "changedFraction": 0.007016975308641976,
+          "meanAbsoluteChannelDifference": 0.06250077160493828
+        },
+        "files": [
+          "deep-motion-before.png",
+          "deep-motion-after.png"
+        ],
+        "sha256": [
+          "2e0dffb2fdee0ab6d2cfaf6a36bb038495c4d23f5a9abdec0722d7c9ab646f59",
+          "9d868191818aa70dc59a72b6499845dcf239e256ec1b3119f67ba09d9b9a315f"
+        ],
+        "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4"
+      },
+      "reducedLanternEvidence": {
+        "before": {
+          "frames": 67,
+          "time": 1.16766,
+          "engineId": "1",
+          "width": 1440,
+          "height": 900,
+          "motion": "paused"
+        },
+        "after": {
+          "frames": 68,
+          "time": 1.16766,
+          "engineId": "1",
+          "width": 1440,
+          "height": 900,
+          "motion": "paused"
+        },
+        "event": {
+          "world": "deep",
+          "kind": "lantern-brightness",
+          "value": 0.7
+        },
+        "difference": {
+          "changedPixels": 62134,
+          "changedFraction": 0.0479429012345679,
+          "meanAbsoluteChannelDifference": 0.29284825102880657
+        },
+        "files": [
+          "deep-lantern-before.png",
+          "deep-lantern-after.png"
+        ],
+        "sha256": [
+          "a8dc6960bb95c806f7100862d13e5065aa24c9a3598ffa2a804fa3ad27abb43a",
+          "057c3cb457ff7c93292208958a494debf122bb5989fca926b82172a6ef6ac28d"
+        ],
+        "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4"
+      },
+      "chromeLookSamples": [
+        {
+          "hitSurface": "holder-primary",
+          "before": {
+            "kind": "lantern-brightness",
+            "x": 970.3635502262713,
+            "y": 701.7855957371156
+          },
+          "held": {
+            "kind": "lantern-brightness",
+            "x": 962.1528563231182,
+            "y": 703.8936475154393
+          },
+          "shift": {
+            "x": -8.210693903153128,
+            "y": 2.10805177832367
+          },
+          "beforeFrame": {
+            "frames": 83,
+            "time": 1.3676,
+            "engineId": "1",
+            "width": 1440,
+            "height": 900,
+            "motion": "running"
+          },
+          "heldFrame": {
+            "frames": 93,
+            "time": 1.5344,
+            "engineId": "1",
+            "width": 1440,
+            "height": 900,
+            "motion": "running"
+          }
+        },
+        {
+          "hitSurface": "holder-primary",
+          "before": {
+            "kind": "lantern-brightness",
+            "x": 970.7003922098575,
+            "y": 701.6972462893498
+          },
+          "held": {
+            "kind": "lantern-brightness",
+            "x": 960.741821935295,
+            "y": 704.2579610586579
+          },
+          "shift": {
+            "x": -9.958570274562476,
+            "y": 2.560714769308106
+          },
+          "beforeFrame": {
+            "frames": 122,
+            "time": 2.8012,
+            "engineId": "1",
+            "width": 1440,
+            "height": 900,
+            "motion": "running"
+          },
+          "heldFrame": {
+            "frames": 129,
+            "time": 3.0845,
+            "engineId": "1",
+            "width": 1440,
+            "height": 900,
+            "motion": "running"
+          }
+        },
+        {
+          "hitSurface": "holder-second",
+          "before": {
+            "kind": "lantern-brightness",
+            "x": 965.1481217355534,
+            "y": 703.1197850797223
+          },
+          "held": {
+            "kind": "lantern-brightness",
+            "x": 958.6840585857669,
+            "y": 704.7922896502905
+          },
+          "shift": {
+            "x": -6.4640631497865115,
+            "y": 1.6725045705682078
+          },
+          "beforeFrame": {
+            "frames": 133,
+            "time": 3.2012,
+            "engineId": "1",
+            "width": 1440,
+            "height": 900,
+            "motion": "running"
+          },
+          "heldFrame": {
+            "frames": 139,
+            "time": 3.4679,
+            "engineId": "1",
+            "width": 1440,
+            "height": 900,
+            "motion": "running"
+          }
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "deep-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "969403ba2d208e0c847b2b1dcc32d82c2839b82d3c43ec7a04f03089390706c9",
+      "bytes": 667244,
+      "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4",
+      "stats": {
+        "width": 1440,
+        "height": 900,
+        "meanLuminance": 41.188358704280425,
+        "luminanceStdDev": 17.36963079643854,
+        "colorBuckets": 864,
+        "below8Fraction": 0.0010516975308641975,
+        "above24Fraction": 0.8939066358024691
+      }
+    },
+    {
+      "file": "deep-chrome-overlay.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "a8bfdaa5fdd93b1896370b47a8a5145f1ec58139ca15e87be4952cc9f5b44742",
+      "bytes": 662844,
+      "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4",
+      "stats": {
+        "width": 1440,
+        "height": 900,
+        "meanLuminance": 41.56209401076422,
+        "luminanceStdDev": 20.26553043143877,
+        "colorBuckets": 887,
+        "below8Fraction": 0.0011558641975308642,
+        "above24Fraction": 0.8399313271604938
+      }
+    },
+    {
+      "file": "deep-portrait.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "009d223fb01d7abea96f381ae3fd48eda937f47d8d4794830c5700a29035b516",
+      "bytes": 183311,
+      "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4",
+      "stats": {
+        "width": 390,
+        "height": 844,
+        "meanLuminance": 43.50666334000087,
+        "luminanceStdDev": 22.141091209854636,
+        "colorBuckets": 793,
+        "below8Fraction": 0.0011301494713816989,
+        "above24Fraction": 0.9031625956981407
+      }
+    },
+    {
+      "file": "deep-fold-inner-viewport.png",
+      "viewport": {
+        "width": 900,
+        "height": 720
+      },
+      "sha256": "609a140d1b3ee28f25ea591cfd3d5c094b01d569ff4658ea35e5ffe0157af92a",
+      "bytes": 345623,
+      "sourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4",
+      "stats": {
+        "width": 900,
+        "height": 720,
+        "meanLuminance": 40.80756586781986,
+        "luminanceStdDev": 15.467249548070823,
+        "colorBuckets": 759,
+        "below8Fraction": 0.0010092592592592592,
+        "above24Fraction": 0.9230694444444445
+      }
+    }
+  ],
+  "status": "passed",
+  "sourceUnchangedDuringVerification": true,
+  "finalSourceTreeSha256": "022af5676447dd72428c6aa5b1709a0cd3cc963de35c92fd95afa3e6c8b2d0c4",
+  "buildUnchangedDuringVerification": true,
+  "completedAt": "2026-10-04T20:09:52.525Z"
+}

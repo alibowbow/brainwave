@@ -1,0 +1,2034 @@
+{
+  "generatedAt": "2026-10-04T22:27:40.704Z",
+  "mode": "cleanup-diagnostic",
+  "renderer": "Chromium headless; ANGLE SwiftShader software WebGL",
+  "hardwareClaim": "Viewport tests only. No physical Fold, device FPS, battery, or thermal claims.",
+  "visibilityScope": "The mandatory hidden-state test uses a labelled synthetic visibilitychange; actual tab visibility is separately reported if observable.",
+  "browserExecutable": "/tmp/cosmic-browser-bin/chromium",
+  "repositoryHead": "de0af8d7c4a62accea7e27ade55887044f513f9c",
+  "source": {
+    "sha256": "58db794a528fa03c3ae9f4905cb0f04ac6ea8240fc4c2b452f066523b98efbba",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+        "sha256": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+        "sha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+        "sha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "sha256": "37ef6d71fa94d47582c83d0c5ce7dea610e854755b16ebd8b5756aaab0cc8c9c"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/environment.test.ts",
+        "sha256": "b817162f29c990e16401b949cf0f625d9ff68bbae0425200c6db1606858e3e77"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/environment.ts",
+        "sha256": "4611b65356a2c302f035ca4633d9875b605447abc387ef01c3341cff12b80d43"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/korean-world.css",
+        "sha256": "8d7610a5096ac40d459aac156ae734534b311b3b9e0b0910602136f21a8547e1"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/environmentQA.ts",
+        "sha256": "9bebbdb34c17421b026ee93e4c7a66b72d9541af2290ace418aeef4f12a01a5d"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "sha256": "2230115d8465b08e75a551129ada8f90d43aa3bd200189e5f305ae09d5eb2dfc"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+        "sha256": "9c2a388d45c110f4dd621a63ff9fe4b5ac7c095a1e7c8e9947ee12a504e00ee4"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+        "sha256": "ece350f8939b1ed689e92054fa5c6df9324db318f63d7175c2fbee0e117d3c40"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+        "sha256": "9acd6784cb5b6a4adc47fcc732ffce9f8159ff5c943b285a2ab888dc3541c7b7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+        "sha256": "f90eae829c5a9e786bf85af3c097fe2deb08ab586fbca5a55f6d1e1121390652"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+        "sha256": "97abe06eb9b074f5b9f1d8e9ab50868b9f46e7e12f848153f8b7579d58aadfa7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+        "sha256": "e72a91df76a38ef3b2d0f756189bbfa75b3ac04758b950612c5c1d6c18318800"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "sha256": "ed4d40a721d640f0ec24abb67e1704f203bb7488e8345e18a3e2a70689db673e"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+        "sha256": "86eaac8f10b2f23da10e2f25318215d4999322a4a7785b25db85231ebd1055af"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/types.ts",
+        "sha256": "30af4e3e663ed68a5569cd53f1094d26ad4874fd4e82fcb991b5b07f6dc2b25f"
+      },
+      {
+        "path": "components/liveScene/liveSceneHost.ts",
+        "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+      },
+      {
+        "path": "components/liveScene/look.ts",
+        "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a"
+      },
+      {
+        "path": "components/useSceneMotion.ts",
+        "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+      }
+    ]
+  },
+  "bundle": {
+    "sha256": "66afc5ee907fb2c249fc0604cd95f38609965459a2bbf00cc0de138c5c80a54c",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-D2Tsgma-.js",
+        "sha256": "a412ed9477511373168c499c3eb142923dbcdd012642032b2659c5b9fad3e8f2"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-UnPzUkqC.css",
+        "sha256": "e97fad7b3b8b0def05914d2f1cfee94a215c0ff2936214b47e11b524dc96ea13"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rural-CHALgL2I.js",
+        "sha256": "f71ce59b6b117a6c8b673f9979f55b83d5d52322d1c044702a7a7b5dfea51411"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/scops-Ccjym389.js",
+        "sha256": "55293aa045e75693c67d2f1992634abd68c269a1d2128aecfe20e62396cd9fe2"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/temple-DYE1Ks2D.js",
+        "sha256": "ea27433192ed3d204195de69b914b55fb9c0f4eef8a5e1be753b4e3d64acc5f7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "sha256": "91a7563f8f26889c0adb074d4d0e4de002374c3a2d0a1be5aa2d05986116054f"
+      }
+    ]
+  },
+  "screenshots": [],
+  "worlds": {
+    "temple": {
+      "diagnosticOnly": true,
+      "mode": "clean",
+      "viewport": {
+        "width": 683,
+        "height": 450
+      },
+      "method": "Two real dispose/remount cycles, initially paused, no screenshots or auxiliary environment sentinel. Original 20000 ms cleanup gate and 5000 ms host grace remain unchanged.",
+      "rendererTimingMethod": "QA wrappers timestamp original renderer.dispose/forceContextLoss entry and synchronous return or throw. No GL methods or extensions are replaced.",
+      "cycles": [
+        {
+          "cycle": 1,
+          "canvasIdentity": 1,
+          "initialCanvas": {
+            "engine": "three.js r186",
+            "world": "temple",
+            "frames": "1",
+            "time": "0.000",
+            "drawCalls": "112",
+            "triangles": "441586",
+            "geometries": "57",
+            "textures": "18",
+            "running": "false",
+            "width": 683,
+            "height": 450
+          },
+          "initialRenderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 1,
+              "zeroDtCalls": 1,
+              "renderedFrames": 1,
+              "lastCallAtMs": 727.6000000014901,
+              "lastReturnAtMs": 1732
+            }
+          ],
+          "rapidRemounts": [],
+          "initialEnvironment": {
+            "pass": true,
+            "observation": {
+              "label": "cleanup diagnostic cycle 1 initial",
+              "observedAtMs": 1759.800000000745,
+              "framebufferStatus": 36053,
+              "errors": [],
+              "contextLost": false,
+              "sceneEnvironmentType": 1009,
+              "sceneEnvironmentMapping": 306
+            },
+            "generationCount": 1,
+            "audit": {
+              "phase": "generation",
+              "scene": "temple",
+              "forceByte": true,
+              "extensions": {
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true
+              },
+              "sourceSize": {
+                "width": 512,
+                "height": 256
+              },
+              "cubeSize": 128,
+              "width": 384,
+              "height": 512,
+              "attempts": [
+                {
+                  "type": "unsigned-byte",
+                  "targets": [
+                    {
+                      "role": "output",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    },
+                    {
+                      "role": "ping-pong",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    }
+                  ],
+                  "success": true,
+                  "discarded": false
+                }
+              ],
+              "selectedType": "unsigned-byte",
+              "environmentMapping": 306,
+              "glErrorsBefore": [],
+              "generationErrors": [],
+              "stateBefore": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "stateAfter": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "restored": true,
+              "success": true,
+              "disposed": false
+            }
+          },
+          "beforeCleanup": {
+            "scene": "temple",
+            "canvasCount": 1,
+            "canvasIdentity": 1,
+            "canvasHolder": "primary",
+            "canvas": {
+              "engine": "three.js r186",
+              "world": "temple",
+              "frames": "1",
+              "time": "0.000",
+              "drawCalls": "112",
+              "triangles": "441586",
+              "geometries": "57",
+              "textures": "18",
+              "running": "false",
+              "width": 683,
+              "height": 450
+            },
+            "surfaces": [
+              {
+                "world": "temple",
+                "state": "ready",
+                "motion": "paused"
+              }
+            ],
+            "events": [],
+            "subscribers": 0,
+            "audioDispatches": 0,
+            "chromeActions": [],
+            "chromeVisible": false,
+            "visibility": "visible",
+            "hidden": false,
+            "disposalObservations": [],
+            "environment": {
+              "mode": "forced-byte",
+              "audits": [
+                {
+                  "scope": "scene",
+                  "observedAtMs": 289.9000000022352,
+                  "event": {
+                    "phase": "generation",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": false
+                  }
+                }
+              ],
+              "observations": [
+                {
+                  "label": "cleanup diagnostic cycle 1 initial",
+                  "observedAtMs": 1759.800000000745,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                }
+              ],
+              "rendererCleanupCalls": [],
+              "renderStatistics": [
+                {
+                  "rendererId": 1,
+                  "renderFrameCalls": 1,
+                  "zeroDtCalls": 1,
+                  "renderedFrames": 1,
+                  "lastCallAtMs": 727.6000000014901,
+                  "lastReturnAtMs": 1732
+                }
+              ]
+            }
+          },
+          "unmountRequestedAtMs": 1769.4000000022352,
+          "detachedObservedAtMs": 1781.2000000029802,
+          "cleanup": {
+            "canvasIdentity": 1,
+            "startedAtMs": 6775.60000000149,
+            "completedAtMs": 7510.400000002235,
+            "contextLostAtMs": 7510.900000002235
+          },
+          "rendererCleanupCalls": [
+            {
+              "rendererId": 1,
+              "method": "dispose",
+              "startedAtMs": 6778.300000000745,
+              "completedAtMs": 6778.400000002235
+            },
+            {
+              "rendererId": 1,
+              "method": "forceContextLoss",
+              "startedAtMs": 6778.400000002235,
+              "completedAtMs": 7510.400000002235
+            }
+          ],
+          "finalRenderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 2,
+              "zeroDtCalls": 2,
+              "renderedFrames": 2,
+              "lastCallAtMs": 1770.800000000745,
+              "lastReturnAtMs": 1774.7000000029802
+            }
+          ],
+          "afterCleanup": {
+            "scene": "temple",
+            "canvasCount": 0,
+            "canvasIdentity": null,
+            "canvasHolder": null,
+            "canvas": null,
+            "surfaces": [],
+            "events": [],
+            "subscribers": 0,
+            "audioDispatches": 0,
+            "chromeActions": [],
+            "chromeVisible": false,
+            "visibility": "visible",
+            "hidden": false,
+            "disposalObservations": [
+              {
+                "canvasIdentity": 1,
+                "startedAtMs": 6775.60000000149,
+                "completedAtMs": 7510.400000002235,
+                "contextLostAtMs": 7510.900000002235
+              }
+            ],
+            "environment": {
+              "mode": "forced-byte",
+              "audits": [
+                {
+                  "scope": "scene",
+                  "observedAtMs": 289.9000000022352,
+                  "event": {
+                    "phase": "generation",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": false
+                  }
+                },
+                {
+                  "scope": "scene",
+                  "observedAtMs": 6778,
+                  "event": {
+                    "phase": "dispose",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": true
+                  }
+                }
+              ],
+              "observations": [
+                {
+                  "label": "cleanup diagnostic cycle 1 initial",
+                  "observedAtMs": 1759.800000000745,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                }
+              ],
+              "rendererCleanupCalls": [
+                {
+                  "rendererId": 1,
+                  "method": "dispose",
+                  "startedAtMs": 6778.300000000745,
+                  "completedAtMs": 6778.400000002235
+                },
+                {
+                  "rendererId": 1,
+                  "method": "forceContextLoss",
+                  "startedAtMs": 6778.400000002235,
+                  "completedAtMs": 7510.400000002235
+                }
+              ],
+              "renderStatistics": [
+                {
+                  "rendererId": 1,
+                  "renderFrameCalls": 2,
+                  "zeroDtCalls": 2,
+                  "renderedFrames": 2,
+                  "lastCallAtMs": 1770.800000000745,
+                  "lastReturnAtMs": 1774.7000000029802
+                }
+              ]
+            }
+          },
+          "synchronousCleanupDurationMs": 734.8000000007451,
+          "contextLostAfterUnmountRequestMs": 5741.5,
+          "drainPlusSynchronousCleanupMs": 734.8000000007451,
+          "drainStartOrUnmountToContextLostMs": 5741.5,
+          "detachedListeners": [
+            {
+              "holder": "primary",
+              "pointerdown": 0
+            }
+          ],
+          "detachedScheduler": {
+            "held": false,
+            "pendingCallbacks": 0,
+            "controlledFrames": 0
+          },
+          "rebuiltIdentity": 2,
+          "rebuiltEnvironment": {
+            "pass": true,
+            "observation": {
+              "label": "cleanup diagnostic cycle 1 remount",
+              "observedAtMs": 8798.60000000149,
+              "framebufferStatus": 36053,
+              "errors": [],
+              "contextLost": false,
+              "sceneEnvironmentType": 1009,
+              "sceneEnvironmentMapping": 306
+            },
+            "generationCount": 2,
+            "audit": {
+              "phase": "generation",
+              "scene": "temple",
+              "forceByte": true,
+              "extensions": {
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true
+              },
+              "sourceSize": {
+                "width": 512,
+                "height": 256
+              },
+              "cubeSize": 128,
+              "width": 384,
+              "height": 512,
+              "attempts": [
+                {
+                  "type": "unsigned-byte",
+                  "targets": [
+                    {
+                      "role": "output",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    },
+                    {
+                      "role": "ping-pong",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    }
+                  ],
+                  "success": true,
+                  "discarded": false
+                }
+              ],
+              "selectedType": "unsigned-byte",
+              "environmentMapping": 306,
+              "glErrorsBefore": [],
+              "generationErrors": [],
+              "stateBefore": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "stateAfter": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "restored": true,
+              "success": true,
+              "disposed": false
+            }
+          },
+          "pass": true
+        },
+        {
+          "cycle": 2,
+          "canvasIdentity": 2,
+          "initialCanvas": {
+            "engine": "three.js r186",
+            "world": "temple",
+            "frames": "1",
+            "time": "0.000",
+            "drawCalls": "112",
+            "triangles": "441586",
+            "geometries": "57",
+            "textures": "18",
+            "running": "false",
+            "width": 683,
+            "height": 450
+          },
+          "initialRenderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 2,
+              "zeroDtCalls": 2,
+              "renderedFrames": 2,
+              "lastCallAtMs": 1770.800000000745,
+              "lastReturnAtMs": 1774.7000000029802
+            },
+            {
+              "rendererId": 2,
+              "renderFrameCalls": 1,
+              "zeroDtCalls": 1,
+              "renderedFrames": 1,
+              "lastCallAtMs": 7934,
+              "lastReturnAtMs": 8783.400000002235
+            }
+          ],
+          "rapidRemounts": [],
+          "initialEnvironment": {
+            "pass": true,
+            "observation": {
+              "label": "cleanup diagnostic cycle 2 initial",
+              "observedAtMs": 8818.5,
+              "framebufferStatus": 36053,
+              "errors": [],
+              "contextLost": false,
+              "sceneEnvironmentType": 1009,
+              "sceneEnvironmentMapping": 306
+            },
+            "generationCount": 2,
+            "audit": {
+              "phase": "generation",
+              "scene": "temple",
+              "forceByte": true,
+              "extensions": {
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true
+              },
+              "sourceSize": {
+                "width": 512,
+                "height": 256
+              },
+              "cubeSize": 128,
+              "width": 384,
+              "height": 512,
+              "attempts": [
+                {
+                  "type": "unsigned-byte",
+                  "targets": [
+                    {
+                      "role": "output",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    },
+                    {
+                      "role": "ping-pong",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    }
+                  ],
+                  "success": true,
+                  "discarded": false
+                }
+              ],
+              "selectedType": "unsigned-byte",
+              "environmentMapping": 306,
+              "glErrorsBefore": [],
+              "generationErrors": [],
+              "stateBefore": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "stateAfter": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "restored": true,
+              "success": true,
+              "disposed": false
+            }
+          },
+          "beforeCleanup": {
+            "scene": "temple",
+            "canvasCount": 1,
+            "canvasIdentity": 2,
+            "canvasHolder": "primary",
+            "canvas": {
+              "engine": "three.js r186",
+              "world": "temple",
+              "frames": "1",
+              "time": "0.000",
+              "drawCalls": "112",
+              "triangles": "441586",
+              "geometries": "57",
+              "textures": "18",
+              "running": "false",
+              "width": 683,
+              "height": 450
+            },
+            "surfaces": [
+              {
+                "world": "temple",
+                "state": "ready",
+                "motion": "paused"
+              }
+            ],
+            "events": [],
+            "subscribers": 0,
+            "audioDispatches": 0,
+            "chromeActions": [],
+            "chromeVisible": false,
+            "visibility": "visible",
+            "hidden": false,
+            "disposalObservations": [
+              {
+                "canvasIdentity": 1,
+                "startedAtMs": 6775.60000000149,
+                "completedAtMs": 7510.400000002235,
+                "contextLostAtMs": 7510.900000002235
+              }
+            ],
+            "environment": {
+              "mode": "forced-byte",
+              "audits": [
+                {
+                  "scope": "scene",
+                  "observedAtMs": 289.9000000022352,
+                  "event": {
+                    "phase": "generation",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": false
+                  }
+                },
+                {
+                  "scope": "scene",
+                  "observedAtMs": 6778,
+                  "event": {
+                    "phase": "dispose",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": true
+                  }
+                },
+                {
+                  "scope": "scene",
+                  "observedAtMs": 7640.5,
+                  "event": {
+                    "phase": "generation",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": false
+                  }
+                }
+              ],
+              "observations": [
+                {
+                  "label": "cleanup diagnostic cycle 1 initial",
+                  "observedAtMs": 1759.800000000745,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                },
+                {
+                  "label": "cleanup diagnostic cycle 1 remount",
+                  "observedAtMs": 8798.60000000149,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                },
+                {
+                  "label": "cleanup diagnostic cycle 2 initial",
+                  "observedAtMs": 8818.5,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                }
+              ],
+              "rendererCleanupCalls": [
+                {
+                  "rendererId": 1,
+                  "method": "dispose",
+                  "startedAtMs": 6778.300000000745,
+                  "completedAtMs": 6778.400000002235
+                },
+                {
+                  "rendererId": 1,
+                  "method": "forceContextLoss",
+                  "startedAtMs": 6778.400000002235,
+                  "completedAtMs": 7510.400000002235
+                }
+              ],
+              "renderStatistics": [
+                {
+                  "rendererId": 1,
+                  "renderFrameCalls": 2,
+                  "zeroDtCalls": 2,
+                  "renderedFrames": 2,
+                  "lastCallAtMs": 1770.800000000745,
+                  "lastReturnAtMs": 1774.7000000029802
+                },
+                {
+                  "rendererId": 2,
+                  "renderFrameCalls": 1,
+                  "zeroDtCalls": 1,
+                  "renderedFrames": 1,
+                  "lastCallAtMs": 7934,
+                  "lastReturnAtMs": 8783.400000002235
+                }
+              ]
+            }
+          },
+          "unmountRequestedAtMs": 8833.20000000298,
+          "detachedObservedAtMs": 8839.20000000298,
+          "cleanup": {
+            "canvasIdentity": 2,
+            "startedAtMs": 13833.900000002235,
+            "completedAtMs": 13849.400000002235,
+            "contextLostAtMs": 13849.70000000298
+          },
+          "rendererCleanupCalls": [
+            {
+              "rendererId": 2,
+              "method": "dispose",
+              "startedAtMs": 13835.900000002235,
+              "completedAtMs": 13835.900000002235
+            },
+            {
+              "rendererId": 2,
+              "method": "forceContextLoss",
+              "startedAtMs": 13835.900000002235,
+              "completedAtMs": 13849.400000002235
+            }
+          ],
+          "finalRenderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 2,
+              "zeroDtCalls": 2,
+              "renderedFrames": 2,
+              "lastCallAtMs": 1770.800000000745,
+              "lastReturnAtMs": 1774.7000000029802
+            },
+            {
+              "rendererId": 2,
+              "renderFrameCalls": 1,
+              "zeroDtCalls": 1,
+              "renderedFrames": 1,
+              "lastCallAtMs": 7934,
+              "lastReturnAtMs": 8783.400000002235
+            }
+          ],
+          "afterCleanup": {
+            "scene": "temple",
+            "canvasCount": 0,
+            "canvasIdentity": null,
+            "canvasHolder": null,
+            "canvas": null,
+            "surfaces": [],
+            "events": [],
+            "subscribers": 0,
+            "audioDispatches": 0,
+            "chromeActions": [],
+            "chromeVisible": false,
+            "visibility": "visible",
+            "hidden": false,
+            "disposalObservations": [
+              {
+                "canvasIdentity": 1,
+                "startedAtMs": 6775.60000000149,
+                "completedAtMs": 7510.400000002235,
+                "contextLostAtMs": 7510.900000002235
+              },
+              {
+                "canvasIdentity": 2,
+                "startedAtMs": 13833.900000002235,
+                "completedAtMs": 13849.400000002235,
+                "contextLostAtMs": 13849.70000000298
+              }
+            ],
+            "environment": {
+              "mode": "forced-byte",
+              "audits": [
+                {
+                  "scope": "scene",
+                  "observedAtMs": 289.9000000022352,
+                  "event": {
+                    "phase": "generation",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": false
+                  }
+                },
+                {
+                  "scope": "scene",
+                  "observedAtMs": 6778,
+                  "event": {
+                    "phase": "dispose",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": true
+                  }
+                },
+                {
+                  "scope": "scene",
+                  "observedAtMs": 7640.5,
+                  "event": {
+                    "phase": "generation",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": false
+                  }
+                },
+                {
+                  "scope": "scene",
+                  "observedAtMs": 13835.900000002235,
+                  "event": {
+                    "phase": "dispose",
+                    "scene": "temple",
+                    "forceByte": true,
+                    "extensions": {
+                      "colorBufferFloat": true,
+                      "colorBufferHalfFloat": true
+                    },
+                    "sourceSize": {
+                      "width": 512,
+                      "height": 256
+                    },
+                    "cubeSize": 128,
+                    "width": 384,
+                    "height": 512,
+                    "attempts": [
+                      {
+                        "type": "unsigned-byte",
+                        "targets": [
+                          {
+                            "role": "output",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          },
+                          {
+                            "role": "ping-pong",
+                            "type": "unsigned-byte",
+                            "width": 384,
+                            "height": 512,
+                            "format": "RGBA",
+                            "internalFormat": "RGBA8",
+                            "status": 36053,
+                            "statusName": "FRAMEBUFFER_COMPLETE",
+                            "errors": [],
+                            "stateBefore": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "stateAfter": {
+                              "target": null,
+                              "cubeFace": 0,
+                              "mip": 0
+                            },
+                            "restored": true
+                          }
+                        ],
+                        "success": true,
+                        "discarded": false
+                      }
+                    ],
+                    "selectedType": "unsigned-byte",
+                    "environmentMapping": 306,
+                    "glErrorsBefore": [],
+                    "generationErrors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true,
+                    "success": true,
+                    "disposed": true
+                  }
+                }
+              ],
+              "observations": [
+                {
+                  "label": "cleanup diagnostic cycle 1 initial",
+                  "observedAtMs": 1759.800000000745,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                },
+                {
+                  "label": "cleanup diagnostic cycle 1 remount",
+                  "observedAtMs": 8798.60000000149,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                },
+                {
+                  "label": "cleanup diagnostic cycle 2 initial",
+                  "observedAtMs": 8818.5,
+                  "framebufferStatus": 36053,
+                  "errors": [],
+                  "contextLost": false,
+                  "sceneEnvironmentType": 1009,
+                  "sceneEnvironmentMapping": 306
+                }
+              ],
+              "rendererCleanupCalls": [
+                {
+                  "rendererId": 1,
+                  "method": "dispose",
+                  "startedAtMs": 6778.300000000745,
+                  "completedAtMs": 6778.400000002235
+                },
+                {
+                  "rendererId": 1,
+                  "method": "forceContextLoss",
+                  "startedAtMs": 6778.400000002235,
+                  "completedAtMs": 7510.400000002235
+                },
+                {
+                  "rendererId": 2,
+                  "method": "dispose",
+                  "startedAtMs": 13835.900000002235,
+                  "completedAtMs": 13835.900000002235
+                },
+                {
+                  "rendererId": 2,
+                  "method": "forceContextLoss",
+                  "startedAtMs": 13835.900000002235,
+                  "completedAtMs": 13849.400000002235
+                }
+              ],
+              "renderStatistics": [
+                {
+                  "rendererId": 1,
+                  "renderFrameCalls": 2,
+                  "zeroDtCalls": 2,
+                  "renderedFrames": 2,
+                  "lastCallAtMs": 1770.800000000745,
+                  "lastReturnAtMs": 1774.7000000029802
+                },
+                {
+                  "rendererId": 2,
+                  "renderFrameCalls": 1,
+                  "zeroDtCalls": 1,
+                  "renderedFrames": 1,
+                  "lastCallAtMs": 7934,
+                  "lastReturnAtMs": 8783.400000002235
+                }
+              ]
+            }
+          },
+          "synchronousCleanupDurationMs": 15.5,
+          "contextLostAfterUnmountRequestMs": 5016.5,
+          "drainPlusSynchronousCleanupMs": 15.5,
+          "drainStartOrUnmountToContextLostMs": 5016.5,
+          "detachedListeners": [
+            {
+              "holder": "primary",
+              "pointerdown": 0
+            }
+          ],
+          "detachedScheduler": {
+            "held": false,
+            "pendingCallbacks": 0,
+            "controlledFrames": 0
+          },
+          "rebuiltIdentity": 3,
+          "rebuiltEnvironment": {
+            "pass": true,
+            "observation": {
+              "label": "cleanup diagnostic cycle 2 remount",
+              "observedAtMs": 15289.900000002235,
+              "framebufferStatus": 36053,
+              "errors": [],
+              "contextLost": false,
+              "sceneEnvironmentType": 1009,
+              "sceneEnvironmentMapping": 306
+            },
+            "generationCount": 3,
+            "audit": {
+              "phase": "generation",
+              "scene": "temple",
+              "forceByte": true,
+              "extensions": {
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true
+              },
+              "sourceSize": {
+                "width": 512,
+                "height": 256
+              },
+              "cubeSize": 128,
+              "width": 384,
+              "height": 512,
+              "attempts": [
+                {
+                  "type": "unsigned-byte",
+                  "targets": [
+                    {
+                      "role": "output",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    },
+                    {
+                      "role": "ping-pong",
+                      "type": "unsigned-byte",
+                      "width": 384,
+                      "height": 512,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA8",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "stateAfter": {
+                        "target": null,
+                        "cubeFace": 0,
+                        "mip": 0
+                      },
+                      "restored": true
+                    }
+                  ],
+                  "success": true,
+                  "discarded": false
+                }
+              ],
+              "selectedType": "unsigned-byte",
+              "environmentMapping": 306,
+              "glErrorsBefore": [],
+              "generationErrors": [],
+              "stateBefore": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "stateAfter": {
+                "target": null,
+                "cubeFace": 0,
+                "mip": 0
+              },
+              "restored": true,
+              "success": true,
+              "disposed": false
+            }
+          },
+          "pass": true
+        }
+      ],
+      "createdAudioContexts": 0,
+      "pass": true
+    }
+  },
+  "errors": [],
+  "environmentMode": "forced-byte",
+  "cleanupDiagnosticMode": "clean",
+  "ruralPreservation": {
+    "baseline": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+    "method": "Exact git-baseline/current file bytes; this record is not a new rural render or a performance claim.",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "baselineSha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22",
+        "currentSha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22",
+        "unchanged": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "baselineSha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
+        "currentSha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
+        "unchanged": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+        "baselineSha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+        "currentSha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+        "unchanged": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+        "baselineSha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+        "currentSha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+        "unchanged": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+        "baselineSha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+        "currentSha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+        "unchanged": true
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png",
+        "baselineSha256": "4edbd86b988754cdbef5ac4a45c1bca2b386b1c8503bc567929f82115520ac54",
+        "currentSha256": "4edbd86b988754cdbef5ac4a45c1bca2b386b1c8503bc567929f82115520ac54",
+        "unchanged": true
+      }
+    ],
+    "pass": true
+  },
+  "dependencySource": {
+    "package": "three",
+    "version": "0.186.1",
+    "sha256": "b36cdb5da45b3a221db3e501ade49f8ec899d08c45ab56b961414b3cc9364023",
+    "files": [
+      {
+        "path": "node_modules/three/package.json",
+        "sha256": "f9c474a27c920b9435353a6235968f4453436bee0444fac7e5fd289c8fa463de"
+      },
+      {
+        "path": "node_modules/three/src/extras/PMREMGenerator.js",
+        "sha256": "78f7cc24a9aa22852f4c46052f39e5fe5507bee6313a824851ba899ed2219ecc"
+      },
+      {
+        "path": "node_modules/three/src/renderers/webgl/WebGLEnvironments.js",
+        "sha256": "69d82f1752b3244682b480cdf31d88c508b4617c5035217061635a326601ff38"
+      }
+    ]
+  },
+  "browserVersion": "153.0.8010.0",
+  "lifecycleViewport": {
+    "width": 683,
+    "height": 450
+  },
+  "lifecycleRendering": "683x450 initially paused real scene; native scheduler remains unheld with zero pending scene RAF. No screenshot, native-motion probe or auxiliary environment sentinel. Real initial/remount redraws are counted; only rapid-drained explicitly waits once on existing QA gl.finish before unmount.",
+  "pass": true,
+  "integrity": {
+    "sourceUnchangedDuringRun": true,
+    "dependencySourceUnchangedDuringRun": true,
+    "bundleUnchangedDuringRun": true
+  },
+  "finishedAt": "2026-10-04T22:27:56.153Z"
+}

@@ -1,0 +1,80 @@
+{
+  "startedAt": "2026-10-04T23:27:08Z",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/native-app-water-teardown-20261004T232708Z",
+  "outerLimitSeconds": 480,
+  "case": "water",
+  "mode": "teardown",
+  "viewport": "390x844",
+  "expectedBuild": [
+    "index-BIpQoT7O.js",
+    "index-BXP0utCv.css"
+  ],
+  "browser": "/tmp/cosmic-browser-bin/chromium",
+  "gpuGrant": "one explicit actual-App teardown/contextloss case; no retries",
+  "port": 56031,
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "buildFiles": {
+    "index-BIpQoT7O.js": "0d8d590648b26d19652431bc5b4169cbfddbc5f425f2a2f17e094ba06c16ae39",
+    "index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+  },
+  "previewPID": 6,
+  "servedIndexSHA256": "5cf8cadfa037c193cabe7742035b62a31f9073f87a449efa969e7d29c296bb21",
+  "previewReady": true,
+  "runnerPID": 27,
+  "testScripts": {
+    "run-app-teardown.mjs": "63a140a10d32fc198d509f0f6bd52e1834fe0ffc9ee64e256f3cce8750c94353",
+    "native-app-teardown.mjs": "447e57ca6cef488f0f5142f1a9d739c6201b3f508ebe2659cb486b418c57d07d",
+    "native-audio-teardown-observer.mjs": "1eaa02ff357bd2dc1e9ee6bc26ea42b0a7302126295dd3784de82f1b82b445f0",
+    "scops-teardown-config.mjs": "99aa155d93a041bc9611418225587374d70448f0f4331141a8694497f2547fef"
+  },
+  "ownedBrowser": {
+    "pid": 51,
+    "launchedAt": "2026-10-04T23:27:10.367Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:27:10.367Z",
+        "pid": 51
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:27:25.490Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:27:25.514Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:27:25.520Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:27:25.520Z"
+  },
+  "exitCode": 0,
+  "elapsedExecutionSeconds": 18.342,
+  "status": "passed",
+  "sourceStable": true,
+  "distStable": true,
+  "errors": [],
+  "checks": [
+    {
+      "name": "native Pause then Session End",
+      "status": "passed",
+      "error": null
+    }
+  ],
+  "ownedPids": [
+    6,
+    27
+  ],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 18.372,
+  "finishedAt": "2026-10-04T23:27:26Z"
+}

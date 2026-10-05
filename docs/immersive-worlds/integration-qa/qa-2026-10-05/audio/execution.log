@@ -1,0 +1,8 @@
+PASS: hybrid session waits for one trusted gesture before creating its graph
+PASS: hybrid recording failures preserve real procedural output
+PASS: recording-only test starts through one trusted playback gesture
+PASS: real picker isolates rain and player shows its actionable failure
+PASS: immersive view keeps one actionable notice and retries in the existing AudioContext
+PASS: unrouting the failure and one trusted retry restores the same recording
+PASS: no uncaught audio runtime failures beyond injected network responses
+Audio failure report: /workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z/evidence/audio/audio-failure-verification.json

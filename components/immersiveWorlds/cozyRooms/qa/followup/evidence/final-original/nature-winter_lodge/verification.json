@@ -1,0 +1,56 @@
+{
+  "passed": false,
+  "worlds": [
+    "nature:winter_lodge"
+  ],
+  "timestamp": "2026-10-04T20:47:24.062Z",
+  "gitHead": "eff612d8ea6ba63d2cc41a11d834e5fa11518461",
+  "source": {
+    "sha256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0",
+    "files": [
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/CozyWorld-DJoyYvrk.js",
+      "assets/CozyWorld-DJoyYvrk.js.map",
+      "assets/HearthWorld-RIrlbgNs.js",
+      "assets/HearthWorld-RIrlbgNs.js.map",
+      "assets/NapTerraceWorld-DzYVM2iK.js",
+      "assets/NapTerraceWorld-DzYVM2iK.js.map",
+      "assets/SleepRoomWorld-CqtFZjib.js",
+      "assets/SleepRoomWorld-CqtFZjib.js.map",
+      "assets/WinterLodgeWorld-BIKqNx3G.js",
+      "assets/WinterLodgeWorld-BIKqNx3G.js.map",
+      "assets/fireDetail-C4Ud7LGM.js",
+      "assets/fireDetail-C4Ud7LGM.js.map",
+      "assets/index-B3ZHnejc.js",
+      "assets/index-B3ZHnejc.js.map",
+      "assets/materials-DedOuHZ2.js",
+      "assets/materials-DedOuHZ2.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [],
+  "errors": []
+}

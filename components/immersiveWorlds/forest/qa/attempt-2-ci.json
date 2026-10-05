@@ -1,0 +1,69 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-04T18:46:27.325Z",
+  "renderer": "Headless Chromium WebGL2 using SwiftShader; actual Three.js geometry and shaders.",
+  "limitations": [
+    "Software rendering in Linux CI is not representative of physical-phone performance.",
+    "344×800 and 882×344 are layout simulations, not physical Fold hardware tests.",
+    "Reduced motion is tested with browser media emulation and the actual app class.",
+    "The hidden-state hook is simulated only inside this isolated test document; actual OS/tab backgrounding remains unverified.",
+    "DOM gesture assertions use PointerEvents through the component; they are not physical touchscreen tests."
+  ],
+  "screenshots": [
+    {
+      "filename": "forest-desktop.jpg",
+      "bytes": 202082,
+      "sha256": "7bc3109e97706db4356963a03b7f61711dbfe2a4703e739a1740c4582c9bcf44",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "filename": "forest-fold-portrait.jpg",
+      "bytes": 65017,
+      "sha256": "4aebc69ff2c0f0acec25bff8f886013c7467f9e7a29bc7a54d1c4e7b3efdc613",
+      "width": 344,
+      "height": 800
+    },
+    {
+      "filename": "forest-fold-landscape.jpg",
+      "bytes": 62342,
+      "sha256": "a01cff4ef976a3925b94ac2848159554bc9999618145aa475671475280659e01",
+      "width": 882,
+      "height": 344
+    }
+  ],
+  "checks": [
+    {
+      "name": "Engine ready instead of fallback",
+      "passed": true,
+      "detail": {
+        "state": "ready"
+      }
+    },
+    {
+      "name": "Nonzero rendered geometry and full desktop buffer",
+      "passed": true,
+      "detail": {
+        "engine": "three.js r186",
+        "frames": "7",
+        "time": "0.0833",
+        "waterHits": "0",
+        "leafHits": "0",
+        "dpr": "1",
+        "running": "true",
+        "lookYaw": "0.00000",
+        "lookPitch": "0.00000",
+        "drawCalls": "239",
+        "triangles": "1289963",
+        "cssWidth": 1280,
+        "cssHeight": 800,
+        "width": 1280,
+        "height": 800
+      }
+    }
+  ],
+  "errors": [],
+  "failure": "page.screenshot: Timeout 90000ms exceeded.\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n\npage.screenshot: Timeout 90000ms exceeded.\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n\n    at screenshot (/home/runner/work/brainwave/brainwave/components/immersiveWorlds/forest/forest.browser.test.ts:52:29)\n    at /home/runner/work/brainwave/brainwave/components/immersiveWorlds/forest/forest.browser.test.ts:148:21\n    at /home/runner/work/brainwave/brainwave/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20",
+  "serverLog": "\n  \u001b[32m\u001b[1mVITE\u001b[22m v6.4.3\u001b[39m  \u001b[2mready in \u001b[0m\u001b[1m198\u001b[22m\u001b[2m\u001b[0m ms\u001b[22m\n\n  \u001b[32m➜\u001b[39m  \u001b[1mLocal\u001b[22m:   \u001b[36mhttp://127.0.0.1:\u001b[1m4178\u001b[22m/\u001b[39m\n",
+  "finishedAt": "2026-10-04T18:50:14.588Z"
+}

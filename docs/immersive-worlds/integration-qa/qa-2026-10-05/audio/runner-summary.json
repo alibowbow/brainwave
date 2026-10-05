@@ -1,0 +1,159 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-05T00:05:33Z",
+  "case": "audio-failures",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z",
+  "report": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z/evidence/audio/audio-failure-verification.json",
+  "outerLimitSeconds": 480,
+  "cleanupReserveSeconds": 25,
+  "gpuGrant": "one separately selected existing verifier; no retries or implicit batch",
+  "browser": "/tmp/cosmic-browser-bin/chromium",
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "gitStatusAtStart": "M components/liveScene/liveSceneHost.test.ts\n M components/liveScene/liveSceneHost.ts\n M scripts/cold-autoplay.mjs\n M scripts/verify-audio-failures.mjs\n M scripts/verify-cafe-world.mjs\n M scripts/verify-cosmic-world.mjs\n M scripts/verify-immersive-worlds.mjs\n M scripts/verify-links.mjs\n M scripts/verify-scenes.mjs\n?? components/liveScene/cozyEngineDisposal.test.ts\n?? components/liveScene/sceneDisposalContract.test.ts\n?? scripts/cold-autoplay.test.ts\n?? scripts/expected-dfg.mjs\n?? scripts/native-texture-ledger.mjs\n?? scripts/native-texture-ledger.test.ts\n?? scripts/press-scene-control.mjs\n?? scripts/scene-disposal-contract.mjs",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "25ac589617465f9857789527da57984fa9cb45ad7b588292035b66b2d923ef71",
+  "wrapperSHA256": "4e1f48a5e4b37339a6c8dc2fd94f28fe60b35c13beccddb7c4c84ae5b17bfd66",
+  "supportScripts": {
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc",
+    "verification-provenance.mjs": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2",
+    "cold-autoplay.mjs": "49e2a08e80c4a6ad9cd9e66e154163fe1c8a57e427cf44e9b0e5668fdc12d561",
+    "scene-disposal-contract.mjs": "0385fc7f15aa58e398270882ad4d8a02a144b7c3e80260668836f8323f4006ce"
+  },
+  "baseUrl": "http://127.0.0.1:50101/",
+  "previewCommand": [
+    "node",
+    "node_modules/vite/bin/vite.js",
+    "preview",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "50101",
+    "--strictPort"
+  ],
+  "previewPID": 10,
+  "servedIndexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+  "servedEntryAssets": {
+    "assets/index-CkDIijGa.js": {
+      "sha256": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "bytes": 418683
+    },
+    "assets/index-BXP0utCv.css": {
+      "sha256": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3",
+      "bytes": 103383
+    }
+  },
+  "command": [
+    "node",
+    "scripts/verify-audio-failures.mjs"
+  ],
+  "environmentOverrides": {
+    "SCENE_BASE_URL": "http://127.0.0.1:50101/",
+    "SCENE_BROWSER_PATH": "/tmp/cosmic-browser-bin/chromium",
+    "SCENE_SCREENSHOT_DIR": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z/evidence"
+  },
+  "runnerPID": 29,
+  "browserOwnership": {
+    "pid": 53,
+    "launchedAt": "2026-10-05T00:05:35.076Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-05T00:05:35.076Z",
+        "pid": 53
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-05T00:06:12.259Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-05T00:06:12.288Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-05T00:06:12.312Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-05T00:06:12.312Z"
+  },
+  "exitCode": 0,
+  "completedReport": {
+    "path": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z/completed-report.json",
+    "sourcePath": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z/evidence/audio/audio-failure-verification.json",
+    "sha256": "848b903f652a7617e1e813b6b8a69af484f4810a8f1e4d71312f39a01642458e",
+    "bytes": 753529,
+    "finishedAt": "2026-10-05T00:06:13.385Z",
+    "runnerExitCode": 0,
+    "capturedAfterVerifierExit": true,
+    "fsyncConfirmed": true,
+    "byteIdentityVerified": true,
+    "capturedAt": "2026-10-05T00:06:13Z"
+  },
+  "reportStatus": "passed",
+  "failure": null,
+  "reportErrors": [],
+  "cleanupErrors": [],
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "checks": [
+    {
+      "name": "hybrid session waits for one trusted gesture before creating its graph",
+      "status": "passed",
+      "elapsedMs": 7247
+    },
+    {
+      "name": "hybrid recording failures preserve real procedural output",
+      "status": "passed",
+      "elapsedMs": 2751
+    },
+    {
+      "name": "recording-only test starts through one trusted playback gesture",
+      "status": "passed",
+      "elapsedMs": 6998
+    },
+    {
+      "name": "real picker isolates rain and player shows its actionable failure",
+      "status": "passed",
+      "elapsedMs": 8859
+    },
+    {
+      "name": "immersive view keeps one actionable notice and retries in the existing AudioContext",
+      "status": "passed",
+      "elapsedMs": 4816
+    },
+    {
+      "name": "unrouting the failure and one trusted retry restores the same recording",
+      "status": "passed",
+      "elapsedMs": 6302
+    },
+    {
+      "name": "no uncaught audio runtime failures beyond injected network responses",
+      "status": "passed",
+      "elapsedMs": 0
+    }
+  ],
+  "ownedPids": [
+    10,
+    29
+  ],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 40.579,
+  "finishedAt": "2026-10-05T00:06:13Z"
+}

@@ -1,0 +1,15 @@
+vite v6.4.3 building for production...
+transforming...
+✓ 43 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../public/immersive-worlds/forest/qa/harness.html     0.42 kB │ gzip:   0.28 kB
+../../../public/immersive-worlds/forest/qa/harness.css      1.12 kB │ gzip:   0.47 kB
+../../../public/immersive-worlds/forest/qa/forest-qa.mjs  838.31 kB │ gzip: 231.15 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.29s
+Forest QA preview written: /workspace/scratch/5f64ba22f1db/brainwave-forest-refinement/public/immersive-worlds/forest/qa

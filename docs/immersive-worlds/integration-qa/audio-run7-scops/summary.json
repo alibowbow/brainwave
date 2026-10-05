@@ -1,0 +1,355 @@
+{
+  "status": "failed",
+  "functionalStatus": "passed",
+  "cleanupStatus": "failed",
+  "applicationGraphTeardown": "not verified",
+  "startedAt": "2026-10-04T23:03:50.253Z",
+  "finishedAt": "2026-10-04T23:04:14.458Z",
+  "build": "index-BIpQoT7O.js / index-BXP0utCv.css",
+  "head": "693f49529e0d5194710dbd8df10c59058491019c",
+  "sourceAndBuildUnchanged": true,
+  "trackedSourceFiles": 17,
+  "sourceSha256": {
+    "App.tsx": "2a65e2963b9344dfbd73f2dfa47edca7adfc3b0674affcdbb57115caf1e90ba9",
+    "components/Player.tsx": "a90335757d6b9b67ff91fe7784f4548e63e2706cc2009ac79a11596e3024aa37",
+    "components/ImmersiveMode.tsx": "13384e202e7d6b2e596c35ad8dfa7ed9a41bc4bb70fbf21913bc07666dc9bd8e",
+    "sceneLayout.ts": "0de619c6184e1565f973b204afbf31a2e9cc92874cc6f36b5158f6df7f687df0",
+    "components/immersiveWorlds/koreanPlaces/scenes/scops.ts": "ed4d40a721d640f0ec24abb67e1704f203bb7488e8345e18a3e2a70689db673e",
+    "components/immersiveWorlds/koreanPlaces/WorldEngine.ts": "37ef6d71fa94d47582c83d0c5ce7dea610e854755b16ebd8b5756aaab0cc8c9c",
+    "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a",
+    "services/audioEngine.ts": "69a2ac927ed5a86cead1ab50e49599ab7806e58cba71f6ad083c496d2d12e020",
+    "services/freshImmersiveSelection.ts": "21efe50b50d3e601efbfb196386ff91bb815f22d65325f06ca5153e8730f9be2",
+    "services/immersiveBridgeLoader.ts": "c612f4c2b2d99c05e39ddad8d112cc91387677754f779cc29a76b36798c2a98e",
+    "services/immersiveSessionBridge.ts": "d07fe121ec3dfe18a565528faef09a98b0e1c3f21ed85967b3e051f9b210bf52",
+    "components/immersiveWorlds/useImmersiveAudioBridge.ts": "4ee8909fa9859a94403269f0d432af758e008632ada85cf849e025f2a53ceac6",
+    "services/immersiveAudio/controller.ts": "b1a99b11c2eda2ad3a581040b704452d2666ae414c2c8c924278fbc322e62751",
+    "services/immersiveAudio/profiles.ts": "09cca1460d48468109ee035c2bf2a18e157b515ee7bbcc69e956025ff3ea32a8",
+    "services/immersiveAudio/interaction.ts": "47cac9bf6117e6f6a659ddf4f86a347793e00e0e154ea5e226ca3f1151312b65",
+    "components/immersiveWorlds/cafe/CafeEngine.ts": "5c6617559f37c8f39f05da6d99600479c5917316620218e8db52f62bd40ada74",
+    "components/NatureMode.tsx": "e91bcd6b6cc27883bd6de89049187ec599102c8e792de7c31270d486cdb54032"
+  },
+  "builtIndexSha256": "5cf8cadfa037c193cabe7742035b62a31f9073f87a449efa969e7d29c296bb21",
+  "builtAssetSha256": {
+    "BrainwaveGuide-B0HxtFxU.js": "357d42719338343b5cdc532e7a6ef691090de8631c2d24c3cd70bebbfab9544d",
+    "BrainwaveGuidePage-DN53iPzm.js": "5e482a499a72af0eb8cdc22d43efc477319da46a65b73cd9525423bba624e5ee",
+    "CafeWorld-C9Qt3Lhc.css": "5f3115f07da313e97d715c3335327d03fc201ef5d257005a61462293eed5b30d",
+    "CosmicWorld-CYYMiYuf.css": "9054ee5b901493625b72b5555ca0004c96ab8bbe491b7ecf8450bff4ee39707d",
+    "DeepWaterView-Dd3CCiYP.css": "6b5818675eade70ecd2f1087249ec3506e456051110f11b10e906b6db6b16f0d",
+    "ForestWorld-BiYXXejK.css": "27df337ba71373e89d06e15207c98528408548f4fadb5571543e3f227a91d82a",
+    "ImmersiveMode-BpXXq5Fi.js": "a941a1dea5e12ffeae6a86de99eed9059cff9465f920aa65b8f32235b4211e89",
+    "ImmersiveWorldSlot-D04usx1L.js": "67df2390ab42cd5458076685c26c87ad2739780f968e64e325b33f1f28163682",
+    "ImmersiveWorldSlot-DTqxEZbX.css": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+    "KoreanWorld-ChQ9t79Y.css": "bc3cbbc60ee10c8697e47134e18d56833cb13a0ed319951bd3f2b41baa68a5fc",
+    "NatureMode-uJMfPL0v.js": "392806a71866eb10ca5824db16f0c8d30d8c68a9a3fbdb07d78da820e7cc96db",
+    "NightWorld-ZuciVTVz.css": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c",
+    "OilSeaScene-C_nY1Tqi.js": "ad27aac7f0cbd745362724041221122e1b52f3d46bfbe66695708d8881b24c2e",
+    "OilSeaScene-DCK9DiR6.css": "727cf536c3f5416ae697b779b335edef98dc1bbf76f69ea69981061bff1483c8",
+    "Player-DY6mznke.js": "a806537589d9181a22fce34e8fbe2d74e97b0dba18d654243dfd2ce0834aa02c",
+    "RainyWindowScene-DgDeEf3g.js": "eaf55ff33d39d5b1341face6d1ebb86cd5a4f568b46f67c3b16a1033abd7c9b2",
+    "RainyWindowScene-RbMGMCWm.css": "4f1113996c4e5ac39dbc580c194a4acf0896b952ae88511282d0649461669d0d",
+    "RoutineLibrary-B7MiSSK-.js": "603f5c0aec36cfc4f4049eef7425577e4de14fa71aaeb26143d5f1790636ff57",
+    "SanctuaryView-BkvmUDvh.css": "88ec64ac19c82a18432d4842663ab711a0cb379b00a03d13552d737f0cfd4ce0",
+    "SessionReflection-Bx31p0AO.js": "1022e49abec6b8b315c271408010c95d28b8c37b98bc623025ff8318d632e371",
+    "SessionSetup-D8uxioVP.js": "151b4e0a062e54bb60debd82f14a6588e87c368a0e4df41434ca876cd3d3f9b8",
+    "SettingsView-DiagevIH.js": "df38b0d22d6ed00a1453d2bee0593af036e794195de2b802def681e9c10f571f",
+    "ShelterWorld-DS072ibN.css": "9fcc756b9257814deb0ee0ff764eb760b33179d0a53a3b8b3c510bac641de024",
+    "SoundFailureNotice-DTz9OBhE.js": "2431cd823e5cbd74a315288526b0f843aa42dceccc43d605e55d0acf7f104218",
+    "SoundLayerPicker-BTRrnhoH.js": "6280614656fc2ce63026bde050cf46f15ddd9df9e6460d37b5425f08e3bcb57f",
+    "StatsDashboard-Pmxauuqa.js": "1bf22d499933b3d11354850b828113d8a5b185a31b2ac5070f4f66a63f604464",
+    "Toggle-JHnraPCa.js": "7f6327eddaa53ab9ae4f1ce307320acb300f2b768bb8c3d549c891677bc3b879",
+    "VolumeSlider-zQF_q3NT.js": "153e2430ec403cb1d63d8794ecb8b6fa26c1af7f15e0eb4d8b197875926c2041",
+    "WorldSurface-C-tstfzs.css": "ccad5e0dce9e1c2d63f1d25a40c1de0db14cb438ca160355e53b7ce9ceecfb63",
+    "WorldView-Ccq85m0N.css": "a8db9b5fbe5c06c6bfa537462956fdc4dc0c9d74fc79d498ebc7409ec9aa82e3",
+    "arrow-right-BSPlRNiw.js": "1e664b957a0bc5390a2f2d928a7ae740a31512446c41e955ba3a499aee6ccce4",
+    "experience-CJtHQUfX.js": "237e16494abc12f4e460e90312026eb63c2f4866a67e7ce46300ec1a79146395",
+    "immersiveSessionBridge-2XhsWP7t.js": "7b4489c4e40264058da809ad041a4c5a81e614919dca4fac564224b207f9a4ba",
+    "index-BIpQoT7O.js": "0d8d590648b26d19652431bc5b4169cbfddbc5f425f2a2f17e094ba06c16ae39",
+    "index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3",
+    "look-CY0gEWsC.js": "337f8ea02ddbefb4315478c74e3da5f4a77f00fe58a83ef8675770712820ddeb",
+    "materials-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+    "quality-Bjokd3qe.js": "f7de5ed31732657c5cca6528a14a30cc9048158ee71d51ea96ca29fe7bb0ec32",
+    "three--Qrk24iT.js": "29ecb6d7aaa2f0a7c76b85be4ce36af2ad05b02b28d121f74a157e65bdd0e403",
+    "three-B94qB-g_.js": "98a917cac242c5609d70faab3e5780a56372800f9a7cc81ad087181364ad7fa0",
+    "three-BcXOOer8.js": "3c06c474494a62811c946e334bff7f9aad317498a2b36d26d1916ac2104a8be2",
+    "three-FvgWsoYT.js": "1b081f04664c18ba4388bc92c9573a83e1ea3b55ab931bb55b543d1c6958db91",
+    "useLookDrag-DsGAO2JA.js": "29e0119756224b3b1bafbc5e1f568e2726dbe25c2941f032e5d342291cf8d6d0",
+    "workbox-window.prod.es5-BBnX5xw4.js": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+    "world-AncientForestWorld-R4nJmNio.js": "6b7146d415c87feef2b5128548d494289e4d5ad7eca3411d1348de0871712afb",
+    "world-BambooWorld-B5DQgzSi.js": "2869d4f48aa8109a60f3b7523de1cfb626aff81d216ea3c8c40701aa69eb6764",
+    "world-CafeWorld-c-eDCkW9.js": "fd4b32422e21420afde874a982e5f8c0f5f797c8d325f33518b0e137196768c6",
+    "world-CaveWorld-w1ER0ZiB.js": "b15e2648f1149765f62e3e94b0e4846cc11464cbb0ae015021fd2c07ef92c267",
+    "world-CosmicWorld-Bhg7SvI2.js": "1e0ff12abb34ec560ac1776f4bd4a6e7b65e113eb4ad9b74e250309b2cd0da6b",
+    "world-DeepNightWorld-L2OLXS_u.js": "5b5437b2fd979a42a67c583102d3412ed39f5eea8b54783c406b28f6e69e39f0",
+    "world-DeepSeaWorld-1tHW9uD-.js": "90f5587a8e1fe086fb79500465df26135e6ce81b05aba5c704e35f69d675acf3",
+    "world-DeepWaterView-CX_NccPb.js": "1376bc447c4cd8ed786f83afb0577031b3bf400f63be206e2c711883254b41c7",
+    "world-ForestWorld-IHaKZSzB.js": "2af8ddaa09a293065846f4fdc2e5afa86c23dbb1831d56274b6ec489b5029b17",
+    "world-GardenWindowWorld-BdY3UBga.js": "104d8b82251027629dd7fd0ced63c3cc23538b0cbccd23f784fa5bd5105cb943",
+    "world-HearthWorld-B5zr_ema.js": "c9df5aef56bb2f1b125ba41c1d58ab8178f60f9bc2d3de78277702fcb3e15b98",
+    "world-KoreanWorld-DEujtOKF.js": "f1d3166188b86f269c7b655f64bc6d2da9ef26f213d4e9b5b6257875aca61e30",
+    "world-LakesideCampWorld-B-EKV-Bv.js": "a53ce2d21fe92f3e1a1e29bfb0484479822a907b65f618d223d981250ffb3858",
+    "world-MeditationCourtWorld-eSx-sXhB.js": "70a37405b37d30492f5e73dd3b4b2439267e1834f4c0101b0be9ee1f753d40be",
+    "world-MonsoonPorchWorld-DrwM9joB.js": "27d755aca50f003d91938e156b42ba24e56fe3899bb3b9cafea359272be59977",
+    "world-MorningPorchWorld-Box-o1YW.js": "5c075a9ffb646b29fbe79f2188f156eae57a0e304dff9b4d49fbe1f8256aaa5b",
+    "world-MountainCampfireWorld-eE5GfmrT.js": "e8879d3c2f1c067497ad249c4770b5d2ca98dad652d6a42a9da44a94e7cf8ed8",
+    "world-NapTerraceWorld-Ctw_oZtj.js": "701dbb2578a30b2f3441a5c54dd7427991f113a349c8aa54018ba553fa9f416a",
+    "world-NightPondWorld-BAsm6qY5.js": "8de90ad1c34f13d1386dbd956a07f7ce553eb114226b841ca47e425227e39678",
+    "world-NightWorld-CLFSg5F8.js": "50252aad46e2f8209d921124eb1a37328c068bd3f29d6431b1bebb9b5e9d76bb",
+    "world-PebbleShoreWorld-BJXMt-De.js": "403daa5ce31a1007663fed25d2f47247b60e613f25be434090e38a13cec26a93",
+    "world-RainTentWorld-0NQoRCi5.js": "6a4dfba8aef765921180d70a1a155d3dc758de1e852202cb15bf5383a49dbe5a",
+    "world-RainyForestWorld-SA6ApdY7.js": "cd9b73fd0cf5d6aac19eb9646fa6a0feb12da9d0c302b4613a98bc5bb3b185b2",
+    "world-RuralSummerNightWorld-D79Nmitg.js": "d044fa3d83af970ae828f59aa3463edd77ff8fda8202fef1ecf8567b4e099a0d",
+    "world-SanctuaryView-5eSVc3G2.js": "e446d2d29587fb30c75a85863d8cb5e04f7bade922807790ad3fd0039bf96147",
+    "world-ScopsNightWorld-CCTmqYU3.js": "d74d815d2e53bab0dfc5238de457b645f812a28d0ecb03bb4e535649eabdd81d",
+    "world-ShelterWorld-Bn9K2nIs.js": "2899495a9ffe306c6c32a4a84aa6eaa9117d772b91b1037044963469173c8c4d",
+    "world-SleepRoomWorld-U2BfvsnJ.js": "d3cf09f524ccff79aace6b5f078b201d59d4443a1d4a5fa2e88c84156152fe18",
+    "world-SnowVillageWorld-DK2vq-nh.js": "862532aa9bdc4fb045a8b5894c365c18f4b3b49bc84c82d752541212ddf17a7b",
+    "world-SummerStormWorld-DNSrxBuR.js": "fed1b54fa75e8793c64e29704dfe707f70df54cd6f7aae7526c1a09b2c45bce9",
+    "world-SummerValleyWorld-D2W259MZ.js": "dd43e51ec61f7c6b6c4b8c09e7252a1359e7e5f6adbc1d8eb6522414c7b0b1c2",
+    "world-TempleWorld-CxbhZN6T.js": "a4de6b238e5f50f32e04fed8ced10b2e062e5c61830bf8d9d6f46205aacce778",
+    "world-WarmHeartWorld-B_GvT6H4.js": "b8051bfec5c5519564345122f01f39a2730e1723bc17a33455adaa44401136ee",
+    "world-WaterfallWorld-C4Ug_BYi.js": "64c9bc5a62d8b6d727a0c30ab5d98c2779aec4a929a1a22b36dc5198484fe6f6",
+    "world-WinterLodgeWorld-BKYNGuIk.js": "3cdb640a8d38f1a390a79d6798273fc2b1d3ceba83260e60287f782236c369a9",
+    "world-WorldSurface-r1C8itUg.js": "47312b0a2cda3bd35b8e645c93313802ab1a378e2f1ef09232739098671fb9b2",
+    "world-WorldView-o89CrxyM.js": "0f5cf49de31f5976591814bcb91b2520b7762ba57191f88c6f03299e85355f90",
+    "world-cave-BfOZXQTt.js": "1894fd3952ba67098c98dcddcd5403383994d7502fa212d45c03e3ce2af16748",
+    "world-environment-DJQPnrUh.js": "6d49a1e5a5a0107a1ee391a50687b14da0c52ddc0067c2d6c2b4ee82523c67cd",
+    "world-environment-DL0Gkhma.js": "75888fa8da2e82799d5e12a5965c6637a32e16839f6ff1ad3ddb21c4b806aeff",
+    "world-fireDetail-Bz-rK0sF.js": "454b31ecca23766bc81f067b0799281558e182112287b84b924b03770303f18e",
+    "world-materials-BOWzhD5e.js": "7238bff60f577344a0607e6f7096f6bff0c9d7c5666ce1cdfd5777cb57b031f2",
+    "world-renderTargets-B1PDlCOP.js": "ada2f939112bc9a99880271d624c599c2375dfc449089edd1d5bb0acf7691de1",
+    "world-rural-BmypkKDO.js": "6d11128acf66c172d2f1e22e84dc2ad77440cfecd79b6338b3138f2a68dd354b",
+    "world-scops-BiDIUZ-H.js": "7565c37480c299bfaffe93475341f64c0f68c6b611ee9641da3234ccd7597052",
+    "world-sea-CVZMpvVf.js": "61aebfa4382bd97d744f2deda9d92fe720139d52bf9ddcff1928ff05b5a02d63",
+    "world-temple-Blr1R8Pw.js": "b080319a90319d3965657b0b63d4ccc9dbb473bffe57b8fc87f4bb9eea242c63",
+    "world-waterfall-Dh2vhhnF.js": "86bd14d534c57d2160cbc82c8a0f4fb37f6663e2b28168037d73729b6db1bc26"
+  },
+  "scriptSha256": "f314a81d2df4a452a84b75f1f6e0516a09ef3716ff100ccaef864f2f543d68f6",
+  "servedBuildMatch": {
+    "checked": 18,
+    "mismatches": []
+  },
+  "servedAssets": [
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/index-BXP0utCv.css",
+      "status": 200,
+      "bytes": 103383,
+      "sha256": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/index-BIpQoT7O.js",
+      "status": 200,
+      "bytes": 418683,
+      "sha256": "0d8d590648b26d19652431bc5b4169cbfddbc5f425f2a2f17e094ba06c16ae39"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "status": 200,
+      "bytes": 5748,
+      "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/immersiveSessionBridge-2XhsWP7t.js",
+      "status": 200,
+      "bytes": 22999,
+      "sha256": "7b4489c4e40264058da809ad041a4c5a81e614919dca4fac564224b207f9a4ba"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/Toggle-JHnraPCa.js",
+      "status": 200,
+      "bytes": 590,
+      "sha256": "7f6327eddaa53ab9ae4f1ce307320acb300f2b768bb8c3d549c891677bc3b879"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/Player-DY6mznke.js",
+      "status": 200,
+      "bytes": 23679,
+      "sha256": "a806537589d9181a22fce34e8fbe2d74e97b0dba18d654243dfd2ce0834aa02c"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/SoundLayerPicker-BTRrnhoH.js",
+      "status": 200,
+      "bytes": 2936,
+      "sha256": "6280614656fc2ce63026bde050cf46f15ddd9df9e6460d37b5425f08e3bcb57f"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "status": 200,
+      "bytes": 3799,
+      "sha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/VolumeSlider-zQF_q3NT.js",
+      "status": 200,
+      "bytes": 1496,
+      "sha256": "153e2430ec403cb1d63d8794ecb8b6fa26c1af7f15e0eb4d8b197875926c2041"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/SoundFailureNotice-DTz9OBhE.js",
+      "status": 200,
+      "bytes": 7375,
+      "sha256": "2431cd823e5cbd74a315288526b0f843aa42dceccc43d605e55d0acf7f104218"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/ImmersiveWorldSlot-D04usx1L.js",
+      "status": 200,
+      "bytes": 12083,
+      "sha256": "67df2390ab42cd5458076685c26c87ad2739780f968e64e325b33f1f28163682"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/KoreanWorld-ChQ9t79Y.css",
+      "status": 200,
+      "bytes": 618,
+      "sha256": "bc3cbbc60ee10c8697e47134e18d56833cb13a0ed319951bd3f2b41baa68a5fc"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/world-ScopsNightWorld-CCTmqYU3.js",
+      "status": 200,
+      "bytes": 258,
+      "sha256": "d74d815d2e53bab0dfc5238de457b645f812a28d0ecb03bb4e535649eabdd81d"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/look-CY0gEWsC.js",
+      "status": 200,
+      "bytes": 933,
+      "sha256": "337f8ea02ddbefb4315478c74e3da5f4a77f00fe58a83ef8675770712820ddeb"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/world-KoreanWorld-DEujtOKF.js",
+      "status": 200,
+      "bytes": 8202,
+      "sha256": "f1d3166188b86f269c7b655f64bc6d2da9ef26f213d4e9b5b6257875aca61e30"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/three--Qrk24iT.js",
+      "status": 200,
+      "bytes": 600474,
+      "sha256": "29ecb6d7aaa2f0a7c76b85be4ce36af2ad05b02b28d121f74a157e65bdd0e403"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/world-environment-DL0Gkhma.js",
+      "status": 200,
+      "bytes": 4297,
+      "sha256": "75888fa8da2e82799d5e12a5965c6637a32e16839f6ff1ad3ddb21c4b806aeff"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/world-scops-BiDIUZ-H.js",
+      "status": 200,
+      "bytes": 19504,
+      "sha256": "7565c37480c299bfaffe93475341f64c0f68c6b611ee9641da3234ccd7597052"
+    }
+  ],
+  "errors": [
+    {
+      "kind": "cleanup",
+      "message": "Error: browser process cleanup: exceeded 15000ms"
+    }
+  ],
+  "pcm": {
+    "sampleCount": 4,
+    "naturalPrimaryCallIds": [
+      219,
+      293
+    ],
+    "energies": {
+      "primaryInternal": {
+        "left": 0.21657287954397714,
+        "right": 1.2622792441237936
+      },
+      "scopsLayer": {
+        "left": 0.102118174427308,
+        "right": 0.06980244388476547
+      }
+    },
+    "streamEnergy": {
+      "count": 103,
+      "firstClock": 0.9520181405895691,
+      "lastClock": 5.851428571428571,
+      "left": 0.0018190979290259868,
+      "right": 0.0037563400057404267
+    },
+    "streamAudioSeconds": 4.899410430839002,
+    "ratios": {
+      "internalRightOverLeft": 5.828427117844531,
+      "scopsOuterLeftOverRight": 1.4629598728074835,
+      "streamRightOverLeft": 2.0649465571937142
+    }
+  },
+  "nativeSourceIdentity": {
+    "originalStream": 0.07,
+    "changedStream": 0.11,
+    "restoredStream": 0.07,
+    "gainIds": [
+      116,
+      117
+    ],
+    "pannerId": 119,
+    "actualPans": [
+      {
+        "id": 30,
+        "pan": 0.5
+      },
+      {
+        "id": 23,
+        "pan": -0.38769277930259705
+      }
+    ],
+    "actualStream": [
+      {
+        "id": 119,
+        "pan": 0.3228657841682434
+      }
+    ]
+  },
+  "contexts": 1,
+  "cold": {
+    "hasBeenActive": false,
+    "contexts": 1,
+    "graphs": 0,
+    "starts": 0
+  },
+  "firstInput": {
+    "type": "pointerdown",
+    "wall": 2828.60000000149,
+    "target": "BUTTON",
+    "button": "눌러서 재생",
+    "hint": "blocked",
+    "graphs": 0,
+    "starts": 0,
+    "activation": true,
+    "control": {
+      "name": "눌러서 재생",
+      "visibility": "visible",
+      "opacity": "1",
+      "effectiveOpacity": 1,
+      "chromeOpacity": null,
+      "chromeClass": null,
+      "chromeVisibility": null,
+      "hit": true
+    }
+  },
+  "claimLimits": [
+    "Source-layer PCM and routing evidence; no listening or physical-device claim",
+    "Run7 overall remains failed because browser process cleanup exceeded15s",
+    "Normal app source graph teardown not verified; native Pause was skipped by hidden-role lookup",
+    "No causal claim about Korean PMREM changes relative to run5",
+    "Run6 nine-check pass remains its earlier DFSibu4A source/build scope"
+  ]
+}

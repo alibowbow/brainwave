@@ -1,0 +1,249 @@
+{
+  "overallStatus": "failed",
+  "caseStatus": "passed",
+  "sourceStable": true,
+  "sourceSHA256": "794a5aaa51d5348b738c602b76bc0747732a265bbca04f83eb8556ddacbdcdb3",
+  "caseErrors": [],
+  "globalErrors": [
+    {
+      "kind": "cleanup",
+      "stage": "graceful-close",
+      "message": "Error: owned browser server close exceeded 10000ms"
+    }
+  ],
+  "ownedBrowser": {
+    "pid": 42,
+    "launchedAt": "2026-10-04T22:52:18.747Z",
+    "terminationConfirmed": true,
+    "forcedKill": true,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T22:52:18.747Z",
+        "pid": 42
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T22:56:30.844Z"
+      },
+      {
+        "kind": "owned-browser-cleanup-error",
+        "at": "2026-10-04T22:56:40.852Z",
+        "stage": "graceful-close",
+        "message": "Error: owned browser server close exceeded 10000ms"
+      },
+      {
+        "kind": "owned-browser-kill-send",
+        "at": "2026-10-04T22:56:40.852Z",
+        "pid": 42
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T22:56:40.868Z",
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      {
+        "kind": "owned-browser-kill-ack",
+        "at": "2026-10-04T22:56:40.902Z"
+      }
+    ],
+    "exitCode": null,
+    "signal": "SIGKILL",
+    "finishedAt": "2026-10-04T22:56:40.902Z"
+  },
+  "checks": [
+    {
+      "name": "native route+playback startup",
+      "status": "passed"
+    },
+    {
+      "name": "player: visible chrome1tap1callback",
+      "status": "passed"
+    },
+    {
+      "name": "player:3.6s hidden chrome native touch1tap1callback",
+      "status": "passed",
+      "nativeTaps": [
+        {
+          "delta": 1,
+          "durationPerformanceMs": 1.2999999970197678,
+          "shortTrusted": true,
+          "durationEventTimeStampMs": 0,
+          "durationWallMs": 1
+        }
+      ]
+    },
+    {
+      "name": "player: out-and-back drag and native cancel callback0",
+      "status": "passed"
+    },
+    {
+      "name": "player: controls+keyboard+focus callback0",
+      "status": "passed"
+    },
+    {
+      "name": "player: source-bound actual-app PNG",
+      "status": "passed"
+    },
+    {
+      "name": "detailsOpen retains pan-y",
+      "status": "passed",
+      "detailsScroll": {
+        "deltaY": 205,
+        "callbackDelta": 0,
+        "restored": {
+          "x": 0,
+          "y": 0,
+          "max": 0,
+          "width": 390,
+          "height": 844
+        },
+        "touchPath": {
+          "x": 195,
+          "y": 663.44,
+          "endY": 443.44000000000005,
+          "distance": 220,
+          "tag": "CANVAS",
+          "steps": 12
+        }
+      }
+    },
+    {
+      "name": "native immersive entry preserves canvas/controlcallback0",
+      "status": "passed"
+    },
+    {
+      "name": "immersive: visible chrome1tap1callback",
+      "status": "passed"
+    },
+    {
+      "name": "immersive:3.6s hidden chrome native touch1tap1callback",
+      "status": "passed",
+      "nativeTaps": [
+        {
+          "delta": 1,
+          "durationPerformanceMs": 7.5,
+          "shortTrusted": true,
+          "durationEventTimeStampMs": 0.20000000298023224,
+          "durationWallMs": 7
+        }
+      ]
+    },
+    {
+      "name": "immersive: out-and-back drag and native cancel callback0",
+      "status": "passed"
+    },
+    {
+      "name": "immersive: controls+keyboard+focus callback0",
+      "status": "passed"
+    },
+    {
+      "name": "immersive: native modal Tab/Shift+Tab cycle",
+      "status": "passed",
+      "modalCycle": {
+        "input": "native Tab/Shift+Tab",
+        "observed": [
+          {
+            "inside": true,
+            "dialog": false,
+            "index": 8,
+            "visible": true,
+            "inert": false,
+            "tabIndex": 0,
+            "tag": "BUTTON",
+            "label": null,
+            "world": false
+          },
+          {
+            "inside": true,
+            "dialog": false,
+            "index": 13,
+            "visible": true,
+            "inert": false,
+            "tabIndex": 0,
+            "tag": "BUTTON",
+            "label": null,
+            "world": false
+          },
+          {
+            "inside": true,
+            "dialog": false,
+            "index": 17,
+            "visible": true,
+            "inert": false,
+            "tabIndex": 0,
+            "tag": "BUTTON",
+            "label": "\ubab0\uc785 \ubaa8\ub4dc \uc885\ub8cc",
+            "world": false
+          },
+          {
+            "inside": true,
+            "dialog": false,
+            "index": 27,
+            "visible": true,
+            "inert": false,
+            "tabIndex": 0,
+            "tag": "BUTTON",
+            "label": "\uc77c\uc2dc\uc815\uc9c0",
+            "world": false
+          },
+          {
+            "inside": true,
+            "dialog": false,
+            "index": 31,
+            "visible": true,
+            "inert": false,
+            "tabIndex": 0,
+            "tag": "BUTTON",
+            "label": "\uc138\uc158 \uc885\ub8cc",
+            "world": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "immersive: source-bound actual-app PNG",
+      "status": "passed"
+    },
+    {
+      "name": "Escape during held touch cancels old holder callback0",
+      "status": "passed"
+    }
+  ],
+  "actualPNGs": [
+    {
+      "filename": "cafe-player-chrome.png",
+      "sha256": "f87a7806a3b792a081328af5523603fd14dd676bdaf93c05aefa41f57e5e8fc6",
+      "width": 390,
+      "height": 844,
+      "openedAndReviewed": true,
+      "observation": "Actual cafe cup/lamp/window scene with working control islands; no blank/fallback or image error visible."
+    },
+    {
+      "filename": "cafe-immersive-chrome.png",
+      "sha256": "478a41276556e1fa79380491b060f20c1eb9ac7db968f52d639776e2cc4567d2",
+      "width": 390,
+      "height": 844,
+      "openedAndReviewed": true,
+      "observation": "Actual cafe cup/lamp/window scene with working control islands; no blank/fallback or image error visible."
+    }
+  ],
+  "limitation": "One Cafe390x844 run only. All15 functional/capture checks passed; overall FAILED solely graceful Chromium close timeout, owned PID exit confirmed after public force-kill. Other worlds/viewports not certified.",
+  "servedEntries": [
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/index-Dxjefzym.css",
+      "status": 200,
+      "bytes": 103359,
+      "sha256": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593"
+    },
+    {
+      "case": "cafe",
+      "url": "http://127.0.0.1:48083/assets/index-DFSibu4A.js",
+      "status": 200,
+      "bytes": 418683,
+      "sha256": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05"
+    }
+  ]
+}

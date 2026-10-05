@@ -1,0 +1,51 @@
+
+> brainwave-ritual-studio@4.0.0 build
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 1782 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/manifest.webmanifest                            0.58 kB
+dist/index.html                                      2.03 kB │ gzip:   1.08 kB
+dist/assets/PretendardVariable-CJuje-Rk.woff2    2,057.69 kB
+dist/assets/OilSeaScene-DCK9DiR6.css                 0.54 kB │ gzip:   0.25 kB
+dist/assets/RainyWindowScene-RbMGMCWm.css            0.59 kB │ gzip:   0.26 kB
+dist/assets/NatureScene-DTqxEZbX.css                 3.80 kB │ gzip:   1.26 kB
+dist/assets/index-BAekRvvJ.css                     101.93 kB │ gzip:  18.45 kB
+dist/assets/arrow-right-BGCqHgC5.js                  0.34 kB │ gzip:   0.26 kB
+dist/assets/Toggle-DMFYJUEs.js                       0.59 kB │ gzip:   0.36 kB
+dist/assets/VolumeSlider-D-3cy06A.js                 1.50 kB │ gzip:   0.88 kB
+dist/assets/SessionReflection-BNVxNcfm.js            2.25 kB │ gzip:   1.18 kB
+dist/assets/SoundLayerPicker-DXsblI3n.js             2.94 kB │ gzip:   1.52 kB
+dist/assets/ImmersiveMode-pJG5eNA0.js                4.47 kB │ gzip:   1.94 kB
+dist/assets/NatureScene-DdFLLaJ-.js                  4.95 kB │ gzip:   2.25 kB
+dist/assets/BrainwaveGuidePage-t6nCrvp_.js           5.29 kB │ gzip:   2.26 kB
+dist/assets/workbox-window.prod.es5-BBnX5xw4.js      5.75 kB │ gzip:   2.36 kB
+dist/assets/VisualModeSwitch-C78FL7Ev.js             6.05 kB │ gzip:   2.85 kB
+dist/assets/BrainwaveGuide-slv6KpbF.js               6.99 kB │ gzip:   2.76 kB
+dist/assets/StatsDashboard-Cr__HT1Q.js              10.02 kB │ gzip:   3.68 kB
+dist/assets/RoutineLibrary-B9GYN5lD.js              12.30 kB │ gzip:   3.64 kB
+dist/assets/NatureMode-CXoXM_qO.js                  14.08 kB │ gzip:   4.88 kB
+dist/assets/SettingsView-BKZ3cYRL.js                14.15 kB │ gzip:   4.23 kB
+dist/assets/SessionSetup-Cpn29HMN.js                20.11 kB │ gzip:   5.39 kB
+dist/assets/Player-Cg6IjFer.js                      23.12 kB │ gzip:   6.97 kB
+dist/assets/OilSeaScene-D8verZUJ.js                130.51 kB │ gzip:  44.63 kB
+dist/assets/RainyWindowScene-DbKc3kK4.js           354.51 kB │ gzip: 137.83 kB
+dist/assets/index-otGrTeg9.js                      412.29 kB │ gzip: 117.88 kB
+dist/assets/three-BvO5mcpD.js                      566.78 kB │ gzip: 144.08 kB
+✓ built in 6.61s
+
+PWA v0.21.2
+mode      generateSW
+precache  42 entries (842.59 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-3b53d7d6.js
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

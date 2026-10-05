@@ -1,0 +1,645 @@
+{
+  "generatedAt": "2026-10-04T20:59:23.244315+00:00",
+  "purpose": "Native-resolution factual before/after screenshot comparison",
+  "baselineHead": "0e09a28a175b0aab8a52443c14a506f54b6998ee",
+  "baselineTestedSource": "42cc8bd67e24d9bd029095c5278c01bae57edf37",
+  "finalTestedSource": "bbc321dcf9fcaa107154c9802e6ef49e7021699c",
+  "method": {
+    "scale": "1:1",
+    "resampling": "none",
+    "screenshotModification": "none",
+    "layout": "Before left; after right; labels external above; external gutter",
+    "labelHeightPixels": 48,
+    "gutterWidthPixels": 16,
+    "pixelValidation": "Exact RGBA byte equality for both saved screenshot regions"
+  },
+  "baselineVerificationReport": {
+    "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/verification-all.json",
+    "sha256": "2e2427f84b24d482f0694284b1fe78a34eb5d0e87d601c1861069d7ded397398"
+  },
+  "finalVerificationReports": [
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-rural.json",
+      "sha256": "8fff2283654ef295e792f3c2da8efdd9e5c465f63d2669ba2a16686be967af25",
+      "repositoryHead": "bbc321dcf9fcaa107154c9802e6ef49e7021699c",
+      "source": {
+        "sha256": "6c2a3b97f5a94e804e92bd4b51405dd82d70b43e536d537fe01b66107250110e",
+        "files": [
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+            "sha256": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+            "sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+            "sha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+            "sha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+            "sha256": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/korean-world.css",
+            "sha256": "8d7610a5096ac40d459aac156ae734534b311b3b9e0b0910602136f21a8547e1"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/index.html",
+            "sha256": "2230115d8465b08e75a551129ada8f90d43aa3bd200189e5f305ae09d5eb2dfc"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+            "sha256": "5d098234ce4a677cc6a9c8517358154608772052434e681d47bc561b1d53e349"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+            "sha256": "ece350f8939b1ed689e92054fa5c6df9324db318f63d7175c2fbee0e117d3c40"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+            "sha256": "9acd6784cb5b6a4adc47fcc732ffce9f8159ff5c943b285a2ab888dc3541c7b7"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+            "sha256": "2e5be37d6fc43f75174a9c6fd82b8b5c997a63fd892b80121117a8ec82dcd75e"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+            "sha256": "97abe06eb9b074f5b9f1d8e9ab50868b9f46e7e12f848153f8b7579d58aadfa7"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+            "sha256": "e72a91df76a38ef3b2d0f756189bbfa75b3ac04758b950612c5c1d6c18318800"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+            "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+            "sha256": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+            "sha256": "94a3cf03259bc54cefbeb10abc8619dc717a505f373709ac1f519101302a8cdc"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/types.ts",
+            "sha256": "30af4e3e663ed68a5569cd53f1094d26ad4874fd4e82fcb991b5b07f6dc2b25f"
+          },
+          {
+            "path": "components/liveScene/liveSceneHost.ts",
+            "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+          },
+          {
+            "path": "components/liveScene/look.ts",
+            "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a"
+          },
+          {
+            "path": "components/useSceneMotion.ts",
+            "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+          }
+        ]
+      },
+      "bundle": {
+        "sha256": "b3184ce18ee3b176045328c9823d970e72876e2d892c05cf73db2f42f262d6f3",
+        "files": [
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-BzR3cmn-.js",
+            "sha256": "718a6af6e071fd19ea875d6b42c1b87425cded91daaa3ed088e171d49e24b53f"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-UnPzUkqC.css",
+            "sha256": "e97fad7b3b8b0def05914d2f1cfee94a215c0ff2936214b47e11b524dc96ea13"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rural-1V06Wzie.js",
+            "sha256": "ae514e83575df256a7bd259efa5f16e519fffc9b5b33b8a851f2840d6a554e20"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/scops-BxMG0T-X.js",
+            "sha256": "2199cad9a842e7395aa171f2f4b89b7c34de0fb908a3de1121ced094191125e8"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/temple-BWvVDAub.js",
+            "sha256": "0e1e6d8947d0f1d2aff3cf88951b214accc26dd3abded335662feb7feca32d3c"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/components/immersiveWorlds/koreanPlaces/qa/index.html",
+            "sha256": "4a95738c52e8c5d9e63320c0d5a53c3a17fccd4fe65bc0c72603e35979ec96ab"
+          }
+        ]
+      }
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-scops.json",
+      "sha256": "bbbf69ba7e879b6c3f769e4c5f1a8c79dedacd1ba7da91475191d5e5b05238ca",
+      "repositoryHead": "bbc321dcf9fcaa107154c9802e6ef49e7021699c",
+      "source": {
+        "sha256": "6c2a3b97f5a94e804e92bd4b51405dd82d70b43e536d537fe01b66107250110e",
+        "files": [
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+            "sha256": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+            "sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+            "sha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+            "sha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+            "sha256": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/korean-world.css",
+            "sha256": "8d7610a5096ac40d459aac156ae734534b311b3b9e0b0910602136f21a8547e1"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/index.html",
+            "sha256": "2230115d8465b08e75a551129ada8f90d43aa3bd200189e5f305ae09d5eb2dfc"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+            "sha256": "5d098234ce4a677cc6a9c8517358154608772052434e681d47bc561b1d53e349"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+            "sha256": "ece350f8939b1ed689e92054fa5c6df9324db318f63d7175c2fbee0e117d3c40"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+            "sha256": "9acd6784cb5b6a4adc47fcc732ffce9f8159ff5c943b285a2ab888dc3541c7b7"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+            "sha256": "2e5be37d6fc43f75174a9c6fd82b8b5c997a63fd892b80121117a8ec82dcd75e"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+            "sha256": "97abe06eb9b074f5b9f1d8e9ab50868b9f46e7e12f848153f8b7579d58aadfa7"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+            "sha256": "e72a91df76a38ef3b2d0f756189bbfa75b3ac04758b950612c5c1d6c18318800"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+            "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+            "sha256": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+            "sha256": "94a3cf03259bc54cefbeb10abc8619dc717a505f373709ac1f519101302a8cdc"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/types.ts",
+            "sha256": "30af4e3e663ed68a5569cd53f1094d26ad4874fd4e82fcb991b5b07f6dc2b25f"
+          },
+          {
+            "path": "components/liveScene/liveSceneHost.ts",
+            "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+          },
+          {
+            "path": "components/liveScene/look.ts",
+            "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a"
+          },
+          {
+            "path": "components/useSceneMotion.ts",
+            "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+          }
+        ]
+      },
+      "bundle": {
+        "sha256": "b3184ce18ee3b176045328c9823d970e72876e2d892c05cf73db2f42f262d6f3",
+        "files": [
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-BzR3cmn-.js",
+            "sha256": "718a6af6e071fd19ea875d6b42c1b87425cded91daaa3ed088e171d49e24b53f"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-UnPzUkqC.css",
+            "sha256": "e97fad7b3b8b0def05914d2f1cfee94a215c0ff2936214b47e11b524dc96ea13"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rural-1V06Wzie.js",
+            "sha256": "ae514e83575df256a7bd259efa5f16e519fffc9b5b33b8a851f2840d6a554e20"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/scops-BxMG0T-X.js",
+            "sha256": "2199cad9a842e7395aa171f2f4b89b7c34de0fb908a3de1121ced094191125e8"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/temple-BWvVDAub.js",
+            "sha256": "0e1e6d8947d0f1d2aff3cf88951b214accc26dd3abded335662feb7feca32d3c"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/components/immersiveWorlds/koreanPlaces/qa/index.html",
+            "sha256": "4a95738c52e8c5d9e63320c0d5a53c3a17fccd4fe65bc0c72603e35979ec96ab"
+          }
+        ]
+      }
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-temple.json",
+      "sha256": "bdcc45eae7cce731b6a0819e014222cf3f6c6ab3f73fe46aa8306f6d118beaf5",
+      "repositoryHead": "bbc321dcf9fcaa107154c9802e6ef49e7021699c",
+      "source": {
+        "sha256": "6c2a3b97f5a94e804e92bd4b51405dd82d70b43e536d537fe01b66107250110e",
+        "files": [
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+            "sha256": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+            "sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+            "sha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+            "sha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+            "sha256": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/korean-world.css",
+            "sha256": "8d7610a5096ac40d459aac156ae734534b311b3b9e0b0910602136f21a8547e1"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/index.html",
+            "sha256": "2230115d8465b08e75a551129ada8f90d43aa3bd200189e5f305ae09d5eb2dfc"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+            "sha256": "5d098234ce4a677cc6a9c8517358154608772052434e681d47bc561b1d53e349"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+            "sha256": "ece350f8939b1ed689e92054fa5c6df9324db318f63d7175c2fbee0e117d3c40"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+            "sha256": "9acd6784cb5b6a4adc47fcc732ffce9f8159ff5c943b285a2ab888dc3541c7b7"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+            "sha256": "2e5be37d6fc43f75174a9c6fd82b8b5c997a63fd892b80121117a8ec82dcd75e"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+            "sha256": "97abe06eb9b074f5b9f1d8e9ab50868b9f46e7e12f848153f8b7579d58aadfa7"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+            "sha256": "e72a91df76a38ef3b2d0f756189bbfa75b3ac04758b950612c5c1d6c18318800"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+            "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+            "sha256": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+            "sha256": "94a3cf03259bc54cefbeb10abc8619dc717a505f373709ac1f519101302a8cdc"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/types.ts",
+            "sha256": "30af4e3e663ed68a5569cd53f1094d26ad4874fd4e82fcb991b5b07f6dc2b25f"
+          },
+          {
+            "path": "components/liveScene/liveSceneHost.ts",
+            "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+          },
+          {
+            "path": "components/liveScene/look.ts",
+            "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a"
+          },
+          {
+            "path": "components/useSceneMotion.ts",
+            "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+          }
+        ]
+      },
+      "bundle": {
+        "sha256": "b3184ce18ee3b176045328c9823d970e72876e2d892c05cf73db2f42f262d6f3",
+        "files": [
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-BzR3cmn-.js",
+            "sha256": "718a6af6e071fd19ea875d6b42c1b87425cded91daaa3ed088e171d49e24b53f"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-UnPzUkqC.css",
+            "sha256": "e97fad7b3b8b0def05914d2f1cfee94a215c0ff2936214b47e11b524dc96ea13"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rural-1V06Wzie.js",
+            "sha256": "ae514e83575df256a7bd259efa5f16e519fffc9b5b33b8a851f2840d6a554e20"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/scops-BxMG0T-X.js",
+            "sha256": "2199cad9a842e7395aa171f2f4b89b7c34de0fb908a3de1121ced094191125e8"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/temple-BWvVDAub.js",
+            "sha256": "0e1e6d8947d0f1d2aff3cf88951b214accc26dd3abded335662feb7feca32d3c"
+          },
+          {
+            "path": "components/immersiveWorlds/koreanPlaces/qa/dist/components/immersiveWorlds/koreanPlaces/qa/index.html",
+            "sha256": "4a95738c52e8c5d9e63320c0d5a53c3a17fccd4fe65bc0c72603e35979ec96ab"
+          }
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "scene": "rural",
+      "viewport": "desktop",
+      "before": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/rural-desktop.png",
+        "sha256": "cdd619606e1cccc0870970b8c6acfecec13c23c76b7299a67b70adf7f7ca4c54",
+        "width": 1365,
+        "height": 900,
+        "mode": "RGB",
+        "matchesPinnedGitHead": true,
+        "matchesBaselineVerification": true
+      },
+      "after": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+        "sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+        "width": 1365,
+        "height": 900,
+        "mode": "RGB",
+        "verificationReports": [
+          "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-rural.json"
+        ]
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/rural-desktop-before-after.png",
+        "sha256": "7a3965224a5b86b33aa3c324131f84fdf3150e605e1ad22b8318e300be6f10dc",
+        "width": 2746,
+        "height": 948,
+        "mode": "RGBA",
+        "beforePixelRectangle": [
+          0,
+          48,
+          1365,
+          900
+        ],
+        "afterPixelRectangle": [
+          1381,
+          48,
+          1365,
+          900
+        ],
+        "pixelRectangleFormat": "x,y,width,height",
+        "savedPixelsExactlyMatchInputs": true
+      }
+    },
+    {
+      "scene": "rural",
+      "viewport": "portrait",
+      "before": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/rural-portrait.png",
+        "sha256": "0f39235055fe500fcb96f6b4fbe540dd0761eb73161857ba2d81b4a5f521fadd",
+        "width": 390,
+        "height": 844,
+        "mode": "RGB",
+        "matchesPinnedGitHead": true,
+        "matchesBaselineVerification": true
+      },
+      "after": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+        "sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+        "width": 390,
+        "height": 844,
+        "mode": "RGB",
+        "verificationReports": [
+          "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-rural.json"
+        ]
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/rural-portrait-before-after.png",
+        "sha256": "ec89b1863e05b0f8526f61b2dfd08dd69a11a393d33feb51567611547d4faa55",
+        "width": 796,
+        "height": 892,
+        "mode": "RGBA",
+        "beforePixelRectangle": [
+          0,
+          48,
+          390,
+          844
+        ],
+        "afterPixelRectangle": [
+          406,
+          48,
+          390,
+          844
+        ],
+        "pixelRectangleFormat": "x,y,width,height",
+        "savedPixelsExactlyMatchInputs": true
+      }
+    },
+    {
+      "scene": "temple",
+      "viewport": "desktop",
+      "before": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/temple-desktop.png",
+        "sha256": "a6667c9150a5153d1757d0b30f172e942ceb11ba62917e0d4804dabce66cc68c",
+        "width": 1365,
+        "height": 900,
+        "mode": "RGB",
+        "matchesPinnedGitHead": true,
+        "matchesBaselineVerification": true
+      },
+      "after": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-desktop.png",
+        "sha256": "8c729dc1535334449f6daa191b4acd5603fe55597aa9f53d3842363bf432b23d",
+        "width": 1365,
+        "height": 900,
+        "mode": "RGB",
+        "verificationReports": [
+          "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-temple.json"
+        ]
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/temple-desktop-before-after.png",
+        "sha256": "6327d96279b7e8abad682fbe402b25ae73ea75d51beb77abc99828c34582450a",
+        "width": 2746,
+        "height": 948,
+        "mode": "RGBA",
+        "beforePixelRectangle": [
+          0,
+          48,
+          1365,
+          900
+        ],
+        "afterPixelRectangle": [
+          1381,
+          48,
+          1365,
+          900
+        ],
+        "pixelRectangleFormat": "x,y,width,height",
+        "savedPixelsExactlyMatchInputs": true
+      }
+    },
+    {
+      "scene": "temple",
+      "viewport": "portrait",
+      "before": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/temple-portrait.png",
+        "sha256": "ab1acbff8a78e331b1ab00f793554eb5944f10513d308fd584e63ebfe95b9f05",
+        "width": 390,
+        "height": 844,
+        "mode": "RGB",
+        "matchesPinnedGitHead": true,
+        "matchesBaselineVerification": true
+      },
+      "after": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/temple-portrait.png",
+        "sha256": "6ba9698f05819fccd5f84767eca4fa423bb08cc629c0b04bf298e3a614c298d0",
+        "width": 390,
+        "height": 844,
+        "mode": "RGB",
+        "verificationReports": [
+          "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-temple.json"
+        ]
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/temple-portrait-before-after.png",
+        "sha256": "223c331c34bca0b8c03ac3155e5931ad1216961764e8b7b9160bbb06445d4e8d",
+        "width": 796,
+        "height": 892,
+        "mode": "RGBA",
+        "beforePixelRectangle": [
+          0,
+          48,
+          390,
+          844
+        ],
+        "afterPixelRectangle": [
+          406,
+          48,
+          390,
+          844
+        ],
+        "pixelRectangleFormat": "x,y,width,height",
+        "savedPixelsExactlyMatchInputs": true
+      }
+    },
+    {
+      "scene": "scops",
+      "viewport": "desktop",
+      "before": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/scops-desktop.png",
+        "sha256": "26bc0759d01e3c9848d5458452bc536652fabaf533b85a603b6335462e03f9a3",
+        "width": 1365,
+        "height": 900,
+        "mode": "RGB",
+        "matchesPinnedGitHead": true,
+        "matchesBaselineVerification": true
+      },
+      "after": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-desktop.png",
+        "sha256": "4287596d57b76d13cc7dbafafb077328fc2f1b8febe20056522a381fe90fe596",
+        "width": 1365,
+        "height": 900,
+        "mode": "RGB",
+        "verificationReports": [
+          "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-scops.json"
+        ]
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/scops-desktop-before-after.png",
+        "sha256": "cf94d8e34dd7880dcca7b7d71983278129f9e118b50def1660c7b572a383bc93",
+        "width": 2746,
+        "height": 948,
+        "mode": "RGBA",
+        "beforePixelRectangle": [
+          0,
+          48,
+          1365,
+          900
+        ],
+        "afterPixelRectangle": [
+          1381,
+          48,
+          1365,
+          900
+        ],
+        "pixelRectangleFormat": "x,y,width,height",
+        "savedPixelsExactlyMatchInputs": true
+      }
+    },
+    {
+      "scene": "scops",
+      "viewport": "portrait",
+      "before": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/scops-portrait.png",
+        "sha256": "ebffcca3b4b49ffdfb3fc5383444f0aee9d2418ccb23f6f09b77c43d1c33a8f8",
+        "width": 390,
+        "height": 844,
+        "mode": "RGB",
+        "matchesPinnedGitHead": true,
+        "matchesBaselineVerification": true
+      },
+      "after": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/scops-portrait.png",
+        "sha256": "aa6eebfdf3d80397b5d02b3dca96fe80d8676a0bedc9a18f390a5272f7dcc195",
+        "width": 390,
+        "height": 844,
+        "mode": "RGB",
+        "verificationReports": [
+          "components/immersiveWorlds/koreanPlaces/qa/evidence/final/verification-scops.json"
+        ]
+      },
+      "comparison": {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/comparisons/scops-portrait-before-after.png",
+        "sha256": "9bea5d203853cf5a362a48c234489c2c466555bf51efbe9b15cc74e69217ce51",
+        "width": 796,
+        "height": 892,
+        "mode": "RGBA",
+        "beforePixelRectangle": [
+          0,
+          48,
+          390,
+          844
+        ],
+        "afterPixelRectangle": [
+          406,
+          48,
+          390,
+          844
+        ],
+        "pixelRectangleFormat": "x,y,width,height",
+        "savedPixelsExactlyMatchInputs": true
+      }
+    }
+  ]
+}

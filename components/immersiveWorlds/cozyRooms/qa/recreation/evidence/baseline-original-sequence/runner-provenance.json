@@ -1,0 +1,41 @@
+{
+  "originalSHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+  "generatedSHA256": "c6d971e76b68a8c63491afd49640371ebcefed329b7e1283c125f93fc8f86e77",
+  "unchangedSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+  "unchangedSequenceBytes": 7964,
+  "cleanReport": "/workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/recreation/evidence/baseline-clean/diagnostic.json",
+  "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+  "adaptations": [
+    {
+      "label": "QA-only imports",
+      "needle": "import {verifyChrome} from './chrome-checks.mjs';",
+      "replacement": "import {verifyChrome} from '../chrome-checks.mjs';\nimport {diagnosticPlugin,attachStream,manifest} from './instrumentation.mjs';\nconst diagnosticTransforms=[];"
+    },
+    {
+      "label": "original QA root from generated runner",
+      "needle": "const qa=path.dirname(fileURLToPath(import.meta.url)),root=",
+      "replacement": "const qa=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),root="
+    },
+    {
+      "label": "observation-only build plugin",
+      "needle": "plugins:[react()]",
+      "replacement": "plugins:[react(),diagnosticPlugin(diagnosticTransforms)]"
+    },
+    {
+      "label": "incremental stream and clean identity guard before navigation",
+      "needle": "const worlds=(process.env.COZY_WORLDS",
+      "replacement": "const diagnosticStream=await attachStream(page,output);\nconst diagnosticManifest=await manifest(bundle,diagnosticTransforms);\nawait writeFile(path.join(output,'instrumentation-manifest.json'),JSON.stringify(diagnosticManifest,null,2));\nassert.equal(diagnosticManifest.bundle.sha256,process.env.COZY_EXPECTED_BUNDLE,'same instrumented bundle as clean probe');\nassert.equal(diagnosticManifest.source.sha256,process.env.COZY_EXPECTED_SOURCE,'same production source as clean probe');\nconst worlds=(process.env.COZY_WORLDS"
+    },
+    {
+      "label": "preserve thrown failure outside original sequence",
+      "needle": "\n} finally {",
+      "replacement": "\n} catch (error) {\nawait writeFile(path.join(output,'failure.json'),JSON.stringify({passed:false,error:error.stack||String(error),lastEvent:diagnosticStream.events.at(-1)},null,2));\ndiagnosticStream.mark('node-original-sequence-failed',{error:error.stack||String(error)});await diagnosticStream.flush();throw error;\n} finally {"
+    },
+    {
+      "label": "flush scalar event stream before original cleanup",
+      "needle": "await writeFile(path.join(output,'verification.json'),JSON.stringify(report,null,2));await browser.close();",
+      "replacement": "await writeFile(path.join(output,'verification.json'),JSON.stringify(report,null,2));await diagnosticStream.flush();await browser.close();"
+    }
+  ],
+  "statement": "Exact original try/for assertion and screenshot sequence preserved; same original chrome-checks import. Only setup and external failure persistence adapted. One winter invocation, no retries and no timeout changes."
+}

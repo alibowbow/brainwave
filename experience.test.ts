@@ -59,4 +59,37 @@ describe('backup payloads', () => {
     });
     expect(parsed).toMatchObject({ logs: [], presets: [], lastSession: null });
   });
+
+  it('round-trips the chosen space independently of edited names and sounds', () => {
+    const custom: UserPreset = { ...preset, name: '소리 없는 내 쉼터', worldId: 'amb:cosmic', layers: [] };
+    const last: LastSession = { ...lastSession, name: custom.name, worldId: custom.worldId, layers: [] };
+    const exported = JSON.stringify(createBackupPayload([], [custom], last));
+    const parsed = parseBackupPayload(JSON.parse(exported));
+    expect(parsed?.presets).toEqual([custom]);
+    expect(parsed?.lastSession).toEqual(last);
+  });
+
+  it.each(['future:space', '', null, 42, { id: 'focus' }])('strips invalid optional world identity %j without losing saved audio', (worldId) => {
+    const input = {
+      version: 1,
+      logs: [],
+      presets: [{ ...preset, worldId }],
+      lastSession: { ...lastSession, worldId },
+    };
+    const parsed = parseBackupPayload(input);
+    expect(parsed?.presets).toEqual([preset]);
+    expect(parsed?.lastSession).toEqual(lastSession);
+    expect(parsed?.presets[0]).not.toHaveProperty('worldId');
+    expect(parsed?.lastSession).not.toHaveProperty('worldId');
+    expect(input.presets[0].worldId).toEqual(worldId);
+    expect(input.lastSession.worldId).toEqual(worldId);
+  });
+
+  it('keeps legacy backups without adding a guessed world identity', () => {
+    const parsed = parseBackupPayload(createBackupPayload([], [preset], lastSession));
+    expect(parsed?.presets).toEqual([preset]);
+    expect(parsed?.lastSession).toEqual(lastSession);
+    expect(parsed?.presets[0]).not.toHaveProperty('worldId');
+    expect(parsed?.lastSession).not.toHaveProperty('worldId');
+  });
 });

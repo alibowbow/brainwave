@@ -1,0 +1,108 @@
+{
+  "sourceSHA256": "e3e7a278bad36a8d12f80403b03972728c11fa07436335346ff796d8f664edfa",
+  "bundleSHA256": "0b0c53ed7a574d44f301bbd6ccaf4f72b9410616eaebd46a299551b927e5e516",
+  "method": "Actual native PNGs from revised bounded-completion sequence; root viewed all11 full-resolution image files. Ten fixed poses compare byte-for-byte to approved6ba images via preserved2a8 manifest. Dynamic chrome timing differs. No generated/substituted pixels.",
+  "fixedPoseCount": 10,
+  "fixedPoseByteIdentical": true,
+  "images": [
+    {
+      "file": "evidence/four-world/relax-chrome-visible.png",
+      "bytes": 517803,
+      "sha256": "5cb6bccf8992586dba088cc1c3cd63cb0f920802439efab3a82c2cea267d1bdf",
+      "approvedSHA256": null,
+      "fixedPose": false,
+      "byteIdentical": false,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/relax-desktop.png",
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2",
+      "approvedSHA256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/relax-portrait.png",
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37",
+      "approvedSHA256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/sleep_prep-desktop.png",
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982",
+      "approvedSHA256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/sleep_prep-portrait.png",
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5",
+      "approvedSHA256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/power_nap-desktop.png",
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7",
+      "approvedSHA256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/power_nap-fold-inner-viewport.png",
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470",
+      "approvedSHA256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/power_nap-portrait.png",
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504",
+      "approvedSHA256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71",
+      "approvedSHA256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00",
+      "approvedSHA256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7",
+      "approvedSHA256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7",
+      "fixedPose": true,
+      "byteIdentical": true,
+      "pixelsInspected": true
+    }
+  ]
+}

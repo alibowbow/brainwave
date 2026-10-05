@@ -1,4 +1,4 @@
-import { readdir, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 const assetDir = path.resolve('dist/assets');
@@ -30,3 +30,27 @@ if (failed) {
   console.error('Bundle budget exceeded. Split optional routes or remove unused client dependencies.');
   process.exitCode = 1;
 }
+
+// Budget alone cannot detect a small eager import that pulls every world in.
+const manifest = JSON.parse(await readFile('dist/.vite/manifest.json', 'utf8'));
+const visited = new Set();
+const optionalScene = /\/assets\/(?:world-|immersiveSessionBridge-|RainyWindowScene-|OilSeaScene-|three-)/;
+const visit = (key) => {
+  if (visited.has(key)) return;
+  visited.add(key);
+  const entry = manifest[key];
+  if (!entry) throw new Error(`Missing build manifest entry: ${key}`);
+  if (optionalScene.test(`/${entry.file}`)) throw new Error(`Scene renderer is eagerly imported: ${entry.file}`);
+  for (const dependency of entry.imports ?? []) visit(dependency);
+};
+for (const [key, entry] of Object.entries(manifest)) if (entry.isEntry) visit(key);
+const serviceWorker = await readFile('dist/sw.js', 'utf8');
+for (const entry of Object.values(manifest)) {
+  if (optionalScene.test(`/${entry.file}`) && serviceWorker.includes(entry.file)) {
+    throw new Error(`Optional scene is in initial service-worker precache: ${entry.file}`);
+  }
+  if (optionalScene.test(`/${entry.file}`)) for (const css of entry.css ?? []) {
+    if (serviceWorker.includes(css)) throw new Error(`Optional scene CSS is in initial service-worker precache: ${css}`);
+  }
+}
+console.log('Scene chunks: absent from initial static imports and service-worker precache.');

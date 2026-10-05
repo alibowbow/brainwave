@@ -1,4 +1,5 @@
 import { defaultSoundLevel } from './audioLevels';
+import { worldIdForSession } from './components/immersiveWorlds/worldCatalog';
 import type { AppView } from './components/app/AppShell';
 import type { LastSession, UserPreset } from './experience';
 import { AMBIENCE_PRESETS, NATURE_MIXES, PRESETS, type AmbiencePreset, type NatureMix, type SessionPreset } from './types';
@@ -105,10 +106,12 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
     case 'preset': {
       const { preset } = target;
       const sound = preset.defaultBackgroundSound;
+      const worldId = worldIdForSession(preset);
       return {
-        selected: preset,
+        selected: { ...preset, worldId },
         snapshot: {
           name: preset.name,
+          worldId,
           brainWaveType: preset.brainWaveType,
           toneMode: 'binaural',
           brainwaveEnabled: true,
@@ -120,10 +123,12 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
     }
     case 'ambience': {
       const { preset } = target;
+      const worldId = worldIdForSession({ id: `amb:${preset.id}` });
       return {
         selected: {
           id: `amb:${preset.id}`,
           name: preset.name,
+          worldId,
           description: preset.description,
           defaultDurationMinutes: preset.durationMinutes,
           brainWaveType: preset.brainWaveType,
@@ -131,6 +136,7 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
         },
         snapshot: {
           name: preset.name,
+          worldId,
           brainWaveType: preset.brainWaveType,
           toneMode: 'binaural',
           brainwaveEnabled: true,
@@ -142,10 +148,12 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
     }
     case 'nature': {
       const { mix } = target;
+      const worldId = worldIdForSession({ id: `nature:${mix.id}` });
       return {
         selected: {
           id: `nature:${mix.id}`,
           name: mix.name,
+          worldId,
           description: '자연음만으로 구성하는 사운드 장면',
           defaultDurationMinutes: natureMinutes,
           brainWaveType: 'alpha',
@@ -153,6 +161,7 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
         },
         snapshot: {
           name: mix.name,
+          worldId,
           brainWaveType: 'alpha',
           toneMode: 'binaural',
           brainwaveEnabled: false,
@@ -164,10 +173,12 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
     }
     case 'user': {
       const { preset } = target;
+      const worldId = worldIdForSession({ id: `user:${preset.id}`, worldId: preset.worldId });
       return {
         selected: {
           id: `user:${preset.id}`,
           name: preset.name,
+          worldId,
           description: '내가 저장한 리듬과 사운드 조합',
           defaultDurationMinutes: preset.durationMinutes,
           brainWaveType: preset.brainWaveType,
@@ -175,6 +186,7 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
         },
         snapshot: {
           name: preset.name,
+          worldId,
           brainWaveType: preset.brainWaveType,
           toneMode: preset.toneMode,
           brainwaveEnabled: preset.brainwaveEnabled,
@@ -187,16 +199,18 @@ export const sessionForLink = (target: SessionLinkTarget, natureMinutes: number)
     }
     case 'last': {
       const { session } = target;
+      const worldId = worldIdForSession({ id: 'last', name: session.name, worldId: session.worldId });
       return {
         selected: {
           id: 'last',
           name: session.name,
+          worldId,
           description: '최근 사용한 리듬과 사운드 조합',
           defaultDurationMinutes: session.durationMinutes,
           brainWaveType: session.brainWaveType,
           defaultBackgroundSound: 'none',
         },
-        snapshot: { ...session, layers: session.layers.map((layer) => ({ ...layer })) },
+        snapshot: { ...session, worldId, layers: session.layers.map((layer) => ({ ...layer })) },
       };
     }
   }

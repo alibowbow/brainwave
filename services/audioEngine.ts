@@ -10,6 +10,7 @@ import {
 } from '../audioSamples';
 import { DecodedSampleCache, type SampleBufferCache, type SampleLease } from './sampleAudio';
 import { DEPTH_MIX, SPATIAL, spatialPan } from '../sceneLayout';
+import type { AccentPlaybackState, AccentRequest, SceneAccentController, SceneAccentDependencies } from './immersiveAudio/types';
 
 // Length of the looping noise buffers. Longer buffers make the loop point far
 // less audible than a short 1-2s loop.
@@ -153,6 +154,43 @@ interface Voice {
 
 export class BinauralEngine {
   private ctx: AudioContext | null = null;
+  private sceneAccents: SceneAccentController | null = null;
+  private accentFactory: ((dependencies: SceneAccentDependencies) => SceneAccentController) | null = null;
+  private graphReady = false;
+  private masterVolume = 0;
+
+  /** Existing transport graph only; a resumed context on its own is not enough. */
+  isPlaybackReady(): boolean {
+    return this.graphReady && this.ctx?.state === 'running';
+  }
+
+  /** Optional synthesis arrives with scene metadata, never in the startup bundle. */
+  setImmersiveAccentFactory(factory: (dependencies: SceneAccentDependencies) => SceneAccentController): void {
+    this.accentFactory = factory;
+  }
+
+  setImmersiveAccentState(state: AccentPlaybackState): void {
+    const muted = state.muted || this.masterVolume <= 0 || this.natureVol <= 0;
+    const gateOpen = state.gateOpen && this.isPlaybackReady();
+    if (!this.sceneAccents && this.accentFactory && state.active && !muted && gateOpen && this.ctx && this.bgBus) {
+      this.sceneAccents = this.accentFactory({ context: this.ctx, output: this.bgBus });
+    }
+    this.sceneAccents?.setState({ active: state.active, muted, gateOpen });
+  }
+
+  triggerImmersiveAccent(request: AccentRequest): boolean {
+    if (!this.isPlaybackReady() || this.masterVolume <= 0 || this.natureVol <= 0) return false;
+    return this.sceneAccents?.trigger(request) ?? false;
+  }
+
+  pauseImmersiveAccents(): void { this.sceneAccents?.pause(); }
+  releaseImmersiveAccents(): void { this.sceneAccents?.release(); }
+
+  /** Unlock the existing context within a trusted play click before optional
+   * preset metadata loads. This does not create voices, a bus or an accent. */
+  preparePlayback(signal: AbortSignal) {
+    return resumeAudioContext(this.ensureContext(), signal);
+  }
 
   // Tone (brain-wave) path
   private leftOsc: OscillatorNode | null = null;
@@ -196,7 +234,7 @@ export class BinauralEngine {
 
   getPlaybackStates(): SoundPlaybackSnapshot {
     return Object.fromEntries([...this.voices].map(([type, voice]) => [type,
-      this.ctx?.state === 'suspended' && voice.playbackState === 'playing' ? 'loading' : voice.playbackState]));
+      this.ctx?.state !== 'running' && voice.playbackState === 'playing' ? 'loading' : voice.playbackState]));
   }
 
   private notifyPlayback() {
@@ -257,7 +295,12 @@ export class BinauralEngine {
       } catch {
         this.ctx = new Context();
       }
-      this.ctx.onstatechange = () => this.notifyPlayback();
+      this.ctx.onstatechange = () => {
+        if (this.ctx?.state !== 'running') {
+          this.sceneAccents?.setState({ active: false, muted: true, gateOpen: false });
+        }
+        this.notifyPlayback();
+      };
     }
     return this.ctx;
   }
@@ -300,6 +343,7 @@ export class BinauralEngine {
     this.stop();
 
     this.masterGain = this.ctx.createGain();
+    this.masterVolume = clampUnit(config.masterVol);
     this.masterGain.gain.value = levelToGain(config.masterVol);
 
     // Remove sub-audible/DC energy from procedural noise before dynamics. This
@@ -390,7 +434,9 @@ export class BinauralEngine {
     this.reverb.connect(this.reverbFilter).connect(this.reverbLp).connect(this.reverbWet).connect(this.masterGain);
 
     this.voices = new Map();
-    config.sounds.forEach((s) => this.addSound(s.type, s.volume, 0.8, false));
+    config.sounds.forEach((s) => this.addSound(s.type, s.muted ? 0 : s.volume, 0.8, false));
+    this.graphReady = true;
+    this.notifyPlayback();
   }
 
   // --- Brain-wave tone path ---
@@ -477,6 +523,10 @@ export class BinauralEngine {
   }
 
   setVolumes(master: number, binaural: number, bg: number) {
+    this.masterVolume = clampUnit(master);
+    if (this.masterVolume <= 0 || clampUnit(bg) <= 0) {
+      this.sceneAccents?.setState({ active: false, muted: true, gateOpen: false });
+    }
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
     this.binauralVol = clampUnit(binaural);
@@ -583,6 +633,7 @@ export class BinauralEngine {
   }
 
   removeSound(type: BackgroundSoundType, fadeSec = 0.8) {
+    this.releaseImmersiveAccents();
     const voice = this.voices.get(type);
     if (!voice || !this.ctx) return;
     this.voices.delete(type);
@@ -601,7 +652,7 @@ export class BinauralEngine {
     if (!this.ctx) return;
     this.voices.forEach((voice, type) => {
       const x = positions[type];
-      const pan = SPATIAL[type]?.wide ? 0 : x == null ? spatialPan(type) : Math.max(-0.6, Math.min(0.6, (x - 0.5) * 1.3));
+      const pan = SPATIAL[type]?.wide ? 0 : typeof x !== 'number' || !Number.isFinite(x) || x < 0 || x > 1 ? spatialPan(type) : Math.max(-0.6, Math.min(0.6, (x - 0.5) * 1.3));
       voice.panner.pan.setTargetAtTime(pan, this.ctx!.currentTime, 0.15);
     });
   }
@@ -610,6 +661,7 @@ export class BinauralEngine {
     const voice = this.voices.get(type);
     if (!voice || !this.ctx) return;
     const safeVolume = clampLayerVolume(volume);
+    if (safeVolume < voice.volume) this.releaseImmersiveAccents();
     const wasAudible = voice.volume > 0.001;
     voice.volume = safeVolume;
     voice.gain.gain.setTargetAtTime(
@@ -629,7 +681,7 @@ export class BinauralEngine {
 
   // Reconcile active layers to a desired set (add missing, drop extra, update volumes).
   setSounds(layers: SoundLayer[], fadeSec = 0.8) {
-    const desired = new Map(layers.map((l) => [l.type, l.volume] as const));
+    const desired = new Map(layers.map((l) => [l.type, l.muted ? 0 : l.volume] as const));
     for (const type of [...this.voices.keys()]) {
       if (!desired.has(type)) this.removeSound(type, fadeSec);
     }
@@ -3415,6 +3467,8 @@ export class BinauralEngine {
   // Gradually fade the whole mix to silence over `seconds`, then tear down.
   // Used by sleep mode so a session ends gently instead of cutting out.
   fadeOutStop(seconds = 10) {
+    this.graphReady = false;
+    this.pauseImmersiveAccents();
     if (!this.ctx || !this.masterGain) { this.stop(); return; }
     this.masterGain.gain.setTargetAtTime(0, this.ctx.currentTime, Math.max(0.005, seconds / 6));
     this.schedulePendingCleanup(() => this.stop(), Math.ceil(seconds * 1000) + 120);
@@ -3445,6 +3499,11 @@ export class BinauralEngine {
   }
 
   stop() {
+    // Close before notifyPlayback: its synchronous subscribers must not attach
+    // a fresh controller to the bus being disposed.
+    this.graphReady = false;
+    this.sceneAccents?.dispose();
+    this.sceneAccents = null;
     this.playbackStartGeneration += 1;
     this.modeSwitchGeneration += 1;
     this.teardownTone();
@@ -3500,4 +3559,3 @@ export class BinauralEngine {
     this.impulseBuffer = null;
   }
 }
-

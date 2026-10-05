@@ -1,0 +1,346 @@
+{
+  "schema": 1,
+  "scope": "Immutable actual run artifacts. Gzip expands to the exact original bytes/hash. Historical failed runs remain failed; different source manifests are not relabeled.",
+  "artifacts": [
+    {
+      "path": "audio/completed-report.json.gz",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "completed-report.json",
+      "originalBytes": 753529,
+      "originalSha256": "848b903f652a7617e1e813b6b8a69af484f4810a8f1e4d71312f39a01642458e",
+      "storedBytes": 164243,
+      "storedSha256": "12ab5c666ba59e893f8f9df19ba8232d77d2230644cb613125e65ff2311c04f3",
+      "encoding": "gzip exact original bytes"
+    },
+    {
+      "path": "audio/runner-summary.json",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "runner-summary.json",
+      "originalBytes": 5990,
+      "originalSha256": "ac0224c1642ab94a457c4bc91bc94390bacb7b7ae65d6b4f34b4b8158fa5eca2",
+      "storedBytes": 5990,
+      "storedSha256": "ac0224c1642ab94a457c4bc91bc94390bacb7b7ae65d6b4f34b4b8158fa5eca2",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "audio/review-summary.json",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "review-summary.json",
+      "originalBytes": 15244,
+      "originalSha256": "d4d4a3f47ad57c88d88261206c60fc81e2ceb16467825806c6ae0b05f8298532",
+      "storedBytes": 15244,
+      "storedSha256": "d4d4a3f47ad57c88d88261206c60fc81e2ceb16467825806c6ae0b05f8298532",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "audio/execution.log",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "execution.log",
+      "originalBytes": 683,
+      "originalSha256": "6e73e73f4b54d2cb1ad570e935cda4456b5e476f791e07a4add91ddd319fbe3f",
+      "storedBytes": 683,
+      "storedSha256": "6e73e73f4b54d2cb1ad570e935cda4456b5e476f791e07a4add91ddd319fbe3f",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "audio/review-summary.md",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "review-summary.md",
+      "originalBytes": 3067,
+      "originalSha256": "becb754062adb058993d445dc65ff775cf2abfd171d073a477af9e00838780f8",
+      "storedBytes": 3067,
+      "storedSha256": "becb754062adb058993d445dc65ff775cf2abfd171d073a477af9e00838780f8",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "audio/hybrid-fallback.png",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "hybrid-fallback.png",
+      "originalBytes": 1073702,
+      "originalSha256": "e0427d1acc9133633c7fe14cd6058051ffcd56ae4188579bdb95874ceef9f2bf",
+      "storedBytes": 1073702,
+      "storedSha256": "e0427d1acc9133633c7fe14cd6058051ffcd56ae4188579bdb95874ceef9f2bf",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "audio/rain-immersive-failure.png",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "rain-immersive-failure.png",
+      "originalBytes": 1200942,
+      "originalSha256": "58b87aecb5960ad3e2306f5ea00282678a6ac7a9820c515b0afc538cc601a32f",
+      "storedBytes": 1200942,
+      "storedSha256": "58b87aecb5960ad3e2306f5ea00282678a6ac7a9820c515b0afc538cc601a32f",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "audio/rain-player-failure.png",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "rain-player-failure.png",
+      "originalBytes": 1049078,
+      "originalSha256": "57a5ee0bb8fa272ee368660380aa3e987d8aea201fc3e9d85c99586ba3e28cca",
+      "storedBytes": 1049078,
+      "storedSha256": "57a5ee0bb8fa272ee368660380aa3e987d8aea201fc3e9d85c99586ba3e28cca",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "audio/rain-recovered-player.png",
+      "sourceRun": "local-audio-failures-20261005T000533Z",
+      "originalName": "rain-recovered-player.png",
+      "originalBytes": 1108451,
+      "originalSha256": "b46cb6128dca2fc8e78fb5f0f9472f87eb4240140494d6fc33fb41cbb4e1d37b",
+      "storedBytes": 1108451,
+      "storedSha256": "b46cb6128dca2fc8e78fb5f0f9472f87eb4240140494d6fc33fb41cbb4e1d37b",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links/runner-summary.json",
+      "sourceRun": "local-links-20261004T235449Z",
+      "originalName": "runner-summary.json",
+      "originalBytes": 4531,
+      "originalSha256": "334498d5f36bde305b0f35796cbc9853c341bb5a1fbcf54e04794e974b876c33",
+      "storedBytes": 4531,
+      "storedSha256": "334498d5f36bde305b0f35796cbc9853c341bb5a1fbcf54e04794e974b876c33",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links/review-summary.json",
+      "sourceRun": "local-links-20261004T235449Z",
+      "originalName": "review-summary.json",
+      "originalBytes": 8078,
+      "originalSha256": "26622db51df2522ed5ec9045deb806dc435fe91c41e8a9acd0db1593512e1fec",
+      "storedBytes": 8078,
+      "storedSha256": "26622db51df2522ed5ec9045deb806dc435fe91c41e8a9acd0db1593512e1fec",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links/execution.log",
+      "sourceRun": "local-links-20261004T235449Z",
+      "originalName": "execution.log",
+      "originalBytes": 335,
+      "originalSha256": "6f915df8f57806d83eefeb15885df3f2e4a3eabff62955d117d9cca31ae73c6c",
+      "storedBytes": 335,
+      "storedSha256": "6f915df8f57806d83eefeb15885df3f2e4a3eabff62955d117d9cca31ae73c6c",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links/review-summary.md",
+      "sourceRun": "local-links-20261004T235449Z",
+      "originalName": "review-summary.md",
+      "originalBytes": 1963,
+      "originalSha256": "f47aef43871ca23567542cd859d74842f3e6418e39468b7cde9d9e35e6c41594",
+      "storedBytes": 1963,
+      "storedSha256": "f47aef43871ca23567542cd859d74842f3e6418e39468b7cde9d9e35e6c41594",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links/link-verification.json.gz",
+      "sourceRun": "local-links-20261004T235449Z",
+      "originalName": "link-verification.json",
+      "originalBytes": 514543,
+      "originalSha256": "47092151ab4d721060b5849f3a33e1480fdb0ce61ae35c089e32044fbe0ac5cb",
+      "storedBytes": 90877,
+      "storedSha256": "15a889ae8853ddadf800b279376a5d2ce34cd1e422aee0ba6e825d61de883703",
+      "encoding": "gzip exact original bytes"
+    },
+    {
+      "path": "water/runner-summary.json",
+      "sourceRun": "native-app-water-teardown-20261004T232708Z",
+      "originalName": "runner-summary.json",
+      "originalBytes": 2417,
+      "originalSha256": "7bf1502906683ab7963126656e4d53f4dcb7fb9dc08798e2a8c8f3add1529ce9",
+      "storedBytes": 2417,
+      "storedSha256": "7bf1502906683ab7963126656e4d53f4dcb7fb9dc08798e2a8c8f3add1529ce9",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "water/results.json.gz",
+      "sourceRun": "native-app-water-teardown-20261004T232708Z",
+      "originalName": "results.json",
+      "originalBytes": 1124237,
+      "originalSha256": "1c7bf98e4c428c8c75369b2475bad0376843089c0acbc52367d85caeb3862a82",
+      "storedBytes": 191919,
+      "storedSha256": "500bbb7214cf65d93cbd9caebd0a10592e537f2d4bb8395cca786b825354ed97",
+      "encoding": "gzip exact original bytes"
+    },
+    {
+      "path": "water/review-summary.json",
+      "sourceRun": "native-app-water-teardown-20261004T232708Z",
+      "originalName": "review-summary.json",
+      "originalBytes": 10456,
+      "originalSha256": "e7f98035c4a124f3cb751ff2d424ae0d288e42e4c868eaa46c27cd92c9ae944d",
+      "storedBytes": 10456,
+      "storedSha256": "e7f98035c4a124f3cb751ff2d424ae0d288e42e4c868eaa46c27cd92c9ae944d",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "water/execution.log",
+      "sourceRun": "native-app-water-teardown-20261004T232708Z",
+      "originalName": "execution.log",
+      "originalBytes": 1049,
+      "originalSha256": "a255c6f046da75273cf1e968103bf2fc0e64b38c428cdc158185e4b70d2f9ecb",
+      "storedBytes": 1049,
+      "storedSha256": "a255c6f046da75273cf1e968103bf2fc0e64b38c428cdc158185e4b70d2f9ecb",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy/completed-report.json.gz",
+      "sourceRun": "local-cozy-disposal-20261005T000942Z",
+      "originalName": "completed-report.json",
+      "originalBytes": 4677187,
+      "originalSha256": "56395e21666e2a63f8efd2497a93a8b823dd866d1925938bf8e70667410b4f46",
+      "storedBytes": 399172,
+      "storedSha256": "c93e91e4d6c9e02b501b486a4c509b776a7bd62efb43079aa16ebee554a801fd",
+      "encoding": "gzip exact original bytes"
+    },
+    {
+      "path": "cozy/runner-summary.json",
+      "sourceRun": "local-cozy-disposal-20261005T000942Z",
+      "originalName": "runner-summary.json",
+      "originalBytes": 6524,
+      "originalSha256": "73b2f3cb10b0fecd0279fa1ac8c108cb08208eda72e9cb882869098b7152026b",
+      "storedBytes": 6524,
+      "storedSha256": "73b2f3cb10b0fecd0279fa1ac8c108cb08208eda72e9cb882869098b7152026b",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy/execution.log",
+      "sourceRun": "local-cozy-disposal-20261005T000942Z",
+      "originalName": "execution.log",
+      "originalBytes": 646,
+      "originalSha256": "26ac949d394d7935bcde4cfc9c717f16a6b093f4c8a25278e2c3f77ef957a422",
+      "storedBytes": 646,
+      "storedSha256": "26ac949d394d7935bcde4cfc9c717f16a6b093f4c8a25278e2c3f77ef957a422",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy-first/runner-summary.json",
+      "sourceRun": "local-cozy-disposal-20261004T234124Z",
+      "originalName": "runner-summary.json",
+      "originalBytes": 4346,
+      "originalSha256": "3c0d42c02f6b029473accf898c66d633fba5c9fc69181bf75c7c55bf02dab1e2",
+      "storedBytes": 4346,
+      "storedSha256": "3c0d42c02f6b029473accf898c66d633fba5c9fc69181bf75c7c55bf02dab1e2",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy-first/review-summary.json",
+      "sourceRun": "local-cozy-disposal-20261004T234124Z",
+      "originalName": "review-summary.json",
+      "originalBytes": 3854,
+      "originalSha256": "7316931cc78df97b33494621c5d71dcea5ff8343c611ba24f3a4053090ee6a1b",
+      "storedBytes": 3854,
+      "storedSha256": "7316931cc78df97b33494621c5d71dcea5ff8343c611ba24f3a4053090ee6a1b",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy-first/execution.log",
+      "sourceRun": "local-cozy-disposal-20261004T234124Z",
+      "originalName": "execution.log",
+      "originalBytes": 790,
+      "originalSha256": "fdecb62965328c7153e6f3db7e75de962dd5935478f2f35560755302dfdd242d",
+      "storedBytes": 790,
+      "storedSha256": "fdecb62965328c7153e6f3db7e75de962dd5935478f2f35560755302dfdd242d",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy-first/review-summary.md",
+      "sourceRun": "local-cozy-disposal-20261004T234124Z",
+      "originalName": "review-summary.md",
+      "originalBytes": 2508,
+      "originalSha256": "acfcb0ee39a3ea3445cddc0fdb91b95e9ba64d43febfc13c2bb3a7b6cbd545dd",
+      "storedBytes": 2508,
+      "storedSha256": "acfcb0ee39a3ea3445cddc0fdb91b95e9ba64d43febfc13c2bb3a7b6cbd545dd",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy-first/nature-verification.json.gz",
+      "sourceRun": "local-cozy-disposal-20261004T234124Z",
+      "originalName": "nature-verification.json",
+      "originalBytes": 572008,
+      "originalSha256": "227329d820b2543e43247ac52fafdd8543195d160f38e679d8c2403377de25d9",
+      "storedBytes": 156019,
+      "storedSha256": "ee390e2fcf5ca960ba54a11aad4e213604ebdb84c19521c36447762dfa2cd5bb",
+      "encoding": "gzip exact original bytes"
+    },
+    {
+      "path": "links-binding-first/runner-summary.json",
+      "sourceRun": "local-links-20261004T234844Z",
+      "originalName": "runner-summary.json",
+      "originalBytes": 6894,
+      "originalSha256": "4c82b63947081e5ee83db02ac2880e4b49965c7f5cfbc36bd0fc576ffbafb406",
+      "storedBytes": 6894,
+      "storedSha256": "4c82b63947081e5ee83db02ac2880e4b49965c7f5cfbc36bd0fc576ffbafb406",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links-binding-first/review-summary.json",
+      "sourceRun": "local-links-20261004T234844Z",
+      "originalName": "review-summary.json",
+      "originalBytes": 5565,
+      "originalSha256": "2100d2cf5758521095ce0d45e9240f0e9693c12f4651e0450b9083283e92a233",
+      "storedBytes": 5565,
+      "storedSha256": "2100d2cf5758521095ce0d45e9240f0e9693c12f4651e0450b9083283e92a233",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links-binding-first/execution.log",
+      "sourceRun": "local-links-20261004T234844Z",
+      "originalName": "execution.log",
+      "originalBytes": 245,
+      "originalSha256": "5d7ed7c19c6ae285db8e434606d5b74a88b8aece330fe5564e79064b3151adfe",
+      "storedBytes": 245,
+      "storedSha256": "5d7ed7c19c6ae285db8e434606d5b74a88b8aece330fe5564e79064b3151adfe",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "links-binding-first/review-summary.md",
+      "sourceRun": "local-links-20261004T234844Z",
+      "originalName": "review-summary.md",
+      "originalBytes": 1976,
+      "originalSha256": "b70d77da60e5d7d687db90a81dfb1869be1010e1c49b808c880e15f88c2fb89d",
+      "storedBytes": 1976,
+      "storedSha256": "b70d77da60e5d7d687db90a81dfb1869be1010e1c49b808c880e15f88c2fb89d",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy/review-summary.md",
+      "sourceRun": "local-cozy-disposal-20261005T000942Z",
+      "originalName": "review-summary.md",
+      "originalBytes": 3293,
+      "originalSha256": "ff8d53d3d45220d3b5a289803a5cd0b7287435aa7e684f593386cd80a365ecb6",
+      "storedBytes": 3293,
+      "storedSha256": "ff8d53d3d45220d3b5a289803a5cd0b7287435aa7e684f593386cd80a365ecb6",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy/review-summary.json",
+      "sourceRun": "local-cozy-disposal-20261005T000942Z",
+      "originalName": "review-summary.json",
+      "originalBytes": 21339,
+      "originalSha256": "aad2db1477a5ec2b4465c4ced23a473d52f0c2fa2b42562c2cce6d1e3809eba3",
+      "storedBytes": 21339,
+      "storedSha256": "aad2db1477a5ec2b4465c4ced23a473d52f0c2fa2b42562c2cce6d1e3809eba3",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy/dfg-upload-instance-1.bin",
+      "sourceRun": "local-cozy-disposal-20261005T000942Z",
+      "originalName": "dfg-upload-instance-1.bin",
+      "originalBytes": 1024,
+      "originalSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+      "storedBytes": 1024,
+      "storedSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+      "encoding": "exact original bytes"
+    },
+    {
+      "path": "cozy/dfg-upload-instance-2.bin",
+      "sourceRun": "local-cozy-disposal-20261005T000942Z",
+      "originalName": "dfg-upload-instance-2.bin",
+      "originalBytes": 1024,
+      "originalSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+      "storedBytes": 1024,
+      "storedSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+      "encoding": "exact original bytes"
+    }
+  ]
+}

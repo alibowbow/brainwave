@@ -1,0 +1,118 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-04T23:41:24Z",
+  "case": "cozy-disposal",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261004T234124Z",
+  "report": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261004T234124Z/evidence/nature-verification.json",
+  "outerLimitSeconds": 480,
+  "cleanupReserveSeconds": 25,
+  "gpuGrant": "one separately selected existing verifier; no retries or implicit batch",
+  "browser": "/tmp/cosmic-browser-bin/chromium",
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "gitStatusAtStart": "M components/liveScene/liveSceneHost.test.ts\n M components/liveScene/liveSceneHost.ts\n M scripts/verify-audio-failures.mjs\n M scripts/verify-links.mjs\n M scripts/verify-scenes.mjs\n?? components/liveScene/cozyEngineDisposal.test.ts\n?? components/liveScene/sceneDisposalContract.test.ts\n?? scripts/scene-disposal-contract.mjs",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "543cfdd8b61ffc4555179282a9fe4bb79b6e7dddf00963e40837be6e1068cf7a",
+  "wrapperSHA256": "780e6269909b1842ee96611ef1ebb8ee54aba6f556d68dcfe2f222eb795bc8ef",
+  "supportScripts": {
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc",
+    "verification-provenance.mjs": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2",
+    "cold-autoplay.mjs": "c1a4b59c5f41278de137d8a7c94df7e62f0438262085a1fe4f0d41de6c3492b9",
+    "scene-disposal-contract.mjs": "76ce9456f52e919aecd59a5e85a3aae262929470a6692b14d4b92c079d8cbfed"
+  },
+  "baseUrl": "http://127.0.0.1:35591/",
+  "previewCommand": [
+    "node",
+    "node_modules/vite/bin/vite.js",
+    "preview",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "35591",
+    "--strictPort"
+  ],
+  "previewPID": 10,
+  "servedIndexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+  "servedEntryAssets": {
+    "assets/index-CkDIijGa.js": {
+      "sha256": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "bytes": 418683
+    },
+    "assets/index-BXP0utCv.css": {
+      "sha256": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3",
+      "bytes": 103383
+    }
+  },
+  "command": [
+    "node",
+    "scripts/verify-scenes.mjs"
+  ],
+  "environmentOverrides": {
+    "SCENE_BASE_URL": "http://127.0.0.1:35591/",
+    "SCENE_BROWSER_PATH": "/tmp/cosmic-browser-bin/chromium",
+    "SCENE_SCREENSHOT_DIR": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261004T234124Z/evidence",
+    "SCENE_VERIFY_SCOPE": "cozy-disposal"
+  },
+  "runnerPID": 28,
+  "browserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-04T23:41:25.463Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:41:25.463Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:41:50.758Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:41:50.804Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:41:50.809Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:41:50.809Z"
+  },
+  "exitCode": 1,
+  "reportStatus": "failed",
+  "failure": "AssertionError [ERR_ASSERTION]: renderer release exceeded fixed 20s including host retention",
+  "reportErrors": [],
+  "cleanupErrors": [],
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "checks": [
+    {
+      "name": "Cozy real disposal postconditions within 20s including retention",
+      "status": "failed",
+      "failure": "AssertionError [ERR_ASSERTION]: renderer release exceeded fixed 20s including host retention"
+    }
+  ],
+  "ownedPids": [
+    10,
+    28
+  ],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 28.341,
+  "finishedAt": "2026-10-04T23:41:52Z"
+}

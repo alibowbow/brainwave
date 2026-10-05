@@ -1,0 +1,376 @@
+{
+  "version": 2,
+  "passed": true,
+  "budgetMs": 120000,
+  "startedAt": 54279,
+  "deadlineAt": 174279,
+  "maxReplacements": 8,
+  "replacements": 1,
+  "oldContextId": 1,
+  "before": {
+    "instance": 1,
+    "taps": 13,
+    "lastHit": "cup",
+    "frames": 48,
+    "time": 8.30880000000447,
+    "running": false,
+    "targets": [
+      {
+        "action": "cup",
+        "x": 0.10181518315902666,
+        "y": 0.8125590954840582,
+        "z": 0.9569004896133495
+      },
+      {
+        "action": "cup",
+        "x": 0.05333203807554232,
+        "y": 0.7656469701435584,
+        "z": 0.9568973537142805
+      },
+      {
+        "action": "lamp",
+        "x": 0.10734110039703582,
+        "y": 0.45051655710232014,
+        "z": 0.9673495917121584
+      },
+      {
+        "action": "lamp",
+        "x": 0.11272193902631739,
+        "y": 0.6027171884734851,
+        "z": 0.9672611221954316
+      },
+      {
+        "action": "log",
+        "x": 0.9014166310301769,
+        "y": 0.7447993194139689,
+        "z": 0.9780888288779535
+      },
+      {
+        "action": "log",
+        "x": 0.9300013682115167,
+        "y": 0.7279177483067474,
+        "z": 0.9777985014716816
+      },
+      {
+        "action": "log",
+        "x": 0.958808828231569,
+        "y": 0.7516784546944905,
+        "z": 0.9775269365320773
+      },
+      {
+        "action": "log",
+        "x": 0.9888709268073961,
+        "y": 0.7344619072992344,
+        "z": 0.9772218811362687
+      },
+      {
+        "action": "log",
+        "x": 1.0191305303951814,
+        "y": 0.7589087258771514,
+        "z": 0.9769363631721307
+      }
+    ],
+    "drawCalls": 631,
+    "triangles": 2675522,
+    "memory": {
+      "geometries": 393,
+      "textures": 31
+    },
+    "lifetime": {
+      "created": 1,
+      "disposed": 0
+    }
+  },
+  "submissionsBefore": {
+    "instance": 1,
+    "contextId": 1,
+    "canvasId": 1,
+    "renderEntries": 48,
+    "renderReturns": 48,
+    "renderThrows": 0,
+    "drawCallsSum": 30398,
+    "trianglesSum": 128493086,
+    "pointsSum": 7920,
+    "linesSum": 0,
+    "lastSubmitEntryAt": 54244,
+    "lastSubmitReturnAt": 54247.19999999553,
+    "lastRendererMs": 3.1999999955296516
+  },
+  "canvasBefore": {
+    "boundaryCanvasId": 1,
+    "connected": true,
+    "parent": "cozy-world-mount",
+    "backingWidth": 960,
+    "backingHeight": 700,
+    "cssWidth": 960,
+    "cssHeight": 700,
+    "instance": "1"
+  },
+  "fences": [
+    {
+      "id": 1,
+      "reason": "initial covering current completed submissions",
+      "matchedZeroDtCalls": [],
+      "placementCounters": {
+        "frames": 48,
+        "entries": 48,
+        "returns": 48,
+        "throws": 0,
+        "zeroDtCount": 28
+      },
+      "submissionsAtPlacement": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 48,
+        "renderReturns": 48,
+        "renderThrows": 0,
+        "drawCallsSum": 30398,
+        "trianglesSum": 128493086,
+        "pointsSum": 7920,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 54244,
+        "lastSubmitReturnAt": 54247.19999999553,
+        "lastRendererMs": 3.1999999955296516
+      },
+      "createdAt": 54460.69999999553,
+      "nonnull": true,
+      "polls": 127,
+      "timeoutExpiredCount": 127,
+      "statusTransitions": [
+        {
+          "fenceId": 1,
+          "status": "TIMEOUT_EXPIRED",
+          "at": 54478.89999999851,
+          "poll": 1
+        }
+      ],
+      "clientWaitTotalMs": 1.0000000074505806,
+      "clientWaitMaxMs": 0.10000000149011612,
+      "deleteCalls": 1,
+      "deleteReturned": true,
+      "fenceSyncMs": 0.8999999985098839,
+      "flushMs": 0,
+      "clientWaitLastMs": 0,
+      "clientWaitFirstMs": 0,
+      "supersededByZeroDtCalls": [
+        29
+      ],
+      "supersededAt": 56595.10000000149,
+      "deleteReason": "superseded by observed successful paused zero-dt submissions",
+      "deleteEntryAt": 56595.39999999851,
+      "deleteMs": 0,
+      "deleteReturnAt": 56595.39999999851,
+      "lifetimeMs": 2134.7000000029802
+    },
+    {
+      "id": 2,
+      "reason": "covers observed successful late renderFrame(0)",
+      "matchedZeroDtCalls": [
+        29
+      ],
+      "placementCounters": {
+        "frames": 49,
+        "entries": 49,
+        "returns": 49,
+        "throws": 0,
+        "zeroDtCount": 29
+      },
+      "submissionsAtPlacement": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 49,
+        "renderReturns": 49,
+        "renderThrows": 0,
+        "drawCallsSum": 31029,
+        "trianglesSum": 131168608,
+        "pointsSum": 8085,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 56582.10000000149,
+        "lastSubmitReturnAt": 56585.19999999553,
+        "lastRendererMs": 3.0999999940395355
+      },
+      "createdAt": 56595.69999999553,
+      "nonnull": true,
+      "polls": 6418,
+      "timeoutExpiredCount": 6417,
+      "statusTransitions": [
+        {
+          "fenceId": 2,
+          "status": "TIMEOUT_EXPIRED",
+          "at": 56612.29999999702,
+          "poll": 1
+        },
+        {
+          "fenceId": 2,
+          "status": "CONDITION_SATISFIED",
+          "at": 164895,
+          "poll": 6418
+        }
+      ],
+      "clientWaitTotalMs": 98.99999985098839,
+      "clientWaitMaxMs": 2.2000000029802322,
+      "deleteCalls": 1,
+      "deleteReturned": true,
+      "fenceSyncMs": 0,
+      "flushMs": 0,
+      "clientWaitLastMs": 0,
+      "clientWaitFirstMs": 0,
+      "signaledAt": 164895.29999999702,
+      "deleteReason": "latest covering fence signaled",
+      "deleteEntryAt": 164895.5,
+      "deleteMs": 0,
+      "deleteReturnAt": 164895.6000000015,
+      "lifetimeMs": 108299.90000000596
+    }
+  ],
+  "ownedSyncs": 2,
+  "polls": 6545,
+  "timeoutExpiredCount": 6544,
+  "statusTransitions": [
+    {
+      "fenceId": 1,
+      "status": "TIMEOUT_EXPIRED",
+      "at": 54478.89999999851,
+      "poll": 1
+    },
+    {
+      "fenceId": 2,
+      "status": "TIMEOUT_EXPIRED",
+      "at": 56612.29999999702,
+      "poll": 1
+    },
+    {
+      "fenceId": 2,
+      "status": "CONDITION_SATISFIED",
+      "at": 164895,
+      "poll": 6418
+    }
+  ],
+  "clientWaitTotalMs": 99.99999985843897,
+  "clientWaitMaxMs": 2.2000000029802322,
+  "deleteSyncCalls": 2,
+  "acceptedZeroDtRecords": [
+    {
+      "instance": 1,
+      "call": 29,
+      "dt": 0,
+      "entryAt": 56582,
+      "returnAt": 56585.29999999702,
+      "before": {
+        "frames": 48,
+        "time": 8.30880000000447,
+        "running": false,
+        "entries": 48,
+        "returns": 48,
+        "throws": 0
+      },
+      "after": {
+        "frames": 49,
+        "time": 8.30880000000447,
+        "running": false,
+        "entries": 49,
+        "returns": 49,
+        "throws": 0
+      }
+    }
+  ],
+  "clientWaitLastMs": 0,
+  "clientWaitFirstMs": 0,
+  "status": "CONDITION_SATISFIED",
+  "signaledAt": 164895.29999999702,
+  "signaledFenceId": 2,
+  "after": {
+    "instance": 1,
+    "taps": 13,
+    "lastHit": "cup",
+    "frames": 49,
+    "time": 8.30880000000447,
+    "running": false,
+    "targets": [
+      {
+        "action": "cup",
+        "x": 0.10181518315902666,
+        "y": 0.8125590954840582,
+        "z": 0.9569004896133495
+      },
+      {
+        "action": "cup",
+        "x": 0.05333203807554232,
+        "y": 0.7656469701435584,
+        "z": 0.9568973537142805
+      },
+      {
+        "action": "lamp",
+        "x": 0.10734110039703582,
+        "y": 0.45051655710232014,
+        "z": 0.9673495917121584
+      },
+      {
+        "action": "lamp",
+        "x": 0.11272193902631739,
+        "y": 0.6027171884734851,
+        "z": 0.9672611221954316
+      },
+      {
+        "action": "log",
+        "x": 0.9014166310301769,
+        "y": 0.7447993194139689,
+        "z": 0.9780888288779535
+      },
+      {
+        "action": "log",
+        "x": 0.9300013682115167,
+        "y": 0.7279177483067474,
+        "z": 0.9777985014716816
+      },
+      {
+        "action": "log",
+        "x": 0.958808828231569,
+        "y": 0.7516784546944905,
+        "z": 0.9775269365320773
+      },
+      {
+        "action": "log",
+        "x": 0.9888709268073961,
+        "y": 0.7344619072992344,
+        "z": 0.9772218811362687
+      },
+      {
+        "action": "log",
+        "x": 1.0191305303951814,
+        "y": 0.7589087258771514,
+        "z": 0.9769363631721307
+      }
+    ],
+    "drawCalls": 631,
+    "triangles": 2675522,
+    "memory": {
+      "geometries": 393,
+      "textures": 31
+    },
+    "lifetime": {
+      "created": 1,
+      "disposed": 0
+    }
+  },
+  "submissionsAfter": {
+    "instance": 1,
+    "contextId": 1,
+    "canvasId": 1,
+    "renderEntries": 49,
+    "renderReturns": 49,
+    "renderThrows": 0,
+    "drawCallsSum": 31029,
+    "trianglesSum": 131168608,
+    "pointsSum": 8085,
+    "linesSum": 0,
+    "lastSubmitEntryAt": 56582.10000000149,
+    "lastSubmitReturnAt": 56585.19999999553,
+    "lastRendererMs": 3.0999999940395355
+  },
+  "completionClaim": "Latest fence signaled covering latest observed completed submissions; post-signal coverage remains monitored through disposal and final summary",
+  "elapsedMs": 110616.60000000149,
+  "allOwnedSyncsDeletedOnce": true
+}

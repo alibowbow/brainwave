@@ -1,0 +1,98 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-04T20:48:28.423Z",
+  "gitHead": "eff612d8ea6ba63d2cc41a11d834e5fa11518461",
+  "source": {
+    "sha256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "60ff86a05ac3a31074cc8fea9452c91b31c3a00023a91a06d2426f765be98f7f",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "bundle": {
+    "sha256": "4a60f6da09dc8262462680a669266703df36fdbb5cc571c85501f995e9f54ca5",
+    "files": [
+      "assets/CozyWorld-CyoJwlwq.js",
+      "assets/CozyWorld-CyoJwlwq.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-t1-3LUjv.js",
+      "assets/HearthWorld-t1-3LUjv.js.map",
+      "assets/NapTerraceWorld-vHIe6Izv.js",
+      "assets/NapTerraceWorld-vHIe6Izv.js.map",
+      "assets/SleepRoomWorld-CsmawBkF.js",
+      "assets/SleepRoomWorld-CsmawBkF.js.map",
+      "assets/WinterLodgeWorld-CJ1DYwfh.js",
+      "assets/WinterLodgeWorld-CJ1DYwfh.js.map",
+      "assets/fireDetail-dlYN0YUl.js",
+      "assets/fireDetail-dlYN0YUl.js.map",
+      "assets/index-DCNi3KY6.js",
+      "assets/index-DCNi3KY6.js.map",
+      "assets/main-Dj_q0n-s.js",
+      "assets/main-Dj_q0n-s.js.map",
+      "assets/materials-Co7f-9zt.js",
+      "assets/materials-Co7f-9zt.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-CyoJwlwq.js": "3ad33cbb5d2ab6de4d285a7f2b09b327819eddbc822915cde606ac7a92b27b13",
+      "assets/CozyWorld-CyoJwlwq.js.map": "6af96743bc45356f848e6f779eab29cc547888f12c171e001f29c63f20813ce4",
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/HearthWorld-t1-3LUjv.js": "4d9bbd1a495c8e872cd4dfa8ee6f660ab8553142014107f3d150559992c3b3e8",
+      "assets/HearthWorld-t1-3LUjv.js.map": "6d5212234bbaf2cb9839c5ee57b9879bf3e69da698e6d3e9c1c7371fa205b80d",
+      "assets/NapTerraceWorld-vHIe6Izv.js": "38f1394fe30dd30eab9191bae6972748bd75fac0624e25d3d2dfbee5aeb46a7d",
+      "assets/NapTerraceWorld-vHIe6Izv.js.map": "7d1509d6b2d269d8aec090d1562b22396b5a7c96793cedd9ced739a695a791bd",
+      "assets/SleepRoomWorld-CsmawBkF.js": "2ff03b7e0625ba84fbdf825b0b4d637b0b300687e943b4229dbb9952e8dcf447",
+      "assets/SleepRoomWorld-CsmawBkF.js.map": "a8f46c74bfb7fee0b1be4123df5207140be5fd199653936d0c76da926c4e32b1",
+      "assets/WinterLodgeWorld-CJ1DYwfh.js": "4aad49ff05a7c98e630d32af37d25f1ec5bec66cf811ddd7962f0aa7df5539eb",
+      "assets/WinterLodgeWorld-CJ1DYwfh.js.map": "8f593e970a337515ce97eeaa55b665e6052e36f9e0c05887b637985c91152799",
+      "assets/fireDetail-dlYN0YUl.js": "b2b2fcb50957682dfd2fd38ef0bc3fa1c33cb46f8467a305641e384f66f2cc25",
+      "assets/fireDetail-dlYN0YUl.js.map": "b5d889ac1d7fdb1999d9e1a46a3463b8ac2db1c1953931d5abf09f3b65f776fb",
+      "assets/index-DCNi3KY6.js": "f01d18540c35320fffda8cedc94f81aa3af9d66ff96a4ebf81dfa11c0e8ffe46",
+      "assets/index-DCNi3KY6.js.map": "006090f5bf42fb659fb494ea931343076de2227ea2efd7195b5b85599d2b3c87",
+      "assets/main-Dj_q0n-s.js": "554aeac61e9eff9643fada9bfe5f23c8ae46ac51cef492493a703378c1c4f8be",
+      "assets/main-Dj_q0n-s.js.map": "16cc687876fc5cac4dbcd2951c128e79d3604e88f17c9f7609ba1928200f953b",
+      "assets/materials-Co7f-9zt.js": "626a7820510c159c263021a0c745df1d8c27c2df4e525d7af9f1294d6cc22cb1",
+      "assets/materials-Co7f-9zt.js.map": "b4f03a3ec6b2d6f6e48ec7577120ec91080c0e8f1986a023abee6d5422c4788d",
+      "index.html": "dbb390f9ebcbefc76bfcdb4530ce1014604947591b60d85d8796d6fcbb7183a9"
+    }
+  },
+  "method": "Separate clean browser per world; at least 3 actual animated submissions then pause and holder roundtrip. No screenshots, GPU fences, canvas readback, forced context loss, or other capture work. QA-only wrappers record original host 5000 ms timer, canvas removal, CozyEngine.dispose entry/exit, context-loss events and heartbeat.",
+  "results": [
+    {
+      "world": "relax",
+      "browser": "153.0.8010.0",
+      "passed": false
+    }
+  ],
+  "errors": [
+    "AssertionError [ERR_ASSERTION]: all distinct lifecycle phases observed\n    at file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/followup/lifecycle.mjs:51:10"
+  ]
+}

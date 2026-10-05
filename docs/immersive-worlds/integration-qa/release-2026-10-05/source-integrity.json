@@ -1,0 +1,144 @@
+{
+  "main": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+  "expectedCore": "2fb2bb6f03b8929415cc3fe2aa19379f2d277d6f",
+  "registry30": true,
+  "registrySHA256": "58c8b32beffed139d1ac4229c43a9c30c38acaa2d97c5d6350dc473be87654e7",
+  "ownerRoots": [
+    {
+      "path": "components/immersiveWorlds/forest",
+      "head": "7382d7c8fd822c46981d764e4381c9b10ffcd816",
+      "treeOrBlob": "a4c73b663c1e83144bece76248b9b4a6dfc5cde8",
+      "files": 72,
+      "exact": true
+    },
+    {
+      "path": "public/immersive-worlds/forest",
+      "head": "7382d7c8fd822c46981d764e4381c9b10ffcd816",
+      "treeOrBlob": "f4db2ef4e45cc0b9b597005e3f56bac8067d8a9d",
+      "files": 4,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/cafe",
+      "head": "e2cc261cd5f88fa6ca9142bf4e6b77ad0eac5925",
+      "treeOrBlob": "7b331af745761d10aa59b0ee078b05c68a18962b",
+      "files": 42,
+      "exact": true
+    },
+    {
+      "path": "public/immersive-worlds/cafe",
+      "head": "e2cc261cd5f88fa6ca9142bf4e6b77ad0eac5925",
+      "treeOrBlob": "12efd2d81a4d09b75696e1161989b4cd11f88e4c",
+      "files": 5,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/cosmic",
+      "head": "c9383a0799b26fc8990363ea93affc8dca982d3b",
+      "treeOrBlob": "42a361865f4339c28dc969d207a0dadb8bf65b20",
+      "files": 46,
+      "exact": true
+    },
+    {
+      "path": "public/immersive-worlds/cosmic",
+      "head": "c9383a0799b26fc8990363ea93affc8dca982d3b",
+      "treeOrBlob": "d149c2ccb5c5c95656cf0f4161576c1727849f78",
+      "files": 10,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/waterEdge",
+      "head": "d5f00475ad86cde3e489157e25e0aa14b400c9e8",
+      "treeOrBlob": "452ca7e26d6bdef933385833f6738d60548e5b8a",
+      "files": 162,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/deepWater",
+      "head": "3ecff28909ac7e3550bf923be9b148fa028ad80b",
+      "treeOrBlob": "0b114df5139ec26ee385807030ec59f82277a3f9",
+      "files": 75,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/cozyRooms",
+      "head": "c8084e10fb49a8d84645d02174443e83a41e3073",
+      "treeOrBlob": "e7c041792f3df940b78ee9f40efa4e7f2b2a6720",
+      "files": 482,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/rainShelters",
+      "head": "633c55f1e6fbacfe28ceb770ad9fecb40fefaa7c",
+      "treeOrBlob": "83c47a43edef54302520edb6cf194302e720dfb2",
+      "files": 135,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/livingWoods",
+      "head": "02fa38c6010f7aed45da501309c3958bdd63826c",
+      "treeOrBlob": "3e040eff650bc4240bec9916d0238f67594798c6",
+      "files": 133,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/koreanPlaces",
+      "head": "4b5f23ae7a1d37254da369b575837ee28462d9ab",
+      "treeOrBlob": "1a2ef94f0fc4446d181dd5bf64e56d80b9f393de",
+      "files": 182,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/nightFires",
+      "head": "3ad1292f971dfb37186d423be6c6c19e8620f4d0",
+      "treeOrBlob": "e9a215c3108d6bbba85ef3f0e824a270a00d2e37",
+      "files": 85,
+      "exact": true
+    },
+    {
+      "path": "components/immersiveWorlds/quietSanctuaries",
+      "head": "215f9c849c96f54421495d55d346e90975fb6402",
+      "treeOrBlob": "b1ed9bacfbd19c68f81bd3eef87b5ebbaf21999c",
+      "files": 70,
+      "exact": true
+    }
+  ],
+  "ownerFiles": 1503,
+  "protected": [
+    {
+      "path": "components/rainyWindow",
+      "head": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+      "treeOrBlob": "2624b583bef4e7caee84bb8b87c0a044fa1f4832",
+      "files": 22,
+      "exact": true
+    },
+    {
+      "path": "components/oilSea",
+      "head": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+      "treeOrBlob": "70876f0d9d8bdef465bd8c308c5ecb0630487b42",
+      "files": 22,
+      "exact": true
+    },
+    {
+      "path": "public/images/nature/backgrounds/oil-sea-v2.webp",
+      "head": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+      "treeOrBlob": "7331c02ea92f5f9cb4920b504749b3c9afd6cd3b",
+      "files": 1,
+      "exact": true
+    },
+    {
+      "path": "public/images/nature/backgrounds/focus-window-v1.webp",
+      "head": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+      "treeOrBlob": "6c0cfb4ea5265e3066f5ce9a668a41ece2c6f267",
+      "files": 1,
+      "exact": true
+    }
+  ],
+  "audio": {
+    "path": "services/immersiveAudio",
+    "head": "cc5b47fea7989b60f5ffb9a17ad4c16264508901",
+    "treeOrBlob": "c527953fb31ff3bb087ec96434ade8ce3ae60b47",
+    "files": 23,
+    "exact": true
+  }
+}

@@ -37,10 +37,112 @@ jobs:
       - name: Install browser
         run: npx playwright-core install --with-deps chromium
 
-      - name: Verify scene experience
+      - name: Start built preview
+        id: preview
         run: |
-          npm run preview -- --host 127.0.0.1 --port 4173 &
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/brainwave-preview.log 2>&1 &
+          ./node_modules/.bin/vite --config components/immersiveWorlds/forest/harness.vite.config.ts > /tmp/brainwave-forest-harness.log 2>&1 &
+          curl --fail --silent --output /dev/null --retry 20 --retry-delay 1 --retry-connrefused http://127.0.0.1:4173
+          curl --fail --silent --output /dev/null --retry 20 --retry-delay 1 --retry-connrefused http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
+
+      - name: Verify scene experience
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: |
           npm run verify:scenes
-          npm run verify:focus
-          npm run verify:sea
-          npm run verify:links
+
+      - name: Verify protected focus scene
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:focus
+
+      - name: Verify protected sea scene
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:sea
+
+      - name: Verify links and history
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:links
+
+      - name: Preserve protected and existing scene screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-core
+          path: |
+            qa/screenshots/*.png
+            qa/screenshots/*.json
+            qa/screenshots/links
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Verify audio failures and recovery
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=20s 8m npm run verify:audio
+
+      - name: Preserve audio screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-audio
+          path: |
+            qa/screenshots/audio
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Verify admitted immersive worlds
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+          SCENE_FOREST_HARNESS_URL: http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html
+        run: timeout --signal=TERM --kill-after=40s 20m npm run verify:worlds
+
+      - name: Preserve forest screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-forest
+          path: |
+            qa/screenshots/worlds/forest-*
+            components/immersiveWorlds/forest/qa/ci-output
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Verify integrated cafe world
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=40s 20m npm run verify:cafe
+
+      - name: Preserve cafe screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-cafe
+          path: |
+            qa/screenshots/worlds/cafe-*
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Verify integrated cosmic world
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        env:
+          SCENE_SCREENSHOT_DIR: qa/screenshots
+        run: timeout --signal=TERM --kill-after=40s 20m npm run verify:cosmic
+
+      - name: Preserve cosmic screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-cosmic
+          path: |
+            qa/screenshots/worlds/cosmic-*
+          if-no-files-found: ignore
+          retention-days: 14

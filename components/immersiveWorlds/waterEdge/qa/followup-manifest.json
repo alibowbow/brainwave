@@ -1,0 +1,1227 @@
+{
+  "generatedAt": "2026-10-04T20:48:07.774544+00:00",
+  "originalHead": "299a18911b2b7818149e4997dc2101b9c760bef5",
+  "productionCommit": "9420bd71def5f8ec6de13006f6132e0ee09ff621",
+  "sourceSha256": "33f976ba9b24293c39bbefabf6cfe6c0e54253323f8dd7f25bb6a2fa3415e96a",
+  "harnessSha256": "9b559e99dcfe3e220b1c9e07a14ddec87a546d6502d3d4768626d9acad68b02d",
+  "bundleSha256": "ae74b16d8207d48f7f03cf61ff9295aa8e4db7578bd34a379552cb4e884a998b",
+  "baseline": {
+    "gitHead": "b4fee13a43a6e3188786401f94d1426d7300b5e7",
+    "sourceSha256": "09b3112034e6f20cdcf3f170f056154a81cd6ef87d623cd73434cc44ae519cf7",
+    "harnessSha256": "c41329d2aab9caf019cfe71f0540da1c76ce38cea8fe723321cccc64106bfffe",
+    "bundleSha256": "49ac6409b4b31f74d4da1251973d5a31547c991a71d54fa526e4c3c2f20e889a"
+  },
+  "sourceFiles": {
+    "NightPondWorld.tsx": "228aa758d21ace5711838ddaa722bf47d74beab3b618ebf6fe26801742a518e3",
+    "PebbleShoreWorld.tsx": "4ccd204582fff58a80161dcfa32d58cb43392076ae3c28ee71d49bfd034f95aa",
+    "SummerValleyWorld.tsx": "7009d7f90583239861f3cc224d1f1abb04a49767e271cf982d0acb2ae56c8129",
+    "WorldView.tsx": "338f80f24b4927f3e18d973b317e38d6af4e50305ac48c34576f1c646b038409",
+    "byteEnvironment.ts": "2eda1c0138facba09ee68d1252aec62c00ec38dac156cd1c12ed39b1f9b4fe81",
+    "contracts.ts": "30e6475faa42b8783c4fbfc8d913103cb5c10c03923a45791b3b832bbc0dd908",
+    "renderTargets.ts": "76dc7e9336a62032f388f51dd2cc93b6a2e8204ba5a23c88654051dfaf083319",
+    "runtime.ts": "cc42cdc993e8b04a0ea70741533393b2f31fde0da29b5e701df6703679ba0ccf",
+    "scenes/nightPond.ts": "40d6a47933485e7bd6455dba3c5e059cd10330016ece618b8233c7bb11426e01",
+    "scenes/pebbleShore.ts": "99947e1230a3a6e62b8e2fe8c2aaf6c95e7de60614f41a59d0c711187ada8e4d",
+    "scenes/summerValley.ts": "ef9d86d55cdc973bffc00df75c75bc1070b4c41c4cbedf8b419e1f0291724ad5",
+    "water-edge.css": "7018b643e6c60a2f52ad6dbb8a771eace948472fb8381bccb580ed28c5fd6763"
+  },
+  "runs": [
+    {
+      "file": "night-pond-normal-desktop-behavior.json",
+      "sha256": "204c2ad3c56dff361eaf71edf0d1989589ba92da32822bc83f44c0ac88896bf9",
+      "status": "passed",
+      "world": "night-pond",
+      "mode": "normal",
+      "stage": "behavior",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "5e8a843eff0914deeea42a3dbda166e28193baeef2acdbe797d419bcca2f9e2e",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "night-pond-normal-desktop-lifecycle.json",
+      "sha256": "39001f05fcc736f1bd42c5093495687f7616d634160e51164b6a67eedf3b0dc3",
+      "status": "passed",
+      "world": "night-pond",
+      "mode": "normal",
+      "stage": "lifecycle",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "night-pond-normal-desktop-visual.json",
+      "sha256": "c1f5908be8df2ca2cf76696eac1e0dba60897de6d86387262dbb9d4e11cd490c",
+      "status": "passed",
+      "world": "night-pond",
+      "mode": "normal",
+      "stage": "visual",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "night-pond-normal-portrait-visual.json",
+      "sha256": "a54192c57fd8904b730731000ee4484f4663f8c2c5658a21a59ffbe5c1f51c99",
+      "status": "passed",
+      "world": "night-pond",
+      "mode": "normal",
+      "stage": "visual",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-byte-desktop-behavior.json",
+      "sha256": "b1889409daa29e747eab8136b52e461f661969453147b0550c526c59f39791ff",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "stage": "behavior",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-byte-desktop-lifecycle.json",
+      "sha256": "dd8a829970dbb40b32c61d6d01f80f50d4a90d2049f1f7240d88297c1258466f",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "stage": "lifecycle",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-byte-desktop-visual.json",
+      "sha256": "7ea21388582ea7e72ad8c0bf3320ca02182795fbd3b5995fb5011e8d9a187020",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "stage": "visual",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-byte-portrait-visual.json",
+      "sha256": "48b3c1daf05fe5e07e5afc7b2870308892f9133c7de4116d455bc8f05ce1635d",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "byte",
+      "stage": "visual",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-normal-desktop-behavior.json",
+      "sha256": "ba12b5ed09f43e52a8077253e034e80ca55e616d433792a917046182b0acb8a8",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "stage": "behavior",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "5e8a843eff0914deeea42a3dbda166e28193baeef2acdbe797d419bcca2f9e2e",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-normal-desktop-lifecycle.json",
+      "sha256": "d68cb8e8f7c936c327822198d810c53c042d24a35ffffd3407d6da31433ae131",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "stage": "lifecycle",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-normal-desktop-visual.json",
+      "sha256": "e2730a8e66cb104cf5781e4b7ff51b9a3a0f0412900ec23bba51582ac293a9e3",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "stage": "visual",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "pebble-shore-normal-portrait-visual.json",
+      "sha256": "34dd0aa525f1bb2a4066824885ab5c5a82a92710cf11bd7eabb1b3b16d30844f",
+      "status": "passed",
+      "world": "pebble-shore",
+      "mode": "normal",
+      "stage": "visual",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "summer-valley-byte-desktop-behavior.json",
+      "sha256": "714f4bffe0de3e47dbdaca255ec9b6d32f44f428315c0574988b18f5692ccf4d",
+      "status": "passed",
+      "world": "summer-valley",
+      "mode": "byte",
+      "stage": "behavior",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "summer-valley-byte-desktop-lifecycle.json",
+      "sha256": "09822ae6a1d9f499f1554ae2ab9956bf1b86a437d2c5e534c62e1930d673bce6",
+      "status": "failed",
+      "world": "summer-valley",
+      "mode": "byte",
+      "stage": "lifecycle",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+      "errors": [],
+      "failure": "page.waitForFunction: Timeout 20000ms exceeded.\n    at /workspace/scratch/fce391ff1294/brainwave-wateredge-followup/components/immersiveWorlds/waterEdge/qa/followup-verify.mjs:253:18"
+    },
+    {
+      "file": "summer-valley-byte-desktop-visual.json",
+      "sha256": "47c71215f2af9f37a05265e6b9605021ba6c8a0a04c0a99aed2ba539abe4da46",
+      "status": "passed",
+      "world": "summer-valley",
+      "mode": "byte",
+      "stage": "visual",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "summer-valley-byte-portrait-visual.json",
+      "sha256": "3c9102c4059cdb8a9552fc0695f0891400cd61d09352a7c04d9fbee713369162",
+      "status": "passed",
+      "world": "summer-valley",
+      "mode": "byte",
+      "stage": "visual",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "summer-valley-normal-desktop-behavior.json",
+      "sha256": "1fed1b00a1182d4c84fd0496b1706bb4e35f56f06fcd112990e9f4cc49e285d1",
+      "status": "passed",
+      "world": "summer-valley",
+      "mode": "normal",
+      "stage": "behavior",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "5e8a843eff0914deeea42a3dbda166e28193baeef2acdbe797d419bcca2f9e2e",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "summer-valley-normal-desktop-lifecycle.json",
+      "sha256": "2c5f4fe6425d327a4e6d67a9bf4b7cdf4425c72b513bd4307315e2007ef69421",
+      "status": "failed",
+      "world": "summer-valley",
+      "mode": "normal",
+      "stage": "lifecycle",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "1b8d213ac94f8ff98bd91dfb7b3e206b831c3e92d2b2424fa48f2a4e9b59acee",
+      "errors": [],
+      "failure": "page.waitForFunction: Timeout 20000ms exceeded.\n    at /workspace/scratch/fce391ff1294/brainwave-wateredge-followup/components/immersiveWorlds/waterEdge/qa/followup-verify.mjs:253:18"
+    },
+    {
+      "file": "summer-valley-normal-desktop-visual.json",
+      "sha256": "ce466ef5341d5e65a284a579d9253e373b70fe6663a828e158d660ad403653f2",
+      "status": "passed",
+      "world": "summer-valley",
+      "mode": "normal",
+      "stage": "visual",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    },
+    {
+      "file": "summer-valley-normal-portrait-visual.json",
+      "sha256": "0fda31eccf511c8de8ca9e1bab607fbe7a2ab6f8950b096e9b7523355842b375",
+      "status": "passed",
+      "world": "summer-valley",
+      "mode": "normal",
+      "stage": "visual",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scriptSha256": "d43bc4bece0f71c1205824d0baf30878beb374d8d3ecb2ab80e1e29d129a87ab",
+      "errors": [],
+      "failure": null
+    }
+  ],
+  "images": [
+    {
+      "file": "night-pond-normal-desktop-behavior-chrome-initial.png",
+      "sha256": "8eb92a1f4fbef243a1f738232608a5db5ffc91fc48a72bb69b9613b3b88e4ab4",
+      "bytes": 816991,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 306,
+      "combinedElapsedMs": 4182,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "night-pond-normal-desktop-behavior.json"
+    },
+    {
+      "file": "night-pond-normal-desktop-behavior-post-native-input.png",
+      "sha256": "274f4ee8184c6cd1424e3851ff3a5ef2270c4c139fbd300f0a15217653ca8e9c",
+      "bytes": 814736,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 272,
+      "combinedElapsedMs": 309,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "night-pond-normal-desktop-behavior.json"
+    },
+    {
+      "file": "night-pond-normal-desktop-visual-initial.png",
+      "sha256": "ce4001fd5db266a24e3b1ff5fc5f357ec4c8af885cc253abd254e69a0e6ff9ae",
+      "bytes": 817858,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 233,
+      "combinedElapsedMs": 1524,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "night-pond-normal-desktop-visual.json"
+    },
+    {
+      "file": "night-pond-normal-portrait-visual-initial.png",
+      "sha256": "66e0dbd01c23a2b5af25880c0cd2d1df1b11f208bfef46790e64a3ff0c447725",
+      "bytes": 204819,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 104,
+      "combinedElapsedMs": 584,
+      "size": [
+        390,
+        844
+      ],
+      "report": "night-pond-normal-portrait-visual.json"
+    },
+    {
+      "file": "pebble-shore-byte-desktop-behavior-chrome-initial.png",
+      "sha256": "f7f92aa644112329f204009d26d51163351f0cd237635412562e9f4f1e700c88",
+      "bytes": 643259,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 438,
+      "combinedElapsedMs": 2512,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "pebble-shore-byte-desktop-behavior.json"
+    },
+    {
+      "file": "pebble-shore-byte-desktop-behavior-post-native-input.png",
+      "sha256": "0b30f0d1b7be580956d45877aafb89e8fd8c11f90711dda93e9f71558f8911df",
+      "bytes": 645128,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 225,
+      "combinedElapsedMs": 253,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "pebble-shore-byte-desktop-behavior.json"
+    },
+    {
+      "file": "pebble-shore-byte-desktop-visual-initial.png",
+      "sha256": "24ce5ece13dac48400d65d2e0abdb9bdfcc6c29353e9a2b3ce560751d63d95ff",
+      "bytes": 639405,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 233,
+      "combinedElapsedMs": 1292,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "pebble-shore-byte-desktop-visual.json"
+    },
+    {
+      "file": "pebble-shore-byte-portrait-visual-initial.png",
+      "sha256": "70e606241c5fadffbccdbb0f45e70079a2fae6b5cfb58ad001d87343420487a5",
+      "bytes": 205364,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 82,
+      "combinedElapsedMs": 396,
+      "size": [
+        390,
+        844
+      ],
+      "report": "pebble-shore-byte-portrait-visual.json"
+    },
+    {
+      "file": "pebble-shore-normal-desktop-behavior-chrome-initial.png",
+      "sha256": "9f8a6dcf4fc63ec639a245e254a12ea942b7f5ca085b5e4e8cd7cb0df25163b3",
+      "bytes": 643508,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 223,
+      "combinedElapsedMs": 3758,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "pebble-shore-normal-desktop-behavior.json"
+    },
+    {
+      "file": "pebble-shore-normal-desktop-behavior-post-native-input.png",
+      "sha256": "0d0ded4367f6897e6eb4d4be8ffc15a25073f3dea331558f8dd83535450e1a84",
+      "bytes": 644667,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 230,
+      "combinedElapsedMs": 256,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "pebble-shore-normal-desktop-behavior.json"
+    },
+    {
+      "file": "pebble-shore-normal-desktop-visual-initial.png",
+      "sha256": "b3ac35013258ebd2ca10a48d908c60ab8742994be7e3d387d243945e48851d8c",
+      "bytes": 639625,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 252,
+      "combinedElapsedMs": 2881,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "pebble-shore-normal-desktop-visual.json"
+    },
+    {
+      "file": "pebble-shore-normal-portrait-visual-initial.png",
+      "sha256": "1e57227b662d49d518d103402d7f51e378583c74ae78cd775d7ce825f4815c15",
+      "bytes": 205843,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 79,
+      "combinedElapsedMs": 1681,
+      "size": [
+        390,
+        844
+      ],
+      "report": "pebble-shore-normal-portrait-visual.json"
+    },
+    {
+      "file": "summer-valley-byte-desktop-behavior-chrome-initial.png",
+      "sha256": "100291ffcc5ddde796f071b384635f90fbeb4f5eaf4cf58e7416d40331db8db9",
+      "bytes": 1515198,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 465,
+      "combinedElapsedMs": 14401,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "summer-valley-byte-desktop-behavior.json"
+    },
+    {
+      "file": "summer-valley-byte-desktop-behavior-post-native-input.png",
+      "sha256": "88f04c1e51d22882004dd0edbbd255020f040c4451e841a09fe9e8396f16bf26",
+      "bytes": 1515369,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 328,
+      "combinedElapsedMs": 361,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "summer-valley-byte-desktop-behavior.json"
+    },
+    {
+      "file": "summer-valley-byte-desktop-visual-initial.png",
+      "sha256": "6c6d2cdd046e32a7ccc7abd2e7b44f1bce9828879109e1a4885abc86e1deb3fe",
+      "bytes": 1528303,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 388,
+      "combinedElapsedMs": 7305,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "summer-valley-byte-desktop-visual.json"
+    },
+    {
+      "file": "summer-valley-byte-portrait-visual-initial.png",
+      "sha256": "729181280ac8fee817088a7b6d5934f902e4d3dc8bfc9e075e6369fd4cdb7096",
+      "bytes": 522864,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 108,
+      "combinedElapsedMs": 6417,
+      "size": [
+        390,
+        844
+      ],
+      "report": "summer-valley-byte-portrait-visual.json"
+    },
+    {
+      "file": "summer-valley-normal-desktop-behavior-chrome-initial.png",
+      "sha256": "8a2e6fcec731fced6d15ac64ca3083e7eca496b4e00790332622d21d0d7ea7a3",
+      "bytes": 1514999,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 344,
+      "combinedElapsedMs": 10048,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "summer-valley-normal-desktop-behavior.json"
+    },
+    {
+      "file": "summer-valley-normal-desktop-behavior-post-native-input.png",
+      "sha256": "f2c078038bdba771d59b155facf1541b4cdc151f345cabe2cdd987c8827bab4f",
+      "bytes": 1515821,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 633,
+      "combinedElapsedMs": 662,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "summer-valley-normal-desktop-behavior.json"
+    },
+    {
+      "file": "summer-valley-normal-desktop-visual-initial.png",
+      "sha256": "832444efb03ed37605e8c263835eb97d2a74dc661fd6dbe751c78b45a0d89b7e",
+      "bytes": 1528138,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 344,
+      "combinedElapsedMs": 6982,
+      "size": [
+        1280,
+        800
+      ],
+      "report": "summer-valley-normal-desktop-visual.json"
+    },
+    {
+      "file": "summer-valley-normal-portrait-visual-initial.png",
+      "sha256": "401de2d2154a843cefc2631d1e027e47c4d1a1081db6bb815286b446a507d6fb",
+      "bytes": 522947,
+      "captureMethod": "Playwright native full viewport PNG via Chromium surface; unmodified HTML+WebGL composition",
+      "screenshotElapsedMs": 112,
+      "combinedElapsedMs": 4709,
+      "size": [
+        390,
+        844
+      ],
+      "report": "summer-valley-normal-portrait-visual.json"
+    }
+  ],
+  "normalBeforeAfter": [
+    {
+      "world": "pebble-shore",
+      "view": "desktop",
+      "before": "pebble-shore-desktop.png",
+      "beforeSha256": "10c89b00a30303a80a296066d85a21d331addb20d21d805550e0a6b37cc55ab1",
+      "after": "pebble-shore-normal-desktop-visual-initial.png",
+      "afterSha256": "b3ac35013258ebd2ca10a48d908c60ab8742994be7e3d387d243945e48851d8c",
+      "pixelsIdentical": false,
+      "meanAbsoluteChannelDifference": 6.343331705729167,
+      "changedPixelsOver6RGB": 397400,
+      "top20PercentMeanAbsoluteChannelDifference": 0.0
+    },
+    {
+      "world": "pebble-shore",
+      "view": "portrait",
+      "before": "pebble-shore-portrait.png",
+      "beforeSha256": "09777ba62dcb09b38fd954fa6b0ed523ee39a215e6f1432bef0e93c691023fc7",
+      "after": "pebble-shore-normal-portrait-visual-initial.png",
+      "afterSha256": "1e57227b662d49d518d103402d7f51e378583c74ae78cd775d7ce825f4815c15",
+      "pixelsIdentical": false,
+      "meanAbsoluteChannelDifference": 4.755069469761413,
+      "changedPixelsOver6RGB": 131529,
+      "top20PercentMeanAbsoluteChannelDifference": 0.0
+    },
+    {
+      "world": "summer-valley",
+      "view": "desktop",
+      "before": "summer-valley-desktop.png",
+      "beforeSha256": "832444efb03ed37605e8c263835eb97d2a74dc661fd6dbe751c78b45a0d89b7e",
+      "after": "summer-valley-normal-desktop-visual-initial.png",
+      "afterSha256": "832444efb03ed37605e8c263835eb97d2a74dc661fd6dbe751c78b45a0d89b7e",
+      "pixelsIdentical": true,
+      "meanAbsoluteChannelDifference": 0.0,
+      "changedPixelsOver6RGB": 0,
+      "top20PercentMeanAbsoluteChannelDifference": 0.0
+    },
+    {
+      "world": "summer-valley",
+      "view": "portrait",
+      "before": "summer-valley-portrait.png",
+      "beforeSha256": "401de2d2154a843cefc2631d1e027e47c4d1a1081db6bb815286b446a507d6fb",
+      "after": "summer-valley-normal-portrait-visual-initial.png",
+      "afterSha256": "401de2d2154a843cefc2631d1e027e47c4d1a1081db6bb815286b446a507d6fb",
+      "pixelsIdentical": true,
+      "meanAbsoluteChannelDifference": 0.0,
+      "changedPixelsOver6RGB": 0,
+      "top20PercentMeanAbsoluteChannelDifference": 0.0
+    },
+    {
+      "world": "night-pond",
+      "view": "desktop",
+      "before": "night-pond-desktop.png",
+      "beforeSha256": "ce4001fd5db266a24e3b1ff5fc5f357ec4c8af885cc253abd254e69a0e6ff9ae",
+      "after": "night-pond-normal-desktop-visual-initial.png",
+      "afterSha256": "ce4001fd5db266a24e3b1ff5fc5f357ec4c8af885cc253abd254e69a0e6ff9ae",
+      "pixelsIdentical": true,
+      "meanAbsoluteChannelDifference": 0.0,
+      "changedPixelsOver6RGB": 0,
+      "top20PercentMeanAbsoluteChannelDifference": 0.0
+    },
+    {
+      "world": "night-pond",
+      "view": "portrait",
+      "before": "night-pond-portrait.png",
+      "beforeSha256": "66e0dbd01c23a2b5af25880c0cd2d1df1b11f208bfef46790e64a3ff0c447725",
+      "after": "night-pond-normal-portrait-visual-initial.png",
+      "afterSha256": "66e0dbd01c23a2b5af25880c0cd2d1df1b11f208bfef46790e64a3ff0c447725",
+      "pixelsIdentical": true,
+      "meanAbsoluteChannelDifference": 0.0,
+      "changedPixelsOver6RGB": 0,
+      "top20PercentMeanAbsoluteChannelDifference": 0.0
+    }
+  ],
+  "gpuCompletionObservations": [
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "chrome-initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3862.10000000149
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "trustedDirectRootMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 10294.300000000745
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "nativeChromePlayPause-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 18219.099999997765
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "trustedMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 16768
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "syntheticCancellationEdgesPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1641.300000000745
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "trustedTouchCancel-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 4564
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "trustedTouchTapPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 6091.699999999255
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "postInteractionRendered-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 2971.89999999851
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "post-native-input-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.599999997764826
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "static3D-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1499.1000000014901
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "reducedMotion-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 7057.79999999702
+    },
+    {
+      "run": "night-pond-normal-desktop-behavior.json",
+      "check": "syntheticHidden-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3436.2000000029802
+    },
+    {
+      "run": "night-pond-normal-desktop-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1280.6000000014901
+    },
+    {
+      "run": "night-pond-normal-portrait-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 472.19999999925494
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "chrome-initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 2045.800000000745
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "trustedDirectRootMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 10330.39999999851
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "nativeChromePlayPause-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 5906.300000000745
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "trustedMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3097.5
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "syntheticCancellationEdgesPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 121.70000000298023
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "trustedTouchCancel-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3011.800000000745
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "trustedTouchTapPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3041.699999999255
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "postInteractionRendered-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 6343
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "post-native-input-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.400000002235174
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "static3D-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 202.19999999925494
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "reducedMotion-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 60.69999999925494
+    },
+    {
+      "run": "pebble-shore-byte-desktop-behavior.json",
+      "check": "syntheticHidden-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.300000000745058
+    },
+    {
+      "run": "pebble-shore-byte-desktop-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1052.4000000022352
+    },
+    {
+      "run": "pebble-shore-byte-portrait-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 307.1000000014901
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "chrome-initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3517.900000002235
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "trustedDirectRootMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 4023.199999999255
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "nativeChromePlayPause-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 8040.699999999255
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "trustedMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3617.599999997765
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "syntheticCancellationEdgesPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 40.599999997764826
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "trustedTouchCancel-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1776.3999999985099
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "trustedTouchTapPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1831.3999999985099
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "postInteractionRendered-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 905.7999999970198
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "post-native-input-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.200000002980232
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "static3D-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 164.30000000074506
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "reducedMotion-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 111.40000000223517
+    },
+    {
+      "run": "pebble-shore-normal-desktop-behavior.json",
+      "check": "syntheticHidden-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.199999999254942
+    },
+    {
+      "run": "pebble-shore-normal-desktop-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 2619.2000000029802
+    },
+    {
+      "run": "pebble-shore-normal-portrait-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1593.3999999985099
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "chrome-initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 13911.20000000298
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "trustedDirectRootMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 39715.699999999255
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "nativeChromePlayPause-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 43996.10000000149
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "trustedMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 51280.5
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "syntheticCancellationEdgesPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 5364.39999999851
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "trustedTouchCancel-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 13949.599999997765
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "trustedTouchTapPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 16498.699999999255
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "postInteractionRendered-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 5071.89999999851
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "post-native-input-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.199999999254942
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "static3D-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 3665.60000000149
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "reducedMotion-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 40.69999999925494
+    },
+    {
+      "run": "summer-valley-byte-desktop-behavior.json",
+      "check": "syntheticHidden-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 21.699999999254942
+    },
+    {
+      "run": "summer-valley-byte-desktop-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 6900.5
+    },
+    {
+      "run": "summer-valley-byte-portrait-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 6299.39999999851
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "chrome-initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 9664
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "trustedDirectRootMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 15666.5
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "nativeChromePlayPause-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 14772.5
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "trustedMouseDrag-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 14900.10000000149
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "syntheticCancellationEdgesPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 1280.8999999985099
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "trustedTouchCancel-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 19763.60000000149
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "trustedTouchTapPaused-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 37244.5
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "postInteractionRendered-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 21065.699999999255
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "post-native-input-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.699999999254942
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "static3D-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 5528.199999999255
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "reducedMotion-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 2921.5
+    },
+    {
+      "run": "summer-valley-normal-desktop-behavior.json",
+      "check": "syntheticHidden-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 20.300000000745058
+    },
+    {
+      "run": "summer-valley-normal-desktop-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 6624.5
+    },
+    {
+      "run": "summer-valley-normal-portrait-visual.json",
+      "check": "initial-gpuDrain",
+      "status": "passed",
+      "elapsedMs": 4590.29999999702
+    }
+  ],
+  "cleanDisposalCycles": [
+    {
+      "run": "night-pond-normal-desktop-lifecycle.json",
+      "cycle": 1,
+      "status": "passed",
+      "removalToDisposeEntryMs": 5001.89999999851,
+      "disposeSynchronousDurationMs": 2197.900000002235,
+      "removalToContextLossObservationMs": 7200.10000000149
+    },
+    {
+      "run": "night-pond-normal-desktop-lifecycle.json",
+      "cycle": 2,
+      "status": "passed",
+      "removalToDisposeEntryMs": 5003,
+      "disposeSynchronousDurationMs": 1571,
+      "removalToContextLossObservationMs": 6574.199999999255
+    },
+    {
+      "run": "pebble-shore-byte-desktop-lifecycle.json",
+      "cycle": 1,
+      "status": "passed",
+      "removalToDisposeEntryMs": 5000.400000002235,
+      "disposeSynchronousDurationMs": 3647.099999997765,
+      "removalToContextLossObservationMs": 8647.900000002235
+    },
+    {
+      "run": "pebble-shore-byte-desktop-lifecycle.json",
+      "cycle": 2,
+      "status": "passed",
+      "removalToDisposeEntryMs": 5003.89999999851,
+      "disposeSynchronousDurationMs": 220.5,
+      "removalToContextLossObservationMs": 5224.599999997765
+    },
+    {
+      "run": "pebble-shore-normal-desktop-lifecycle.json",
+      "cycle": 1,
+      "status": "passed",
+      "removalToDisposeEntryMs": 5000.400000002235,
+      "disposeSynchronousDurationMs": 7779.39999999851,
+      "removalToContextLossObservationMs": 12780
+    },
+    {
+      "run": "pebble-shore-normal-desktop-lifecycle.json",
+      "cycle": 2,
+      "status": "passed",
+      "removalToDisposeEntryMs": 5000.699999999255,
+      "disposeSynchronousDurationMs": 1956.5,
+      "removalToContextLossObservationMs": 6957.29999999702
+    }
+  ],
+  "failedCleanupObservations": [
+    {
+      "run": "summer-valley-byte-desktop-lifecycle.json",
+      "status": "failed",
+      "unmountRequest": {
+        "kind": "unmount-request",
+        "atMs": 3524.699999999255
+      },
+      "detached": {
+        "kind": "canvas-detached-observed",
+        "atMs": 3525.199999999255,
+        "canvasId": 1
+      },
+      "disposeEntry": {
+        "kind": "dispose-entry",
+        "atMs": 8525.699999999255,
+        "canvasId": 1
+      },
+      "disposeExit": {
+        "kind": "dispose-exit",
+        "atMs": 49013.699999999255,
+        "canvasId": 1
+      },
+      "contextLossObserved": {
+        "kind": "context-loss-observed",
+        "atMs": 49014.89999999851,
+        "canvasId": 1,
+        "trusted": true
+      },
+      "disposalDeadlineMs": 20000,
+      "subsequentCycles": "unrun",
+      "eventualCounters": {
+        "created": 1,
+        "disposed": 1,
+        "live": 0
+      },
+      "note": "Eventual observations do not convert the deadline failure into a pass."
+    },
+    {
+      "run": "summer-valley-normal-desktop-lifecycle.json",
+      "status": "failed",
+      "unmountRequest": {
+        "kind": "unmount-request",
+        "atMs": 3242.39999999851
+      },
+      "detached": {
+        "kind": "canvas-detached-observed",
+        "atMs": 3242.60000000149,
+        "canvasId": 1
+      },
+      "disposeEntry": {
+        "kind": "dispose-entry",
+        "atMs": 8243.10000000149,
+        "canvasId": 1
+      },
+      "disposeExit": {
+        "kind": "dispose-exit",
+        "atMs": 40049.699999999255,
+        "canvasId": 1
+      },
+      "contextLossObserved": {
+        "kind": "context-loss-observed",
+        "atMs": 40050.199999999255,
+        "canvasId": 1,
+        "trusted": true
+      },
+      "disposalDeadlineMs": 20000,
+      "subsequentCycles": "unrun",
+      "eventualCounters": {
+        "created": 1,
+        "disposed": 1,
+        "live": 0
+      },
+      "note": "Eventual observations do not convert the deadline failure into a pass."
+    }
+  ],
+  "counts": {
+    "passed": 18,
+    "failed": 2,
+    "blocked": 0,
+    "running": 0
+  },
+  "unrun": [
+    "Physical mobile/Fold hardware and absent-extension GPUs",
+    "Sustained performance, thermals, long-session memory and production queue bounds",
+    "Real OS tab background/foreground",
+    "Integrated Player/ImmersiveMode chrome and native Fullscreen/Escape on a final integration commit",
+    "Physical VRAM reclamation timing and auditory quality"
+  ]
+}

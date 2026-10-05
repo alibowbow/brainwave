@@ -1,0 +1,10 @@
+{
+  "type": "original-assertion-failed",
+  "method": "equal",
+  "observedAt": "2026-10-04T23:32:33.022Z",
+  "error": {
+    "name": "AssertionError",
+    "message": "paused RAF does not advance\n\n8 !== 7\n",
+    "stack": "AssertionError [ERR_ASSERTION]: paused RAF does not advance\n\n8 !== 7\n\n    at strictAssert.<computed> [as equal] (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/backpressure/observe-original.mjs:25:23)\n    at freeze (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/verify.mjs:25:246)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/verify.mjs:72:3"
+  }
+}

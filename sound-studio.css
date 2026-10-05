@@ -184,7 +184,7 @@
 .nature-viewer-root .sound-stage { flex:1; min-height:0; height:auto; }
 .nature-viewer-root .sound-transport-panel { flex:none; padding-bottom:max(14px,env(safe-area-inset-bottom)); }
 .nature-viewer-root[data-controls='hidden'] .scene-heading { opacity:0; pointer-events:none; visibility:hidden; }
-.scene-heading { transition:opacity .2s; }
+.scene-heading { transition:none; }
 @media(max-width:900px) {
  .sound-transport-panel { gap:12px; padding:12px; }
  .sound-transport { gap:14px; }

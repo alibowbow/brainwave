@@ -1,0 +1,294 @@
+{
+  "reviewedAt": "2026-10-04T22:12:26.842542+00:00",
+  "scope": "actual-app normal cold paused-first-frame portrait completeness; no new lifecycle or compatibility approval",
+  "head": "693f49529e0d5194710dbd8df10c59058491019c",
+  "sourceDigest": "f3e935fdecfd2ced1621a9f80739afb483411bb422d04d5b55aba9433229bf11",
+  "distDigest": "d2eb4b588acb0c67d2eec593aa9102fd208efbc33c7e8dedef3aa83b15502d7f",
+  "sourceStable": true,
+  "distStable": true,
+  "scenes": 30,
+  "nativePNGs": 30,
+  "checksPassed": 391,
+  "allPausedWithoutActivation": true,
+  "allBrowserContextsClosed": true,
+  "images": [
+    {
+      "id": "amb:morning_forest",
+      "image": "amb--morning_forest--portrait/cold-first-frame.png",
+      "sha256": "4f53f977f3a39a5a1f2d02eeb85519db3d34d1d4734b6f788b841f8e29a6b437",
+      "coldGate": "passed",
+      "visualContent": "Layered trees, near stones and reflective forest pool.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:focus_cafe",
+      "image": "amb--focus_cafe--portrait/cold-first-frame.png",
+      "sha256": "6b7f06384a37eebc3a4017e4bd30dea5af71d68ce187c47569d5f75552efff5a",
+      "coldGate": "passed",
+      "visualContent": "Rainy window, lamp, ceramic cup and exterior buildings.",
+      "reviewBasis": "Exact final PNG hash equals directly opened smoke PNG",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:cosmic",
+      "image": "amb--cosmic--portrait/cold-first-frame.png",
+      "sha256": "640235ed667db68352119d0686c804d386f3582c88e7a26fe35d8b51bf86f649",
+      "coldGate": "passed",
+      "visualContent": "Planet, floating planted islands, foreground foliage and basin reflection.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:night_pond",
+      "image": "amb--night_pond--portrait/cold-first-frame.png",
+      "sha256": "133c7840fc6db244a71e6a76c67184d806f9eef1a9fe36a12e4f285a1e3485f0",
+      "coldGate": "passed",
+      "visualContent": "Moonlit pond, near lotus leaves, flower and distant tree silhouettes.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:summer_valley",
+      "image": "nature--summer_valley--portrait/cold-first-frame.png",
+      "sha256": "80e1a60eb777338787dd45fbb913eee5fa9d27d98007f47488496a5f3bb9a836",
+      "coldGate": "passed",
+      "visualContent": "Clear stream, submerged stones, banks and receding foliage.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:pebble_shore",
+      "image": "nature--pebble_shore--portrait/cold-first-frame.png",
+      "sha256": "ef1a0d41ee41bd5863e57ab7b10bd361d4169b0eeb8b7a376ff6e3a72c646d9e",
+      "coldGate": "passed",
+      "visualContent": "Near rounded pebbles, shallow water, sea horizon and distant headland.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:waterfall_valley",
+      "image": "amb--waterfall_valley--portrait/cold-first-frame.png",
+      "sha256": "f764fbf9d4096abf8d53c1e179e41b6462c2078c58351b684110541b5e0197a5",
+      "coldGate": "passed",
+      "visualContent": "Tall rock aperture, waterfall streaks, reflecting pool and foreground plants.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:cave_meditation",
+      "image": "amb--cave_meditation--portrait/cold-first-frame.png",
+      "sha256": "73074bb726f936c5c3bb8c0b792817e1ad7dd39e65e4e86c038e59be80c25ca0",
+      "coldGate": "passed",
+      "visualContent": "Enclosed cave, small roof opening, shafts of light and reflected stalagmites.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:deep_sea",
+      "image": "nature--deep_sea--portrait/cold-first-frame.png",
+      "sha256": "e415e1c523109743fc2996f98412357b0c007404c6539412437faa40212e9c4e",
+      "coldGate": "passed",
+      "visualContent": "Rock wall, near translucent jellyfish and smaller animals at depth.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "relax",
+      "image": "relax--portrait/cold-first-frame.png",
+      "sha256": "fd5d2b68189e11b89f38c5b4c20e1d4d6e5ccc8cc7f3998994d3f8c0ecf8caa6",
+      "coldGate": "passed",
+      "visualContent": "Stone hearth, timber, ember bed and actual flame forms.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "sleep_prep",
+      "image": "sleep_prep--portrait/cold-first-frame.png",
+      "sha256": "4c0d8cbd84f15a31ab6f69ad86583ae039ad5c92592e5354a93844de1f132cf4",
+      "coldGate": "passed",
+      "visualContent": "Bed foreground, curtains, bedside lamp and moonlit window.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "power_nap",
+      "image": "power_nap--portrait/cold-first-frame.png",
+      "sha256": "e981852781610d798b6f38174ad82375b959ad198ca34f48bdd27070b05136b3",
+      "coldGate": "passed",
+      "visualContent": "Reclined blanket foreground, terrace objects, shade and vegetation.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:winter_lodge",
+      "image": "nature--winter_lodge--portrait/cold-first-frame.png",
+      "sha256": "7e66cd48ee47d98e18b8105dc2909bb05fc89fdbb432495d7fcae8a92c325948",
+      "coldGate": "passed",
+      "visualContent": "Blanket foreground, lamp/table, fireplace and snowy trees outside.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:tent_rain",
+      "image": "nature--tent_rain--portrait/cold-first-frame.png",
+      "sha256": "405669d16cb4ab4a5510ec1f921d9a17a92ffba368ce6acc4ad38b22f09e3bad",
+      "coldGate": "passed",
+      "visualContent": "Tent walls and seam, sleeping bag, lantern and rainy forest opening.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:window_rain",
+      "image": "nature--window_rain--portrait/cold-first-frame.png",
+      "sha256": "3b9db9639decd995a628921a14c280f5eda61ff606a7e7d44f65acbcf5de4073",
+      "coldGate": "passed",
+      "visualContent": "Garden window framing, hydrangeas, bamboo, rain and bowl.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:monsoon_eaves",
+      "image": "nature--monsoon_eaves--portrait/cold-first-frame.png",
+      "sha256": "58232a5b3b51a7612d0d164767d28817e3d7b4b61509dbad0bd1796ae6d41953",
+      "coldGate": "passed",
+      "visualContent": "Eaves and timber post, stone basin, bamboo spout and rainy rocks.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:summer_storm",
+      "image": "amb--summer_storm--portrait/cold-first-frame.png",
+      "sha256": "6b8de2f1bbbc1b3cb1581883dff1014e1c135fdd6344d840ef786875d6b52fb3",
+      "coldGate": "passed",
+      "visualContent": "Porch roof, wind-chime pull, lantern, jar and wet green field.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "country_morning",
+      "image": "country_morning--portrait/cold-first-frame.png",
+      "sha256": "147ba9d77aaf35a29a9f3f864b5748de911b432465f4e6433732588cc9ddaed7",
+      "coldGate": "passed",
+      "visualContent": "Porch tea cup/book, stone wall, flowering yard and trees.",
+      "reviewBasis": "Exact final PNG hash equals directly opened smoke PNG",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:rainy_forest",
+      "image": "amb--rainy_forest--portrait/cold-first-frame.png",
+      "sha256": "96a94efab6d8c78dc60be9a54f6c0eb70f52a974c260bbdf0b836cf66a48c339",
+      "coldGate": "passed",
+      "visualContent": "Near wet broad leaves, trunks, ferns and small receding channel.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:deep_forest",
+      "image": "amb--deep_forest--portrait/cold-first-frame.png",
+      "sha256": "8a151ae2cc42039d397d10684ab858f430ae7ad104be073ec67edf90d7da244a",
+      "coldGate": "passed",
+      "visualContent": "Massive near trunk, roots, forest depth and foreground fern/leaf.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:bamboo_grove",
+      "image": "nature--bamboo_grove--portrait/cold-first-frame.png",
+      "sha256": "8765ff14b3f2e8cca5aeb1e745c61325ad898e393dccc7ba018a113e1e82303a",
+      "coldGate": "passed",
+      "visualContent": "Near segmented bamboo, leaves, stones and reflective creek.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:temple_dawn",
+      "image": "nature--temple_dawn--portrait/cold-first-frame.png",
+      "sha256": "f26404a467df71c238e3216734a9884b03a7b24670474856b3fe333c86fd1117",
+      "coldGate": "passed",
+      "visualContent": "Detailed bronze bell, beam, painted temple trim, courtyard and tea set.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:scops_night",
+      "image": "nature--scops_night--portrait/cold-first-frame.png",
+      "sha256": "0c37472bac55b7ade90439adcf4450c6fcb459ec4f043b497c885f279a3191e5",
+      "coldGate": "passed",
+      "visualContent": "Owl on branch, lantern and night stream/vegetation.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:rural_summer_night",
+      "image": "nature--rural_summer_night--portrait/cold-first-frame.png",
+      "sha256": "8a05754d0a53446262007d5915af20f87131d6ab14765abcfbdb946c805b6945",
+      "coldGate": "passed",
+      "visualContent": "Field path, utility lines, lit rural home and moonlit trees.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:campfire_night",
+      "image": "amb--campfire_night--portrait/cold-first-frame.png",
+      "sha256": "8694649a5e85a1ad0a0768bd8ca76fa6c31d77e1eb1865562c4151d43418eb4c",
+      "coldGate": "passed",
+      "visualContent": "Close stone fire ring, glowing wood and distant mountain layers.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:deep_night",
+      "image": "amb--deep_night--portrait/cold-first-frame.png",
+      "sha256": "660efeca66e23a753af4ab37c8e6e90755c17483b3cf565649b66117a9192102",
+      "coldGate": "passed",
+      "visualContent": "Stone overlook, lantern, receding mountain silhouettes and stars.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:campfire",
+      "image": "nature--campfire--portrait/cold-first-frame.png",
+      "sha256": "8853f6984ef6f14bf2856ae5263603b196315dfef93a4197daf59aa94977f608",
+      "coldGate": "passed",
+      "visualContent": "Lakeside tent, fire, near table/cup/lantern and camping chair.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "meditation",
+      "image": "meditation--portrait/cold-first-frame.png",
+      "sha256": "6a82f4955db4853749e3b0564aedf9b7a398fa829dfe4e3f5550c35b552cfb63",
+      "coldGate": "passed",
+      "visualContent": "Stone arch, courtyard trees, reflected pool and close golden bowl.",
+      "reviewBasis": "Exact final PNG hash equals directly opened smoke PNG",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "nature:womb",
+      "image": "nature--womb--portrait/cold-first-frame.png",
+      "sha256": "f7d8dd8dd286b563f78d831fbc79da8034d80b87fe79640a47c2fbb652d1e4f7",
+      "coldGate": "passed",
+      "visualContent": "Enveloping warm fabric-like room surfaces, soft light and nearby cushions.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    },
+    {
+      "id": "amb:snowy_night",
+      "image": "amb--snowy_night--portrait/cold-first-frame.png",
+      "sha256": "87c290d3bcc082512fb63c38b815fc180f4df7e1fadc6097947fa9b562efa1f1",
+      "coldGate": "passed",
+      "visualContent": "Near lantern/porch, snow-covered village roofs and distant snowy hill.",
+      "reviewBasis": "Final PNG opened directly",
+      "blankOrFallbackOrDuplicatePlaceholderObserved": false
+    }
+  ],
+  "limits": [
+    "Portrait390x844 only in this run; desktop remains unrun.",
+    "Normal supported-driver path only; pending Quiet/Korean owner compatibility work unchanged.",
+    "No autoplay Play gesture, live motion, control, keyboard, cancellation, audio quality, disposal or remount tested here.",
+    "Context/browser closure is isolation only, not evidence of clean app resource disposal.",
+    "Water active23.8s failure and Cozy longsequence100.2s stall are not cleared.",
+    "Observed scene-specific pixels are completeness evidence; coordinator acceptance under implementation authority is not personal user approval."
+  ]
+}

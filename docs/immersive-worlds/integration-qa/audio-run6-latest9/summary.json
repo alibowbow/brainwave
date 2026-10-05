@@ -1,0 +1,121 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-04T22:57:08.357Z",
+  "finishedAt": "2026-10-04T23:00:25.670Z",
+  "groups": [
+    "live",
+    "restore",
+    "status",
+    "cancel"
+  ],
+  "checksPassed": 9,
+  "errors": [],
+  "normalCleanup": true,
+  "sourceAndBuildUnchanged": true,
+  "trackedSourceFiles": 17,
+  "head": "693f49529e0d5194710dbd8df10c59058491019c",
+  "servedBuildMatch": {
+    "checked": 82,
+    "mismatches": []
+  },
+  "sourceSha256": {
+    "App.tsx": "2a65e2963b9344dfbd73f2dfa47edca7adfc3b0674affcdbb57115caf1e90ba9",
+    "components/Player.tsx": "a90335757d6b9b67ff91fe7784f4548e63e2706cc2009ac79a11596e3024aa37",
+    "components/ImmersiveMode.tsx": "13384e202e7d6b2e596c35ad8dfa7ed9a41bc4bb70fbf21913bc07666dc9bd8e",
+    "sceneLayout.ts": "0de619c6184e1565f973b204afbf31a2e9cc92874cc6f36b5158f6df7f687df0",
+    "components/immersiveWorlds/koreanPlaces/scenes/scops.ts": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996",
+    "components/immersiveWorlds/koreanPlaces/WorldEngine.ts": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade",
+    "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a",
+    "services/audioEngine.ts": "69a2ac927ed5a86cead1ab50e49599ab7806e58cba71f6ad083c496d2d12e020",
+    "services/freshImmersiveSelection.ts": "21efe50b50d3e601efbfb196386ff91bb815f22d65325f06ca5153e8730f9be2",
+    "services/immersiveBridgeLoader.ts": "c612f4c2b2d99c05e39ddad8d112cc91387677754f779cc29a76b36798c2a98e",
+    "services/immersiveSessionBridge.ts": "d07fe121ec3dfe18a565528faef09a98b0e1c3f21ed85967b3e051f9b210bf52",
+    "components/immersiveWorlds/useImmersiveAudioBridge.ts": "4ee8909fa9859a94403269f0d432af758e008632ada85cf849e025f2a53ceac6",
+    "services/immersiveAudio/controller.ts": "b1a99b11c2eda2ad3a581040b704452d2666ae414c2c8c924278fbc322e62751",
+    "services/immersiveAudio/profiles.ts": "09cca1460d48468109ee035c2bf2a18e157b515ee7bbcc69e956025ff3ea32a8",
+    "services/immersiveAudio/interaction.ts": "47cac9bf6117e6f6a659ddf4f86a347793e00e0e154ea5e226ca3f1151312b65",
+    "components/immersiveWorlds/cafe/CafeEngine.ts": "5c6617559f37c8f39f05da6d99600479c5917316620218e8db52f62bd40ada74",
+    "components/NatureMode.tsx": "e91bcd6b6cc27883bd6de89049187ec599102c8e792de7c31270d486cdb54032"
+  },
+  "builtIndexSha256": "878f5f2595630cc637845c65bc4aadb59fdf49d57769c27f45cc60952663c54e",
+  "scriptSha256": "f314a81d2df4a452a84b75f1f6e0516a09ef3716ff100ccaef864f2f543d68f6",
+  "checks": [
+    {
+      "name": "new built-in cafe applies profile to both UI and persisted snapshot",
+      "status": "passed",
+      "elapsedMs": 5537
+    },
+    {
+      "name": "one real semantic cup callback starts one bounded cue through existing bg/master/safety graph",
+      "status": "passed",
+      "elapsedMs": 4086
+    },
+    {
+      "name": "master zero suppresses eligible tap after cooldown, native restoration reopens same graph",
+      "status": "passed",
+      "elapsedMs": 15040
+    },
+    {
+      "name": "source zero suppresses cue while transport keeps running; restored fader allows it",
+      "status": "passed",
+      "elapsedMs": 32800
+    },
+    {
+      "name": "pause makes scene tap and cue silent; edited layers survive native resume without defaults",
+      "status": "passed",
+      "elapsedMs": 17265
+    },
+    {
+      "name": "user restore retains built-in worldId but preserves custom layers, mute and mix",
+      "status": "passed",
+      "elapsedMs": 9520
+    },
+    {
+      "name": "last restore retains built-in worldId but preserves custom layers, mute and mix",
+      "status": "passed",
+      "elapsedMs": 9915
+    },
+    {
+      "name": "HTTP503 source fixture: real window failure suppresses touch despite audible pink bed",
+      "status": "passed",
+      "elapsedMs": 4205
+    },
+    {
+      "name": "held-resume fixture: native minimize cancels pending start and late running context creates no graph",
+      "status": "passed",
+      "elapsedMs": 2336
+    }
+  ],
+  "source503": {
+    "requests": 2,
+    "callbackDelta": 1,
+    "cues": 0,
+    "masterPcm": {
+      "peak": 0.0006003457820042968,
+      "rms": 0.0002684705220487306
+    }
+  },
+  "pendingCancel": {
+    "trustedMinimize": {
+      "trusted": true,
+      "hint": "starting",
+      "elapsedSinceResumeMs": 367,
+      "lastResumeHeld": true,
+      "wall": 597
+    },
+    "after": {
+      "contexts": 1,
+      "states": [
+        "running"
+      ],
+      "graphs": 0,
+      "starts": [],
+      "accents": []
+    }
+  },
+  "scopeLimits": [
+    "Representative Café actual-app audio bridge, not all30 scene event coverage",
+    "No listening, naturalness, hardware-output or GPU-performance approval",
+    "Scops source routing observed in failed run5; PCM direction and normal-cleanup gate still incomplete, no rerun6 Scops execution"
+  ]
+}

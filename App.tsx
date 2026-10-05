@@ -3,12 +3,7 @@ import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useStat
 import { BrainCircuit, Headphones, RefreshCw, Save, X } from 'lucide-react';
 import { DEFAULT_MIX_VOLUMES, defaultSoundLevel, normalizeMixVolumes, type MixVolumes } from './audioLevels';
 import { SOUND_ORDER, getWaveColor } from './audioOptions';
-import {
-  createBackupPayload,
-  parseBackupPayload,
-  type LastSession,
-  type UserPreset,
-} from './experience';
+import type { LastSession, UserPreset } from './experience';
 import { BinauralEngine, type SoundLayer, type ToneMode, type SoundPlaybackSnapshot } from './services/audioEngine';
 import {
   NATURE_MIXES,
@@ -26,6 +21,10 @@ import {
 } from './types';
 import { AppShell, type AppView } from './components/app/AppShell';
 import { sessionBackdropFor } from './components/session/sessionBackdrop';
+import { isProtectedWorldId, isWorldId, worldIdForSession } from './components/immersiveWorlds/worldCatalog';
+import { useImmersiveAudioBridge } from './components/immersiveWorlds/useImmersiveAudioBridge';
+import { loadImmersiveSessionBridge } from './services/immersiveBridgeLoader';
+import { createFreshImmersiveSelection } from './services/freshImmersiveSelection';
 import { HomeDashboard } from './components/app/HomeDashboard';
 import { NowPlayingBar } from './components/app/NowPlayingBar';
 import {
@@ -148,6 +147,7 @@ export default function App() {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [appUpdateStatus, setAppUpdateStatus] = useState<AppUpdateStatus>('idle');
   const sessionBackgroundVariant = sessionBackdropFor(selectedPreset);
+  const sessionWorldId = worldIdForSession(selectedPreset);
 
   const [natureLayers, setNatureLayers] = useState<SoundLayer[]>(() => {
     try {
@@ -190,6 +190,58 @@ export default function App() {
   const audioEngine = useRef<BinauralEngine | null>(null);
   if (!audioEngine.current) audioEngine.current = new BinauralEngine();
   const engine = audioEngine.current;
+  const [selectionPending, setSelectionPending] = useState(false);
+  const sceneHolder = viewMode === 'player' && visualMode === 'nature' ? (immersive ? 'immersive' : 'player')
+    : viewMode === 'list' && activeView === 'nature' ? 'nature' : null;
+  const sceneAudio = useImmersiveAudioBridge({
+    engine,
+    holder: sceneHolder,
+    pending: selectionPending || linkedPlaybackHint === 'starting',
+    worldId: sceneHolder === 'nature' ? `nature:${natureSceneId}` : sessionWorldId,
+    playing: sceneHolder === 'nature' ? natureStatus === 'running' : playbackStatus === 'running',
+    layers: sceneHolder === 'nature' ? natureLayers : activeLayers,
+    master: sceneHolder === 'nature' ? natureVol : volumes.master,
+    nature: sceneHolder === 'nature' ? 1 : volumes.bg,
+  });
+  const [selectionError, setSelectionError] = useState(false);
+  const freshSelection = useRef<ReturnType<typeof createFreshImmersiveSelection> | null>(null);
+  if (!freshSelection.current) freshSelection.current = createFreshImmersiveSelection({
+    load: loadImmersiveSessionBridge,
+    prime: (signal) => engine.preparePlayback(signal),
+    pending: setSelectionPending,
+    error: () => setSelectionError(true),
+  });
+  const cancelFreshSelection = useCallback(() => freshSelection.current?.cancel(), []);
+  useEffect(() => cancelFreshSelection, [cancelFreshSelection]);
+  const freshBuiltin = (id: string | undefined, candidate: readonly SoundLayer[], play: boolean, accept: (layers: SoundLayer[]) => void) => {
+    cancelLinkedStart();
+    sceneAudio.invalidate();
+    setSelectionError(false);
+    if (!isWorldId(id) || isProtectedWorldId(id)) {
+      cancelFreshSelection();
+      accept(candidate.map(layer => ({ ...layer })));
+    } else freshSelection.current!.run(id, candidate, play, accept);
+  };
+  const invalidateSceneState = useCallback(() => {
+    setSelectionError(false);
+    cancelFreshSelection();
+    cancelLinkedStart();
+    sceneAudio.invalidate();
+  }, [cancelFreshSelection, cancelLinkedStart, sceneAudio.invalidate]);
+  const changeMixVolumes = (value: MixVolumes) => {
+    invalidateSceneState();
+    const next = normalizeMixVolumes(value);
+    if (playbackStatus === 'running') engine.setVolumes(next.master, brainwaveEnabled ? next.binaural : 0, next.bg);
+    setVolumes(next);
+  };
+  const changeNatureVolume = (value: number) => {
+    invalidateSceneState();
+    const next = Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0;
+    if (natureStatus === 'running') engine.setVolumes(next, 0, 1);
+    setNatureVol(next);
+  };
+  const changeVisualMode = (mode: VisualMode) => { invalidateSceneState(); setVisualMode(mode); };
+  const changeNatureScene = (id: NatureSceneId) => { invalidateSceneState(); setNatureSceneId(id); };
   const [soundPlayback, setSoundPlayback] = useState<SoundPlaybackSnapshot>({});
   useEffect(() => engine.onPlaybackState(setSoundPlayback), [engine]);
   const endTimeRef = useRef<number | null>(null);
@@ -212,6 +264,9 @@ export default function App() {
   });
 
   const navigate = useCallback((location: AppLocation, behavior: 'push' | 'replace' = 'push') => {
+    setSelectionError(false);
+    cancelFreshSelection();
+    sceneAudio.invalidate();
     if (location.viewMode !== 'player') cancelLinkedStart();
     const current = navigationRef.current;
     if (behavior === 'push' && sameLocation(current, location)) return;
@@ -230,6 +285,8 @@ export default function App() {
   }, []);
 
   const navigateBack = useCallback((fallback: AppLocation) => {
+    cancelFreshSelection();
+    sceneAudio.invalidate();
     if (navigationRef.current.index > 0) {
       window.history.back();
       return;
@@ -255,22 +312,11 @@ export default function App() {
   };
 
   const playEngineSession = (seconds: number, snapshot: LastSession) => {
-    readySnapshotRef.current = null;
-    const frequencies = WAVE_FREQS[snapshot.brainWaveType];
-    engine.start({
-      base: frequencies.base,
-      beat: frequencies.beat,
-      mode: snapshot.toneMode,
-      masterVol: snapshot.mix?.master ?? volumes.master,
-      binauralVol: snapshot.brainwaveEnabled ? snapshot.mix?.binaural ?? volumes.binaural : 0,
-      bgVol: snapshot.mix?.bg ?? volumes.bg,
-      sounds: snapshot.layers,
-    });
-    beginRun(seconds);
+    readySnapshotRef.current = snapshot;
     setVisualMode(DEFAULT_VISUAL_MODE);
-    setPlaybackStatus('running');
+    setPlaybackStatus('paused');
     navigate({ activeView: 'home', viewMode: 'player', immersive: false });
-    persistLastSession(snapshot);
+    startLinkedSession(snapshot, seconds);
   };
 
   const runAfterHeadphoneNotice = (callback: () => void, enabled = brainwaveEnabled, mode = toneMode) => {
@@ -294,6 +340,7 @@ export default function App() {
   };
 
   const startSessionNow = () => {
+    invalidateSceneState();
     if (!selectedPreset) return;
     if (natureStatus === 'running') stopNature();
     playedMsRef.current = 0;
@@ -301,6 +348,7 @@ export default function App() {
     setSessionTotalSeconds(timeLeft);
     const snapshot: LastSession = {
       name: selectedPreset.name,
+      worldId: sessionWorldId,
       brainWaveType: currentBrainWave,
       toneMode,
       brainwaveEnabled,
@@ -315,13 +363,14 @@ export default function App() {
 
   const startSession = () => runAfterHeadphoneNotice(startSessionNow);
 
-  const quickStartPresetNow = (preset: SessionPreset) => {
+  const quickStartPresetNow = (preset: SessionPreset, prepared?: SoundLayer[]) => {
+    if (!prepared) {
+      freshBuiltin(worldIdForSession(preset), preset.defaultBackgroundSound === 'none' ? [] : [{ type: preset.defaultBackgroundSound, volume: defaultSoundLevel(preset.defaultBackgroundSound) }], true, layers => quickStartPresetNow(preset, layers));
+      return;
+    }
     if (natureStatus === 'running') stopNature();
     if (playbackStatus !== 'idle') engine.stop();
-    const layers: SoundLayer[] = preset.defaultBackgroundSound === 'none' ? [] : [{
-      type: preset.defaultBackgroundSound,
-      volume: defaultSoundLevel(preset.defaultBackgroundSound),
-    }];
+    const layers = prepared;
     const seconds = preset.defaultDurationMinutes * 60;
     setSelectedPreset(preset);
     setCurrentBrainWave(preset.brainWaveType);
@@ -337,6 +386,7 @@ export default function App() {
     sessionStartedAtRef.current = new Date().toISOString();
     playEngineSession(seconds, {
       name: preset.name,
+      worldId: worldIdForSession(preset),
       brainWaveType: preset.brainWaveType,
       toneMode: 'binaural',
       brainwaveEnabled: true,
@@ -349,10 +399,14 @@ export default function App() {
 
   const quickStartPreset = quickStartPresetNow;
 
-  const quickStartAmbienceNow = (preset: AmbiencePreset) => {
+  const quickStartAmbienceNow = (preset: AmbiencePreset, prepared?: SoundLayer[]) => {
+    if (!prepared) {
+      freshBuiltin(`amb:${preset.id}`, preset.layers, true, layers => quickStartAmbienceNow(preset, layers));
+      return;
+    }
     if (natureStatus === 'running') stopNature();
     if (playbackStatus !== 'idle') engine.stop();
-    const layers = preset.layers.map((layer) => ({ ...layer }));
+    const layers = prepared;
     const selected: SessionPreset = {
       id: `amb:${preset.id}`,
       name: preset.name,
@@ -376,6 +430,7 @@ export default function App() {
     sessionStartedAtRef.current = new Date().toISOString();
     playEngineSession(seconds, {
       name: preset.name,
+      worldId: worldIdForSession(selected),
       brainWaveType: preset.brainWaveType,
       toneMode: 'binaural',
       brainwaveEnabled: true,
@@ -389,35 +444,26 @@ export default function App() {
   const quickStartAmbience = quickStartAmbienceNow;
 
   const pauseSession = () => {
+    invalidateSceneState();
     accumulateRun();
     setPlaybackStatus('paused');
     engine.fadeOutStop(0.08);
   };
 
   const resumeSession = () => {
+    invalidateSceneState();
     if (!selectedPreset) return;
     if (natureStatus === 'running') stopNature();
-    const frequencies = WAVE_FREQS[currentBrainWave];
-    engine.start({
-      base: frequencies.base,
-      beat: frequencies.beat,
-      mode: toneMode,
-      masterVol: volumes.master,
-      binauralVol: brainwaveEnabled ? volumes.binaural : 0,
-      bgVol: volumes.bg,
-      sounds: activeLayers.map((layer) => ({ ...layer, volume: layer.muted ? 0 : layer.volume })),
-    });
-    beginRun(timeLeft);
-    setPlaybackStatus('running');
-    const ready = readySnapshotRef.current;
-    if (ready) {
-      readySnapshotRef.current = null;
-      sessionStartedAtRef.current = new Date().toISOString();
-      persistLastSession({ ...ready, mix: ready.mix ?? { ...volumes } });
-    }
+    startLinkedSession({
+      name: selectedPreset.name, worldId: sessionWorldId,
+      brainWaveType: currentBrainWave, toneMode, brainwaveEnabled,
+      durationMinutes: Math.max(1, Math.round(sessionTotalSeconds / 60)),
+      layers: activeLayers.map(layer => ({ ...layer })), sleepMode,
+      mix: { ...volumes }, intention: intention.trim() || undefined,
+    }, timeLeft, true);
   };
 
-  const startLinkedSession = (snapshot: LastSession, seconds: number) => {
+  const startLinkedSession = (snapshot: LastSession, seconds: number, resuming = false) => {
     cancelLinkedStart();
     const controller = new AbortController();
     linkedStartRef.current = controller;
@@ -440,7 +486,7 @@ export default function App() {
       }
       readySnapshotRef.current = null;
       setLinkedPlaybackHint(null);
-      sessionStartedAtRef.current = new Date().toISOString();
+      if (!resuming) sessionStartedAtRef.current = new Date().toISOString();
       beginRun(seconds);
       setPlaybackStatus('running');
       persistLastSession({ ...snapshot, mix: snapshot.mix ?? { ...volumes } });
@@ -449,6 +495,7 @@ export default function App() {
 
   /** A blocked deep link retries directly in the tap, with no second dialog. */
   const playSession = () => {
+    invalidateSceneState();
     if (readySnapshotRef.current) startLinkedSession({
       ...readySnapshotRef.current,
       brainWaveType: currentBrainWave,
@@ -466,6 +513,8 @@ export default function App() {
    * it ready on the player, with its timer untouched and a one-tap fallback.
    */
   const prepareSession = (selected: SessionPreset, snapshot: LastSession, behavior: 'push' | 'replace') => {
+    cancelFreshSelection();
+    sceneAudio.invalidate();
     cancelLinkedStart();
     pendingStartRef.current = null;
     setNoticeOpen(false);
@@ -508,13 +557,16 @@ export default function App() {
     const target = resolveSessionLink(route.sessionId, { userPresets, lastSession });
     if (!target) return false;
     const { selected, snapshot } = sessionForLink(target, natureTimerMin ?? 30);
-    prepareSession(selected, snapshot, behavior);
+    if (target.kind === 'user' || target.kind === 'last') prepareSession(selected, snapshot, behavior);
+    else freshBuiltin(snapshot.worldId, snapshot.layers, true, layers => prepareSession(selected, { ...snapshot, layers }, behavior));
     return true;
   };
   const applyRouteRef = useRef(applyRoute);
   applyRouteRef.current = applyRoute;
 
   const stopSession = ({ reflect = false, goHome = false }: { reflect?: boolean; goHome?: boolean } = {}) => {
+    cancelFreshSelection();
+    sceneAudio.invalidate();
     cancelLinkedStart();
     readySnapshotRef.current = null;
     accumulateRun();
@@ -565,16 +617,17 @@ export default function App() {
     setViewMode('feedback');
   };
 
-  const configurePreset = (preset: SessionPreset) => {
+  const configurePreset = (preset: SessionPreset, prepared?: SoundLayer[]) => {
+    if (!prepared) {
+      freshBuiltin(worldIdForSession(preset), preset.defaultBackgroundSound === 'none' ? [] : [{ type: preset.defaultBackgroundSound, volume: defaultSoundLevel(preset.defaultBackgroundSound) }], false, layers => configurePreset(preset, layers));
+      return;
+    }
     if (playbackStatus !== 'idle') stopSession();
     setSelectedPreset(preset);
     setCurrentBrainWave(preset.brainWaveType);
     setToneMode('binaural');
     setBrainwaveEnabled(true);
-    setActiveLayers(preset.defaultBackgroundSound === 'none' ? [] : [{
-      type: preset.defaultBackgroundSound,
-      volume: defaultSoundLevel(preset.defaultBackgroundSound),
-    }]);
+    setActiveLayers(prepared);
     setSleepMode(preset.id === 'sleep_prep');
     setIntention('');
     setMoodBefore(null);
@@ -584,7 +637,11 @@ export default function App() {
     navigate({ activeView, viewMode: 'config', immersive: false });
   };
 
-  const loadAmbience = (preset: AmbiencePreset) => {
+  const loadAmbience = (preset: AmbiencePreset, prepared?: SoundLayer[]) => {
+    if (!prepared) {
+      freshBuiltin(`amb:${preset.id}`, preset.layers, false, layers => loadAmbience(preset, layers));
+      return;
+    }
     if (playbackStatus !== 'idle') stopSession();
     setSelectedPreset({
       id: `amb:${preset.id}`,
@@ -597,7 +654,7 @@ export default function App() {
     setCurrentBrainWave(preset.brainWaveType);
     setToneMode('binaural');
     setBrainwaveEnabled(true);
-    setActiveLayers(preset.layers.map((layer) => ({ ...layer })));
+    setActiveLayers(prepared);
     setSleepMode(false);
     setIntention('');
     setMoodBefore(null);
@@ -607,7 +664,11 @@ export default function App() {
     navigate({ activeView, viewMode: 'config', immersive: false });
   };
 
-  const loadNatureMix = (mix: NatureMix) => {
+  const loadNatureMix = (mix: NatureMix, prepared?: SoundLayer[]) => {
+    if (!prepared) {
+      freshBuiltin(`nature:${mix.id}`, mix.layers, false, layers => loadNatureMix(mix, layers));
+      return;
+    }
     if (playbackStatus !== 'idle') stopSession();
     if (natureStatus === 'running') stopNature();
     const durationMinutes = natureTimerMin ?? 30;
@@ -622,7 +683,7 @@ export default function App() {
     setCurrentBrainWave('alpha');
     setToneMode('binaural');
     setBrainwaveEnabled(false);
-    setActiveLayers(mix.layers.map((layer) => ({ ...layer })));
+    setActiveLayers(prepared);
     setSleepMode(false);
     setIntention('');
     setMoodBefore(null);
@@ -633,10 +694,13 @@ export default function App() {
   };
 
   const loadUserPreset = (preset: UserPreset) => {
+    cancelFreshSelection();
+    sceneAudio.invalidate();
     if (playbackStatus !== 'idle') stopSession();
     setSelectedPreset({
       id: `user:${preset.id}`,
       name: preset.name,
+      worldId: worldIdForSession({ id: `user:${preset.id}`, worldId: preset.worldId }),
       description: '내가 저장한 리듬과 사운드 조합',
       defaultDurationMinutes: preset.durationMinutes,
       brainWaveType: preset.brainWaveType,
@@ -657,13 +721,17 @@ export default function App() {
   };
 
   const resumeLastSession = () => {
+    cancelFreshSelection();
+    sceneAudio.invalidate();
     if (!lastSession) return;
+    const worldId = worldIdForSession({ id: 'last', name: lastSession.name, worldId: lastSession.worldId });
     if (natureStatus === 'running') stopNature();
     if (playbackStatus !== 'idle') engine.stop();
     const seconds = lastSession.durationMinutes * 60;
     setSelectedPreset({
       id: 'last',
       name: lastSession.name,
+      worldId,
       description: '최근 사용한 리듬과 사운드 조합',
       defaultDurationMinutes: lastSession.durationMinutes,
       brainWaveType: lastSession.brainWaveType,
@@ -683,6 +751,7 @@ export default function App() {
     sessionStartedAtRef.current = new Date().toISOString();
     playEngineSession(seconds, {
       ...lastSession,
+      worldId,
       layers: lastSession.layers.map((layer) => ({ ...layer })),
       mix: lastSession.mix ? { ...lastSession.mix } : { ...volumes },
     });
@@ -697,6 +766,7 @@ export default function App() {
     const preset: UserPreset = {
       id: `${Date.now()}`,
       name: presetNameDraft.trim() || selectedPreset?.name || '내 프리셋',
+      worldId: sessionWorldId,
       brainWaveType: currentBrainWave,
       toneMode,
       brainwaveEnabled,
@@ -710,6 +780,7 @@ export default function App() {
   };
 
   const handleTimeChange = (minutes: number) => {
+    invalidateSceneState();
     const seconds = minutes * 60;
     setTimeLeft(seconds);
     setSessionTotalSeconds(seconds);
@@ -717,6 +788,7 @@ export default function App() {
   };
 
   const handleLiveWaveChange = (wave: BrainWaveType) => {
+    invalidateSceneState();
     setCurrentBrainWave(wave);
     if (playbackStatus === 'running') {
       const frequencies = WAVE_FREQS[wave];
@@ -725,59 +797,82 @@ export default function App() {
   };
 
   const handleToneModeChange = (mode: ToneMode) => {
+    invalidateSceneState();
     setToneMode(mode);
     if (playbackStatus === 'running') engine.setMode(mode);
   };
 
   const toggleLayer = (type: BackgroundSoundType) => {
-    setActiveLayers((current) => {
-      if (current.some((layer) => layer.type === type)) {
-        if (playbackStatus === 'running') engine.removeSound(type);
-        return current.filter((layer) => layer.type !== type);
-      }
+    invalidateSceneState();
+    if (activeLayers.some(layer => layer.type === type)) {
+      if (playbackStatus === 'running') engine.removeSound(type);
+      setActiveLayers(current => current.filter(layer => layer.type !== type));
+    } else {
       const volume = defaultSoundLevel(type);
       if (playbackStatus === 'running') engine.addSound(type, volume);
-      return [...current, { type, volume }];
-    });
+      setActiveLayers(current => [...current, { type, volume }]);
+    }
   };
 
   const setLayerVolume = (type: BackgroundSoundType, volume: number) => {
+    invalidateSceneState();
     setActiveLayers((current) => current.map((layer) => layer.type === type ? { ...layer, volume } : layer));
-    if (playbackStatus === 'running') engine.setSoundVolume(type, volume);
+    if (playbackStatus === 'running') engine.setSoundVolume(type, activeLayers.find(layer => layer.type === type)?.muted ? 0 : volume);
   };
 
   const balanceLayers = () => {
+    invalidateSceneState();
     const next = activeLayers.map((layer) => ({ ...layer, volume: defaultSoundLevel(layer.type) }));
     setActiveLayers(next);
     if (playbackStatus === 'running') engine.setSounds(next);
   };
 
   const startNature = () => {
+    invalidateSceneState();
     if (natureLayers.length === 0) return;
     if (playbackStatus !== 'idle') stopSession();
-    setNatureStatus('running');
-    if (natureTimerMin != null) {
-      natureEndRef.current = Date.now() + natureTimerMin * 60 * 1000;
-      setNatureTimeLeft(natureTimerMin * 60);
-    } else natureEndRef.current = null;
-    engine.start({
+    startNatureGraph(natureLayers);
+  };
+
+  const startNatureGraph = (layers: SoundLayer[]) => {
+    cancelLinkedStart();
+    const controller = new AbortController();
+    linkedStartRef.current = controller;
+    setNatureStatus('idle');
+    setLinkedPlaybackHint('starting');
+    void engine.tryStart({
       base: WAVE_FREQS.alpha.base,
       beat: WAVE_FREQS.alpha.beat,
       mode: 'binaural',
       masterVol: natureVol,
       binauralVol: 0,
       bgVol: 1,
-      sounds: natureLayers.map((layer) => ({ ...layer, volume: layer.muted ? 0 : layer.volume })),
+      sounds: layers.map(layer => ({ ...layer, volume: layer.muted ? 0 : layer.volume })),
+    }, controller.signal).then(result => {
+      if (linkedStartRef.current !== controller) return;
+      linkedStartRef.current = null;
+      if (result !== 'started') {
+        setLinkedPlaybackHint(result === 'cancelled' ? null : result);
+        return;
+      }
+      setLinkedPlaybackHint(null);
+      setNatureStatus('running');
+      if (natureTimerMin != null) {
+        natureEndRef.current = Date.now() + natureTimerMin * 60 * 1000;
+        setNatureTimeLeft(natureTimerMin * 60);
+      } else natureEndRef.current = null;
     });
   };
 
   const stopNature = (fade = false) => {
+    invalidateSceneState();
     setNatureStatus('idle');
     natureEndRef.current = null;
     if (fade) engine.fadeOutStop(12); else engine.stop();
   };
 
   const handleNatureTimer = (minutes: number | null) => {
+    invalidateSceneState();
     setNatureTimerMin(minutes);
     if (natureStatus !== 'running') return;
     if (minutes == null) natureEndRef.current = null;
@@ -788,6 +883,7 @@ export default function App() {
   };
 
   const toggleNatureLayer = (type: BackgroundSoundType) => {
+    invalidateSceneState();
     setNatureMixId(null);
     if (natureLayers.some((layer) => layer.type === type)) {
       const next = natureLayers.filter((layer) => layer.type !== type);
@@ -804,29 +900,38 @@ export default function App() {
   };
 
   const setNatureLayerVolume = (type: BackgroundSoundType, volume: number) => {
+    invalidateSceneState();
     setNatureLayers((current) => current.map((layer) => layer.type === type ? { ...layer, volume, muted: false } : layer));
     if (natureStatus === 'running') engine.setSoundVolume(type, volume);
   };
 
   const toggleNatureMute = (type: BackgroundSoundType) => {
-    setNatureLayers((current) => current.map((layer) => {
-      if (layer.type !== type) return layer;
-      const muted = !layer.muted;
-      if (natureStatus === 'running') engine.setSoundVolume(type, muted ? 0 : layer.volume);
-      return { ...layer, muted };
-    }));
+    invalidateSceneState();
+    const layer = natureLayers.find(item => item.type === type);
+    if (!layer) return;
+    const muted = !layer.muted;
+    if (natureStatus === 'running') engine.setSoundVolume(type, muted ? 0 : layer.volume);
+    setNatureLayers(current => current.map(item => item.type === type ? { ...item, muted } : item));
   };
 
-  const selectNatureMix = (mix: NatureMix) => {
-    const layers = mix.layers.map((layer) => ({ ...layer }));
+  const selectNatureMix = (mix: NatureMix, prepared?: SoundLayer[]) => {
+    if (!prepared) {
+      freshBuiltin(`nature:${mix.id}`, mix.layers, false, layers => selectNatureMix(mix, layers));
+      return;
+    }
+    const layers = prepared;
     setNatureLayers(layers);
     setNatureMixId(mix.id);
     if (isNatureSceneId(mix.id)) setNatureSceneId(mix.id);
     if (natureStatus === 'running') engine.setSounds(layers, 3);
   };
 
-  const quickStartNature = (mix: NatureMix) => {
-    const layers = mix.layers.map((layer) => ({ ...layer }));
+  const quickStartNature = (mix: NatureMix, prepared?: SoundLayer[]) => {
+    if (!prepared) {
+      freshBuiltin(`nature:${mix.id}`, mix.layers, true, layers => quickStartNature(mix, layers));
+      return;
+    }
+    const layers = prepared;
     if (playbackStatus !== 'idle') {
       engine.stop();
       setPlaybackStatus('idle');
@@ -836,42 +941,32 @@ export default function App() {
     setNatureLayers(layers);
     setNatureMixId(mix.id);
     if (isNatureSceneId(mix.id)) setNatureSceneId(mix.id);
-    setNatureStatus('running');
-    if (natureTimerMin != null) {
-      natureEndRef.current = Date.now() + natureTimerMin * 60 * 1000;
-      setNatureTimeLeft(natureTimerMin * 60);
-    } else {
-      natureEndRef.current = null;
-    }
-    engine.start({
-      base: WAVE_FREQS.alpha.base,
-      beat: WAVE_FREQS.alpha.beat,
-      mode: 'binaural',
-      masterVol: natureVol,
-      binauralVol: 0,
-      bgVol: 1,
-      sounds: layers,
-    });
     setNatureLaunchMode('studio');
     navigate({ activeView: 'nature', viewMode: 'list', immersive: false });
+    startNatureGraph(layers);
   };
 
   const updateScenePositions = useCallback((positions: Partial<Record<BackgroundSoundType, number>>) => engine.setScenePositions(positions), [engine]);
   const subscribeNatureEvents = useCallback((callback: (type: BackgroundSoundType) => void) => engine.onSoundEvent(callback), [engine]);
 
-  const exportData = () => {
-    const blob = new Blob([JSON.stringify(createBackupPayload(logs, userPresets, lastSession), null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `brainwave-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  const exportData = async () => {
+    try {
+      const { createBackupPayload } = await import('./experience');
+      const blob = new Blob([JSON.stringify(createBackupPayload(logs, userPresets, lastSession), null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `brainwave-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    } catch { setImportMessage('백업을 준비하지 못했어요. 다시 눌러 주세요.'); }
   };
 
   const importData = async (file: File) => {
+    invalidateSceneState();
     try {
       if (file.size > 5_000_000) throw new Error('too-large');
+      const { parseBackupPayload } = await import('./experience');
       const payload = parseBackupPayload(JSON.parse(await file.text()));
       if (!payload) throw new Error('invalid');
       if (!window.confirm('현재 기록과 프리셋을 백업 파일의 내용으로 교체할까요?')) return;
@@ -1034,6 +1129,7 @@ export default function App() {
     );
 
     const onPopState = (event: PopStateEvent) => {
+      invalidateSceneState();
       const entry = readAppHistoryEntry(event.state);
       if (!entry) return;
       navigationRef.current = entry;
@@ -1290,6 +1386,12 @@ export default function App() {
         onNavigate={handleNavigate}
         onToggleTheme={() => setSettings((current) => ({ ...current, darkMode: !current.darkMode }))}
       >
+        {(selectionPending || selectionError) && <p role={selectionError ? 'alert' : 'status'} className="pointer-events-none fixed inset-x-4 top-3 z-[210] mx-auto w-fit rounded-full bg-slate-900/95 px-4 py-2 text-sm text-white shadow-lg">
+          {selectionError ? '공간 설정을 불러오지 못했어요. 다시 선택해 주세요.' : '공간을 준비하고 있어요'}
+        </p>}
+        {activeView === 'nature' && viewMode === 'list' && linkedPlaybackHint && <p role={linkedPlaybackHint === 'starting' ? 'status' : 'alert'} className="mx-4 rounded-xl bg-white/90 px-4 py-2 text-sm text-slate-700 dark:bg-slate-900 dark:text-slate-200">
+          {linkedPlaybackHint === 'starting' ? '소리를 준비하고 있어요' : '소리를 시작하지 못했어요. 재생 버튼을 다시 눌러 주세요.'}
+        </p>}
         {viewMode === 'list' && activeView === 'home' && (
           <HomeDashboard
             logs={logs}
@@ -1363,7 +1465,7 @@ export default function App() {
           <Suspense fallback={<LoadingPanel />}>
             <BrainwaveGuidePage
               wave={currentBrainWave}
-              onWaveChange={setCurrentBrainWave}
+              onWaveChange={handleLiveWaveChange}
               onCreateSound={() => configurePreset({
                 id: 'custom', name: '나만의 사운드', description: '시간·뇌파·사운드를 한 화면에서 직접 조합합니다.',
                 defaultDurationMinutes: 30, brainWaveType: currentBrainWave, defaultBackgroundSound: 'rain',
@@ -1388,16 +1490,16 @@ export default function App() {
               onBack={() => navigateBack({ activeView, viewMode: 'list', immersive: false })}
               onStart={startSession}
               onDurationChange={handleTimeChange}
-              onWaveChange={setCurrentBrainWave}
-              onToggleBrainwave={() => setBrainwaveEnabled((value) => !value)}
+              onWaveChange={handleLiveWaveChange}
+              onToggleBrainwave={() => { invalidateSceneState(); setBrainwaveEnabled(value => !value); }}
               onToneModeChange={handleToneModeChange}
               onToggleLayer={toggleLayer}
               onLayerVolume={setLayerVolume}
               onBalanceLayers={balanceLayers}
-              onMixChange={setVolumes}
-              onToggleSleepMode={() => setSleepMode((value) => !value)}
-              onMoodBeforeChange={setMoodBefore}
-              onIntentionChange={setIntention}
+              onMixChange={changeMixVolumes}
+              onToggleSleepMode={() => { invalidateSceneState(); setSleepMode(value => !value); }}
+              onMoodBeforeChange={value => { invalidateSceneState(); setMoodBefore(value); }}
+              onIntentionChange={value => { invalidateSceneState(); setIntention(value); }}
               onSave={() => { setPresetNameDraft(selectedPreset.name.replace(/\s*\([^)]*\)/, '')); setSaveOpen(true); }}
             />
           </Suspense>
@@ -1407,8 +1509,11 @@ export default function App() {
           <Suspense fallback={<LoadingPanel />}>
             <Player
               playbackHint={linkedPlaybackHint}
+              playbackStates={soundPlayback}
+              onRetrySound={(type) => engine.retrySound(type)}
               shareUrl={appRouteHash({ kind: 'play', sessionId: selectedPreset.id }) ? sessionShareUrl(window.location.href, selectedPreset.id) : undefined}
               subscribeEvents={subscribeNatureEvents}
+              onWorldInteraction={sceneAudio.onPlayerInteraction}
               sessionName={selectedPreset.name.replace(/\s*\([^)]*\)/, '')}
               intention={intention}
               timeLeft={timeLeft}
@@ -1426,16 +1531,17 @@ export default function App() {
               onLayerVolume={setLayerVolume}
               onBalanceLayers={balanceLayers}
               volumes={volumes}
-              onMixChange={(next) => setVolumes(normalizeMixVolumes(next))}
+              onMixChange={changeMixVolumes}
               brainwaveEnabled={brainwaveEnabled}
-              onToggleBrainwave={() => setBrainwaveEnabled((value) => !value)}
+              onToggleBrainwave={() => { invalidateSceneState(); setBrainwaveEnabled(value => !value); }}
               toneMode={toneMode}
               onToneModeChange={handleToneModeChange}
               visualMode={visualMode}
-              onVisualModeChange={setVisualMode}
+              onVisualModeChange={changeVisualMode}
               getAnalyser={() => engine.getAnalyser()}
               onImmersive={() => navigate({ activeView: 'home', viewMode: 'player', immersive: true })}
               backgroundVariant={sessionBackgroundVariant}
+              worldId={sessionWorldId}
               sceneCovered={immersive}
             />
           </Suspense>
@@ -1463,7 +1569,8 @@ export default function App() {
                 timeLeft={natureTimeLeft}
                 volume={natureVol}
                 sceneId={natureSceneId}
-                onSceneChange={setNatureSceneId}
+                onSceneChange={changeNatureScene}
+                onWorldInteraction={sceneAudio.onNatureInteraction}
                 onPositionsChange={updateScenePositions}
                 onPlay={startNature}
                 onStop={() => stopNature()}
@@ -1472,7 +1579,7 @@ export default function App() {
                 onToggleMute={toggleNatureMute}
                 onSelectMix={selectNatureMix}
                 onTimerChange={handleNatureTimer}
-                onVolumeChange={setNatureVol}
+                onVolumeChange={changeNatureVolume}
                 playbackStates={soundPlayback}
                 onRetrySound={(type) => engine.retrySound(type)}
                 subscribeEvents={subscribeNatureEvents}
@@ -1529,6 +1636,7 @@ export default function App() {
         <Suspense fallback={null}>
           <ImmersiveMode
               subscribeEvents={subscribeNatureEvents}
+            onWorldInteraction={sceneAudio.onImmersiveInteraction}
             timeLeft={timeLeft}
             isPlaying={playbackStatus === 'running'}
             sessionName={selectedPreset?.name ?? '세션'}
@@ -1536,12 +1644,15 @@ export default function App() {
             visualMode={visualMode}
             activeLayers={activeLayers}
             getAnalyser={() => engine.getAnalyser()}
-            onVisualModeChange={setVisualMode}
+            onVisualModeChange={changeVisualMode}
             onPlay={playSession}
             onPause={pauseSession}
             onStop={() => stopSession({ reflect: true, goHome: true })}
             onExit={() => navigateBack({ activeView: 'home', viewMode: 'player', immersive: false })}
             backgroundVariant={sessionBackgroundVariant}
+            worldId={sessionWorldId}
+            playbackStates={soundPlayback}
+            onRetrySound={(type) => engine.retrySound(type)}
           />
         </Suspense>
       )}
@@ -1575,4 +1686,3 @@ export default function App() {
     </>
   );
 }
-

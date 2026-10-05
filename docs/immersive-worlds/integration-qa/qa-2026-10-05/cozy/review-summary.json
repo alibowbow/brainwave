@@ -1,0 +1,694 @@
+{
+  "status": "failed",
+  "elapsedTotalSeconds": 72.636,
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "948a893498d0fa9bd253796ad86f78e621de775a8a784c72d4f9775ff7d0207e",
+  "completedReport": {
+    "path": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261005T000942Z/completed-report.json",
+    "sourcePath": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261005T000942Z/evidence/nature-verification.json",
+    "sha256": "56395e21666e2a63f8efd2497a93a8b823dd866d1925938bf8e70667410b4f46",
+    "bytes": 4677187,
+    "finishedAt": "2026-10-05T00:10:54.000Z",
+    "runnerExitCode": 1,
+    "capturedAfterVerifierExit": true,
+    "fsyncConfirmed": true,
+    "byteIdentityVerified": true,
+    "capturedAt": "2026-10-05T00:10:54Z"
+  },
+  "separateReadArchiveVerified": true,
+  "rawMatchesArchive": true,
+  "checks": [
+    {
+      "name": "Cozy real disposal postconditions within 20s including retention",
+      "status": "failed",
+      "failure": "Error: renderer disposal observation exceeded 9ms"
+    },
+    {
+      "name": "targeted old Winter: separate post-failure detached-canvas quiet observation",
+      "status": "passed"
+    },
+    {
+      "name": "fresh actual Winter uses new canvas/instance, ready within 120s and native keyboard",
+      "status": "passed"
+    },
+    {
+      "name": "fresh Winter independently disposes once with no further draws",
+      "status": "failed",
+      "failure": "AssertionError [ERR_ASSERTION]: renderer release exceeded fixed 20s including host retention"
+    },
+    {
+      "name": "targeted fresh Winter: separate post-failure detached-canvas quiet observation",
+      "status": "passed"
+    },
+    {
+      "name": "actual fresh owner lifetime created/disposed advances once",
+      "status": "passed"
+    }
+  ],
+  "fixedReleaseGates": [
+    {
+      "label": "targeted old Winter",
+      "status": "failed",
+      "configuredTimeoutMs": 20000,
+      "actualWaitElapsedMs": 20000,
+      "failure": "Error: renderer disposal observation exceeded 9ms",
+      "assessments": [
+        {
+          "worldId": "nature:monsoon_eaves",
+          "contract": "explicit-context-loss",
+          "ready": true,
+          "pending": [],
+          "physicalGpuReclamation": "not measured"
+        },
+        {
+          "worldId": "nature:winter_lodge",
+          "contract": "cozy-explicit-resource-disposal",
+          "ready": false,
+          "pending": [
+            "Three owned geometry/texture accounting is not empty"
+          ],
+          "textureAccounting": {
+            "ownerTextureAccountingEmpty": true,
+            "residual": 1,
+            "internalRetention": "unresolved: DFG raw handle and renderer-internal placeholders remain; this is not overall release success",
+            "explainedBy": {
+              "textureId": 9,
+              "dataSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+              "sourceSha256": "280b75b70d9d55c39d4121d5244c22ee445d27cc05ed6b134c3a5bde6b81b3da"
+            },
+            "explanation": "One retained renderer-internal DFG upload, byte-exact to installed Three; owner texture accounting remainder is zero. The existing overall release gate is not waived."
+          },
+          "physicalGpuReclamation": "not measured",
+          "automaticContextLoss": "not observed; not required by this renderer"
+        }
+      ],
+      "separateQuiet": {
+        "scope": "Additional observation after failed 20s resource gate; does not change that failed deadline.",
+        "elapsedBrowserMs": 734.7999999970198,
+        "before": [
+          {
+            "id": 2,
+            "instance": 1,
+            "frames": 2,
+            "draws": 1398,
+            "connected": false
+          }
+        ],
+        "after": [
+          {
+            "id": 2,
+            "instance": 1,
+            "frames": 2,
+            "draws": 1398,
+            "connected": false
+          }
+        ]
+      }
+    },
+    {
+      "label": "targeted fresh Winter",
+      "status": "failed",
+      "configuredTimeoutMs": 20000,
+      "actualWaitElapsedMs": 20036,
+      "failure": "AssertionError [ERR_ASSERTION]: renderer release exceeded fixed 20s including host retention",
+      "assessments": [
+        {
+          "worldId": "nature:monsoon_eaves",
+          "contract": "explicit-context-loss",
+          "ready": true,
+          "pending": [],
+          "physicalGpuReclamation": "not measured"
+        },
+        {
+          "worldId": "nature:winter_lodge",
+          "contract": "cozy-explicit-resource-disposal",
+          "ready": false,
+          "pending": [
+            "Three owned geometry/texture accounting is not empty"
+          ],
+          "textureAccounting": {
+            "ownerTextureAccountingEmpty": true,
+            "residual": 1,
+            "internalRetention": "unresolved: DFG raw handle and renderer-internal placeholders remain; this is not overall release success",
+            "explainedBy": {
+              "textureId": 9,
+              "dataSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+              "sourceSha256": "280b75b70d9d55c39d4121d5244c22ee445d27cc05ed6b134c3a5bde6b81b3da"
+            },
+            "explanation": "One retained renderer-internal DFG upload, byte-exact to installed Three; owner texture accounting remainder is zero. The existing overall release gate is not waived."
+          },
+          "physicalGpuReclamation": "not measured",
+          "automaticContextLoss": "not observed; not required by this renderer"
+        },
+        {
+          "worldId": "nature:winter_lodge",
+          "contract": "cozy-explicit-resource-disposal",
+          "ready": false,
+          "pending": [
+            "Three owned geometry/texture accounting is not empty"
+          ],
+          "textureAccounting": {
+            "ownerTextureAccountingEmpty": true,
+            "residual": 1,
+            "internalRetention": "unresolved: DFG raw handle and renderer-internal placeholders remain; this is not overall release success",
+            "explainedBy": {
+              "textureId": 9,
+              "dataSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+              "sourceSha256": "280b75b70d9d55c39d4121d5244c22ee445d27cc05ed6b134c3a5bde6b81b3da"
+            },
+            "explanation": "One retained renderer-internal DFG upload, byte-exact to installed Three; owner texture accounting remainder is zero. The existing overall release gate is not waived."
+          },
+          "physicalGpuReclamation": "not measured",
+          "automaticContextLoss": "not observed; not required by this renderer"
+        }
+      ],
+      "separateQuiet": {
+        "scope": "Additional observation after failed 20s resource gate; does not change that failed deadline.",
+        "elapsedBrowserMs": 895.5,
+        "before": [
+          {
+            "id": 2,
+            "instance": 1,
+            "frames": 2,
+            "draws": 1398,
+            "connected": false
+          },
+          {
+            "id": 3,
+            "instance": 2,
+            "frames": 13,
+            "draws": 9087,
+            "connected": false
+          }
+        ],
+        "after": [
+          {
+            "id": 2,
+            "instance": 1,
+            "frames": 2,
+            "draws": 1398,
+            "connected": false
+          },
+          {
+            "id": 3,
+            "instance": 2,
+            "frames": 13,
+            "draws": 9087,
+            "connected": false
+          }
+        ]
+      }
+    }
+  ],
+  "dfgReference": {
+    "source": "three/src/renderers/shaders/DFGLUTData.js",
+    "sourceSha256": "280b75b70d9d55c39d4121d5244c22ee445d27cc05ed6b134c3a5bde6b81b3da",
+    "dataSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+    "width": 16,
+    "height": 16,
+    "elements": 512,
+    "format": "RG",
+    "type": "HALF_FLOAT",
+    "internalFormat": "RG16F",
+    "byteLength": 1024,
+    "scope": "Expected installed Three CPU data; runtime upload and raw handle evidence must independently match. Internal retention is unresolved, not an overall release waiver."
+  },
+  "instances": [
+    {
+      "instance": 1,
+      "contextId": 2,
+      "connected": false,
+      "frames": 2,
+      "draws": 1398,
+      "contextLost": false,
+      "host": {
+        "attempts": 1,
+        "returned": 1,
+        "phase": "returned",
+        "attemptedAtMs": 11543.20000000298,
+        "diagnosticsStatus": "captured",
+        "returnedAtMs": 11548.39999999851,
+        "diagnostics": {
+          "instance": 1,
+          "taps": 0,
+          "lastHit": "none",
+          "frames": 2,
+          "time": 8,
+          "running": false,
+          "targets": [],
+          "drawCalls": 699,
+          "triangles": 2707958,
+          "memory": {
+            "geometries": 0,
+            "textures": 1
+          },
+          "lifetime": {
+            "created": 1,
+            "disposed": 1
+          }
+        }
+      },
+      "disposeCallDurationMs": 5.199999995529652,
+      "disposeReturnAfterObservedDetachMs": 5003.89999999851,
+      "listeners": {
+        "active": 0,
+        "added": 4,
+        "removed": 4
+      },
+      "nativeGLDeletes": {
+        "deleteShader": 38,
+        "deleteTexture": 30,
+        "deleteFramebuffer": 1,
+        "deleteVertexArray": 684,
+        "deleteBuffer": 1394,
+        "deleteProgram": 18
+      },
+      "textureLedger": {
+        "schema": 1,
+        "initializedBeforeFirstObservedCreate": true,
+        "calls": {
+          "createTexture": 35,
+          "bindTexture": 141,
+          "texParameteri": 134,
+          "texImage2D": 8,
+          "texImage3D": 2,
+          "activeTexture": 116,
+          "framebufferTexture2D": 2,
+          "pixelStorei": 9,
+          "texStorage2D": 30,
+          "texSubImage2D": 29,
+          "generateMipmap": 28,
+          "deleteTexture": 30
+        },
+        "errors": [],
+        "contextLost": false,
+        "complete": true,
+        "liveIds": [
+          1,
+          2,
+          3,
+          4,
+          9
+        ],
+        "placeholderIds": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "provenDfgIds": [
+          9
+        ],
+        "unclassifiedLiveIds": [],
+        "exactDfgOnlyResidual": true,
+        "proofScope": "Native CPU upload arguments and live handle accounting; no GPU texture readback or physical reclamation measurement.",
+        "nodeAttestation": {
+          "actual": [
+            {
+              "textureId": 9,
+              "actualUploadSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+              "expectedDataSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+              "sourceSha256": "280b75b70d9d55c39d4121d5244c22ee445d27cc05ed6b134c3a5bde6b81b3da"
+            }
+          ],
+          "allHashesMatch": true
+        }
+      },
+      "liveTextureRecords": [
+        {
+          "id": 1,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:2D"
+        },
+        {
+          "id": 2,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:cube-six-faces"
+        },
+        {
+          "id": 3,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:2D-array"
+        },
+        {
+          "id": 4,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:3D"
+        },
+        {
+          "id": 9,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "exact-installed-three-dfg-cpu-upload"
+        }
+      ],
+      "dfgUpload": {
+        "file": "dfg-upload-instance-1.bin",
+        "bytes": 1024,
+        "sha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+        "matchesRecordedExpectedWords": true,
+        "storage": {
+          "method": "texStorage2D",
+          "target": 3553,
+          "levels": 1,
+          "internalFormat": 33327,
+          "width": 16,
+          "height": 16,
+          "sequence": 81,
+          "unit": 33986,
+          "unpack": {
+            "rowLength": 0,
+            "skipRows": 0,
+            "skipPixels": 0,
+            "imageHeight": 0,
+            "skipImages": 0
+          }
+        },
+        "upload": {
+          "method": "texSubImage2D",
+          "target": 3553,
+          "level": 0,
+          "x": 0,
+          "y": 0,
+          "width": 16,
+          "height": 16,
+          "format": 33319,
+          "type": 5131,
+          "offset": 0,
+          "sequence": 82,
+          "unit": 33986,
+          "unpack": {
+            "rowLength": 0,
+            "skipRows": 0,
+            "skipPixels": 0,
+            "imageHeight": 0,
+            "skipImages": 0
+          }
+        },
+        "sourceDataKind": "Uint16Array"
+      }
+    },
+    {
+      "instance": 2,
+      "contextId": 3,
+      "connected": false,
+      "frames": 13,
+      "draws": 9087,
+      "contextLost": false,
+      "host": {
+        "attempts": 1,
+        "returned": 1,
+        "phase": "returned",
+        "attemptedAtMs": 37045.60000000149,
+        "diagnosticsStatus": "captured",
+        "returnedAtMs": 37051.70000000298,
+        "diagnostics": {
+          "instance": 2,
+          "taps": 0,
+          "lastHit": "none",
+          "frames": 13,
+          "time": 8.223000000001491,
+          "running": false,
+          "targets": [],
+          "drawCalls": 699,
+          "triangles": 2707958,
+          "memory": {
+            "geometries": 0,
+            "textures": 1
+          },
+          "lifetime": {
+            "created": 2,
+            "disposed": 2
+          }
+        }
+      },
+      "disposeCallDurationMs": 6.100000001490116,
+      "disposeReturnAfterObservedDetachMs": 5033.70000000298,
+      "listeners": {
+        "active": 0,
+        "added": 4,
+        "removed": 4
+      },
+      "nativeGLDeletes": {
+        "deleteShader": 38,
+        "deleteTexture": 30,
+        "deleteFramebuffer": 1,
+        "deleteVertexArray": 684,
+        "deleteBuffer": 1394,
+        "deleteProgram": 18
+      },
+      "textureLedger": {
+        "schema": 1,
+        "initializedBeforeFirstObservedCreate": true,
+        "calls": {
+          "createTexture": 35,
+          "bindTexture": 867,
+          "texParameteri": 134,
+          "texImage2D": 8,
+          "texImage3D": 2,
+          "activeTexture": 732,
+          "framebufferTexture2D": 2,
+          "pixelStorei": 9,
+          "texStorage2D": 30,
+          "texSubImage2D": 29,
+          "generateMipmap": 28,
+          "deleteTexture": 30
+        },
+        "errors": [],
+        "contextLost": false,
+        "complete": true,
+        "liveIds": [
+          1,
+          2,
+          3,
+          4,
+          9
+        ],
+        "placeholderIds": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "provenDfgIds": [
+          9
+        ],
+        "unclassifiedLiveIds": [],
+        "exactDfgOnlyResidual": true,
+        "proofScope": "Native CPU upload arguments and live handle accounting; no GPU texture readback or physical reclamation measurement.",
+        "nodeAttestation": {
+          "actual": [
+            {
+              "textureId": 9,
+              "actualUploadSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+              "expectedDataSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+              "sourceSha256": "280b75b70d9d55c39d4121d5244c22ee445d27cc05ed6b134c3a5bde6b81b3da"
+            }
+          ],
+          "allHashesMatch": true
+        }
+      },
+      "liveTextureRecords": [
+        {
+          "id": 1,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:2D"
+        },
+        {
+          "id": 2,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:cube-six-faces"
+        },
+        {
+          "id": 3,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:2D-array"
+        },
+        {
+          "id": 4,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "three-state-placeholder:3D"
+        },
+        {
+          "id": 9,
+          "deleted": false,
+          "deleteCount": 0,
+          "classification": "exact-installed-three-dfg-cpu-upload"
+        }
+      ],
+      "dfgUpload": {
+        "file": "dfg-upload-instance-2.bin",
+        "bytes": 1024,
+        "sha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+        "matchesRecordedExpectedWords": true,
+        "storage": {
+          "method": "texStorage2D",
+          "target": 3553,
+          "levels": 1,
+          "internalFormat": 33327,
+          "width": 16,
+          "height": 16,
+          "sequence": 81,
+          "unit": 33986,
+          "unpack": {
+            "rowLength": 0,
+            "skipRows": 0,
+            "skipPixels": 0,
+            "imageHeight": 0,
+            "skipImages": 0
+          }
+        },
+        "upload": {
+          "method": "texSubImage2D",
+          "target": 3553,
+          "level": 0,
+          "x": 0,
+          "y": 0,
+          "width": 16,
+          "height": 16,
+          "format": 33319,
+          "type": 5131,
+          "offset": 0,
+          "sequence": 82,
+          "unit": 33986,
+          "unpack": {
+            "rowLength": 0,
+            "skipRows": 0,
+            "skipPixels": 0,
+            "imageHeight": 0,
+            "skipImages": 0
+          }
+        },
+        "sourceDataKind": "Uint16Array"
+      }
+    }
+  ],
+  "cozyFreshSession": {
+    "configuredTimeoutMs": 120000,
+    "status": "passed",
+    "scope": "Actual App fresh Winter after observed disposal; separate from the original owner four-world 120s sequence, whose failure remains open.",
+    "readyElapsedMs": 1345,
+    "fresh": {
+      "id": "nature:winter_lodge",
+      "state": "ready",
+      "callbacks": 0,
+      "motion": "paused",
+      "width": 1406,
+      "height": 800,
+      "data": {
+        "engine": "three.js r186",
+        "frames": "2",
+        "instance": "2"
+      },
+      "draws": 1398,
+      "lost": false
+    },
+    "nativeKeyboardAction": {
+      "label": "장작 살짝 건드리기",
+      "focused": true
+    },
+    "finishedAt": "2026-10-05T00:10:16.572Z"
+  },
+  "nativeKeyboardCallback": {
+    "assertion": "one real Enter callback delta exactly 1",
+    "result": "passed in executed verifier",
+    "rawBeforeAfterCallbackPairPersisted": false,
+    "sourceLine": 280
+  },
+  "cozyLifetimeAdvance": {
+    "before": [
+      {
+        "id": 2,
+        "lifetime": {
+          "created": 1,
+          "disposed": 1
+        }
+      }
+    ],
+    "after": {
+      "created": 2,
+      "disposed": 2
+    }
+  },
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "browserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-05T00:09:44.530Z",
+    "terminationConfirmed": true,
+    "forcedKill": true,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-05T00:09:44.530Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-05T00:10:37.658Z"
+      },
+      {
+        "kind": "owned-browser-cleanup-error",
+        "at": "2026-10-05T00:10:52.660Z",
+        "stage": "graceful-close",
+        "message": "Error: owned browser server close exceeded 15000ms"
+      },
+      {
+        "kind": "owned-browser-kill-send",
+        "at": "2026-10-05T00:10:52.660Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-05T00:10:52.670Z",
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      {
+        "kind": "owned-browser-kill-ack",
+        "at": "2026-10-05T00:10:52.696Z"
+      }
+    ],
+    "exitCode": null,
+    "signal": "SIGKILL",
+    "finishedAt": "2026-10-05T00:10:52.696Z"
+  },
+  "reportErrors": [
+    {
+      "kind": "cleanup",
+      "stage": "graceful-close",
+      "message": "Error: owned browser server close exceeded 15000ms"
+    }
+  ],
+  "cleanupErrors": [],
+  "ownedStillAlive": [],
+  "gpu": "released",
+  "additionalRuns": 0,
+  "priorFailures": "Original owner four-world120s and first integrated20s failure remain separate/open",
+  "limits": [
+    "Exact CPU upload/native raw handle accounting only; no GPU texture readback or physical reclamation measurement.",
+    "Post-dispose diagnostics are captured once by host; later resource dataset reads are not fresh renderer.info snapshots.",
+    "Separate post-failure quiet observations and fresh-session success do not waive either failed20s gate.",
+    "Browser graceful shutdown failed15s; owned process kill/exit confirmed, not a clean shutdown pass."
+  ]
+}

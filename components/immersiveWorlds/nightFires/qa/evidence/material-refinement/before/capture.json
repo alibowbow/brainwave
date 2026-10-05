@@ -1,0 +1,96 @@
+{
+  "capture": "fresh paused time=0; fixed viewports; material review only",
+  "bundleTreeSha256": "4524526bcfd7ef45eaa6af4da15022a781c3b141d32c15f393c6906b68cac81e",
+  "bundleFiles": [
+    {
+      "path": "assets/index-BKtx9edC.js",
+      "sha256": "3ef414a9a8dd5064c096005223018d883a6fd17279e2b9adbebc5ee1f0023eea"
+    },
+    {
+      "path": "assets/index-BYa97GcX.js",
+      "sha256": "7dbc7ddf9ccfd28e8077037d153908a2f32b7b754805647554ac8929eb941e4f"
+    },
+    {
+      "path": "assets/index-p-kR-lfB.js",
+      "sha256": "fed6db88c7590fb71099fac6990db957ba7c1f9df78172c84737415843a2bdec"
+    },
+    {
+      "path": "assets/index-ZuciVTVz.css",
+      "sha256": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c"
+    },
+    {
+      "path": "components/immersiveWorlds/nightFires/qa/index.html",
+      "sha256": "2ece0fb214fa63476991be71ef81a2fffdd3f0a09b5285736d4a8aac653a8a08"
+    }
+  ],
+  "images": [
+    {
+      "file": "mountain-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "ba07e9f93630d0bcb9fb488327f00d2a53dc4eb98219c5f43d4ef2f4e43d9422",
+      "bytes": 1248992,
+      "time": "0.00000",
+      "targets": "[{\"kind\":\"log-embers\",\"x\":704.659160025199,\"y\":690.7967496624586}]"
+    },
+    {
+      "file": "mountain-portrait.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "fc40292f01663b985f11fb983b0fd0d1d2773f7f8e8ce6a0c67812681b9d0cfe",
+      "bytes": 249879,
+      "time": "0.00000",
+      "targets": "[{\"kind\":\"log-embers\",\"x\":185.95613887959527,\"y\":618.3857503439392}]"
+    },
+    {
+      "file": "lakeside-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "43173015fdbbd5f1e55edb339b63e1250af3dcc2539963bc46349db000d30530",
+      "bytes": 784740,
+      "time": "0.00000",
+      "targets": "[{\"kind\":\"log-embers\",\"x\":595.7923063681177,\"y\":647.7113337566877},{\"kind\":\"lantern-brightness\",\"x\":1070.1763185923107,\"y\":628.7293840150942}]"
+    },
+    {
+      "file": "lakeside-portrait.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "e922bf451e2c51d1ab481e0e0aa516073fde25dc07b1146ab04bc9c85eaa8535",
+      "bytes": 193692,
+      "time": "0.00000",
+      "targets": "[{\"kind\":\"log-embers\",\"x\":73.01412567914149,\"y\":577.8672925672191},{\"kind\":\"lantern-brightness\",\"x\":347.1016860843577,\"y\":524.9034230026166}]"
+    },
+    {
+      "file": "deep-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "969403ba2d208e0c847b2b1dcc32d82c2839b82d3c43ec7a04f03089390706c9",
+      "bytes": 667244,
+      "time": "0.00000",
+      "targets": "[{\"kind\":\"lantern-brightness\",\"x\":970.7210212984994,\"y\":701.6919835014293}]"
+    },
+    {
+      "file": "deep-portrait.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "2ef99242bbdf76fe78e107fb3dbac8144a0f1f68a14b8a0e0a043e4ebc1b358b",
+      "bytes": 186916,
+      "time": "0.00000",
+      "targets": "[{\"kind\":\"lantern-brightness\",\"x\":321.86038250034215,\"y\":649.2750414960907}]"
+    }
+  ],
+  "testedRuntimeSource": "9fa421b6856756fb47dfb190d5303d2b565f0f9b",
+  "baselinePRHead": "813b4ef7f468366e330893f13c27962249f1c3b5"
+}

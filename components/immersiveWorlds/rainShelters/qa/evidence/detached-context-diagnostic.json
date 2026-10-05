@@ -1,0 +1,142 @@
+{
+  "schema": "rain-shelters-detached-context-diagnostic-v1",
+  "observedAt": "2026-10-04T19:41:41.670664+00:00",
+  "sourceGitHead": "4c0131625bd0ef127f08a0539128abbe00d90d12",
+  "sourceBundle": "index-D8YJ8BJE.js",
+  "method": "Fresh paused tent, retain original canvas, unmount, wait6500ms, inspect real WebGL2 context state and contextlost event delivery",
+  "observed": {
+    "canvasConnected": false,
+    "webglcontextlostEvents": 0,
+    "actualContextIsLost": true
+  },
+  "conclusion": "The WebGL context really is released; this Chromium does not deliver the contextlost event for the detached canvas. Authoritative disposal gate must inspect retained context.isContextLost(), not notification count.",
+  "priorTentCompletedChecks": [
+    {
+      "name": "initial active=false renders a real first 3D frame",
+      "pass": true,
+      "frame": {
+        "frame": 2,
+        "time": 0,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 77,
+        "triangles": 363770,
+        "geometries": 74,
+        "textures": 22
+      }
+    },
+    {
+      "name": "active animation advances frame and simulation time",
+      "pass": true,
+      "before": {
+        "frame": 5,
+        "time": 0.0461,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 77,
+        "triangles": 363770,
+        "geometries": 74,
+        "textures": 22
+      },
+      "after": {
+        "frame": 9,
+        "time": 0.1127,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 77,
+        "triangles": 363770,
+        "geometries": 74,
+        "textures": 22
+      }
+    },
+    {
+      "name": "active=false stops motion and preserves rendered frame",
+      "pass": true,
+      "state": {
+        "frame": 10,
+        "time": 0.1293,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 77,
+        "triangles": 363770,
+        "geometries": 74,
+        "textures": 22
+      }
+    },
+    {
+      "name": "native canvas pointer tap hits the intended 3D target",
+      "pass": true,
+      "ndc": [
+        0,
+        0
+      ],
+      "event": {
+        "world": "tent",
+        "action": "opening",
+        "value": 0.2
+      }
+    },
+    {
+      "name": "accessible scene interaction emits one bounded event",
+      "pass": true,
+      "event": {
+        "world": "tent",
+        "action": "opening",
+        "value": 0.95
+      }
+    },
+    {
+      "name": "visible player chrome overlay supports native bounded tap/drag while button and input stay separate",
+      "pass": true,
+      "event": {
+        "world": "tent",
+        "action": "opening",
+        "value": 0.2
+      }
+    },
+    {
+      "name": "drag is not tap and pointer cancellation releases gesture",
+      "pass": true,
+      "method": "synthetic pointerdown/move/up and pointerdown/cancel/up"
+    },
+    {
+      "name": "window blur cancels active gesture and subsequent pointerup emits no interaction",
+      "pass": true,
+      "method": "synthetic FocusEvent blur during pointer drag"
+    },
+    {
+      "name": "mid-drag second-holder transfer cancels old gesture, reuses identical canvas and returns with single interaction listeners",
+      "pass": true,
+      "sceneContexts": 1
+    },
+    {
+      "name": "prefers-reduced-motion freezes scene and change resumes it",
+      "pass": true
+    },
+    {
+      "name": "static3D canvas interaction visibly redraws exactly once without animation",
+      "pass": true,
+      "before": {
+        "sha256": "123afed63784ec58295dd57c023aad167f52b337d01a6a7f345b4c14f29dde9a",
+        "bytes": 796323
+      },
+      "after": {
+        "sha256": "c7f43800ba8fda05983c2f3c392e1c0c8d421c2178dceb93fa611d05f669e3e9",
+        "bytes": 792027
+      }
+    },
+    {
+      "name": "static3D preserves full 3D frame without animation",
+      "pass": true
+    },
+    {
+      "name": "synthetic hidden state pauses; visibility restoration resumes",
+      "pass": true,
+      "actualTabSwitch": false
+    },
+    {
+      "name": "three quick mount/unmount cycles reuse one live scene and one overlay listener",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,679 @@
+{
+  "timestamp": "2026-10-05T00:19:59.780379+00:00",
+  "passed": true,
+  "scope": "New explicitly authorized bounded static-completion contract; no retroactive original-contract pass",
+  "baselineCommit": "2a8f9b97ba4982623da13ed6835a14c27ef7fae2",
+  "sourceCheckpoint": "bfffa3461b2e625b53ba87d82d52ef0ea0a0d366",
+  "harnessCheckpoint": "456ecde2cb70a67ccbad394c767de963dac97d53",
+  "source": {
+    "sha256": "e3e7a278bad36a8d12f80403b03972728c11fa07436335346ff796d8f664edfa",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "f9e6bc14c08ef5d125464fef8313eaa4539b9ea560ea87cb1ffca51f8e9e7c0a",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "bundle": {
+    "sha256": "0b0c53ed7a574d44f301bbd6ccaf4f72b9410616eaebd46a299551b927e5e516",
+    "files": [
+      "assets/CozyWorld-CNeeHmPh.js",
+      "assets/CozyWorld-CNeeHmPh.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-B0r6M-lW.js",
+      "assets/HearthWorld-B0r6M-lW.js.map",
+      "assets/NapTerraceWorld-Dje3lAQ6.js",
+      "assets/NapTerraceWorld-Dje3lAQ6.js.map",
+      "assets/SleepRoomWorld-BY3AbvTl.js",
+      "assets/SleepRoomWorld-BY3AbvTl.js.map",
+      "assets/WinterLodgeWorld-Drwvbuk7.js",
+      "assets/WinterLodgeWorld-Drwvbuk7.js.map",
+      "assets/fireDetail-qi0uyylj.js",
+      "assets/fireDetail-qi0uyylj.js.map",
+      "assets/index-CDP5Jz4U.js",
+      "assets/index-CDP5Jz4U.js.map",
+      "assets/materials-BkTAzY0D.js",
+      "assets/materials-BkTAzY0D.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-CNeeHmPh.js": "346b2fd96eb1ffb9a08ac9573574f4ee41f8dbcc82df86cc66e58891547e5778",
+      "assets/CozyWorld-CNeeHmPh.js.map": "c1e35f2f62adb26d4b0ac6d15e9a148893c647dd8ea05e63fe7f9c95adbb2839",
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/HearthWorld-B0r6M-lW.js": "1814101273064ae5899eff8aaee1ea2e94b8dba26542e706534f7aba32e5a50a",
+      "assets/HearthWorld-B0r6M-lW.js.map": "39dee3207998cb97ac27ea92a251c34ec2bbfc47d869db35ca01948dc9b126c6",
+      "assets/NapTerraceWorld-Dje3lAQ6.js": "f5ecca0c0b52fbc3e4bf823576ba535b02d1795827067ba56ccc5eb66aba45cd",
+      "assets/NapTerraceWorld-Dje3lAQ6.js.map": "8581cebec3c3611a6b5ecfb5a0126274d477b19bb28cd3dbe0f759fc17157105",
+      "assets/SleepRoomWorld-BY3AbvTl.js": "b7764a5f86739f2bf982df699e45ef3ecad94883d9d5ee022878e4daa9378459",
+      "assets/SleepRoomWorld-BY3AbvTl.js.map": "417a632107ba15409c1ddac2c8ab98ceca6268c799cfb2a591ad15fab70cc2c2",
+      "assets/WinterLodgeWorld-Drwvbuk7.js": "5a5d871bf2eddc1d7fd1abffe5d6dcb38a72ca77bd943031cd793cb74006735b",
+      "assets/WinterLodgeWorld-Drwvbuk7.js.map": "f569f689d5d4c16b6bf012cca24e9616ccb262f3b18194261cfb92315eb3da13",
+      "assets/fireDetail-qi0uyylj.js": "639a71904876ab4eeaf21a4e034640969150e45f5623178679db8b68f9094f6a",
+      "assets/fireDetail-qi0uyylj.js.map": "6680f5dab05e8bb0927e8d816d68775b4777e305e98cae74b1ece88e3a50ca7a",
+      "assets/index-CDP5Jz4U.js": "2b2cb97b0850b690a0861989e1d6bbfe903f8ec10a6e9850fdc0b8856be3e7f7",
+      "assets/index-CDP5Jz4U.js.map": "635e74d240c75e5e084a87944749c5278010f10b6203d11f048301bdd3c59698",
+      "assets/materials-BkTAzY0D.js": "fe074a287c4a3dbb5053cd49421a3eb24d6257241838e104b288c8695e0018b9",
+      "assets/materials-BkTAzY0D.js.map": "a33b921058d379bdf2b2a0cd263f527562e8b98874efdc064864bc308b4f4c21",
+      "index.html": "600fc0b9d9fa183dfec1ac65f5db382c3e0b1a86300e3afbd83f5e2eb7147186"
+    }
+  },
+  "engineSHA256": "f9e6bc14c08ef5d125464fef8313eaa4539b9ea560ea87cb1ffca51f8e9e7c0a",
+  "contract": {
+    "acknowledgementBoundMs": 120000,
+    "stableObservationMs": 180,
+    "readyBoundMs": 120000,
+    "disposedObservationBoundMs": 30000,
+    "configuredHostGraceMs": 5000,
+    "required": "Same live paused engine/canvas, time fixed throughout waiting, positive requested=submitted=completed revision, all submitted batches actually signaled, no dirty size/pending/fence/poll/failure; then exact180ms stability. No synthetic completion or forced finish.",
+    "originalGateClaim": false,
+    "productionTimeoutCaveat": "Production timeout detects an observed still-unsignaled batch after120s; hidden/detached polling suspension is not an absolute wall-clock guarantee. QA has its own absolute deadline."
+  },
+  "fourWorld": {
+    "passed": true,
+    "checkLabels": 104,
+    "completionAcknowledgements": 100,
+    "stableWindows": 100,
+    "persistedPollSnapshots": 179,
+    "helperPolls": 2426,
+    "worlds": [
+      {
+        "world": "relax",
+        "passed": true,
+        "checkLabels": 26,
+        "completionAcknowledgements": 23,
+        "stableWindows": 23,
+        "persistedPollSnapshots": 38,
+        "helperPolls": 466,
+        "maxInFlightObserved": 1,
+        "maxUnconfirmedObserved": 1,
+        "maxRequiredRequestToAckMs": 3834.9000000059605,
+        "freshReadyGate": {
+          "boundMs": 120000,
+          "startedAtNode": 40962.03831,
+          "passed": true,
+          "endedAtNode": 42123.577145,
+          "elapsedMs": 1161.5388349999994
+        },
+        "freshFirstRenderMs": 379.29999999701977,
+        "oldDisposeBodyMs": 3.5,
+        "oldFinalGPU": {
+          "submitted": 24,
+          "returned": 24,
+          "completed": 24,
+          "polls": 1629,
+          "timeouts": 1605,
+          "maxInFlight": 1,
+          "lastSubmit": 33930.39999999851,
+          "lastComplete": 34784.70000000298,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "disposed",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "reportSHA256": "6c0f429e8053e2f487ac31d5f7cdf8ae60fec402d00aa9c41215a033a5bb826d"
+      },
+      {
+        "world": "sleep_prep",
+        "passed": true,
+        "checkLabels": 26,
+        "completionAcknowledgements": 25,
+        "stableWindows": 25,
+        "persistedPollSnapshots": 26,
+        "helperPolls": 240,
+        "maxInFlightObserved": 1,
+        "maxUnconfirmedObserved": 1,
+        "maxRequiredRequestToAckMs": 1612.4000000059605,
+        "freshReadyGate": {
+          "boundMs": 120000,
+          "startedAtNode": 25647.398823,
+          "passed": true,
+          "endedAtNode": 26158.773464,
+          "elapsedMs": 511.37464100000216
+        },
+        "freshFirstRenderMs": 292.6000000014901,
+        "oldDisposeBodyMs": 3.6999999955296516,
+        "oldFinalGPU": {
+          "submitted": 26,
+          "returned": 26,
+          "completed": 26,
+          "polls": 792,
+          "timeouts": 766,
+          "maxInFlight": 1,
+          "lastSubmit": 19265,
+          "lastComplete": 19730.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "disposed",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "reportSHA256": "a58a29f5bbc70bf354a500ef8affb5160a91ba89b29500c7492b03d83bb5f30c"
+      },
+      {
+        "world": "power_nap",
+        "passed": true,
+        "checkLabels": 26,
+        "completionAcknowledgements": 24,
+        "stableWindows": 24,
+        "persistedPollSnapshots": 52,
+        "helperPolls": 729,
+        "maxInFlightObserved": 1,
+        "maxUnconfirmedObserved": 1,
+        "maxRequiredRequestToAckMs": 4561.29999999702,
+        "freshReadyGate": {
+          "boundMs": 120000,
+          "startedAtNode": 52112.547256,
+          "passed": true,
+          "endedAtNode": 52803.481807,
+          "elapsedMs": 690.9345509999985
+        },
+        "freshFirstRenderMs": 302.6000000014901,
+        "oldDisposeBodyMs": 9.200000002980232,
+        "oldFinalGPU": {
+          "submitted": 26,
+          "returned": 26,
+          "completed": 26,
+          "polls": 2410,
+          "timeouts": 2384,
+          "maxInFlight": 1,
+          "lastSubmit": 44696.70000000298,
+          "lastComplete": 46178,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "disposed",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "reportSHA256": "c2e7659f3328fbcef3aaeb7ef0dd769e10337bd4a3a857da995259227d1a1631"
+      },
+      {
+        "world": "nature:winter_lodge",
+        "passed": true,
+        "checkLabels": 26,
+        "completionAcknowledgements": 28,
+        "stableWindows": 28,
+        "persistedPollSnapshots": 63,
+        "helperPolls": 991,
+        "maxInFlightObserved": 1,
+        "maxUnconfirmedObserved": 1,
+        "maxRequiredRequestToAckMs": 4287.70000000298,
+        "freshReadyGate": {
+          "boundMs": 120000,
+          "startedAtNode": 69356.756083,
+          "passed": true,
+          "endedAtNode": 70769.054419,
+          "elapsedMs": 1412.2983359999926
+        },
+        "freshFirstRenderMs": 746.0,
+        "oldDisposeBodyMs": 6.5,
+        "oldFinalGPU": {
+          "submitted": 28,
+          "returned": 28,
+          "completed": 28,
+          "polls": 3354,
+          "timeouts": 3326,
+          "maxInFlight": 1,
+          "lastSubmit": 61425.39999999851,
+          "lastComplete": 63360.10000000149,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "disposed",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "reportSHA256": "f3280b0d09cc2e1b436e0d85c6fcda52e7630b7b26301344118acb8e8039a182"
+      }
+    ],
+    "aggregateReportSHA256": "ced2aa8282cc68f631250e1cd9a900e3b5559c66fd7f3f58c12f53322ddcd3bf"
+  },
+  "winterCycles": {
+    "passed": true,
+    "readyGates": [
+      {
+        "generation": 0,
+        "timeoutMs": 120000,
+        "startedAtNodeMs": 744.532667,
+        "endedAtNodeMs": 3150.72085,
+        "elapsedMs": 2406.188183,
+        "passed": true,
+        "contract": "unchanged original ready selector gate"
+      },
+      {
+        "generation": 1,
+        "timeoutMs": 120000,
+        "startedAtNodeMs": 18604.94275,
+        "endedAtNodeMs": 19905.443235,
+        "elapsedMs": 1300.5004850000005,
+        "passed": true,
+        "contract": "unchanged original ready selector gate"
+      },
+      {
+        "generation": 2,
+        "timeoutMs": 120000,
+        "startedAtNodeMs": 30330.770291,
+        "endedAtNodeMs": 31665.884865,
+        "elapsedMs": 1335.1145739999993,
+        "passed": true,
+        "contract": "unchanged original ready selector gate"
+      }
+    ],
+    "engineIdentities": [
+      1,
+      2,
+      3
+    ],
+    "canvasIdentities": [
+      1,
+      2,
+      3
+    ],
+    "inputs": [
+      {
+        "generation": 1,
+        "callbackDelta": 1,
+        "frameDelta": 1,
+        "sceneTimeDelta": 0,
+        "sameEngine": true,
+        "sameCanvas": true,
+        "requestToAckMs": 2073.1999999955297,
+        "acknowledgedImage": {
+          "requestedRevision": 4,
+          "submittedRevision": 4,
+          "completedRevision": 4,
+          "requestedAt": 22342,
+          "submittedAt": 22347.69999999553,
+          "completedAt": 24415.19999999553,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "nativeInput": [
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 22341.19999999553
+          },
+          {
+            "type": "click",
+            "key": null,
+            "isTrusted": true,
+            "at": 22341.69999999553
+          },
+          {
+            "type": "keyup",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 22349.89999999851
+          }
+        ]
+      },
+      {
+        "generation": 2,
+        "callbackDelta": 1,
+        "frameDelta": 1,
+        "sceneTimeDelta": 0,
+        "sameEngine": true,
+        "sameCanvas": true,
+        "requestToAckMs": 2244.39999999851,
+        "acknowledgedImage": {
+          "requestedRevision": 4,
+          "submittedRevision": 4,
+          "completedRevision": 4,
+          "requestedAt": 34247.89999999851,
+          "submittedAt": 34253.19999999553,
+          "completedAt": 36492.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "nativeInput": [
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 34247.60000000149
+          },
+          {
+            "type": "click",
+            "key": null,
+            "isTrusted": true,
+            "at": 34247.79999999702
+          },
+          {
+            "type": "keyup",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 34257.19999999553
+          }
+        ]
+      }
+    ],
+    "finalLifetime": {
+      "created": 3,
+      "disposed": 3
+    },
+    "reportSHA256": "ff919613765b1db9de9afaea1aeb551e5a9fa5d20219abfb09b30f3015ddcc46"
+  },
+  "actualContextLoss": {
+    "passed": true,
+    "readyGates": [
+      {
+        "generation": 0,
+        "timeoutMs": 120000,
+        "startedAtNodeMs": 762.432757,
+        "endedAtNodeMs": 3342.037192,
+        "elapsedMs": 2579.6044349999997,
+        "passed": true,
+        "contract": "unchanged original ready selector gate"
+      },
+      {
+        "generation": 1,
+        "timeoutMs": 120000,
+        "startedAtNodeMs": 14394.059423,
+        "endedAtNodeMs": 15713.348112,
+        "elapsedMs": 1319.288688999999,
+        "passed": true,
+        "contract": "unchanged original ready selector gate"
+      },
+      {
+        "generation": 2,
+        "timeoutMs": 120000,
+        "startedAtNodeMs": 27143.421214,
+        "endedAtNodeMs": 28624.981973,
+        "elapsedMs": 1481.560759,
+        "passed": true,
+        "contract": "unchanged original ready selector gate"
+      },
+      {
+        "generation": 3,
+        "timeoutMs": 120000,
+        "startedAtNodeMs": 43049.38393,
+        "endedAtNodeMs": 44443.679916,
+        "elapsedMs": 1394.2959859999974,
+        "passed": true,
+        "contract": "unchanged original ready selector gate"
+      }
+    ],
+    "cases": [
+      {
+        "mode": "running",
+        "passed": true,
+        "trustedLostEvent": {
+          "at": 13317,
+          "isTrusted": true,
+          "contextLost": true,
+          "frames": 4,
+          "canvas": 1
+        },
+        "requestToEventMs": 2251.89999999851,
+        "recoveryInput": {
+          "callbackDelta": 1,
+          "frameDelta": 1,
+          "sceneTimeDelta": 0,
+          "sameEngine": true,
+          "sameCanvas": true,
+          "requestToAckMs": 2424.5,
+          "acknowledgedImage": {
+            "requestedRevision": 4,
+            "submittedRevision": 4,
+            "completedRevision": 4,
+            "requestedAt": 18765.79999999702,
+            "submittedAt": 18773.20000000298,
+            "completedAt": 21190.29999999702,
+            "dirty": false,
+            "awaitingCompletion": false,
+            "sizeDirty": false
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 18765.10000000149
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 18765.5
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 18776.20000000298
+            }
+          ]
+        },
+        "finalLifetime": {
+          "created": 2,
+          "disposed": 2
+        }
+      },
+      {
+        "mode": "paused",
+        "passed": true,
+        "trustedLostEvent": {
+          "at": 41980.29999999702,
+          "isTrusted": true,
+          "contextLost": true,
+          "frames": 4,
+          "canvas": 3
+        },
+        "requestToEventMs": 20.0,
+        "recoveryInput": {
+          "callbackDelta": 1,
+          "frameDelta": 1,
+          "sceneTimeDelta": 0,
+          "sameEngine": true,
+          "sameCanvas": true,
+          "requestToAckMs": 2012.0,
+          "acknowledgedImage": {
+            "requestedRevision": 4,
+            "submittedRevision": 4,
+            "completedRevision": 4,
+            "requestedAt": 46805.89999999851,
+            "submittedAt": 46811.10000000149,
+            "completedAt": 48817.89999999851,
+            "dirty": false,
+            "awaitingCompletion": false,
+            "sizeDirty": false
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 46805.70000000298
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 46805.70000000298
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 46812.10000000149
+            }
+          ]
+        },
+        "finalLifetime": {
+          "created": 4,
+          "disposed": 4
+        }
+      }
+    ],
+    "reportSHA256": "e5e9a7ba8daaec983a5b9ffc8536654403ebcf21c2a3c1bed9b83f74a933f326"
+  },
+  "motionPixels": {
+    "passed": true,
+    "verificationSHA256": "ced2aa8282cc68f631250e1cd9a900e3b5559c66fd7f3f58c12f53322ddcd3bf",
+    "results": [
+      {
+        "world": "relax",
+        "dimensions": [
+          800,
+          600
+        ],
+        "changedPixels": 85072,
+        "changedPixelsOver8of255": 1977,
+        "totalPixels": 480000,
+        "changedFraction": 0.17723333333333333,
+        "meanAbsoluteChannelDifference": 0.1718340277777778,
+        "changedBounds": [
+          0,
+          0,
+          800,
+          600
+        ],
+        "beforeSHA256": "38fc5e3fe75772a40f49e3721562a535ad3ef4dcb519ece30905fafc03093a68",
+        "afterSHA256": "656649d22898fb4c9c9537132749948bcf95652bc9519efffc1f5815a9ffa7a3",
+        "framesAdvanced": 12,
+        "sceneTimeAdvanced": 0.5545000000014983
+      },
+      {
+        "world": "sleep_prep",
+        "dimensions": [
+          800,
+          600
+        ],
+        "changedPixels": 16507,
+        "changedPixelsOver8of255": 97,
+        "totalPixels": 480000,
+        "changedFraction": 0.034389583333333335,
+        "meanAbsoluteChannelDifference": 0.020513194444444445,
+        "changedBounds": [
+          195,
+          43,
+          617,
+          421
+        ],
+        "beforeSHA256": "b28e57e20c585c00311d0106435f3324b68a588645a0372e084ccbebe3682be0",
+        "afterSHA256": "7a66a2e8c910b9075c74d9a32987d795a85cbb31acd4d0260754667f9298a77d",
+        "framesAdvanced": 12,
+        "sceneTimeAdvanced": 0.5500000000000078
+      },
+      {
+        "world": "power_nap",
+        "dimensions": [
+          800,
+          600
+        ],
+        "changedPixels": 67022,
+        "changedPixelsOver8of255": 13070,
+        "totalPixels": 480000,
+        "changedFraction": 0.13962916666666667,
+        "meanAbsoluteChannelDifference": 0.7827993055555555,
+        "changedBounds": [
+          0,
+          0,
+          800,
+          434
+        ],
+        "beforeSHA256": "c9d29e0a0c6dbfac39667b2d5915304d7763d0456010c3322c3e27f03cbddb37",
+        "afterSHA256": "111c1a03eb55d1f6d91044538e8117a32a8877662e39adf2ee454ace610cc12d",
+        "framesAdvanced": 12,
+        "sceneTimeAdvanced": 0.5599000000044789
+      },
+      {
+        "world": "nature:winter_lodge",
+        "dimensions": [
+          800,
+          600
+        ],
+        "changedPixels": 30343,
+        "changedPixelsOver8of255": 838,
+        "totalPixels": 480000,
+        "changedFraction": 0.06321458333333334,
+        "meanAbsoluteChannelDifference": 0.06482638888888889,
+        "changedBounds": [
+          47,
+          0,
+          800,
+          600
+        ],
+        "beforeSHA256": "1b3fae5e59c03323f942643b4cc3dc7bae6cce52013fd2728f42398c13e51e7e",
+        "afterSHA256": "28aa8bd372af59f4f68e06bbe3021e58dddffdfbe76e4084663a5acf5d4179a0",
+        "framesAdvanced": 12,
+        "sceneTimeAdvanced": 0.5561000000014982
+      }
+    ],
+    "reportSHA256": "ce8f45e69aadebbcfc87abf042fa28d594b63b51c5c7e5d8948e070bf89da332"
+  },
+  "normalPNGs": {
+    "passed": true,
+    "captured": 11,
+    "actualPixelsViewed": 11,
+    "fixedPoseByteIdentical": 10,
+    "manifestSHA256": "0338687f6256d54db0191711f84104a4e5cc7d05b7aba403a0752049cb308e03"
+  },
+  "localChecks": {
+    "typecheck": "PASS; exit0",
+    "unitTests": "PASS;198tests/27files;exit0",
+    "focusedEngineTests": 48,
+    "build": "PASS;exit0",
+    "bundleBudget": "PASS;initialJS402.6/410KiB,CSS99.5/135KiB;exit0",
+    "originalEntryQABuild": "PASS;exit0"
+  },
+  "preservedFailures": {
+    "baselineFourWorld": "FAIL:relax8!=7;sleep7!=6;Nap/Winter original26checks eachpassed",
+    "baselineNative": "FAIL:frame1!=2 AFTER180ms stopped observation; GPU state/eventual delivery unproven then. These were not instantaneous reads.",
+    "baselineCycles": "second cycle/finaldispose UNRUN at2a8",
+    "baselineActualContextLoss": "running loss/recreation observed;native-image fail;pausedmode/finaldispose UNRUN at2a8",
+    "baselineMotionPixels": "UNRUN:prerequisite failed before browser launch",
+    "earlierWinter120s": "Historical failures at earlier checkpoints remain unchanged",
+    "baselineReportSHA256": "01e20443d18d999889ebe8be640c6b967fecfe59ccc29481f865f5baec52e22b"
+  },
+  "limitations": [
+    "Chromium153/SwiftShader software driver; not physical-device latency/FPS/thermal qualification. Another owner browser workload was present at preparation.",
+    "Production diagnostics reflect actual production fence results, but are not an independent complete nativeGL trace. Polling/IPC affects timing.",
+    "5000ms host grace, measured synchronous resource disposal, signaled GPU completion and physical GPU reclamation are distinct; physical reclamation remains UNRUN/unmeasured.",
+    "Pointer/cancel/blur/hidden stimuli include explicitly synthetic events; native trusted keyboard/click and actual extension context loss are separate. Real-tab backgrounding and Fold hardware UNRUN.",
+    "Full-app routing/audio integration and latest shared core693f495 integration UNRUN; shared host unchanged. Initial synchronous failure adaptation remains necessary on this old host.",
+    "No quality/DPR/material/geometry/lighting/reflection/FPS-cap change. No forced loss on ordinary disposal."
+  ],
+  "publication": "Preparation-time snapshot. Exact published commit/tree, immediately-before-ref guards and remoteCI/automaticpreview outcomes are recorded in PR65 after publication; no main merge."
+}

@@ -1,0 +1,15 @@
+{
+  "createdAt": "2026-10-04T20:36:55.601Z",
+  "world": "morning",
+  "scope": "Read-only frozen bundle, native hit diagnostic, no acceptance relaxation",
+  "manifest": {
+    "sourceHash": "2a3f1d19ccc89ee51ecd3f4c6343e036d781e66c8a6c4704e7c2e0023fbbc89f",
+    "harnessHash": "3da4fe53ecfc93941375f43ed0c367cab6732f37f234b896befcffa349222556",
+    "bundleHash": "1a8165fc9bc889338170cd50cb22858c85bd6ca37678972b41ce91fdbf10c98a"
+  },
+  "runnerHash": "c96b07b6da1af37da862126ec3b9c8b12b9d0f08b6cfcfd8eef5090050d4f1ce",
+  "snapshots": [],
+  "errors": [
+    "page.waitForFunction: Timeout 15000ms exceeded.\n    at /workspace/scratch/8e4ccef6af68/brainwave-livingwoods-followup/components/immersiveWorlds/livingWoods/qa/followup/diagnose-hit.mjs:53:14"
+  ]
+}

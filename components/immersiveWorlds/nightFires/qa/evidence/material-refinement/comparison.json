@@ -1,0 +1,235 @@
+{
+  "description": "Original real-WebGL PNG comparison at identical paused time-zero views; no image editing. Complete runtime regression is in results.json.",
+  "baselinePRHead": "813b4ef7f468366e330893f13c27962249f1c3b5",
+  "baselineRuntimeSource": "9fa421b6856756fb47dfb190d5303d2b565f0f9b",
+  "baselineBundleTreeSha256": "4524526bcfd7ef45eaa6af4da15022a781c3b141d32c15f393c6906b68cac81e",
+  "testedSource": "6623c083888e2baece9da11436fe35694a7fcebf",
+  "sourceTreeSha256": "2957a9ed91177425953654a2fe0dc68ee554e60b7ffb6eb77a792dbcd9fbd371",
+  "isolatedBundle": {
+    "bundleTreeSha256": "25d34563c4211fbcee3a1e9ab417482f9d8cabfb7d9f9322d1be3736cd66ba0c",
+    "files": [
+      {
+        "path": "assets/index-BMIBpFoN.js",
+        "sha256": "c91b8c23b685cd2b2aa9bf4eec2a3f666c7179cd4f46098450b8a4d5331469a3"
+      },
+      {
+        "path": "assets/index-CS-EPeon.js",
+        "sha256": "9e4f65846a2004e6a0eebc5ef56ab6b4ca27e0c8f73ff434a491922fbfe0c98d"
+      },
+      {
+        "path": "assets/index-ZuciVTVz.css",
+        "sha256": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/qa/index.html",
+        "sha256": "2045cb6a9db0b9a04b24711b0227c33dbfc30e9f32842f336fc4ef4621c5bc13"
+      }
+    ]
+  },
+  "images": [
+    {
+      "world": "mountain",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "time": 0,
+      "before": {
+        "file": "before/mountain-desktop.png",
+        "sha256": "ba07e9f93630d0bcb9fb488327f00d2a53dc4eb98219c5f43d4ef2f4e43d9422"
+      },
+      "after": {
+        "file": "mountain-desktop.png",
+        "sha256": "4916159a2c6cbf7a40dd5a31069e33004b045822dfc5a68be381804564c6c86a"
+      },
+      "byteIdentical": false
+    },
+    {
+      "world": "mountain",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "time": 0,
+      "before": {
+        "file": "before/mountain-portrait.png",
+        "sha256": "fc40292f01663b985f11fb983b0fd0d1d2773f7f8e8ce6a0c67812681b9d0cfe"
+      },
+      "after": {
+        "file": "mountain-portrait-initial.png",
+        "sha256": "d06c271c130f27e95f29a023907ba70a4b0aef0b52a46c09f29c2f4860ce8488"
+      },
+      "byteIdentical": false
+    },
+    {
+      "world": "lakeside",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "time": 0,
+      "before": {
+        "file": "before/lakeside-desktop.png",
+        "sha256": "43173015fdbbd5f1e55edb339b63e1250af3dcc2539963bc46349db000d30530"
+      },
+      "after": {
+        "file": "lakeside-desktop.png",
+        "sha256": "3c15e1c40de08bcbadf24b37310375caa8ba50b126bca734ae0e4c8ca6481645"
+      },
+      "byteIdentical": false
+    },
+    {
+      "world": "lakeside",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "time": 0,
+      "before": {
+        "file": "before/lakeside-portrait.png",
+        "sha256": "e922bf451e2c51d1ab481e0e0aa516073fde25dc07b1146ab04bc9c85eaa8535"
+      },
+      "after": {
+        "file": "lakeside-portrait-initial.png",
+        "sha256": "3e0a653ab934b1f5fff04c101ac9205e9f7d11ec40cd7d39e0353039b7e1bca9"
+      },
+      "byteIdentical": false
+    },
+    {
+      "world": "deep",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "time": 0,
+      "before": {
+        "file": "before/deep-desktop.png",
+        "sha256": "969403ba2d208e0c847b2b1dcc32d82c2839b82d3c43ec7a04f03089390706c9"
+      },
+      "after": {
+        "file": "deep-desktop.png",
+        "sha256": "969403ba2d208e0c847b2b1dcc32d82c2839b82d3c43ec7a04f03089390706c9"
+      },
+      "byteIdentical": true
+    },
+    {
+      "world": "deep",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "time": 0,
+      "before": {
+        "file": "before/deep-portrait.png",
+        "sha256": "2ef99242bbdf76fe78e107fb3dbac8144a0f1f68a14b8a0e0a043e4ebc1b358b"
+      },
+      "after": {
+        "file": "deep-portrait-initial.png",
+        "sha256": "2ef99242bbdf76fe78e107fb3dbac8144a0f1f68a14b8a0e0a043e4ebc1b358b"
+      },
+      "byteIdentical": true
+    }
+  ],
+  "waterSample": {
+    "boundsXYXY": [
+      580,
+      437,
+      770,
+      530
+    ],
+    "luminanceFormula": [
+      0.2126,
+      0.7152,
+      0.0722
+    ],
+    "range": [
+      0,
+      255
+    ],
+    "metrics": [
+      {
+        "capture": "before",
+        "meanLuminance": 132.1700704244482,
+        "meanAbsoluteVerticalLuminanceDifference": 5.030036064073227,
+        "meanAbsoluteRowMeanLuminanceDifference": 0.8591575514874136
+      },
+      {
+        "capture": "after",
+        "meanLuminance": 123.87590868138088,
+        "meanAbsoluteVerticalLuminanceDifference": 1.6284283180778036,
+        "meanAbsoluteRowMeanLuminanceDifference": 1.1878349542334086
+      }
+    ],
+    "interpretation": "A local fine-contrast measure, not a global quality score. Broad shallow waves remain visible; the water geometry and displacement are unchanged.",
+    "motion": {
+      "files": [
+        "lakeside-motion-before.png",
+        "lakeside-motion-after.png"
+      ],
+      "totalPixels": 17670,
+      "changedPixelsAtTotalRGBDifference6": 8,
+      "meanAbsoluteChannelDifference": 0.1280701754385965,
+      "interpretation": "The existing paired real-frame captures also change inside this water-only sample. Timing and whole-frame motion assertions are in results.json."
+    }
+  },
+  "scopeAudit": {
+    "changedFiles": [
+      "components/immersiveWorlds/nightFires/lakesideScene.ts",
+      "components/immersiveWorlds/nightFires/qa/verify-night-fires.mjs",
+      "components/immersiveWorlds/nightFires/scenery.ts"
+    ],
+    "unchangedFiles": [
+      {
+        "path": "components/immersiveWorlds/nightFires/DeepNightWorld.tsx",
+        "sha256": "4e0535895df72608d1fa7a387b16390e4bf22decddea8102376d25b7fc2d95dd"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/deepScene.ts",
+        "sha256": "a6ac8243bbf38a07fde563dd958a14578cf2aa463c2f1049fccf074070825ba0"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/MountainCampfireWorld.tsx",
+        "sha256": "dcedb12e8ad9b0a39dd467e6e9ce336499abd40afefbb49d6700a35c89621870"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/mountainScene.ts",
+        "sha256": "75ea0fda9623208085a751ebb1bd27831d8d70794df3e0a6e6869fa5980384d7"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/LakesideCampWorld.tsx",
+        "sha256": "2dae5a14734e34986df014dd717761025e750c68b892bab61a2db8908b647b3d"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/NightWorld.tsx",
+        "sha256": "2f37cdc1f588fd48398c77f30e18b76eb944579aad2f23b6293ccb24729f407c"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/nightEngine.ts",
+        "sha256": "89fcd0ab8895f88052b9c30a8ea82d4d784c124666c7d486ff5fc2a28267a397"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/worldTypes.ts",
+        "sha256": "a593a1beaf39813890c8f49d952eb756924f246121bbcd68dfa6201a3f1b7f42"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/night-world.css",
+        "sha256": "f16b87a035faf312ecb68591fddbc87ff0de9804fd1f7754fef3f7696b08e1b3"
+      },
+      {
+        "path": "components/immersiveWorlds/nightFires/qa/harness.tsx",
+        "sha256": "915c913d1535c89847b6f25dfbd5aecd917e2b3c47b85cf5a568b29ebfe6bb10"
+      }
+    ],
+    "otherCodeComparison": "scenery helpers outside fire surface/log/coal construction, flame/spark/local-light update and RNG consumption are unchanged. Lakeside is byte-identical outside its water fragment shader; wave time coefficients intentionally changed. QA runner only adds initial portrait capture/restore assertions.",
+    "sharedCoreProtectedScenesAudioChanged": false
+  },
+  "finalRegression": {
+    "file": "results.json",
+    "sha256": "d7b00f9e9e77d2f1e9bd1266ac5b232ccc90877944e047f7a36ea248172ed744",
+    "status": "passed",
+    "checks": 67,
+    "originalPNGCount": 24,
+    "sourceUnchangedDuringVerification": true,
+    "buildUnchangedDuringVerification": true
+  }
+}

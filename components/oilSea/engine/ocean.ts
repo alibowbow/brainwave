@@ -237,7 +237,7 @@ vec3 shadeSea(vec3 world, vec3 eye) {
   // (red light is lost first, then green; blue goes farthest), so the bay
   // runs from pale sand at the water's edge through emerald and turquoise
   // to the deep blue of open water.
-  vec3 water = mix(vec3(0.03, 0.16, 0.44), vec3(0.02, 0.37, 0.45), exp(-depth / 7.0));
+  vec3 water = mix(vec3(0.04, 0.25, 0.6), vec3(0.03, 0.5, 0.55), exp(-depth / 7.0));
   vec3 body = water;
   if (depth < 14.0) {
     // The bottom, seen through the waves (bent a little by their slopes):
@@ -449,7 +449,7 @@ export function createOcean(sunDirection: THREE.Vector3) {
         float dist = length(toEye);
         vec3 dir = -toEye / dist;
         float haze = 1.0 - exp(-dist / 7000.0 * uHaze);
-        col = mix(col, mix(skyLight(vec3(dir.x, 0.02, dir.z), 0.3), vec3(0.66, 0.78, 0.9), 0.5), haze);
+        col = mix(col, mix(skyLight(vec3(dir.x, 0.02, dir.z), 0.3), vec3(0.74, 0.86, 0.96), 0.5), haze);
         gl_FragColor = vec4(col, 1.0);
       }
     `,

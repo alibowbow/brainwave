@@ -217,9 +217,9 @@ uniform float uHaze;
 vec3 lightGround(vec3 albedo, vec3 n, float sunlight) {
   float wrap = clamp((dot(n, uSunDir) + 0.2) / 1.2, 0.0, 1.0);
   // A warm sun; shade lit by the blue sky (a little violet), open and cool; a warm bounce off the ground.
-  vec3 sun = vec3(1.0, 0.92, 0.74) * 1.6 * wrap * sunlight;
-  vec3 sky = vec3(0.44, 0.56, 0.98) * (0.44 + 0.24 * n.y);
-  vec3 bounce = vec3(0.42, 0.38, 0.2) * 0.16;
+  vec3 sun = vec3(1.0, 0.92, 0.76) * 1.6 * wrap * sunlight;
+  vec3 sky = vec3(0.5, 0.64, 1.0) * (0.5 + 0.24 * n.y);
+  vec3 bounce = vec3(0.42, 0.4, 0.26) * 0.18;
   return albedo * (sun + sky + bounce);
 }
 // The air between the eye and a point: its colour (rgb) and how much of it (a).
@@ -232,7 +232,7 @@ vec4 hazeAt(vec3 world, vec3 eye) {
   // The air thins with height: high ground shows through more of it.
   float thin = exp(-max(0.0, 0.5 * (world.y + eye.y)) / 1500.0);
   float haze = (1.0 - exp(-dist / 6500.0 * uHaze * thin)) * 0.8 + (1.0 - exp(-dist / 60000.0)) * 0.12;
-  vec3 air = mix(skyLight(vec3(dir.x, max(dir.y, 0.0) * 0.3, dir.z), 0.4), vec3(0.64, 0.70, 0.92), 0.55);
+  vec3 air = mix(skyLight(vec3(dir.x, max(dir.y, 0.0) * 0.3, dir.z), 0.4), vec3(0.66, 0.78, 0.97), 0.55);
   return vec4(air, haze);
 }
 vec3 addHaze(vec3 col, vec3 world, vec3 eye) {
@@ -332,7 +332,7 @@ export function createTerrain(sunDirection: THREE.Vector3, detail = 1) {
         col = mix(col, mix(vec3(0.15, 0.25, 0.08), vec3(0.25, 0.36, 0.12), mid), headland);
         // Sand, wet towards the water.
         float beach = smoothstep(52.0, 30.0, inland) * smoothstep(9.0, 4.5, height);
-        col = mix(col, mix(vec3(0.97, 0.91, 0.76), vec3(0.9, 0.83, 0.67), fine), beach);
+        col = mix(col, mix(vec3(0.99, 0.9, 0.72), vec3(0.92, 0.82, 0.62), fine), beach);
         float wet = smoothstep(7.0, 0.5, inland) * smoothstep(2.5, 0.6, height);
         col = mix(col, vec3(0.62, 0.6, 0.54), wet);
         // The swash: each wave runs up the sand in a thin sheet with a line

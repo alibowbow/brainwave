@@ -354,7 +354,7 @@ export function createPine(sunDirection: THREE.Vector3) {
         float old = smoothstep(0.06, 0.3, vBark.z);
         float crack = (1.0 - smoothstep(0.02, 0.12, plate.x)) * old;
         // Plates grey-brown to a warm red-brown where the outer bark has flaked.
-        vec3 albedo = mix(vec3(0.4, 0.31, 0.25), vec3(0.58, 0.39, 0.27), smoothstep(0.35, 0.95, plate.y) * old);
+        vec3 albedo = mix(vec3(0.46, 0.34, 0.25), vec3(0.66, 0.44, 0.3), smoothstep(0.35, 0.95, plate.y) * old);
         albedo *= 0.88 + 0.24 * vnoise(surface * vec2(8.0, 2.5));
         // The plates' own grain: fine ridges along the limb, and flakes lifting at their edges.
         float grain = vnoise(surface * vec2(34.0, 9.0)) * 0.6 + vnoise(surface * vec2(70.0, 20.0) + 3.0) * 0.4;
@@ -455,7 +455,7 @@ export function createPine(sunDirection: THREE.Vector3) {
         // The clump carries its own light and shade; the crown adds
         // sunlight above and shadow within. Each clump its own green:
         // old needles blue-green, fresh shoots yellower.
-        vec3 col = clump.rgb * mix(vec3(0.7, 0.8, 0.9), vec3(1.3, 1.22, 0.9), vShade);
+        vec3 col = clump.rgb * mix(vec3(0.84, 0.94, 1.0), vec3(1.3, 1.22, 0.9), vShade);
         col *= mix(vec3(0.88, 1.0, 1.12), vec3(1.14, 1.06, 0.8), vHue);
         vec3 albedo = clump.rgb;
         // The sun shines through the thin edges of the crown.

@@ -23,8 +23,8 @@ void main() {
   vec3 c = knee(texture2D(tScene, vUv).rgb);
   float grey = dot(c, vec3(0.3, 0.55, 0.15));
   c = mix(vec3(grey), c, 1.02);
-  // A gentle S-curve: deeper darks, fuller lights.
-  c = mix(c, c * c * (3.0 - 2.0 * c), 0.16);
+  // A gentle S-curve: lights stay full, darks stay open and airy rather than heavy.
+  c = mix(c, c * c * (3.0 - 2.0 * c), 0.1);
   gl_FragColor = vec4(clamp(c, 0.0, 1.0), 1.0);
 }
 `;
@@ -306,18 +306,33 @@ vec2 flowAt(vec2 uv) {
   along = along.x < 0.0 ? -along : along;
   return normalize(mix(vec2(1.0, 0.0), along, strength) + vec2(1e-4, 0.0));
 }
-// The painter's colour. Dull colours are enriched most and strong ones hardly
-// at all (so the picture is richer, never garish); light and shade take colours
-// of their own, warm cream in the lights and blue-violet in the shade; the
-// mid-tones are opened up for a brighter, sunnier picture.
+// A soft shoulder on the brightest channel, so that light blues and whites
+// ease into the top of the range instead of clipping into flat colour.
+vec3 shoulder(vec3 c) {
+  float peak = max(c.r, max(c.g, c.b));
+  if (peak <= 0.95) return c;
+  float over = peak - 0.95;
+  return c * (0.95 + over / (1.0 + over / 0.04)) / peak;
+}
+// The painter's colour: clear, cool and bright. Dull colours are enriched most
+// and strong ones hardly at all (so the picture is richer, never garish); blues,
+// cyans and fresh greens a little more, for clean water and sky and a lively
+// meadow. Light stays clean white (a trace of cool, never cream) and the shade
+// takes a light blue of its own, open air rather than grey or brown; the
+// mid-tones are opened up for a bright, airy picture.
 vec3 painterColour(vec3 col) {
   float l = dot(col, vec3(0.299, 0.587, 0.114));
   float chroma = max(col.r, max(col.g, col.b)) - min(col.r, min(col.g, col.b));
   col = mix(vec3(l), col, 1.0 + 0.55 * (1.0 - smoothstep(0.05, 0.7, chroma)));
   float shade = 1.0 - smoothstep(0.06, 0.5, l);
   float light = smoothstep(0.42, 0.9, l);
-  col += shade * vec3(0.012, 0.004, 0.06) + light * vec3(0.04, 0.032, -0.016);
-  col = pow(max(col, 0.0), vec3(0.9));
+  // Warm darks (bark, soil) keep their warmth; the cool ones open into blue.
+  float warm = clamp((col.r - col.b) * 4.0, 0.0, 1.0);
+  col += shade * (1.0 - 0.7 * warm) * vec3(0.018, 0.026, 0.08) + light * vec3(0.0, 0.006, 0.015);
+  float cool = clamp((col.b - col.r) * 2.5, 0.0, 1.0);
+  float fresh = clamp((col.g - max(col.r, col.b)) * 3.0, 0.0, 1.0);
+  col = mix(vec3(dot(col, vec3(0.299, 0.587, 0.114))), col, 1.0 + 0.2 * cool + 0.12 * fresh);
+  col = pow(max(col, 0.0), vec3(0.85));
   return col;
 }
 float bristles(vec2 px, float brush) {
@@ -366,14 +381,14 @@ void main() {
   col = painterColour(col);
   float cloth = weave(gl_FragCoord.xy);
   col *= 0.985 + 0.025 * cloth;
-  col *= vec3(1.015, 1.0, 0.97);
+  col *= vec3(0.995, 1.0, 1.01);
   // The vignette frames the view.
   vec2 v = (vUv - 0.5) * vec2(1.0 / uView, 1.0);
   float r = length((vUv - uSun) * vec2(uResolution.x / uResolution.y, 1.0));
   float glow = exp(-r * 6.0) * uSunVisible;
-  col *= 1.0 - 0.2 * dot(v * vec2(1.0, 1.25), v * vec2(1.0, 1.25)) * (1.0 - glow);
+  col *= 1.0 - 0.13 * dot(v * vec2(1.0, 1.25), v * vec2(1.0, 1.25)) * (1.0 - glow);
   col += vec3(0.24, 0.16, 0.06) * glow + vec3(0.3, 0.27, 0.18) * exp(-r * 22.0) * uSunVisible;
-  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+  gl_FragColor = vec4(clamp(shoulder(col), 0.0, 1.0), 1.0);
 }
 `;
 

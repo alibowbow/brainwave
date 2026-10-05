@@ -1,0 +1,1216 @@
+{
+  "schema": "rain-followup-evidence-summary-v1",
+  "createdAt": "2026-10-05T00:11:17.907447+00:00",
+  "sourceCheckpoint": "1897ea5295fa1a88777e3aae8f969d888df607d4",
+  "sourceTreeSHA256": "b0dae68a41e2ca1c3f0d240c32f72e536106022df313455577e13cee696336bc",
+  "sourceHashes": {
+    "components/immersiveWorlds/rainShelters/engine/gardenFoliage.ts": "b2dfdee0d15b36ac13cd95a8a50a7a1d8e3844f58ece89658788eb5bf6b157d8",
+    "components/immersiveWorlds/rainShelters/engine/materials.ts": "c079a82516edac85c2aec706e53d5cd3b393a7cff980aa86dbf9be7807564d13",
+    "components/immersiveWorlds/rainShelters/engine/porch.ts": "f4553cd1d465b2d88bffa8ef3a538bd46f509f2928df32cbf40cc835e19d426f",
+    "components/immersiveWorlds/rainShelters/engine/renderTargets.test.ts": "3157141a986322bf0c2071e5474e3ddde6d1f32443a7d0df1d02b8106cba1b32",
+    "components/immersiveWorlds/rainShelters/engine/renderTargets.ts": "51eff3051bcf9fc2f523b40b93772bdd403707b1a478dc71c5b1a755206340d1",
+    "components/immersiveWorlds/rainShelters/engine/ShelterEngine.ts": "73e47eb88a52651f1a3dbeac0b1415b86d72d398a372ddaadf3e1d300290a9a1",
+    "components/immersiveWorlds/rainShelters/engine/storm.ts": "097b22400cc401cf8f3a0fd856392c716a598d758d99f965fe346923f09f25e9",
+    "components/immersiveWorlds/rainShelters/engine/tent.ts": "3f83a24263d288465c56968253396e78a59fcacf1838bc508190f61764149817",
+    "components/immersiveWorlds/rainShelters/engine/types.ts": "50545f701fdca4b36cf56e44ff99759f105abe1619836be31e22d69ee649cb18",
+    "components/immersiveWorlds/rainShelters/engine/window.ts": "7ce20b38762b9cd7f22cb8e54fee423ea90259b11fe855cc1de7ae7322c51c12",
+    "components/immersiveWorlds/rainShelters/GardenWindowWorld.tsx": "df8818e9365eaac5adc8e734679d96326ade00635c970ff82f62941fbbbef653",
+    "components/immersiveWorlds/rainShelters/MonsoonPorchWorld.tsx": "e24ee1a3d6cb415e53cb7579c7ea50aadb1789656e5cdf3dc9a76b986aeb3ae7",
+    "components/immersiveWorlds/rainShelters/qa/followup/harness.css": "378f48653699eb43d332caba2933b5c76f790288c717467e23b6653b67574067",
+    "components/immersiveWorlds/rainShelters/qa/followup/harness.tsx": "b6bf6292aad80d611405b08e16a90eda38f2474bfcb1758687c57df1f6ff10b2",
+    "components/immersiveWorlds/rainShelters/qa/followup/index.html": "a335ce7ea0d1f6503ce59eb8aaf91c1736732cf4eb3c434c9fe905a95a9a0361",
+    "components/immersiveWorlds/rainShelters/qa/followup/instrumentation.ts": "6a7e3bbdd97465b48b3d67e3a7d147d2246f8c86974934e439bbf6ee86eb942b",
+    "components/immersiveWorlds/rainShelters/qa/followup/run.mjs": "61b878263eb6befa41870e684c6f1900cf0e8e8702deb960e27c72622fd269c7",
+    "components/immersiveWorlds/rainShelters/qa/followup/verify.mjs": "8a0ba282f59ffb2d107c7f1cea4d2212e925845801de30c37a8885d4b3ed4b02",
+    "components/immersiveWorlds/rainShelters/qa/followup/vite.config.ts": "1bef40d906e39427d9490f2f0b0faad782b28861e201755e68a340725d35233a",
+    "components/immersiveWorlds/rainShelters/qa/harness.css": "378f48653699eb43d332caba2933b5c76f790288c717467e23b6653b67574067",
+    "components/immersiveWorlds/rainShelters/qa/harness.tsx": "4a66c6da2717967be7466c3e44684dbedf22e6dc76775ffbeac3ba516bb4b8a3",
+    "components/immersiveWorlds/rainShelters/qa/index.html": "c399650b8d748711d50e261dcc894b31c7ccec264707dfe607506f21ba6321a1",
+    "components/immersiveWorlds/rainShelters/qa/run.mjs": "6d6e61d3469f6cc5014e85ef53b25084816697ba98741b8b3d90dd551422cdf4",
+    "components/immersiveWorlds/rainShelters/qa/verify.mjs": "5e67eb82969a3945630b3f7da138920b685407efe72c37a1d33c11155c925961",
+    "components/immersiveWorlds/rainShelters/qa/vite.config.ts": "91fa1216f68c352d5abfa8166b50a9e8e0c9ee4df27d16c17b92a279e42b52d0",
+    "components/immersiveWorlds/rainShelters/rain-shelters.css": "0555b92028860ad82ed7b526849bbf87d4bb232a1cb37f1f9c76c28d58b05710",
+    "components/immersiveWorlds/rainShelters/RainTentWorld.tsx": "8bf04614cdf7f81821ffb791b24235fb22ff65613aa3a4a2eebb1d61fd9d9a18",
+    "components/immersiveWorlds/rainShelters/ShelterWorld.tsx": "92d13675c96245a985410585fadb2653b986410a12f5a1c9dce0793989110a1a",
+    "components/immersiveWorlds/rainShelters/SummerStormWorld.tsx": "b83c5fd2966f2a1263312db2f0ad475305fe9ba0044c04404163f12fcd975d3b"
+  },
+  "bundleHashes": {
+    "assets/index-C4gziLaJ.js": "fadb28c930a08d004b474f7dcb28f5ff6d47ac7fea8eb0d52f17ab888a0017ba",
+    "assets/index-DeYwlQ_G.js": "5c29aea525e13347c1e96af3265aa26150b430f2ed1488da53070c345cf9d8a8",
+    "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+    "assets/PretendardVariable-CJuje-Rk.woff2": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+    "index.html": "332201492475a87fc9cb3a0a23cc912fb07caa7e141e39916875b60b2311a1a2"
+  },
+  "baselineSourceCheckpoint": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "baselineSourceTreeSHA256": "977482a0ea2d341f6465b4fc7f9ed6865bf30ad3e3abeefbfac4f16429b62faa",
+  "baselineBundleHashes": {
+    "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f",
+    "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+    "assets/PretendardVariable-CJuje-Rk.woff2": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+    "index.html": "404d2e41407b34c6a98f7d115dbb2b4ca04992886db4f9af7bc01ecedfea5238"
+  },
+  "reports": [
+    {
+      "file": "before-capture-window-storm-tent-porch-normal.json",
+      "status": "passed",
+      "gitHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+      "sourceTreeSHA256": "977482a0ea2d341f6465b4fc7f9ed6865bf30ad3e3abeefbfac4f16429b62faa",
+      "segmentCount": 8,
+      "sha256": "8e20bfa82bd39c39359b97318879f339278dd5c9ca6ce913bfa02f40581cf9b2"
+    },
+    {
+      "file": "after-capture-window-storm-tent-porch-normal-byte.json",
+      "status": "passed",
+      "gitHead": "1897ea5295fa1a88777e3aae8f969d888df607d4",
+      "sourceTreeSHA256": "b0dae68a41e2ca1c3f0d240c32f72e536106022df313455577e13cee696336bc",
+      "segmentCount": 16,
+      "sha256": "44201d5fe14aa3e8b3ff40ee74748267338ee73d314b305e5e6fba8b26813d12"
+    },
+    {
+      "file": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+      "status": "passed",
+      "gitHead": "1897ea5295fa1a88777e3aae8f969d888df607d4",
+      "sourceTreeSHA256": "b0dae68a41e2ca1c3f0d240c32f72e536106022df313455577e13cee696336bc",
+      "segmentCount": 32,
+      "sha256": "ca7ac72532426f8cf7642daf05afc1f546a43c05223095bf4bf7f601b50506b1"
+    }
+  ],
+  "counts": {
+    "segments": 56,
+    "passed": 56,
+    "failed": 0,
+    "blocked": 0,
+    "unrun": 0,
+    "checks": 184,
+    "pngs": 48,
+    "lifecycleCycles": 16
+  },
+  "segmentStatuses": [
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "before",
+      "checkCount": 0
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "window",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "window",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "storm",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "storm",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "tent",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "tent",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "porch",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "porch",
+      "mode": "byte",
+      "stage": "capture",
+      "view": "portrait",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 1
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    },
+    {
+      "world": "window",
+      "mode": "byte",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "window",
+      "mode": "byte",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "window",
+      "mode": "byte",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "window",
+      "mode": "byte",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    },
+    {
+      "world": "storm",
+      "mode": "byte",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "storm",
+      "mode": "byte",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "storm",
+      "mode": "byte",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "storm",
+      "mode": "byte",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    },
+    {
+      "world": "tent",
+      "mode": "byte",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "tent",
+      "mode": "byte",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "tent",
+      "mode": "byte",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "tent",
+      "mode": "byte",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    },
+    {
+      "world": "porch",
+      "mode": "byte",
+      "stage": "compatibility",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 2
+    },
+    {
+      "world": "porch",
+      "mode": "byte",
+      "stage": "input",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 7
+    },
+    {
+      "world": "porch",
+      "mode": "byte",
+      "stage": "motion",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 8
+    },
+    {
+      "world": "porch",
+      "mode": "byte",
+      "stage": "lifecycle",
+      "view": "desktop",
+      "status": "passed",
+      "phase": "after",
+      "checkCount": 4
+    }
+  ],
+  "cleanup": [
+    {
+      "world": "window",
+      "mode": "normal",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5002.10000000149,
+        "disposeCallMs": 914.5,
+        "removeRequestToDisposeExitMs": 5916.60000000149,
+        "contextLostObservedMs": 5918.60000000149,
+        "maxHeartbeatGapMs": 1100
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 8,
+        "removalToDisposeEntryMs": 5000.80000000447,
+        "disposeCallMs": 14535.39999999851,
+        "removalToDisposeExitMs": 19536.20000000298,
+        "actualContextLost": true,
+        "contextLostObservationMs": 19538.20000000298,
+        "maxHeartbeatGapMs": 14543,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    },
+    {
+      "world": "window",
+      "mode": "byte",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5002.20000000298,
+        "disposeCallMs": 692.2999999970198,
+        "removeRequestToDisposeExitMs": 5694.5,
+        "contextLostObservedMs": 5698.89999999851,
+        "maxHeartbeatGapMs": 1242.2999999970198
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 8,
+        "removalToDisposeEntryMs": 5000.69999999553,
+        "disposeCallMs": 13589.10000000149,
+        "removalToDisposeExitMs": 18589.79999999702,
+        "actualContextLost": true,
+        "contextLostObservationMs": 18591.69999999553,
+        "maxHeartbeatGapMs": 13596.89999999851,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5001.9000000059605,
+        "disposeCallMs": 22.099999994039536,
+        "removeRequestToDisposeExitMs": 5024,
+        "contextLostObservedMs": 5039.80000000447,
+        "maxHeartbeatGapMs": 641.8000000044703
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 8,
+        "removalToDisposeEntryMs": 5000.79999999702,
+        "disposeCallMs": 4892,
+        "removalToDisposeExitMs": 9892.79999999702,
+        "actualContextLost": true,
+        "contextLostObservationMs": 9896.10000000149,
+        "maxHeartbeatGapMs": 4940,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    },
+    {
+      "world": "storm",
+      "mode": "byte",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5002.39999999851,
+        "disposeCallMs": 16.80000000447035,
+        "removeRequestToDisposeExitMs": 5019.20000000298,
+        "contextLostObservedMs": 5021.20000000298,
+        "maxHeartbeatGapMs": 837.2000000029802
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 8,
+        "removalToDisposeEntryMs": 5000.70000000298,
+        "disposeCallMs": 1823.6000000014901,
+        "removalToDisposeExitMs": 6824.30000000447,
+        "actualContextLost": true,
+        "contextLostObservationMs": 6826.4000000059605,
+        "maxHeartbeatGapMs": 1861.7999999970198,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5002.5,
+        "disposeCallMs": 23.69999999552965,
+        "removeRequestToDisposeExitMs": 5026.19999999553,
+        "contextLostObservedMs": 5037.19999999553,
+        "maxHeartbeatGapMs": 1201.3999999985099
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 8,
+        "removalToDisposeEntryMs": 5000.60000000149,
+        "disposeCallMs": 2871.3000000044703,
+        "removalToDisposeExitMs": 7871.9000000059605,
+        "actualContextLost": true,
+        "contextLostObservationMs": 7875.20000000298,
+        "maxHeartbeatGapMs": 2912.5,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    },
+    {
+      "world": "tent",
+      "mode": "byte",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5003.5,
+        "disposeCallMs": 20.700000002980232,
+        "removeRequestToDisposeExitMs": 5024.20000000298,
+        "contextLostObservedMs": 5034,
+        "maxHeartbeatGapMs": 1073.5
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 7,
+        "removalToDisposeEntryMs": 5008.10000000149,
+        "disposeCallMs": 1938,
+        "removalToDisposeExitMs": 6946.10000000149,
+        "actualContextLost": true,
+        "contextLostObservationMs": 6948.0,
+        "maxHeartbeatGapMs": 1951.6000000014901,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5002,
+        "disposeCallMs": 24.600000001490116,
+        "removeRequestToDisposeExitMs": 5026.60000000149,
+        "contextLostObservedMs": 5051.79999999702,
+        "maxHeartbeatGapMs": 743.7000000029802
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 8,
+        "removalToDisposeEntryMs": 5000.69999999553,
+        "disposeCallMs": 5196.5,
+        "removalToDisposeExitMs": 10197.19999999553,
+        "actualContextLost": true,
+        "contextLostObservationMs": 10200.09999999404,
+        "maxHeartbeatGapMs": 5203.60000000149,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    },
+    {
+      "world": "porch",
+      "mode": "byte",
+      "status": "passed",
+      "configuredHostGraceMs": 5000,
+      "gateMs": 20000,
+      "coldPaused": {
+        "removeRequestToDisposeEntryMs": 5002.60000000149,
+        "disposeCallMs": 28.799999997019768,
+        "removeRequestToDisposeExitMs": 5031.29999999702,
+        "contextLostObservedMs": 5054.39999999851,
+        "maxHeartbeatGapMs": 719.8000000044703
+      },
+      "afterMotionAndHolder": {
+        "submittedFramesBefore": 2,
+        "submittedFramesAfter": 8,
+        "removalToDisposeEntryMs": 5001.20000000298,
+        "disposeCallMs": 7338.5,
+        "removalToDisposeExitMs": 12339.70000000298,
+        "actualContextLost": true,
+        "contextLostObservationMs": 12341.60000000149,
+        "maxHeartbeatGapMs": 7381.70000000298,
+        "capturePerformed": false,
+        "preDisposalFencePerformed": false
+      }
+    }
+  ],
+  "captureTiming": [
+    {
+      "phase": "before",
+      "world": "window",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 9409.70000000298,
+      "nativePngMs": 327,
+      "png": "before-window-normal-desktop.png",
+      "sha256": "1c1e87a35547f6faaa6d1e1aab2762d541424d7029b7a70032243f8d9e0f31b7"
+    },
+    {
+      "phase": "before",
+      "world": "window",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 5299,
+      "nativePngMs": 106,
+      "png": "before-window-normal-portrait.png",
+      "sha256": "062f966eceaad0642c50915d66ba38d397a2591708f6fd09c146e154c8b34039"
+    },
+    {
+      "phase": "before",
+      "world": "storm",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1685.8999999985099,
+      "nativePngMs": 333,
+      "png": "before-storm-normal-desktop.png",
+      "sha256": "9ffa7bbbdc160ffccf12622eeac423ef2da9291e1fb93d634d3d8d40e3152ca5"
+    },
+    {
+      "phase": "before",
+      "world": "storm",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1265.8000000044703,
+      "nativePngMs": 126,
+      "png": "before-storm-normal-portrait.png",
+      "sha256": "81142607044cee8f3349f57d8cd4872686d5eec86356442738bd75df5420c99d"
+    },
+    {
+      "phase": "before",
+      "world": "tent",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 2538.6999999955297,
+      "nativePngMs": 452,
+      "png": "before-tent-normal-desktop.png",
+      "sha256": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1"
+    },
+    {
+      "phase": "before",
+      "world": "tent",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1577.3999999985099,
+      "nativePngMs": 134,
+      "png": "before-tent-normal-portrait.png",
+      "sha256": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2"
+    },
+    {
+      "phase": "before",
+      "world": "porch",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 3387.60000000149,
+      "nativePngMs": 366,
+      "png": "before-porch-normal-desktop.png",
+      "sha256": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4"
+    },
+    {
+      "phase": "before",
+      "world": "porch",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1505,
+      "nativePngMs": 135,
+      "png": "before-porch-normal-portrait.png",
+      "sha256": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322"
+    },
+    {
+      "phase": "after",
+      "world": "window",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 6112.19999999553,
+      "nativePngMs": 307,
+      "png": "after-window-normal-desktop.png",
+      "sha256": "8eabca25a9add290c2b87ccf071661a32ff17f98bffd5d045178ee34e0f30909"
+    },
+    {
+      "phase": "after",
+      "world": "window",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 3981.10000000149,
+      "nativePngMs": 108,
+      "png": "after-window-normal-portrait.png",
+      "sha256": "c895ba2f273af99fa793e8752e6a745a8b1a9fcc40e91b280f8fdedae539a1d4"
+    },
+    {
+      "phase": "after",
+      "world": "window",
+      "mode": "byte",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 9028.5,
+      "nativePngMs": 281,
+      "png": "after-window-byte-desktop.png",
+      "sha256": "3ee709c5c511f15abbe7a609200ba09c1fb8b9dd7d5524b624eb70a88bf7bbdd"
+    },
+    {
+      "phase": "after",
+      "world": "window",
+      "mode": "byte",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 3838.7000000029802,
+      "nativePngMs": 95,
+      "png": "after-window-byte-portrait.png",
+      "sha256": "340c145026e4bb096a82b5a40167c668b7ad7a44ce0291b891007776d099a2b3"
+    },
+    {
+      "phase": "after",
+      "world": "storm",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 4718.39999999851,
+      "nativePngMs": 433,
+      "png": "after-storm-normal-desktop.png",
+      "sha256": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495"
+    },
+    {
+      "phase": "after",
+      "world": "storm",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1847.3000000044703,
+      "nativePngMs": 136,
+      "png": "after-storm-normal-portrait.png",
+      "sha256": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3"
+    },
+    {
+      "phase": "after",
+      "world": "storm",
+      "mode": "byte",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 2839.2999999970198,
+      "nativePngMs": 361,
+      "png": "after-storm-byte-desktop.png",
+      "sha256": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495"
+    },
+    {
+      "phase": "after",
+      "world": "storm",
+      "mode": "byte",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1740.3999999985099,
+      "nativePngMs": 116,
+      "png": "after-storm-byte-portrait.png",
+      "sha256": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3"
+    },
+    {
+      "phase": "after",
+      "world": "tent",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 2525.7000000029802,
+      "nativePngMs": 456,
+      "png": "after-tent-normal-desktop.png",
+      "sha256": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1"
+    },
+    {
+      "phase": "after",
+      "world": "tent",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1463.1000000014901,
+      "nativePngMs": 131,
+      "png": "after-tent-normal-portrait.png",
+      "sha256": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2"
+    },
+    {
+      "phase": "after",
+      "world": "tent",
+      "mode": "byte",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 2445.2000000029802,
+      "nativePngMs": 468,
+      "png": "after-tent-byte-desktop.png",
+      "sha256": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1"
+    },
+    {
+      "phase": "after",
+      "world": "tent",
+      "mode": "byte",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1297.3999999985099,
+      "nativePngMs": 128,
+      "png": "after-tent-byte-portrait.png",
+      "sha256": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2"
+    },
+    {
+      "phase": "after",
+      "world": "porch",
+      "mode": "normal",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 2910.8000000044703,
+      "nativePngMs": 376,
+      "png": "after-porch-normal-desktop.png",
+      "sha256": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4"
+    },
+    {
+      "phase": "after",
+      "world": "porch",
+      "mode": "normal",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1516.1999999955297,
+      "nativePngMs": 136,
+      "png": "after-porch-normal-portrait.png",
+      "sha256": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322"
+    },
+    {
+      "phase": "after",
+      "world": "porch",
+      "mode": "byte",
+      "view": "desktop",
+      "submittedFrames": 2,
+      "gpuFenceMs": 2938.89999999851,
+      "nativePngMs": 390,
+      "png": "after-porch-byte-desktop.png",
+      "sha256": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4"
+    },
+    {
+      "phase": "after",
+      "world": "porch",
+      "mode": "byte",
+      "view": "portrait",
+      "submittedFrames": 2,
+      "gpuFenceMs": 1597.8000000044703,
+      "nativePngMs": 147,
+      "png": "after-porch-byte-portrait.png",
+      "sha256": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322"
+    }
+  ],
+  "limits": [
+    "These are segmented isolated-scene tests, not a single uninterrupted full-application pass. Original17PNGs and64segmented checks/failures unchanged.",
+    "No full-production-route integration, physical-device/Fold/FPS/thermal or listening validation.",
+    "Byte mode is selected before allocation, never by faking native extension APIs. Advertised-incomplete policy is unit tested separately, not represented as real hardware incapable of RGBA16F.",
+    "Window motion+holder disposal narrowly meets strict20000ms gate on these controlled7\u20138submission runs, with material main-thread heartbeat gaps. No five-second-cleanup or extended-play latency claim.",
+    "Visibility tests override document.visibilityState and are synthetic. Native mouse checks use fixture player chrome, not the integrated full app."
+  ],
+  "status": "passed",
+  "currentSourceHashMismatchCount": 0,
+  "preservedCompositionComparison": [
+    {
+      "world": "tent",
+      "viewport": "desktop",
+      "before": "before-tent-normal-desktop.png",
+      "normal": "after-tent-normal-desktop.png",
+      "byte": "after-tent-byte-desktop.png",
+      "normalBytePixelIdentical": true,
+      "normalByteMaxChannelDelta": 0,
+      "normalByteMeanAbsoluteChannelDelta": 0.0,
+      "beforeAfterPixelIdentical": true,
+      "sha256": {
+        "before-tent-normal-desktop.png": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+        "after-tent-normal-desktop.png": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+        "after-tent-byte-desktop.png": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1"
+      }
+    },
+    {
+      "world": "tent",
+      "viewport": "portrait",
+      "before": "before-tent-normal-portrait.png",
+      "normal": "after-tent-normal-portrait.png",
+      "byte": "after-tent-byte-portrait.png",
+      "normalBytePixelIdentical": true,
+      "normalByteMaxChannelDelta": 0,
+      "normalByteMeanAbsoluteChannelDelta": 0.0,
+      "beforeAfterPixelIdentical": true,
+      "sha256": {
+        "before-tent-normal-portrait.png": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+        "after-tent-normal-portrait.png": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+        "after-tent-byte-portrait.png": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2"
+      }
+    },
+    {
+      "world": "window",
+      "viewport": "desktop",
+      "before": "before-window-normal-desktop.png",
+      "normal": "after-window-normal-desktop.png",
+      "byte": "after-window-byte-desktop.png",
+      "normalBytePixelIdentical": false,
+      "normalByteMaxChannelDelta": 3,
+      "normalByteMeanAbsoluteChannelDelta": 0.2880283082561728,
+      "beforeAfterPixelIdentical": false,
+      "sha256": {
+        "before-window-normal-desktop.png": "1c1e87a35547f6faaa6d1e1aab2762d541424d7029b7a70032243f8d9e0f31b7",
+        "after-window-normal-desktop.png": "8eabca25a9add290c2b87ccf071661a32ff17f98bffd5d045178ee34e0f30909",
+        "after-window-byte-desktop.png": "3ee709c5c511f15abbe7a609200ba09c1fb8b9dd7d5524b624eb70a88bf7bbdd"
+      }
+    },
+    {
+      "world": "window",
+      "viewport": "portrait",
+      "before": "before-window-normal-portrait.png",
+      "normal": "after-window-normal-portrait.png",
+      "byte": "after-window-byte-portrait.png",
+      "normalBytePixelIdentical": false,
+      "normalByteMaxChannelDelta": 3,
+      "normalByteMeanAbsoluteChannelDelta": 0.21903127151942317,
+      "beforeAfterPixelIdentical": false,
+      "sha256": {
+        "before-window-normal-portrait.png": "062f966eceaad0642c50915d66ba38d397a2591708f6fd09c146e154c8b34039",
+        "after-window-normal-portrait.png": "c895ba2f273af99fa793e8752e6a745a8b1a9fcc40e91b280f8fdedae539a1d4",
+        "after-window-byte-portrait.png": "340c145026e4bb096a82b5a40167c668b7ad7a44ce0291b891007776d099a2b3"
+      }
+    },
+    {
+      "world": "porch",
+      "viewport": "desktop",
+      "before": "before-porch-normal-desktop.png",
+      "normal": "after-porch-normal-desktop.png",
+      "byte": "after-porch-byte-desktop.png",
+      "normalBytePixelIdentical": true,
+      "normalByteMaxChannelDelta": 0,
+      "normalByteMeanAbsoluteChannelDelta": 0.0,
+      "beforeAfterPixelIdentical": true,
+      "sha256": {
+        "before-porch-normal-desktop.png": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+        "after-porch-normal-desktop.png": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+        "after-porch-byte-desktop.png": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4"
+      }
+    },
+    {
+      "world": "porch",
+      "viewport": "portrait",
+      "before": "before-porch-normal-portrait.png",
+      "normal": "after-porch-normal-portrait.png",
+      "byte": "after-porch-byte-portrait.png",
+      "normalBytePixelIdentical": true,
+      "normalByteMaxChannelDelta": 0,
+      "normalByteMeanAbsoluteChannelDelta": 0.0,
+      "beforeAfterPixelIdentical": true,
+      "sha256": {
+        "before-porch-normal-portrait.png": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+        "after-porch-normal-portrait.png": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+        "after-porch-byte-portrait.png": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322"
+      }
+    },
+    {
+      "world": "storm",
+      "viewport": "desktop",
+      "before": "before-storm-normal-desktop.png",
+      "normal": "after-storm-normal-desktop.png",
+      "byte": "after-storm-byte-desktop.png",
+      "normalBytePixelIdentical": true,
+      "normalByteMaxChannelDelta": 0,
+      "normalByteMeanAbsoluteChannelDelta": 0.0,
+      "beforeAfterPixelIdentical": false,
+      "sha256": {
+        "before-storm-normal-desktop.png": "9ffa7bbbdc160ffccf12622eeac423ef2da9291e1fb93d634d3d8d40e3152ca5",
+        "after-storm-normal-desktop.png": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495",
+        "after-storm-byte-desktop.png": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495"
+      }
+    },
+    {
+      "world": "storm",
+      "viewport": "portrait",
+      "before": "before-storm-normal-portrait.png",
+      "normal": "after-storm-normal-portrait.png",
+      "byte": "after-storm-byte-portrait.png",
+      "normalBytePixelIdentical": true,
+      "normalByteMaxChannelDelta": 0,
+      "normalByteMeanAbsoluteChannelDelta": 0.0,
+      "beforeAfterPixelIdentical": false,
+      "sha256": {
+        "before-storm-normal-portrait.png": "81142607044cee8f3349f57d8cd4872686d5eec86356442738bd75df5420c99d",
+        "after-storm-normal-portrait.png": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3",
+        "after-storm-byte-portrait.png": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3"
+      }
+    }
+  ],
+  "validatedServedJSCSS": {
+    "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+    "assets/index-DeYwlQ_G.js": "5c29aea525e13347c1e96af3265aa26150b430f2ed1488da53070c345cf9d8a8"
+  },
+  "unservedPriorBuildJavaScript": {
+    "assets/index-C4gziLaJ.js": "fadb28c930a08d004b474f7dcb28f5ff6d47ac7fea8eb0d52f17ab888a0017ba"
+  }
+}

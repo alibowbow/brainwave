@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import type { WorldBuilder } from './types';
+import { createRainRefractionTarget, withRainRenderTargetState } from './renderTargets';
+import { gardenFoliageMaterial, gardenLeafGeometry, gardenSepalGeometry } from './gardenFoliage';
 
 /* Original procedural geometry and shaders. No third-party art assets. */
 const random = (seed: number) => () => {
@@ -107,23 +109,8 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const stoneTex = texture('#78817a', 'stone', 55);
   const stone = new THREE.MeshStandardMaterial({ map: stoneTex, color: '#b5b6a7', roughness: 0.72, bumpMap: stoneTex, bumpScale: 0.042 });
   const bronze = new THREE.MeshStandardMaterial({ color: '#655b41', roughness: 0.42, metalness: 0.62 });
-  const leafMat = new THREE.MeshStandardMaterial({ color: '#c2cbb0', roughness: 0.7, side: THREE.DoubleSide });
-  leafMat.onBeforeCompile = shader => {
-    shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
-      float midrib = 1.0 - smoothstep(0.014, 0.029, abs(vUv.x - 0.5));
-      float veins = pow(max(0.0, cos((vUv.y + abs(vUv.x-0.5)*0.63)*85.0)), 20.0);
-      diffuseColor.rgb *= 0.84 + 0.12*sin(vUv.y*3.14159);
-      diffuseColor.rgb += vec3(0.08,0.09,0.025) * (midrib*0.65+veins*0.24);`);
-  };
-  leafMat.defines = { USE_UV: '' };
-  const petalMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.8, side: THREE.DoubleSide });
-  petalMat.onBeforeCompile = shader => {
-    shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
-      float vein=pow(max(0.0,cos((vUv.x-0.5)*(11.0+vUv.y*18.0))),14.0);
-      diffuseColor.rgb *= 0.88+0.12*vUv.y+0.04*vein;
-      diffuseColor.rgb = mix(diffuseColor.rgb,vec3(0.57,0.67,0.51),pow(1.0-vUv.y,5.0)*0.32);`);
-  };
-  petalMat.defines = { USE_UV: '' };
+  const leafMat = gardenFoliageMaterial('leaf');
+  const petalMat = gardenFoliageMaterial('sepal');
   const glassOccluders: THREE.Object3D[] = [];
   const box = (w: number, h: number, d: number, x: number, y: number, z: number, mat: THREE.Material, parent: THREE.Object3D = scene) => {
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
@@ -191,7 +178,8 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
     rock.castShadow = rock.receiveShadow = true; garden.add(rock);
   }
   const stemMat = new THREE.MeshStandardMaterial({ color: '#536746', roughness: 0.94 });
-  const leafG = leafGeometry(), petalG = petalGeometry();
+  const leafG = leafGeometry();
+  const foliageRandom = random(38291); // Keep the established distant garden/rain placement deterministic.
   const leavesData: { pos: THREE.Vector3; q: THREE.Quaternion; scale: THREE.Vector3; color: THREE.Color }[] = [];
   const petalsData: { pos: THREE.Vector3; q: THREE.Quaternion; scale: THREE.Vector3; color: THREE.Color }[] = [];
   const eye = new THREE.Vector3(0, 1.6, 3.2);
@@ -211,7 +199,7 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
         const length = 0.34 + rnd() * 0.32;
         const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), outward.normalize());
         q.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), rnd() * 1.8 - 0.9));
-        leavesData.push({ pos, q, scale: new THREE.Vector3(length * 0.82, length, length), color: new THREE.Color().setHSL(0.23 + rnd() * 0.07, 0.28 + rnd() * 0.16, 0.18 + rnd() * 0.13) });
+        leavesData.push({ pos, q, scale: new THREE.Vector3(length * (0.72 + foliageRandom() * 0.25), length, length), color: new THREE.Color().setHSL(0.26 + rnd() * 0.07, 0.33 + rnd() * 0.16, 0.22 + rnd() * 0.13) });
       }
       const bloomRadius = 0.20 + rnd() * 0.11;
       const forward = eye.clone().sub(top).normalize().lerp(new THREE.Vector3(0, 1, 0), 0.35).normalize();
@@ -220,27 +208,40 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       for (let f = 0; f < floretCount; f++) {
         const polar = Math.acos(1 - (f + 0.5) / (floretCount + 2)), azimuth = f * 2.39996;
         const normal = new THREE.Vector3(Math.sin(polar) * Math.cos(azimuth), Math.sin(polar) * Math.sin(azimuth), Math.cos(polar));
-        const centre = normal.clone().multiplyScalar(bloomRadius * (0.88 + rnd() * 0.25)).applyQuaternion(basisQ).add(top);
+        const centre = normal.clone().multiplyScalar(bloomRadius * (0.88 + rnd() * 0.25));
+        centre.x *= 0.92 + foliageRandom() * 0.13;
+        centre.y *= 0.82 + foliageRandom() * 0.17;
+        centre.z *= 0.75 + foliageRandom() * 0.17;
+        centre.applyQuaternion(basisQ).add(top);
         const flowerQ = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal.clone().applyQuaternion(basisQ));
         const spin = rnd() * Math.PI * 2, size = 0.065 + rnd() * 0.027;
         const c = new THREE.Color().setHSL(hue + 0.05 + rnd() * 0.035, 0.40 + rnd() * 0.22, 0.45 + rnd() * 0.16);
         for (let petal = 0; petal < 4; petal++) {
-          const q = flowerQ.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), spin + petal * Math.PI / 2));
-          petalsData.push({ pos: centre, q, scale: new THREE.Vector3(size, size, size), color: c });
+          const q = flowerQ.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), spin + petal * Math.PI / 2 + (foliageRandom() - 0.5) * 0.19));
+          q.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), (foliageRandom() - 0.5) * 0.22));
+          const sepalLength = size * (0.83 + foliageRandom() * 0.32);
+          petalsData.push({ pos: centre, q, scale: new THREE.Vector3(size * (0.84 + foliageRandom() * 0.22), sepalLength, size), color: c.clone().offsetHSL((foliageRandom() - 0.5) * 0.012, 0, (foliageRandom() - 0.5) * 0.032) });
         }
       }
     }
   });
-  const leaves = new THREE.InstancedMesh(leafG, leafMat, leavesData.length);
-  const petals = new THREE.InstancedMesh(petalG, petalMat, petalsData.length);
+  const leaves = new THREE.Group(), petals = new THREE.Group();
+  leaves.name = 'hydrangea-curved-leaves'; petals.name = 'hydrangea-irregular-sepals';
   const dummy = new THREE.Object3D();
-  for (const [mesh, data] of [[leaves, leavesData], [petals, petalsData]] as const) {
-    data.forEach((d, i) => {
+  // Four actual curved surfaces prevent scale/color changes from repeating one primitive.
+  for (const [group, data, geometry, mat] of [
+    [leaves, leavesData, gardenLeafGeometry, leafMat],
+    [petals, petalsData, gardenSepalGeometry, petalMat],
+  ] as const) for (let variant = 0; variant < 4; variant++) {
+    const instances = data.filter((_, i) => i % 4 === variant);
+    const mesh = new THREE.InstancedMesh(geometry(variant), mat, instances.length);
+    instances.forEach((d, i) => {
       dummy.position.copy(d.pos); dummy.quaternion.copy(d.q); dummy.scale.copy(d.scale); dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix); mesh.setColorAt(i, d.color);
     });
-    mesh.castShadow = true; mesh.receiveShadow = true; garden.add(mesh);
+    mesh.castShadow = mesh.receiveShadow = true; group.add(mesh);
   }
+  garden.add(leaves, petals);
   // The far boundary is a textured Japanese garden wall and irregular bamboo, not a city grid.
   const wallTex = texture('#a8b2a1', 'stone', 18); wallTex.repeat.set(5, 1);
   const gardenWall = new THREE.MeshStandardMaterial({ map: wallTex, color: '#c4c8b7', roughness: 0.97, bumpMap: wallTex, bumpScale: 0.016 });
@@ -327,9 +328,9 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const rain = new THREE.LineSegments(rainGeo, new THREE.LineBasicMaterial({ color: '#d8e8e3', transparent: true, opacity: 0.28, depthWrite: false })); garden.add(rain);
 
   // Screen-space refraction comes from this same 3D scene and camera, not a backdrop image.
-  const target = new THREE.WebGLRenderTarget(1, 1, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: true, type: THREE.HalfFloatType });
+  const refraction = createRainRefractionTarget(renderer);
   const glassUniforms = {
-    uScene: { value: target.texture }, uResolution: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 },
+    uScene: { value: null as THREE.Texture | null }, uResolution: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 },
     uTouch: { value: new THREE.Vector2(-2, -2) }, uTouchStrength: { value: 0 },
   };
   const glassMat = new THREE.ShaderMaterial({
@@ -341,14 +342,16 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       vec3 drops(vec2 uv, vec2 density, float layer){
         vec2 p=uv*density; vec2 cell=floor(p); float seed=h(cell+layer);
         vec2 q=fract(p)-vec2(0.18+seed*0.60,0.24+h(cell+2.2)*0.5);
-        float r=0.058+0.12*h(cell+1.7); q.y*=0.68+seed*0.28;
-        float d=length(q)/r; float mask=(1.0-smoothstep(0.72,1.0,d))*step(0.13,seed);
-        return vec3(q*mask/r,mask);
+        float r=0.040+0.090*pow(h(cell+1.7),1.7); q.y*=0.80+seed*0.22;
+        float d=length(q)/r; float mask=(1.0-smoothstep(0.76,1.0,d))*step(0.34,seed);
+        // A shallow cap bends the real scene most at the rim; no opaque green bead fill.
+        float curvature=sqrt(max(0.06,1.0-min(d*d,0.94)));
+        return vec3(q*mask/(r*curvature),mask);
       }
       void main(){
         vec2 screenUv=gl_FragCoord.xy/uResolution;
         vec3 a=drops(vUv,vec2(38.0,22.0),0.0), b=drops(vUv,vec2(19.0,11.0),8.1);
-        vec2 refractNormal=a.xy*0.0038+b.xy*0.007; float dropMask=max(a.z,b.z);
+        vec2 refractNormal=a.xy*0.0014+b.xy*0.0025;
         float stream=0.0; vec2 streamN=vec2(0.0);
         for(int i=0;i<7;i++){
           float fi=float(i); float seed=fract(sin(fi*72.13+9.8)*199.73);
@@ -358,13 +361,15 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
           float s=exp(-pow(dx/0.0015,2.0))*tail;
           stream=max(stream,s); streamN.x+=sign(dx)*s*0.006;
           vec2 qp=(vUv-vec2(x,head))*vec2(1.0,0.66); float dd=length(qp)/0.009;
-          float bead=1.0-smoothstep(0.72,1.0,dd); refractNormal+=qp*bead*1.4; dropMask=max(dropMask,bead);
+          float bead=1.0-smoothstep(0.72,1.0,dd); refractNormal+=qp*bead*0.72;
         }
         vec2 traceDelta=(vUv-uTouch)*vec2(1.5,1.0);
         float clear=exp(-dot(traceDelta,traceDelta)*135.0)*uTouchStrength;
         refractNormal=(refractNormal+streamN)*(1.0-clear*0.88);
         vec3 bg=texture2D(uScene,clamp(screenUv+refractNormal,vec2(0.002),vec2(0.998))).rgb;
-        float edgeLight=(a.x+a.y*0.8)*a.z*0.033+(b.x+b.y)*b.z*0.048+stream*0.035;
+        float fineHighlight=pow(max(0.0,(a.x+a.y*0.8)*0.52),5.0)*a.z;
+        float largeHighlight=pow(max(0.0,(b.x+b.y*0.8)*0.52),5.0)*b.z;
+        float edgeLight=min(0.075,fineHighlight*0.030+largeHighlight*0.048)+stream*0.027;
         float mist=(0.012+pow(1.0-vUv.y,3.0)*0.018)*(1.0-clear);
         bg=mix(bg,vec3(0.64,0.73,0.70),mist)+edgeLight*(1.0-clear);
         gl_FragColor=vec4(bg,1.0);
@@ -375,7 +380,7 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const glass = new THREE.Mesh(new THREE.PlaneGeometry(5.72, 2.69), glassMat);
   glass.position.set(0, 2.15, -0.012); scene.add(glass);
   const raycaster = new THREE.Raycaster(), viewport = new THREE.Vector2();
-  let traceAge = 100, currentTime = 0, lastTargetWidth = 0, lastTargetHeight = 0;
+  let traceAge = 100, currentTime = 0;
   const resize = (aspect: number) => {
     camera.fov = aspect < 0.85 ? 51 : 49;
     camera.position.set(aspect < 0.85 ? -0.08 : 0.12, aspect < 0.85 ? 1.42 : 1.47, aspect < 0.85 ? 3.15 : 3.05);
@@ -399,14 +404,15 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       }
       rainGeo.attributes.position.needsUpdate = true;
       renderer.getDrawingBufferSize(viewport);
-      if (viewport.x !== lastTargetWidth || viewport.y !== lastTargetHeight) {
-        lastTargetWidth = Math.max(1, viewport.x); lastTargetHeight = Math.max(1, viewport.y);
-        target.setSize(lastTargetWidth, lastTargetHeight); glassUniforms.uResolution.value.copy(viewport);
-      }
-      const previous = renderer.getRenderTarget();
-      glass.visible = false;
-      renderer.setRenderTarget(target); renderer.clear(); renderer.render(scene, camera);
-      renderer.setRenderTarget(previous); glass.visible = true;
+      const target = refraction.ensure(Math.max(1, viewport.x), Math.max(1, viewport.y));
+      glassUniforms.uScene.value = target.texture; glassUniforms.uResolution.value.copy(viewport);
+      const glassVisible = glass.visible;
+      try {
+        glass.visible = false;
+        withRainRenderTargetState(renderer, () => {
+          renderer.setRenderTarget(target, 0, 0); renderer.clear(); renderer.render(scene, camera);
+        });
+      } finally { glass.visible = glassVisible; }
     },
     interact(x, y, explicit) {
       if (explicit) glassUniforms.uTouch.value.set(0.52, 0.43);
@@ -419,6 +425,6 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       traceAge = 0;
       return { action: 'glass-trace', value: 0.65 + Math.sin(currentTime) * 0.1 };
     },
-    dispose() { target.dispose(); textures.forEach(t => t.dispose()); },
+    dispose() { refraction.dispose(); textures.forEach(t => t.dispose()); },
   };
 };

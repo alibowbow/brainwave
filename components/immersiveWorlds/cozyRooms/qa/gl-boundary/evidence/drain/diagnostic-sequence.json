@@ -1,0 +1,307 @@
+{
+  "passed": false,
+  "worlds": [
+    "nature:winter_lodge"
+  ],
+  "timestamp": "2026-10-04T22:22:12.430Z",
+  "gitHead": "45591e92be66a04f6eed97d0780d693968ab9df9",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "f292a14103e188eff9af6ebb236519cbcaa394afdfe748d466cef51a4e891652",
+    "files": [
+      "assets/CozyWorld-Ba24gTbB.js",
+      "assets/CozyWorld-Ba24gTbB.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-Cc5yDa9a.js",
+      "assets/HearthWorld-Cc5yDa9a.js.map",
+      "assets/NapTerraceWorld-CgnLUZME.js",
+      "assets/NapTerraceWorld-CgnLUZME.js.map",
+      "assets/SleepRoomWorld-C7SfRXbi.js",
+      "assets/SleepRoomWorld-C7SfRXbi.js.map",
+      "assets/WinterLodgeWorld-D2xa8fCS.js",
+      "assets/WinterLodgeWorld-D2xa8fCS.js.map",
+      "assets/fireDetail-BeD7MlKR.js",
+      "assets/fireDetail-BeD7MlKR.js.map",
+      "assets/index-CRdQdscM.js",
+      "assets/index-CRdQdscM.js.map",
+      "assets/main-bAl6bzOS.js",
+      "assets/main-bAl6bzOS.js.map",
+      "assets/materials-e8nGSyYp.js",
+      "assets/materials-e8nGSyYp.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [],
+  "errors": [],
+  "diagnosticOnly": true,
+  "originalGateClaim": false,
+  "reconciliation": {
+    "complete": true,
+    "recovered": 0,
+    "error": null
+  },
+  "boundary": {
+    "engines": [
+      {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 52,
+        "renderReturns": 52,
+        "renderThrows": 0,
+        "drawCallsSum": 32926,
+        "trianglesSum": 139197378,
+        "pointsSum": 8580,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 75077.80000000075,
+        "lastSubmitReturnAt": 75081.19999999925,
+        "lastRendererMs": 3.399999998509884
+      }
+    ],
+    "contexts": [
+      {
+        "contextId": 1,
+        "createdAt": 487.80000000074506,
+        "engineInstance": 1,
+        "api": {
+          "compileShader": {
+            "calls": 38,
+            "returns": 38,
+            "throws": 0,
+            "totalMs": 0,
+            "maxMs": 0,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {}
+          },
+          "linkProgram": {
+            "calls": 19,
+            "returns": 19,
+            "throws": 0,
+            "totalMs": 0.10000000149011612,
+            "maxMs": 0.10000000149011612,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {}
+          },
+          "getProgramParameter": {
+            "calls": 57,
+            "returns": 57,
+            "throws": 0,
+            "totalMs": 42.19999999925494,
+            "maxMs": 10.699999999254942,
+            "lastMs": 0,
+            "detailEventsCapped": false,
+            "pnames": {
+              "35714": 19,
+              "35718": 19,
+              "35721": 19
+            }
+          }
+        },
+        "currentCall": null,
+        "canvas": {
+          "boundaryCanvasId": 1,
+          "connected": true,
+          "parent": "cozy-world-mount",
+          "backingWidth": 960,
+          "backingHeight": 700,
+          "cssWidth": 960,
+          "cssHeight": 700,
+          "instance": "1"
+        }
+      }
+    ],
+    "coverage": {
+      "active": true,
+      "monitorUntil": "final-summary",
+      "valid": false,
+      "instance": 1,
+      "canvasId": 1,
+      "contextId": 1,
+      "frames": 51,
+      "time": 8.374399999998504,
+      "renderEntriesAtFence": 51,
+      "renderReturnsAtFence": 51,
+      "placedAt": 72463.39999999851,
+      "uncoveredEntries": 1,
+      "uncoveredBackingWrites": 0,
+      "releaseAt": null,
+      "disposeEntryAt": null,
+      "disposeReturnAt": null,
+      "finalOldCounters": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 52,
+        "renderReturns": 52,
+        "renderThrows": 0,
+        "drawCallsSum": 32926,
+        "trianglesSum": 139197378,
+        "pointsSum": 8580,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 75077.80000000075,
+        "lastSubmitReturnAt": 75081.19999999925,
+        "lastRendererMs": 3.399999998509884
+      }
+    }
+  },
+  "drain": {
+    "passed": false,
+    "budgetMs": 120000,
+    "startedAt": 72270.39999999851,
+    "oldContextId": 1,
+    "before": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 51,
+      "time": 8.374399999998504,
+      "running": false,
+      "targets": [
+        {
+          "action": "cup",
+          "x": 0.10181518315902666,
+          "y": 0.8125590954840582,
+          "z": 0.9569004896133495
+        },
+        {
+          "action": "cup",
+          "x": 0.05332061471459115,
+          "y": 0.7656697177629317,
+          "z": 0.9568973944313078
+        },
+        {
+          "action": "lamp",
+          "x": 0.10734110039703582,
+          "y": 0.45051655710232014,
+          "z": 0.9673495917121584
+        },
+        {
+          "action": "lamp",
+          "x": 0.11272193902631739,
+          "y": 0.6027171884734851,
+          "z": 0.9672611221954316
+        },
+        {
+          "action": "log",
+          "x": 0.9014166310301769,
+          "y": 0.7447993194139689,
+          "z": 0.9780888288779535
+        },
+        {
+          "action": "log",
+          "x": 0.9300013682115167,
+          "y": 0.7279177483067474,
+          "z": 0.9777985014716816
+        },
+        {
+          "action": "log",
+          "x": 0.958808828231569,
+          "y": 0.7516784546944905,
+          "z": 0.9775269365320773
+        },
+        {
+          "action": "log",
+          "x": 0.9888709268073961,
+          "y": 0.7344619072992344,
+          "z": 0.9772218811362687
+        },
+        {
+          "action": "log",
+          "x": 1.0191305303951814,
+          "y": 0.7589087258771514,
+          "z": 0.9769363631721307
+        }
+      ],
+      "drawCalls": 631,
+      "triangles": 2675522,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      }
+    },
+    "submissionsBefore": {
+      "instance": 1,
+      "contextId": 1,
+      "canvasId": 1,
+      "renderEntries": 51,
+      "renderReturns": 51,
+      "renderThrows": 0,
+      "drawCallsSum": 32295,
+      "trianglesSum": 136521856,
+      "pointsSum": 8415,
+      "linesSum": 0,
+      "lastSubmitEntryAt": 72196.30000000075,
+      "lastSubmitReturnAt": 72206.5,
+      "lastRendererMs": 10.199999999254942
+    },
+    "canvasBefore": {
+      "boundaryCanvasId": 1,
+      "connected": true,
+      "parent": "cozy-world-mount",
+      "backingWidth": 960,
+      "backingHeight": 700,
+      "cssWidth": 960,
+      "cssHeight": 700,
+      "instance": "1"
+    },
+    "polls": 155,
+    "timeoutExpiredCount": 155,
+    "statusTransitions": [
+      {
+        "status": "TIMEOUT_EXPIRED",
+        "at": 72480.10000000149,
+        "poll": 1
+      }
+    ],
+    "clientWaitTotalMs": 0.8000000081956387,
+    "clientWaitMaxMs": 0.10000000149011612,
+    "deleteSyncCalls": 1,
+    "fenceSyncMs": 1.1000000014901161,
+    "flushMs": 0.10000000149011612,
+    "clientWaitLastMs": 0,
+    "clientWaitFirstMs": 0,
+    "error": {
+      "name": "Error",
+      "message": "Old engine/canvas/frame/time/backing/CSS/submission state changed during drain",
+      "stack": "Error: Old engine/canvas/frame/time/backing/CSS/submission state changed during drain\n    at l (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:77281)\n    at Object.drain (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:78780)\n    at async <anonymous>:329:30"
+    },
+    "deleteSyncMs": 0.10000000149011612,
+    "elapsedMs": 2812.2000000029802
+  },
+  "identity": {
+    "sourceAtStart": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "sourceAtEnd": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "bundleAtStart": "f292a14103e188eff9af6ebb236519cbcaa394afdfe748d466cef51a4e891652",
+    "bundleAtEnd": "f292a14103e188eff9af6ebb236519cbcaa394afdfe748d466cef51a4e891652",
+    "unchanged": true
+  },
+  "cleanupError": "Error: browser cleanup: external 10000 ms deadline; comparison ends without retry"
+}

@@ -1,0 +1,1682 @@
+[
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 1,
+    "type": "observer-installed",
+    "at": 14,
+    "intervalMs": 1000,
+    "noExtraGLCalls": true
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 2,
+    "type": "sample",
+    "at": 1327,
+    "reason": "interval",
+    "lagMs": 312,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 1316.8000000044703,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 406,
+      "triangles": 1649826,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": null,
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 3,
+    "type": "sample",
+    "at": 2015.1000000014901,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 1316.8000000044703,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 406,
+      "triangles": 1649826,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 4,
+    "type": "sample",
+    "at": 3015.3000000044703,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 1316.8000000044703,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 406,
+      "triangles": 1649826,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 5,
+    "type": "sample",
+    "at": 4015.10000000149,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 1316.8000000044703,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 406,
+      "triangles": 1649826,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 6,
+    "type": "sample",
+    "at": 5015.20000000298,
+    "reason": "interval",
+    "lagMs": 0.10000000149011612,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 1316.8000000044703,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 406,
+      "triangles": 1649826,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 1280,
+        "backingHeight": 850,
+        "cssWidth": 1280,
+        "cssHeight": 850
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 7,
+    "type": "sample",
+    "at": 6015.30000000447,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 2,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 2,
+        "returned": 2,
+        "completed": 1,
+        "polls": 1,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 5674.80000000447,
+        "lastComplete": 5644,
+        "lastWait": "CONDITION_SATISFIED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 360,
+      "triangles": 1552282,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "2",
+        "connected": true,
+        "backingWidth": 412,
+        "backingHeight": 915,
+        "cssWidth": 412,
+        "cssHeight": 915
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 8,
+    "type": "sample",
+    "at": 7015.10000000149,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 3,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 3,
+        "returned": 3,
+        "completed": 2,
+        "polls": 2,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 6874.30000000447,
+        "lastComplete": 6865.80000000447,
+        "lastWait": "CONDITION_SATISFIED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 379,
+      "triangles": 1561810,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "3",
+        "connected": true,
+        "backingWidth": 673,
+        "backingHeight": 841,
+        "cssWidth": 673,
+        "cssHeight": 841
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 9,
+    "type": "sample",
+    "at": 8015.20000000298,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 3,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 3,
+        "returned": 3,
+        "completed": 2,
+        "polls": 2,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 6874.30000000447,
+        "lastComplete": 6865.80000000447,
+        "lastWait": "CONDITION_SATISFIED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 379,
+      "triangles": 1561810,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "3",
+        "connected": true,
+        "backingWidth": 673,
+        "backingHeight": 841,
+        "cssWidth": 673,
+        "cssHeight": 841
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 10,
+    "type": "sample",
+    "at": 9014.89999999851,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 4,
+      "time": 8,
+      "running": true,
+      "gpu": {
+        "submitted": 4,
+        "returned": 4,
+        "completed": 3,
+        "polls": 49,
+        "timeouts": 46,
+        "maxInFlight": 1,
+        "lastSubmit": 8248.30000000447,
+        "lastComplete": 8239.39999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "4",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 11,
+    "type": "sample",
+    "at": 10015,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 5,
+      "time": 8.05,
+      "running": true,
+      "gpu": {
+        "submitted": 5,
+        "returned": 5,
+        "completed": 4,
+        "polls": 109,
+        "timeouts": 105,
+        "maxInFlight": 1,
+        "lastSubmit": 9802.39999999851,
+        "lastComplete": 9796.30000000447,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "5",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 12,
+    "type": "sample",
+    "at": 11014.89999999851,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 5,
+      "time": 8.05,
+      "running": true,
+      "gpu": {
+        "submitted": 5,
+        "returned": 5,
+        "completed": 4,
+        "polls": 169,
+        "timeouts": 165,
+        "maxInFlight": 1,
+        "lastSubmit": 9802.39999999851,
+        "lastComplete": 9796.30000000447,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "5",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 13,
+    "type": "sample",
+    "at": 12015,
+    "reason": "interval",
+    "lagMs": 0.10000000149011612,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 6,
+      "time": 8.100000000000001,
+      "running": true,
+      "gpu": {
+        "submitted": 6,
+        "returned": 6,
+        "completed": 5,
+        "polls": 229,
+        "timeouts": 224,
+        "maxInFlight": 1,
+        "lastSubmit": 11699.10000000149,
+        "lastComplete": 11696.10000000149,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "6",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 14,
+    "type": "sample",
+    "at": 13015,
+    "reason": "interval",
+    "lagMs": 0.09999999403953552,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 6,
+      "time": 8.100000000000001,
+      "running": true,
+      "gpu": {
+        "submitted": 6,
+        "returned": 6,
+        "completed": 5,
+        "polls": 289,
+        "timeouts": 284,
+        "maxInFlight": 1,
+        "lastSubmit": 11699.10000000149,
+        "lastComplete": 11696.10000000149,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0.05,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "6",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "running",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 15,
+    "type": "sample",
+    "at": 14016.70000000298,
+    "reason": "interval",
+    "lagMs": 1.8000000044703484,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 23,
+      "lastHit": "canopy",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 356,
+        "timeouts": 350,
+        "maxInFlight": 1,
+        "lastSubmit": 13198.80000000447,
+        "lastComplete": 13195.89999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": true,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 1,
+        "instance": "1",
+        "frames": "7",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 16,
+    "type": "sample",
+    "at": 15014.89999999851,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 23,
+      "lastHit": "canopy",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 383,
+        "timeouts": 377,
+        "maxInFlight": 1,
+        "lastSubmit": 13198.80000000447,
+        "lastComplete": 13195.89999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 17,
+    "type": "sample",
+    "at": 16014.80000000447,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 23,
+      "lastHit": "canopy",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 383,
+        "timeouts": 377,
+        "maxInFlight": 1,
+        "lastSubmit": 13198.80000000447,
+        "lastComplete": 13195.89999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 18,
+    "type": "sample",
+    "at": 17016.10000000149,
+    "reason": "interval",
+    "lagMs": 0.10000000149011612,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 23,
+      "lastHit": "canopy",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 383,
+        "timeouts": 377,
+        "maxInFlight": 1,
+        "lastSubmit": 13198.80000000447,
+        "lastComplete": 13195.89999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 19,
+    "type": "sample",
+    "at": 18015,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 23,
+      "lastHit": "canopy",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 383,
+        "timeouts": 377,
+        "maxInFlight": 1,
+        "lastSubmit": 13198.80000000447,
+        "lastComplete": 13195.89999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 20,
+    "type": "sample",
+    "at": 19015,
+    "reason": "interval",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 1,
+      "taps": 23,
+      "lastHit": "canopy",
+      "frames": 7,
+      "time": 8.150000000000002,
+      "running": false,
+      "gpu": {
+        "submitted": 7,
+        "returned": 7,
+        "completed": 6,
+        "polls": 383,
+        "timeouts": 377,
+        "maxInFlight": 1,
+        "lastSubmit": 13198.80000000447,
+        "lastComplete": 13195.89999999851,
+        "lastWait": "TIMEOUT_EXPIRED",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": 0,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 365.20000000298023,
+        "constructorEnd": 377,
+        "factoryStart": 384.5,
+        "factoryEnd": 821,
+        "initEnd": 822.5,
+        "firstRenderStart": 833.3000000044703,
+        "firstRenderEnd": 1316.8000000044703,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      },
+      "status": "ready",
+      "retired": []
+    },
+    "inspectError": null,
+    "canvases": [],
+    "dom": []
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 21,
+    "type": "sample",
+    "at": 20260.89999999851,
+    "reason": "interval",
+    "lagMs": 244.69999999552965,
+    "diagnostic": {
+      "instance": 2,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 20256.20000000298,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 19631.70000000298,
+        "constructorEnd": 19640.60000000149,
+        "factoryStart": 19641,
+        "factoryEnd": 19964.5,
+        "initEnd": 19965.20000000298,
+        "firstRenderStart": 19973.80000000447,
+        "firstRenderEnd": 20256.20000000298,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 2,
+        "disposed": 1
+      },
+      "status": "ready",
+      "retired": [
+        {
+          "instance": 1,
+          "frames": 7,
+          "time": 8.150000000000002,
+          "gpu": {
+            "submitted": 7,
+            "returned": 7,
+            "completed": 6,
+            "polls": 383,
+            "timeouts": 377,
+            "maxInFlight": 1,
+            "lastSubmit": 13198.80000000447,
+            "lastComplete": 13195.89999999851,
+            "lastWait": "TIMEOUT_EXPIRED",
+            "phase": "disposed",
+            "inFlight": 0,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 365.20000000298023,
+            "constructorEnd": 377,
+            "factoryStart": 384.5,
+            "factoryEnd": 821,
+            "initEnd": 822.5,
+            "firstRenderStart": 833.3000000044703,
+            "firstRenderEnd": 1316.8000000044703,
+            "disposeStart": 19601.89999999851,
+            "disposeEnd": 19607.10000000149
+          }
+        }
+      ]
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 2,
+        "instance": "2",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": null,
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  },
+  {
+    "pageId": 1,
+    "documentId": "1791156837670-dd188ced55504",
+    "sequence": 22,
+    "type": "sample",
+    "at": 20305.30000000447,
+    "reason": "before-original-browser-close",
+    "lagMs": 0,
+    "diagnostic": {
+      "instance": 2,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 1,
+      "time": 8,
+      "running": false,
+      "gpu": {
+        "submitted": 1,
+        "returned": 1,
+        "completed": 0,
+        "polls": 0,
+        "timeouts": 0,
+        "maxInFlight": 1,
+        "lastSubmit": 20256.20000000298,
+        "lastComplete": 0,
+        "lastWait": "none",
+        "phase": "submitted",
+        "inFlight": 1,
+        "unconfirmed": 1,
+        "pending": null,
+        "pollScheduled": false,
+        "failure": null,
+        "cleanupErrors": []
+      },
+      "phases": {
+        "constructorStart": 19631.70000000298,
+        "constructorEnd": 19640.60000000149,
+        "factoryStart": 19641,
+        "factoryEnd": 19964.5,
+        "initEnd": 19965.20000000298,
+        "firstRenderStart": 19973.80000000447,
+        "firstRenderEnd": 20256.20000000298,
+        "disposeStart": 0,
+        "disposeEnd": 0
+      },
+      "drawCalls": 405,
+      "triangles": 1649238,
+      "memory": {
+        "geometries": 207,
+        "textures": 19
+      },
+      "lifetime": {
+        "created": 2,
+        "disposed": 1
+      },
+      "status": "ready",
+      "retired": [
+        {
+          "instance": 1,
+          "frames": 7,
+          "time": 8.150000000000002,
+          "gpu": {
+            "submitted": 7,
+            "returned": 7,
+            "completed": 6,
+            "polls": 383,
+            "timeouts": 377,
+            "maxInFlight": 1,
+            "lastSubmit": 13198.80000000447,
+            "lastComplete": 13195.89999999851,
+            "lastWait": "TIMEOUT_EXPIRED",
+            "phase": "disposed",
+            "inFlight": 0,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 365.20000000298023,
+            "constructorEnd": 377,
+            "factoryStart": 384.5,
+            "factoryEnd": 821,
+            "initEnd": 822.5,
+            "firstRenderStart": 833.3000000044703,
+            "firstRenderEnd": 1316.8000000044703,
+            "disposeStart": 19601.89999999851,
+            "disposeEnd": 19607.10000000149
+          }
+        }
+      ]
+    },
+    "inspectError": null,
+    "canvases": [
+      {
+        "id": 2,
+        "instance": "2",
+        "frames": "1",
+        "connected": true,
+        "backingWidth": 960,
+        "backingHeight": 700,
+        "cssWidth": 960,
+        "cssHeight": 700
+      }
+    ],
+    "dom": [
+      {
+        "world": "power_nap",
+        "state": "ready",
+        "motion": "paused",
+        "input": "ready",
+        "status": null,
+        "canvasCount": 1
+      }
+    ]
+  }
+]

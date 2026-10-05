@@ -1,0 +1,23 @@
+{
+  "commit": "024922a3a14db4b7e0d3a4f085d598e7fa3df715",
+  "tree": "cf487c55d81bc84033789eefc42310e69de1184b",
+  "ci": {
+    "status": "completed",
+    "conclusion": "success",
+    "run": 314,
+    "attempt": 1,
+    "url": "https://github.com/alibowbow/brainwave/actions/runs/37242689451"
+  },
+  "vercel": {
+    "status": "success",
+    "url": "https://vercel.com/alibowbows-projects/brainwave/joBx9Fb8cfVfYKLt9EbScSsAS1dQ"
+  },
+  "originalGate": "FAILED: unchanged winter fresh-ready 120000 ms timeout; motion proof UNRUN prerequisite",
+  "startGuard": {
+    "timestamp": "2026-10-04T23:18:33Z",
+    "original": "7373c1eeb5372fa9bebf41889ff2960643f3990e",
+    "followup": "024922a3a14db4b7e0d3a4f085d598e7fa3df715",
+    "method": "successful fetch then exact remote refs"
+  },
+  "previousEvidence": "../static-redraw; unchanged"
+}

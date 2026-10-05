@@ -56,12 +56,14 @@ export function installColdReadyBinding(bindingName, scenes) {
           frames: canvas.dataset.frames ?? canvas.dataset.frame ?? null })) };
     });
     const value = { url: location.href, hash: location.hash, documentOrigin: performance.timeOrigin, wall: performance.now(),
-      headings, candidates, activation: { isActive: navigator.userActivation?.isActive ?? null, hasBeenActive: navigator.userActivation?.hasBeenActive ?? null },
+      headings, candidates, hints: [...document.querySelectorAll('[data-playback-hint]')].map(element => element.getAttribute('data-playback-hint')), activation: { isActive: navigator.userActivation?.isActive ?? null, hasBeenActive: navigator.userActivation?.hasBeenActive ?? null },
       audio: window.__coldAudioSnapshot?.() ?? null, inputs: [...(window.__coldInputProbe ?? [])] };
-    const signature = JSON.stringify({ hash: value.hash, headings, candidates, audio: value.audio, activation: value.activation, inputs: value.inputs.length });
+    const signature = JSON.stringify({ hash: value.hash, headings, candidates, hints: value.hints, audio: value.audio, activation: value.activation, inputs: value.inputs.length });
     if (signature !== prior) { prior = signature; window[bindingName](JSON.stringify(value)); }
-    // Only the requested cold document needs startup events; later history/guide waits remain generic.
-    if (candidates.some(candidate => candidate.ready)) observer.disconnect();
+    // Keep collecting until renderer AND blocked audio readiness coincide in the same document.
+    // Later history/guide waits stay generic; no extra startup budget or initial raw polling.
+    if (candidates.some(candidate => candidate.ready) && value.hints.includes('blocked') &&
+      value.audio?.contexts === 1 && value.audio.states?.length === 1 && value.audio.states[0] === 'suspended') observer.disconnect();
   };
   const observer = new MutationObserver(observe);
   observer.observe(document, { subtree: true, childList: true, characterData: true, attributes: true,
@@ -122,36 +124,45 @@ export async function createColdObserver(page, onObservation = () => {}, { ready
   }
   let lastReadTiming;
   const evaluateWithoutGesture = async (expression, deadlineAt = Infinity) => {
-    const remaining = Math.min(5000, deadlineAt - Date.now());
+    const finiteDeadline = Number.isFinite(deadlineAt);
+    const remaining = finiteDeadline ? deadlineAt - Date.now() : 5000;
     if (remaining <= 0) throw new Error('cold observation reached the absolute startup deadline');
     const startedAt = performance.now();
     const timing = { phase: 'fresh-read', nodeRequestedAt: Date.now(), nodeAcknowledgedAt: null,
-      nodeFinishedAt: null, elapsedMs: null, limitMs: remaining, deadlineAt: Number.isFinite(deadlineAt) ? deadlineAt : null,
-      userGesture: false, outcome: 'pending' };
+      nodeFinishedAt: null, elapsedMs: null, limitMs: remaining, deadlineAt: finiteDeadline ? deadlineAt : null,
+      collectionWarningMs: 5000, delayedRead: null, userGesture: false, outcome: 'pending' };
     lastReadTiming = timing;
+    const noteDelay = () => { timing.delayedRead ??= { nodeRecordedAt: Date.now(), elapsedMs: performance.now() - startedAt, continuedSameRequest: true }; };
+    const warningTimer = finiteDeadline ? setTimeout(noteDelay, 5000) : undefined;
+    const label = finiteDeadline ? 'non-gesture observation absolute deadline' : 'non-gesture observation';
     try {
-      const result = await bounded(session.send('Runtime.evaluate', {
+      // Send once. The 5s collection warning neither abandons nor duplicates this request.
+      const request = session.send('Runtime.evaluate', {
         expression, returnByValue: true, userGesture: false, awaitPromise: false,
-      }), remaining, 'non-gesture observation');
+      });
+      const result = await bounded(request, remaining, label);
       timing.nodeAcknowledgedAt = Date.now();
       timing.elapsedMs = performance.now() - startedAt;
       // A delayed Node timer callback cannot turn an already-late ACK into a passing read.
-      if (timing.elapsedMs > remaining) throw new Error(`non-gesture observation exceeded ${remaining}ms (ACK observed after ${timing.elapsedMs}ms)`);
+      if (finiteDeadline && timing.elapsedMs >= 5000) noteDelay();
+      if (timing.elapsedMs > remaining || (finiteDeadline && Date.now() >= deadlineAt)) throw new Error(`${label} exceeded ${remaining}ms (ACK observed after ${timing.elapsedMs}ms)`);
       if (result.exceptionDetails) throw new Error(`Raw CDP observation failed: ${result.exceptionDetails.exception?.description || result.exceptionDetails.text}`);
       timing.outcome = 'acknowledged';
       return result.result.value;
     } catch (error) {
-      timing.outcome = String(error.message).startsWith('non-gesture observation exceeded') ? 'read-timeout' : 'read-error';
+      timing.outcome = String(error.message).startsWith(`${label} exceeded`) ? 'read-timeout' : 'read-error';
       timing.nodeFinishedAt = Date.now(); timing.elapsedMs = performance.now() - startedAt;
       error.message += ` [observationTiming=${JSON.stringify(timing)}]`;
       throw error;
     } finally {
+      clearTimeout(warningTimer);
       timing.nodeFinishedAt = Date.now(); timing.elapsedMs = performance.now() - startedAt;
     }
   };
   const read = async (label, deadlineAt = Infinity) => {
     const value = await evaluateWithoutGesture(snapshotExpression, deadlineAt);
     value.observationTiming = { ...lastReadTiming };
+    if (value.observationTiming.delayedRead) await onObservation({ label: 'delayed non-gesture read', timing: value.observationTiming });
     if (label) await onObservation({ label, snapshot: value });
     return value;
   };
@@ -171,7 +182,8 @@ export async function createColdObserver(page, onObservation = () => {}, { ready
   const waitForReady = async (title, deadlineAt, pristine) => {
     assert.ok(readyScenes.some(scene => scene.title === title), `cold ready selector must be configured for ${title}`);
     const selected = () => readiness.findLast(value => value.url === page.url() &&
-      value.candidates.some(candidate => candidate.title === title && candidate.ready));
+      value.candidates.some(candidate => candidate.title === title && candidate.ready) && value.hints?.includes('blocked') &&
+      value.audio?.contexts === 1 && value.audio.states?.length === 1 && value.audio.states[0] === 'suspended');
     const timing = { phase: 'ready-binding', nodeRequestedAt: Date.now(), nodeAcknowledgedAt: null, elapsedMs: null, deadlineAt };
     let pending;
     try {

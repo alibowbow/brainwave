@@ -1,0 +1,32 @@
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:36:46.109Z","stage":"verify-original-entry-and-bundle"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:36:46.427Z","stage":"initial-navigation"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:36:46.486Z","stage":"generation-0-ready-wait"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:36:49.034Z","stage":"generation-0-ready","instance":1,"canvas":1}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:36:49.036Z","stage":"running-actual-animation"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:36:56.150Z","stage":"running-driver-loss-request"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:37:01.527Z","stage":"running-loss-verified","isTrusted":true,"contextLost":true,"frames":4,"lifetime":{"created":1,"disposed":1}}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:37:01.536Z","stage":"running-failed-holder-unmount"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:37:01.542Z","stage":"generation-1-ready-wait"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:37:02.829Z","stage":"generation-1-ready","instance":2,"canvas":2}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:37:02.830Z","stage":"generation-1-native-input"}
+COZY_CONTEXT_LOSS {"timestamp":"2026-10-04T23:37:03.254Z","stage":"generation-1-native-input","error":"AssertionError [ERR_ASSERTION]: discrete action rendered a real stopped frame\n\n1 !== 2\n\n    at file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:197:12\n    at async bounded (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:37:14)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:286:61"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: discrete action rendered a real stopped frame
+
+1 !== 2
+
+    at file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:197:12
+    at async bounded (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:37:14)
+    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:286:61 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 2,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

@@ -146,24 +146,42 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   (terrain.material as THREE.MeshStandardMaterial).bumpMap = fieldMap;
   (terrain.material as THREE.MeshStandardMaterial).bumpScale = .045;
 
-  // Field grasses are individually rooted in space; the shader bends tips, not whole patches.
+  // Wet grasses keep their rooted density, with curved, folded cross-sections and
+  // genuine pointed tips. A separate seed preserves all shelter/rain details below.
+  const grassRandom = seedRandom(68124);
   const bladeGeo = new THREE.BufferGeometry();
-  const bladePositions: number[] = [], bladeIndices: number[] = [];
-  // Each instance is a loosely clustered tussock of slender curved blades.
+  const bladePositions: number[] = [], bladeIndices: number[] = [], bladeColors: number[] = [];
   for (let b = 0; b < 12; b++) {
-    const direction = random() * Math.PI * 2, spread = random() * .19, bend = .06 + random() * .18;
+    const direction = grassRandom() * Math.PI * 2, spread = Math.sqrt(grassRandom()) * .23;
     const bx = Math.cos(direction) * spread, bz = Math.sin(direction) * spread;
-    const h = .26 + random() * .37, width = .015 + random() * .015, start = bladePositions.length / 3;
-    for (let j = 0; j < 4; j++) {
-      const t = j / 3, cx = bx + Math.cos(direction) * t * t * bend, cz = bz + Math.sin(direction) * t * t * bend;
-      const w = width * (1 - t * .92);
-      bladePositions.push(cx - Math.cos(direction + 1.57) * w, t * h, cz - Math.sin(direction + 1.57) * w,
-        cx + Math.cos(direction + 1.57) * w, t * h, cz + Math.sin(direction + 1.57) * w);
-      if (j < 3) { const k = start + j * 2; bladeIndices.push(k,k+1,k+2,k+1,k+3,k+2); }
+    const h = .24 + grassRandom() * .40, bend = .12 + grassRandom() * .27;
+    const width = .009 + grassRandom() * .012, twist = (grassRandom() - .5) * 1.5;
+    const tone = .78 + grassRandom() * .22, start = bladePositions.length / 3;
+    for (let j = 0; j <= 5; j++) {
+      const t = j / 5, angle = direction + twist * t;
+      const cx = bx + Math.cos(direction) * t * t * bend;
+      const cz = bz + Math.sin(direction) * t * t * bend;
+      // A narrow base opens into the lamina, then closes to a single tapered tip.
+      const w = width * Math.pow(1 - t, .72) * (.68 + Math.sin(t * Math.PI) * .55);
+      const y = h * (t - .13 * t * t * t), fold = Math.sin(t * Math.PI) * width * .40;
+      for (let edge = -1; edge <= 1; edge++) {
+        const rib = edge === 0 ? fold : 0;
+        bladePositions.push(cx + Math.cos(angle + Math.PI / 2) * w * edge + Math.cos(angle) * rib,
+          y, cz + Math.sin(angle + Math.PI / 2) * w * edge + Math.sin(angle) * rib);
+        const shade = (.43 + .50 * Math.pow(t, .58)) * tone * (edge === 0 ? 1 : .84);
+        bladeColors.push(shade, shade, shade);
+      }
+      if (j < 5) {
+        const k = start + j * 3;
+        bladeIndices.push(k, k + 1, k + 3, k + 1, k + 4, k + 3,
+          k + 1, k + 2, k + 4, k + 2, k + 5, k + 4);
+      }
     }
   }
-  bladeGeo.setAttribute('position', new THREE.Float32BufferAttribute(bladePositions, 3)); bladeGeo.setIndex(bladeIndices); bladeGeo.computeVertexNormals();
-  const grassMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .97, side: THREE.DoubleSide });
+  bladeGeo.setAttribute('position', new THREE.Float32BufferAttribute(bladePositions, 3));
+  bladeGeo.setAttribute('color', new THREE.Float32BufferAttribute(bladeColors, 3));
+  bladeGeo.setIndex(bladeIndices); bladeGeo.computeVertexNormals();
+  const grassMat = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: .73, side: THREE.DoubleSide });
   const grassTime = { value: 0 };
   grassMat.onBeforeCompile = shader => {
     shader.uniforms.uGrassTime = grassTime;
@@ -175,36 +193,83 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   };
   const grass = new THREE.InstancedMesh(bladeGeo, grassMat, 4200); const dummy = new THREE.Object3D();
   const grassColor = new THREE.Color();
+  // Irregular patches retain 4,200 tussocks; no density or distance reduction.
+  const patches = Array.from({ length: 145 }, () => ({
+    x: (grassRandom() - .5) * 79, z: -3.3 - Math.pow(grassRandom(), 1.65) * 67,
+    radius: .65 + grassRandom() * 2.7, tone: grassRandom(),
+  }));
   for (let i = 0; i < 4200; i++) {
-    const x = (random() - .5) * 80, z = -3.0 - Math.pow(random(), 1.9) * 69;
-    dummy.position.set(x, height(x, z) + .08, z); dummy.rotation.set(0, random() * Math.PI * 2, 0); dummy.scale.setScalar(.6 + random() * 1.1); dummy.updateMatrix(); grass.setMatrixAt(i, dummy.matrix);
-    grassColor.setHSL(.19 + random() * .05, .20 + random() * .18, .24 + random() * .12); grass.setColorAt(i, grassColor);
+    const patch = patches[i % patches.length], angle = grassRandom() * Math.PI * 2;
+    const radius = Math.pow(grassRandom(), .65) * patch.radius;
+    const x = patch.x + Math.cos(angle) * radius;
+    const z = Math.min(-3.0, patch.z + Math.sin(angle) * radius * .73);
+    const scale = .60 + grassRandom() * 1.05;
+    dummy.position.set(x, height(x, z) + .025, z);
+    dummy.rotation.set((grassRandom() - .5) * .12, grassRandom() * Math.PI * 2, (grassRandom() - .5) * .12);
+    dummy.scale.set(scale * (.80 + grassRandom() * .34), scale, scale); dummy.updateMatrix(); grass.setMatrixAt(i, dummy.matrix);
+    // HSL is authored in display space, then converted by Three. Treating these
+    // values as linear radiance made the old wet leaves read as pale white straw.
+    grassColor.setHSL(.205 + grassRandom() * .055, .26 + grassRandom() * .23,
+      .28 + patch.tone * .075 + grassRandom() * .045, THREE.SRGBColorSpace);
+    grass.setColorAt(i, grassColor);
   }
-  grass.frustumCulled = false; scene.add(grass);
+  grass.frustumCulled = false; grass.name = 'wet-field-tussocks'; scene.add(grass);
 
-  // The distant shelterbelt uses irregular crown geometry and staggered trunks.
-  const crownGeo = new THREE.IcosahedronGeometry(1, 3);
-  const cp = crownGeo.attributes.position;
+  // The original 55-tree shelterbelt retains its extent. Branch-sized crown
+  // masses have different proportions and fine scalloped edges instead of three
+  // equally sized balls. A further belt separates the field from the rain hills.
+  const treeRandom = seedRandom(90123);
+  const crownGeo = new THREE.IcosahedronGeometry(1, 4);
+  const cp = crownGeo.attributes.position, cn = crownGeo.attributes.normal;
+  const crownColors: number[] = [];
+  const radial = (x: number, y: number, z: number) => 1
+    + Math.sin(x * 5.1 + z * 3.7) * .12 + Math.sin(y * 7.8 + x * 4.3) * .08
+    + Math.cos(z * 13.1 - y * 10.4) * .045 + Math.sin(x * 24 + y * 21 + z * 18) * .019;
+  const point = new THREE.Vector3(), tangent = new THREE.Vector3(), bitangent = new THREE.Vector3();
+  const axis = new THREE.Vector3(0, 1, 0), near = new THREE.Vector3(), along = new THREE.Vector3();
   for (let i = 0; i < cp.count; i++) {
-    const x = cp.getX(i), y = cp.getY(i), z = cp.getZ(i);
-    const f = 1 + Math.sin(x * 8 + z * 6) * .072 + Math.sin(y * 11 + x * 5) * .068 + Math.cos(z * 14 - y * 9) * .053;
-    cp.setXYZ(i, x * f, y * f, z * f);
+    point.fromBufferAttribute(cp, i).normalize();
+    const f = radial(point.x, point.y, point.z);
+    cp.setXYZ(i, point.x * f, point.y * f, point.z * f);
+    tangent.crossVectors(Math.abs(point.y) > .95 ? new THREE.Vector3(1, 0, 0) : axis, point).normalize();
+    bitangent.crossVectors(point, tangent).normalize();
+    near.copy(point).addScaledVector(tangent, .002).normalize();
+    along.copy(point).addScaledVector(bitangent, .002).normalize();
+    near.multiplyScalar(radial(near.x, near.y, near.z)).sub(point.clone().multiplyScalar(f));
+    along.multiplyScalar(radial(along.x, along.y, along.z)).sub(point.clone().multiplyScalar(f));
+    tangent.crossVectors(near, along).normalize(); cn.setXYZ(i, tangent.x, tangent.y, tangent.z);
+    const mottling = .76 + .10 * Math.sin(point.x * 39 + point.z * 31) * Math.cos(point.y * 35)
+      + .10 * point.y + .035 * Math.sin(point.x * 73 - point.y * 61 + point.z * 52);
+    crownColors.push(mottling, mottling, mottling);
   }
-  // Continuous normals prevent faceted low-poly clouds of foliage.
-  const cn = crownGeo.attributes.normal;
-  for (let i = 0; i < cp.count; i++) { const v = new THREE.Vector3(cp.getX(i), cp.getY(i), cp.getZ(i)).normalize(); cn.setXYZ(i, v.x, v.y, v.z); }
-  const crowns = new THREE.InstancedMesh(crownGeo, new THREE.MeshStandardMaterial({ color: 0x7d9572, roughness: 1 }), 165);
-  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(.10, .18, 1, 5), new THREE.MeshStandardMaterial({ color: 0x4e5141 }), 55);
-  for (let t = 0; t < 55; t++) {
-    const x = -87 + t * 3.4 + random() * 2, z = -62 + Math.sin(t * .33) * 7, h = 2.2 + random() * 2.7;
-    dummy.position.set(x, height(x, z) + h * .35, z); dummy.rotation.set(0, 0, 0); dummy.scale.set(1, h * .7, 1); dummy.updateMatrix(); trunks.setMatrixAt(t, dummy.matrix);
+  crownGeo.setAttribute('color', new THREE.Float32BufferAttribute(crownColors, 3));
+  const trees = 83;
+  const crowns = new THREE.InstancedMesh(crownGeo, new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: .93 }), trees * 3);
+  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(.10, .18, 1, 7), new THREE.MeshStandardMaterial({ color: 0x4e5141 }), trees);
+  for (let t = 0; t < trees; t++) {
+    const distant = t >= 55, index = distant ? t - 55 : t;
+    const x = distant ? -88 + index * 6.4 + treeRandom() * 4 : -87 + index * 3.4 + treeRandom() * 2;
+    const z = distant ? -88 - treeRandom() * 13 : -62 + Math.sin(index * .33) * 7 + (treeRandom() - .5) * 7;
+    const h = (distant ? 2.8 : 2.2) + treeRandom() * (distant ? 3.1 : 2.7), ground = height(x, z);
+    dummy.position.set(x, ground + h * .35, z); dummy.rotation.set(0, treeRandom() * .4, (treeRandom() - .5) * .07);
+    dummy.scale.set(1, h * .7, 1); dummy.updateMatrix(); trunks.setMatrixAt(t, dummy.matrix);
+    const breadth = .82 + treeRandom() * .55, lean = (treeRandom() - .5) * .36;
     for (let c = 0; c < 3; c++) {
-      dummy.position.set(x + (c - 1) * h * .25, height(x, z) + h * (.68 + random() * .16), z + (random() - .5) * 2);
-      dummy.rotation.set(random(), random(), random()); dummy.scale.set(h * (.37 + random() * .1), h * (.35 + random() * .22), h * .40); dummy.updateMatrix(); crowns.setMatrixAt(t * 3 + c, dummy.matrix);
-      grassColor.setHSL(.25, .21, .22 + random() * .08); crowns.setColorAt(t * 3 + c, grassColor);
+      const side = c === 0 ? 0 : c === 1 ? -1 : 1, size = c === 0 ? 1 : .48 + treeRandom() * .23;
+      dummy.position.set(x + h * (lean + side * (.24 + treeRandom() * .10)),
+        ground + h * (c === 0 ? .82 : .56 + treeRandom() * .15), z + (treeRandom() - .5) * h * .42);
+      dummy.rotation.set(treeRandom() * .7, treeRandom() * Math.PI * 2, (treeRandom() - .5) * .7);
+      dummy.scale.set(h * .39 * breadth * size, h * (.39 + treeRandom() * .15) * size, h * (.34 + treeRandom() * .11) * size);
+      dummy.updateMatrix(); crowns.setMatrixAt(t * 3 + c, dummy.matrix);
+      grassColor.setHSL(.24 + treeRandom() * .035, distant ? .17 : .27,
+        (distant ? .28 : .245) + treeRandom() * .075, THREE.SRGBColorSpace);
+      crowns.setColorAt(t * 3 + c, grassColor);
     }
   }
-  scene.add(crowns, trunks);
+  crowns.name = 'layered-shelterbelt-crowns'; scene.add(crowns, trunks);
+  // Consume the original vegetation seed budget so existing roof/deck grain,
+  // rain placement and runoff phases remain byte-for-byte deterministic.
+  for (let i = 0; i < 12 * 5 + 4200 * 7 + 55 * (2 + 3 * 8); i++) random();
 
   // Raised deck, jointed posts and functional roof frame surround the seated viewpoint.
   beam(scene, [6.8, .24, 6.8], [0, -.19, 1.55], wood);
@@ -278,10 +343,23 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   const curtainMats: THREE.ShaderMaterial[] = [];
   for (const [x, z, width, opacity] of [[-32,-69,31,.28],[20,-95,54,.28],[-1,-45,19,.12],[48,-56,24,.26],[-58,-112,44,.33]]) {
     const m = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, side: THREE.DoubleSide,
-      uniforms: { uTime: { value: 0 }, uOpacity: { value: opacity } },
+      uniforms: { uTime: { value: 0 }, uOpacity: { value: opacity }, uLayer: { value: -z / 112 } },
       vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader: `varying vec2 vUv;uniform float uTime;uniform float uOpacity;${noiseGLSL}
-      void main(){float x=vUv.x+vUv.y*.17;float streak=fbm(vec2(x*19.,vUv.y*.8-uTime*.022));float edge=smoothstep(0.,.2,vUv.x)*smoothstep(1.,.79,vUv.x);float base=smoothstep(0.,.07,vUv.y)*smoothstep(1.,.48,vUv.y);float a=(.3+streak*.7)*edge*base*uOpacity;gl_FragColor=vec4(.70,.78,.78,a);#include <colorspace_fragment>}`.replace(';#include', ';\n#include') });
+      fragmentShader: `varying vec2 vUv;uniform float uTime;uniform float uOpacity;uniform float uLayer;${noiseGLSL}
+      void main(){
+        float drift=uTime*.019;
+        float x=vUv.x+vUv.y*.17;
+        float broad=fbm(vec2(x*7.+uLayer*11.,vUv.y*.65-drift));
+        float streak=fbm(vec2(x*43.+broad*.7,vUv.y*1.4-drift*1.6));
+        float threads=noise(vec2(x*147.+uLayer*5.,vUv.y*2.5-drift*2.));
+        float edge=smoothstep(0.,.21,vUv.x)*(1.-smoothstep(.78,1.,vUv.x));
+        float base=smoothstep(0.,.085,vUv.y)*(1.-smoothstep(.42,1.,vUv.y));
+        float veil=smoothstep(.25,.77,broad)*(.55+streak*.33+threads*.12);
+        float a=(.18+veil*.82)*edge*base*uOpacity;
+        vec3 rainTone=mix(vec3(.46,.57,.55),vec3(.65,.73,.71),uLayer);
+        gl_FragColor=vec4(rainTone,a);
+        #include <colorspace_fragment>
+      }`.replace(';#include', ';\n#include') });
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, 30), m); mesh.position.set(x, 13.1, z); mesh.renderOrder = 2; scene.add(mesh); curtainMats.push(m);
   }
   // Near rainfall lives outside the porch. Keep sharp streaks sparse against a soft storm bed.

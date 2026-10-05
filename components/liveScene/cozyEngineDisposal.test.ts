@@ -17,6 +17,15 @@ vi.mock('three', async importOriginal => {
   class Renderer {
     shadowMap = { enabled: false, type: 0 };
     info = { render: { calls: 0, triangles: 0 }, memory: { geometries: 0, textures: 0 } };
+    // A signaled fence double lets the real engine's retirement path run;
+    // it is not a measurement of GPU completion.
+    getContext = () => ({
+      isContextLost: () => false,
+      SYNC_GPU_COMMANDS_COMPLETE: 0x9117, ALREADY_SIGNALED: 0x911a,
+      CONDITION_SATISFIED: 0x911c, TIMEOUT_EXPIRED: 0x911b, WAIT_FAILED: 0x911d,
+      fenceSync: () => ({}), clientWaitSync: () => 0x911a,
+      deleteSync: vi.fn(), flush: vi.fn(),
+    });
     constructor() { rendererState.instances.push(this); }
     render = vi.fn((_scene: THREE.Scene, _camera: THREE.Camera) => {});
     dispose = vi.fn(() => {});
@@ -125,7 +134,8 @@ describe('CozyEngine resource retirement at the renderer boundary', () => {
     f.engine.dispose();
     f.engine.dispose();
     expect(f.removed).toHaveBeenCalledExactlyOnceWith(eventName, handler);
-    expect(cancelAnimationFrame).toHaveBeenCalledExactlyOnceWith(ownFrame);
+    expect(cancelAnimationFrame).toHaveBeenCalledWith(ownFrame);
+    expect(cancelAnimationFrame).not.toHaveBeenCalledWith(unrelatedFrame);
     expect([...pendingFrames.keys()]).toEqual([unrelatedFrame]);
     for (const dispose of resources.disposeSpies) expect(dispose).toHaveBeenCalledTimes(1);
     for (const event of resources.resourceEvents) expect(event).toHaveBeenCalledTimes(1);

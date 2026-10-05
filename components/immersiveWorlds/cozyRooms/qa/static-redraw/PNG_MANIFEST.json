@@ -1,0 +1,139 @@
+{
+  "sourceSHA256": "588e2d1aa9721bae82c9b5de3fcc48a8d01955c47bba8f9a02398aa7be40a297",
+  "bundleSHA256": "3a3888b3703fda1d03bf0198cbccaa022acb0d1c480da9a77a313eb91632f376",
+  "method": "Real Chromium PNGs from the unchanged original verification suite. All eleven inspected as images. Ten cold images are byte-identical to approved PR65. No pixel editing, diagnostic fence or readback inserted into this suite. Captures are not proof of completed recreation.",
+  "snapshots": [
+    {
+      "file": "evidence/final-original/relax/relax-chrome-visible.png",
+      "width": 960,
+      "height": 700,
+      "bytes": 517763,
+      "sha256": "f3d62f464e322c1441169a67da31ff123ead5127e3fc19bbe25d38b403f60d20",
+      "approvedFile": null,
+      "approvedSHA256": null,
+      "byteIdentical": false,
+      "comparison": "post-input dynamic timing; not a cold-pose identity claim",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/relax/relax-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2",
+      "approvedFile": "followup/evidence/final/relax-desktop.png",
+      "approvedSHA256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/relax/relax-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37",
+      "approvedFile": "followup/evidence/final/relax-portrait.png",
+      "approvedSHA256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/sleep_prep/sleep_prep-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982",
+      "approvedFile": "followup/evidence/final/sleep_prep-desktop.png",
+      "approvedSHA256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/sleep_prep/sleep_prep-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5",
+      "approvedFile": "followup/evidence/final/sleep_prep-portrait.png",
+      "approvedSHA256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/power_nap/power_nap-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7",
+      "approvedFile": "followup/evidence/final/power_nap-desktop.png",
+      "approvedSHA256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/power_nap/power_nap-fold-inner-viewport.png",
+      "width": 673,
+      "height": 841,
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470",
+      "approvedFile": "followup/evidence/final/power_nap-fold-inner-viewport.png",
+      "approvedSHA256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/power_nap/power_nap-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504",
+      "approvedFile": "followup/evidence/final/power_nap-portrait.png",
+      "approvedSHA256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71",
+      "approvedFile": "followup/evidence/final/nature-winter_lodge-desktop.png",
+      "approvedSHA256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-landscape-viewport.png",
+      "width": 915,
+      "height": 412,
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00",
+      "approvedFile": "followup/evidence/final/nature-winter_lodge-landscape-viewport.png",
+      "approvedSHA256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    },
+    {
+      "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7",
+      "approvedFile": "followup/evidence/final/nature-winter_lodge-portrait.png",
+      "approvedSHA256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7",
+      "byteIdentical": true,
+      "comparison": "same cold view",
+      "pixelsInspected": true
+    }
+  ]
+}

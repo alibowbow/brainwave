@@ -1,0 +1,139 @@
+{
+  "passed": false,
+  "error": "page.evaluate: Error: Old engine/canvas/frame/time/backing/CSS/submission state changed during drain\n    at l (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:77281)\n    at Object.drain (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:78780)\n    at async <anonymous>:329:30\n    at drainBeforeFinalUnmount (/workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/gl-boundary/runtime.mjs:56:38)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/gl-boundary/.generated-drain-11.mjs:81:3",
+  "lastEvent": {
+    "receivedAt": "2026-10-04T22:22:12.427Z",
+    "delivery": "console",
+    "documentId": "1791152457431-3ccaaa453c338",
+    "sequence": 667,
+    "type": "old-context-drain-result",
+    "at": 75082.60000000149,
+    "passed": false,
+    "budgetMs": 120000,
+    "startedAt": 72270.39999999851,
+    "oldContextId": 1,
+    "before": {
+      "instance": 1,
+      "taps": 13,
+      "lastHit": "cup",
+      "frames": 51,
+      "time": 8.374399999998504,
+      "running": false,
+      "targets": [
+        {
+          "action": "cup",
+          "x": 0.10181518315902666,
+          "y": 0.8125590954840582,
+          "z": 0.9569004896133495
+        },
+        {
+          "action": "cup",
+          "x": 0.05332061471459115,
+          "y": 0.7656697177629317,
+          "z": 0.9568973944313078
+        },
+        {
+          "action": "lamp",
+          "x": 0.10734110039703582,
+          "y": 0.45051655710232014,
+          "z": 0.9673495917121584
+        },
+        {
+          "action": "lamp",
+          "x": 0.11272193902631739,
+          "y": 0.6027171884734851,
+          "z": 0.9672611221954316
+        },
+        {
+          "action": "log",
+          "x": 0.9014166310301769,
+          "y": 0.7447993194139689,
+          "z": 0.9780888288779535
+        },
+        {
+          "action": "log",
+          "x": 0.9300013682115167,
+          "y": 0.7279177483067474,
+          "z": 0.9777985014716816
+        },
+        {
+          "action": "log",
+          "x": 0.958808828231569,
+          "y": 0.7516784546944905,
+          "z": 0.9775269365320773
+        },
+        {
+          "action": "log",
+          "x": 0.9888709268073961,
+          "y": 0.7344619072992344,
+          "z": 0.9772218811362687
+        },
+        {
+          "action": "log",
+          "x": 1.0191305303951814,
+          "y": 0.7589087258771514,
+          "z": 0.9769363631721307
+        }
+      ],
+      "drawCalls": 631,
+      "triangles": 2675522,
+      "memory": {
+        "geometries": 393,
+        "textures": 31
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 0
+      }
+    },
+    "submissionsBefore": {
+      "instance": 1,
+      "contextId": 1,
+      "canvasId": 1,
+      "renderEntries": 51,
+      "renderReturns": 51,
+      "renderThrows": 0,
+      "drawCallsSum": 32295,
+      "trianglesSum": 136521856,
+      "pointsSum": 8415,
+      "linesSum": 0,
+      "lastSubmitEntryAt": 72196.30000000075,
+      "lastSubmitReturnAt": 72206.5,
+      "lastRendererMs": 10.199999999254942
+    },
+    "canvasBefore": {
+      "boundaryCanvasId": 1,
+      "connected": true,
+      "parent": "cozy-world-mount",
+      "backingWidth": 960,
+      "backingHeight": 700,
+      "cssWidth": 960,
+      "cssHeight": 700,
+      "instance": "1"
+    },
+    "polls": 155,
+    "timeoutExpiredCount": 155,
+    "statusTransitions": [
+      {
+        "status": "TIMEOUT_EXPIRED",
+        "at": 72480.10000000149,
+        "poll": 1
+      }
+    ],
+    "clientWaitTotalMs": 0.8000000081956387,
+    "clientWaitMaxMs": 0.10000000149011612,
+    "deleteSyncCalls": 1,
+    "fenceSyncMs": 1.1000000014901161,
+    "flushMs": 0.10000000149011612,
+    "clientWaitLastMs": 0,
+    "clientWaitFirstMs": 0,
+    "deleteSyncMs": 0.10000000149011612,
+    "elapsedMs": 2812.2000000029802,
+    "error": {
+      "name": "Error",
+      "message": "Old engine/canvas/frame/time/backing/CSS/submission state changed during drain",
+      "stack": "Error: Old engine/canvas/frame/time/backing/CSS/submission state changed during drain\n    at l (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:77281)\n    at Object.drain (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:78780)\n    at async <anonymous>:329:30"
+    }
+  },
+  "comparisonContinued": false
+}

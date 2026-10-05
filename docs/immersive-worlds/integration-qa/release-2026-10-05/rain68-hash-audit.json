@@ -1,0 +1,1769 @@
+{
+  "head": "633c55f1e6fbacfe28ceb770ad9fecb40fefaa7c",
+  "tree": "9319db7e20a974f6c397c9a3a68171b9e719ee42",
+  "sourceCommit": "ae6e9a3d3b6671306eb24e83d9707537ba9c1615",
+  "base": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "checkedAt": "2026-10-05T00:28:47.515031+00:00",
+  "scope": {
+    "changed": 81,
+    "allOwned": true,
+    "unownedChanges": [],
+    "changedProduction": [
+      "components/immersiveWorlds/rainShelters/engine/ShelterEngine.ts",
+      "components/immersiveWorlds/rainShelters/engine/gardenFoliage.ts",
+      "components/immersiveWorlds/rainShelters/engine/renderTargets.ts",
+      "components/immersiveWorlds/rainShelters/engine/storm.ts",
+      "components/immersiveWorlds/rainShelters/engine/window.ts"
+    ],
+    "originalEvidencePreserved": 32,
+    "originalEvidenceChanges": []
+  },
+  "entries": {
+    "GardenWindowWorld": {
+      "defaultExport": true,
+      "unchangedVsOriginal": true
+    },
+    "MonsoonPorchWorld": {
+      "defaultExport": true,
+      "unchangedVsOriginal": true
+    },
+    "RainTentWorld": {
+      "defaultExport": true,
+      "unchangedVsOriginal": true
+    },
+    "SummerStormWorld": {
+      "defaultExport": true,
+      "unchangedVsOriginal": true
+    }
+  },
+  "props": {
+    "onlyRequired": "active:boolean",
+    "optional": [
+      "onInteraction",
+      "static3D"
+    ],
+    "reviewedFile": "components/immersiveWorlds/rainShelters/ShelterWorld.tsx"
+  },
+  "source": {
+    "rows": [
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/gardenFoliage.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/materials.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/porch.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/renderTargets.test.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/renderTargets.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/ShelterEngine.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/storm.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/tent.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/types.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/engine/window.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/GardenWindowWorld.tsx",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/MonsoonPorchWorld.tsx",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/harness.css",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/harness.tsx",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/index.html",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/instrumentation.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/run.mjs",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/verify.mjs",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/vite.config.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/harness.css",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/harness.tsx",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/index.html",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/run.mjs",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/verify.mjs",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/vite.config.ts",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/rain-shelters.css",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/RainTentWorld.tsx",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/ShelterWorld.tsx",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/SummerStormWorld.tsx",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "sourceCommitMatches": true
+      }
+    ],
+    "matched": 29,
+    "count": 29,
+    "aggregate": "b0dae68a41e2ca1c3f0d240c32f72e536106022df313455577e13cee696336bc",
+    "expected": "b0dae68a41e2ca1c3f0d240c32f72e536106022df313455577e13cee696336bc",
+    "aggregateMatches": true
+  },
+  "artifacts": {
+    "rows": [
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-capture-window-storm-tent-porch-normal-byte.json",
+        "sha256": "44201d5fe14aa3e8b3ff40ee74748267338ee73d314b305e5e6fba8b26813d12",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "sha256": "ca7ac72532426f8cf7642daf05afc1f546a43c05223095bf4bf7f601b50506b1",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-byte-desktop.png",
+        "sha256": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-byte-portrait.png",
+        "sha256": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-byte-post-native-chrome.png",
+        "sha256": "fda8d566ffb6cf3a5b2ba43b02d699979daef666d556fe704af3a900c2f1af09",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-byte-static-after.png",
+        "sha256": "6e8f62896eb825c0834173861a14e7a70855aabe025d59bafc85a65386c4416b",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-byte-static-before.png",
+        "sha256": "3852055f5e2246d6bac69db1931904a01900b748456c21df49a6a6018e6b8bac",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-normal-desktop.png",
+        "sha256": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-normal-portrait.png",
+        "sha256": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-normal-post-native-chrome.png",
+        "sha256": "ac7522aadc2f175b79c6694b797d09275b58a90ea7d574554a694fd01dbc0250",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-normal-static-after.png",
+        "sha256": "6e8f62896eb825c0834173861a14e7a70855aabe025d59bafc85a65386c4416b",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-porch-normal-static-before.png",
+        "sha256": "3852055f5e2246d6bac69db1931904a01900b748456c21df49a6a6018e6b8bac",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-byte-desktop.png",
+        "sha256": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-byte-portrait.png",
+        "sha256": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-byte-post-native-chrome.png",
+        "sha256": "73c3b3702147b9203591ad26e16801f39aeba7c289ddba52c020eee2a9124726",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-byte-static-after.png",
+        "sha256": "8ec7b552c2b8f1af5cc16b1299d12d5918f89b0975b6481e91964e1dab86a416",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-byte-static-before.png",
+        "sha256": "4c22bbcc443c7d4c39887bfc0337a8ce0a20e784777b5d4a2e6a8b3d9b392935",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-normal-desktop.png",
+        "sha256": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-normal-portrait.png",
+        "sha256": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-normal-post-native-chrome.png",
+        "sha256": "b7fb099d5fea620764183dcc91781802ad1c17e859382e515590be7eb98c1373",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-normal-static-after.png",
+        "sha256": "8ec7b552c2b8f1af5cc16b1299d12d5918f89b0975b6481e91964e1dab86a416",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-storm-normal-static-before.png",
+        "sha256": "4c22bbcc443c7d4c39887bfc0337a8ce0a20e784777b5d4a2e6a8b3d9b392935",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-byte-desktop.png",
+        "sha256": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-byte-portrait.png",
+        "sha256": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-byte-post-native-chrome.png",
+        "sha256": "494e51c47f09988003ea45a5c06b9349c678fa0f3b27ffc1ee43294857161967",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-byte-static-after.png",
+        "sha256": "7b58a60ff3cd9980eda36076fe92ef3bdd61931607e12ebcb0526508565d42bd",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-byte-static-before.png",
+        "sha256": "da576ef2f774e7c4a49ea9d6ae2be628af04b1e547d2c475a9fe508581ba2da4",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-normal-desktop.png",
+        "sha256": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-normal-portrait.png",
+        "sha256": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-normal-post-native-chrome.png",
+        "sha256": "153d424c73fabf7c34a7b8b9c8fc4d2913f9aadd8bc13288fd5ff5a52d34ffd0",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-normal-static-after.png",
+        "sha256": "7b58a60ff3cd9980eda36076fe92ef3bdd61931607e12ebcb0526508565d42bd",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-tent-normal-static-before.png",
+        "sha256": "da576ef2f774e7c4a49ea9d6ae2be628af04b1e547d2c475a9fe508581ba2da4",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-byte-desktop.png",
+        "sha256": "3ee709c5c511f15abbe7a609200ba09c1fb8b9dd7d5524b624eb70a88bf7bbdd",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-byte-portrait.png",
+        "sha256": "340c145026e4bb096a82b5a40167c668b7ad7a44ce0291b891007776d099a2b3",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-byte-post-native-chrome.png",
+        "sha256": "24aba2082607d4fc04955764f3975f532b9844461c04c3bc02db328a05350330",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-byte-static-after.png",
+        "sha256": "fb70c2aa5a44aa310293efc9e42afe0c14f0d8cea667f308a6b9889d420739d3",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-byte-static-before.png",
+        "sha256": "1e7de8ca06401cfd59bce1283ae870087939716be53901150b4b0e459638a233",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-normal-desktop.png",
+        "sha256": "8eabca25a9add290c2b87ccf071661a32ff17f98bffd5d045178ee34e0f30909",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-normal-portrait.png",
+        "sha256": "c895ba2f273af99fa793e8752e6a745a8b1a9fcc40e91b280f8fdedae539a1d4",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-normal-post-native-chrome.png",
+        "sha256": "ec2a3b341dc14d326282092de7a51679c4e5a0d19f56e89676b74033107a3f9e",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-normal-static-after.png",
+        "sha256": "39c42f034d1b23ee3155d8130fb4add3a18386720240ce29436b19344b0e8860",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/after-window-normal-static-before.png",
+        "sha256": "f594e92aef5bb256c10dd122327e83d439a90991d3176f5e8c1c0f6f5e704815",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-capture-window-storm-tent-porch-normal.json",
+        "sha256": "8e20bfa82bd39c39359b97318879f339278dd5c9ca6ce913bfa02f40581cf9b2",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-porch-normal-desktop.png",
+        "sha256": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-porch-normal-portrait.png",
+        "sha256": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-storm-normal-desktop.png",
+        "sha256": "9ffa7bbbdc160ffccf12622eeac423ef2da9291e1fb93d634d3d8d40e3152ca5",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-storm-normal-portrait.png",
+        "sha256": "81142607044cee8f3349f57d8cd4872686d5eec86356442738bd75df5420c99d",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-tent-normal-desktop.png",
+        "sha256": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-tent-normal-portrait.png",
+        "sha256": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-window-normal-desktop.png",
+        "sha256": "1c1e87a35547f6faaa6d1e1aab2762d541424d7029b7a70032243f8d9e0f31b7",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          1440,
+          960
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/before-window-normal-portrait.png",
+        "sha256": "062f966eceaad0642c50915d66ba38d397a2591708f6fd09c146e154c8b34039",
+        "matches": true,
+        "immutableHeadMatches": true,
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/after-index-C4gziLaJ.js.gz",
+        "sha256": "eef6dda1550d28d1a4d3afc231abdc9f33962be3ccbbc46da6ea03a52c9ac0da",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/after-index-DeYwlQ_G.js.gz",
+        "sha256": "7d25ad1e273337c03225fd7d3d350dc6311ed59603bf894dc4923b29c4820bdf",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/after-index-vOV6bk3X.css.gz",
+        "sha256": "05733be9878295ddecf07d7249a539a56370329f3e4a77b8a0bad7f4b332672c",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/before-index-D8YJ8BJE.js.gz",
+        "sha256": "d475e12513d19a6553d8b676238fa4e76b1a9c6cb4e1e51287021c9f38f64d8c",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/before-index-vOV6bk3X.css.gz",
+        "sha256": "05733be9878295ddecf07d7249a539a56370329f3e4a77b8a0bad7f4b332672c",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/manifest.json",
+        "sha256": "1ebcfff21263465f88df8906dc0116b44f8c132ad9d59b558e4b5f06517125de",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/summary.json",
+        "sha256": "9a3b933d9d135bf71e7f138b1defc729f5535045c0eecba57c5970565c9eadab",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/local-gates.json",
+        "sha256": "2e916f2f0e6962de4ba587cae321843d979fb1547354b6bc7870a875a685168d",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/pixel-comparisons.json",
+        "sha256": "536a4fd475a11ecd7d5cb4843d46e883eb4b82c62098bfa82582fd7e3166424f",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/publication-guard.json",
+        "sha256": "009b1ad454f733efa42c07b3ad6b9f36314315f57206f24902e40bdca6a0bb92",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/runtime-dependencies.json",
+        "sha256": "3179b48862440e8331f6200fe16a2383315cb2f1b85acf95a1286ea4c53072d4",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/scope-preservation.json",
+        "sha256": "806c40938a35f6a46f5cc24db220fc33bee38f14c236f5e89e74f025c97af543",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/start-guard.json",
+        "sha256": "1c3b10148d47247da24c37f1fc132b8094e1a8d3155863c1fde4285cc84efddc",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/HANDOFF.md",
+        "sha256": "cebde304f58a0bdc1ca9fa958946649fe577c8ab723ef585cc1c141f86d43e31",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/INDEPENDENT_REVIEW.md",
+        "sha256": "61f5b9b862099feb81318810dd84c3daaaaca6dab06e2387c4601026cf55cfe3",
+        "matches": true,
+        "immutableHeadMatches": true
+      },
+      {
+        "file": "components/immersiveWorlds/rainShelters/qa/followup/README.md",
+        "sha256": "98076b0901bede27c568ff66351016746f4650777b456b4f763a3c835653003c",
+        "matches": true,
+        "immutableHeadMatches": true
+      }
+    ],
+    "count": 67,
+    "matched": 67,
+    "headBound": 67,
+    "PNGCount": 48
+  },
+  "bundles": [
+    {
+      "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/before-index-vOV6bk3X.css.gz",
+      "stage": "before",
+      "bundle": "assets/index-vOV6bk3X.css",
+      "role": "original-served-asset",
+      "gzipMatches": true,
+      "decompressedMatches": true,
+      "sha256": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+      "immutableHeadMatches": true
+    },
+    {
+      "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/before-index-D8YJ8BJE.js.gz",
+      "stage": "before",
+      "bundle": "assets/index-D8YJ8BJE.js",
+      "role": "original-served-asset",
+      "gzipMatches": true,
+      "decompressedMatches": true,
+      "sha256": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f",
+      "immutableHeadMatches": true
+    },
+    {
+      "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/after-index-vOV6bk3X.css.gz",
+      "stage": "after",
+      "bundle": "assets/index-vOV6bk3X.css",
+      "role": "validated-served-asset",
+      "gzipMatches": true,
+      "decompressedMatches": true,
+      "sha256": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+      "immutableHeadMatches": true
+    },
+    {
+      "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/after-index-C4gziLaJ.js.gz",
+      "stage": "after",
+      "bundle": "assets/index-C4gziLaJ.js",
+      "role": "prior-build-unserved-retained",
+      "gzipMatches": true,
+      "decompressedMatches": true,
+      "sha256": "fadb28c930a08d004b474f7dcb28f5ff6d47ac7fea8eb0d52f17ab888a0017ba",
+      "immutableHeadMatches": true
+    },
+    {
+      "file": "components/immersiveWorlds/rainShelters/qa/followup/evidence/bundles/after-index-DeYwlQ_G.js.gz",
+      "stage": "after",
+      "bundle": "assets/index-DeYwlQ_G.js",
+      "role": "validated-served-asset",
+      "gzipMatches": true,
+      "decompressedMatches": true,
+      "sha256": "5c29aea525e13347c1e96af3265aa26150b430f2ed1488da53070c345cf9d8a8",
+      "immutableHeadMatches": true
+    }
+  ],
+  "reports": [
+    {
+      "file": "before-capture-window-storm-tent-porch-normal.json",
+      "status": "passed",
+      "segments": 8,
+      "sourceTreeHashMatches": true
+    },
+    {
+      "file": "after-capture-window-storm-tent-porch-normal-byte.json",
+      "status": "passed",
+      "segments": 16,
+      "sourceTreeHashMatches": true
+    },
+    {
+      "file": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+      "status": "passed",
+      "segments": 32,
+      "sourceTreeHashMatches": true
+    }
+  ],
+  "segments": {
+    "rows": [
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "window",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "window",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "before-capture-window-storm-tent-porch-normal.json",
+        "phase": "before",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 0,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-capture-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "byte",
+        "stage": "capture",
+        "view": "portrait",
+        "status": "passed",
+        "checks": 1,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "normal",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "normal",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "normal",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "normal",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "byte",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "byte",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "byte",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "window",
+        "mode": "byte",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "normal",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "byte",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "byte",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "byte",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "storm",
+        "mode": "byte",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "normal",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "byte",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "byte",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "byte",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "tent",
+        "mode": "byte",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "normal",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "byte",
+        "stage": "compatibility",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 2,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "byte",
+        "stage": "input",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 7,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "byte",
+        "stage": "motion",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 8,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      },
+      {
+        "report": "after-compatibility-input-motion-lifecycle-window-storm-tent-porch-normal-byte.json",
+        "phase": "after",
+        "world": "porch",
+        "mode": "byte",
+        "stage": "lifecycle",
+        "view": "desktop",
+        "status": "passed",
+        "checks": 4,
+        "failedChecks": [],
+        "errors": [],
+        "servedBundleHashesMatch": true
+      }
+    ],
+    "count": 56,
+    "passed": 56,
+    "failed": 0,
+    "checks": 184,
+    "afterServedBundleMatches": 48,
+    "allServedBundleMatches": true,
+    "errors": 0
+  },
+  "lifecycle": {
+    "rows": [
+      {
+        "world": "window",
+        "mode": "normal",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5916.60000000149,
+        "secondRemovalToExitMs": 19536.20000000298,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      },
+      {
+        "world": "window",
+        "mode": "byte",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5694.5,
+        "secondRemovalToExitMs": 18589.79999999702,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      },
+      {
+        "world": "storm",
+        "mode": "normal",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5024,
+        "secondRemovalToExitMs": 9892.79999999702,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      },
+      {
+        "world": "storm",
+        "mode": "byte",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5019.20000000298,
+        "secondRemovalToExitMs": 6824.30000000447,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      },
+      {
+        "world": "tent",
+        "mode": "normal",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5026.19999999553,
+        "secondRemovalToExitMs": 7871.9000000059605,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      },
+      {
+        "world": "tent",
+        "mode": "byte",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5024.20000000298,
+        "secondRemovalToExitMs": 6946.10000000149,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      },
+      {
+        "world": "porch",
+        "mode": "normal",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5026.60000000149,
+        "secondRemovalToExitMs": 10197.19999999553,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      },
+      {
+        "world": "porch",
+        "mode": "byte",
+        "gateMs": 20000,
+        "capturePerformed": false,
+        "hostGraceMs": 5000,
+        "coldRemovalToExitMs": 5031.29999999702,
+        "secondRemovalToExitMs": 12339.70000000298,
+        "bothWithinGate": true,
+        "firstDisposed": true,
+        "firstContextLost": true,
+        "secondDisposed": true,
+        "secondContextLost": true
+      }
+    ],
+    "cycles": 16,
+    "passedCycles": 16,
+    "maxRemovalToExitMs": 19536.20000000298,
+    "acceptedLimit": "User accepted the fixed 20s gate including 19.536s software-renderer observation. No new blocker/criterion added."
+  },
+  "limitations": [
+    "Public PR68 immutable source/evidence only; no GPU run or repo modification.",
+    "Image viewing delegated to parent; this report verifies byte/dimension/hash identities.",
+    "Segmented isolated evidence, no assertion of a continuous full-app test."
+  ],
+  "machineAuditPass": true
+}

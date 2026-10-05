@@ -1,0 +1,21 @@
+{
+  "sourceHead": "1897ea5295fa1a88777e3aae8f969d888df607d4",
+  "node": "v24.19.0",
+  "packages": {
+    "three": "0.186.1",
+    "react": "19.2.7",
+    "vite": "6.4.3",
+    "vitest": "4.1.9",
+    "playwright-core": "1.61.1"
+  },
+  "sha256": {
+    "package.json": "ef504d9c1df7130d534a1d543a67089a7fa10e46b2248c77f1e33aa6caa55553",
+    "package-lock.json": "91a7df5bfd528eb4d40d662c4d57ad4938cc9b39f68a0b827f59483b4f5f5b07",
+    "components/liveScene/liveSceneHost.ts": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+    "components/useSceneMotion.ts": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77",
+    "node_modules/three/package.json": "f9c474a27c920b9435353a6235968f4453436bee0444fac7e5fd289c8fa463de",
+    "node_modules/three/src/renderers/webgl/WebGLShadowMap.js": "88669e97ab02b2132a175eb94f9bfeea2a705d5f6c59e677bcb6421f258ff696",
+    "node_modules/three/src/renderers/WebGLRenderer.js": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a",
+    "node_modules/three/examples/jsm/objects/Reflector.js": "57836df976f02a474b2dcfbb6609bca8bde0ccc6e77159ad8e418fa11c065d3b"
+  }
+}

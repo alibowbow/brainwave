@@ -1,0 +1,665 @@
+{
+  "schema": "rain-followup-segmented-qa-v1",
+  "phase": "before",
+  "startedAt": "2026-10-04T23:57:10.036Z",
+  "gitHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "sourceHashes": {
+    "components/immersiveWorlds/rainShelters/engine/materials.ts": "c079a82516edac85c2aec706e53d5cd3b393a7cff980aa86dbf9be7807564d13",
+    "components/immersiveWorlds/rainShelters/engine/porch.ts": "f4553cd1d465b2d88bffa8ef3a538bd46f509f2928df32cbf40cc835e19d426f",
+    "components/immersiveWorlds/rainShelters/engine/ShelterEngine.ts": "b49435b9296deaae1399d20c325400a28732b1a9420207edbdb9a60c5671b865",
+    "components/immersiveWorlds/rainShelters/engine/storm.ts": "9531357b652939b844285020ba97084db093740d2f67e49412d17055ae1392b9",
+    "components/immersiveWorlds/rainShelters/engine/tent.ts": "3f83a24263d288465c56968253396e78a59fcacf1838bc508190f61764149817",
+    "components/immersiveWorlds/rainShelters/engine/types.ts": "50545f701fdca4b36cf56e44ff99759f105abe1619836be31e22d69ee649cb18",
+    "components/immersiveWorlds/rainShelters/engine/window.ts": "a10d300d093bf245525f77919922a13c0de74f8eef3dcbd93032582aaade4f5d",
+    "components/immersiveWorlds/rainShelters/GardenWindowWorld.tsx": "df8818e9365eaac5adc8e734679d96326ade00635c970ff82f62941fbbbef653",
+    "components/immersiveWorlds/rainShelters/MonsoonPorchWorld.tsx": "e24ee1a3d6cb415e53cb7579c7ea50aadb1789656e5cdf3dc9a76b986aeb3ae7",
+    "components/immersiveWorlds/rainShelters/qa/harness.css": "378f48653699eb43d332caba2933b5c76f790288c717467e23b6653b67574067",
+    "components/immersiveWorlds/rainShelters/qa/harness.tsx": "4a66c6da2717967be7466c3e44684dbedf22e6dc76775ffbeac3ba516bb4b8a3",
+    "components/immersiveWorlds/rainShelters/qa/index.html": "c399650b8d748711d50e261dcc894b31c7ccec264707dfe607506f21ba6321a1",
+    "components/immersiveWorlds/rainShelters/qa/run.mjs": "6d6e61d3469f6cc5014e85ef53b25084816697ba98741b8b3d90dd551422cdf4",
+    "components/immersiveWorlds/rainShelters/qa/verify.mjs": "5e67eb82969a3945630b3f7da138920b685407efe72c37a1d33c11155c925961",
+    "components/immersiveWorlds/rainShelters/qa/vite.config.ts": "91fa1216f68c352d5abfa8166b50a9e8e0c9ee4df27d16c17b92a279e42b52d0",
+    "components/immersiveWorlds/rainShelters/rain-shelters.css": "0555b92028860ad82ed7b526849bbf87d4bb232a1cb37f1f9c76c28d58b05710",
+    "components/immersiveWorlds/rainShelters/RainTentWorld.tsx": "8bf04614cdf7f81821ffb791b24235fb22ff65613aa3a4a2eebb1d61fd9d9a18",
+    "components/immersiveWorlds/rainShelters/ShelterWorld.tsx": "92d13675c96245a985410585fadb2653b986410a12f5a1c9dce0793989110a1a",
+    "components/immersiveWorlds/rainShelters/SummerStormWorld.tsx": "b83c5fd2966f2a1263312db2f0ad475305fe9ba0044c04404163f12fcd975d3b"
+  },
+  "sourceTreeSHA256": "977482a0ea2d341f6465b4fc7f9ed6865bf30ad3e3abeefbfac4f16429b62faa",
+  "bundleHashes": {
+    "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f",
+    "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+    "assets/PretendardVariable-CJuje-Rk.woff2": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+    "index.html": "404d2e41407b34c6a98f7d115dbb2b4ca04992886db4f9af7bc01ecedfea5238"
+  },
+  "requested": {
+    "worlds": [
+      "window",
+      "storm",
+      "tent",
+      "porch"
+    ],
+    "modes": [
+      "normal"
+    ],
+    "stages": [
+      "capture"
+    ],
+    "selectedViews": [
+      "desktop",
+      "portrait"
+    ]
+  },
+  "segments": [
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "startedAt": "2026-10-04T23:57:10.037Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 388,
+        "triangles": 1650648
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 9409.70000000298,
+        "polls": 369,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        }
+      },
+      "capture": {
+        "file": "before-window-normal-desktop.png",
+        "sha256": "1c1e87a35547f6faaa6d1e1aab2762d541424d7029b7a70032243f8d9e0f31b7",
+        "bytes": 1119654,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 1440,
+        "pngHeight": 960,
+        "captureMs": 327,
+        "combinedFenceAndCaptureMs": 9748,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960,
+          "drawCalls": 388,
+          "triangles": 1650648
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:21.283Z"
+    },
+    {
+      "world": "window",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "startedAt": "2026-10-04T23:57:21.376Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 390,
+        "height": 844,
+        "drawCalls": 205,
+        "triangles": 1645620
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 5299,
+        "polls": 207,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        }
+      },
+      "capture": {
+        "file": "before-window-normal-portrait.png",
+        "sha256": "062f966eceaad0642c50915d66ba38d397a2591708f6fd09c146e154c8b34039",
+        "bytes": 250578,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 390,
+        "pngHeight": 844,
+        "captureMs": 106,
+        "combinedFenceAndCaptureMs": 5423,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844,
+          "drawCalls": 205,
+          "triangles": 1645620
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:28.341Z"
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "startedAt": "2026-10-04T23:57:28.385Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 69,
+        "triangles": 380496
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 1685.8999999985099,
+        "polls": 66,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        }
+      },
+      "capture": {
+        "file": "before-storm-normal-desktop.png",
+        "sha256": "9ffa7bbbdc160ffccf12622eeac423ef2da9291e1fb93d634d3d8d40e3152ca5",
+        "bytes": 1179149,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 1440,
+        "pngHeight": 960,
+        "captureMs": 333,
+        "combinedFenceAndCaptureMs": 2032,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960,
+          "drawCalls": 69,
+          "triangles": 380496
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:31.423Z"
+    },
+    {
+      "world": "storm",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "startedAt": "2026-10-04T23:57:31.473Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 390,
+        "height": 844,
+        "drawCalls": 76,
+        "triangles": 381232
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 1265.8000000044703,
+        "polls": 50,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        }
+      },
+      "capture": {
+        "file": "before-storm-normal-portrait.png",
+        "sha256": "81142607044cee8f3349f57d8cd4872686d5eec86356442738bd75df5420c99d",
+        "bytes": 306861,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 390,
+        "pngHeight": 844,
+        "captureMs": 126,
+        "combinedFenceAndCaptureMs": 1400,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844,
+          "drawCalls": 76,
+          "triangles": 381232
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:33.888Z"
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "startedAt": "2026-10-04T23:57:33.945Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 77,
+        "triangles": 363770
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 2538.6999999955297,
+        "polls": 99,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        }
+      },
+      "capture": {
+        "file": "before-tent-normal-desktop.png",
+        "sha256": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+        "bytes": 1285423,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 1440,
+        "pngHeight": 960,
+        "captureMs": 452,
+        "combinedFenceAndCaptureMs": 3004,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960,
+          "drawCalls": 77,
+          "triangles": 363770
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:38.291Z"
+    },
+    {
+      "world": "tent",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "startedAt": "2026-10-04T23:57:38.356Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 390,
+        "height": 844,
+        "drawCalls": 71,
+        "triangles": 362801
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 1577.3999999985099,
+        "polls": 62,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        }
+      },
+      "capture": {
+        "file": "before-tent-normal-portrait.png",
+        "sha256": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+        "bytes": 307550,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 390,
+        "pngHeight": 844,
+        "captureMs": 134,
+        "combinedFenceAndCaptureMs": 1724,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844,
+          "drawCalls": 71,
+          "triangles": 362801
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:41.299Z"
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "startedAt": "2026-10-04T23:57:41.365Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 1440,
+        "height": 960,
+        "drawCalls": 535,
+        "triangles": 445244
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 3387.60000000149,
+        "polls": 130,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960
+        }
+      },
+      "capture": {
+        "file": "before-porch-normal-desktop.png",
+        "sha256": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+        "bytes": 1410470,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 1440,
+        "pngHeight": 960,
+        "captureMs": 366,
+        "combinedFenceAndCaptureMs": 3766,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 1440,
+          "height": 960,
+          "drawCalls": 535,
+          "triangles": 445244
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:46.012Z"
+    },
+    {
+      "world": "porch",
+      "mode": "normal",
+      "stage": "capture",
+      "view": "portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "startedAt": "2026-10-04T23:57:46.068Z",
+      "status": "passed",
+      "checks": [],
+      "errors": [],
+      "servedBundleHashes": {
+        "assets/index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4",
+        "assets/index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f"
+      },
+      "browser": {
+        "version": "153.0.8010.0",
+        "backend": "SwiftShader requested",
+        "deviceScaleFactor": 1
+      },
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "readyMetric": {
+        "frame": 2,
+        "time": 0,
+        "width": 390,
+        "height": 844,
+        "drawCalls": 307,
+        "triangles": 436736
+      },
+      "readyTelemetry": null,
+      "captureBudgetMs": 120000,
+      "gpuCompletion": {
+        "status": 37148,
+        "elapsedMs": 1505,
+        "polls": 59,
+        "before": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        },
+        "after": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844
+        }
+      },
+      "capture": {
+        "file": "before-porch-normal-portrait.png",
+        "sha256": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+        "bytes": 328413,
+        "method": "Playwright native page screenshot (PNG)",
+        "pngWidth": 390,
+        "pngHeight": 844,
+        "captureMs": 135,
+        "combinedFenceAndCaptureMs": 1646,
+        "canvas": {
+          "frame": 2,
+          "time": 0,
+          "width": 390,
+          "height": 844,
+          "drawCalls": 307,
+          "triangles": 436736
+        }
+      },
+      "finalTelemetry": null,
+      "finishedAt": "2026-10-04T23:57:48.586Z"
+    }
+  ],
+  "limitations": [
+    "Emulated viewport/DPR1, no physical device validation.",
+    "SwiftShader evidence establishes pixels and behavior; no hardware FPS/thermal claim.",
+    "No auditory evaluation; no audio engine exists in this isolated fixture.",
+    "Visibility is synthetic document visibility override, explicitly not a native tab switch.",
+    "Original 64 segmented checks and failures are retained unchanged. These are additional segmented runs, not one uninterrupted full application pass.",
+    "GPU fences poll clientWaitSync(sync,0,0) in later tasks; no gl.finish/readPixels or GL method patch.",
+    "Lifecycle gate is 20000 ms removal to actual disposed/context-lost observation, including configured 5000 ms host grace."
+  ],
+  "finishedAt": "2026-10-04T23:57:48.627Z",
+  "status": "passed"
+}

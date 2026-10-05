@@ -1,0 +1,130 @@
+[
+  {
+    "world": "tent",
+    "viewport": "desktop",
+    "before": "before-tent-normal-desktop.png",
+    "normal": "after-tent-normal-desktop.png",
+    "byte": "after-tent-byte-desktop.png",
+    "normalBytePixelIdentical": true,
+    "normalByteMaxChannelDelta": 0,
+    "normalByteMeanAbsoluteChannelDelta": 0.0,
+    "beforeAfterPixelIdentical": true,
+    "sha256": {
+      "before-tent-normal-desktop.png": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+      "after-tent-normal-desktop.png": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1",
+      "after-tent-byte-desktop.png": "a5c4b5a4dd381e47312cbfc5e13824e20472d30ed5c3a8cb6d92305f2e4bf9c1"
+    }
+  },
+  {
+    "world": "tent",
+    "viewport": "portrait",
+    "before": "before-tent-normal-portrait.png",
+    "normal": "after-tent-normal-portrait.png",
+    "byte": "after-tent-byte-portrait.png",
+    "normalBytePixelIdentical": true,
+    "normalByteMaxChannelDelta": 0,
+    "normalByteMeanAbsoluteChannelDelta": 0.0,
+    "beforeAfterPixelIdentical": true,
+    "sha256": {
+      "before-tent-normal-portrait.png": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+      "after-tent-normal-portrait.png": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2",
+      "after-tent-byte-portrait.png": "a0ceefc827b9a539e9d8907c18788469c9ec5dd392bcc608c0b920d3839d7ea2"
+    }
+  },
+  {
+    "world": "window",
+    "viewport": "desktop",
+    "before": "before-window-normal-desktop.png",
+    "normal": "after-window-normal-desktop.png",
+    "byte": "after-window-byte-desktop.png",
+    "normalBytePixelIdentical": false,
+    "normalByteMaxChannelDelta": 3,
+    "normalByteMeanAbsoluteChannelDelta": 0.2880283082561728,
+    "beforeAfterPixelIdentical": false,
+    "sha256": {
+      "before-window-normal-desktop.png": "1c1e87a35547f6faaa6d1e1aab2762d541424d7029b7a70032243f8d9e0f31b7",
+      "after-window-normal-desktop.png": "8eabca25a9add290c2b87ccf071661a32ff17f98bffd5d045178ee34e0f30909",
+      "after-window-byte-desktop.png": "3ee709c5c511f15abbe7a609200ba09c1fb8b9dd7d5524b624eb70a88bf7bbdd"
+    }
+  },
+  {
+    "world": "window",
+    "viewport": "portrait",
+    "before": "before-window-normal-portrait.png",
+    "normal": "after-window-normal-portrait.png",
+    "byte": "after-window-byte-portrait.png",
+    "normalBytePixelIdentical": false,
+    "normalByteMaxChannelDelta": 3,
+    "normalByteMeanAbsoluteChannelDelta": 0.21903127151942317,
+    "beforeAfterPixelIdentical": false,
+    "sha256": {
+      "before-window-normal-portrait.png": "062f966eceaad0642c50915d66ba38d397a2591708f6fd09c146e154c8b34039",
+      "after-window-normal-portrait.png": "c895ba2f273af99fa793e8752e6a745a8b1a9fcc40e91b280f8fdedae539a1d4",
+      "after-window-byte-portrait.png": "340c145026e4bb096a82b5a40167c668b7ad7a44ce0291b891007776d099a2b3"
+    }
+  },
+  {
+    "world": "porch",
+    "viewport": "desktop",
+    "before": "before-porch-normal-desktop.png",
+    "normal": "after-porch-normal-desktop.png",
+    "byte": "after-porch-byte-desktop.png",
+    "normalBytePixelIdentical": true,
+    "normalByteMaxChannelDelta": 0,
+    "normalByteMeanAbsoluteChannelDelta": 0.0,
+    "beforeAfterPixelIdentical": true,
+    "sha256": {
+      "before-porch-normal-desktop.png": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+      "after-porch-normal-desktop.png": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4",
+      "after-porch-byte-desktop.png": "c93cf7fbd8596b823be1d051ce412fe367b6ab736a04488c88644978fd879ef4"
+    }
+  },
+  {
+    "world": "porch",
+    "viewport": "portrait",
+    "before": "before-porch-normal-portrait.png",
+    "normal": "after-porch-normal-portrait.png",
+    "byte": "after-porch-byte-portrait.png",
+    "normalBytePixelIdentical": true,
+    "normalByteMaxChannelDelta": 0,
+    "normalByteMeanAbsoluteChannelDelta": 0.0,
+    "beforeAfterPixelIdentical": true,
+    "sha256": {
+      "before-porch-normal-portrait.png": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+      "after-porch-normal-portrait.png": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322",
+      "after-porch-byte-portrait.png": "e07922e33432e3e2df24073593e60e87adc2f9cba65668b481f12dc7c5fc6322"
+    }
+  },
+  {
+    "world": "storm",
+    "viewport": "desktop",
+    "before": "before-storm-normal-desktop.png",
+    "normal": "after-storm-normal-desktop.png",
+    "byte": "after-storm-byte-desktop.png",
+    "normalBytePixelIdentical": true,
+    "normalByteMaxChannelDelta": 0,
+    "normalByteMeanAbsoluteChannelDelta": 0.0,
+    "beforeAfterPixelIdentical": false,
+    "sha256": {
+      "before-storm-normal-desktop.png": "9ffa7bbbdc160ffccf12622eeac423ef2da9291e1fb93d634d3d8d40e3152ca5",
+      "after-storm-normal-desktop.png": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495",
+      "after-storm-byte-desktop.png": "98e8b76fea80d5f382ae9ccddc966841b1510acfff31abf274438d4db729a495"
+    }
+  },
+  {
+    "world": "storm",
+    "viewport": "portrait",
+    "before": "before-storm-normal-portrait.png",
+    "normal": "after-storm-normal-portrait.png",
+    "byte": "after-storm-byte-portrait.png",
+    "normalBytePixelIdentical": true,
+    "normalByteMaxChannelDelta": 0,
+    "normalByteMeanAbsoluteChannelDelta": 0.0,
+    "beforeAfterPixelIdentical": false,
+    "sha256": {
+      "before-storm-normal-portrait.png": "81142607044cee8f3349f57d8cd4872686d5eec86356442738bd75df5420c99d",
+      "after-storm-normal-portrait.png": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3",
+      "after-storm-byte-portrait.png": "7a87706f70a468f7bfdff6655b2ec0c1135487675671fb5dc3b30d9b2354c0f3"
+    }
+  }
+]

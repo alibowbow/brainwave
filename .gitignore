@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Decoded original Blender assets (reconstructed by prebuild/predev)
+/public/immersive-worlds/mosi/

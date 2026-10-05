@@ -1,3 +1,4 @@
+import { pressSceneControl, hoverSceneControl } from './press-scene-control.mjs';
 import { ownBrowserServer } from './owned-browser.mjs';
 import { beginVerificationProvenance } from './verification-provenance.mjs';
 import { chromium } from 'playwright-core';
@@ -148,10 +149,9 @@ const revealChrome = async page => {
   }
 };
 const pressHarness = (page, testId) => page.getByTestId(testId).click();
-const pressApp = async (page, name) => {
-  await revealChrome(page);
-  await page.getByRole('button', { name, exact: true, includeHidden: true }).first().click();
-};
+const pressApp = (page, name) => pressSceneControl(page, name, {
+  record: evidence => (report.controlObservations ??= []).push(evidence),
+});
 
 const stalledCapturePages = new WeakSet();
 const capture = async (page, name) => {
@@ -391,11 +391,17 @@ try {
     const visibleChrome = await dragThroughChrome(app, true);
     const hiddenChrome = await dragThroughChrome(app, false);
     await revealChrome(app);
-    await app.locator('[aria-label^="남은 시간"]').first().hover();
+    await hoverSceneControl(app, '일시정지', {
+      record: evidence => (report.controlObservations ??= []).push(evidence),
+    });
     await app.mouse.down();
     try {
     assert.equal(await app.locator('.forest-world').getAttribute('data-look'), null, 'transport controls must not start look drag');
-    } finally { await app.mouse.up(); }
+    } finally {
+      const box = await app.locator('.forest-world-canvas').boundingBox();
+      if (box) await app.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await app.mouse.up();
+    }
     return { visibleChrome, hiddenChrome, transportControlsStartDrag: false, events: 'native mouse move/down/up on actual hit-tested targets' };
   });
   await check('application respects OS reduced motion while the session plays', async () => {

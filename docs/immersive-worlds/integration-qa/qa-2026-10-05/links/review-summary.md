@@ -1,0 +1,9 @@
+Links rerun — all functional checkpoints and wrapper final checks PASSED; raw artifact discrepancy remains
+
+One separately authorized run completed in 159.812 s on frozen HEAD `19c0561bff1b17d88c447a63fd8bb7e4315c8514` plus recorded changes, build `index-CkDIijGa.js` / `index-BXP0utCv.css`. No automatic retry or audio run occurred. Earlier `local-links-20261004T234844Z` failure remains untouched.
+
+All four original checkpoints passed: cold native retry; warm hash/copy/history; saved/last/reload/invalid links; navigation cancelling held readiness. Cold renderer binding arrived in 2773 ms with 5 payloads and one ready 748×422 rainy-window canvas. Before the real first input: activation false/false, no input, one suspended context, zero graphs/oscillators, timer 40:00 and no recent session. Exactly one trusted visible/hit-tested click on the retry control activated native playback; one context/one analyser graph ran and timer advanced to 39:59. The longest recorded raw read was 4441.13 ms, below the unchanged 5 s limit. Cold readiness retained its 60 s total deadline.
+
+The wrapper exited 0 and its final summary records valid/stable source, dist and served-application provenance, no errors, and owned Chromium PID52 exiting normally with close ACK after45ms. No forced kill; all own preview/verifier handles ended. GPU is released.
+
+**Artifact discrepancy:** the wrapper's final in-process read passed its explicit `finishedAt`, final provenance and confirmed-termination predicate. However, a separate post-run filesystem read of `evidence/links/link-verification.json` currently returns its pre-cleanup snapshot: status passed and all checkpoints present, but no finishedAt/final provenance and ownership still false. The final wrapper summary and execution log remain intact. Cause is unresolved; no raw fields were reconstructed or overwritten. Preserve this qualification before accepting the raw artifact as self-contained final evidence.

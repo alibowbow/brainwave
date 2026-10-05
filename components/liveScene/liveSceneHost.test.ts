@@ -3,6 +3,7 @@ import { LiveSceneHost, type LiveSceneEngine, type LiveSceneHolder } from './liv
 
 class TestCanvas {
   className = '';
+  dataset: Record<string, string> = {};
   parentElement: TestMount | null = null;
   setAttribute = vi.fn();
   remove() { this.parentElement = null; }
@@ -26,6 +27,7 @@ class TestEngine implements LiveSceneEngine {
   start = vi.fn();
   stop = vi.fn();
   dispose = vi.fn();
+  diagnostics?: () => unknown;
   releaseDrag = vi.fn();
 
   constructor(readonly canvas: TestCanvas, readonly loseContext: () => void) {}
@@ -201,5 +203,108 @@ describe('shared live scene lifecycle', () => {
     expect(() => second.host.acquire(other)).not.toThrow();
     expect(second.engines[0].dispose).toHaveBeenCalledOnce();
     expect(other.onStatus).toHaveBeenLastCalledWith('failed');
+  });
+});
+
+describe('actual disposal evidence does not change lifecycle behavior', () => {
+  const evidence = (engine: TestEngine) => JSON.parse(engine.canvas.dataset.liveSceneDisposal);
+
+  it('records the actual call once, then an immutable post-dispose snapshot on the detached canvas', async () => {
+    const snapshot = { instance: 1, running: true, memory: { geometries: 4 }, lifetime: { created: 1, disposed: 0 } };
+    const order: string[] = [];
+    const { host, engines } = setup(0, engine => {
+      engine.dispose.mockImplementation(() => {
+        order.push('dispose');
+        expect(engine.canvas.parentElement).toBeNull();
+        expect(evidence(engine)).toMatchObject({ attempts: 1, returned: 0, phase: 'attempting' });
+        engine.loseContext(); // Ownership must already be cleared: no recursion.
+        snapshot.running = false;
+        snapshot.memory.geometries = 0;
+        snapshot.lifetime.disposed++;
+      });
+      engine.diagnostics = vi.fn(() => {
+        order.push('diagnostics');
+        expect(evidence(engine)).toMatchObject({ attempts: 1, returned: 1, phase: 'returned' });
+        return snapshot;
+      });
+    });
+    const current = holder();
+    const release = host.acquire(current);
+    engines[0].resolveInit(); await Promise.resolve();
+    expect(current.onStatus).toHaveBeenLastCalledWith('ready');
+    expect(engines[0].diagnostics).not.toHaveBeenCalled();
+    release(); release(); engines[0].loseContext();
+    expect(order).toEqual(['dispose', 'diagnostics']);
+    expect(engines[0].dispose).toHaveBeenCalledOnce();
+    const observed = evidence(engines[0]);
+    expect(observed).toMatchObject({ attempts: 1, returned: 1, phase: 'returned', diagnosticsStatus: 'captured', diagnostics: snapshot });
+    expect(Number.isFinite(observed.attemptedAtMs)).toBe(true);
+    expect(observed.returnedAtMs).toBeGreaterThanOrEqual(observed.attemptedAtMs);
+    snapshot.running = true; snapshot.memory.geometries = 99; snapshot.lifetime.disposed = 99;
+    expect(evidence(engines[0]).diagnostics).toEqual({ instance: 1, running: false, memory: { geometries: 0 }, lifetime: { created: 1, disposed: 1 } });
+  });
+
+  it.each(['call', 'getter', 'serialization'] as const)('keeps disposal and a later fresh ready session valid when diagnostics fail at %s', async failure => {
+    const { host, engines } = setup(0, engine => {
+      if (failure === 'getter') Object.defineProperty(engine, 'diagnostics', { get() {
+        expect(engine.dispose).toHaveBeenCalledOnce();
+        throw new Error('diagnostics getter');
+      } });
+      else engine.diagnostics = () => {
+        expect(engine.dispose).toHaveBeenCalledOnce();
+        if (failure === 'call') throw new Error('diagnostics call');
+        const circular: { self?: unknown } = {}; circular.self = circular; return circular;
+      };
+    });
+    const release = host.acquire(holder());
+    expect(release).not.toThrow();
+    expect(engines[0].dispose).toHaveBeenCalledOnce();
+    expect(evidence(engines[0])).toMatchObject({ attempts: 1, returned: 1, phase: 'returned', diagnosticsStatus: 'failed', diagnosticsError: true });
+    expect(evidence(engines[0])).not.toHaveProperty('diagnostics');
+    const fresh = holder(); host.acquire(fresh);
+    expect(engines[1].canvas).not.toBe(engines[0].canvas);
+    engines[1].resolveInit(); await Promise.resolve();
+    expect(fresh.onStatus).toHaveBeenLastCalledWith('ready');
+    expect(engines[1].renderFrame).toHaveBeenCalledWith(0);
+    expect(engines[1].dispose).not.toHaveBeenCalled();
+  });
+
+  it('preserves the original dispose exception without publishing a returned disposal or calling diagnostics', () => {
+    const original = new Error('real dispose failed');
+    const { host, engines } = setup(0, engine => {
+      engine.dispose.mockImplementation(() => { throw original; });
+      engine.diagnostics = vi.fn();
+    });
+    const release = host.acquire(holder());
+    let caught: unknown; try { release(); } catch (error) { caught = error; }
+    expect(caught).toBe(original);
+    expect(engines[0].dispose).toHaveBeenCalledOnce();
+    expect(engines[0].diagnostics).not.toHaveBeenCalled();
+    expect(evidence(engines[0])).toMatchObject({ attempts: 1, returned: 0, phase: 'threw', error: true });
+    expect(evidence(engines[0])).not.toHaveProperty('returnedAtMs');
+    expect(evidence(engines[0]).threwAtMs).toBeGreaterThanOrEqual(evidence(engines[0]).attemptedAtMs);
+    expect(engines[0].canvas.parentElement).toBeNull();
+    expect(release).not.toThrow();
+    expect(engines[0].dispose).toHaveBeenCalledOnce();
+    const fresh = holder(); host.acquire(fresh);
+    expect(engines[1].canvas.parentElement).toBe(fresh.mount);
+  });
+
+  it('does not let a canvas observation error block real disposal', () => {
+    const { host, engines } = setup(0);
+    const release = host.acquire(holder());
+    Object.defineProperty(engines[0].canvas, 'dataset', { get() { throw new Error('metadata unavailable'); } });
+    expect(release).not.toThrow();
+    expect(engines[0].dispose).toHaveBeenCalledOnce();
+  });
+
+  it('records the actual early-creation disposal while preserving failed and never publishing ready', () => {
+    const { host, engines } = setup(0, engine => engine.loseContext());
+    const current = holder();
+    host.acquire(current);
+    expect(engines[0].init).not.toHaveBeenCalled();
+    expect(evidence(engines[0])).toMatchObject({ attempts: 1, returned: 1, phase: 'returned', diagnosticsStatus: 'absent' });
+    expect(current.onStatus).toHaveBeenLastCalledWith('failed');
+    expect(current.onStatus).not.toHaveBeenCalledWith('ready');
   });
 });

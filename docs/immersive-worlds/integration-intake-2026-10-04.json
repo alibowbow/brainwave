@@ -1,12 +1,19 @@
 {
   "schemaVersion": 3,
-  "observedAtUTC": "2026-10-04T23:10:00Z",
+  "observedAtUTC": "2026-10-05T00:12:55Z",
   "mode": "local_integration",
-  "coreCheckpoint": "693f49529e0d5194710dbd8df10c59058491019c",
+  "coreCheckpoint": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
   "worktreeUncommitted": true,
   "mainBaseline": "14940149cc5c0fccb778b58d4d755a04aea55e53",
   "mergeCondition": "All30 scene and shared App technical release gates complete; Rain visual refinement and final acceptance pending.",
-  "remoteObservation": "2026-10-04T22:51Z read: core693f495/main14940149, Quiet215f9c8/Cozyf154065/Korean174aa43 unchanged.",
+  "remoteObservation": {
+    "basis": "Latest remote observations reported by coordinator; local HEAD/tree independently read for this draft. This is not a new remote query.",
+    "coreHead": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+    "rain53Head": "0dc8e935",
+    "cozy65Head": "2a8f9b97ba4982623da13ed6835a14c27ef7fae2",
+    "cozy65Integrated": false,
+    "scope": "Current core still contains Cozy f154; remote candidate does not replace integrated owner identity."
+  },
   "coverage": {
     "targetScenes": 30,
     "registered": 30,
@@ -89,18 +96,18 @@
     "exact": true
   },
   "sharedValidation": {
-    "basis": "Root executed current local tests/build and read their logs; latest runtime index-DFSibu4A.js. Current browser evidence is separate.",
+    "basis": "Current local worktree on 19c0561 plus recorded QA/host-contract changes: coordinator reports 704 tests/72 files and typecheck/build/budget/PWA pass; index-CkDIijGa.js. Browser results below are individually source-bound.",
     "currentFullUnitSuite": {
       "status": "passed",
-      "tests": 639,
-      "files": 67,
-      "basis": "root executed after final Korean intake"
+      "tests": 704,
+      "files": 72,
+      "basis": "coordinator completed current local suite after QA/contract fixes; this read-only refresh did not rerun it"
     },
     "currentFullTypecheckBuildBudgetPwa": {
       "typecheck": "passed",
       "build": "passed",
       "bundle": "passed",
-      "indexChunk": "index-BIpQoT7O.js",
+      "indexChunk": "index-CkDIijGa.js",
       "initialJSKiB": 408.9,
       "initialCSSKiB": 101.0,
       "pwa": "worlds absent from initial and precache"
@@ -115,11 +122,21 @@
       "initialCSSKiB": 101.0,
       "initialCSSLimitKiB": 135,
       "pwaFinalGuard": "passed; actual optional world/protected renderer CSS and JS excluded from precache",
-      "limit": "Historical497-test checkpoint, superseded by current618/66 validation. Not current native App acceptance."
+      "limit": "Historical 497-test checkpoint; superseded by later recorded validations. Not current native App acceptance."
     },
-    "nativeApp": "Current source-bound native App acceptance remains pending/incomplete; historical public693 cold gallery and failed/current diagnostic attempts are retained.",
-    "audioBridge": "Run6 latest9 passed with normal cleanup on DFSibu4A. Current BIpQoT7O run7 Scops source PCM direction passed, browser process close15s failed; application teardown not verified in that run.",
-    "realDeviceFPSHeatListening": "not verified"
+    "nativeApp": "Partial current App evidence: Water summer_valley normal teardown passed; Links four functional checks passed but terminal raw archival mismatch remains; audio-failure/recovery seven checks and strict cleanup passed. Pilot final-flow and aggregate scene lifecycle acceptance remain incomplete.",
+    "audioBridge": "Historical bridge run6 nine checks and run7 Scops PCM retain their original build/cleanup scope. Current CkDIijGa audio failure/recovery seven-check suite passed with strict normal cleanup; this is not all-30 listening or aggregate bridge teardown approval.",
+    "realDeviceFPSHeatListening": "not verified",
+    "currentSourceIntegrity": {
+      "ownedRoots": 14,
+      "ownerFiles": 1161,
+      "exact": true,
+      "protectedFiles": 46,
+      "protectedBaseline": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+      "audioFiles": 23,
+      "audioHead": "cc5b47fea7989b60f5ffb9a17ad4c16264508901",
+      "basis": "coordinator repeated exact tree/worktree comparison before this checkpoint"
+    }
   },
   "audioOwnerHead": "cc5b47fea7989b60f5ffb9a17ad4c16264508901",
   "worlds": [
@@ -368,7 +385,7 @@
       },
       "functionGate": {
         "isolated": "Fixed20s source-bound lifecycle gate resolved by finald5;24finalreports pass/28PNG. Historicalc6twofails anddedupactivefail remain.",
-        "sharedApp": "Responsiveness and integrated transitions/cleanup pending; normal firstdispose11.249s synchronous/heartbeat11.2445s is a separate observed limit.",
+        "sharedApp": "One 390x844 actual App normal teardown passed: release-to-trusted-loss 5.1061s including 5s retention, normal cleanup. Earlier 11.249s synchronous stall and broader transitions/performance remain unresolved.",
         "sourceOrEvidenceFollowup": "",
         "sceneSpecific": "Finalclean normal16.2501/7.7436s;byte5.0389/5.3272s;active2frame5.0204/5.0186s. No smoothUI/physicalGPUclaim."
       },
@@ -619,7 +636,7 @@
       "functionGate": {
         "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
+        "sourceOrEvidenceFollowup": "Candidate 2a8f9b9 not integrated: Winter/Nap each26 original checks passed; Relax/Sleep final static-frame and stopped-input image gates unresolved. Current f154 and its original failure history remain.",
         "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
       },
       "ci": {
@@ -672,7 +689,7 @@
       "functionGate": {
         "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
+        "sourceOrEvidenceFollowup": "Candidate 2a8f9b9 not integrated: Winter/Nap each26 original checks passed; Relax/Sleep final static-frame and stopped-input image gates unresolved. Current f154 and its original failure history remain.",
         "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
       },
       "ci": {
@@ -725,7 +742,7 @@
       "functionGate": {
         "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
+        "sourceOrEvidenceFollowup": "Candidate 2a8f9b9 not integrated: Winter/Nap each26 original checks passed; Relax/Sleep final static-frame and stopped-input image gates unresolved. Current f154 and its original failure history remain.",
         "sceneSpecific": "Published original suite checks completed for this scene; shared group release remains blocked by winter."
       },
       "ci": {
@@ -778,7 +795,7 @@
       "functionGate": {
         "isolated": "f154 boundednoopresizevalid;78labels thenoriginalwinter120sremountfailure retained. Separate2clean nativecycles pass butdo notclear.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Targeted oldGPU completion/fresh context GL-boundary investigation remains in progress; original120s recreation gate is unchanged.",
+        "sourceOrEvidenceFollowup": "Candidate 2a8f9b9 not integrated: Winter/Nap each26 original checks passed; Relax/Sleep final static-frame and stopped-input image gates unresolved. Current f154 and its original failure history remain.",
         "sceneSpecific": "Repeated120s recreated-ready failure; cause undetermined."
       },
       "ci": {
@@ -932,7 +949,7 @@
       },
       "functionGate": {
         "isolated": "Published source evidence only; remaining compatibility gates are recorded separately.",
-        "sharedApp": "pending",
+        "sharedApp": "Current CkDIijGa recording-only failure notice/retry/recovery checks passed in the existing AudioContext with normal cleanup; visual refinement and final acceptance pending.",
         "sourceOrEvidenceFollowup": "visual refinement and final acceptance pending",
         "sceneSpecific": "visual refinement and final acceptance pending"
       },
@@ -1181,7 +1198,7 @@
       },
       "functionGate": {
         "isolated": "35source files/29selected PNGs/5reports hashes verified; selected owner native and paused/drained lifecycle jobs pass. Same-runtime morning15s cold-settlement failures retained.",
-        "sharedApp": "pending",
+        "sharedApp": "Current CkDIijGa hybrid autoplay/procedural fallback checks passed with normal cleanup; full scene native/lifecycle acceptance remains pending.",
         "sourceOrEvidenceFollowup": "New pointer-through chrome plus actual App/catalog/audio/history/focus/native lifecycle still unverified. Owner harness success does not replace App acceptance.",
         "sceneSpecific": "Selected owner runs passed; actual integrated cold/native/lifecycle remains pending."
       },
@@ -1429,7 +1446,7 @@
       "functionGate": {
         "isolated": "Final3ad evidence source6623:67isolated checks,24PNG/16source hashes; shared App native gates pending.",
         "sharedApp": "pending",
-        "sourceOrEvidenceFollowup": "Stockr186 transmission used byDeepNight/Lakeside lanterns already has extension-based byte selection; normalowner evidence accepted. Actualtarget FBOstatus andforced-byte transmission unmeasured; nonblocking inventory, no demonstrated sourcefailure."
+        "sourceOrEvidenceFollowup": "MountainCampfire does not use the transmissive lantern material. Normal owner evidence accepted; shared App native/lifecycle gates remain separate."
       },
       "ci": {
         "run": 37234116444,
@@ -1697,20 +1714,20 @@
     {
       "id": "cozyRooms.winter_recreation_group_gate",
       "directScene": "nature:winter_lodge",
-      "detail": "Original full suite and isolated retry both fail recreated-ready120s; no proven cause; do not replace with separate disposal timings."
+      "detail": "Current integrated f154 retains its original 120-second recreation failure history. Non-integrated 2a8 candidate passes Winter/Nap each26 original checks but Relax/Sleep static-frame and stopped-input image gates remain unresolved; no group clearance."
     },
     {
       "id": "rainShelters.visual_refinement_and_final_acceptance",
-      "detail": "visual refinement and final acceptance pending"
+      "detail": "visual refinement and final acceptance pending; follow-up in progress"
     },
     {
       "id": "shared_app_acceptance",
-      "detail": "Current App lifecycle, normal browser process cleanup and remaining route/history/protected regression acceptance incomplete. Cafe15functional checks and currentScops PCM direction passed; cleanup timeouts remain failures. Latest9audio passed on precedingKorean build."
+      "detail": "Final scene native/lifecycle and pilot full-flow gates remain incomplete. Current Water normal teardown and seven audio-failure/recovery checks pass with normal cleanup; Links four functional checks pass, but terminal raw archival mismatch remains. Historical cleanup failures retain their original scope."
     },
     {
       "id": "waterEdge.app_responsiveness",
       "directScene": "nature:summer_valley",
-      "detail": "Fixed20slifecyclegate resolved on d5; independentApptransition/cleanup impacts of normal11.249ssyncdispose remainunverified."
+      "detail": "Owner fixed20s gate and one actual App summer_valley normal teardown resolved. Earlier normal11.249s synchronous dispose/11.2445s heartbeat limit is not cleared; broader transitions/device responsiveness remain unverified."
     }
   ],
   "remainingSourceEvidenceFollowups": [
@@ -1756,7 +1773,7 @@
     "testPath": "components/liveScene/liveSceneHost.test.ts",
     "testObserved": "keeps first-render synchronous failure failed instead of publishing ready without a canvas",
     "testSha256": "b3dfcb3eff7211fa9b64c48d48db4f9dc9420de34ec5586de7d6b705b840bc86",
-    "currentFullValidation": "passed as part of root-reported618tests/66files, typecheck/build/bundle on index-DFSibu4A.js; actual App gates remain open"
+    "currentFullValidation": "Included in coordinator-reported 704 tests/72 files and typecheck/build/budget/PWA pass on index-CkDIijGa.js; original identity-failure regression and source-bound history retained; aggregate App gates remain open."
   },
   "retainedFailureEvidence": [
     {
@@ -1766,39 +1783,14 @@
     }
   ],
   "rootValidationUpdate": {
-    "source": "Current local tree including Korean4b5f23a checked-PMREM intake",
-    "unitTests": 639,
-    "testFiles": 67,
+    "source": "19c0561 plus recorded local QA/host-contract fixes; current Cozy f154 unchanged",
+    "unitTests": 687,
+    "testFiles": 71,
     "typecheck": "pass",
     "build": "pass",
     "bundle": "pass",
-    "initialJsAsset": "index-BIpQoT7O.js",
-    "sharedAppFinalGate": "pending current source-bound native run",
-    "nativeCafeLatest": {
-      "status": "15 functional and pixel steps passed; overall failed on owned-browser graceful-close10s",
-      "evidence": "integration-qa/native-cafe-full/results.json",
-      "runtime": "index-DFSibu4A; HEAD693 with current owner intakes and central bridge/layout changes",
-      "sourceStable": true,
-      "limits": "No clean-lifecycle pass. Native input and recorded source hash are preserved. Served byte binding independently checked after run; do not relabel older runs."
-    },
-    "audioLiveLatest": {
-      "status": "functional_PCM_pass_cleanup_failed",
-      "evidence": "integration-qa/audio-run7-scops/results.json",
-      "runtime": "index-BIpQoT7O.js after Korean4b5 intake",
-      "sourceFiles": 17,
-      "servedHashesMatched": 18,
-      "PCM": {
-        "primaryCalls": 2,
-        "primarySamples": 4,
-        "internalRightOverLeft": 5.828,
-        "outerScopsLeftOverRight": 1.463,
-        "streamRightOverLeft": 2.065,
-        "streamWindows": 103,
-        "streamAudioSeconds": 4.899
-      },
-      "failure": "Browser process graceful cleanup exceeded15s. Context.close returned; app graph teardown was not established.",
-      "limits": "No listening or physical device claim; no causal attribution to Korean PMREM update."
-    },
+    "initialJsAsset": "index-CkDIijGa.js",
+    "sharedAppFinalGate": "Incomplete: scene lifecycle/pilot full-flow gates and Links terminal archive integrity remain; DFG exact upload identified; owner accounting/internal retention separated; original diagnostic run failed.",
     "newCompatibilityFollowups": [
       "Rain GardenWindow compatibility pending; released private PMREM adapters must be revalidated on Three upgrade."
     ],
@@ -1872,15 +1864,204 @@
       "evidence": "integration-qa/audio-run6-latest9/results.json",
       "sourceScope": "index-DFSibu4A before final Korean intake;17trackedsource and82servedhashesstable; normalcleanup",
       "notCovered": "Scops PCM direction, all30listening, current Korean renderer"
+    },
+    "historicalScopsRun7": {
+      "status": "functional_PCM_pass_cleanup_failed",
+      "evidence": "integration-qa/audio-run7-scops/results.json",
+      "runtime": "index-BIpQoT7O.js after Korean4b5 intake",
+      "sourceFiles": 17,
+      "servedHashesMatched": 18,
+      "PCM": {
+        "primaryCalls": 2,
+        "primarySamples": 4,
+        "internalRightOverLeft": 5.828,
+        "outerScopsLeftOverRight": 1.463,
+        "streamRightOverLeft": 2.065,
+        "streamWindows": 103,
+        "streamAudioSeconds": 4.899
+      },
+      "failure": "Browser process graceful cleanup exceeded15s. Context.close returned; app graph teardown was not established.",
+      "limits": "No listening or physical device claim; no causal attribution to Korean PMREM update."
+    },
+    "historicalCafeFull": {
+      "status": "15 functional and pixel steps passed; overall failed on owned-browser graceful-close10s",
+      "evidence": "integration-qa/native-cafe-full/results.json",
+      "runtime": "index-DFSibu4A; HEAD693 with current owner intakes and central bridge/layout changes",
+      "sourceStable": true,
+      "limits": "No clean-lifecycle pass. Native input and recorded source hash are preserved. Served byte binding independently checked after run; do not relabel older runs."
+    },
+    "ci19": {
+      "run": 37243249979,
+      "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+      "tree": "9a39c0ac5ebc2c759ec432945bef6369a1354795",
+      "overallGate": "failed",
+      "protectedFocus": "passed",
+      "protectedSea": "passed",
+      "nature": {
+        "completed": "13 selections, four rural viewports, edits/restoration and play/pause/same-canvas checks passed",
+        "failed": "20-second all-observed-context-loss assertion reached Cozy browser-managed context release; contract mismatch is not evidence that all 13 scenes leak or that dispose was not called"
+      },
+      "links": {
+        "failed": "pre-input non-gesture raw observation exceeded 5 seconds",
+        "unrun": "trusted retry and downstream history in this CI attempt"
+      },
+      "audioFailures": {
+        "passed": "hybrid trusted gesture and actual procedural fallback; maxRms 0.015489, not peak",
+        "failed": "recording-only pre-input raw observation exceeded 5 seconds",
+        "unrun": "recording-only failure/retry/recovery downstream checks",
+        "cleanup": "passed"
+      },
+      "pilots": {
+        "forestCafeCosmic": "first Pause locator remained hidden for 120 seconds; failed before native Pause click",
+        "cosmicAdditional": "independent compositor capture exceeded 120 seconds after the unpaused failure; do not combine with the first failure"
+      },
+      "scope": "Exact published checkpoint; later local fixes and passes do not relabel this run."
+    },
+    "waterNormalTeardownLatest": {
+      "status": "passed",
+      "scene": "nature:summer_valley",
+      "viewport": "390x844",
+      "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+      "runtime": "index-BIpQoT7O.js",
+      "evidence": "integration-qa/qa-2026-10-05/water/review-summary.json",
+      "totalExecutionSeconds": 18.372,
+      "releaseToTrustedContextLossMs": 5106.1,
+      "hostRetentionMs": 5000,
+      "deadlineMs": 20000,
+      "sourceStable": true,
+      "distStable": true,
+      "applicationBound": true,
+      "cleanup": "normal, no forced kill, no errors",
+      "scope": "One actual App normal teardown after native Play/Pause/End; not running context-loss recovery, all Water worlds, device performance, or a clearance of the previous 11.249-second synchronous stall."
+    },
+    "linksLatest": {
+      "status": "functional_pass_terminal_archive_discrepancy",
+      "checksPassed": 4,
+      "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+      "runtime": "index-CkDIijGa.js",
+      "evidence": "integration-qa/qa-2026-10-05/links/review-summary.json",
+      "functionalScope": [
+        "cold focus autoplay and one trusted retry",
+        "warm hash/copy/history",
+        "saved/last/reload/invalid links",
+        "held readiness cancelled by navigation"
+      ],
+      "wrapperExitCode": 0,
+      "wrapperFinalProvenance": "valid, stable source/dist and application binding",
+      "wrapperCleanup": "normal process exit, no forced kill or surviving owned process",
+      "rawReadMaxMs": 4441.127975,
+      "rawReadLimitMs": 5000,
+      "rawTerminalMismatch": "Preserved raw file has four passed checks but lacks finishedAt/finalProvenance and final termination flag; wrapper observed completed final fields. Cause unresolved; do not reconstruct the raw report.",
+      "rawSha256": "47092151ab4d721060b5849f3a33e1480fdb0ce61ae35c089e32044fbe0ac5cb",
+      "scope": "Four functional passes and wrapper cleanup stand separately; raw file is not self-contained final proof."
+    },
+    "audioFailureLatest": {
+      "status": "passed",
+      "strictTerminalPass": true,
+      "checksPassed": 7,
+      "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+      "runtime": "index-CkDIijGa.js",
+      "evidence": "integration-qa/qa-2026-10-05/audio/completed-report.json.gz",
+      "review": "integration-qa/qa-2026-10-05/audio/review-summary.json",
+      "archiveSha256": "848b903f652a7617e1e813b6b8a69af484f4810a8f1e4d71312f39a01642458e",
+      "archiveBytes": 753529,
+      "finishedAt": "2026-10-05T00:06:13.385Z",
+      "archiveVerifiedAfterExit": true,
+      "sourceStable": true,
+      "distStable": true,
+      "applicationBound": true,
+      "cleanup": "normal browser exit, zero cleanup errors, no forced kill or surviving owned process",
+      "hybridFallbackMaxRms": 0.018542933797782747,
+      "hybridFallbackMaxPeak": 0.034005776047706604,
+      "recordingOnlyFailureMaxRms": 0,
+      "recoveredRecordingMaxRms": 0.002673184562475647,
+      "recoveredRecordingMaxPeak": 0.009085566736757755,
+      "scope": "Actual existing-context autoplay/fallback, real picker recording isolation, player/immersive notices, retry and same-recording recovery. Pre-limiter analyser PCM only; no listening or physical-device loudness claim."
+    },
+    "dfgDiagnostic": {
+      "status": "completed_failed_run_preserved",
+      "exactTextureIdentification": "Observed35 created/30deleted perWinter;4constructor placeholders plus sole1024-byte DFG upload matched installed Three SHA256",
+      "ownedResourceContract": "Exact internal classification separates owned accounting from renderer-internal retention. No generic numeric allowance; actual dispose/listeners/RAF/detach/quiet20s andfresh120s remain.",
+      "unresolved": "DFG/context-reference retention and browser graceful-close15s failure; physicalGPUreclamation unmeasured",
+      "evidence": "integration-qa/qa-2026-10-05/cozy/completed-report.json.gz"
     }
   },
   "acceptanceClarification": "Visual evidence acceptance and shared App functional/lifecycle acceptance are separate. Rain visual refinement and final acceptance pending.",
   "ownerUpdatesPendingPublication": {
-    "quietKorean": "Quiet215 final intaken+narrowcompatresolved. Korean sameownerinvestigates initiallongTemple20sfail vsnormal/byte2recreations; finaltreepending.",
-    "water": "Finald5 exactownedtree now intaken locally, fixed20sgate resolved; shared App responsiveness remains.",
-    "cozy": "Publishedf154 exactownedtree now intaken locally, validnoopresize; original120sfail retained. SameownerGL investigation stillactive."
+    "quietKorean": "Quiet215 and Korean4b5 are integrated; narrow compatibility evidence resolved. Actual App aggregate gates remain separate.",
+    "water": "Final d5 integrated; owner fixed-20-second gate and one actual App summer_valley normal teardown passed. Earlier 11.249-second synchronous stall remains a separate responsiveness limit.",
+    "cozy": "Candidate 2a8f9b97ba4982623da13ed6835a14c27ef7fae2 is not integrated: Winter and Nap each pass 26 original labels; Relax/Sleep final static-frame assertions and stopped-input image gates remain failed/pending reconciliation. Current core stays f154; earlier original 120-second failure remains historical evidence.",
+    "rain": "visual refinement and final acceptance pending; follow-up in progress"
   },
   "firstRenderIdentityGate": "resolved: code and synchronous failure regression9 independently confirmed",
   "remotePublicationHold": false,
-  "releaseReady": false
+  "releaseReady": false,
+  "historicalCheckpoints": [
+    {
+      "kind": "superseded_summary",
+      "coreCheckpoint": "693f49529e0d5194710dbd8df10c59058491019c",
+      "observedAtUTC": "2026-10-04T23:10:00Z",
+      "localTests": {
+        "status": "passed",
+        "tests": 639,
+        "files": 67,
+        "basis": "root executed after final Korean intake"
+      },
+      "localBuild": {
+        "typecheck": "passed",
+        "build": "passed",
+        "bundle": "passed",
+        "indexChunk": "index-BIpQoT7O.js",
+        "initialJSKiB": 408.9,
+        "initialCSSKiB": 101.0,
+        "pwa": "worlds absent from initial and precache"
+      },
+      "scope": "Historical summary only; unchanged source-bound raw artifacts retain their original source and status."
+    }
+  ],
+  "coreTree": "9a39c0ac5ebc2c759ec432945bef6369a1354795",
+  "disposalContractUpdate": {
+    "cozy": "Observed actual dispose/count/RAF/listeners/canvas/owned-resource accounting and fresh session; no automatic context-loss requirement. Exact DFG classification separates owner textures from retained renderer internals.",
+    "otherRenderers": "Actual explicit context-loss within original20s, including retention, unchanged.",
+    "physicalGpuReclamation": "not measured",
+    "cozyDiagnosticRun": {
+      "overall": "failed",
+      "artifact": "integration-qa/qa-2026-10-05/cozy/completed-report.json.gz",
+      "originalSha256": "56395e21666e2a63f8efd2497a93a8b823dd866d1925938bf8e70667410b4f46",
+      "freshReadyMs": 1345,
+      "freshNativeCallbackDelta": 1,
+      "lifetimeBefore": {
+        "created": 1,
+        "disposed": 1
+      },
+      "lifetimeAfter": {
+        "created": 2,
+        "disposed": 2
+      },
+      "retainedFailures": [
+        "old and fresh total-texture-counter-zero20s assertion",
+        "owned browser graceful close15s"
+      ],
+      "rendererInternals": "exact DFG plus4 constructor placeholders retained; module-global DFG listener→renderer/context reference path identified; unresolved"
+    }
+  },
+  "latestLocalValidation": {
+    "unit": {
+      "tests": 704,
+      "files": 72,
+      "status": "passed"
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "bundlePwa": "passed",
+    "runtimeJs": "index-CkDIijGa.js",
+    "css": "index-BXP0utCv.css",
+    "initialJsKiB": 408.9,
+    "initialJsLimitKiB": 410,
+    "cssKiB": 101.0,
+    "cssLimitKiB": 135,
+    "sceneChunks": "lazy, excluded from initial static imports/PWA precache",
+    "ownership": "14 roots/1161 files,46protected main14940149,23audio cc5 exact"
+  },
+  "checkpointBasis": "coreCheckpoint/coreTree identify the public parent of this source worktree; local browser reports bind exact dirty source and served dist hashes. Published commit/CI tracked by PR48."
 }

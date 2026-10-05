@@ -1,0 +1,467 @@
+{
+  "runId": 37243249979,
+  "publishedHead": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "publishedTree": "9a39c0ac5ebc2c759ec432945bef6369a1354795",
+  "scenes": {
+    "forest": {
+      "artifactId": 11318362475,
+      "rawJsonSha256": "c08ce2172401da2f7cb76d1514866d3560d665f31f159c47714f8e171631273c",
+      "status": "failed",
+      "checkoutHead": "961bc6c08d12460eb789ce26f025d5fae9920b1e",
+      "checkoutTree": "9a39c0ac5ebc2c759ec432945bef6369a1354795",
+      "treeMatchesPublished": true,
+      "sourceDigest": "c592383fc8328e629f8c4200e33e825cadd8d87cac0cf7e1965a9a9db49af10f",
+      "distDigest": "c8d9e97fd04c652ead1adb182003221e4ecf1a58ba8ee1e7e6fc3f2c2e72bbae",
+      "sourceStable": true,
+      "distStable": true,
+      "provenanceValid": true,
+      "verifiedProductionAndQaSources": [
+        {
+          "path": "components/ImmersiveMode.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "13384e202e7d6b2e596c35ad8dfa7ed9a41bc4bb70fbf21913bc07666dc9bd8e"
+        },
+        {
+          "path": "components/Player.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "a90335757d6b9b67ff91fe7784f4548e63e2706cc2009ac79a11596e3024aa37"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/ForestEngine.scheduler.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "fc61b00c1b1883af68ef6b9e4eda80328b024b4c1f0c7150ba66e79ea1378ff4"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/ForestEngine.ts",
+          "matchesPublishedSource": true,
+          "sha256": "628d16f204235d1e9784b3f318b7e547509f94bf4e6f3b42eb9baa9c430d421f"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/ForestWorld.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "5a59184586da62dfe27d80a27897ffa84b444de20ca0ba52772dc0ed50f6b71d"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/botany.ts",
+          "matchesPublishedSource": true,
+          "sha256": "3ad85ee4e55ae2d09bea6ebbd9ef94dae312abd147e6c7dd6fee8201406f6234"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/build-qa.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "525d6ec71b74f78e62d027ec3deda2e8a32cfd5dfba561ba78e2c62ebe32b9e6"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/foregroundLeaf.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "351acf3316b18a1cccbe01548795b4417a05c9bfac59cce6984ea227d3b54470"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forest.browser.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "86551946f6507bc3a7294be735fcf1c426a6f40be49b2a94e8106748d7de3e06"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forest.css",
+          "matchesPublishedSource": true,
+          "sha256": "3fe829475f658cefa32067bd0f9ae487b559cd1d0078785230080abc4ac65bd9"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestFrameScheduler.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "309ac83d570372d8a8336281a70cf2fa281dad23266ae23c1159c0ec5cba2a44"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestFrameScheduler.ts",
+          "matchesPublishedSource": true,
+          "sha256": "3f2b9441e5977343f30ec94ec9953746805f18c785e8eda27f5e16252a9b75d3"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestHost.ts",
+          "matchesPublishedSource": true,
+          "sha256": "e835661be9c051c38bdf01587b66fc4d6b0513cf067609a96b175d67ba5865c6"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestHostRetention.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "fc564b80371b3aa1558e4abe54da828436cb56feaeec03460b8a780afa3bb2dc"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestMath.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "2a6d68c797e3e420aa8af4851428aa505206a6d75b0557984f0a9b61f4f0518c"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestMath.ts",
+          "matchesPublishedSource": true,
+          "sha256": "82067fb3c7c84931de95a546b4115bbc65573c23f2805d7b574e7f3964d18afd"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestRenderTargets.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "432cf7b731ac46485ec53f808cd70cfaa0302d8b1e9cd0d534b7c8974d8b7b11"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestRenderTargets.ts",
+          "matchesPublishedSource": true,
+          "sha256": "035ec97813ada9537e4e077ce053b82edb3848d0202f150018b4326ce1df02c3"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/forestStones.ts",
+          "matchesPublishedSource": true,
+          "sha256": "2e58972f0c129a398e5f2d29cc531cb4b97c7089d5b344577658d587100dd82f"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/harness.html",
+          "matchesPublishedSource": true,
+          "sha256": "680f40dddda5962693ca6400471480fa7bf52b580321eb0d93b37df716eb53e2"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/harness.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "29864275d4781287068f5c2edcf7e28e5192a69aa8dbdcf965ee1b7ec3178041"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/harness.vite.config.ts",
+          "matchesPublishedSource": true,
+          "sha256": "afed2bb3d3cdf7b81f5927b55b2b9f41d0ca73d2149e0cdb9484f57fc2b321e2"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/qa/capture-production-baseline.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "fb9d1cb9a783197dc7a5ab53d7fd7bd7772818966805a9af01fd81e5eb061e42"
+        },
+        {
+          "path": "components/immersiveWorlds/forest/qa/capture-refinement.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "382e4ff0e8e65159c2bec194d8058a6125c5a361c03154833c8d44b1c993f8bf"
+        },
+        {
+          "path": "components/liveScene/liveSceneHost.ts",
+          "matchesPublishedSource": true,
+          "sha256": "344d71381575ec775187f80c250ec0222b51223effdde80dce2bd2cfd9236a78"
+        },
+        {
+          "path": "scripts/cold-autoplay.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "c1a4b59c5f41278de137d8a7c94df7e62f0438262085a1fe4f0d41de6c3492b9"
+        },
+        {
+          "path": "scripts/owned-browser.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc"
+        },
+        {
+          "path": "scripts/verification-provenance.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2"
+        },
+        {
+          "path": "scripts/verify-immersive-worlds.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "b15d321f7ae4dd128fe8a556f79d3e5c08b889aacfbba09a723a927bdb1061d9"
+        }
+      ],
+      "appResponsesExactlyMatchingRecordedDist": 19,
+      "screenshots": [
+        {
+          "name": "forest-harness-desktop.png",
+          "sha256": "f1f6aae41aa068d96f68497b7c276532bee3b77a69f17392cc08c0aa514d815d",
+          "bytes": 2379875,
+          "width": 1440,
+          "height": 1000,
+          "visuallyOpened": true
+        },
+        {
+          "name": "forest-harness-fold-cover.png",
+          "sha256": "c911884ea4b34145dae1bba52734f4745bdb06516d4e8d651e0210062ba91cc9",
+          "bytes": 459974,
+          "width": 344,
+          "height": 882,
+          "visuallyOpened": true
+        },
+        {
+          "name": "forest-harness-fold-inner.png",
+          "sha256": "30d2601ed587131c53772833e06dc6417e54380fa30b2c171affce9f4d5e443d",
+          "bytes": 1333757,
+          "width": 768,
+          "height": 1024,
+          "visuallyOpened": true
+        },
+        {
+          "name": "forest-harness-landscape.png",
+          "sha256": "d4d364be107ffee4aa9787ffb8a26a960168a5425d8352e229608518c31b15bd",
+          "bytes": 1308031,
+          "width": 1024,
+          "height": 768,
+          "visuallyOpened": true
+        },
+        {
+          "name": "forest-harness-second-holder.png",
+          "sha256": "f02ebe1d293cf75ad5ba1a3e1bd418ca5456dbcffba0219d9019a03ceb6abbe0",
+          "bytes": 1308102,
+          "width": 1024,
+          "height": 768,
+          "visuallyOpened": true
+        }
+      ],
+      "passedChecks": [
+        "standalone harness initializes the real forest and advances frames",
+        "standalone active=false stops rendering",
+        "standalone paused desktop and Fold-like viewport screenshots",
+        "standalone second holder reuses the exact canvas and restores it",
+        "standalone simulated hidden document stops and visible document resumes",
+        "standalone OS reduced motion pauses and resumes",
+        "standalone app reduced-motion preference pauses and resumes",
+        "standalone final holder release eventually reaches engine disposal after the five-second grace",
+        "standalone remount creates a fresh real canvas",
+        "morning-forest application link loads the pilot and starts with policy-safe playback"
+      ],
+      "failedStep": "application pause stops the real renderer",
+      "failureMessage": "locator.click: Timeout 120000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: '\uc77c\uc2dc\uc815\uc9c0', exact: true, includeHidden: true }).first()\n    - locator resolved to <button type=\"button\" aria-label=\"\uc77c\uc2dc\uc815\uc9c0\" class=\"grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    212 \u00d7 waiting for element to be visible, enabled and stable\n        - element is not visible\n      - retrying click action\n        - waiting 500ms\n",
+      "errors": [],
+      "cleanupErrors": [],
+      "browserOwnership": {
+        "pid": 4285,
+        "launchedAt": "2026-10-04T23:26:27.229Z",
+        "terminationConfirmed": true,
+        "forcedKill": false,
+        "events": [
+          {
+            "kind": "owned-browser-created",
+            "at": "2026-10-04T23:26:27.230Z",
+            "pid": 4285
+          },
+          {
+            "kind": "owned-browser-close-send",
+            "at": "2026-10-04T23:31:11.843Z"
+          },
+          {
+            "kind": "owned-browser-exit",
+            "at": "2026-10-04T23:31:31.865Z",
+            "code": 0,
+            "signal": null
+          },
+          {
+            "kind": "owned-browser-close-ack",
+            "at": "2026-10-04T23:31:31.870Z"
+          }
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-10-04T23:31:31.870Z"
+      }
+    },
+    "cafe": {
+      "artifactId": 11318282870,
+      "rawJsonSha256": "1ee2449fa76f24068cd86ff136ba324190953491c1a53cdb2f528f0f50030920",
+      "status": "failed",
+      "checkoutHead": "961bc6c08d12460eb789ce26f025d5fae9920b1e",
+      "checkoutTree": "9a39c0ac5ebc2c759ec432945bef6369a1354795",
+      "treeMatchesPublished": true,
+      "sourceDigest": "c592383fc8328e629f8c4200e33e825cadd8d87cac0cf7e1965a9a9db49af10f",
+      "distDigest": "c8d9e97fd04c652ead1adb182003221e4ecf1a58ba8ee1e7e6fc3f2c2e72bbae",
+      "sourceStable": true,
+      "distStable": true,
+      "provenanceValid": true,
+      "verifiedProductionAndQaSources": [
+        {
+          "path": "components/ImmersiveMode.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "13384e202e7d6b2e596c35ad8dfa7ed9a41bc4bb70fbf21913bc07666dc9bd8e"
+        },
+        {
+          "path": "components/Player.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "a90335757d6b9b67ff91fe7784f4548e63e2706cc2009ac79a11596e3024aa37"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/CafeEngine.ts",
+          "matchesPublishedSource": true,
+          "sha256": "5c6617559f37c8f39f05da6d99600479c5917316620218e8db52f62bd40ada74"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/CafeWorld.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "0011837fcdafb857a1259e551f7ff578d56fdb4b0177b0ee94c450e79a82e67c"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/cafe.css",
+          "matchesPublishedSource": true,
+          "sha256": "f1f5b331b16fab226ee15a2be4ae28842a666053a425ab29b2b1fa3c11d3fd33"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/cafeHost.ts",
+          "matchesPublishedSource": true,
+          "sha256": "cbb509ea8baa902fdc967332bc07430681a16255a5911a0a7f5edf7345b8e7ff"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/environment.ts",
+          "matchesPublishedSource": true,
+          "sha256": "42b1b1f8c26da1b5aa8c2e981c1dd69389ae641300db6911ab65231df8a8fe5c"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/exterior.ts",
+          "matchesPublishedSource": true,
+          "sha256": "beb5c29d6a181bfa506038e35bd1bd6c58991397ef9d3b84a81052c3672e4235"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/materials.ts",
+          "matchesPublishedSource": true,
+          "sha256": "77ab017f002d501f1129b53e23e2bdabd4f86e81bddabe01b177af3ac2fc4f2a"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/plant.ts",
+          "matchesPublishedSource": true,
+          "sha256": "578f59b096bc9402221c7970a0c52b843d0176ef171d9d215723efaf2fd58835"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/bake-environment.html",
+          "matchesPublishedSource": true,
+          "sha256": "6ecabad36ea48eaffb52dfc377ff5fc84e0986028285f507e7acad524fe5cd23"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/bake-environment.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "21e52003e0527f3f8a12db14c4b45db917430e8cb83ee030cbd605baf0c0399e"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/bake-environment.ts",
+          "matchesPublishedSource": true,
+          "sha256": "94169c88ccc51bb343729ee4b27c01b134e83fec4e92e3ac81aace08ce6d5df8"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/build.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "06328363bf75a60dfae7b42900350e5f3b75321c0bb3cd7ced6d6ebea74356d9"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/capture.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "5e07d6b8b0a4aa1ee1172d8dc360425b6f2984deb2b7c1c8397d366fbee9f608"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/dispose-check.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "efc6fd71a7e9c9740f989b41ffc3e3eea1df05284c5ea838a6b7933a662d341e"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/index.html",
+          "matchesPublishedSource": true,
+          "sha256": "d3694165c0747281342cae57cc32e2676358fb657085117a00b7496008b4eb59"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/main.tsx",
+          "matchesPublishedSource": true,
+          "sha256": "544e669d101f59c0018c07d797ba6d60ceb174551f3c8701966622282cac4e3e"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/qa/verify.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "a96f9b58ce33df1a04503f39b0be422d71ffe14d017d656af479cb1eb785228d"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/renderTargets.test.ts",
+          "matchesPublishedSource": true,
+          "sha256": "86f196c067c2d2044fff9984034b9519f0a509f89fa411ac1b2a904087a1eb92"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/renderTargets.ts",
+          "matchesPublishedSource": true,
+          "sha256": "9c519293395b1da11bc4c4beb02e81989ae2dd6fc6ba601784dfe24b6bcd9b33"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/shelves.ts",
+          "matchesPublishedSource": true,
+          "sha256": "c11b2f7c0b204dc1c28aac8b0b2a4d267937b1d75c49ef48e4abd6eb08ca0d82"
+        },
+        {
+          "path": "components/immersiveWorlds/cafe/world.ts",
+          "matchesPublishedSource": true,
+          "sha256": "c1489e58e24ac7b2878a00c9812f35f45484fa6971d4330d12762a052246656d"
+        },
+        {
+          "path": "components/liveScene/liveSceneHost.ts",
+          "matchesPublishedSource": true,
+          "sha256": "344d71381575ec775187f80c250ec0222b51223effdde80dce2bd2cfd9236a78"
+        },
+        {
+          "path": "scripts/cold-autoplay.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "c1a4b59c5f41278de137d8a7c94df7e62f0438262085a1fe4f0d41de6c3492b9"
+        },
+        {
+          "path": "scripts/owned-browser.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc"
+        },
+        {
+          "path": "scripts/verification-provenance.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2"
+        },
+        {
+          "path": "scripts/verify-cafe-world.mjs",
+          "matchesPublishedSource": true,
+          "sha256": "19002a8286b64aee82536a64c937e08daed33011895c8b449a154acbf7acdab1"
+        }
+      ],
+      "appResponsesExactlyMatchingRecordedDist": 19,
+      "screenshots": [],
+      "passedChecks": [
+        "cafe application route loads a real scene and requires one playback tap"
+      ],
+      "failedStep": "cafe application pause freezes rendering",
+      "failureMessage": "locator.click: Timeout 120000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: '\uc77c\uc2dc\uc815\uc9c0', exact: true, includeHidden: true }).first()\n    - locator resolved to <button type=\"button\" aria-label=\"\uc77c\uc2dc\uc815\uc9c0\" class=\"grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    5 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n",
+      "errors": [],
+      "cleanupErrors": [
+        {
+          "kind": "cleanup",
+          "stage": "graceful-close",
+          "message": "Error: owned browser server close exceeded 30000ms"
+        }
+      ],
+      "browserOwnership": {
+        "pid": 4477,
+        "launchedAt": "2026-10-04T23:31:35.141Z",
+        "terminationConfirmed": true,
+        "forcedKill": true,
+        "events": [
+          {
+            "kind": "owned-browser-created",
+            "at": "2026-10-04T23:31:35.141Z",
+            "pid": 4477
+          },
+          {
+            "kind": "owned-browser-close-send",
+            "at": "2026-10-04T23:33:42.719Z"
+          },
+          {
+            "kind": "owned-browser-cleanup-error",
+            "at": "2026-10-04T23:34:12.726Z",
+            "stage": "graceful-close",
+            "message": "Error: owned browser server close exceeded 30000ms"
+          },
+          {
+            "kind": "owned-browser-kill-send",
+            "at": "2026-10-04T23:34:12.726Z",
+            "pid": 4477
+          },
+          {
+            "kind": "owned-browser-exit",
+            "at": "2026-10-04T23:34:12.742Z",
+            "code": null,
+            "signal": "SIGKILL"
+          },
+          {
+            "kind": "owned-browser-kill-ack",
+            "at": "2026-10-04T23:34:12.773Z"
+          }
+        ],
+        "exitCode": null,
+        "signal": "SIGKILL",
+        "finishedAt": "2026-10-04T23:34:12.773Z"
+      }
+    }
+  }
+}

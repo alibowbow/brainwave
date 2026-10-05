@@ -42,6 +42,33 @@ export function installNativeStartupAudioProbe() {
   };
 }
 
+/** Installed by CDP before navigation. DOM/data reads only: no layout, GL, input or audio calls. */
+export function installColdReadyBinding(bindingName, scenes) {
+  if (window !== window.top) return;
+  let prior = '';
+  const observe = () => {
+    const headings = [...document.querySelectorAll('h1')].map(element => element.textContent.trim());
+    const candidates = scenes.filter(scene => scene.hash === location.hash).map(scene => {
+      const canvases = [...document.querySelectorAll(scene.canvasSelector)]
+        .filter(canvas => canvas instanceof HTMLCanvasElement && canvas.isConnected && canvas.width > 0 && canvas.height > 0);
+      return { title: scene.title, selector: scene.canvasSelector, ready: headings.includes(scene.title) && canvases.length === 1,
+        canvases: canvases.map(canvas => ({ className: canvas.className, width: canvas.width, height: canvas.height,
+          frames: canvas.dataset.frames ?? canvas.dataset.frame ?? null })) };
+    });
+    const value = { url: location.href, hash: location.hash, documentOrigin: performance.timeOrigin, wall: performance.now(),
+      headings, candidates, activation: { isActive: navigator.userActivation?.isActive ?? null, hasBeenActive: navigator.userActivation?.hasBeenActive ?? null },
+      audio: window.__coldAudioSnapshot?.() ?? null, inputs: [...(window.__coldInputProbe ?? [])] };
+    const signature = JSON.stringify({ hash: value.hash, headings, candidates, audio: value.audio, activation: value.activation, inputs: value.inputs.length });
+    if (signature !== prior) { prior = signature; window[bindingName](JSON.stringify(value)); }
+    // Only the requested cold document needs startup events; later history/guide waits remain generic.
+    if (candidates.some(candidate => candidate.ready)) observer.disconnect();
+  };
+  const observer = new MutationObserver(observe);
+  observer.observe(document, { subtree: true, childList: true, characterData: true, attributes: true,
+    attributeFilter: ['class', 'data-state', 'data-status', 'width', 'height', 'data-frame', 'data-frames', 'data-playback-hint'] });
+  observe();
+}
+
 const snapshotExpression = `(() => {
   let lastSession = null, storageError = null;
   try { lastSession = localStorage.getItem('mc_brain_last'); } catch (error) { storageError = String(error); }
@@ -69,17 +96,62 @@ async function bounded(promise, ms, label) {
  * This Chromium-only observer uses raw CDP until the real native mouse click.
  * All audio methods still run natively; no resume policy or state is changed.
  */
-export async function createColdObserver(page, onObservation = () => {}) {
+export async function createColdObserver(page, onObservation = () => {}, { readyScenes = [] } = {}) {
   const session = await page.context().newCDPSession(page);
-  const evaluateWithoutGesture = async expression => {
-    const result = await bounded(session.send('Runtime.evaluate', {
-      expression, returnByValue: true, userGesture: false, awaitPromise: false,
-    }), 5000, 'non-gesture observation');
-    if (result.exceptionDetails) throw new Error(`Raw CDP observation failed: ${result.exceptionDetails.exception?.description || result.exceptionDetails.text}`);
-    return result.result.value;
+  const bindingName = '__brainwaveColdReady';
+  let readiness = [], documentOrigin = null;
+  const listeners = new Set();
+  session.on('Runtime.executionContextsCleared', () => { readiness = []; documentOrigin = null; });
+  session.on('Runtime.bindingCalled', event => {
+    if (event.name !== bindingName) return;
+    const value = { ...JSON.parse(event.payload), nodeReceivedAt: Date.now() };
+    if (value.documentOrigin !== documentOrigin) { readiness = []; documentOrigin = value.documentOrigin; }
+    readiness.push(value);
+    for (const listener of listeners) listener();
+  });
+  // addBinding/new-document script do not evaluate in a gesture-bearing execution context.
+  // No current-document evaluation is needed: every caller installs this before page.goto().
+  if (readyScenes.length) {
+    // This CDP session must enable Page before its new-document script can run.
+    await session.send('Page.enable');
+    await session.send('Runtime.enable');
+    await session.send('Runtime.addBinding', { name: bindingName });
+    await session.send('Page.addScriptToEvaluateOnNewDocument', {
+      source: `(${installColdReadyBinding.toString()})(${JSON.stringify(bindingName)}, ${JSON.stringify(readyScenes)});`,
+    });
+  }
+  let lastReadTiming;
+  const evaluateWithoutGesture = async (expression, deadlineAt = Infinity) => {
+    const remaining = Math.min(5000, deadlineAt - Date.now());
+    if (remaining <= 0) throw new Error('cold observation reached the absolute startup deadline');
+    const startedAt = performance.now();
+    const timing = { phase: 'fresh-read', nodeRequestedAt: Date.now(), nodeAcknowledgedAt: null,
+      nodeFinishedAt: null, elapsedMs: null, limitMs: remaining, deadlineAt: Number.isFinite(deadlineAt) ? deadlineAt : null,
+      userGesture: false, outcome: 'pending' };
+    lastReadTiming = timing;
+    try {
+      const result = await bounded(session.send('Runtime.evaluate', {
+        expression, returnByValue: true, userGesture: false, awaitPromise: false,
+      }), remaining, 'non-gesture observation');
+      timing.nodeAcknowledgedAt = Date.now();
+      timing.elapsedMs = performance.now() - startedAt;
+      // A delayed Node timer callback cannot turn an already-late ACK into a passing read.
+      if (timing.elapsedMs > remaining) throw new Error(`non-gesture observation exceeded ${remaining}ms (ACK observed after ${timing.elapsedMs}ms)`);
+      if (result.exceptionDetails) throw new Error(`Raw CDP observation failed: ${result.exceptionDetails.exception?.description || result.exceptionDetails.text}`);
+      timing.outcome = 'acknowledged';
+      return result.result.value;
+    } catch (error) {
+      timing.outcome = String(error.message).startsWith('non-gesture observation exceeded') ? 'read-timeout' : 'read-error';
+      timing.nodeFinishedAt = Date.now(); timing.elapsedMs = performance.now() - startedAt;
+      error.message += ` [observationTiming=${JSON.stringify(timing)}]`;
+      throw error;
+    } finally {
+      timing.nodeFinishedAt = Date.now(); timing.elapsedMs = performance.now() - startedAt;
+    }
   };
-  const read = async label => {
-    const value = await evaluateWithoutGesture(snapshotExpression);
+  const read = async (label, deadlineAt = Infinity) => {
+    const value = await evaluateWithoutGesture(snapshotExpression, deadlineAt);
+    value.observationTiming = { ...lastReadTiming };
     if (label) await onObservation({ label, snapshot: value });
     return value;
   };
@@ -96,22 +168,51 @@ export async function createColdObserver(page, onObservation = () => {}) {
     assertNoGraph(value);
     assert.ok((value.audio?.resumeCalls ?? []).every(call => call.activeGesture === false), 'no gesture-bearing resume before real input');
   };
-  const waitUntil = async (predicate, label, { pristine = false, timeoutMs = 60_000 } = {}) => {
-    const start = Date.now(); let last, prior = '';
-    while (Date.now() - start < timeoutMs) {
-      last = await read();
+  const waitForReady = async (title, deadlineAt, pristine) => {
+    assert.ok(readyScenes.some(scene => scene.title === title), `cold ready selector must be configured for ${title}`);
+    const selected = () => readiness.findLast(value => value.url === page.url() &&
+      value.candidates.some(candidate => candidate.title === title && candidate.ready));
+    const timing = { phase: 'ready-binding', nodeRequestedAt: Date.now(), nodeAcknowledgedAt: null, elapsedMs: null, deadlineAt };
+    let pending;
+    try {
+      if (!selected()) await bounded(new Promise(resolve => {
+        const changed = () => { if (selected()) resolve(); };
+        listeners.add(changed);
+        // Remove this listener on both success and deadline failure below.
+        pending = changed;
+      }), Math.max(0, deadlineAt - Date.now()), `cold ready binding for ${title}`);
+      assert.ok(Date.now() < deadlineAt, 'ready binding must arrive within the original startup deadline');
+      timing.nodeAcknowledgedAt = Date.now(); timing.elapsedMs = timing.nodeAcknowledgedAt - timing.nodeRequestedAt;
+      const evidence = readiness.filter(value => value.url === page.url());
+      if (pristine) for (const value of evidence) assertPristine(value);
+      await onObservation({ label: 'cold renderer ready binding', title, timing, evidence, ready: selected() });
+    } catch (error) {
+      timing.elapsedMs = Date.now() - timing.nodeRequestedAt;
+      await onObservation({ label: 'cold renderer ready binding failed', title, timing, evidence: readiness.filter(value => value.url === page.url()), message: String(error) });
+      throw error;
+    } finally { if (pending) listeners.delete(pending); }
+  };
+  const waitUntil = async (predicate, label, { pristine = false, timeoutMs = 60_000, readyTitle = '' } = {}) => {
+    const deadlineAt = Date.now() + timeoutMs; let last, prior = '';
+    // Binding collection and subsequent fresh reads share ONE deadline. A busy initialization
+    // cannot spend a second budget, and no Runtime.evaluate is queued until actual readiness.
+    if (readyTitle) await waitForReady(readyTitle, deadlineAt, pristine);
+    while (Date.now() < deadlineAt) {
+      last = await read(undefined, deadlineAt);
+      assert.ok(Date.now() < deadlineAt, `${label} exceeded the absolute ${timeoutMs}ms startup deadline`);
       const signature = JSON.stringify({ url: last.url, hash: last.hash, headings: last.headings, hints: last.hints, states: last.audio?.states,
         scene: last.scene, graphs: last.audio?.analyserGraphs, starts: last.audio?.bufferSourceStarts, activation: last.activation, inputs: last.inputs.length });
       if (signature !== prior) { await onObservation({ label, snapshot: last }); prior = signature; }
       if (pristine) assertPristine(last);
+      assert.ok(Date.now() < deadlineAt, `${label} exceeded the absolute ${timeoutMs}ms startup deadline`);
       if (predicate(last)) return last;
-      await delay(50);
+      await delay(Math.min(50, Math.max(0, deadlineAt - Date.now())));
     }
     throw new Error(`${label} did not settle within ${timeoutMs}ms: ${JSON.stringify(last)}`);
   };
   const blocked = async title => {
     const value = await waitUntil(s => s.headings.includes(title) && s.hints.includes('blocked') && s.audio?.contexts === 1,
-      'cold route waits for blocked fallback', { pristine: true });
+      'cold route waits for blocked fallback', { pristine: true, readyTitle: title });
     assert.deepEqual(value.audio.states, ['suspended']);
     assert.equal(value.storageError, null, 'application storage remains readable');
     assert.equal(value.buttons.filter(x => x.name === '일시정지').length, 0);

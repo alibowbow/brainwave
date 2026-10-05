@@ -1,0 +1,55 @@
+{
+  "sourceOnly": true,
+  "threeVersion": "0.186.1",
+  "filesSha256": {
+    "node_modules/three/package.json": "f9c474a27c920b9435353a6235968f4453436bee0444fac7e5fd289c8fa463de",
+    "node_modules/three/src/renderers/WebGLRenderer.js": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a",
+    "node_modules/three/src/renderers/shaders/DFGLUTData.js": "280b75b70d9d55c39d4121d5244c22ee445d27cc05ed6b134c3a5bde6b81b3da",
+    "node_modules/three/src/renderers/shaders/ShaderLib.js": "3e743420bd5d20eb1372786908a001dec8ef3bf62f479eeb283cf38bd5b1376e",
+    "node_modules/three/src/renderers/shaders/UniformsLib.js": "4823736ccfa1c1223981f9e659689e46a1b5c84f9f723248c4972c9cacc25ef7",
+    "node_modules/three/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js": "59701d74c43b49f5e5648f92c011ff7c8d24905f532617cb7e5db17f650b9701",
+    "node_modules/three/src/renderers/webgl/WebGLTextures.js": "a1947fd09ac98b3a57e40018dc8eccfce9c40f2cf4b6200b3180a00af5406451",
+    "node_modules/three/src/renderers/webgl/WebGLUniforms.js": "a1910ebdedfb7903b8d6155515ffb414add03108c222de95868eee790bef2317",
+    "node_modules/three/src/renderers/webgl/WebGLState.js": "fd6adb6c01d75a148ef6ebc8ea948a38acc1a48d3cfdbbb1d12dbde668092431",
+    "components/immersiveWorlds/cozyRooms/engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+    "components/immersiveWorlds/cozyRooms/winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f",
+    "components/immersiveWorlds/cozyRooms/materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+    "components/immersiveWorlds/cozyRooms/fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+    "dist/assets/three-hZqueUhM.js": "2e441274922e1c20a1aa1863ca80fdf7b6de07e2e52911e50cc6c5915dfe1a6c",
+    "node_modules/three/src/core/EventDispatcher.js": "bf032f809ea34e50cf0b63512d9c7e0ba9fd90ca8b0c81c9e5efe121bce1bd97"
+  },
+  "expectedDfg": {
+    "width": 16,
+    "height": 16,
+    "channels": 2,
+    "componentFormat": "Uint16 half-float bits",
+    "elements": 512,
+    "bytes": 1024,
+    "littleEndianPayloadSha256": "b41ba8e2bd29fa007dfbf034d4d58b853f378062183847846b1f6d228f2c7e79",
+    "mipmaps": false,
+    "internalFormat": "RG16F",
+    "format": "RG",
+    "type": "HALF_FLOAT"
+  },
+  "actualRun": "local-cozy-disposal-20261004T234124Z",
+  "actualServedThreeBundle": {
+    "surface": "application",
+    "url": "http://127.0.0.1:35591/assets/three-hZqueUhM.js",
+    "resourceType": "script",
+    "bytes": 601380,
+    "sha256": "2e441274922e1c20a1aa1863ca80fdf7b6de07e2e52911e50cc6c5915dfe1a6c",
+    "distFile": "assets/three-hZqueUhM.js",
+    "expectedSha256": "2e441274922e1c20a1aa1863ca80fdf7b6de07e2e52911e50cc6c5915dfe1a6c",
+    "matchesDist": true,
+    "binding": "exact-dist-bytes"
+  },
+  "actualRunProvenance": {
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "valid": true
+  },
+  "handleIdentityObserved": false,
+  "sourceFinding": "DFG_LUT is one counted renderer-owned singleton reached by Winter Standard/Physical materials, with no WebGL renderer dispose path. The run remaining handle identity still requires exact upload ledger.",
+  "retentionFinding": "Module-global DFG_LUT strongly owns per-renderer onTextureDispose listener. Its texture-manager closure retains GL context and source cache; renderer.dispose does not remove this listener. Exact DFG residual classification does not prove all renderer resources freed or physical reclamation."
+}

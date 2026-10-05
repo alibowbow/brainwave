@@ -1,4 +1,5 @@
 import { ownBrowserServer } from './owned-browser.mjs';
+import { pressSceneControl } from './press-scene-control.mjs';
 import { beginVerificationProvenance } from './verification-provenance.mjs';
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
@@ -35,6 +36,7 @@ owned = ownBrowserServer(browserServer, {
   onError: error => { report.cleanupErrors.push(error); report.status = 'failed'; process.exitCode = 1; },
 });
 report.browserOwnership = owned.state;
+await persist();
 const interrupted = signal => {
   report.interrupted = signal; report.status = 'failed'; process.exitCode = 1;
   void persist().catch(error => report.cleanupErrors.push({ stage: 'signal-report', message: String(error) })).finally(() => owned.close());
@@ -79,16 +81,13 @@ page.setDefaultTimeout(60_000);
 cold = await createColdObserver(page, async observation => {
   report.coldObservations.push({ at: new Date().toISOString(), step: currentStep, ...observation });
   await persist();
-});
+}, { readyScenes: [{ title: '깊은 집중', hash: '#/play/focus',
+  canvasSelector: '.rainy-window[data-state="ready"] .rainy-window-canvas' }] });
 const checkpoint = async name => { report.checks.push({ name, status: 'passed' }); await persist(); };
 page.on('pageerror', (error) => errors.push(error.message));
 const hash = () => page.evaluate(() => location.hash);
 const button = (name) => page.getByRole('button', { name, exact: true, includeHidden: true }).first();
-const press = async (name) => {
-  const control = button(name), box = await control.boundingBox();
-  if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await control.click();
-};
+const press = name => pressSceneControl(page, name, { record: evidence => (report.controlObservations ??= []).push(evidence) });
 const playing = () => button('일시정지').waitFor({ state: 'attached' });
 const stopped = () => button('재생').waitFor({ state: 'attached' });
 const typeLink = async (address, expected = address) => {

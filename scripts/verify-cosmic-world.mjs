@@ -1,3 +1,4 @@
+import { pressSceneControl, hoverSceneControl } from './press-scene-control.mjs';
 import { ownBrowserServer } from './owned-browser.mjs';
 import { beginVerificationProvenance } from './verification-provenance.mjs';
 import { chromium } from 'playwright-core';
@@ -141,7 +142,8 @@ const createPage = async (surface) => {
   coldObservers.set(page, await createColdObserver(page, async observation => {
     report.coldObservations.push({ surface, at: new Date().toISOString(), ...observation });
     await saveReport();
-  }));
+  }, { readyScenes: [{ title: '우주 명상', hash: '#/play/amb/cosmic',
+    canvasSelector: '[data-immersive-world-id="amb:cosmic"] .cosmic-world[data-state="ready"] .cosmic-world-canvas' }] }));
   page.on('pageerror', (error) => report.errors.push({ surface, kind: 'runtime', message: error.message }));
   page.on('console', (message) => {
     if (message.type() === 'error' && /three|webgl|shader|program|framebuffer/i.test(message.text())) report.errors.push({ surface, kind: 'renderer', message: message.text() });
@@ -205,10 +207,9 @@ const revealChrome = async page => {
     if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   }
 };
-const press = async (page, name) => {
-  await revealChrome(page);
-  await page.getByRole('button', { name, exact: true, includeHidden: true }).first().click();
-};
+const press = (page, name) => pressSceneControl(page, name, {
+  record: evidence => (report.controlObservations ??= []).push(evidence),
+});
 const remember = (page) => page.evaluate(() => { window.__savedCosmicVerificationCanvas = document.querySelector('.cosmic-world-canvas'); });
 const finalDisposal = async (page) => {
   await page.waitForFunction(() => !document.querySelector('.cosmic-world-canvas'));
@@ -330,8 +331,9 @@ try {
     const visible = await drag(page, true);
     const hidden = await drag(page, false);
     await revealChrome(page);
-    const control = page.getByRole('button', { name: '일시정지', exact: true, includeHidden: true }).first();
-    await control.hover();
+    await hoverSceneControl(page, '일시정지', {
+      record: evidence => (report.controlObservations ??= []).push(evidence),
+    });
     await page.mouse.down();
     try {
     assert.equal(await page.locator('.cosmic-world').getAttribute('data-look'), null, 'transport button pointerdown must not begin look drag');

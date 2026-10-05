@@ -1,4 +1,5 @@
 import { ownBrowserServer } from './owned-browser.mjs';
+import { pressSceneControl } from './press-scene-control.mjs';
 import { beginVerificationProvenance } from './verification-provenance.mjs';
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
@@ -129,7 +130,10 @@ const newCase = async (name) => {
   coldObservers.set(page, await createColdObserver(page, async (observation) => {
     report.coldObservations.push({ case: name, at: new Date().toISOString(), ...observation });
     await persist();
-  }));
+  }, { readyScenes: [
+    { title: '대나무숲', hash: '#/play/nature/bamboo_grove', canvasSelector: '[data-immersive-world-id="nature:bamboo_grove"] .living-woods[data-status="ready"] .living-woods-canvas' },
+    { title: '장마철 처마', hash: '#/play/nature/monsoon_eaves', canvasSelector: '[data-immersive-world-id="nature:monsoon_eaves"] .rain-shelter[data-state="ready"] .rain-shelter-canvas' },
+  ] }));
   page.on('pageerror', (error) => report.errors.push({ case: name, message: error.message }));
   page.on('response', (response) => {
     if (response.url().includes('/audio/nature/')) report.requests.push({ case: name, kind: 'response', status: response.status(), url: response.url() });
@@ -165,12 +169,7 @@ const startWithGesture = async (page, route, title) => {
   return { before, after, route, nativeInput, oneTrustedTap: true };
 };
 
-const press = async (page, name) => {
-  const control = page.getByRole('button', { name, exact: true, includeHidden: true }).first();
-  const box = await control.boundingBox();
-  if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await control.click();
-};
+const press = (page, name) => pressSceneControl(page, name, { record: evidence => (report.controlObservations ??= []).push(evidence) });
 const waitForRequests = async (page, blocked, required) => {
   for (let attempt = 0; attempt < 100; attempt++) {
     if (required.every((file) => blocked.some((request) => new URL(request.url).pathname.endsWith(`/${file}`)))) return;
@@ -195,7 +194,8 @@ try {
   owned = ownBrowserServer(browserServer, {
     onError: error => { report.cleanupErrors.push(error); report.status = 'failed'; process.exitCode = 1; },
   });
-  report.browserOwnership = owned.state;
+report.browserOwnership = owned.state;
+await persist();
 const interrupted = signal => {
   report.interrupted = signal; report.status = 'failed'; process.exitCode = 1;
   void persist().catch(error => report.cleanupErrors.push({ stage: 'signal-report', message: String(error) })).finally(() => owned.close());

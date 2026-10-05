@@ -1,0 +1,7 @@
+/* Also keeps a real Cycles rendering visible during loading or a GPU failure. */
+.sanctuary-world[data-sanctuary="meditation"] { background: #211f1a url('/immersive-worlds/mosi/fold_square.webp') center / cover no-repeat; }
+.sanctuary-world[data-sanctuary="meditation"] .sanctuary-status { inset: auto 16px 18%; padding: 8px 12px; background: #171713b3; border-radius: 8px; font-size: 12px; }
+@media (max-aspect-ratio: 3/5) { .sanctuary-world[data-sanctuary="meditation"] { background-image: url('/immersive-worlds/mosi/phone_1x2.webp'); } }
+@media (min-aspect-ratio: 3/5) and (max-aspect-ratio: 7/8) { .sanctuary-world[data-sanctuary="meditation"] { background-image: url('/immersive-worlds/mosi/tablet_3x4.webp'); } }
+@media (min-aspect-ratio: 4/3) { .sanctuary-world[data-sanctuary="meditation"] { background-image: url('/immersive-worlds/mosi/desktop_16x9.webp'); } }
+@media (min-aspect-ratio: 19/10) { .sanctuary-world[data-sanctuary="meditation"] { background-image: url('/immersive-worlds/mosi/wide_2x1.webp'); } }

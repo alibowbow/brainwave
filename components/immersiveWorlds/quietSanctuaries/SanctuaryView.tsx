@@ -5,7 +5,7 @@ import type { SanctuaryHost } from './SanctuaryEngine';
 import type { SanctuaryProps } from './worldTypes';
 import './sanctuaries.css';
 
-interface Props extends SanctuaryProps { host: SanctuaryHost; label: string }
+interface Props extends SanctuaryProps { host: Pick<SanctuaryHost, 'kind' | 'acquire' | 'setRunning' | 'releaseDrag' | 'drag' | 'interact'>; label: string }
 export default function SanctuaryView({ active, static3D = false, onInteraction, host, label }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);

@@ -1,0 +1,213 @@
+{
+  "passed": true,
+  "worlds": [
+    "nature:winter_lodge"
+  ],
+  "timestamp": "2026-10-04T23:34:50.708Z",
+  "gitHead": "aa2d01f1a87a11dc208c48ada0ce157e6a595c81",
+  "source": {
+    "sha256": "c67f2b6e467841fbc3fe0897b6ff646db5dba968c3c5d54b896672c371e312a3",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "597e78687fc1fc38eb317c6e4fb73ff41735d128c88804757d7135745980a947",
+    "files": [
+      "assets/CozyWorld-Cn6amMXH.js",
+      "assets/CozyWorld-Cn6amMXH.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-BA_0e-v7.js",
+      "assets/HearthWorld-BA_0e-v7.js.map",
+      "assets/NapTerraceWorld-CzCs8lIb.js",
+      "assets/NapTerraceWorld-CzCs8lIb.js.map",
+      "assets/SleepRoomWorld--D7VE7ix.js",
+      "assets/SleepRoomWorld--D7VE7ix.js.map",
+      "assets/WinterLodgeWorld-kLqDmZzP.js",
+      "assets/WinterLodgeWorld-kLqDmZzP.js.map",
+      "assets/fireDetail-pupxm1XR.js",
+      "assets/fireDetail-pupxm1XR.js.map",
+      "assets/index-BQMFZjdm.js",
+      "assets/index-BQMFZjdm.js.map",
+      "assets/materials-LRJhVkLz.js",
+      "assets/materials-LRJhVkLz.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [
+    {
+      "world": "nature:winter_lodge",
+      "snapshots": [
+        {
+          "file": "nature-winter_lodge-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+        },
+        {
+          "file": "nature-winter_lodge-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+        },
+        {
+          "file": "nature-winter_lodge-landscape-viewport.png",
+          "width": 915,
+          "height": 412,
+          "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-cup",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 7,
+        "time": 8.150000000000002,
+        "running": false,
+        "gpu": {
+          "submitted": 7,
+          "returned": 7,
+          "completed": 6,
+          "polls": 398,
+          "timeouts": 392,
+          "maxInFlight": 1,
+          "lastSubmit": 17249.09999999404,
+          "lastComplete": 17243.59999999404,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 1,
+          "unconfirmed": 1,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 366.69999999552965,
+          "constructorEnd": 382.09999999403954,
+          "factoryStart": 396.19999999552965,
+          "factoryEnd": 1059.0999999940395,
+          "initEnd": 1059.2999999970198,
+          "firstRenderStart": 1065.8999999985099,
+          "firstRenderEnd": 2169.5999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          }
+        ],
+        "drawCalls": 632,
+        "triangles": 2675962,
+        "memory": {
+          "geometries": 393,
+          "textures": 31
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      }
+    }
+  ],
+  "errors": []
+}

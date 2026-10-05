@@ -1,0 +1,90 @@
+{
+  "gitHead": "9e3b8ed29b99b0d96ed1f43ef80db46c6985caf5",
+  "mode": "undrained",
+  "productionSource": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "originalVerifySHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+  "originalSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+  "originalSequenceBytes": 7964,
+  "intervenedSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+  "generatedRunnerSHA256": "33a9361405a0f9fce360298089f048608005fcfef61119f72c66b7b85cc6ec26",
+  "intervention": {
+    "version": 2,
+    "mode": "undrained",
+    "performed": false,
+    "insertion": null,
+    "originalSequenceByteExact": true,
+    "addedPreDisposalWaitMs": 0
+  },
+  "adaptations": [
+    {
+      "label": "diagnostic setup imports",
+      "needle": "import {verifyChrome} from './chrome-checks.mjs';",
+      "replacement": "import {verifyChrome} from '../chrome-checks.mjs';\nimport {diagnosticPlugin,manifest,attachStream,drainBeforeFinalUnmount,finalizeDiagnostic} from './runtime.mjs';\nconst diagnosticTransforms=[];"
+    },
+    {
+      "label": "original QA root",
+      "needle": "const qa=path.dirname(fileURLToPath(import.meta.url)),root=",
+      "replacement": "const qa=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),root="
+    },
+    {
+      "label": "QA-only diagnostic build",
+      "needle": "plugins:[react()]",
+      "replacement": "plugins:[react(),diagnosticPlugin(diagnosticTransforms)]"
+    },
+    {
+      "label": "manifest, exact control binding and build-only path before any browser",
+      "needle": "const bundleDigest=await digest(bundle);",
+      "replacement": "const bundleDigest=await digest(bundle);\nconst diagnosticManifest=await manifest(bundle,diagnosticTransforms);\nif(process.env.COZY_GL_MODE==='undrained'){const reference=JSON.parse(await readFile(path.join(qa,'gl-boundary/evidence/covered-drain/instrumentation-manifest.json'),'utf8'));assert.equal(diagnosticManifest.source.sha256,reference.source.sha256,'control production bytes match covered run');assert.equal(diagnosticManifest.bundle.sha256,reference.bundle.sha256,'control browser bundle is identical to covered run');assert.equal(diagnosticManifest.glBoundaryScripts.fileSHA256['entry.mjs'],reference.glBoundaryScripts.fileSHA256['entry.mjs'],'control browser probe entry unchanged');diagnosticManifest.controlBinding={reference:'evidence/covered-drain/instrumentation-manifest.json',sourceSHA256:reference.source.sha256,bundleSHA256:reference.bundle.sha256,entrySHA256:reference.glBoundaryScripts.fileSHA256['entry.mjs']};}\nawait writeFile(path.join(output,'instrumentation-manifest.json'),JSON.stringify(diagnosticManifest,null,2));\nassert.equal(diagnosticManifest.source.sha256,process.env.COZY_EXPECTED_SOURCE,'exact production source for this one experiment');\nif(process.env.COZY_BUILD_ONLY==='1'){console.log('Build-only GL diagnostic',diagnosticManifest.bundle.sha256);process.exit(0);}"
+    },
+    {
+      "label": "stream before navigation",
+      "needle": "const worlds=(process.env.COZY_WORLDS",
+      "replacement": "const diagnosticStream=await attachStream(page,output);\nconst worlds=(process.env.COZY_WORLDS"
+    },
+    {
+      "label": "persist thrown failure outside original body",
+      "needle": "\n} finally {",
+      "replacement": "\n} catch (error) {\nconst failure={diagnosticOnly:true,passed:false,error:error.stack||String(error),lastEvent:diagnosticStream.records.at(-1)};\ndiagnosticStream.mark('node-diagnostic-sequence-failed',{error:failure.error});await diagnosticStream.flush();\nawait writeFile(path.join(output,'failure.json'),JSON.stringify(failure,null,2));throw error;\n} finally {"
+    },
+    {
+      "label": "full event reconciliation and bounded cleanup; diagnostic-only report",
+      "needle": "await writeFile(path.join(output,'verification.json'),JSON.stringify(report,null,2));await browser.close();await new Promise(r=>server.httpServer.close(r));",
+      "replacement": "await finalizeDiagnostic(page,browser,server,diagnosticStream,output,report,bundle);"
+    }
+  ],
+  "claim": "Exact original assertion sequence with the same observation-only browser entry as covered-drain. No drain insertion. Diagnostic only; not an unchanged original-gate pass."
+}

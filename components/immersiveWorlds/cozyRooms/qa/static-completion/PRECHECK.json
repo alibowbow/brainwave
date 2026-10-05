@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-05T00:10:53.240Z",
+  "head": "2a8f9b97ba4982623da13ed6835a14c27ef7fae2",
+  "ci": {
+    "workflow_runs": [
+      {
+        "id": 37244926015,
+        "name": "CI",
+        "status": "completed",
+        "conclusion": "success",
+        "run_number": 316,
+        "jobs_url": "https://api.github.com/repos/alibowbow/brainwave/actions/runs/37244926015/jobs",
+        "logs_url": "https://api.github.com/repos/alibowbow/brainwave/actions/runs/37244926015/logs",
+        "workflow_id": 296618122
+      }
+    ]
+  },
+  "preview": {
+    "statuses": [
+      {
+        "context": "Vercel",
+        "state": "success",
+        "target_url": "https://vercel.com/alibowbows-projects/brainwave/4EsSTwhC1xMLuUvSZ3KGNLYGf8w3"
+      }
+    ]
+  },
+  "sourceCheckpoint": "bfffa3461b2e625b53ba87d82d52ef0ea0a0d366",
+  "harnessCheckpoint": "456ecde2cb70a67ccbad394c767de963dac97d53",
+  "startGuard": {
+    "verifiedAt": "2026-10-04T23:54:59Z",
+    "original": "7373c1eeb5372fa9bebf41889ff2960643f3990e",
+    "followup": "2a8f9b97ba4982623da13ed6835a14c27ef7fae2",
+    "localWorktreeClean": true
+  },
+  "environment": {
+    "browser": "Chromium153.0.8010.0",
+    "gpu": "SwiftShader software WebGL",
+    "otherWorkload": "A separate owner's browser workload was observed at test preparation. No other process was altered. Timings are environment-specific, not isolated hardware benchmarks."
+  }
+}

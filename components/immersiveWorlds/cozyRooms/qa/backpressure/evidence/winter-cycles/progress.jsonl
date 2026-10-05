@@ -1,0 +1,14 @@
+{"timestamp":"2026-10-04T23:35:26.696Z","stage":"verify-source-and-bundle"}
+{"timestamp":"2026-10-04T23:35:27.030Z","stage":"initial-navigation"}
+{"timestamp":"2026-10-04T23:35:27.094Z","stage":"generation-0-ready-wait"}
+{"timestamp":"2026-10-04T23:35:29.566Z","stage":"generation-0-ready","instance":1,"canvas":1}
+{"timestamp":"2026-10-04T23:35:29.568Z","stage":"initial-actual-animation"}
+{"timestamp":"2026-10-04T23:35:37.635Z","stage":"initial-animation-paused","frames":4,"time":8.100000000000001}
+{"timestamp":"2026-10-04T23:35:37.635Z","stage":"generation-0-dispose-request"}
+{"timestamp":"2026-10-04T23:35:42.674Z","stage":"generation-0-disposed","elapsedMs":5038.854012,"lifetime":{"created":1,"disposed":1}}
+{"timestamp":"2026-10-04T23:35:42.675Z","stage":"generation-1-mount-request"}
+{"timestamp":"2026-10-04T23:35:42.680Z","stage":"generation-1-ready-wait"}
+{"timestamp":"2026-10-04T23:35:43.944Z","stage":"generation-1-ready","instance":2,"canvas":2}
+{"timestamp":"2026-10-04T23:35:43.945Z","stage":"generation-1-static-input-setup"}
+{"timestamp":"2026-10-04T23:35:44.161Z","stage":"generation-1-native-enter"}
+{"timestamp":"2026-10-04T23:35:44.358Z","stage":"generation-1-native-enter","error":"AssertionError [ERR_ASSERTION]: one discrete action renders its stopped frame\n\n1 !== 2\n\n    at freshInput (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/recreation-cycle/verify.mjs:164:10)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/recreation-cycle/verify.mjs:238:5"}

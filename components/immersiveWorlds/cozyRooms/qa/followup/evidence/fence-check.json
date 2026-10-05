@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-04T20:30:41.850Z",
+  "method": "Node VM fault injection against the actual exported drainGPU function; no browser or production renderer exercised",
+  "commonSHA256": "f0a969485d7b5785ca3e39651f3c55a981452e4348367f7db1881e55ef5cea4a",
+  "scriptSHA256": "608007e59f0a252ef18e9b069f17d8ad931e2cc650943d9c6730cc6581e33ca4",
+  "results": [
+    {
+      "check": "TIMEOUT_EXPIRED then ALREADY_SIGNALED in later tasks",
+      "passed": true,
+      "deleted": 1,
+      "waits": 2,
+      "flushes": 1
+    },
+    {
+      "check": "CONDITION_SATISFIED is completion",
+      "passed": true,
+      "deleted": 1,
+      "waits": 1,
+      "flushes": 1
+    },
+    {
+      "check": "WAIT_FAILED fails without completion",
+      "passed": true,
+      "deleted": 1,
+      "waits": 1,
+      "flushes": 1
+    },
+    {
+      "check": "null fence fails without completion",
+      "passed": true,
+      "deleted": 0,
+      "waits": 0,
+      "flushes": 0
+    },
+    {
+      "check": "context loss fails without completion",
+      "passed": true,
+      "deleted": 1,
+      "waits": 0,
+      "flushes": 1
+    },
+    {
+      "check": "state drift fails without completion",
+      "passed": true,
+      "deleted": 1,
+      "waits": 0,
+      "flushes": 1
+    },
+    {
+      "check": "Nonresolving page evaluation fails at external deadline",
+      "passed": true
+    }
+  ]
+}

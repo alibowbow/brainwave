@@ -1,0 +1,22 @@
+vite v6.4.3 building for production...
+transforming...
+✓ 48 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../../../tmp/cozy-static-completion-bundle/index.html                             0.92 kB │ gzip:   0.55 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/CozyWorld-DFmtbpTc.css          0.86 kB │ gzip:   0.42 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/materials-BkTAzY0D.js           3.74 kB │ gzip:   1.74 kB │ map:    17.46 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/CozyWorld-CNeeHmPh.js           4.84 kB │ gzip:   2.18 kB │ map:    13.31 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/SleepRoomWorld-BY3AbvTl.js     10.09 kB │ gzip:   4.57 kB │ map:    36.36 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/HearthWorld-B0r6M-lW.js        10.79 kB │ gzip:   4.96 kB │ map:    39.80 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/fireDetail-qi0uyylj.js         14.81 kB │ gzip:   5.70 kB │ map:    77.02 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/WinterLodgeWorld-Drwvbuk7.js   15.57 kB │ gzip:   6.78 kB │ map:    54.61 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/NapTerraceWorld-Dje3lAQ6.js    16.43 kB │ gzip:   7.09 kB │ map:    61.96 kB
+../../../../../../../../tmp/cozy-static-completion-bundle/assets/index-CDP5Jz4U.js             797.41 kB │ gzip: 215.47 kB │ map: 3,895.66 kB
+✓ built in 3.05s
+{
+  "bundle": "/tmp/cozy-static-completion-bundle",
+  "manifest": "/tmp/cozy-static-completion-bundle.manifest.json",
+  "sourceSHA256": "e3e7a278bad36a8d12f80403b03972728c11fa07436335346ff796d8f664edfa",
+  "bundleSHA256": "0b0c53ed7a574d44f301bbd6ccaf4f72b9410616eaebd46a299551b927e5e516"
+}

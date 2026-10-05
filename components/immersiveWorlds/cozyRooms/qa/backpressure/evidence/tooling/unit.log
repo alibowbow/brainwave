@@ -1,0 +1,35 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> brainwave-ritual-studio@4.0.0 test
+> vitest run
+
+
+ RUN  v4.1.9 /workspace/scratch/9bedca85494b/brainwave
+
+ ❯ components/immersiveWorlds/cozyRooms/qa/backpressure/engine.test.ts (17 tests | 3 failed) 387ms
+     × reports null-fence during initial submission and throws before the host can call it ready 5ms
+     × reports fence-throw during initial submission and throws before the host can call it ready 2ms
+     × reports flush-throw during initial submission and throws before the host can call it ready 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/immersiveWorlds/cozyRooms/qa/backpressure/engine.test.ts > CozyEngine one-batch completion backpressure (protocol doubles only) > reports null-fence during initial submission and throws before the host can call it ready
+ FAIL  components/immersiveWorlds/cozyRooms/qa/backpressure/engine.test.ts > CozyEngine one-batch completion backpressure (protocol doubles only) > reports fence-throw during initial submission and throws before the host can call it ready
+ FAIL  components/immersiveWorlds/cozyRooms/qa/backpressure/engine.test.ts > CozyEngine one-batch completion backpressure (protocol doubles only) > reports flush-throw during initial submission and throws before the host can call it ready
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ components/immersiveWorlds/cozyRooms/qa/backpressure/engine.test.ts:211:68
+    210|     else f.gl.flush.mockImplementationOnce(()=>{throw new Error('flush…
+    211|     expect(()=>f.engine.renderFrame(0)).toThrow();
+    212|     // Initial errors reach the unchanged shared host through its prom…
+       |                 ^
+    213|     // catch, avoiding a reentrant failed callback overwritten by read…
+    214|     expect(f.onLost).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed | 25 passed (26)
+      Tests  3 failed | 177 passed (180)
+   Start at  19:28:02
+   Duration  2.08s (transform 1.76s, setup 0ms, import 3.01s, tests 2.33s, environment 3ms)
+

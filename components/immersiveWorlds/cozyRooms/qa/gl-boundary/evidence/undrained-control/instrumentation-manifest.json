@@ -1,0 +1,154 @@
+{
+  "timestamp": "2026-10-04T22:40:45.176Z",
+  "gitHead": "9e3b8ed29b99b0d96ed1f43ef80db46c6985caf5",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+  "three": {
+    "version": "0.186.1",
+    "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+  },
+  "bundle": {
+    "sha256": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+    "files": [
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/CozyWorld-o4FWuVHB.js",
+      "assets/CozyWorld-o4FWuVHB.js.map",
+      "assets/HearthWorld-BzsvmV1s.js",
+      "assets/HearthWorld-BzsvmV1s.js.map",
+      "assets/NapTerraceWorld-Cg1FuqCn.js",
+      "assets/NapTerraceWorld-Cg1FuqCn.js.map",
+      "assets/SleepRoomWorld-ChkPhVGB.js",
+      "assets/SleepRoomWorld-ChkPhVGB.js.map",
+      "assets/WinterLodgeWorld-DKMwcA2Q.js",
+      "assets/WinterLodgeWorld-DKMwcA2Q.js.map",
+      "assets/fireDetail-7ff1P15k.js",
+      "assets/fireDetail-7ff1P15k.js.map",
+      "assets/index-C9C37vN3.js",
+      "assets/index-C9C37vN3.js.map",
+      "assets/main-CVT1hKOw.js",
+      "assets/main-CVT1hKOw.js.map",
+      "assets/materials-wf-a3px0.js",
+      "assets/materials-wf-a3px0.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/CozyWorld-o4FWuVHB.js": "f0e46c0f0ff82a35036c4ff74c91df71eaf3f268b62dd3b2dfaff16a4f6ef5aa",
+      "assets/CozyWorld-o4FWuVHB.js.map": "c1c369f398881ec26b5ca1ab24368eefe13f13215435b9cc77940050349b9ee0",
+      "assets/HearthWorld-BzsvmV1s.js": "eb83d2fca8af31967c48b8e435e8296261965854c83c0a1ac3a3b24035bfc10a",
+      "assets/HearthWorld-BzsvmV1s.js.map": "806b0a5718e1c827e1829775aab898d0e93ab8e11bb1e479d85a087694ebe588",
+      "assets/NapTerraceWorld-Cg1FuqCn.js": "8b9145cf8d6ac0c8001cfe9a2906572c6ffe8c30662c45b2d5cb8e0f1220f355",
+      "assets/NapTerraceWorld-Cg1FuqCn.js.map": "09ce544494128ef5a69c1ddb7ea3c0e27c46aac6237c629f7f5b29f28cb7aaf0",
+      "assets/SleepRoomWorld-ChkPhVGB.js": "6d96cf139fb9d095e14d70633bfa74b6f0a108332ccb4719801ea38a6afebde5",
+      "assets/SleepRoomWorld-ChkPhVGB.js.map": "e16441b176a5c30f1294250c7a4a1b2f2ad5a419a06adeff6d8a8d63ea4d17a9",
+      "assets/WinterLodgeWorld-DKMwcA2Q.js": "01c942b0d1ab06384365bf78e5d4ae9cae1d5e0347be29c0b35bd63cd2f42ab4",
+      "assets/WinterLodgeWorld-DKMwcA2Q.js.map": "b5589aac5eb9094e9e3de6ede43918066e49cd1de87211d8402d0eef3d0d0b56",
+      "assets/fireDetail-7ff1P15k.js": "1e35e4ffde3b82a12b6df427eae8b38ebc551650e18746a22facfd71a75056fe",
+      "assets/fireDetail-7ff1P15k.js.map": "9c147c356ed3f19a02a3cd3baced3116266435cf02b3485b9a63681fb25785f2",
+      "assets/index-C9C37vN3.js": "3cc7048f1ae6e2a6c16d666e6c8a8c5bc6c85aa4a5f009309545586735a37d86",
+      "assets/index-C9C37vN3.js.map": "0bf38a52b35bd00f5d9b0d83687e1449e1209e1ebdc493182a626c4e5e3687bb",
+      "assets/main-CVT1hKOw.js": "aa9793f53727592239f4f68dda711683350cac676877e60a94d77accce16d87d",
+      "assets/main-CVT1hKOw.js.map": "dce1e6df7dd08f2a0829f3e95f0eb04197c56efea512b4d409ae5c2f3e3c8e7b",
+      "assets/materials-wf-a3px0.js": "bfeeb8512617c7e4b86370f237e1e799091c79caf912bad20d02207989c57e41",
+      "assets/materials-wf-a3px0.js.map": "d9a9caaf7281093e6c52453577596d44763d774c2e10ed9af1acfbd8e59f99e7",
+      "index.html": "94c2ba5259082eb5bf19f136049ad652f4d0769c592d42a0855728c3d6fb6d5c"
+    }
+  },
+  "scripts": {
+    "sha256": "d0e6dcc8905c054087ec4f7aec9e614e9543ff178103aaa5193be15dcea0fed4",
+    "files": [
+      "clean.mjs",
+      "entry.mjs",
+      "evidence/baseline-original-sequence/runner-source.mjs",
+      "evidence/size-guard-original-sequence/runner-source.mjs",
+      "instrumentation.mjs",
+      "original-sequence.mjs"
+    ],
+    "fileSHA256": {
+      "clean.mjs": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b",
+      "entry.mjs": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac",
+      "evidence/baseline-original-sequence/runner-source.mjs": "c6d971e76b68a8c63491afd49640371ebcefed329b7e1283c125f93fc8f86e77",
+      "evidence/size-guard-original-sequence/runner-source.mjs": "992a87809376d87b90b9983d06cab2dbe0327be004517056b0f653ebf3a4f89b",
+      "instrumentation.mjs": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf",
+      "original-sequence.mjs": "c68dd6eedff7712918d00a6f17287ab1c685ce5b03190943b3ed59faaac3bb18"
+    }
+  },
+  "originalVerifySHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+  "transforms": [
+    {
+      "file": "components/immersiveWorlds/cozyRooms/engine.ts",
+      "originalSHA256": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "transformedSHA256": "1a0955ab10468ab441b382cc4585df2cafb425e6adb4f94382dbe20edacf348b"
+    },
+    {
+      "file": "components/liveScene/liveSceneHost.ts",
+      "originalSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "transformedSHA256": "1c20cc6d13b03394d2492423e869fbdbb095fc7acedf989d7317b5f1b0f5b3c2"
+    }
+  ],
+  "instrumentation": "QA build only: original production files untouched. Original promise returned from init; observers do not delay host await through an extra promise. Constructor/factory/host catches add phase records only.",
+  "glBoundaryScripts": {
+    "sha256": "747cdd7762cefd91de59744e42fcaa4706991d10a4e6b741cb708abb58741046",
+    "files": [
+      "entry.mjs",
+      "run.mjs",
+      "runtime.mjs"
+    ],
+    "fileSHA256": {
+      "entry.mjs": "cfb1f830480b0cafda5d6d9604e25f17966b05cb33c23c0e46c62057ea925b4b",
+      "run.mjs": "d816cf94a49c2e8cb1f2be25cc2b844fb7b6149052e9c09ea31e7c67f176c4bf",
+      "runtime.mjs": "fb0820887b4129f8dd569015beb0c0c7e07868869f77b1aa2a1e1f469506fbb0"
+    }
+  },
+  "intervention": {
+    "version": 2,
+    "mode": "undrained",
+    "performed": false,
+    "drainBudgetMs": null,
+    "externalDrainMs": null,
+    "maxReplacements": null,
+    "replacementPolicy": null,
+    "insertion": null,
+    "meaning": "Undrained control: exact original assertion sequence and identical instrumented browser entry; no drain call or added pre-disposal wait. Instrumentation remains, so this is not an unchanged original-gate claim."
+  },
+  "controlBinding": {
+    "reference": "evidence/covered-drain/instrumentation-manifest.json",
+    "sourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "bundleSHA256": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+    "entrySHA256": "cfb1f830480b0cafda5d6d9604e25f17966b05cb33c23c0e46c62057ea925b4b"
+  }
+}

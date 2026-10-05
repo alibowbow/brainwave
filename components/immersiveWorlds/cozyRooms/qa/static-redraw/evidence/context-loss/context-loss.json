@@ -1,0 +1,1962 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-04T22:48:57.622Z",
+  "gitHead": "15e8d80eb3e6982858a8ef8fa24f40b388642cb7",
+  "world": "nature:winter_lodge",
+  "runnerSHA256": "5c71bc8887e44037c455baa0b6e8b7cad85b7d407c6ded4e7549717057dfe44c",
+  "commonSHA256": "f0a969485d7b5785ca3e39651f3c55a981452e4348367f7db1881e55ef5cea4a",
+  "method": "One browser/page with the unchanged original QA entry. Existing scene contexts are actually lost using WEBGL_lose_context, once while running and once after pause. No synthetic context-loss event, production instrumentation, screenshots, readback, fences, or context restoration.",
+  "environmentLimit": "Driver context loss in a software WebGL browser. This is not a physical GPU fault, hardware reliability measurement, or proof of physical GPU reclamation.",
+  "bounds": {
+    "readyMs": 120000,
+    "disposeMs": 30000,
+    "configuredHostGraceMs": 5000
+  },
+  "viewport": {
+    "width": 960,
+    "height": 700,
+    "dpr": 1
+  },
+  "identities": [
+    {
+      "generation": 0,
+      "engine": 1,
+      "canvas": 1,
+      "ready": {
+        "at": 2531.2999999970198,
+        "summary": {
+          "instance": 1,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 1,
+            "disposed": 0
+          }
+        },
+        "canvases": [
+          {
+            "id": 1,
+            "instance": 1,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 0,
+        "events": [],
+        "fault": null,
+        "nativeInput": [],
+        "disposal": null,
+        "heldFaultCanvas": null
+      }
+    },
+    {
+      "generation": 1,
+      "engine": 2,
+      "canvas": 2,
+      "ready": {
+        "at": 15828.39999999851,
+        "summary": {
+          "instance": 2,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 2,
+            "disposed": 1
+          }
+        },
+        "canvases": [
+          {
+            "id": 2,
+            "instance": 2,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 0,
+        "events": [],
+        "fault": {
+          "mode": "running",
+          "requestAt": 2638.6999999955297,
+          "instance": 1,
+          "canvas": 1,
+          "framesBefore": 6,
+          "timeBefore": 8.095400000000001,
+          "runningBefore": true,
+          "lossEvents": [
+            {
+              "at": 14205.69999999553,
+              "isTrusted": true,
+              "contextLost": true,
+              "frames": 7,
+              "canvas": 1
+            }
+          ],
+          "renderer": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+          },
+          "loseContextReturnedAt": 14199.79999999702,
+          "isContextLostAfterCall": true
+        },
+        "nativeInput": [],
+        "disposal": null,
+        "heldFaultCanvas": null
+      }
+    },
+    {
+      "generation": 2,
+      "engine": 3,
+      "canvas": 3,
+      "ready": {
+        "at": 22600.29999999702,
+        "summary": {
+          "instance": 3,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 3,
+            "disposed": 2
+          }
+        },
+        "canvases": [
+          {
+            "id": 3,
+            "instance": 3,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 1,
+        "events": [
+          {
+            "world": "nature:winter_lodge",
+            "type": "cup",
+            "intensity": 0.12
+          }
+        ],
+        "fault": {
+          "mode": "running",
+          "requestAt": 2638.6999999955297,
+          "instance": 1,
+          "canvas": 1,
+          "framesBefore": 6,
+          "timeBefore": 8.095400000000001,
+          "runningBefore": true,
+          "lossEvents": [
+            {
+              "at": 14205.69999999553,
+              "isTrusted": true,
+              "contextLost": true,
+              "frames": 7,
+              "canvas": 1
+            }
+          ],
+          "renderer": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+          },
+          "loseContextReturnedAt": 14199.79999999702,
+          "isContextLostAfterCall": true
+        },
+        "nativeInput": [
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16050.5
+          },
+          {
+            "type": "click",
+            "key": null,
+            "isTrusted": true,
+            "at": 16050.79999999702
+          },
+          {
+            "type": "keyup",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16057.60000000149
+          }
+        ],
+        "disposal": {
+          "requestAt": 16252.39999999851,
+          "detachedAt": 16253.79999999702,
+          "disposedAt": 21292.60000000149
+        },
+        "heldFaultCanvas": null
+      }
+    },
+    {
+      "generation": 3,
+      "engine": 4,
+      "canvas": 4,
+      "ready": {
+        "at": 34685.39999999851,
+        "summary": {
+          "instance": 4,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 4,
+            "disposed": 3
+          }
+        },
+        "canvases": [
+          {
+            "id": 4,
+            "instance": 4,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 1,
+        "events": [
+          {
+            "world": "nature:winter_lodge",
+            "type": "cup",
+            "intensity": 0.12
+          }
+        ],
+        "fault": {
+          "mode": "paused",
+          "requestAt": 22863.5,
+          "instance": 3,
+          "canvas": 3,
+          "framesBefore": 5,
+          "timeBefore": 8.058200000002978,
+          "runningBefore": false,
+          "lossEvents": [
+            {
+              "at": 33024.69999999553,
+              "isTrusted": true,
+              "contextLost": true,
+              "frames": 5,
+              "canvas": 3
+            }
+          ],
+          "renderer": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+          },
+          "loseContextReturnedAt": 33022.60000000149,
+          "isContextLostAfterCall": true
+        },
+        "nativeInput": [
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16050.5
+          },
+          {
+            "type": "click",
+            "key": null,
+            "isTrusted": true,
+            "at": 16050.79999999702
+          },
+          {
+            "type": "keyup",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16057.60000000149
+          }
+        ],
+        "disposal": {
+          "requestAt": 16252.39999999851,
+          "detachedAt": 16253.79999999702,
+          "disposedAt": 21292.60000000149
+        },
+        "heldFaultCanvas": null
+      }
+    }
+  ],
+  "cases": [
+    {
+      "mode": "running",
+      "passed": true,
+      "initial": {
+        "at": 2531.2999999970198,
+        "summary": {
+          "instance": 1,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 1,
+            "disposed": 0
+          }
+        },
+        "canvases": [
+          {
+            "id": 1,
+            "instance": 1,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 0,
+        "events": [],
+        "fault": null,
+        "nativeInput": [],
+        "disposal": null,
+        "heldFaultCanvas": null
+      },
+      "motion": {
+        "moving": {
+          "at": 2542.6999999955297,
+          "summary": {
+            "instance": 1,
+            "frames": 1,
+            "time": 8,
+            "running": true,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvases": [
+            {
+              "id": 1,
+              "instance": 1,
+              "frames": 1,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "running",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "eventCount": 0,
+          "events": [],
+          "fault": null,
+          "nativeInput": [],
+          "disposal": null,
+          "heldFaultCanvas": null
+        },
+        "before": {
+          "at": 2627.2999999970198,
+          "summary": {
+            "instance": 1,
+            "frames": 5,
+            "time": 8.078800000000001,
+            "running": true,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 1,
+              "disposed": 0
+            }
+          },
+          "canvases": [
+            {
+              "id": 1,
+              "instance": 1,
+              "frames": 5,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "running",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "eventCount": 0,
+          "events": [],
+          "fault": null,
+          "nativeInput": [],
+          "disposal": null,
+          "heldFaultCanvas": null
+        }
+      },
+      "loss": {
+        "first": {
+          "at": 14313.79999999702,
+          "summary": {
+            "instance": null,
+            "frames": null,
+            "time": null,
+            "running": false,
+            "disposed": true,
+            "triangles": null,
+            "lifetime": {
+              "created": 1,
+              "disposed": 1
+            }
+          },
+          "canvases": [],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "failed",
+              "motion": "running",
+              "input": null,
+              "status": "이 환경에서는 3D 화면을 표시할 수 없어요.",
+              "disabledActions": [
+                true,
+                true,
+                true
+              ]
+            }
+          ],
+          "eventCount": 0,
+          "events": [],
+          "fault": {
+            "mode": "running",
+            "requestAt": 2638.6999999955297,
+            "instance": 1,
+            "canvas": 1,
+            "framesBefore": 6,
+            "timeBefore": 8.095400000000001,
+            "runningBefore": true,
+            "lossEvents": [
+              {
+                "at": 14205.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 7,
+                "canvas": 1
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 14199.79999999702,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [],
+          "disposal": null,
+          "heldFaultCanvas": {
+            "id": 1,
+            "connected": false,
+            "frames": 7,
+            "contextLost": true
+          }
+        },
+        "second": {
+          "at": 14568.89999999851,
+          "summary": {
+            "instance": null,
+            "frames": null,
+            "time": null,
+            "running": false,
+            "disposed": true,
+            "triangles": null,
+            "lifetime": {
+              "created": 1,
+              "disposed": 1
+            }
+          },
+          "canvases": [],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "failed",
+              "motion": "running",
+              "input": null,
+              "status": "이 환경에서는 3D 화면을 표시할 수 없어요.",
+              "disabledActions": [
+                true,
+                true,
+                true
+              ]
+            }
+          ],
+          "eventCount": 0,
+          "events": [],
+          "fault": {
+            "mode": "running",
+            "requestAt": 2638.6999999955297,
+            "instance": 1,
+            "canvas": 1,
+            "framesBefore": 6,
+            "timeBefore": 8.095400000000001,
+            "runningBefore": true,
+            "lossEvents": [
+              {
+                "at": 14205.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 7,
+                "canvas": 1
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 14199.79999999702,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [],
+          "disposal": null,
+          "heldFaultCanvas": {
+            "id": 1,
+            "connected": false,
+            "frames": 7,
+            "contextLost": true
+          }
+        },
+        "elapsedMs": 11940.318103,
+        "oldCanvasReferenceReleasedBeforeRecovery": true
+      },
+      "recovered": {
+        "at": 15828.39999999851,
+        "summary": {
+          "instance": 2,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 2,
+            "disposed": 1
+          }
+        },
+        "canvases": [
+          {
+            "id": 2,
+            "instance": 2,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 0,
+        "events": [],
+        "fault": {
+          "mode": "running",
+          "requestAt": 2638.6999999955297,
+          "instance": 1,
+          "canvas": 1,
+          "framesBefore": 6,
+          "timeBefore": 8.095400000000001,
+          "runningBefore": true,
+          "lossEvents": [
+            {
+              "at": 14205.69999999553,
+              "isTrusted": true,
+              "contextLost": true,
+              "frames": 7,
+              "canvas": 1
+            }
+          ],
+          "renderer": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+          },
+          "loseContextReturnedAt": 14199.79999999702,
+          "isContextLostAfterCall": true
+        },
+        "nativeInput": [],
+        "disposal": null,
+        "heldFaultCanvas": null
+      },
+      "input": {
+        "before": {
+          "at": 16022.79999999702,
+          "summary": {
+            "instance": 2,
+            "frames": 1,
+            "time": 8,
+            "running": false,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 2,
+              "disposed": 1
+            }
+          },
+          "canvases": [
+            {
+              "id": 2,
+              "instance": 2,
+              "frames": 1,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "paused",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "eventCount": 0,
+          "events": [],
+          "fault": {
+            "mode": "running",
+            "requestAt": 2638.6999999955297,
+            "instance": 1,
+            "canvas": 1,
+            "framesBefore": 6,
+            "timeBefore": 8.095400000000001,
+            "runningBefore": true,
+            "lossEvents": [
+              {
+                "at": 14205.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 7,
+                "canvas": 1
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 14199.79999999702,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [],
+          "disposal": null,
+          "heldFaultCanvas": null
+        },
+        "after": {
+          "at": 16248.89999999851,
+          "summary": {
+            "instance": 2,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 2,
+              "disposed": 1
+            }
+          },
+          "canvases": [
+            {
+              "id": 2,
+              "instance": 2,
+              "frames": 2,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "paused",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "eventCount": 1,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "running",
+            "requestAt": 2638.6999999955297,
+            "instance": 1,
+            "canvas": 1,
+            "framesBefore": 6,
+            "timeBefore": 8.095400000000001,
+            "runningBefore": true,
+            "lossEvents": [
+              {
+                "at": 14205.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 7,
+                "canvas": 1
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 14199.79999999702,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16050.5
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 16050.79999999702
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16057.60000000149
+            }
+          ],
+          "disposal": null,
+          "heldFaultCanvas": null
+        },
+        "event": {
+          "world": "nature:winter_lodge",
+          "type": "cup",
+          "intensity": 0.12
+        },
+        "method": "Native browser Enter on original cup action, with trusted key/click observation"
+      },
+      "finalDisposal": {
+        "observation": {
+          "at": 21295.29999999702,
+          "summary": {
+            "instance": null,
+            "frames": null,
+            "time": null,
+            "running": false,
+            "disposed": true,
+            "triangles": null,
+            "lifetime": {
+              "created": 2,
+              "disposed": 2
+            }
+          },
+          "canvases": [],
+          "dom": [],
+          "eventCount": 1,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "running",
+            "requestAt": 2638.6999999955297,
+            "instance": 1,
+            "canvas": 1,
+            "framesBefore": 6,
+            "timeBefore": 8.095400000000001,
+            "runningBefore": true,
+            "lossEvents": [
+              {
+                "at": 14205.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 7,
+                "canvas": 1
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 14199.79999999702,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16050.5
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 16050.79999999702
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16057.60000000149
+            }
+          ],
+          "disposal": {
+            "requestAt": 16252.39999999851,
+            "detachedAt": 16253.79999999702,
+            "disposedAt": 21292.60000000149
+          },
+          "heldFaultCanvas": null
+        },
+        "elapsedMs": 5045.449857
+      }
+    },
+    {
+      "mode": "paused",
+      "passed": true,
+      "initial": {
+        "at": 22600.29999999702,
+        "summary": {
+          "instance": 3,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 3,
+            "disposed": 2
+          }
+        },
+        "canvases": [
+          {
+            "id": 3,
+            "instance": 3,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 1,
+        "events": [
+          {
+            "world": "nature:winter_lodge",
+            "type": "cup",
+            "intensity": 0.12
+          }
+        ],
+        "fault": {
+          "mode": "running",
+          "requestAt": 2638.6999999955297,
+          "instance": 1,
+          "canvas": 1,
+          "framesBefore": 6,
+          "timeBefore": 8.095400000000001,
+          "runningBefore": true,
+          "lossEvents": [
+            {
+              "at": 14205.69999999553,
+              "isTrusted": true,
+              "contextLost": true,
+              "frames": 7,
+              "canvas": 1
+            }
+          ],
+          "renderer": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+          },
+          "loseContextReturnedAt": 14199.79999999702,
+          "isContextLostAfterCall": true
+        },
+        "nativeInput": [
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16050.5
+          },
+          {
+            "type": "click",
+            "key": null,
+            "isTrusted": true,
+            "at": 16050.79999999702
+          },
+          {
+            "type": "keyup",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16057.60000000149
+          }
+        ],
+        "disposal": {
+          "requestAt": 16252.39999999851,
+          "detachedAt": 16253.79999999702,
+          "disposedAt": 21292.60000000149
+        },
+        "heldFaultCanvas": null
+      },
+      "motion": {
+        "moving": {
+          "at": 22623.39999999851,
+          "summary": {
+            "instance": 3,
+            "frames": 2,
+            "time": 8.008100000002981,
+            "running": true,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 3,
+              "disposed": 2
+            }
+          },
+          "canvases": [
+            {
+              "id": 3,
+              "instance": 3,
+              "frames": 2,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "running",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "eventCount": 1,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "running",
+            "requestAt": 2638.6999999955297,
+            "instance": 1,
+            "canvas": 1,
+            "framesBefore": 6,
+            "timeBefore": 8.095400000000001,
+            "runningBefore": true,
+            "lossEvents": [
+              {
+                "at": 14205.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 7,
+                "canvas": 1
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 14199.79999999702,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16050.5
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 16050.79999999702
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16057.60000000149
+            }
+          ],
+          "disposal": {
+            "requestAt": 16252.39999999851,
+            "detachedAt": 16253.79999999702,
+            "disposedAt": 21292.60000000149
+          },
+          "heldFaultCanvas": null
+        },
+        "before": {
+          "at": 22860.39999999851,
+          "summary": {
+            "instance": 3,
+            "frames": 5,
+            "time": 8.058200000002978,
+            "running": false,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 3,
+              "disposed": 2
+            }
+          },
+          "canvases": [
+            {
+              "id": 3,
+              "instance": 3,
+              "frames": 5,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "paused",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                true,
+                true,
+                true
+              ]
+            }
+          ],
+          "eventCount": 1,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "running",
+            "requestAt": 2638.6999999955297,
+            "instance": 1,
+            "canvas": 1,
+            "framesBefore": 6,
+            "timeBefore": 8.095400000000001,
+            "runningBefore": true,
+            "lossEvents": [
+              {
+                "at": 14205.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 7,
+                "canvas": 1
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 14199.79999999702,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16050.5
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 16050.79999999702
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16057.60000000149
+            }
+          ],
+          "disposal": {
+            "requestAt": 16252.39999999851,
+            "detachedAt": 16253.79999999702,
+            "disposedAt": 21292.60000000149
+          },
+          "heldFaultCanvas": null
+        }
+      },
+      "loss": {
+        "first": {
+          "at": 33130.89999999851,
+          "summary": {
+            "instance": null,
+            "frames": null,
+            "time": null,
+            "running": false,
+            "disposed": true,
+            "triangles": null,
+            "lifetime": {
+              "created": 3,
+              "disposed": 3
+            }
+          },
+          "canvases": [],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "failed",
+              "motion": "paused",
+              "input": null,
+              "status": "이 환경에서는 3D 화면을 표시할 수 없어요.",
+              "disabledActions": [
+                true,
+                true,
+                true
+              ]
+            }
+          ],
+          "eventCount": 1,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "paused",
+            "requestAt": 22863.5,
+            "instance": 3,
+            "canvas": 3,
+            "framesBefore": 5,
+            "timeBefore": 8.058200000002978,
+            "runningBefore": false,
+            "lossEvents": [
+              {
+                "at": 33024.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 5,
+                "canvas": 3
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 33022.60000000149,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16050.5
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 16050.79999999702
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16057.60000000149
+            }
+          ],
+          "disposal": {
+            "requestAt": 16252.39999999851,
+            "detachedAt": 16253.79999999702,
+            "disposedAt": 21292.60000000149
+          },
+          "heldFaultCanvas": {
+            "id": 3,
+            "connected": false,
+            "frames": 5,
+            "contextLost": true
+          }
+        },
+        "second": {
+          "at": 33385.60000000149,
+          "summary": {
+            "instance": null,
+            "frames": null,
+            "time": null,
+            "running": false,
+            "disposed": true,
+            "triangles": null,
+            "lifetime": {
+              "created": 3,
+              "disposed": 3
+            }
+          },
+          "canvases": [],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "failed",
+              "motion": "paused",
+              "input": null,
+              "status": "이 환경에서는 3D 화면을 표시할 수 없어요.",
+              "disabledActions": [
+                true,
+                true,
+                true
+              ]
+            }
+          ],
+          "eventCount": 1,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "paused",
+            "requestAt": 22863.5,
+            "instance": 3,
+            "canvas": 3,
+            "framesBefore": 5,
+            "timeBefore": 8.058200000002978,
+            "runningBefore": false,
+            "lossEvents": [
+              {
+                "at": 33024.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 5,
+                "canvas": 3
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 33022.60000000149,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16050.5
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 16050.79999999702
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16057.60000000149
+            }
+          ],
+          "disposal": {
+            "requestAt": 16252.39999999851,
+            "detachedAt": 16253.79999999702,
+            "disposedAt": 21292.60000000149
+          },
+          "heldFaultCanvas": {
+            "id": 3,
+            "connected": false,
+            "frames": 5,
+            "contextLost": true
+          }
+        },
+        "elapsedMs": 10526.864077000002,
+        "oldCanvasReferenceReleasedBeforeRecovery": true
+      },
+      "recovered": {
+        "at": 34685.39999999851,
+        "summary": {
+          "instance": 4,
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "disposed": false,
+          "triangles": 2675962,
+          "lifetime": {
+            "created": 4,
+            "disposed": 3
+          }
+        },
+        "canvases": [
+          {
+            "id": 4,
+            "instance": 4,
+            "frames": 1,
+            "connected": true,
+            "backing": {
+              "width": 960,
+              "height": 700
+            }
+          }
+        ],
+        "dom": [
+          {
+            "world": "nature:winter_lodge",
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null,
+            "disabledActions": [
+              true,
+              true,
+              true
+            ]
+          }
+        ],
+        "eventCount": 1,
+        "events": [
+          {
+            "world": "nature:winter_lodge",
+            "type": "cup",
+            "intensity": 0.12
+          }
+        ],
+        "fault": {
+          "mode": "paused",
+          "requestAt": 22863.5,
+          "instance": 3,
+          "canvas": 3,
+          "framesBefore": 5,
+          "timeBefore": 8.058200000002978,
+          "runningBefore": false,
+          "lossEvents": [
+            {
+              "at": 33024.69999999553,
+              "isTrusted": true,
+              "contextLost": true,
+              "frames": 5,
+              "canvas": 3
+            }
+          ],
+          "renderer": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+          },
+          "loseContextReturnedAt": 33022.60000000149,
+          "isContextLostAfterCall": true
+        },
+        "nativeInput": [
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16050.5
+          },
+          {
+            "type": "click",
+            "key": null,
+            "isTrusted": true,
+            "at": 16050.79999999702
+          },
+          {
+            "type": "keyup",
+            "key": "Enter",
+            "isTrusted": true,
+            "at": 16057.60000000149
+          }
+        ],
+        "disposal": {
+          "requestAt": 16252.39999999851,
+          "detachedAt": 16253.79999999702,
+          "disposedAt": 21292.60000000149
+        },
+        "heldFaultCanvas": null
+      },
+      "input": {
+        "before": {
+          "at": 34882,
+          "summary": {
+            "instance": 4,
+            "frames": 1,
+            "time": 8,
+            "running": false,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 4,
+              "disposed": 3
+            }
+          },
+          "canvases": [
+            {
+              "id": 4,
+              "instance": 4,
+              "frames": 1,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "paused",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "eventCount": 1,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "paused",
+            "requestAt": 22863.5,
+            "instance": 3,
+            "canvas": 3,
+            "framesBefore": 5,
+            "timeBefore": 8.058200000002978,
+            "runningBefore": false,
+            "lossEvents": [
+              {
+                "at": 33024.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 5,
+                "canvas": 3
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 33022.60000000149,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16050.5
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 16050.79999999702
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 16057.60000000149
+            }
+          ],
+          "disposal": {
+            "requestAt": 16252.39999999851,
+            "detachedAt": 16253.79999999702,
+            "disposedAt": 21292.60000000149
+          },
+          "heldFaultCanvas": null
+        },
+        "after": {
+          "at": 35097.79999999702,
+          "summary": {
+            "instance": 4,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "disposed": false,
+            "triangles": 2675962,
+            "lifetime": {
+              "created": 4,
+              "disposed": 3
+            }
+          },
+          "canvases": [
+            {
+              "id": 4,
+              "instance": 4,
+              "frames": 2,
+              "connected": true,
+              "backing": {
+                "width": 960,
+                "height": 700
+              }
+            }
+          ],
+          "dom": [
+            {
+              "world": "nature:winter_lodge",
+              "state": "ready",
+              "motion": "paused",
+              "input": "ready",
+              "status": null,
+              "disabledActions": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "eventCount": 2,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            },
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "paused",
+            "requestAt": 22863.5,
+            "instance": 3,
+            "canvas": 3,
+            "framesBefore": 5,
+            "timeBefore": 8.058200000002978,
+            "runningBefore": false,
+            "lossEvents": [
+              {
+                "at": 33024.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 5,
+                "canvas": 3
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 33022.60000000149,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 34897.10000000149
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 34897.19999999553
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 34903.89999999851
+            }
+          ],
+          "disposal": {
+            "requestAt": 16252.39999999851,
+            "detachedAt": 16253.79999999702,
+            "disposedAt": 21292.60000000149
+          },
+          "heldFaultCanvas": null
+        },
+        "event": {
+          "world": "nature:winter_lodge",
+          "type": "cup",
+          "intensity": 0.12
+        },
+        "method": "Native browser Enter on original cup action, with trusted key/click observation"
+      },
+      "finalDisposal": {
+        "observation": {
+          "at": 40141,
+          "summary": {
+            "instance": null,
+            "frames": null,
+            "time": null,
+            "running": false,
+            "disposed": true,
+            "triangles": null,
+            "lifetime": {
+              "created": 4,
+              "disposed": 4
+            }
+          },
+          "canvases": [],
+          "dom": [],
+          "eventCount": 2,
+          "events": [
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            },
+            {
+              "world": "nature:winter_lodge",
+              "type": "cup",
+              "intensity": 0.12
+            }
+          ],
+          "fault": {
+            "mode": "paused",
+            "requestAt": 22863.5,
+            "instance": 3,
+            "canvas": 3,
+            "framesBefore": 5,
+            "timeBefore": 8.058200000002978,
+            "runningBefore": false,
+            "lossEvents": [
+              {
+                "at": 33024.69999999553,
+                "isTrusted": true,
+                "contextLost": true,
+                "frames": 5,
+                "canvas": 3
+              }
+            ],
+            "renderer": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL",
+              "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "loseContextReturnedAt": 33022.60000000149,
+            "isContextLostAfterCall": true
+          },
+          "nativeInput": [
+            {
+              "type": "keydown",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 34897.10000000149
+            },
+            {
+              "type": "click",
+              "key": null,
+              "isTrusted": true,
+              "at": 34897.19999999553
+            },
+            {
+              "type": "keyup",
+              "key": "Enter",
+              "isTrusted": true,
+              "at": 34903.89999999851
+            }
+          ],
+          "disposal": {
+            "requestAt": 35100.39999999851,
+            "detachedAt": 35101.39999999851,
+            "disposedAt": 40138.79999999702
+          },
+          "heldFaultCanvas": null
+        },
+        "elapsedMs": 5042.797213000005
+      }
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+    "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+  ],
+  "manifest": {
+    "timestamp": "2026-10-04T22:47:57.321Z",
+    "gitHead": "15e8d80eb3e6982858a8ef8fa24f40b388642cb7",
+    "source": {
+      "sha256": "588e2d1aa9721bae82c9b5de3fcc48a8d01955c47bba8f9a02398aa7be40a297",
+      "files": [
+        "CozyWorld.tsx",
+        "HearthWorld.tsx",
+        "NapTerraceWorld.tsx",
+        "SleepRoomWorld.tsx",
+        "WinterLodgeWorld.tsx",
+        "contracts.ts",
+        "cozyRooms.css",
+        "engine.ts",
+        "fireDetail.ts",
+        "hearth.ts",
+        "materials.ts",
+        "napTerrace.ts",
+        "sleepRoom.ts",
+        "winterLodge.ts"
+      ],
+      "fileSHA256": {
+        "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+        "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+        "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+        "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+        "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+        "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+        "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+        "engine.ts": "556388ddf4fe7034d05cc4d5fcfc08e39aa72207079c1c68710c6d29d574dc30",
+        "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+        "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+        "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+        "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+        "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+        "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+      }
+    },
+    "bundle": {
+      "sha256": "3a3888b3703fda1d03bf0198cbccaa022acb0d1c480da9a77a313eb91632f376",
+      "files": [
+        "assets/CozyWorld-BLNEgYfV.js",
+        "assets/CozyWorld-BLNEgYfV.js.map",
+        "assets/CozyWorld-DFmtbpTc.css",
+        "assets/HearthWorld-O_G0LPg3.js",
+        "assets/HearthWorld-O_G0LPg3.js.map",
+        "assets/NapTerraceWorld-BhX3htgo.js",
+        "assets/NapTerraceWorld-BhX3htgo.js.map",
+        "assets/SleepRoomWorld-CZeARFKk.js",
+        "assets/SleepRoomWorld-CZeARFKk.js.map",
+        "assets/WinterLodgeWorld-L4-LKUcA.js",
+        "assets/WinterLodgeWorld-L4-LKUcA.js.map",
+        "assets/fireDetail-CRcKvq-F.js",
+        "assets/fireDetail-CRcKvq-F.js.map",
+        "assets/index-DcR1gwMx.js",
+        "assets/index-DcR1gwMx.js.map",
+        "assets/materials-Cf2IMZjV.js",
+        "assets/materials-Cf2IMZjV.js.map",
+        "index.html"
+      ],
+      "fileSHA256": {
+        "assets/CozyWorld-BLNEgYfV.js": "4bde1015e3785092fc7a40b6d2b86e9e704b137b97149b4dce5e1bc61c6b8f89",
+        "assets/CozyWorld-BLNEgYfV.js.map": "5feaf77f9aed5715f647f0b37399b8eac104f5e63b33257cbc3ee3dc0d2d93d5",
+        "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+        "assets/HearthWorld-O_G0LPg3.js": "682c7741e28d3c70cda6ad2eff0a36720d848e77c195619189e3740fcc46de0d",
+        "assets/HearthWorld-O_G0LPg3.js.map": "e77bb9c1e8885dd345120801b85515fe41b793b7bdd363c3d2e57d64b1a18b28",
+        "assets/NapTerraceWorld-BhX3htgo.js": "49f4425fac65ffbdb8d9342fdb1606bc8fccb2d2bca3891b6a3bc5c52d687280",
+        "assets/NapTerraceWorld-BhX3htgo.js.map": "1ad5eefcd01f866ab13c85883b1cddaf1f132ecac47ddc4996210022a5ef1dd6",
+        "assets/SleepRoomWorld-CZeARFKk.js": "6a3e8c5fae65cf9f10ba6ea51f9f0b6114daec2dc490cf7f097ec274291d56a3",
+        "assets/SleepRoomWorld-CZeARFKk.js.map": "cc117b995fe46b2960c3c048a5e236436da546226f56c5318633569c32cf62af",
+        "assets/WinterLodgeWorld-L4-LKUcA.js": "4bb5c0243332b5176635d31d2414058b64016f08e15593936eb7ac6010d363cb",
+        "assets/WinterLodgeWorld-L4-LKUcA.js.map": "428eace821993cb34926622eef3d034a9230c586f095de476ed572f684b09804",
+        "assets/fireDetail-CRcKvq-F.js": "aa09ae04882fa0187cd134a5447a06211ebac97157e3dee293b0886670f4096d",
+        "assets/fireDetail-CRcKvq-F.js.map": "514db02ae6937304b59e03c72298317cfc13b20ed16e19500dd2f7b5416e01b8",
+        "assets/index-DcR1gwMx.js": "5dac9bff03a242bd775bb80d5be5a395e2a940b7df007b971d6a1e875cc76a3d",
+        "assets/index-DcR1gwMx.js.map": "69b4ee20eafe806fa3e1b89f8dda13265953da0fbe135590aed16acf64831816",
+        "assets/materials-Cf2IMZjV.js": "0d6da151985d00e8432294ef0cb169e065b029e0bbd5f5c8512ca51d78882f77",
+        "assets/materials-Cf2IMZjV.js.map": "d1084fae4e2b159c48ffe046267f835991151763d7a711786ec577d225c99335",
+        "index.html": "b30deed712ac6f59dcd2fc9d6b4c4572ea5d51ca78ff53a097a1f9808807e424"
+      }
+    },
+    "harness": "Unmodified original qa/index.html and qa/main.tsx; same Vite settings as verify.mjs"
+  },
+  "unchangedFiles": {
+    "components/immersiveWorlds/cozyRooms/qa/main.tsx": "993eb008caf0ccd05bfb39172274d6997e37bc990f7b177d744c66304de6ca15",
+    "components/immersiveWorlds/cozyRooms/qa/index.html": "78f9c1916bba94ce57d449a7da43ffb3f692732cffaca6a2aaa9e0fee1aca7e6",
+    "components/liveScene/liveSceneHost.ts": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+  },
+  "browser": "153.0.8010.0",
+  "launch": "Playwright launchServer/connect, unchanged shared Chromium flags",
+  "finalGitHead": "15e8d80eb3e6982858a8ef8fa24f40b388642cb7",
+  "finishedAt": "2026-10-04T22:49:38.161Z"
+}

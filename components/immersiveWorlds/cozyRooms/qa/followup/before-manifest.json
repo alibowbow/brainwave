@@ -1,0 +1,154 @@
+{
+  "originalBranch": "codex/cozy-rooms-four-worlds",
+  "originalHead": "7373c1eeb5372fa9bebf41889ff2960643f3990e",
+  "testedImplementation": "30851e8667c822bf7f400974f469dfa454524454",
+  "source": {
+    "sha256": "86c8383a3720ffa60cecbfd022d5234945af17bf88ad8edb14741202b3ee645c",
+    "files": [
+      {
+        "file": "CozyWorld.tsx",
+        "sha256": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45"
+      },
+      {
+        "file": "HearthWorld.tsx",
+        "sha256": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06"
+      },
+      {
+        "file": "NapTerraceWorld.tsx",
+        "sha256": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292"
+      },
+      {
+        "file": "SleepRoomWorld.tsx",
+        "sha256": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78"
+      },
+      {
+        "file": "WinterLodgeWorld.tsx",
+        "sha256": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248"
+      },
+      {
+        "file": "contracts.ts",
+        "sha256": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6"
+      },
+      {
+        "file": "cozyRooms.css",
+        "sha256": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c"
+      },
+      {
+        "file": "engine.ts",
+        "sha256": "60ff86a05ac3a31074cc8fea9452c91b31c3a00023a91a06d2426f765be98f7f"
+      },
+      {
+        "file": "hearth.ts",
+        "sha256": "74cc813f98e2a6d7eab51c7423bce08de48c8ef662fb9e4c3175657ca2c035f7"
+      },
+      {
+        "file": "materials.ts",
+        "sha256": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae"
+      },
+      {
+        "file": "napTerrace.ts",
+        "sha256": "fdcc27c71120a6484eb5318550aa75af56ac049ebb51f954195b993cd013e4b3"
+      },
+      {
+        "file": "sleepRoom.ts",
+        "sha256": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44"
+      },
+      {
+        "file": "winterLodge.ts",
+        "sha256": "dff99c51c9cb1564abbf8d98a23e42800acf21431496fcf3c93f9142c7e19589"
+      }
+    ]
+  },
+  "bundle": {
+    "sha256": "503b5400075a16a2562d8177e90159980553e5113b1ca47ccec7e62901d50d90",
+    "files": [
+      "assets/CozyWorld-B7EYPuDB.js",
+      "assets/CozyWorld-B7EYPuDB.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-B-9MW5o_.js",
+      "assets/HearthWorld-B-9MW5o_.js.map",
+      "assets/NapTerraceWorld-CIH7CZBt.js",
+      "assets/NapTerraceWorld-CIH7CZBt.js.map",
+      "assets/SleepRoomWorld-BjXtCI9Q.js",
+      "assets/SleepRoomWorld-BjXtCI9Q.js.map",
+      "assets/WinterLodgeWorld-BDQgEbcr.js",
+      "assets/WinterLodgeWorld-BDQgEbcr.js.map",
+      "assets/index-DNu5_49m.js",
+      "assets/index-DNu5_49m.js.map",
+      "assets/materials-CRXcM_cc.js",
+      "assets/materials-CRXcM_cc.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "images": [
+    {
+      "file": "relax-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "sha256": "1aa73b8d529c66c92a438008631354a9e9a3d9608e6d9a364af82fe8c6c8e777"
+    },
+    {
+      "file": "relax-portrait.png",
+      "width": 412,
+      "height": 915,
+      "sha256": "a0689ab928485e09759b7d32d4e253728a12bdefc46195176461378a9b017f81"
+    },
+    {
+      "file": "relax-chrome-visible.png",
+      "width": 960,
+      "height": 700,
+      "sha256": "ddce6d3ae17ef1bb56fca86d2d53ddd89f5d2129b003fe5fc87e06a32e0aed2c"
+    },
+    {
+      "file": "sleep_prep-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "sleep_prep-portrait.png",
+      "width": 412,
+      "height": 915,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "power_nap-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "sha256": "83f01c3cc5d2a1100b9f63f27620fa822382bd08ef8966dc52e25d38313cc1c5"
+    },
+    {
+      "file": "power_nap-portrait.png",
+      "width": 412,
+      "height": 915,
+      "sha256": "5567a6e97351801b39d4e994d3205d94a966fedc1d18843b6d5a39b152c97c98"
+    },
+    {
+      "file": "power_nap-fold-inner-viewport.png",
+      "width": 673,
+      "height": 841,
+      "sha256": "ce4783fee52ac691b7a76936dda3745dce9de594a206088722da9d95d10a741b"
+    },
+    {
+      "file": "nature-winter_lodge-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "sha256": "5a2debc9b5416a0f7c1ac787b55b667efba9818912f77fca962ed446882b9d32"
+    },
+    {
+      "file": "nature-winter_lodge-portrait.png",
+      "width": 412,
+      "height": 915,
+      "sha256": "2a35e282e531d17d05e019d1d0e7cabf944ac98dbefc3b4410d8e6ff3252177e"
+    },
+    {
+      "file": "nature-winter_lodge-landscape-viewport.png",
+      "width": 915,
+      "height": 412,
+      "sha256": "acd23e8726fa9ca8961ab6c92864cd80bbeed15bcdd9af0c505c8099a159d841"
+    }
+  ],
+  "imageLocation": "../evidence/",
+  "note": "Original real render PNG bytes retained in qa/evidence and SHA-256 independently verified. All 11 original images inspected before edits. No synthetic before image."
+}

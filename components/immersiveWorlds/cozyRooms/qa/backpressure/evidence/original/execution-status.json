@@ -1,0 +1,8 @@
+{
+  "exitCode": 1,
+  "startedAt": "2026-10-04T23:32:20Z",
+  "finishedAt": "2026-10-04T23:32:33.760310+00:00",
+  "originalGateMs": 120000,
+  "outerProcessBoundSeconds": 900,
+  "observer": "passive preload; unchanged suite assertions and bundle; timing overhead disclosed"
+}

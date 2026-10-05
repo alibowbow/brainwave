@@ -1,0 +1,1263 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-10-04T21:46:34.661Z",
+  "scope": "Four single instrumented diagnostic runs only. Final uninstrumented regression, visuals and repository gates are separate.",
+  "timingMethod": "Differences of same-document performance.now() phase timestamps; renderer.render entry-to-return is synchronous caller duration, not GPU completion or an internal driver/compile attribution.",
+  "runs": [
+    {
+      "name": "baseline-clean",
+      "evidence": "evidence/baseline-clean",
+      "passedReported": true,
+      "phaseAssertionsPassed": true,
+      "cleanupError": "Error: browser close: external 10000 ms deadline",
+      "errors": [],
+      "source": {
+        "sha256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+        "files": [
+          "CozyWorld.tsx",
+          "HearthWorld.tsx",
+          "NapTerraceWorld.tsx",
+          "SleepRoomWorld.tsx",
+          "WinterLodgeWorld.tsx",
+          "contracts.ts",
+          "cozyRooms.css",
+          "engine.ts",
+          "fireDetail.ts",
+          "hearth.ts",
+          "materials.ts",
+          "napTerrace.ts",
+          "sleepRoom.ts",
+          "winterLodge.ts"
+        ],
+        "fileSHA256": {
+          "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+          "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+          "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+          "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+          "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+          "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+          "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+          "engine.ts": "60ff86a05ac3a31074cc8fea9452c91b31c3a00023a91a06d2426f765be98f7f",
+          "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+          "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+          "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+          "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+          "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+          "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+        }
+      },
+      "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "bundleSHA256": "990417b07961d9a91d647dc42603a28323ba673cfbf01d92046fb817ba60961f",
+      "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "three": {
+        "version": "0.186.1",
+        "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+      },
+      "probeHashes": {
+        "entry": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac",
+        "instrumentation": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf",
+        "clean": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b",
+        "scriptsAggregate": "0fc1c3358b188be6ad0bcf87b49bb5642de51e70dd584833a9cd20b28ca18a17"
+      },
+      "provenance": null,
+      "artifactSHA256": {
+        "diagnostic.json": "a742f1d1cbe4847764877fbd4929a0238f369e23a2863d653bc11d2d4cf889ac",
+        "phases.jsonl": "916512ef50ec79d6d69d51f34bfd47af6f185fcd29755ab3aa98531a56f66142"
+      },
+      "stream": {
+        "persistedEvents": 172,
+        "numberedEvents": 166,
+        "lastSequence": 166,
+        "missingSequences": [],
+        "complete": true,
+        "deliveryCounts": {
+          "node": 6,
+          "console": 166
+        }
+      },
+      "reportedCheckCount": null,
+      "recordedErrorOrLossEvents": [],
+      "generations": [
+        {
+          "instance": 1,
+          "canvasId": 2,
+          "phaseCoverageComplete": true,
+          "missingSequences": [],
+          "constructorMs": 26.599999997764826,
+          "factoryMs": 853.2000000029802,
+          "initSynchronousReturnMs": 854,
+          "initPromiseResolvedMs": 858.1999999992549,
+          "firstRenderFrameMs": 1667.300000000745,
+          "firstRendererCallMs": 1666.8999999985099,
+          "constructorToHostReadyMs": 2600,
+          "combinedFactoryEntryToFirstRendererReturnMs": 2525.300000000745,
+          "combinedIntervalNote": "Separately observed factory and render boundaries are available.",
+          "observedCounts": {
+            "engineSetSizeCalls": 3,
+            "rendererSetPixelRatioCalls": 3,
+            "rendererSetSizeCalls": 6,
+            "canvasBackingSetterWrites": 12,
+            "sameValueBackingWrites": 10,
+            "renderFrameEntries": 2,
+            "staticRenderFrameEntries": 2
+          },
+          "countsInterpretation": "Complete sequence coverage for this generation.",
+          "lastRecordedEngine": {
+            "instance": 1,
+            "dead": true,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "hasWorld": false,
+            "sceneId": null,
+            "canvas": {
+              "id": 2,
+              "connected": false,
+              "parent": null,
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 0,
+              "cssHeight": 0,
+              "instance": "1",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 0,
+            "canvas": {
+              "id": 2,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "1",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 1,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "b74142a6-be2b-4836-9483-3e5ce1914c05",
+              "canvas": {
+                "id": 2,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "1",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 632
+          }
+        },
+        {
+          "instance": 2,
+          "canvasId": 3,
+          "phaseCoverageComplete": true,
+          "missingSequences": [],
+          "constructorMs": 17.800000000745058,
+          "factoryMs": 1026.199999999255,
+          "initSynchronousReturnMs": 1026.7999999970198,
+          "initPromiseResolvedMs": 1029.2999999970198,
+          "firstRenderFrameMs": 2054.599999997765,
+          "firstRendererCallMs": 2053.89999999851,
+          "constructorToHostReadyMs": 3111.60000000149,
+          "combinedFactoryEntryToFirstRendererReturnMs": 3083.5,
+          "combinedIntervalNote": "Separately observed factory and render boundaries are available.",
+          "observedCounts": {
+            "engineSetSizeCalls": 3,
+            "rendererSetPixelRatioCalls": 3,
+            "rendererSetSizeCalls": 6,
+            "canvasBackingSetterWrites": 12,
+            "sameValueBackingWrites": 10,
+            "renderFrameEntries": 2,
+            "staticRenderFrameEntries": 2
+          },
+          "countsInterpretation": "Complete sequence coverage for this generation.",
+          "lastRecordedEngine": {
+            "instance": 2,
+            "dead": false,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "hasWorld": true,
+            "sceneId": "e5791ad0-eef0-4c9f-8f47-c7de8f5286d4",
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 4,
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 2,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "e5791ad0-eef0-4c9f-8f47-c7de8f5286d4",
+              "canvas": {
+                "id": 3,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "2",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 632
+          }
+        }
+      ],
+      "finalDOM": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "world": "nature:winter_lodge",
+          "connected": true,
+          "width": 960,
+          "height": 700,
+          "canvasCount": 1
+        }
+      ]
+    },
+    {
+      "name": "baseline-original-sequence",
+      "evidence": "evidence/baseline-original-sequence",
+      "passedReported": true,
+      "phaseAssertionsPassed": true,
+      "cleanupError": null,
+      "errors": [],
+      "source": {
+        "sha256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+        "files": [
+          "CozyWorld.tsx",
+          "HearthWorld.tsx",
+          "NapTerraceWorld.tsx",
+          "SleepRoomWorld.tsx",
+          "WinterLodgeWorld.tsx",
+          "contracts.ts",
+          "cozyRooms.css",
+          "engine.ts",
+          "fireDetail.ts",
+          "hearth.ts",
+          "materials.ts",
+          "napTerrace.ts",
+          "sleepRoom.ts",
+          "winterLodge.ts"
+        ],
+        "fileSHA256": {
+          "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+          "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+          "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+          "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+          "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+          "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+          "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+          "engine.ts": "60ff86a05ac3a31074cc8fea9452c91b31c3a00023a91a06d2426f765be98f7f",
+          "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+          "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+          "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+          "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+          "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+          "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+        }
+      },
+      "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "bundleSHA256": "990417b07961d9a91d647dc42603a28323ba673cfbf01d92046fb817ba60961f",
+      "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "three": {
+        "version": "0.186.1",
+        "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+      },
+      "probeHashes": {
+        "entry": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac",
+        "instrumentation": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf",
+        "clean": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b",
+        "scriptsAggregate": "49066de33be6f654365d12b7c0f90a5fb79da38d5abb458713ee8ec1df91e1ec"
+      },
+      "provenance": {
+        "originalSHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+        "generatedSHA256": "c6d971e76b68a8c63491afd49640371ebcefed329b7e1283c125f93fc8f86e77",
+        "unchangedSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+        "unchangedSequenceBytes": 7964,
+        "cleanReport": "/workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/recreation/evidence/baseline-clean/diagnostic.json",
+        "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+        "adaptations": [
+          {
+            "label": "QA-only imports",
+            "needle": "import {verifyChrome} from './chrome-checks.mjs';",
+            "replacement": "import {verifyChrome} from '../chrome-checks.mjs';\nimport {diagnosticPlugin,attachStream,manifest} from './instrumentation.mjs';\nconst diagnosticTransforms=[];"
+          },
+          {
+            "label": "original QA root from generated runner",
+            "needle": "const qa=path.dirname(fileURLToPath(import.meta.url)),root=",
+            "replacement": "const qa=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),root="
+          },
+          {
+            "label": "observation-only build plugin",
+            "needle": "plugins:[react()]",
+            "replacement": "plugins:[react(),diagnosticPlugin(diagnosticTransforms)]"
+          },
+          {
+            "label": "incremental stream and clean identity guard before navigation",
+            "needle": "const worlds=(process.env.COZY_WORLDS",
+            "replacement": "const diagnosticStream=await attachStream(page,output);\nconst diagnosticManifest=await manifest(bundle,diagnosticTransforms);\nawait writeFile(path.join(output,'instrumentation-manifest.json'),JSON.stringify(diagnosticManifest,null,2));\nassert.equal(diagnosticManifest.bundle.sha256,process.env.COZY_EXPECTED_BUNDLE,'same instrumented bundle as clean probe');\nassert.equal(diagnosticManifest.source.sha256,process.env.COZY_EXPECTED_SOURCE,'same production source as clean probe');\nconst worlds=(process.env.COZY_WORLDS"
+          },
+          {
+            "label": "preserve thrown failure outside original sequence",
+            "needle": "\n} finally {",
+            "replacement": "\n} catch (error) {\nawait writeFile(path.join(output,'failure.json'),JSON.stringify({passed:false,error:error.stack||String(error),lastEvent:diagnosticStream.events.at(-1)},null,2));\ndiagnosticStream.mark('node-original-sequence-failed',{error:error.stack||String(error)});await diagnosticStream.flush();throw error;\n} finally {"
+          },
+          {
+            "label": "flush scalar event stream before original cleanup",
+            "needle": "await writeFile(path.join(output,'verification.json'),JSON.stringify(report,null,2));await browser.close();",
+            "replacement": "await writeFile(path.join(output,'verification.json'),JSON.stringify(report,null,2));await diagnosticStream.flush();await browser.close();"
+          }
+        ],
+        "statement": "Exact original try/for assertion and screenshot sequence preserved; same original chrome-checks import. Only setup and external failure persistence adapted. One winter invocation, no retries and no timeout changes."
+      },
+      "artifactSHA256": {
+        "instrumentation-manifest.json": "9af67bf0a522f9fa01ac21fa0cacf4f6725cbe8a82a99e8e0678c957f477a547",
+        "phases.jsonl": "43c652dc57efbb027105868777fb0204564975055869466777095bcc3158b8cf",
+        "verification.json": "40388bed07a3f8d9f83dd71473fd87fb4652273febdc126d4aa2e2f0f831c230",
+        "runner-source.mjs": "c6d971e76b68a8c63491afd49640371ebcefed329b7e1283c125f93fc8f86e77",
+        "runner-provenance.json": "f82a014c200c7b2b7987a008b3ccb76dbb64f22c75e1ce14228adebbcaf2a73d"
+      },
+      "stream": {
+        "persistedEvents": 721,
+        "numberedEvents": 721,
+        "lastSequence": 721,
+        "missingSequences": [],
+        "complete": true,
+        "deliveryCounts": {
+          "console": 721
+        }
+      },
+      "reportedCheckCount": 26,
+      "recordedErrorOrLossEvents": [],
+      "generations": [
+        {
+          "instance": 1,
+          "canvasId": 2,
+          "phaseCoverageComplete": true,
+          "missingSequences": [],
+          "constructorMs": 15.199999999254942,
+          "factoryMs": 703.3000000007451,
+          "initSynchronousReturnMs": 704,
+          "initPromiseResolvedMs": 711.8000000007451,
+          "firstRenderFrameMs": 952.4000000022352,
+          "firstRendererCallMs": 951.9000000022352,
+          "constructorToHostReadyMs": 1695,
+          "combinedFactoryEntryToFirstRendererReturnMs": 1664.1000000014901,
+          "combinedIntervalNote": "Separately observed factory and render boundaries are available.",
+          "observedCounts": {
+            "engineSetSizeCalls": 19,
+            "rendererSetPixelRatioCalls": 19,
+            "rendererSetSizeCalls": 38,
+            "canvasBackingSetterWrites": 76,
+            "sameValueBackingWrites": 68,
+            "renderFrameEntries": 52,
+            "staticRenderFrameEntries": 28
+          },
+          "countsInterpretation": "Complete sequence coverage for this generation.",
+          "lastRecordedEngine": {
+            "instance": 1,
+            "dead": true,
+            "frames": 52,
+            "time": 8.401799999999252,
+            "running": false,
+            "hasWorld": false,
+            "sceneId": null,
+            "canvas": {
+              "id": 2,
+              "connected": false,
+              "parent": null,
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 0,
+              "cssHeight": 0,
+              "instance": "1",
+              "frames": "52",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 0,
+            "canvas": {
+              "id": 2,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 1280,
+              "backingHeight": 850,
+              "cssWidth": 1280,
+              "cssHeight": 850,
+              "instance": "1",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 1,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "fd08d4a0-6cbc-4f94-88d6-4274cae27c9a",
+              "canvas": {
+                "id": 2,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 1280,
+                "backingHeight": 850,
+                "cssWidth": 1280,
+                "cssHeight": 850,
+                "instance": "1",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 676
+          }
+        },
+        {
+          "instance": 2,
+          "canvasId": 3,
+          "phaseCoverageComplete": true,
+          "missingSequences": [],
+          "constructorMs": 2300.10000000149,
+          "factoryMs": 836.2000000029802,
+          "initSynchronousReturnMs": 836.8000000007451,
+          "initPromiseResolvedMs": 845.6999999992549,
+          "firstRenderFrameMs": 100196.29999999702,
+          "firstRendererCallMs": 100195.90000000224,
+          "constructorToHostReadyMs": 106051,
+          "combinedFactoryEntryToFirstRendererReturnMs": 101041.70000000298,
+          "combinedIntervalNote": "Separately observed factory and render boundaries are available.",
+          "observedCounts": {
+            "engineSetSizeCalls": 3,
+            "rendererSetPixelRatioCalls": 3,
+            "rendererSetSizeCalls": 6,
+            "canvasBackingSetterWrites": 12,
+            "sameValueBackingWrites": 10,
+            "renderFrameEntries": 2,
+            "staticRenderFrameEntries": 2
+          },
+          "countsInterpretation": "Complete sequence coverage for this generation.",
+          "lastRecordedEngine": {
+            "instance": 2,
+            "dead": false,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "hasWorld": true,
+            "sceneId": "ee980bfc-b044-41b8-8a4b-36d4d8c12bfb",
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 8,
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 2,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "ee980bfc-b044-41b8-8a4b-36d4d8c12bfb",
+              "canvas": {
+                "id": 3,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "2",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 632
+          }
+        }
+      ],
+      "finalDOM": {
+        "readySelectorPassed": true,
+        "source": "Unchanged original final waitForSelector and fresh instance assertion; no separate successful final DOM snapshot retained."
+      }
+    },
+    {
+      "name": "size-guard-clean",
+      "evidence": "evidence/size-guard-clean",
+      "passedReported": true,
+      "phaseAssertionsPassed": true,
+      "cleanupError": null,
+      "errors": [],
+      "source": {
+        "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+        "files": [
+          "CozyWorld.tsx",
+          "HearthWorld.tsx",
+          "NapTerraceWorld.tsx",
+          "SleepRoomWorld.tsx",
+          "WinterLodgeWorld.tsx",
+          "contracts.ts",
+          "cozyRooms.css",
+          "engine.ts",
+          "fireDetail.ts",
+          "hearth.ts",
+          "materials.ts",
+          "napTerrace.ts",
+          "sleepRoom.ts",
+          "winterLodge.ts"
+        ],
+        "fileSHA256": {
+          "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+          "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+          "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+          "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+          "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+          "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+          "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+          "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+          "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+          "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+          "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+          "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+          "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+          "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+        }
+      },
+      "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "bundleSHA256": "83a3d64864bf9edd9c610711999d27074eb600563467030f952711a8f4e5167e",
+      "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "three": {
+        "version": "0.186.1",
+        "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+      },
+      "probeHashes": {
+        "entry": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac",
+        "instrumentation": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf",
+        "clean": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b",
+        "scriptsAggregate": "12a0fbbafdd6d237e46d5d196a5f1a524ed22606bf1ae108323320f8900b0983"
+      },
+      "provenance": null,
+      "artifactSHA256": {
+        "diagnostic.json": "e5c800bd39fa2bf2af76664d812a1b1882df1b9654b655c1c594e3c8de882781",
+        "phases.jsonl": "8a8c614604d43a51bcc02952ce467c0f58b5220eb2dce4e06c5b758a1393a39a"
+      },
+      "stream": {
+        "persistedEvents": 101,
+        "numberedEvents": 95,
+        "lastSequence": 95,
+        "missingSequences": [],
+        "complete": true,
+        "deliveryCounts": {
+          "node": 6,
+          "console": 95
+        }
+      },
+      "reportedCheckCount": null,
+      "recordedErrorOrLossEvents": [],
+      "generations": [
+        {
+          "instance": 1,
+          "canvasId": 2,
+          "phaseCoverageComplete": true,
+          "missingSequences": [],
+          "constructorMs": 12.099999997764826,
+          "factoryMs": 621.8000000007451,
+          "initSynchronousReturnMs": 622.6000000014901,
+          "initPromiseResolvedMs": 624.1999999992549,
+          "firstRenderFrameMs": 879.1999999992549,
+          "firstRendererCallMs": 878.8000000007451,
+          "constructorToHostReadyMs": 1527.3999999985099,
+          "combinedFactoryEntryToFirstRendererReturnMs": 1503.2000000029802,
+          "combinedIntervalNote": "Separately observed factory and render boundaries are available.",
+          "observedCounts": {
+            "engineSetSizeCalls": 3,
+            "rendererSetPixelRatioCalls": 0,
+            "rendererSetSizeCalls": 1,
+            "canvasBackingSetterWrites": 2,
+            "sameValueBackingWrites": 0,
+            "renderFrameEntries": 2,
+            "staticRenderFrameEntries": 2
+          },
+          "countsInterpretation": "Complete sequence coverage for this generation.",
+          "lastRecordedEngine": {
+            "instance": 1,
+            "dead": true,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "hasWorld": false,
+            "sceneId": null,
+            "canvas": {
+              "id": 2,
+              "connected": false,
+              "parent": null,
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 0,
+              "cssHeight": 0,
+              "instance": "1",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 0,
+            "canvas": {
+              "id": 2,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "1",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 1,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "5582094e-215d-4867-85d5-843e59d84548",
+              "canvas": {
+                "id": 2,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "1",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 632
+          }
+        },
+        {
+          "instance": 2,
+          "canvasId": 3,
+          "phaseCoverageComplete": true,
+          "missingSequences": [],
+          "constructorMs": 11.599999997764826,
+          "factoryMs": 584.3999999985099,
+          "initSynchronousReturnMs": 585.1000000014901,
+          "initPromiseResolvedMs": 586.9000000022352,
+          "firstRenderFrameMs": 700,
+          "firstRendererCallMs": 699.5,
+          "constructorToHostReadyMs": 1305,
+          "combinedFactoryEntryToFirstRendererReturnMs": 1286.699999999255,
+          "combinedIntervalNote": "Separately observed factory and render boundaries are available.",
+          "observedCounts": {
+            "engineSetSizeCalls": 3,
+            "rendererSetPixelRatioCalls": 0,
+            "rendererSetSizeCalls": 1,
+            "canvasBackingSetterWrites": 2,
+            "sameValueBackingWrites": 0,
+            "renderFrameEntries": 2,
+            "staticRenderFrameEntries": 2
+          },
+          "countsInterpretation": "Complete sequence coverage for this generation.",
+          "lastRecordedEngine": {
+            "instance": 2,
+            "dead": false,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "hasWorld": true,
+            "sceneId": "bfac31d9-3f15-4721-ad9a-c1e7d6d3b626",
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 4,
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 2,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "bfac31d9-3f15-4721-ad9a-c1e7d6d3b626",
+              "canvas": {
+                "id": 3,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "2",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 632
+          }
+        }
+      ],
+      "finalDOM": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "world": "nature:winter_lodge",
+          "connected": true,
+          "width": 960,
+          "height": 700,
+          "canvasCount": 1
+        }
+      ]
+    },
+    {
+      "name": "size-guard-original-sequence",
+      "evidence": "evidence/size-guard-original-sequence",
+      "passedReported": true,
+      "phaseAssertionsPassed": true,
+      "cleanupError": null,
+      "errors": [],
+      "source": {
+        "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+        "files": [
+          "CozyWorld.tsx",
+          "HearthWorld.tsx",
+          "NapTerraceWorld.tsx",
+          "SleepRoomWorld.tsx",
+          "WinterLodgeWorld.tsx",
+          "contracts.ts",
+          "cozyRooms.css",
+          "engine.ts",
+          "fireDetail.ts",
+          "hearth.ts",
+          "materials.ts",
+          "napTerrace.ts",
+          "sleepRoom.ts",
+          "winterLodge.ts"
+        ],
+        "fileSHA256": {
+          "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+          "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+          "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+          "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+          "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+          "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+          "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+          "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+          "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+          "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+          "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+          "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+          "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+          "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+        }
+      },
+      "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "bundleSHA256": "83a3d64864bf9edd9c610711999d27074eb600563467030f952711a8f4e5167e",
+      "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "three": {
+        "version": "0.186.1",
+        "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+      },
+      "probeHashes": {
+        "entry": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac",
+        "instrumentation": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf",
+        "clean": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b",
+        "scriptsAggregate": "d0e6dcc8905c054087ec4f7aec9e614e9543ff178103aaa5193be15dcea0fed4"
+      },
+      "provenance": {
+        "originalSHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+        "generatedSHA256": "992a87809376d87b90b9983d06cab2dbe0327be004517056b0f653ebf3a4f89b",
+        "unchangedSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+        "unchangedSequenceBytes": 7964,
+        "cleanReport": "/workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/recreation/evidence/size-guard-clean/diagnostic.json",
+        "sourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+        "adaptations": [
+          {
+            "label": "QA-only imports",
+            "needle": "import {verifyChrome} from './chrome-checks.mjs';",
+            "replacement": "import {verifyChrome} from '../chrome-checks.mjs';\nimport {diagnosticPlugin,attachStream,manifest} from './instrumentation.mjs';\nconst diagnosticTransforms=[];"
+          },
+          {
+            "label": "original QA root from generated runner",
+            "needle": "const qa=path.dirname(fileURLToPath(import.meta.url)),root=",
+            "replacement": "const qa=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),root="
+          },
+          {
+            "label": "observation-only build plugin",
+            "needle": "plugins:[react()]",
+            "replacement": "plugins:[react(),diagnosticPlugin(diagnosticTransforms)]"
+          },
+          {
+            "label": "incremental stream and clean identity guard before navigation",
+            "needle": "const worlds=(process.env.COZY_WORLDS",
+            "replacement": "const diagnosticStream=await attachStream(page,output);\nconst diagnosticManifest=await manifest(bundle,diagnosticTransforms);\nawait writeFile(path.join(output,'instrumentation-manifest.json'),JSON.stringify(diagnosticManifest,null,2));\nassert.equal(diagnosticManifest.bundle.sha256,process.env.COZY_EXPECTED_BUNDLE,'same instrumented bundle as clean probe');\nassert.equal(diagnosticManifest.source.sha256,process.env.COZY_EXPECTED_SOURCE,'same production source as clean probe');\nconst worlds=(process.env.COZY_WORLDS"
+          },
+          {
+            "label": "preserve thrown failure and bounded DOM observation outside original sequence",
+            "needle": "\n} finally {",
+            "replacement": "\n} catch (error) {\nconst failure={passed:false,error:error.stack||String(error),lastEvent:diagnosticStream.events.at(-1)};\ndiagnosticStream.mark('node-original-sequence-failed',{error:failure.error});await diagnosticStream.flush();\nawait writeFile(path.join(output,'failure.json'),JSON.stringify(failure,null,2));\nlet observationDeadline;\ntry {failure.snapshot=await Promise.race([page.evaluate(()=>({snapshot:window.__cozyRecreation?.snapshot?.()??null,inspect:window.__cozyQA?.inspect?.()??null})),new Promise((_,reject)=>{observationDeadline=setTimeout(()=>reject(new Error('Failure DOM/state observation exceeded 1000 ms')),1000);})]);}\ncatch (observationError) {failure.observationError=String(observationError);}\nfinally {clearTimeout(observationDeadline);}\nawait writeFile(path.join(output,'failure.json'),JSON.stringify(failure,null,2));\nawait diagnosticStream.flush();throw error;\n} finally {"
+          },
+          {
+            "label": "flush scalar event stream before original cleanup",
+            "needle": "await writeFile(path.join(output,'verification.json'),JSON.stringify(report,null,2));await browser.close();",
+            "replacement": "await writeFile(path.join(output,'verification.json'),JSON.stringify(report,null,2));await diagnosticStream.flush();await browser.close();"
+          }
+        ],
+        "statement": "Exact original try/for assertion and screenshot sequence preserved; same original chrome-checks import. Only setup and external failure persistence adapted. One winter invocation, no retries and no timeout changes."
+      },
+      "artifactSHA256": {
+        "instrumentation-manifest.json": "ea7dbfc6944beda727e928b193447f2633cfd9f00d65a99c738760321940f6b1",
+        "phases.jsonl": "63c3c710c26d296e1a9ca9aaa47172950af856887e82cb3b9fc806f602c48b48",
+        "verification.json": "a8d8357f184993fe6c1e28ad1ea2fe3a04264b3c7aa8f36155ddc104b5144171",
+        "runner-source.mjs": "992a87809376d87b90b9983d06cab2dbe0327be004517056b0f653ebf3a4f89b",
+        "runner-provenance.json": "a3b4247136af2b7ff646c1d5a44d12140d12b25cb6100cd522fff2b1858f8372"
+      },
+      "stream": {
+        "persistedEvents": 396,
+        "numberedEvents": 396,
+        "lastSequence": 407,
+        "missingSequences": [
+          386,
+          387,
+          388,
+          389,
+          390,
+          391,
+          392,
+          393,
+          394,
+          395,
+          396
+        ],
+        "complete": false,
+        "deliveryCounts": {
+          "console": 396
+        }
+      },
+      "reportedCheckCount": 26,
+      "recordedErrorOrLossEvents": [],
+      "generations": [
+        {
+          "instance": 1,
+          "canvasId": 2,
+          "phaseCoverageComplete": true,
+          "missingSequences": [],
+          "constructorMs": 12.600000001490116,
+          "factoryMs": 654.9000000022352,
+          "initSynchronousReturnMs": 655.8000000007451,
+          "initPromiseResolvedMs": 657.8999999985099,
+          "firstRenderFrameMs": 1302.8999999985099,
+          "firstRendererCallMs": 1301.9000000022352,
+          "constructorToHostReadyMs": 1986.5,
+          "combinedFactoryEntryToFirstRendererReturnMs": 1960.1000000014901,
+          "combinedIntervalNote": "Separately observed factory and render boundaries are available.",
+          "observedCounts": {
+            "engineSetSizeCalls": 19,
+            "rendererSetPixelRatioCalls": 0,
+            "rendererSetSizeCalls": 4,
+            "canvasBackingSetterWrites": 8,
+            "sameValueBackingWrites": 0,
+            "renderFrameEntries": 47,
+            "staticRenderFrameEntries": 28
+          },
+          "countsInterpretation": "Complete sequence coverage for this generation.",
+          "lastRecordedEngine": {
+            "instance": 1,
+            "dead": true,
+            "frames": 47,
+            "time": 8.24210000000372,
+            "running": false,
+            "hasWorld": false,
+            "sceneId": null,
+            "canvas": {
+              "id": 2,
+              "connected": false,
+              "parent": null,
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 0,
+              "cssHeight": 0,
+              "instance": "1",
+              "frames": "47",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 0,
+            "canvas": {
+              "id": 2,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 1280,
+              "backingHeight": 850,
+              "cssWidth": 1280,
+              "cssHeight": 850,
+              "instance": "1",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 1,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "fd2a7f63-2569-4634-81c0-6448436e6be0",
+              "canvas": {
+                "id": 2,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 1280,
+                "backingHeight": 850,
+                "cssWidth": 1280,
+                "cssHeight": 850,
+                "instance": "1",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 676
+          }
+        },
+        {
+          "instance": 2,
+          "canvasId": 3,
+          "phaseCoverageComplete": false,
+          "missingSequences": [
+            386,
+            387,
+            388,
+            389,
+            390,
+            391,
+            392,
+            393,
+            394,
+            395,
+            396
+          ],
+          "constructorMs": 2632.5,
+          "factoryMs": null,
+          "initSynchronousReturnMs": null,
+          "initPromiseResolvedMs": null,
+          "firstRenderFrameMs": null,
+          "firstRendererCallMs": null,
+          "constructorToHostReadyMs": 54250.89999999851,
+          "combinedFactoryEntryToFirstRendererReturnMs": 49762.199999999255,
+          "combinedIntervalNote": "Missing boundaries prevent attributing this combined interval to factory versus first render.",
+          "observedCounts": {
+            "engineSetSizeCalls": 2,
+            "rendererSetPixelRatioCalls": 0,
+            "rendererSetSizeCalls": 1,
+            "canvasBackingSetterWrites": 2,
+            "sameValueBackingWrites": 0,
+            "renderFrameEntries": 1,
+            "staticRenderFrameEntries": 1
+          },
+          "countsInterpretation": "Observed lower bounds only; do not infer absent calls from the event gap.",
+          "lastRecordedEngine": {
+            "instance": 2,
+            "dead": false,
+            "frames": 2,
+            "time": 8,
+            "running": false,
+            "hasWorld": true,
+            "sceneId": "dec37de0-cb42-4e65-9a49-1156022f4756",
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "2",
+              "contextPresent": true,
+              "contextLost": false
+            }
+          },
+          "hostReady": {
+            "id": 1,
+            "status": "ready",
+            "unsupported": false,
+            "holders": 1,
+            "timer": 8,
+            "canvas": {
+              "id": 3,
+              "connected": true,
+              "parent": "cozy-world-mount",
+              "backingWidth": 960,
+              "backingHeight": 700,
+              "cssWidth": 960,
+              "cssHeight": 700,
+              "instance": "2",
+              "frames": "1",
+              "contextPresent": true,
+              "contextLost": false
+            },
+            "engine": {
+              "instance": 2,
+              "dead": false,
+              "frames": 1,
+              "time": 8,
+              "running": false,
+              "hasWorld": true,
+              "sceneId": "dec37de0-cb42-4e65-9a49-1156022f4756",
+              "canvas": {
+                "id": 3,
+                "connected": true,
+                "parent": "cozy-world-mount",
+                "backingWidth": 960,
+                "backingHeight": 700,
+                "cssWidth": 960,
+                "cssHeight": 700,
+                "instance": "2",
+                "frames": "1",
+                "contextPresent": true,
+                "contextLost": false
+              }
+            }
+          },
+          "firstRendererReturn": {
+            "programs": 19,
+            "drawCalls": 632
+          }
+        }
+      ],
+      "finalDOM": {
+        "readySelectorPassed": true,
+        "source": "Unchanged original final waitForSelector and fresh instance assertion; no separate successful final DOM snapshot retained."
+      }
+    }
+  ],
+  "bindings": {
+    "withinVersionSourceAndBundleEqual": true,
+    "browserProbeEntryAndPluginEqualAcrossAllFour": true,
+    "sharedHostEqualAcrossAllFour": true,
+    "originalTryForBodyEqualAcrossFullSequenceRuns": true,
+    "originalTryForSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+    "originalTryForBytes": 7964,
+    "productionFilesChangedBetweenVersions": [
+      "engine.ts"
+    ],
+    "note": "Aggregate QA-script digests differ because generated runner artifacts and wrapper failure reporting evolved; browser entry and transform plugin bytes are identical. The baseline wrapper lacks the later bounded failure-DOM snapshot. Both full-sequence attempts passed."
+  },
+  "historicalFailures": [
+    {
+      "path": "../followup/evidence/final-original/failure.json",
+      "sha256": "4c52b04974c4d2e4a79951c3a4e78748aaaf0601fd05a6a530b51cc6a5dca8ba",
+      "record": {
+        "passed": false,
+        "attempt": "First unchanged final-source verify-group.mjs run",
+        "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+        "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0",
+        "completedWorlds": [
+          "relax",
+          "sleep_prep",
+          "power_nap"
+        ],
+        "completedReportedChecks": 78,
+        "failedWorld": "nature:winter_lodge",
+        "failure": "page.waitForSelector: Timeout 120000ms exceeded waiting for .cozy-world[data-state=ready] canvas to be visible, at unchanged qa/verify.mjs line 75, after final disposal and on recreation",
+        "previousAssertions": "The immediately preceding disposed=true wait within 30000ms and lifetime.disposed===lifetime.created assertion completed before execution reached the failing recreation wait.",
+        "rawReport": "nature-winter_lodge/verification.json",
+        "log": "execution.log",
+        "reportingCaveat": "The unchanged runner's errors array only captures page and console errors. Its empty errors array does not negate the thrown test exception. Results append only after a whole world passes; no unsupported count is assigned to winter's partial assertions.",
+        "cause": "Undetermined: no post-timeout DOM/state snapshot was retained by the original runner. The original qa/VALIDATION.md also recorded a winter recreation timeout. This recurrence is neither proof of a new production regression nor proof of a driver-only cause.",
+        "retryPolicy": "A separate isolated winter run keeps the original assertions and timeouts and retains this failed attempt. A passing retry does not erase the failure."
+      }
+    },
+    {
+      "path": "../followup/evidence/final-winter-retry/failure.json",
+      "sha256": "8fbcdf6ae401aee5bd03f194530c1322d3ee6fd032ab203ca129fbdfe093642a",
+      "record": {
+        "passed": false,
+        "attempt": "Second unchanged isolated winter verification run",
+        "sourceSHA256": "673d3f3dcf1e8659a6d2784435aac6e6601a6da592cb74ca4a3a38b217954bf9",
+        "bundleSHA256": "293e1467d2c6c919f61a3afb8db8e5a64bbd5b710263973953afc7ef28238bd0",
+        "completedWorlds": [],
+        "completedReportedChecks": 0,
+        "failedWorld": "nature:winter_lodge",
+        "failure": "page.waitForSelector: Timeout 120000ms exceeded waiting for .cozy-world[data-state=ready] canvas to be visible, at unchanged qa/verify.mjs line 75, after final disposal and on recreation",
+        "previousAssertions": "The immediately preceding disposed=true wait within 30000ms and lifetime.disposed===lifetime.created assertion completed before execution reached the failing recreation wait.",
+        "rawReport": "verification.json",
+        "log": "execution.log",
+        "reportingCaveat": "The unchanged runner's errors array only captures page and console errors. Its empty errors array does not negate the thrown test exception. Results append only after a whole world passes; no unsupported count is assigned to winter's partial assertions.",
+        "cause": "Undetermined: no post-timeout DOM/state snapshot was retained by the original runner. The original qa/VALIDATION.md also recorded a winter recreation timeout. This recurrence is neither proof of a new production regression nor proof of a driver-only cause.",
+        "retryPolicy": "No further retry. Both failed attempts are retained and fresh-engine recreation remains an unresolved integration check."
+      }
+    }
+  ],
+  "limitations": [
+    "The two historical uninstrumented 120 s winter recreation failures remain immutable and unexplained at an internal browser/GPU level; both later instrumented full-sequence runs passed.",
+    "Baseline clean phase assertions passed, but browser.close exceeded its separate 10000 ms cleanup deadline; do not describe its entire execution as an unqualified success.",
+    "Candidate full-sequence phases 386-396 are missing. Candidate second-generation factory and first-render durations are unavailable; only the observed combined interval is reported.",
+    "No successful end-of-run reconciliation of the in-page event list with JSONL was implemented. Binding rejection is ignored and all persisted numbered events arrived through console. No exact emission/transport/persistence loss cause is established.",
+    "Logging, delegated getters/setters and prototype wrappers alter timing. Four serial software-rendered observations do not establish a performance distribution, hardware FPS, or causal fix of the historical failures.",
+    "Baseline second-generation synchronous renderer.render was slow; this boundary cannot separate JS preparation, shader work, command submission, driver waits, previous work or readback-related effects. No GPU completion fence was inserted in these phase probes.",
+    "The correction eliminates demonstrated redundant backing setter writes. It preserves actual size/DPR updates and host static redraw behavior; it is not a renderer submission bound or scheduler correction.",
+    "No context-loss/error event was recorded in these streams; the candidate missing interval prevents a blanket complete-event claim. Later recorded context states are not lost and both full-sequence ready waits passed.",
+    "Final uninstrumented original suite, native input/visual evidence, two-cycle recreation regression and repository gates must be assessed separately."
+  ]
+}

@@ -1,0 +1,51 @@
+[
+  {
+    "instance": 1,
+    "taps": 8,
+    "lastHit": "log",
+    "frames": 8,
+    "time": 8.150000000000002,
+    "running": false,
+    "gpu": {
+      "submitted": 8,
+      "returned": 8,
+      "completed": 7,
+      "polls": 240,
+      "timeouts": 233,
+      "maxInFlight": 1,
+      "lastSubmit": 9480.29999999702,
+      "lastComplete": 9475.59999999404,
+      "lastWait": "CONDITION_SATISFIED",
+      "phase": "submitted",
+      "inFlight": 1,
+      "unconfirmed": 1,
+      "pending": null,
+      "pollScheduled": false,
+      "failure": null,
+      "cleanupErrors": []
+    },
+    "phases": {
+      "constructorStart": 363.59999999403954,
+      "constructorEnd": 374.59999999403954,
+      "factoryStart": 382.5,
+      "factoryEnd": 1214.6999999955297,
+      "initEnd": 1215.2999999970198,
+      "firstRenderStart": 1226.2999999970198,
+      "firstRenderEnd": 1810,
+      "disposeStart": 0,
+      "disposeEnd": 0
+    },
+    "drawCalls": 222,
+    "triangles": 298348,
+    "memory": {
+      "geometries": 95,
+      "textures": 32
+    },
+    "lifetime": {
+      "created": 1,
+      "disposed": 0
+    },
+    "status": "ready",
+    "retired": []
+  }
+]

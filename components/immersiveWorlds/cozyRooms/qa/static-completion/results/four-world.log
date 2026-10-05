@@ -1,0 +1,37 @@
+START relax
+Motion verified relax
+Touch verified relax log
+Chrome overlay verified relax
+Inputs/pause verified relax
+Second holder verified relax
+Motion policies verified relax
+Final holder detached relax 0
+PASS relax
+START sleep_prep
+Motion verified sleep_prep
+Touch verified sleep_prep curtain
+Chrome overlay verified sleep_prep
+Inputs/pause verified sleep_prep
+Second holder verified sleep_prep
+Motion policies verified sleep_prep
+Final holder detached sleep_prep 0
+PASS sleep_prep
+START power_nap
+Motion verified power_nap
+Touch verified power_nap canopy
+Chrome overlay verified power_nap
+Inputs/pause verified power_nap
+Second holder verified power_nap
+Motion policies verified power_nap
+Final holder detached power_nap 0
+PASS power_nap
+START nature:winter_lodge
+Motion verified nature:winter_lodge
+Touch verified nature:winter_lodge cup
+Chrome overlay verified nature:winter_lodge
+Inputs/pause verified nature:winter_lodge
+Second holder verified nature:winter_lodge
+Motion policies verified nature:winter_lodge
+Final holder detached nature:winter_lodge 0
+PASS nature:winter_lodge
+PASS: revised completion contract in all four isolated browsers

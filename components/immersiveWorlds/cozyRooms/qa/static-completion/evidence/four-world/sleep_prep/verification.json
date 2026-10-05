@@ -1,0 +1,3081 @@
+{
+  "passed": true,
+  "revisedContract": true,
+  "originalGateClaim": false,
+  "contract": "bounded required-image revision/submission/GPU acknowledgement, then 180 ms exact frame/time/revision stability",
+  "provenance": {
+    "upstreamPath": "qa/verify.mjs",
+    "upstreamSHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+    "runnerSHA256": "cbc7bb5414188fbb76add3257cafe77f676b668ebedb0dccf1a741951a9ee7c1",
+    "completionSHA256": "12c303e837b4b010250db8490e32f677d480beedd3c46546329f5d9cfc3b69f2",
+    "chromeSHA256": "b1174b5cf89bb57f909377095c12ac57ebd77c134a2fa053b9cfa2ec5c41f864"
+  },
+  "binding": {
+    "sourceSHA256": "e3e7a278bad36a8d12f80403b03972728c11fa07436335346ff796d8f664edfa",
+    "bundleSHA256": "0b0c53ed7a574d44f301bbd6ccaf4f72b9410616eaebd46a299551b927e5e516",
+    "hashes": {
+      "components/immersiveWorlds/cozyRooms/qa/main.tsx": "993eb008caf0ccd05bfb39172274d6997e37bc990f7b177d744c66304de6ca15",
+      "components/immersiveWorlds/cozyRooms/qa/index.html": "78f9c1916bba94ce57d449a7da43ffb3f692732cffaca6a2aaa9e0fee1aca7e6",
+      "components/liveScene/liveSceneHost.ts": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+      "components/immersiveWorlds/cozyRooms/qa/static-completion/verify.mjs": "cbc7bb5414188fbb76add3257cafe77f676b668ebedb0dccf1a741951a9ee7c1",
+      "components/immersiveWorlds/cozyRooms/qa/static-completion/completion.mjs": "12c303e837b4b010250db8490e32f677d480beedd3c46546329f5d9cfc3b69f2",
+      "components/immersiveWorlds/cozyRooms/qa/static-completion/provenance.mjs": "d0e465095ce2e73ead909b85b0400ead6a29711f1a1a4c36bc5eebb534aafcb1",
+      "components/immersiveWorlds/cozyRooms/qa/verify.mjs": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+      "components/immersiveWorlds/cozyRooms/qa/chrome-checks.mjs": "b1174b5cf89bb57f909377095c12ac57ebd77c134a2fa053b9cfa2ec5c41f864",
+      "components/immersiveWorlds/cozyRooms/qa/followup/common.mjs": "f0a969485d7b5785ca3e39651f3c55a981452e4348367f7db1881e55ef5cea4a"
+    }
+  },
+  "completions": [
+    {
+      "at": 2407.89999999851,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 1,
+        "time": 8,
+        "running": false,
+        "image": {
+          "requestedRevision": 3,
+          "submittedRevision": 3,
+          "completedRevision": 3,
+          "requestedAt": 582.5999999940395,
+          "submittedAt": 1128,
+          "completedAt": 2195,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 1,
+          "returned": 1,
+          "completed": 1,
+          "polls": 65,
+          "timeouts": 64,
+          "maxInFlight": 1,
+          "lastSubmit": 1127.0999999940395,
+          "lastComplete": 2195,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 1280,
+          "height": 850,
+          "cssWidth": 1280,
+          "cssHeight": 850
+        }
+      ],
+      "requestRevision": 3,
+      "submittedRevision": 3,
+      "completedRevision": 3,
+      "eventCount": 0,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 2598.7999999970198,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 1,
+        "time": 8,
+        "running": false,
+        "image": {
+          "requestedRevision": 3,
+          "submittedRevision": 3,
+          "completedRevision": 3,
+          "requestedAt": 582.5999999940395,
+          "submittedAt": 1128,
+          "completedAt": 2195,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 1,
+          "returned": 1,
+          "completed": 1,
+          "polls": 65,
+          "timeouts": 64,
+          "maxInFlight": 1,
+          "lastSubmit": 1127.0999999940395,
+          "lastComplete": 2195,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 1280,
+          "height": 850,
+          "cssWidth": 1280,
+          "cssHeight": 850
+        }
+      ],
+      "requestRevision": 3,
+      "submittedRevision": 3,
+      "completedRevision": 3,
+      "eventCount": 0,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 3325.39999999851,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 2,
+        "time": 8,
+        "running": false,
+        "image": {
+          "requestedRevision": 4,
+          "submittedRevision": 4,
+          "completedRevision": 4,
+          "requestedAt": 2778.89999999851,
+          "submittedAt": 2795.0999999940395,
+          "completedAt": 3118.5,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 2,
+          "returned": 2,
+          "completed": 2,
+          "polls": 84,
+          "timeouts": 82,
+          "maxInFlight": 1,
+          "lastSubmit": 2795.0999999940395,
+          "lastComplete": 3118.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 423,
+        "triangles": 212226,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 412,
+          "height": 915,
+          "cssWidth": 412,
+          "cssHeight": 915
+        }
+      ],
+      "requestRevision": 4,
+      "submittedRevision": 4,
+      "completedRevision": 4,
+      "eventCount": 0,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 4104.79999999702,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 3,
+        "time": 8,
+        "running": false,
+        "image": {
+          "requestedRevision": 5,
+          "submittedRevision": 5,
+          "completedRevision": 5,
+          "requestedAt": 3407.2999999970198,
+          "submittedAt": 3422.0999999940395,
+          "completedAt": 3914.5999999940395,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 3,
+          "returned": 3,
+          "completed": 3,
+          "polls": 114,
+          "timeouts": 111,
+          "maxInFlight": 1,
+          "lastSubmit": 3422,
+          "lastComplete": 3914.5999999940395,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 5,
+      "submittedRevision": 5,
+      "completedRevision": 5,
+      "eventCount": 0,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 6882.19999999553,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 1,
+        "lastHit": "curtain",
+        "frames": 8,
+        "time": 8.166200000001492,
+        "running": false,
+        "image": {
+          "requestedRevision": 7,
+          "submittedRevision": 7,
+          "completedRevision": 7,
+          "requestedAt": 6242.39999999851,
+          "submittedAt": 6249.5999999940395,
+          "completedAt": 6679.5,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 8,
+          "returned": 8,
+          "completed": 8,
+          "polls": 254,
+          "timeouts": 246,
+          "maxInFlight": 1,
+          "lastSubmit": 6249.5999999940395,
+          "lastComplete": 6679.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 7,
+      "submittedRevision": 7,
+      "completedRevision": 7,
+      "eventCount": 1,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 8755.09999999404,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 1,
+        "lastHit": "curtain",
+        "frames": 11,
+        "time": 8.166200000001492,
+        "running": false,
+        "image": {
+          "requestedRevision": 11,
+          "submittedRevision": 11,
+          "completedRevision": 11,
+          "requestedAt": 8001.39999999851,
+          "submittedAt": 8005,
+          "completedAt": 8528,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 11,
+          "returned": 11,
+          "completed": 11,
+          "polls": 340,
+          "timeouts": 329,
+          "maxInFlight": 1,
+          "lastSubmit": 8004.89999999851,
+          "lastComplete": 8528,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 11,
+      "submittedRevision": 11,
+      "completedRevision": 11,
+      "eventCount": 2,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 9646,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 1,
+        "lastHit": "curtain",
+        "frames": 12,
+        "time": 8.166200000001492,
+        "running": false,
+        "image": {
+          "requestedRevision": 12,
+          "submittedRevision": 12,
+          "completedRevision": 12,
+          "requestedAt": 8951.89999999851,
+          "submittedAt": 8956.39999999851,
+          "completedAt": 9419.19999999553,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 12,
+          "returned": 12,
+          "completed": 12,
+          "polls": 368,
+          "timeouts": 356,
+          "maxInFlight": 1,
+          "lastSubmit": 8956.39999999851,
+          "lastComplete": 9419.19999999553,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 12,
+      "submittedRevision": 12,
+      "completedRevision": 12,
+      "eventCount": 3,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 10887.79999999702,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 14,
+        "time": 8.166200000001492,
+        "running": false,
+        "image": {
+          "requestedRevision": 34,
+          "submittedRevision": 34,
+          "completedRevision": 34,
+          "requestedAt": 10019.39999999851,
+          "submittedAt": 10190.19999999553,
+          "completedAt": 10660.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 14,
+          "returned": 14,
+          "completed": 14,
+          "polls": 441,
+          "timeouts": 427,
+          "maxInFlight": 1,
+          "lastSubmit": 10190.09999999404,
+          "lastComplete": 10660.29999999702,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 34,
+      "submittedRevision": 34,
+      "completedRevision": 34,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 11578.09999999404,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 15,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 34,
+          "submittedRevision": 34,
+          "completedRevision": 34,
+          "requestedAt": 10019.39999999851,
+          "submittedAt": 10190.19999999553,
+          "completedAt": 10660.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 15,
+          "returned": 15,
+          "completed": 15,
+          "polls": 471,
+          "timeouts": 456,
+          "maxInFlight": 1,
+          "lastSubmit": 10895.39999999851,
+          "lastComplete": 11383.79999999702,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 34,
+      "submittedRevision": 34,
+      "completedRevision": 34,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 12277.09999999404,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 16,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 35,
+          "submittedRevision": 35,
+          "completedRevision": 35,
+          "requestedAt": 11580.79999999702,
+          "submittedAt": 11585.29999999702,
+          "completedAt": 12048.5,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 16,
+          "returned": 16,
+          "completed": 16,
+          "polls": 499,
+          "timeouts": 483,
+          "maxInFlight": 1,
+          "lastSubmit": 11585.29999999702,
+          "lastComplete": 12048.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 35,
+      "submittedRevision": 35,
+      "completedRevision": 35,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        },
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 12985.69999999553,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 17,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 36,
+          "submittedRevision": 36,
+          "completedRevision": 36,
+          "requestedAt": 12280.5,
+          "submittedAt": 12284.19999999553,
+          "completedAt": 12761.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 17,
+          "returned": 17,
+          "completed": 17,
+          "polls": 528,
+          "timeouts": 511,
+          "maxInFlight": 1,
+          "lastSubmit": 12284.19999999553,
+          "lastComplete": 12761.29999999702,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 36,
+      "submittedRevision": 36,
+      "completedRevision": 36,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 13694.09999999404,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 18,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 36,
+          "submittedRevision": 36,
+          "completedRevision": 36,
+          "requestedAt": 12280.5,
+          "submittedAt": 12284.19999999553,
+          "completedAt": 12761.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 18,
+          "returned": 18,
+          "completed": 18,
+          "polls": 556,
+          "timeouts": 538,
+          "maxInFlight": 1,
+          "lastSubmit": 12992.59999999404,
+          "lastComplete": 13460.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 36,
+      "submittedRevision": 36,
+      "completedRevision": 36,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 14556,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 19,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 36,
+          "submittedRevision": 36,
+          "completedRevision": 36,
+          "requestedAt": 12280.5,
+          "submittedAt": 12284.19999999553,
+          "completedAt": 12761.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 19,
+          "returned": 19,
+          "completed": 19,
+          "polls": 583,
+          "timeouts": 564,
+          "maxInFlight": 1,
+          "lastSubmit": 13866.59999999404,
+          "lastComplete": 14325.59999999404,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 36,
+      "submittedRevision": 36,
+      "completedRevision": 36,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 14934.79999999702,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 19,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 36,
+          "submittedRevision": 36,
+          "completedRevision": 36,
+          "requestedAt": 12280.5,
+          "submittedAt": 12284.19999999553,
+          "completedAt": 12761.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 19,
+          "returned": 19,
+          "completed": 19,
+          "polls": 583,
+          "timeouts": 564,
+          "maxInFlight": 1,
+          "lastSubmit": 13866.59999999404,
+          "lastComplete": 14325.59999999404,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 36,
+      "submittedRevision": 36,
+      "completedRevision": 36,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 15626.69999999553,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 20,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 36,
+          "submittedRevision": 36,
+          "completedRevision": 36,
+          "requestedAt": 12280.5,
+          "submittedAt": 12284.19999999553,
+          "completedAt": 12761.29999999702,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 20,
+          "returned": 20,
+          "completed": 20,
+          "polls": 613,
+          "timeouts": 593,
+          "maxInFlight": 1,
+          "lastSubmit": 14943.09999999404,
+          "lastComplete": 15428,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 36,
+      "submittedRevision": 36,
+      "completedRevision": 36,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 16341.79999999702,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 21,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 37,
+          "submittedRevision": 37,
+          "completedRevision": 37,
+          "requestedAt": 15631.5,
+          "submittedAt": 15636,
+          "completedAt": 16127.89999999851,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 21,
+          "returned": 21,
+          "completed": 21,
+          "polls": 643,
+          "timeouts": 622,
+          "maxInFlight": 1,
+          "lastSubmit": 15635.89999999851,
+          "lastComplete": 16127.89999999851,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 37,
+      "submittedRevision": 37,
+      "completedRevision": 37,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 17090,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 22,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 38,
+          "submittedRevision": 38,
+          "completedRevision": 38,
+          "requestedAt": 16346.5,
+          "submittedAt": 16350.09999999404,
+          "completedAt": 16862.59999999404,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 22,
+          "returned": 22,
+          "completed": 22,
+          "polls": 673,
+          "timeouts": 651,
+          "maxInFlight": 1,
+          "lastSubmit": 16350,
+          "lastComplete": 16862.59999999404,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 38,
+      "submittedRevision": 38,
+      "completedRevision": 38,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 17747.89999999851,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 23,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 39,
+          "submittedRevision": 39,
+          "completedRevision": 39,
+          "requestedAt": 17095.29999999702,
+          "submittedAt": 17098.89999999851,
+          "completedAt": 17528.5,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 23,
+          "returned": 23,
+          "completed": 23,
+          "polls": 699,
+          "timeouts": 676,
+          "maxInFlight": 1,
+          "lastSubmit": 17098.79999999702,
+          "lastComplete": 17528.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 39,
+      "submittedRevision": 39,
+      "completedRevision": 39,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 19253.09999999404,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 25,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 40,
+          "submittedRevision": 40,
+          "completedRevision": 40,
+          "requestedAt": 17958.69999999553,
+          "submittedAt": 18452.09999999404,
+          "completedAt": 19028.09999999404,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 25,
+          "returned": 25,
+          "completed": 25,
+          "polls": 764,
+          "timeouts": 739,
+          "maxInFlight": 1,
+          "lastSubmit": 18452,
+          "lastComplete": 19028.09999999404,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 980,
+          "height": 720,
+          "cssWidth": 980,
+          "cssHeight": 720
+        }
+      ],
+      "requestRevision": 40,
+      "submittedRevision": 40,
+      "completedRevision": 40,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 19952.29999999702,
+      "diagnostic": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 26,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 41,
+          "submittedRevision": 41,
+          "completedRevision": 41,
+          "requestedAt": 19255.29999999702,
+          "submittedAt": 19265.09999999404,
+          "completedAt": 19730.5,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 26,
+          "returned": 26,
+          "completed": 26,
+          "polls": 792,
+          "timeouts": 766,
+          "maxInFlight": 1,
+          "lastSubmit": 19265,
+          "lastComplete": 19730.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "canvasId": 1,
+      "canvases": [
+        {
+          "id": 1,
+          "connected": true,
+          "instance": 1,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 41,
+      "submittedRevision": 41,
+      "completedRevision": 41,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    },
+    {
+      "at": 26597,
+      "diagnostic": {
+        "instance": 2,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 1,
+        "time": 8,
+        "running": false,
+        "image": {
+          "requestedRevision": 3,
+          "submittedRevision": 3,
+          "completedRevision": 3,
+          "requestedAt": 25153.79999999702,
+          "submittedAt": 25458,
+          "completedAt": 26365,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 1,
+          "returned": 1,
+          "completed": 1,
+          "polls": 55,
+          "timeouts": 54,
+          "maxInFlight": 1,
+          "lastSubmit": 25457.39999999851,
+          "lastComplete": 26365,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 24980.29999999702,
+          "constructorEnd": 24989.5,
+          "factoryStart": 24989.79999999702,
+          "factoryEnd": 25152.39999999851,
+          "initEnd": 25153.69999999553,
+          "firstRenderStart": 25164.79999999702,
+          "firstRenderEnd": 25457.39999999851,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 2,
+          "disposed": 1
+        },
+        "status": "ready",
+        "retired": [
+          {
+            "instance": 1,
+            "frames": 26,
+            "time": 8.166700000001493,
+            "image": {
+              "requestedRevision": 41,
+              "submittedRevision": 41,
+              "completedRevision": 41,
+              "requestedAt": 19255.29999999702,
+              "submittedAt": 19265.09999999404,
+              "completedAt": 19730.5,
+              "dirty": false,
+              "awaitingCompletion": false,
+              "sizeDirty": false
+            },
+            "gpu": {
+              "submitted": 26,
+              "returned": 26,
+              "completed": 26,
+              "polls": 792,
+              "timeouts": 766,
+              "maxInFlight": 1,
+              "lastSubmit": 19265,
+              "lastComplete": 19730.5,
+              "lastWait": "CONDITION_SATISFIED",
+              "phase": "disposed",
+              "inFlight": 0,
+              "unconfirmed": 0,
+              "pending": null,
+              "pollScheduled": false,
+              "failure": null,
+              "cleanupErrors": []
+            },
+            "phases": {
+              "constructorStart": 369.8999999985099,
+              "constructorEnd": 381.09999999403954,
+              "factoryStart": 388.29999999701977,
+              "factoryEnd": 581.0999999940395,
+              "initEnd": 582.5,
+              "firstRenderStart": 629.0999999940395,
+              "firstRenderEnd": 1127.0999999940395,
+              "disposeStart": 24956.5,
+              "disposeEnd": 24960.19999999553
+            }
+          }
+        ]
+      },
+      "canvasId": 2,
+      "canvases": [
+        {
+          "id": 2,
+          "connected": true,
+          "instance": 2,
+          "width": 960,
+          "height": 700,
+          "cssWidth": 960,
+          "cssHeight": 700
+        }
+      ],
+      "requestRevision": 3,
+      "submittedRevision": 3,
+      "completedRevision": 3,
+      "eventCount": 9,
+      "dom": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "input": "ready",
+          "status": null
+        }
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "world": "sleep_prep",
+      "oldBeforeUnmount": {
+        "instance": 1,
+        "taps": 8,
+        "lastHit": "curtain",
+        "frames": 26,
+        "time": 8.166700000001493,
+        "running": false,
+        "image": {
+          "requestedRevision": 41,
+          "submittedRevision": 41,
+          "completedRevision": 41,
+          "requestedAt": 19255.29999999702,
+          "submittedAt": 19265.09999999404,
+          "completedAt": 19730.5,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 26,
+          "returned": 26,
+          "completed": 26,
+          "polls": 792,
+          "timeouts": 766,
+          "maxInFlight": 1,
+          "lastSubmit": 19265,
+          "lastComplete": 19730.5,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "clock": "Node performance.now for gate boundaries; production phases use page performance.now",
+      "unmountRequestedAtNode": 20621.994079,
+      "disposedObservedAtNode": 25646.644456,
+      "oldDisposed": {
+        "lifetime": {
+          "created": 1,
+          "disposed": 1
+        },
+        "disposed": true,
+        "status": "loading",
+        "retired": [
+          {
+            "instance": 1,
+            "frames": 26,
+            "time": 8.166700000001493,
+            "image": {
+              "requestedRevision": 41,
+              "submittedRevision": 41,
+              "completedRevision": 41,
+              "requestedAt": 19255.29999999702,
+              "submittedAt": 19265.09999999404,
+              "completedAt": 19730.5,
+              "dirty": false,
+              "awaitingCompletion": false,
+              "sizeDirty": false
+            },
+            "gpu": {
+              "submitted": 26,
+              "returned": 26,
+              "completed": 26,
+              "polls": 792,
+              "timeouts": 766,
+              "maxInFlight": 1,
+              "lastSubmit": 19265,
+              "lastComplete": 19730.5,
+              "lastWait": "CONDITION_SATISFIED",
+              "phase": "disposed",
+              "inFlight": 0,
+              "unconfirmed": 0,
+              "pending": null,
+              "pollScheduled": false,
+              "failure": null,
+              "cleanupErrors": []
+            },
+            "phases": {
+              "constructorStart": 369.8999999985099,
+              "constructorEnd": 381.09999999403954,
+              "factoryStart": 388.29999999701977,
+              "factoryEnd": 581.0999999940395,
+              "initEnd": 582.5,
+              "firstRenderStart": 629.0999999940395,
+              "firstRenderEnd": 1127.0999999940395,
+              "disposeStart": 24956.5,
+              "disposeEnd": 24960.19999999553
+            }
+          }
+        ]
+      },
+      "freshMountRequestedAtNode": 25646.657005,
+      "freshReadyGate": {
+        "boundMs": 120000,
+        "startedAtNode": 25647.398823,
+        "passed": true,
+        "endedAtNode": 26158.773464,
+        "elapsedMs": 511.37464100000216
+      },
+      "freshReady": {
+        "instance": 2,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 1,
+        "time": 8,
+        "running": false,
+        "image": {
+          "requestedRevision": 3,
+          "submittedRevision": 3,
+          "completedRevision": 0,
+          "requestedAt": 25153.79999999702,
+          "submittedAt": 25458,
+          "completedAt": 0,
+          "dirty": false,
+          "awaitingCompletion": true,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 1,
+          "returned": 1,
+          "completed": 0,
+          "polls": 1,
+          "timeouts": 1,
+          "maxInFlight": 1,
+          "lastSubmit": 25457.39999999851,
+          "lastComplete": 0,
+          "lastWait": "TIMEOUT_EXPIRED",
+          "phase": "submitted",
+          "inFlight": 1,
+          "unconfirmed": 1,
+          "pending": null,
+          "pollScheduled": true,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 24980.29999999702,
+          "constructorEnd": 24989.5,
+          "factoryStart": 24989.79999999702,
+          "factoryEnd": 25152.39999999851,
+          "initEnd": 25153.69999999553,
+          "firstRenderStart": 25164.79999999702,
+          "firstRenderEnd": 25457.39999999851,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 2,
+          "disposed": 1
+        },
+        "status": "ready",
+        "retired": [
+          {
+            "instance": 1,
+            "frames": 26,
+            "time": 8.166700000001493,
+            "image": {
+              "requestedRevision": 41,
+              "submittedRevision": 41,
+              "completedRevision": 41,
+              "requestedAt": 19255.29999999702,
+              "submittedAt": 19265.09999999404,
+              "completedAt": 19730.5,
+              "dirty": false,
+              "awaitingCompletion": false,
+              "sizeDirty": false
+            },
+            "gpu": {
+              "submitted": 26,
+              "returned": 26,
+              "completed": 26,
+              "polls": 792,
+              "timeouts": 766,
+              "maxInFlight": 1,
+              "lastSubmit": 19265,
+              "lastComplete": 19730.5,
+              "lastWait": "CONDITION_SATISFIED",
+              "phase": "disposed",
+              "inFlight": 0,
+              "unconfirmed": 0,
+              "pending": null,
+              "pollScheduled": false,
+              "failure": null,
+              "cleanupErrors": []
+            },
+            "phases": {
+              "constructorStart": 369.8999999985099,
+              "constructorEnd": 381.09999999403954,
+              "factoryStart": 388.29999999701977,
+              "factoryEnd": 581.0999999940395,
+              "initEnd": 582.5,
+              "firstRenderStart": 629.0999999940395,
+              "firstRenderEnd": 1127.0999999940395,
+              "disposeStart": 24956.5,
+              "disposeEnd": 24960.19999999553
+            }
+          }
+        ]
+      },
+      "freshAcknowledged": {
+        "at": 26597,
+        "diagnostic": {
+          "instance": 2,
+          "taps": 0,
+          "lastHit": "none",
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "image": {
+            "requestedRevision": 3,
+            "submittedRevision": 3,
+            "completedRevision": 3,
+            "requestedAt": 25153.79999999702,
+            "submittedAt": 25458,
+            "completedAt": 26365,
+            "dirty": false,
+            "awaitingCompletion": false,
+            "sizeDirty": false
+          },
+          "gpu": {
+            "submitted": 1,
+            "returned": 1,
+            "completed": 1,
+            "polls": 55,
+            "timeouts": 54,
+            "maxInFlight": 1,
+            "lastSubmit": 25457.39999999851,
+            "lastComplete": 26365,
+            "lastWait": "CONDITION_SATISFIED",
+            "phase": "submitted",
+            "inFlight": 0,
+            "unconfirmed": 0,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 24980.29999999702,
+            "constructorEnd": 24989.5,
+            "factoryStart": 24989.79999999702,
+            "factoryEnd": 25152.39999999851,
+            "initEnd": 25153.69999999553,
+            "firstRenderStart": 25164.79999999702,
+            "firstRenderEnd": 25457.39999999851,
+            "disposeStart": 0,
+            "disposeEnd": 0
+          },
+          "drawCalls": 520,
+          "triangles": 239398,
+          "memory": {
+            "geometries": 252,
+            "textures": 13
+          },
+          "lifetime": {
+            "created": 2,
+            "disposed": 1
+          },
+          "status": "ready",
+          "retired": [
+            {
+              "instance": 1,
+              "frames": 26,
+              "time": 8.166700000001493,
+              "image": {
+                "requestedRevision": 41,
+                "submittedRevision": 41,
+                "completedRevision": 41,
+                "requestedAt": 19255.29999999702,
+                "submittedAt": 19265.09999999404,
+                "completedAt": 19730.5,
+                "dirty": false,
+                "awaitingCompletion": false,
+                "sizeDirty": false
+              },
+              "gpu": {
+                "submitted": 26,
+                "returned": 26,
+                "completed": 26,
+                "polls": 792,
+                "timeouts": 766,
+                "maxInFlight": 1,
+                "lastSubmit": 19265,
+                "lastComplete": 19730.5,
+                "lastWait": "CONDITION_SATISFIED",
+                "phase": "disposed",
+                "inFlight": 0,
+                "unconfirmed": 0,
+                "pending": null,
+                "pollScheduled": false,
+                "failure": null,
+                "cleanupErrors": []
+              },
+              "phases": {
+                "constructorStart": 369.8999999985099,
+                "constructorEnd": 381.09999999403954,
+                "factoryStart": 388.29999999701977,
+                "factoryEnd": 581.0999999940395,
+                "initEnd": 582.5,
+                "firstRenderStart": 629.0999999940395,
+                "firstRenderEnd": 1127.0999999940395,
+                "disposeStart": 24956.5,
+                "disposeEnd": 24960.19999999553
+              }
+            }
+          ]
+        },
+        "canvasId": 2,
+        "canvases": [
+          {
+            "id": 2,
+            "connected": true,
+            "instance": 2,
+            "width": 960,
+            "height": 700,
+            "cssWidth": 960,
+            "cssHeight": 700
+          }
+        ],
+        "requestRevision": 3,
+        "submittedRevision": 3,
+        "completedRevision": 3,
+        "eventCount": 9,
+        "dom": [
+          {
+            "state": "ready",
+            "motion": "paused",
+            "input": "ready",
+            "status": null
+          }
+        ]
+      }
+    }
+  ],
+  "failure": null,
+  "failureSnapshot": null,
+  "identityError": null,
+  "worlds": [
+    "sleep_prep"
+  ],
+  "timestamp": "2026-10-05T00:11:37.441Z",
+  "gitHead": "456ecde2cb70a67ccbad394c767de963dac97d53",
+  "source": {
+    "sha256": "e3e7a278bad36a8d12f80403b03972728c11fa07436335346ff796d8f664edfa",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "f9e6bc14c08ef5d125464fef8313eaa4539b9ea560ea87cb1ffca51f8e9e7c0a",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "bundle": {
+    "sha256": "0b0c53ed7a574d44f301bbd6ccaf4f72b9410616eaebd46a299551b927e5e516",
+    "files": [
+      "assets/CozyWorld-CNeeHmPh.js",
+      "assets/CozyWorld-CNeeHmPh.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-B0r6M-lW.js",
+      "assets/HearthWorld-B0r6M-lW.js.map",
+      "assets/NapTerraceWorld-Dje3lAQ6.js",
+      "assets/NapTerraceWorld-Dje3lAQ6.js.map",
+      "assets/SleepRoomWorld-BY3AbvTl.js",
+      "assets/SleepRoomWorld-BY3AbvTl.js.map",
+      "assets/WinterLodgeWorld-Drwvbuk7.js",
+      "assets/WinterLodgeWorld-Drwvbuk7.js.map",
+      "assets/fireDetail-qi0uyylj.js",
+      "assets/fireDetail-qi0uyylj.js.map",
+      "assets/index-CDP5Jz4U.js",
+      "assets/index-CDP5Jz4U.js.map",
+      "assets/materials-BkTAzY0D.js",
+      "assets/materials-BkTAzY0D.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-CNeeHmPh.js": "346b2fd96eb1ffb9a08ac9573574f4ee41f8dbcc82df86cc66e58891547e5778",
+      "assets/CozyWorld-CNeeHmPh.js.map": "c1e35f2f62adb26d4b0ac6d15e9a148893c647dd8ea05e63fe7f9c95adbb2839",
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/HearthWorld-B0r6M-lW.js": "1814101273064ae5899eff8aaee1ea2e94b8dba26542e706534f7aba32e5a50a",
+      "assets/HearthWorld-B0r6M-lW.js.map": "39dee3207998cb97ac27ea92a251c34ec2bbfc47d869db35ca01948dc9b126c6",
+      "assets/NapTerraceWorld-Dje3lAQ6.js": "f5ecca0c0b52fbc3e4bf823576ba535b02d1795827067ba56ccc5eb66aba45cd",
+      "assets/NapTerraceWorld-Dje3lAQ6.js.map": "8581cebec3c3611a6b5ecfb5a0126274d477b19bb28cd3dbe0f759fc17157105",
+      "assets/SleepRoomWorld-BY3AbvTl.js": "b7764a5f86739f2bf982df699e45ef3ecad94883d9d5ee022878e4daa9378459",
+      "assets/SleepRoomWorld-BY3AbvTl.js.map": "417a632107ba15409c1ddac2c8ab98ceca6268c799cfb2a591ad15fab70cc2c2",
+      "assets/WinterLodgeWorld-Drwvbuk7.js": "5a5d871bf2eddc1d7fd1abffe5d6dcb38a72ca77bd943031cd793cb74006735b",
+      "assets/WinterLodgeWorld-Drwvbuk7.js.map": "f569f689d5d4c16b6bf012cca24e9616ccb262f3b18194261cfb92315eb3da13",
+      "assets/fireDetail-qi0uyylj.js": "639a71904876ab4eeaf21a4e034640969150e45f5623178679db8b68f9094f6a",
+      "assets/fireDetail-qi0uyylj.js.map": "6680f5dab05e8bb0927e8d816d68775b4777e305e98cae74b1ece88e3a50ca7a",
+      "assets/index-CDP5Jz4U.js": "2b2cb97b0850b690a0861989e1d6bbfe903f8ec10a6e9850fdc0b8856be3e7f7",
+      "assets/index-CDP5Jz4U.js.map": "635e74d240c75e5e084a87944749c5278010f10b6203d11f048301bdd3c59698",
+      "assets/materials-BkTAzY0D.js": "fe074a287c4a3dbb5053cd49421a3eb24d6257241838e104b288c8695e0018b9",
+      "assets/materials-BkTAzY0D.js.map": "a33b921058d379bdf2b2a0cd263f527562e8b98874efdc064864bc308b4f4c21",
+      "index.html": "600fc0b9d9fa183dfec1ac65f5db382c3e0b1a86300e3afbd83f5e2eb7147186"
+    }
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [
+    {
+      "world": "sleep_prep",
+      "snapshots": [
+        {
+          "file": "sleep_prep-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+        },
+        {
+          "file": "sleep_prep-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-curtain",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 2,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 1,
+        "time": 8,
+        "running": false,
+        "image": {
+          "requestedRevision": 3,
+          "submittedRevision": 3,
+          "completedRevision": 3,
+          "requestedAt": 25153.79999999702,
+          "submittedAt": 25458,
+          "completedAt": 26365,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 1,
+          "returned": 1,
+          "completed": 1,
+          "polls": 55,
+          "timeouts": 54,
+          "maxInFlight": 1,
+          "lastSubmit": 25457.39999999851,
+          "lastComplete": 26365,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 24980.29999999702,
+          "constructorEnd": 24989.5,
+          "factoryStart": 24989.79999999702,
+          "factoryEnd": 25152.39999999851,
+          "initEnd": 25153.69999999553,
+          "firstRenderStart": 25164.79999999702,
+          "firstRenderEnd": 25457.39999999851,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 2,
+          "disposed": 1
+        },
+        "status": "ready",
+        "retired": [
+          {
+            "instance": 1,
+            "frames": 26,
+            "time": 8.166700000001493,
+            "image": {
+              "requestedRevision": 41,
+              "submittedRevision": 41,
+              "completedRevision": 41,
+              "requestedAt": 19255.29999999702,
+              "submittedAt": 19265.09999999404,
+              "completedAt": 19730.5,
+              "dirty": false,
+              "awaitingCompletion": false,
+              "sizeDirty": false
+            },
+            "gpu": {
+              "submitted": 26,
+              "returned": 26,
+              "completed": 26,
+              "polls": 792,
+              "timeouts": 766,
+              "maxInFlight": 1,
+              "lastSubmit": 19265,
+              "lastComplete": 19730.5,
+              "lastWait": "CONDITION_SATISFIED",
+              "phase": "disposed",
+              "inFlight": 0,
+              "unconfirmed": 0,
+              "pending": null,
+              "pollScheduled": false,
+              "failure": null,
+              "cleanupErrors": []
+            },
+            "phases": {
+              "constructorStart": 369.8999999985099,
+              "constructorEnd": 381.09999999403954,
+              "factoryStart": 388.29999999701977,
+              "factoryEnd": 581.0999999940395,
+              "initEnd": 582.5,
+              "firstRenderStart": 629.0999999940395,
+              "firstRenderEnd": 1127.0999999940395,
+              "disposeStart": 24956.5,
+              "disposeEnd": 24960.19999999553
+            }
+          }
+        ]
+      },
+      "originalSequenceRenderSnapshot": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 7,
+        "time": 8.166200000001492,
+        "running": false,
+        "image": {
+          "requestedRevision": 5,
+          "submittedRevision": 5,
+          "completedRevision": 5,
+          "requestedAt": 3407.2999999970198,
+          "submittedAt": 3422.0999999940395,
+          "completedAt": 3914.5999999940395,
+          "dirty": false,
+          "awaitingCompletion": false,
+          "sizeDirty": false
+        },
+        "gpu": {
+          "submitted": 7,
+          "returned": 7,
+          "completed": 7,
+          "polls": 228,
+          "timeouts": 221,
+          "maxInFlight": 1,
+          "lastSubmit": 5597.0999999940395,
+          "lastComplete": 6034.5999999940395,
+          "lastWait": "CONDITION_SATISFIED",
+          "phase": "submitted",
+          "inFlight": 0,
+          "unconfirmed": 0,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        },
+        "phases": {
+          "constructorStart": 369.8999999985099,
+          "constructorEnd": 381.09999999403954,
+          "factoryStart": 388.29999999701977,
+          "factoryEnd": 581.0999999940395,
+          "initEnd": 582.5,
+          "firstRenderStart": 629.0999999940395,
+          "firstRenderEnd": 1127.0999999940395,
+          "disposeStart": 0,
+          "disposeEnd": 0
+        },
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        },
+        "status": "ready",
+        "retired": []
+      },
+      "lifecycle": {
+        "world": "sleep_prep",
+        "oldBeforeUnmount": {
+          "instance": 1,
+          "taps": 8,
+          "lastHit": "curtain",
+          "frames": 26,
+          "time": 8.166700000001493,
+          "running": false,
+          "image": {
+            "requestedRevision": 41,
+            "submittedRevision": 41,
+            "completedRevision": 41,
+            "requestedAt": 19255.29999999702,
+            "submittedAt": 19265.09999999404,
+            "completedAt": 19730.5,
+            "dirty": false,
+            "awaitingCompletion": false,
+            "sizeDirty": false
+          },
+          "gpu": {
+            "submitted": 26,
+            "returned": 26,
+            "completed": 26,
+            "polls": 792,
+            "timeouts": 766,
+            "maxInFlight": 1,
+            "lastSubmit": 19265,
+            "lastComplete": 19730.5,
+            "lastWait": "CONDITION_SATISFIED",
+            "phase": "submitted",
+            "inFlight": 0,
+            "unconfirmed": 0,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 369.8999999985099,
+            "constructorEnd": 381.09999999403954,
+            "factoryStart": 388.29999999701977,
+            "factoryEnd": 581.0999999940395,
+            "initEnd": 582.5,
+            "firstRenderStart": 629.0999999940395,
+            "firstRenderEnd": 1127.0999999940395,
+            "disposeStart": 0,
+            "disposeEnd": 0
+          },
+          "targets": [
+            {
+              "action": "curtain",
+              "x": 0.340423600934045,
+              "y": 0.37635926394155983,
+              "z": 0.9829028480465697
+            },
+            {
+              "action": "curtain",
+              "x": 0.6948417730434866,
+              "y": 0.37963368035621176,
+              "z": 0.9832490750740214
+            },
+            {
+              "action": "lamp",
+              "x": 0.8748090372918853,
+              "y": 0.7033900466709939,
+              "z": 0.9708437318614971
+            },
+            {
+              "action": "lamp",
+              "x": 0.871975462016278,
+              "y": 0.49102810286960036,
+              "z": 0.9710755033103184
+            }
+          ],
+          "drawCalls": 520,
+          "triangles": 239398,
+          "memory": {
+            "geometries": 252,
+            "textures": 13
+          },
+          "lifetime": {
+            "created": 1,
+            "disposed": 0
+          },
+          "status": "ready",
+          "retired": []
+        },
+        "clock": "Node performance.now for gate boundaries; production phases use page performance.now",
+        "unmountRequestedAtNode": 20621.994079,
+        "disposedObservedAtNode": 25646.644456,
+        "oldDisposed": {
+          "lifetime": {
+            "created": 1,
+            "disposed": 1
+          },
+          "disposed": true,
+          "status": "loading",
+          "retired": [
+            {
+              "instance": 1,
+              "frames": 26,
+              "time": 8.166700000001493,
+              "image": {
+                "requestedRevision": 41,
+                "submittedRevision": 41,
+                "completedRevision": 41,
+                "requestedAt": 19255.29999999702,
+                "submittedAt": 19265.09999999404,
+                "completedAt": 19730.5,
+                "dirty": false,
+                "awaitingCompletion": false,
+                "sizeDirty": false
+              },
+              "gpu": {
+                "submitted": 26,
+                "returned": 26,
+                "completed": 26,
+                "polls": 792,
+                "timeouts": 766,
+                "maxInFlight": 1,
+                "lastSubmit": 19265,
+                "lastComplete": 19730.5,
+                "lastWait": "CONDITION_SATISFIED",
+                "phase": "disposed",
+                "inFlight": 0,
+                "unconfirmed": 0,
+                "pending": null,
+                "pollScheduled": false,
+                "failure": null,
+                "cleanupErrors": []
+              },
+              "phases": {
+                "constructorStart": 369.8999999985099,
+                "constructorEnd": 381.09999999403954,
+                "factoryStart": 388.29999999701977,
+                "factoryEnd": 581.0999999940395,
+                "initEnd": 582.5,
+                "firstRenderStart": 629.0999999940395,
+                "firstRenderEnd": 1127.0999999940395,
+                "disposeStart": 24956.5,
+                "disposeEnd": 24960.19999999553
+              }
+            }
+          ]
+        },
+        "freshMountRequestedAtNode": 25646.657005,
+        "freshReadyGate": {
+          "boundMs": 120000,
+          "startedAtNode": 25647.398823,
+          "passed": true,
+          "endedAtNode": 26158.773464,
+          "elapsedMs": 511.37464100000216
+        },
+        "freshReady": {
+          "instance": 2,
+          "taps": 0,
+          "lastHit": "none",
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "image": {
+            "requestedRevision": 3,
+            "submittedRevision": 3,
+            "completedRevision": 0,
+            "requestedAt": 25153.79999999702,
+            "submittedAt": 25458,
+            "completedAt": 0,
+            "dirty": false,
+            "awaitingCompletion": true,
+            "sizeDirty": false
+          },
+          "gpu": {
+            "submitted": 1,
+            "returned": 1,
+            "completed": 0,
+            "polls": 1,
+            "timeouts": 1,
+            "maxInFlight": 1,
+            "lastSubmit": 25457.39999999851,
+            "lastComplete": 0,
+            "lastWait": "TIMEOUT_EXPIRED",
+            "phase": "submitted",
+            "inFlight": 1,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": true,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 24980.29999999702,
+            "constructorEnd": 24989.5,
+            "factoryStart": 24989.79999999702,
+            "factoryEnd": 25152.39999999851,
+            "initEnd": 25153.69999999553,
+            "firstRenderStart": 25164.79999999702,
+            "firstRenderEnd": 25457.39999999851,
+            "disposeStart": 0,
+            "disposeEnd": 0
+          },
+          "targets": [
+            {
+              "action": "curtain",
+              "x": 0.340423600934045,
+              "y": 0.37635926394155983,
+              "z": 0.9829028480465697
+            },
+            {
+              "action": "curtain",
+              "x": 0.6948417730434866,
+              "y": 0.37963368035621176,
+              "z": 0.9832490750740214
+            },
+            {
+              "action": "lamp",
+              "x": 0.8748090372918853,
+              "y": 0.7033900466709939,
+              "z": 0.9708437318614971
+            },
+            {
+              "action": "lamp",
+              "x": 0.871975462016278,
+              "y": 0.49102810286960036,
+              "z": 0.9710755033103184
+            }
+          ],
+          "drawCalls": 520,
+          "triangles": 239398,
+          "memory": {
+            "geometries": 252,
+            "textures": 13
+          },
+          "lifetime": {
+            "created": 2,
+            "disposed": 1
+          },
+          "status": "ready",
+          "retired": [
+            {
+              "instance": 1,
+              "frames": 26,
+              "time": 8.166700000001493,
+              "image": {
+                "requestedRevision": 41,
+                "submittedRevision": 41,
+                "completedRevision": 41,
+                "requestedAt": 19255.29999999702,
+                "submittedAt": 19265.09999999404,
+                "completedAt": 19730.5,
+                "dirty": false,
+                "awaitingCompletion": false,
+                "sizeDirty": false
+              },
+              "gpu": {
+                "submitted": 26,
+                "returned": 26,
+                "completed": 26,
+                "polls": 792,
+                "timeouts": 766,
+                "maxInFlight": 1,
+                "lastSubmit": 19265,
+                "lastComplete": 19730.5,
+                "lastWait": "CONDITION_SATISFIED",
+                "phase": "disposed",
+                "inFlight": 0,
+                "unconfirmed": 0,
+                "pending": null,
+                "pollScheduled": false,
+                "failure": null,
+                "cleanupErrors": []
+              },
+              "phases": {
+                "constructorStart": 369.8999999985099,
+                "constructorEnd": 381.09999999403954,
+                "factoryStart": 388.29999999701977,
+                "factoryEnd": 581.0999999940395,
+                "initEnd": 582.5,
+                "firstRenderStart": 629.0999999940395,
+                "firstRenderEnd": 1127.0999999940395,
+                "disposeStart": 24956.5,
+                "disposeEnd": 24960.19999999553
+              }
+            }
+          ]
+        },
+        "freshAcknowledged": {
+          "at": 26597,
+          "diagnostic": {
+            "instance": 2,
+            "taps": 0,
+            "lastHit": "none",
+            "frames": 1,
+            "time": 8,
+            "running": false,
+            "image": {
+              "requestedRevision": 3,
+              "submittedRevision": 3,
+              "completedRevision": 3,
+              "requestedAt": 25153.79999999702,
+              "submittedAt": 25458,
+              "completedAt": 26365,
+              "dirty": false,
+              "awaitingCompletion": false,
+              "sizeDirty": false
+            },
+            "gpu": {
+              "submitted": 1,
+              "returned": 1,
+              "completed": 1,
+              "polls": 55,
+              "timeouts": 54,
+              "maxInFlight": 1,
+              "lastSubmit": 25457.39999999851,
+              "lastComplete": 26365,
+              "lastWait": "CONDITION_SATISFIED",
+              "phase": "submitted",
+              "inFlight": 0,
+              "unconfirmed": 0,
+              "pending": null,
+              "pollScheduled": false,
+              "failure": null,
+              "cleanupErrors": []
+            },
+            "phases": {
+              "constructorStart": 24980.29999999702,
+              "constructorEnd": 24989.5,
+              "factoryStart": 24989.79999999702,
+              "factoryEnd": 25152.39999999851,
+              "initEnd": 25153.69999999553,
+              "firstRenderStart": 25164.79999999702,
+              "firstRenderEnd": 25457.39999999851,
+              "disposeStart": 0,
+              "disposeEnd": 0
+            },
+            "drawCalls": 520,
+            "triangles": 239398,
+            "memory": {
+              "geometries": 252,
+              "textures": 13
+            },
+            "lifetime": {
+              "created": 2,
+              "disposed": 1
+            },
+            "status": "ready",
+            "retired": [
+              {
+                "instance": 1,
+                "frames": 26,
+                "time": 8.166700000001493,
+                "image": {
+                  "requestedRevision": 41,
+                  "submittedRevision": 41,
+                  "completedRevision": 41,
+                  "requestedAt": 19255.29999999702,
+                  "submittedAt": 19265.09999999404,
+                  "completedAt": 19730.5,
+                  "dirty": false,
+                  "awaitingCompletion": false,
+                  "sizeDirty": false
+                },
+                "gpu": {
+                  "submitted": 26,
+                  "returned": 26,
+                  "completed": 26,
+                  "polls": 792,
+                  "timeouts": 766,
+                  "maxInFlight": 1,
+                  "lastSubmit": 19265,
+                  "lastComplete": 19730.5,
+                  "lastWait": "CONDITION_SATISFIED",
+                  "phase": "disposed",
+                  "inFlight": 0,
+                  "unconfirmed": 0,
+                  "pending": null,
+                  "pollScheduled": false,
+                  "failure": null,
+                  "cleanupErrors": []
+                },
+                "phases": {
+                  "constructorStart": 369.8999999985099,
+                  "constructorEnd": 381.09999999403954,
+                  "factoryStart": 388.29999999701977,
+                  "factoryEnd": 581.0999999940395,
+                  "initEnd": 582.5,
+                  "firstRenderStart": 629.0999999940395,
+                  "firstRenderEnd": 1127.0999999940395,
+                  "disposeStart": 24956.5,
+                  "disposeEnd": 24960.19999999553
+                }
+              }
+            ]
+          },
+          "canvasId": 2,
+          "canvases": [
+            {
+              "id": 2,
+              "connected": true,
+              "instance": 2,
+              "width": 960,
+              "height": 700,
+              "cssWidth": 960,
+              "cssHeight": 700
+            }
+          ],
+          "requestRevision": 3,
+          "submittedRevision": 3,
+          "completedRevision": 3,
+          "eventCount": 9,
+          "dom": [
+            {
+              "state": "ready",
+              "motion": "paused",
+              "input": "ready",
+              "status": null
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "errors": []
+}

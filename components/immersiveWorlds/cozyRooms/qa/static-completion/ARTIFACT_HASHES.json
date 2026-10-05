@@ -1,0 +1,403 @@
+{
+  "baseDirectory": "components/immersiveWorlds/cozyRooms/qa/static-completion",
+  "method": "SHA256 over file entries in the listed order (relative paths sorted by path components): relative filename, NUL, then file bytes. Manifest excludes itself to avoid circularity. Production14file source and18file bundle hashes are separately bound in SOURCE_BUNDLE.json.",
+  "count": 79,
+  "aggregateSHA256": "59268f2ba945c2a6b5ae27ec3047a11417d12a83ddcc8634c6b50d558bfa54d4",
+  "files": [
+    {
+      "file": "EXECUTIONS.json",
+      "bytes": 1221,
+      "sha256": "6a2cb3badcf65dd711da989335dfb6cd76c9ad1c7aaec0a58d642f77c5a34d10"
+    },
+    {
+      "file": "FINAL_RESULTS.json",
+      "bytes": 24228,
+      "sha256": "1b30994c251ffeaf2152a4dbef5dac867165a25134ca00acf8ca427d1f952126"
+    },
+    {
+      "file": "HANDOFF.md",
+      "bytes": 7684,
+      "sha256": "26c49ff5e28fb45adf76f4907b7d68ae5b4443c366d2d427aedb725bbe9d0d2b"
+    },
+    {
+      "file": "LIFECYCLE_AUDIT.md",
+      "bytes": 6416,
+      "sha256": "67572c851f5a069f6b512d3834da806a4cf33d1cf66ba52b66e66e17c12f168a"
+    },
+    {
+      "file": "MOTION_PIXELS.json",
+      "bytes": 2989,
+      "sha256": "ec3274ee2f1f1ffe9d26b18516f9ff402bfa1067c34be1f8d60801d13034c571"
+    },
+    {
+      "file": "PNG_MANIFEST.json",
+      "bytes": 4425,
+      "sha256": "0338687f6256d54db0191711f84104a4e5cc7d05b7aba403a0752049cb308e03"
+    },
+    {
+      "file": "PRECHECK.json",
+      "bytes": 1400,
+      "sha256": "21a9924cab9389b20da8f1789af177c89d9ee7de468594b91586aeceadf1dead"
+    },
+    {
+      "file": "PUBLICATION_GUARD.json",
+      "bytes": 272,
+      "sha256": "95a9a0d4eff82592e24b4b42e53d464d940814ed82518b3b16954bd70e8ac060"
+    },
+    {
+      "file": "README.md",
+      "bytes": 7045,
+      "sha256": "ec25761e4ee9f091c6753e2a186c9ac973859e914950dee859b43d236afd14d4"
+    },
+    {
+      "file": "SOURCE_BUNDLE.json",
+      "bytes": 4802,
+      "sha256": "9b05329b9ab3ac78800a0aceee488b114609f903849b8636aae45e2678456900"
+    },
+    {
+      "file": "SOURCE_REVIEW.md",
+      "bytes": 15502,
+      "sha256": "4e4ac0ffe639e1193d1dcdb1b44cb2edafc19f57601a19f50bd81ad04f983658"
+    },
+    {
+      "file": "STATIC_AUDIT.md",
+      "bytes": 8575,
+      "sha256": "ca643fa8b40198affe9ce2e26af7fba432fbb6292ae1ef999becbedda222a929"
+    },
+    {
+      "file": "completion.mjs",
+      "bytes": 9868,
+      "sha256": "12c303e837b4b010250db8490e32f677d480beedd3c46546329f5d9cfc3b69f2"
+    },
+    {
+      "file": "context-loss.mjs",
+      "bytes": 26682,
+      "sha256": "b85c89ede0af6db5ba74573ada426fa2bb361d1e6b13ed61e2ef0005f61f2cf1"
+    },
+    {
+      "file": "cycles.mjs",
+      "bytes": 22917,
+      "sha256": "95cb83ef9d0aecf352cdbd7c163a6d87cde453ce9a41e56a12b9f53e8cd0323b"
+    },
+    {
+      "file": "engine.test.ts",
+      "bytes": 15837,
+      "sha256": "73a0b75de36b26211d2e84fac08ef734553ec9b671d3f2a43bd843e377d3d6b8"
+    },
+    {
+      "file": "evidence/context-loss/context-loss.json",
+      "bytes": 226001,
+      "sha256": "e5e9a7ba8daaec983a5b9ffc8536654403ebcf21c2a3c1bed9b83f74a933f326"
+    },
+    {
+      "file": "evidence/context-loss/progress.jsonl",
+      "bytes": 122324,
+      "sha256": "c284a2bc1af4b4268d790f80585caf6c1d66db0628c714b2925e66c42f708392"
+    },
+    {
+      "file": "evidence/cycles/progress.jsonl",
+      "bytes": 71803,
+      "sha256": "a2065f1d078adffe54cf79ec3f66724193d06215eff66084b841b6a71b26d4ef"
+    },
+    {
+      "file": "evidence/cycles/recreation-cycle.json",
+      "bytes": 103644,
+      "sha256": "ff919613765b1db9de9afaea1aeb551e5a9fa5d20219abfb09b30f3015ddcc46"
+    },
+    {
+      "file": "evidence/four-world/checkpoint.json",
+      "bytes": 419145,
+      "sha256": "9874c3fb1c35b8877309808e0501479aff30ee1437a9c3b1dcf04d267fcf24b2"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge/execution-status.json",
+      "bytes": 154,
+      "sha256": "9aac7416c139c8f29e922871ee22ca2a62d6eb112dfd2fb50b95a62e53841433"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge/progress.jsonl",
+      "bytes": 244622,
+      "sha256": "fdf8df7cbd5d6e4b2e5d915ea66675102c075b88829bfeea1779dceec173ff66"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge/verification.json",
+      "bytes": 98865,
+      "sha256": "f3280b0d09cc2e1b436e0d85c6fcda52e7630b7b26301344118acb8e8039a182"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "evidence/four-world/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "evidence/four-world/power_nap/execution-status.json",
+      "bytes": 144,
+      "sha256": "2fdfe3ff7a9ceee1ddbfbf1795a1a937e7749b32d90e655ade3727030cc92fbc"
+    },
+    {
+      "file": "evidence/four-world/power_nap/power_nap-desktop.png",
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/four-world/power_nap/power_nap-fold-inner-viewport.png",
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/four-world/power_nap/power_nap-portrait.png",
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/four-world/power_nap/progress.jsonl",
+      "bytes": 206947,
+      "sha256": "65120928d46cacb3d29e01847f2e9165fe6831b24ba7fc62415232638fb9df6d"
+    },
+    {
+      "file": "evidence/four-world/power_nap/verification.json",
+      "bytes": 90570,
+      "sha256": "c2e7659f3328fbcef3aaeb7ef0dd769e10337bd4a3a857da995259227d1a1631"
+    },
+    {
+      "file": "evidence/four-world/power_nap-desktop.png",
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/four-world/power_nap-fold-inner-viewport.png",
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/four-world/power_nap-portrait.png",
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/four-world/relax/execution-status.json",
+      "bytes": 140,
+      "sha256": "93f365c0835039734c5f8db95d9ed075a9c69f0467ca0a8802175879f921116a"
+    },
+    {
+      "file": "evidence/four-world/relax/progress.jsonl",
+      "bytes": 180214,
+      "sha256": "8c2ae29f19d923db867d417227fc5bfd68ec49be99196213104068642452b5f8"
+    },
+    {
+      "file": "evidence/four-world/relax/relax-chrome-visible.png",
+      "bytes": 517803,
+      "sha256": "5cb6bccf8992586dba088cc1c3cd63cb0f920802439efab3a82c2cea267d1bdf"
+    },
+    {
+      "file": "evidence/four-world/relax/relax-desktop.png",
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "evidence/four-world/relax/relax-portrait.png",
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "evidence/four-world/relax/verification.json",
+      "bytes": 88815,
+      "sha256": "6c0f429e8053e2f487ac31d5f7cdf8ae60fec402d00aa9c41215a033a5bb826d"
+    },
+    {
+      "file": "evidence/four-world/relax-chrome-visible.png",
+      "bytes": 517803,
+      "sha256": "5cb6bccf8992586dba088cc1c3cd63cb0f920802439efab3a82c2cea267d1bdf"
+    },
+    {
+      "file": "evidence/four-world/relax-desktop.png",
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "evidence/four-world/relax-portrait.png",
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "evidence/four-world/sleep_prep/execution-status.json",
+      "bytes": 145,
+      "sha256": "4aad770d5d82a4b0e016981f32678d14337bb80336f9a1d087e91bc647797e74"
+    },
+    {
+      "file": "evidence/four-world/sleep_prep/progress.jsonl",
+      "bytes": 169933,
+      "sha256": "67b5803a75e2fa21127080d27fc0a786599ed0abacf1051e43e23a9b26de009d"
+    },
+    {
+      "file": "evidence/four-world/sleep_prep/sleep_prep-desktop.png",
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/four-world/sleep_prep/sleep_prep-portrait.png",
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "evidence/four-world/sleep_prep/verification.json",
+      "bytes": 89528,
+      "sha256": "a58a29f5bbc70bf354a500ef8affb5160a91ba89b29500c7492b03d83bb5f30c"
+    },
+    {
+      "file": "evidence/four-world/sleep_prep-desktop.png",
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/four-world/sleep_prep-portrait.png",
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "evidence/four-world/verification.json",
+      "bytes": 510564,
+      "sha256": "ced2aa8282cc68f631250e1cd9a900e3b5559c66fd7f3f58c12f53322ddcd3bf"
+    },
+    {
+      "file": "evidence/motion/motion-proof.json",
+      "bytes": 28171,
+      "sha256": "ce8f45e69aadebbcfc87abf042fa28d594b63b51c5c7e5d8948e070bf89da332"
+    },
+    {
+      "file": "evidence/motion/nature-winter_lodge-after.png",
+      "bytes": 418658,
+      "sha256": "28aa8bd372af59f4f68e06bbe3021e58dddffdfbe76e4084663a5acf5d4179a0"
+    },
+    {
+      "file": "evidence/motion/nature-winter_lodge-before.png",
+      "bytes": 418633,
+      "sha256": "1b3fae5e59c03323f942643b4cc3dc7bae6cce52013fd2728f42398c13e51e7e"
+    },
+    {
+      "file": "evidence/motion/power_nap-after.png",
+      "bytes": 586150,
+      "sha256": "111c1a03eb55d1f6d91044538e8117a32a8877662e39adf2ee454ace610cc12d"
+    },
+    {
+      "file": "evidence/motion/power_nap-before.png",
+      "bytes": 585924,
+      "sha256": "c9d29e0a0c6dbfac39667b2d5915304d7763d0456010c3322c3e27f03cbddb37"
+    },
+    {
+      "file": "evidence/motion/progress.jsonl",
+      "bytes": 58647,
+      "sha256": "63211c1e425c0ffc0b9d477363faafdbfd07b6f176e8b793a0df24ea62d69abf"
+    },
+    {
+      "file": "evidence/motion/relax-after.png",
+      "bytes": 384981,
+      "sha256": "656649d22898fb4c9c9537132749948bcf95652bc9519efffc1f5815a9ffa7a3"
+    },
+    {
+      "file": "evidence/motion/relax-before.png",
+      "bytes": 384927,
+      "sha256": "38fc5e3fe75772a40f49e3721562a535ad3ef4dcb519ece30905fafc03093a68"
+    },
+    {
+      "file": "evidence/motion/sleep_prep-after.png",
+      "bytes": 250071,
+      "sha256": "7a66a2e8c910b9075c74d9a32987d795a85cbb31acd4d0260754667f9298a77d"
+    },
+    {
+      "file": "evidence/motion/sleep_prep-before.png",
+      "bytes": 250033,
+      "sha256": "b28e57e20c585c00311d0106435f3324b68a588645a0372e084ccbebe3682be0"
+    },
+    {
+      "file": "motion-proof.mjs",
+      "bytes": 6135,
+      "sha256": "c7bfd10005de4ab9ff401ae7493bda743c5a42fa50202ffce8644a3547118382"
+    },
+    {
+      "file": "provenance.mjs",
+      "bytes": 2876,
+      "sha256": "d0e465095ce2e73ead909b85b0400ead6a29711f1a1a4c36bc5eebb534aafcb1"
+    },
+    {
+      "file": "results/budget.log",
+      "bytes": 292,
+      "sha256": "641c2dd8d786742e25c33ce221f1f704e13febc42f4d77eb9c0d60f7cb8db2c8"
+    },
+    {
+      "file": "results/build.log",
+      "bytes": 2983,
+      "sha256": "f1cb26051cb519cbb7fd376c996d2f43601fc1ea69f125499d44db1e8485b9d6"
+    },
+    {
+      "file": "results/context-loss.log",
+      "bytes": 123746,
+      "sha256": "a77ba0605be05a5570a964f065140104b7b809e584f90e5a014422fe3db28c82"
+    },
+    {
+      "file": "results/cycles.log",
+      "bytes": 5628,
+      "sha256": "9061aeabed6155e996d2e0013f5416c08b89903cbb526d04c374e123df5e7317"
+    },
+    {
+      "file": "results/four-world.log",
+      "bytes": 1150,
+      "sha256": "69756d3a7464bb26ad76105392c5815d1959c0ce7ad653ec28fe1adc6cb4f7e2"
+    },
+    {
+      "file": "results/motion-proof.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "results/qa-build.log",
+      "bytes": 1854,
+      "sha256": "cf9b9dbed4c77038e327f11c4037780b9f450d94cef62a84cfe8a191f92a6e24"
+    },
+    {
+      "file": "results/typecheck.log",
+      "bytes": 158,
+      "sha256": "f351d6cc7f837f6090b2d50736a5ed84cc07aee8c71a95acdbdeca9a31a22ceb"
+    },
+    {
+      "file": "results/unit.log",
+      "bytes": 382,
+      "sha256": "af3e661dbdb770001d168ea80fd689a000cf4405a600f1452c2436e8596197d0"
+    },
+    {
+      "file": "verify-group.mjs",
+      "bytes": 3281,
+      "sha256": "359b2bc85bca6c160cc5d7439fd61a3b21b254117ba71512fc163d245d50a4fc"
+    },
+    {
+      "file": "verify.mjs",
+      "bytes": 18225,
+      "sha256": "cbc7bb5414188fbb76add3257cafe77f676b668ebedb0dccf1a741951a9ee7c1"
+    }
+  ]
+}

@@ -152,14 +152,16 @@ describe('CozyEngine one-batch completion backpressure (protocol doubles only)',
     step(64);expect(f.renderer.render).toHaveBeenCalledTimes(2);
   });
 
-  it('drops unsubmitted positive time on stop, retaining an inert fence until new work needs it',async()=>{
+  it('drops unsubmitted positive time on stop but observes completion without another draw',async()=>{
     const f=await fixture();f.engine.renderFrame(0);f.engine.start();step(32);step(32);
     const before=f.engine.diagnostics(),updates=f.update.mock.calls.length;
     f.engine.stop();const polls=f.gl.clientWaitSync.mock.calls.length;
     step(1000);
-    expect(f.gl.clientWaitSync).toHaveBeenCalledTimes(polls);expect(f.gl.deleteSync).not.toHaveBeenCalled();
+    expect(f.gl.clientWaitSync.mock.calls.length).toBeGreaterThan(polls);expect(f.gl.deleteSync).not.toHaveBeenCalled();
     expect(f.update).toHaveBeenCalledTimes(updates);expect(f.engine.diagnostics()).toMatchObject({frames:before.frames,time:before.time,running:false});
     f.gl.signal();step(1000);expect(f.renderer.render).toHaveBeenCalledTimes(1);
+    expect(f.gl.deleteSync).toHaveBeenCalledTimes(1);
+    expect(f.engine.diagnostics().gpu).toMatchObject({completed:1,inFlight:0,pending:null,pollScheduled:false});
     f.engine.start();step(16);
     expect(f.renderer.render).toHaveBeenCalledTimes(2);expect(f.gl.deleteSync).toHaveBeenCalledTimes(1);
     expect(f.engine.diagnostics().time-before.time).toBeGreaterThan(0);

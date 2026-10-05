@@ -1,0 +1,641 @@
+{
+  "generatedAt": "2026-10-04T19:16:50.446Z",
+  "sourceRevision": "uncommitted source snapshot; use sourceHash/sourceFiles for exact provenance",
+  "sourceHash": "670d0544eba758352fb278b6eb42af567ef77050a687bcb74f1f0d0e3e9bc7de",
+  "sourceFiles": [
+    {
+      "path": "AncientForestWorld.tsx",
+      "sha256": "8e3c0fa0d8732511952bc680d37dfc6b74ef63da90ad3709d750a2c672553932"
+    },
+    {
+      "path": "BambooWorld.tsx",
+      "sha256": "f3c26503fef49fb4db89160c221dd26ca76282650c0f8ad49496ec5294c8cbd8"
+    },
+    {
+      "path": "engine.ts",
+      "sha256": "fc1d0f4f02eacbfcd5606701abd9f2deae9492f9f5769ce5cbb3eaf700d1e6d6"
+    },
+    {
+      "path": "gesture.test.ts",
+      "sha256": "8f6294a4cf17ee1b6604f2fb16b3d9bb3857ac393880d06fe25ac7d892deabd2"
+    },
+    {
+      "path": "gesture.ts",
+      "sha256": "67a90fae02e72a2233c68191386f0178bfbd764df9c64429592897e2e7b30f3e"
+    },
+    {
+      "path": "host.ts",
+      "sha256": "95f11c971c0b2a8acf93e72cf41120aba9d227c5c22a3074c6f3b58c03cd425d"
+    },
+    {
+      "path": "INTEGRATION.md",
+      "sha256": "d4f365153fd30d3e34808afe87e86ecc6bf352eaaaa96564f83b49e11b61ad8a"
+    },
+    {
+      "path": "livingWoods.browser.test.ts",
+      "sha256": "1a1fea8f3471eaaacd503b99bcdc0356b3a85ffb636450677b7cd4447ee3df35"
+    },
+    {
+      "path": "livingWoods.css",
+      "sha256": "95d99e6d793ba920789ffcf5bb49133f2d36cb3085884cdfbe7cbc5cde134622"
+    },
+    {
+      "path": "MorningPorchWorld.tsx",
+      "sha256": "68b13118c86592bd94d417e77e34dad7bef0b3a72e90040b4f9ed17c212e203e"
+    },
+    {
+      "path": "qa/.gitignore",
+      "sha256": "6af9dc8dfbf1e0cfd82fbf37edcd545f7c1f11a270a8737431419c80dd972326"
+    },
+    {
+      "path": "qa/harness.tsx",
+      "sha256": "f9be8ebe06f6b287539643380f19a6b62aea3fa93f13d0f16351090947315908"
+    },
+    {
+      "path": "qa/index.html",
+      "sha256": "d8c616bfb5aa84950607bad8e8568bb27236d6d530b808a94761fae9ea8afefc"
+    },
+    {
+      "path": "qa/README.md",
+      "sha256": "ec859ce0d79740392c876374d5b9ab3cecfc06af480a99706ad2820c18fa1a48"
+    },
+    {
+      "path": "qa/run.mjs",
+      "sha256": "487e554527d99b4a236fc6c3385ea304c0d58723c52013d490b1033e3d5d41ee"
+    },
+    {
+      "path": "RainyForestWorld.tsx",
+      "sha256": "b73a6c1116ca61f1655e6d19857814be4ef9378f1c3d4179b981e71fbe802fc4"
+    },
+    {
+      "path": "REFERENCE_REVIEW.md",
+      "sha256": "0392023fdb283a1e4eddadb85841886df93a3c5afc6dfe8e65a4cee0d08a7ef5"
+    },
+    {
+      "path": "scenes/ancientForest.ts",
+      "sha256": "f80b6f00ec8ea48c3f66863ce78ae8cb80ee613a3649997b091463e6230e256c"
+    },
+    {
+      "path": "scenes/bamboo.ts",
+      "sha256": "30a2fa1c9bf1a20f6f1646a02a314f16d85452cd134c9db0c7c834b35226f111"
+    },
+    {
+      "path": "scenes/morningPorch.ts",
+      "sha256": "c025a435ff0cc96f75b1650735726380c867308794679fc6732cff762a9a8daa"
+    },
+    {
+      "path": "scenes/rainyForest.ts",
+      "sha256": "00bfe7e614556bf0bbc20d532ec6ddd0098b643e870e4578c801513e016748dc"
+    },
+    {
+      "path": "types.ts",
+      "sha256": "56ef46fb22db1f85a332e52830972355ef1d33fda0a145a7fff1b39fccb98375"
+    },
+    {
+      "path": "WorldSurface.tsx",
+      "sha256": "948bd36fb0fe6a1b383cd492a2e5cb8ed6045ded9d6597e4d8b6921bf036a51f"
+    }
+  ],
+  "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd",
+  "bundleFiles": [
+    {
+      "path": "assets/index-C-tstfzs.css",
+      "sha256": "ccad5e0dce9e1c2d63f1d25a40c1de0db14cb438ca160355e53b7ce9ceecfb63"
+    },
+    {
+      "path": "assets/index-C2tOngXp.js",
+      "sha256": "5ca65625c478b4aa55714acd7b6f7bdb2d58a58e89ae48f4e4db2f9e6a5cd960"
+    },
+    {
+      "path": "index.html",
+      "sha256": "01634d0b80a5feb73faf94c5a6f7d6fa3f8f4567433d93eb6dec6cae81365d36"
+    }
+  ],
+  "environment": {
+    "renderer": "Chromium software WebGL (SwiftShader)",
+    "hardwareClaim": "Viewport checks only; no physical phone/Fold or device FPS/thermal claim.",
+    "hiddenTest": "Synthetic visibilitychange with document.hidden/visibilityState override, not real tab switching.",
+    "browserExecutable": "/tmp/cosmic-browser-bin/chromium",
+    "browserVersion": "153.0.8010.0"
+  },
+  "verificationRunnerSha256": "7ef7a0435f09f50d1155b6686fd073c10ee93fe79c3384ecc85e8cd1566d22f9",
+  "scenes": [
+    {
+      "world": "morning",
+      "screenshots": [
+        {
+          "file": "morning-cold-inactive.png",
+          "sha256": "3cd0f67977ab52d2b77e3768eabc15dfabfd4c67c3406cb68e71f0b6978f134b",
+          "bytes": 874174,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "morning-desktop.png",
+          "sha256": "3cd0f67977ab52d2b77e3768eabc15dfabfd4c67c3406cb68e71f0b6978f134b",
+          "bytes": 874174,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "morning-portrait.png",
+          "sha256": "84200c1ad04f0bda78858835996ec39fd840873e662886e820166fbe48655266",
+          "bytes": 221579,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "morning-fold-inner-viewport.png",
+          "sha256": "e90f5fe689603433087942d42117d6cb40ecfeadaa0190e1460c563ae0b1294f",
+          "bytes": 568984,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 201,
+            "triangles": 678584,
+            "geometries": 102,
+            "textures": 8,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 201,
+            "triangles": 678584,
+            "geometries": 102,
+            "textures": 8,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": true
+        },
+        "scope": "cold inactive screenshots and stable paused pixels only; motion and interactions not checked in this capture pass"
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 201,
+          "triangles": 678584,
+          "geometries": 102,
+          "textures": 8,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 182,
+          "triangles": 678356,
+          "geometries": 102,
+          "textures": 8,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 200,
+          "triangles": 678572,
+          "geometries": 102,
+          "textures": 8,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "world": "rainy",
+      "screenshots": [
+        {
+          "file": "rainy-cold-inactive.png",
+          "sha256": "cf3e6f4858ef423f4de51aa3900c3c59625118733c6807c995942324b93e6376",
+          "bytes": 996142,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "rainy-desktop.png",
+          "sha256": "cf3e6f4858ef423f4de51aa3900c3c59625118733c6807c995942324b93e6376",
+          "bytes": 996142,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "rainy-portrait.png",
+          "sha256": "993cd2fa3cc4b8903a2cac5def7ca49f96108cc282866a0ee2f91bd3c3bacb88",
+          "bytes": 308518,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "rainy-fold-inner-viewport.png",
+          "sha256": "8a943b3c9d843507756b67e530fe9c2ef15865389a9d2e6c6582a83f30e1675b",
+          "bytes": 681937,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 98,
+            "triangles": 2001726,
+            "geometries": 54,
+            "textures": 7,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 98,
+            "triangles": 2001726,
+            "geometries": 54,
+            "textures": 7,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": true
+        },
+        "scope": "cold inactive screenshots and stable paused pixels only; motion and interactions not checked in this capture pass"
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 98,
+          "triangles": 2001726,
+          "geometries": 54,
+          "textures": 7,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 87,
+          "triangles": 1999402,
+          "geometries": 54,
+          "textures": 7,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 96,
+          "triangles": 2001334,
+          "geometries": 54,
+          "textures": 7,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "world": "ancient",
+      "screenshots": [
+        {
+          "file": "ancient-cold-inactive.png",
+          "sha256": "9a50a7182c221e46fa05c41253ad3574f3eb2a57907014af53b0141482f10acb",
+          "bytes": 897728,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "ancient-desktop.png",
+          "sha256": "9a50a7182c221e46fa05c41253ad3574f3eb2a57907014af53b0141482f10acb",
+          "bytes": 897728,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "ancient-portrait.png",
+          "sha256": "4d03ecc6230e35c0c7e3567c02669467963acdcf4addf33a917a3bc385f63b98",
+          "bytes": 297705,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "ancient-fold-inner-viewport.png",
+          "sha256": "dc3894ce2aa5b0ae83d53a9497bbbe089645445539769642ad00585bb55bb70b",
+          "bytes": 648385,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 39,
+            "triangles": 341761,
+            "geometries": 18,
+            "textures": 5,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 39,
+            "triangles": 341761,
+            "geometries": 18,
+            "textures": 5,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": true
+        },
+        "scope": "cold inactive screenshots and stable paused pixels only; motion and interactions not checked in this capture pass"
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 39,
+          "triangles": 341761,
+          "geometries": 18,
+          "textures": 5,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 39,
+          "triangles": 341761,
+          "geometries": 18,
+          "textures": 5,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 39,
+          "triangles": 341761,
+          "geometries": 18,
+          "textures": 5,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "world": "bamboo",
+      "screenshots": [
+        {
+          "file": "bamboo-cold-inactive.png",
+          "sha256": "daeeb47ed9af3a8dfcd883266c8b56a5aa0fcaf530c247ebdc47e10aece8d77c",
+          "bytes": 1135647,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "bamboo-desktop.png",
+          "sha256": "daeeb47ed9af3a8dfcd883266c8b56a5aa0fcaf530c247ebdc47e10aece8d77c",
+          "bytes": 1135647,
+          "viewport": {
+            "width": 1280,
+            "height": 800
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "bamboo-portrait.png",
+          "sha256": "a8c49a746cf35bf82e0829e518807887a1a282db3f3bdb1d9675b05adfd245e2",
+          "bytes": 384175,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        },
+        {
+          "file": "bamboo-fold-inner-viewport.png",
+          "sha256": "5834a860adf5c282f4d7419d5a876cc6a621765af1e65c082e58e248cde7b2cb",
+          "bytes": 835083,
+          "viewport": {
+            "width": 882,
+            "height": 768
+          },
+          "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd"
+        }
+      ],
+      "checks": {
+        "inactive": {
+          "passed": true,
+          "before": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 22,
+            "triangles": 965002,
+            "geometries": 12,
+            "textures": 5,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "after": {
+            "canvasCount": 1,
+            "engine": "1",
+            "frames": 2,
+            "time": 0,
+            "drawCalls": 22,
+            "triangles": 965002,
+            "geometries": 12,
+            "textures": 5,
+            "width": 1280,
+            "height": 800,
+            "status": "ready",
+            "motion": "paused"
+          },
+          "identicalPixels": true
+        }
+      },
+      "metrics": [
+        {
+          "viewport": "desktop",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 2,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 965002,
+          "geometries": 12,
+          "textures": 5,
+          "width": 1280,
+          "height": 800,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "portrait",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 3,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 965002,
+          "geometries": 12,
+          "textures": 5,
+          "width": 390,
+          "height": 844,
+          "status": "ready",
+          "motion": "paused"
+        },
+        {
+          "viewport": "fold-inner-viewport",
+          "canvasCount": 1,
+          "engine": "1",
+          "frames": 4,
+          "time": 0,
+          "drawCalls": 22,
+          "triangles": 965002,
+          "geometries": 12,
+          "textures": 5,
+          "width": 882,
+          "height": 768,
+          "status": "ready",
+          "motion": "paused"
+        }
+      ],
+      "errors": [
+        "THREE.WebGLProgram: Shader Error 0 - VALIDATE_STATUS false\n\nMaterial Name: \nMaterial Type: MeshStandardMaterial\n\nProgram Info Log: Fragment shader is not compiled.\n\nFRAGMENT\n\nERROR: 0:1708: 'vUv' : undeclared identifier\nERROR: 0:1708: 'x' :  field selection requires structure, vector, or interface block on left hand side\nERROR: 0:1709: 'vUv' : undeclared identifier\nERROR: 0:1709: 'x' :  field selection requires structure, vector, or interface block on left hand side\n\n  1703: \tdiffuseColor *= sampledDiffuseColor;\n  1704: #endif\n  1705: #if defined( USE_COLOR ) || defined( USE_COLOR_ALPHA )\n  1706: \tdiffuseColor *= vColor;\n  1707: #endif\n> 1708:       float midrib = 1.0-smoothstep(0.008,0.042,abs(vUv.x-.5));\n  1709:       diffuseColor.rgb*=mix(.78,1.10,sin(vUv.x*3.14159));\n  1710:       diffuseColor.rgb+=vec3(.032,.037,.007)*midrib;\n  1711:     \n  1712: #ifdef USE_ALPHAMAP\n  1713: \tdiffuseColor.a *= texture2D( alphaMap, vAlphaMapUv ).g;\n  1714: #endif"
+      ]
+    }
+  ],
+  "errors": [
+    "AssertionError [ERR_ASSERTION]: bamboo: no JavaScript/WebGL errors\n+ actual - expected\n\n+ [\n+   'THREE.WebGLProgram: Shader Error 0 - VALIDATE_STATUS false\\n' +\n+     '\\n' +\n+     'Material Name: \\n' +\n+     'Material Type: MeshStandardMaterial\\n' +\n+     '\\n' +\n+     'Program Info Log: Fragment shader is not compiled.\\n' +\n+     '\\n' +\n+     'FRAGMENT\\n' +\n+     '\\n' +\n+     \"ERROR: 0:1708: 'vUv' : undeclared identifier\\n\" +\n+     \"ERROR: 0:1708: 'x' :  field selection requires structure, vector, or interface block on left hand side\\n\" +\n+     \"ERROR: 0:1709: 'vUv' : undeclared identifier\\n\" +\n+     \"ERROR: 0:1709: 'x' :  field selection requires structure, vector, or interface block on left hand side\\n\" +\n+     '\\n' +\n+     '  1703: \\tdiffuseColor *= sampledDiffuseColor;\\n' +\n+     '  1704: #endif\\n' +\n+     '  1705: #if defined( USE_COLOR ) || defined( USE_COLOR_ALPHA )\\n' +\n+     '  1706: \\tdiffuseColor *= vColor;\\n' +\n+     '  1707: #endif\\n' +\n+     '> 1708:       float midrib = 1.0-smoothstep(0.008,0.042,abs(vUv.x-.5));\\n' +\n+     '  1709:       diffuseColor.rgb*=mix(.78,1.10,sin(vUv.x*3.14159));\\n' +\n+     '  1710:       diffuseColor.rgb+=vec3(.032,.037,.007)*midrib;\\n' +\n+     '  1711:     \\n' +\n+     '  1712: #ifdef USE_ALPHAMAP\\n' +\n+     '  1713: \\tdiffuseColor.a *= texture2D( alphaMap, vAlphaMapUv ).g;\\n' +\n+     '  1714: #endif'\n+ ]\n- []\n\n    at runLivingWoodsQA (file:///workspace/scratch/f9b5eee20809/brainwave-livingwoods/components/immersiveWorlds/livingWoods/qa/run.mjs:154:18)\n    at async file:///workspace/scratch/f9b5eee20809/brainwave-livingwoods/components/immersiveWorlds/livingWoods/qa/run.mjs:315:3"
+  ],
+  "passed": false
+}

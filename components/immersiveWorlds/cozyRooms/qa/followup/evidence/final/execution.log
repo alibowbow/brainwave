@@ -1,0 +1,18 @@
+FOLLOWUP START relax
+CAPTURE cold relax desktop
+CAPTURE cold relax portrait
+FOLLOWUP PASS relax
+FOLLOWUP START sleep_prep
+CAPTURE cold sleep_prep desktop
+CAPTURE cold sleep_prep portrait
+FOLLOWUP PASS sleep_prep
+FOLLOWUP START power_nap
+CAPTURE cold power_nap desktop
+CAPTURE cold power_nap portrait
+CAPTURE cold power_nap fold-inner-viewport
+FOLLOWUP PASS power_nap
+FOLLOWUP START nature:winter_lodge
+CAPTURE cold nature:winter_lodge desktop
+CAPTURE cold nature:winter_lodge portrait
+CAPTURE cold nature:winter_lodge landscape-viewport
+FOLLOWUP PASS nature:winter_lodge

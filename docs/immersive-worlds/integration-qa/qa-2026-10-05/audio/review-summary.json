@@ -1,0 +1,497 @@
+{
+  "status": "passed",
+  "strictTerminalPass": true,
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z",
+  "completedReport": {
+    "path": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z/completed-report.json",
+    "sourcePath": "/workspace/scratch/448e5748a57d/integration-audit/local-audio-failures-20261005T000533Z/evidence/audio/audio-failure-verification.json",
+    "sha256": "848b903f652a7617e1e813b6b8a69af484f4810a8f1e4d71312f39a01642458e",
+    "bytes": 753529,
+    "finishedAt": "2026-10-05T00:06:13.385Z",
+    "runnerExitCode": 0,
+    "capturedAfterVerifierExit": true,
+    "fsyncConfirmed": true,
+    "byteIdentityVerified": true,
+    "capturedAt": "2026-10-05T00:06:13Z"
+  },
+  "separateReadArchiveHashVerified": true,
+  "originalRawMatchesArchive": true,
+  "elapsedTotalSeconds": 40.579,
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "25ac589617465f9857789527da57984fa9cb45ad7b588292035b66b2d923ef71",
+  "wrapperSHA256": "4e1f48a5e4b37339a6c8dc2fd94f28fe60b35c13beccddb7c4c84ae5b17bfd66",
+  "scope": "Existing application routes, native Web Audio and controlled HTTP 503 audio responses in isolated browser contexts.",
+  "evidenceScope": "PCM measured at the existing pre-limiter master analyser. No human audition, speaker/headphone, perceptual quality, or output loudness claim.",
+  "recordingScope": "Existing monsoon-eaves preset with every non-rain layer removed through its actual picker, leaving only the approved rain recording and disabled brainwave tone.",
+  "checks": [
+    {
+      "name": "hybrid session waits for one trusted gesture before creating its graph",
+      "status": "passed",
+      "elapsedMs": 7247,
+      "evidence": {
+        "before": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "analyserGraphs": 0,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 0,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            }
+          ],
+          "media": []
+        },
+        "after": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "analyserGraphs": 1,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 14,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": true,
+              "state": "suspended"
+            }
+          ],
+          "media": []
+        },
+        "route": "#/play/nature/bamboo_grove",
+        "oneTrustedTap": true
+      }
+    },
+    {
+      "name": "hybrid recording failures preserve real procedural output",
+      "status": "passed",
+      "elapsedMs": 2751,
+      "evidence": {
+        "failedFiles": [
+          "mountain-wind-cc0-v2.mp3",
+          "forest-birds-alishan-cc0-v2.mp3",
+          "creek-brook-cc0-v3.mp3"
+        ],
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "analyserGraphs": 1,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 19,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": true,
+              "state": "suspended"
+            }
+          ],
+          "media": []
+        },
+        "pcm": {
+          "samples": 12,
+          "intervalMs": 100,
+          "maxPeak": 0.034005776047706604,
+          "maxRms": 0.018542933797782747
+        },
+        "screenshot": "hybrid-fallback.png"
+      }
+    },
+    {
+      "name": "recording-only test starts through one trusted playback gesture",
+      "status": "passed",
+      "elapsedMs": 6998,
+      "evidence": {
+        "before": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "analyserGraphs": 0,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 0,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            }
+          ],
+          "media": []
+        },
+        "after": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "analyserGraphs": 1,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 13,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": true,
+              "state": "suspended"
+            }
+          ],
+          "media": [
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 0,
+              "errorEvents": 1,
+              "currentTime": 0,
+              "paused": false,
+              "readyState": 0
+            }
+          ]
+        },
+        "route": "#/play/nature/monsoon_eaves",
+        "oneTrustedTap": true
+      }
+    },
+    {
+      "name": "real picker isolates rain and player shows its actionable failure",
+      "status": "passed",
+      "elapsedMs": 8859,
+      "evidence": {
+        "selected": [
+          "REAL빗소리"
+        ],
+        "pcm": {
+          "samples": 12,
+          "intervalMs": 100,
+          "maxPeak": 0,
+          "maxRms": 0
+        },
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "analyserGraphs": 1,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 158,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": true,
+              "state": "suspended"
+            }
+          ],
+          "media": [
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 0,
+              "errorEvents": 1,
+              "currentTime": 0,
+              "paused": false,
+              "readyState": 0
+            }
+          ]
+        },
+        "screenshot": "rain-player-failure.png",
+        "synthesisScope": "No audible procedural-rain fallback at the master analyser; internal muted generators are not claimed absent."
+      }
+    },
+    {
+      "name": "immersive view keeps one actionable notice and retries in the existing AudioContext",
+      "status": "passed",
+      "elapsedMs": 4816,
+      "evidence": {
+        "before": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "analyserGraphs": 1,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 175,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": true,
+              "state": "suspended"
+            }
+          ],
+          "media": [
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 0,
+              "errorEvents": 1,
+              "currentTime": 0,
+              "paused": false,
+              "readyState": 0
+            }
+          ]
+        },
+        "after": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "analyserGraphs": 1,
+          "successfulDecodes": 0,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 179,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": true,
+              "state": "suspended"
+            }
+          ],
+          "media": [
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 0,
+              "errorEvents": 1,
+              "currentTime": 0,
+              "paused": true,
+              "readyState": 0
+            },
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 0,
+              "errorEvents": 1,
+              "currentTime": 0,
+              "paused": false,
+              "readyState": 0
+            }
+          ]
+        },
+        "pcm": {
+          "samples": 12,
+          "intervalMs": 100,
+          "maxPeak": 0,
+          "maxRms": 0
+        },
+        "screenshot": "rain-immersive-failure.png"
+      }
+    },
+    {
+      "name": "unrouting the failure and one trusted retry restores the same recording",
+      "status": "passed",
+      "elapsedMs": 6302,
+      "evidence": {
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "analyserGraphs": 1,
+          "successfulDecodes": 1,
+          "failedDecodes": 0,
+          "bufferSourceStarts": 277,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": false,
+              "state": "suspended"
+            },
+            {
+              "activeGesture": true,
+              "state": "suspended"
+            }
+          ],
+          "media": [
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 0,
+              "errorEvents": 1,
+              "currentTime": 0,
+              "paused": true,
+              "readyState": 0
+            },
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 0,
+              "errorEvents": 1,
+              "currentTime": 0,
+              "paused": true,
+              "readyState": 0
+            },
+            {
+              "url": "http://127.0.0.1:50101/audio/nature/rain-jun-v1.mp3",
+              "playingEvents": 1,
+              "errorEvents": 0,
+              "currentTime": 0,
+              "paused": true,
+              "readyState": 0
+            }
+          ]
+        },
+        "pcm": {
+          "samples": 12,
+          "intervalMs": 100,
+          "maxPeak": 0.009085566736757755,
+          "maxRms": 0.002673184562475647
+        },
+        "screenshot": "rain-recovered-player.png",
+        "recovery": "Same local recording, native media/buffer playback, no context replacement."
+      }
+    },
+    {
+      "name": "no uncaught audio runtime failures beyond injected network responses",
+      "status": "passed",
+      "elapsedMs": 0,
+      "evidence": {
+        "errors": [],
+        "injectedResponsesAreExpected": true
+      }
+    }
+  ],
+  "unrunGates": [],
+  "coldRecordedRawReadMaxMs": 126.34227800000008,
+  "screenshots": [
+    {
+      "file": "hybrid-fallback.png",
+      "width": 1280,
+      "height": 900,
+      "bytes": 1073702,
+      "sha256": "e0427d1acc9133633c7fe14cd6058051ffcd56ae4188579bdb95874ceef9f2bf",
+      "openedWithViewImage": true,
+      "pixelReview": "Distinct bamboo/stream scene is rendered. App title, copy and fullscreen controls are readable; no recording-failure notice overlays this hybrid scene. Lower transport is not visible in this capture, so this PNG alone does not prove its visibility."
+    },
+    {
+      "file": "rain-player-failure.png",
+      "width": 1280,
+      "height": 900,
+      "bytes": 1049078,
+      "sha256": "57a5ee0bb8fa272ee368660380aa3e987d8aea201fc3e9d85c99586ba3e28cca",
+      "openedWithViewImage": true,
+      "pixelReview": "Rainy porch remains rendered. One clear failure bar below the header reads that rain audio could not load and exposes a readable retry action. No duplicate notice or overlap with the header. The lower scene continues beyond this capture edge; full bottom-control visibility is not asserted from this PNG."
+    },
+    {
+      "file": "rain-immersive-failure.png",
+      "width": 1280,
+      "height": 900,
+      "bytes": 1200942,
+      "sha256": "58b87aecb5960ad3e2306f5ea00282678a6ac7a9820c515b0afc538cc601a32f",
+      "openedWithViewImage": true,
+      "pixelReview": "One centered compact failure notice and retry button are visible over the porch. Top mode switch/exit, bottom timer/Pause/Stop pill and separate scene-action button are visible with no overlap."
+    },
+    {
+      "file": "rain-recovered-player.png",
+      "width": 1280,
+      "height": 900,
+      "bytes": 1108451,
+      "sha256": "b46cb6128dca2fc8e78fb5f0f9472f87eb4240140494d6fc33fb41cbb4e1d37b",
+      "openedWithViewImage": true,
+      "pixelReview": "Failure notice is absent after recovery. Scene remains rendered; mode switch, bottom29:40 timer/Pause/Stop/settings pill and scene action are visible. Fullscreen control shows a visible keyboard-focus outline."
+    }
+  ],
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "browserOwnership": {
+    "pid": 53,
+    "launchedAt": "2026-10-05T00:05:35.076Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-05T00:05:35.076Z",
+        "pid": 53
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-05T00:06:12.259Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-05T00:06:12.288Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-05T00:06:12.312Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-05T00:06:12.312Z"
+  },
+  "cleanupErrors": [],
+  "reportErrors": [],
+  "ownedStillAlive": [],
+  "gpu": "released",
+  "additionalRuns": 0,
+  "priorLinksEvidence": "unchanged; no prior raw report reconstructed"
+}

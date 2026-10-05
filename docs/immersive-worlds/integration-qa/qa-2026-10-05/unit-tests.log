@@ -1,0 +1,14 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> brainwave-ritual-studio@4.0.0 test
+> vitest run --exclude '**/*.browser.test.ts'
+
+
+ RUN  v4.1.9 /workspace/scratch/448e5748a57d/brainwave-integration
+
+
+ Test Files  72 passed (72)
+      Tests  704 passed (704)
+   Start at  20:15:16
+   Duration  5.46s (transform 4.89s, setup 0ms, import 9.18s, tests 12.56s, environment 8ms)
+

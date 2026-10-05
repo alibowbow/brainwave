@@ -1,0 +1,1703 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only comparison of three retained SwiftShader diagnostics on production source 4d83102d. Root selected a bounded staticFrameCurrent candidate separately; its review and required runtime gates remain pending and these diagnostics do not establish that candidate as a fix.",
+  "timingUnits": "Milliseconds from each page performance.now(); compare durations, not cross-run absolute timestamps. Stages include observer overhead unless native API duration explicitly stated.",
+  "shared": {
+    "productionSourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+    "three": {
+      "version": "0.186.1",
+      "rendererSourceSHA256": "9e8740aad691246b31b3704014e8f3bbd38a8e7bf4b1b4d23868541b023cc63a"
+    },
+    "originalVerifySHA256": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+    "browser": "153.0.8010.0",
+    "coveredAndUndrainedBrowserBundleIdentical": true,
+    "coveredAndUndrainedProbeEntryIdentical": true
+  },
+  "runs": {
+    "drain": {
+      "outcome": "Invalid fence coverage; stopped before disposal/fresh comparison; separate cleanup failure",
+      "overallDiagnosticPassed": false,
+      "recordedCompletedSequenceChecks": null,
+      "partialCheckCountInvented": false,
+      "originalGateClaim": false,
+      "cleanupError": "Error: browser cleanup: external 10000 ms deadline; comparison ends without retry",
+      "identity": {
+        "gitHead": "45591e92be66a04f6eed97d0780d693968ab9df9",
+        "productionSourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+        "browserBundleSHA256": "f292a14103e188eff9af6ebb236519cbcaa394afdfe748d466cef51a4e891652",
+        "probeEntrySHA256": "5782f4de4a4e03d0a5fc0535338d527f4976f953fb46da730dd6a7637951967e",
+        "probeScriptsSHA256": "e1243079a471e5f0ab67e50560f1554ef409b7ee729ab4b4153d7a0706b27339",
+        "originalSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+        "executedSequenceSHA256": "e09be8f3ed9e529e30084a6217ec1e8dba971fc29b5001f3799a4ae271b704ad",
+        "sourceAndBundleUnchangedAtEnd": true
+      },
+      "stages": [
+        {
+          "instance": 1,
+          "observed": true,
+          "constructor": {
+            "startSequence": 5,
+            "endSequence": 11,
+            "startMs": 446.4,
+            "endMs": 498.9,
+            "durationMs": 52.5
+          },
+          "getContext": {
+            "startSequence": 6,
+            "endSequence": 7,
+            "startMs": 450,
+            "endMs": 487.1,
+            "durationMs": 37.1
+          },
+          "initCall": {
+            "startSequence": 22,
+            "endSequence": 25,
+            "startMs": 527.1,
+            "endMs": 1879.3,
+            "durationMs": 1352.2
+          },
+          "initResolved": {
+            "startSequence": 22,
+            "endSequence": 32,
+            "startMs": 527.1,
+            "endMs": 1881.9,
+            "durationMs": 1354.8
+          },
+          "factory": {
+            "startSequence": 23,
+            "endSequence": 24,
+            "startMs": 527.3,
+            "endMs": 1878.3,
+            "durationMs": 1351.0
+          },
+          "firstEngineRenderFrame0": {
+            "startSequence": 33,
+            "endSequence": 264,
+            "startMs": 1882,
+            "endMs": 3920.1,
+            "durationMs": 2038.1
+          },
+          "firstRendererRender": {
+            "startSequence": 34,
+            "endSequence": 263,
+            "startMs": 1882.3,
+            "endMs": 3919.8,
+            "durationMs": 2037.5
+          },
+          "constructorToHostReady": {
+            "startSequence": 5,
+            "endSequence": 266,
+            "startMs": 446.4,
+            "endMs": 3920.6,
+            "durationMs": 3474.2
+          },
+          "largestUntracedInterEventGapsInsideFirstRender": [
+            {
+              "durationMs": 230.9,
+              "from": {
+                "sequence": 172,
+                "type": "gl-api-return",
+                "at": 2981.300000000745,
+                "method": "linkProgram",
+                "call": 12
+              },
+              "to": {
+                "sequence": 173,
+                "type": "gl-api-entry",
+                "at": 3212.199999999255,
+                "method": "getProgramParameter",
+                "call": 34
+              }
+            },
+            {
+              "durationMs": 202.6,
+              "from": {
+                "sequence": 184,
+                "type": "gl-api-return",
+                "at": 3236.5,
+                "method": "linkProgram",
+                "call": 13
+              },
+              "to": {
+                "sequence": 185,
+                "type": "gl-api-entry",
+                "at": 3439.10000000149,
+                "method": "getProgramParameter",
+                "call": 37
+              }
+            },
+            {
+              "durationMs": 140,
+              "from": {
+                "sequence": 88,
+                "type": "gl-api-return",
+                "at": 2223,
+                "method": "linkProgram",
+                "call": 5
+              },
+              "to": {
+                "sequence": 89,
+                "type": "gl-api-entry",
+                "at": 2363,
+                "method": "getProgramParameter",
+                "call": 13
+              }
+            }
+          ]
+        },
+        {
+          "instance": 2,
+          "observed": false
+        }
+      ],
+      "oldEngine": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 52,
+        "renderReturns": 52,
+        "renderThrows": 0,
+        "drawCallsSum": 32926,
+        "trianglesSum": 139197378,
+        "pointsSum": 8580,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 75077.80000000075,
+        "lastSubmitReturnAt": 75081.19999999925,
+        "lastRendererMs": 3.399999998509884
+      },
+      "oldFinalState": {
+        "instance": 1,
+        "frames": 52,
+        "time": 8.374399999998504,
+        "running": false,
+        "dead": false
+      },
+      "lifecycle": {
+        "lastReleaseToDisposeEntry": null,
+        "engineDispose": null,
+        "lastOldSubmitReturnToDisposeEntryMs": null,
+        "forcedContextLoss": false,
+        "observedContextLostEvents": 0
+      },
+      "drain": {
+        "passed": false,
+        "budgetMs": 120000,
+        "startedAt": 72270.39999999851,
+        "elapsedMs": 2812.2000000029802,
+        "oldContextId": 1,
+        "polls": 155,
+        "timeoutExpiredCount": 155,
+        "clientWaitTotalMs": 0.8000000081956387,
+        "clientWaitMaxMs": 0.10000000149011612,
+        "deleteSyncCalls": 1,
+        "statusTransitions": [
+          {
+            "status": "TIMEOUT_EXPIRED",
+            "at": 72480.10000000149,
+            "poll": 1
+          }
+        ],
+        "error": {
+          "name": "Error",
+          "message": "Old engine/canvas/frame/time/backing/CSS/submission state changed during drain",
+          "stack": "Error: Old engine/canvas/frame/time/backing/CSS/submission state changed during drain\n    at l (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:77281)\n    at Object.drain (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:78780)\n    at async <anonymous>:329:30"
+        },
+        "singleFence": {
+          "fenceSyncMs": 1.1000000014901161,
+          "flushMs": 0.10000000149011612,
+          "deleteSyncMs": 0.10000000149011612
+        }
+      },
+      "coverage": {
+        "active": true,
+        "monitorUntil": "final-summary",
+        "valid": false,
+        "instance": 1,
+        "canvasId": 1,
+        "contextId": 1,
+        "frames": 51,
+        "time": 8.374399999998504,
+        "renderEntriesAtFence": 51,
+        "renderReturnsAtFence": 51,
+        "placedAt": 72463.39999999851,
+        "uncoveredEntries": 1,
+        "uncoveredBackingWrites": 0,
+        "releaseAt": null,
+        "disposeEntryAt": null,
+        "disposeReturnAt": null,
+        "finalOldCounters": {
+          "instance": 1,
+          "contextId": 1,
+          "canvasId": 1,
+          "renderEntries": 52,
+          "renderReturns": 52,
+          "renderThrows": 0,
+          "drawCallsSum": 32926,
+          "trianglesSum": 139197378,
+          "pointsSum": 8580,
+          "linesSum": 0,
+          "lastSubmitEntryAt": 75077.80000000075,
+          "lastSubmitReturnAt": 75081.19999999925,
+          "lastRendererMs": 3.399999998509884
+        }
+      },
+      "contexts": [
+        {
+          "contextId": 1,
+          "engineInstance": 1,
+          "canvas": {
+            "boundaryCanvasId": 1,
+            "connected": true,
+            "parent": "cozy-world-mount",
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 960,
+            "cssHeight": 700,
+            "instance": "1"
+          },
+          "api": {
+            "compileShader": {
+              "calls": 38,
+              "returns": 38,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "linkProgram": {
+              "calls": 19,
+              "returns": 19,
+              "throws": 0,
+              "totalMs": 0.1,
+              "maxMs": 0.1,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getShaderParameter": {
+              "calls": 0,
+              "returns": 0,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getProgramParameter": {
+              "calls": 57,
+              "returns": 57,
+              "throws": 0,
+              "totalMs": 42.2,
+              "maxMs": 10.7,
+              "pnames": {
+                "35714": 19,
+                "35718": 19,
+                "35721": 19
+              },
+              "detailCapped": false
+            }
+          },
+          "currentCall": null
+        }
+      ],
+      "heartbeat": {
+        "countThroughWatermark": 69,
+        "maxObservedLagMs": 4530.6,
+        "samplingIntervalMs": 1000,
+        "meaning": "Observer event-loop lag, not GPU duration"
+      },
+      "pageErrors": [],
+      "caughtOrShaderErrorEvents": [],
+      "finalHostStatus": "ready",
+      "finalDOM": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "world": "nature:winter_lodge",
+          "connected": true,
+          "width": 960,
+          "height": 700,
+          "canvasCount": 1
+        }
+      ],
+      "reconciliation": {
+        "complete": true,
+        "recovered": 0,
+        "conflicts": [],
+        "error": null,
+        "documents": [
+          {
+            "documentId": "1791152457431-3ccaaa453c338",
+            "watermark": 668,
+            "sourceEvents": 668,
+            "sourceUnique": 668,
+            "missing": [],
+            "persistedUniqueThroughWatermark": 668
+          }
+        ],
+        "disk": {
+          "file": "phases.jsonl",
+          "readbackCopy": "phases-readback.jsonl",
+          "sha256AtReadback": "51bc09b524c1743a3d36fa275bcf828f9a67e121b558cca016aaaff8d16d9837",
+          "bytesAtReadback": 293408,
+          "recordsAtReadback": 671,
+          "uniqueSequencedEvents": 668,
+          "duplicateKeys": [],
+          "conflictingKeys": [],
+          "contentMismatches": [],
+          "scope": "Read-back bytes before node-reconciliation marker and cleanup; full event identity/content comparison only through each in-page document watermark. Later heartbeats are outside this snapshot claim."
+        },
+        "sourceEventsSHA256": "ef1aaf8c53a191931d2cbfada8f893f9cbb81ea2533eee26974e9e7a9d287169"
+      },
+      "evidence": {
+        "diagnostic-sequence.json": {
+          "path": "evidence/drain/diagnostic-sequence.json",
+          "sha256": "89f7ee8e4b0fbcefbd48a563ebc772a295e9d6318ca88801adf21e79d3704035"
+        },
+        "instrumentation-manifest.json": {
+          "path": "evidence/drain/instrumentation-manifest.json",
+          "sha256": "abd6e7306ed3a54d10d84285e00b7d88bdf346a3bed78f83049924ca25b14934"
+        },
+        "runner-provenance.json": {
+          "path": "evidence/drain/runner-provenance.json",
+          "sha256": "195aa3396800817156e12f3be5ef304c82e99140d881756a875f229c7c10f7f6"
+        },
+        "reconciliation.json": {
+          "path": "evidence/drain/reconciliation.json",
+          "sha256": "d9eb59c29292db1b2778e02b772974814033e1c7c786dd636d6ccb17b1e34845"
+        },
+        "reconciled-events.json": {
+          "path": "evidence/drain/reconciled-events.json",
+          "sha256": "2b6c781b230798739078a23d812d07dc664e5316a84eb476a065aa854446b392"
+        },
+        "phases-readback.jsonl": {
+          "path": "evidence/drain/phases-readback.jsonl",
+          "sha256": "51bc09b524c1743a3d36fa275bcf828f9a67e121b558cca016aaaff8d16d9837"
+        }
+      }
+    },
+    "covered-drain": {
+      "outcome": "Altered diagnostic PASS; 26 sequence checks completed",
+      "overallDiagnosticPassed": true,
+      "recordedCompletedSequenceChecks": 26,
+      "partialCheckCountInvented": false,
+      "originalGateClaim": false,
+      "cleanupError": null,
+      "identity": {
+        "gitHead": "34ce6fa2d0e3bfc57708df7e92a72464c2922983",
+        "productionSourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+        "browserBundleSHA256": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+        "probeEntrySHA256": "cfb1f830480b0cafda5d6d9604e25f17966b05cb33c23c0e46c62057ea925b4b",
+        "probeScriptsSHA256": "366da06497f1e78f45ec620b637fbc4b994534fc5c5baf50f2570ae5be8ca943",
+        "originalSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+        "executedSequenceSHA256": "e09be8f3ed9e529e30084a6217ec1e8dba971fc29b5001f3799a4ae271b704ad",
+        "sourceAndBundleUnchangedAtEnd": true
+      },
+      "stages": [
+        {
+          "instance": 1,
+          "observed": true,
+          "constructor": {
+            "startSequence": 5,
+            "endSequence": 11,
+            "startMs": 461.5,
+            "endMs": 492.5,
+            "durationMs": 31.0
+          },
+          "getContext": {
+            "startSequence": 6,
+            "endSequence": 7,
+            "startMs": 462.4,
+            "endMs": 475,
+            "durationMs": 12.6
+          },
+          "initCall": {
+            "startSequence": 22,
+            "endSequence": 25,
+            "startMs": 539.7,
+            "endMs": 1763,
+            "durationMs": 1223.3
+          },
+          "initResolved": {
+            "startSequence": 22,
+            "endSequence": 32,
+            "startMs": 539.7,
+            "endMs": 1764.3,
+            "durationMs": 1224.6
+          },
+          "factory": {
+            "startSequence": 23,
+            "endSequence": 24,
+            "startMs": 539.8,
+            "endMs": 1762.3,
+            "durationMs": 1222.5
+          },
+          "firstEngineRenderFrame0": {
+            "startSequence": 33,
+            "endSequence": 264,
+            "startMs": 1764.4,
+            "endMs": 3313.9,
+            "durationMs": 1549.5
+          },
+          "firstRendererRender": {
+            "startSequence": 34,
+            "endSequence": 263,
+            "startMs": 1764.7,
+            "endMs": 3313.7,
+            "durationMs": 1549.0
+          },
+          "constructorToHostReady": {
+            "startSequence": 5,
+            "endSequence": 267,
+            "startMs": 461.5,
+            "endMs": 3314.1,
+            "durationMs": 2852.6
+          },
+          "largestUntracedInterEventGapsInsideFirstRender": [
+            {
+              "durationMs": 134.4,
+              "from": {
+                "sequence": 172,
+                "type": "gl-api-return",
+                "at": 2709.199999999255,
+                "method": "linkProgram",
+                "call": 12
+              },
+              "to": {
+                "sequence": 173,
+                "type": "gl-api-entry",
+                "at": 2843.599999997765,
+                "method": "getProgramParameter",
+                "call": 34
+              }
+            },
+            {
+              "durationMs": 134.3,
+              "from": {
+                "sequence": 184,
+                "type": "gl-api-return",
+                "at": 2847.2999999970198,
+                "method": "linkProgram",
+                "call": 13
+              },
+              "to": {
+                "sequence": 185,
+                "type": "gl-api-entry",
+                "at": 2981.599999997765,
+                "method": "getProgramParameter",
+                "call": 37
+              }
+            },
+            {
+              "durationMs": 110.9,
+              "from": {
+                "sequence": 136,
+                "type": "gl-api-return",
+                "at": 2448.099999997765,
+                "method": "linkProgram",
+                "call": 9
+              },
+              "to": {
+                "sequence": 137,
+                "type": "gl-api-entry",
+                "at": 2559,
+                "method": "getProgramParameter",
+                "call": 25
+              }
+            }
+          ]
+        },
+        {
+          "instance": 2,
+          "observed": true,
+          "constructor": {
+            "startSequence": 910,
+            "endSequence": 916,
+            "startMs": 169961.6,
+            "endMs": 169972.3,
+            "durationMs": 10.7
+          },
+          "getContext": {
+            "startSequence": 911,
+            "endSequence": 912,
+            "startMs": 169961.8,
+            "endMs": 169966.8,
+            "durationMs": 5.0
+          },
+          "initCall": {
+            "startSequence": 927,
+            "endSequence": 930,
+            "startMs": 169979.4,
+            "endMs": 170610,
+            "durationMs": 630.6
+          },
+          "initResolved": {
+            "startSequence": 927,
+            "endSequence": 937,
+            "startMs": 169979.4,
+            "endMs": 170610.9,
+            "durationMs": 631.5
+          },
+          "factory": {
+            "startSequence": 928,
+            "endSequence": 929,
+            "startMs": 169979.5,
+            "endMs": 170609.7,
+            "durationMs": 630.2
+          },
+          "firstEngineRenderFrame0": {
+            "startSequence": 938,
+            "endSequence": 1169,
+            "startMs": 170610.9,
+            "endMs": 171296,
+            "durationMs": 685.1
+          },
+          "firstRendererRender": {
+            "startSequence": 939,
+            "endSequence": 1168,
+            "startMs": 170611,
+            "endMs": 171295.9,
+            "durationMs": 684.9
+          },
+          "constructorToHostReady": {
+            "startSequence": 910,
+            "endSequence": 1172,
+            "startMs": 169961.6,
+            "endMs": 171296.4,
+            "durationMs": 1334.8
+          },
+          "largestUntracedInterEventGapsInsideFirstRender": [
+            {
+              "durationMs": 48.5,
+              "from": {
+                "sequence": 1089,
+                "type": "gl-api-return",
+                "at": 171105,
+                "method": "linkProgram",
+                "call": 13
+              },
+              "to": {
+                "sequence": 1090,
+                "type": "gl-api-entry",
+                "at": 171153.5,
+                "method": "getProgramParameter",
+                "call": 37
+              }
+            },
+            {
+              "durationMs": 45.6,
+              "from": {
+                "sequence": 1077,
+                "type": "gl-api-return",
+                "at": 171056.19999999553,
+                "method": "linkProgram",
+                "call": 12
+              },
+              "to": {
+                "sequence": 1078,
+                "type": "gl-api-entry",
+                "at": 171101.79999999702,
+                "method": "getProgramParameter",
+                "call": 34
+              }
+            },
+            {
+              "durationMs": 44.7,
+              "from": {
+                "sequence": 1041,
+                "type": "gl-api-return",
+                "at": 170933.79999999702,
+                "method": "linkProgram",
+                "call": 9
+              },
+              "to": {
+                "sequence": 1042,
+                "type": "gl-api-entry",
+                "at": 170978.5,
+                "method": "getProgramParameter",
+                "call": 25
+              }
+            }
+          ]
+        }
+      ],
+      "oldEngine": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 49,
+        "renderReturns": 49,
+        "renderThrows": 0,
+        "drawCallsSum": 31029,
+        "trianglesSum": 131168608,
+        "pointsSum": 8085,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 56582.10000000149,
+        "lastSubmitReturnAt": 56585.19999999553,
+        "lastRendererMs": 3.0999999940395355
+      },
+      "oldFinalState": {
+        "instance": 1,
+        "frames": 49,
+        "time": 8.30880000000447,
+        "running": false,
+        "dead": true
+      },
+      "lifecycle": {
+        "lastReleaseToDisposeEntry": {
+          "startSequence": 895,
+          "endSequence": 904,
+          "startMs": 164910.3,
+          "endMs": 169911.5,
+          "durationMs": 5001.2
+        },
+        "engineDispose": {
+          "startSequence": 904,
+          "endSequence": 905,
+          "startMs": 169911.5,
+          "endMs": 169917.5,
+          "durationMs": 6.0
+        },
+        "lastOldSubmitReturnToDisposeEntryMs": 113326.3,
+        "forcedContextLoss": false,
+        "observedContextLostEvents": 0
+      },
+      "drain": {
+        "version": 2,
+        "passed": true,
+        "budgetMs": 120000,
+        "startedAt": 54279,
+        "deadlineAt": 174279,
+        "elapsedMs": 110616.60000000149,
+        "oldContextId": 1,
+        "replacements": 1,
+        "maxReplacements": 8,
+        "ownedSyncs": 2,
+        "polls": 6545,
+        "timeoutExpiredCount": 6544,
+        "clientWaitTotalMs": 99.99999985843897,
+        "clientWaitMaxMs": 2.2000000029802322,
+        "deleteSyncCalls": 2,
+        "allOwnedSyncsDeletedOnce": true,
+        "status": "CONDITION_SATISFIED",
+        "signaledAt": 164895.29999999702,
+        "signaledFenceId": 2,
+        "statusTransitions": [
+          {
+            "fenceId": 1,
+            "status": "TIMEOUT_EXPIRED",
+            "at": 54478.89999999851,
+            "poll": 1
+          },
+          {
+            "fenceId": 2,
+            "status": "TIMEOUT_EXPIRED",
+            "at": 56612.29999999702,
+            "poll": 1
+          },
+          {
+            "fenceId": 2,
+            "status": "CONDITION_SATISFIED",
+            "at": 164895,
+            "poll": 6418
+          }
+        ],
+        "fences": [
+          {
+            "id": 1,
+            "reason": "initial covering current completed submissions",
+            "matchedZeroDtCalls": [],
+            "placementCounters": {
+              "frames": 48,
+              "entries": 48,
+              "returns": 48,
+              "throws": 0,
+              "zeroDtCount": 28
+            },
+            "submissionsAtPlacement": {
+              "instance": 1,
+              "contextId": 1,
+              "canvasId": 1,
+              "renderEntries": 48,
+              "renderReturns": 48,
+              "renderThrows": 0,
+              "drawCallsSum": 30398,
+              "trianglesSum": 128493086,
+              "pointsSum": 7920,
+              "linesSum": 0,
+              "lastSubmitEntryAt": 54244,
+              "lastSubmitReturnAt": 54247.19999999553,
+              "lastRendererMs": 3.1999999955296516
+            },
+            "createdAt": 54460.69999999553,
+            "nonnull": true,
+            "polls": 127,
+            "timeoutExpiredCount": 127,
+            "statusTransitions": [
+              {
+                "fenceId": 1,
+                "status": "TIMEOUT_EXPIRED",
+                "at": 54478.89999999851,
+                "poll": 1
+              }
+            ],
+            "clientWaitTotalMs": 1.0000000074505806,
+            "clientWaitMaxMs": 0.10000000149011612,
+            "deleteCalls": 1,
+            "deleteReturned": true,
+            "fenceSyncMs": 0.8999999985098839,
+            "flushMs": 0,
+            "clientWaitLastMs": 0,
+            "clientWaitFirstMs": 0,
+            "supersededByZeroDtCalls": [
+              29
+            ],
+            "supersededAt": 56595.10000000149,
+            "deleteReason": "superseded by observed successful paused zero-dt submissions",
+            "deleteEntryAt": 56595.39999999851,
+            "deleteMs": 0,
+            "deleteReturnAt": 56595.39999999851,
+            "lifetimeMs": 2134.7000000029802
+          },
+          {
+            "id": 2,
+            "reason": "covers observed successful late renderFrame(0)",
+            "matchedZeroDtCalls": [
+              29
+            ],
+            "placementCounters": {
+              "frames": 49,
+              "entries": 49,
+              "returns": 49,
+              "throws": 0,
+              "zeroDtCount": 29
+            },
+            "submissionsAtPlacement": {
+              "instance": 1,
+              "contextId": 1,
+              "canvasId": 1,
+              "renderEntries": 49,
+              "renderReturns": 49,
+              "renderThrows": 0,
+              "drawCallsSum": 31029,
+              "trianglesSum": 131168608,
+              "pointsSum": 8085,
+              "linesSum": 0,
+              "lastSubmitEntryAt": 56582.10000000149,
+              "lastSubmitReturnAt": 56585.19999999553,
+              "lastRendererMs": 3.0999999940395355
+            },
+            "createdAt": 56595.69999999553,
+            "nonnull": true,
+            "polls": 6418,
+            "timeoutExpiredCount": 6417,
+            "statusTransitions": [
+              {
+                "fenceId": 2,
+                "status": "TIMEOUT_EXPIRED",
+                "at": 56612.29999999702,
+                "poll": 1
+              },
+              {
+                "fenceId": 2,
+                "status": "CONDITION_SATISFIED",
+                "at": 164895,
+                "poll": 6418
+              }
+            ],
+            "clientWaitTotalMs": 98.99999985098839,
+            "clientWaitMaxMs": 2.2000000029802322,
+            "deleteCalls": 1,
+            "deleteReturned": true,
+            "fenceSyncMs": 0,
+            "flushMs": 0,
+            "clientWaitLastMs": 0,
+            "clientWaitFirstMs": 0,
+            "signaledAt": 164895.29999999702,
+            "deleteReason": "latest covering fence signaled",
+            "deleteEntryAt": 164895.5,
+            "deleteMs": 0,
+            "deleteReturnAt": 164895.6000000015,
+            "lifetimeMs": 108299.90000000596
+          }
+        ],
+        "acceptedZeroDtRecords": [
+          {
+            "instance": 1,
+            "call": 29,
+            "dt": 0,
+            "entryAt": 56582,
+            "returnAt": 56585.29999999702,
+            "before": {
+              "frames": 48,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 48,
+              "returns": 48,
+              "throws": 0
+            },
+            "after": {
+              "frames": 49,
+              "time": 8.30880000000447,
+              "running": false,
+              "entries": 49,
+              "returns": 49,
+              "throws": 0
+            }
+          }
+        ]
+      },
+      "coverage": {
+        "active": true,
+        "monitorUntil": "final-summary",
+        "valid": true,
+        "instance": 1,
+        "canvasId": 1,
+        "contextId": 1,
+        "time": 8.30880000000447,
+        "uncoveredEntries": 1,
+        "uncoveredBackingWrites": 0,
+        "postSignalEntries": 0,
+        "acceptedLateZeroDtCalls": 1,
+        "signaledAt": 164895.29999999702,
+        "releaseAt": 164910.1000000015,
+        "disposeEntryAt": 169911.29999999702,
+        "disposeReturnAt": 169917.69999999553,
+        "frames": 49,
+        "renderEntriesAtFence": 49,
+        "renderReturnsAtFence": 49,
+        "placedAt": 56595.69999999553,
+        "latestFenceId": 2,
+        "framesAtRelease": 49,
+        "timeAtRelease": 8.30880000000447,
+        "countersAtDisposeEntry": {
+          "instance": 1,
+          "contextId": 1,
+          "canvasId": 1,
+          "renderEntries": 49,
+          "renderReturns": 49,
+          "renderThrows": 0,
+          "drawCallsSum": 31029,
+          "trianglesSum": 131168608,
+          "pointsSum": 8085,
+          "linesSum": 0,
+          "lastSubmitEntryAt": 56582.10000000149,
+          "lastSubmitReturnAt": 56585.19999999553,
+          "lastRendererMs": 3.0999999940395355
+        },
+        "countersAtDisposeReturn": {
+          "instance": 1,
+          "contextId": 1,
+          "canvasId": 1,
+          "renderEntries": 49,
+          "renderReturns": 49,
+          "renderThrows": 0,
+          "drawCallsSum": 31029,
+          "trianglesSum": 131168608,
+          "pointsSum": 8085,
+          "linesSum": 0,
+          "lastSubmitEntryAt": 56582.10000000149,
+          "lastSubmitReturnAt": 56585.19999999553,
+          "lastRendererMs": 3.0999999940395355
+        },
+        "finalOldCounters": {
+          "instance": 1,
+          "contextId": 1,
+          "canvasId": 1,
+          "renderEntries": 49,
+          "renderReturns": 49,
+          "renderThrows": 0,
+          "drawCallsSum": 31029,
+          "trianglesSum": 131168608,
+          "pointsSum": 8085,
+          "linesSum": 0,
+          "lastSubmitEntryAt": 56582.10000000149,
+          "lastSubmitReturnAt": 56585.19999999553,
+          "lastRendererMs": 3.0999999940395355
+        }
+      },
+      "contexts": [
+        {
+          "contextId": 1,
+          "engineInstance": 1,
+          "canvas": {
+            "boundaryCanvasId": 1,
+            "connected": false,
+            "parent": null,
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 0,
+            "cssHeight": 0,
+            "instance": "1"
+          },
+          "api": {
+            "compileShader": {
+              "calls": 38,
+              "returns": 38,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "linkProgram": {
+              "calls": 19,
+              "returns": 19,
+              "throws": 0,
+              "totalMs": 0.1,
+              "maxMs": 0.1,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getShaderParameter": {
+              "calls": 0,
+              "returns": 0,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getProgramParameter": {
+              "calls": 57,
+              "returns": 57,
+              "throws": 0,
+              "totalMs": 45.3,
+              "maxMs": 14.6,
+              "pnames": {
+                "35714": 19,
+                "35718": 19,
+                "35721": 19
+              },
+              "detailCapped": false
+            }
+          },
+          "currentCall": null
+        },
+        {
+          "contextId": 2,
+          "engineInstance": 2,
+          "canvas": {
+            "boundaryCanvasId": 2,
+            "connected": true,
+            "parent": "cozy-world-mount",
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 960,
+            "cssHeight": 700,
+            "instance": "2"
+          },
+          "api": {
+            "compileShader": {
+              "calls": 38,
+              "returns": 38,
+              "throws": 0,
+              "totalMs": 0.1,
+              "maxMs": 0.1,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "linkProgram": {
+              "calls": 19,
+              "returns": 19,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getShaderParameter": {
+              "calls": 0,
+              "returns": 0,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getProgramParameter": {
+              "calls": 57,
+              "returns": 57,
+              "throws": 0,
+              "totalMs": 11.8,
+              "maxMs": 5.4,
+              "pnames": {
+                "35714": 19,
+                "35718": 19,
+                "35721": 19
+              },
+              "detailCapped": false
+            }
+          },
+          "currentCall": null
+        }
+      ],
+      "heartbeat": {
+        "countThroughWatermark": 168,
+        "maxObservedLagMs": 2310.6,
+        "samplingIntervalMs": 1000,
+        "meaning": "Observer event-loop lag, not GPU duration"
+      },
+      "pageErrors": [],
+      "caughtOrShaderErrorEvents": [],
+      "finalHostStatus": "ready",
+      "finalDOM": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "world": "nature:winter_lodge",
+          "connected": true,
+          "width": 960,
+          "height": 700,
+          "canvasCount": 1
+        }
+      ],
+      "reconciliation": {
+        "complete": true,
+        "recovered": 0,
+        "conflicts": [],
+        "error": null,
+        "documents": [
+          {
+            "documentId": "1791153229354-66f94653e0b2b",
+            "watermark": 1180,
+            "sourceEvents": 1180,
+            "sourceUnique": 1180,
+            "missing": [],
+            "persistedUniqueThroughWatermark": 1180
+          }
+        ],
+        "disk": {
+          "file": "phases.jsonl",
+          "readbackCopy": "phases-readback.jsonl",
+          "sha256AtReadback": "6a921c66616292718103ae4758fc0d7e8ca15d1d85d969ed8b84b1235273e3bb",
+          "bytesAtReadback": 440600,
+          "recordsAtReadback": 1182,
+          "uniqueSequencedEvents": 1180,
+          "duplicateKeys": [],
+          "conflictingKeys": [],
+          "contentMismatches": [],
+          "scope": "Read-back bytes before node-reconciliation marker and cleanup; full event identity/content comparison only through each in-page document watermark. Later heartbeats are outside this snapshot claim."
+        },
+        "sourceEventsSHA256": "67b13d9ddf780fdf4cf69531a3231d8f21c8b98cfd91ddc11534ebf9297bd6c3"
+      },
+      "evidence": {
+        "diagnostic-sequence.json": {
+          "path": "evidence/covered-drain/diagnostic-sequence.json",
+          "sha256": "c77a8fa4e3ece6730a96a3499a4233a380fcc0421e4e7b9c7ba90dfa3fdad521"
+        },
+        "instrumentation-manifest.json": {
+          "path": "evidence/covered-drain/instrumentation-manifest.json",
+          "sha256": "e300b82a4259ba8cfa548e68608c30a82323d0a68c1a85b2190f7b9f907c6865"
+        },
+        "runner-provenance.json": {
+          "path": "evidence/covered-drain/runner-provenance.json",
+          "sha256": "698e39dccfbc073357c445d88e6a33ab96bf3a04e74fa1a9f16d809d9675446c"
+        },
+        "reconciliation.json": {
+          "path": "evidence/covered-drain/reconciliation.json",
+          "sha256": "b7893caeeae3fd454e43bdd9667a53c8f38d2e5fce8ec791fc97d7d7897c3ea1"
+        },
+        "reconciled-events.json": {
+          "path": "evidence/covered-drain/reconciled-events.json",
+          "sha256": "814987fb5395086d0a04f162db11181c91c34265c0e1ecd975947a38fa920098"
+        },
+        "phases-readback.jsonl": {
+          "path": "evidence/covered-drain/phases-readback.jsonl",
+          "sha256": "6a921c66616292718103ae4758fc0d7e8ca15d1d85d969ed8b84b1235273e3bb"
+        }
+      }
+    },
+    "undrained-control": {
+      "outcome": "26 original-sequence checks PASS; overall diagnostic FAIL on browser cleanup only",
+      "overallDiagnosticPassed": false,
+      "recordedCompletedSequenceChecks": 26,
+      "partialCheckCountInvented": false,
+      "originalGateClaim": false,
+      "cleanupError": "Error: browser cleanup: external 10000 ms deadline; comparison ends without retry",
+      "identity": {
+        "gitHead": "9e3b8ed29b99b0d96ed1f43ef80db46c6985caf5",
+        "productionSourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+        "browserBundleSHA256": "853c25e69ea20a411a5ebcbfd092c39d97e9f75bc9935b0d908bfe08b0d21ed4",
+        "probeEntrySHA256": "cfb1f830480b0cafda5d6d9604e25f17966b05cb33c23c0e46c62057ea925b4b",
+        "probeScriptsSHA256": "747cdd7762cefd91de59744e42fcaa4706991d10a4e6b741cb708abb58741046",
+        "originalSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+        "executedSequenceSHA256": "c6a541be6d7ade472d17b023e08bc3a79edb3206ca7e52418ac0df75bdc0c6f0",
+        "sourceAndBundleUnchangedAtEnd": true
+      },
+      "stages": [
+        {
+          "instance": 1,
+          "observed": true,
+          "constructor": {
+            "startSequence": 5,
+            "endSequence": 11,
+            "startMs": 381.8,
+            "endMs": 395.9,
+            "durationMs": 14.1
+          },
+          "getContext": {
+            "startSequence": 6,
+            "endSequence": 7,
+            "startMs": 382.4,
+            "endMs": 389,
+            "durationMs": 6.6
+          },
+          "initCall": {
+            "startSequence": 22,
+            "endSequence": 25,
+            "startMs": 406.8,
+            "endMs": 1098,
+            "durationMs": 691.2
+          },
+          "initResolved": {
+            "startSequence": 22,
+            "endSequence": 32,
+            "startMs": 406.8,
+            "endMs": 1099.8,
+            "durationMs": 693.0
+          },
+          "factory": {
+            "startSequence": 23,
+            "endSequence": 24,
+            "startMs": 407,
+            "endMs": 1097.3,
+            "durationMs": 690.3
+          },
+          "firstEngineRenderFrame0": {
+            "startSequence": 33,
+            "endSequence": 264,
+            "startMs": 1099.9,
+            "endMs": 2107.1,
+            "durationMs": 1007.2
+          },
+          "firstRendererRender": {
+            "startSequence": 34,
+            "endSequence": 263,
+            "startMs": 1100.2,
+            "endMs": 2106.9,
+            "durationMs": 1006.7
+          },
+          "constructorToHostReady": {
+            "startSequence": 5,
+            "endSequence": 267,
+            "startMs": 381.8,
+            "endMs": 2107.5,
+            "durationMs": 1725.7
+          },
+          "largestUntracedInterEventGapsInsideFirstRender": [
+            {
+              "durationMs": 92.1,
+              "from": {
+                "sequence": 172,
+                "type": "gl-api-return",
+                "at": 1690.6999999955297,
+                "method": "linkProgram",
+                "call": 12
+              },
+              "to": {
+                "sequence": 173,
+                "type": "gl-api-entry",
+                "at": 1782.7999999970198,
+                "method": "getProgramParameter",
+                "call": 34
+              }
+            },
+            {
+              "durationMs": 86.3,
+              "from": {
+                "sequence": 184,
+                "type": "gl-api-return",
+                "at": 1790.2999999970198,
+                "method": "linkProgram",
+                "call": 13
+              },
+              "to": {
+                "sequence": 185,
+                "type": "gl-api-entry",
+                "at": 1876.6000000014901,
+                "method": "getProgramParameter",
+                "call": 37
+              }
+            },
+            {
+              "durationMs": 71.9,
+              "from": {
+                "sequence": 136,
+                "type": "gl-api-return",
+                "at": 1524.6999999955297,
+                "method": "linkProgram",
+                "call": 9
+              },
+              "to": {
+                "sequence": 137,
+                "type": "gl-api-entry",
+                "at": 1596.6000000014901,
+                "method": "getProgramParameter",
+                "call": 25
+              }
+            }
+          ]
+        },
+        {
+          "instance": 2,
+          "observed": true,
+          "constructor": {
+            "startSequence": 656,
+            "endSequence": 662,
+            "startMs": 38710.5,
+            "endMs": 41044.8,
+            "durationMs": 2334.3
+          },
+          "getContext": {
+            "startSequence": 657,
+            "endSequence": 658,
+            "startMs": 38710.8,
+            "endMs": 39043.7,
+            "durationMs": 332.9
+          },
+          "initCall": {
+            "startSequence": 673,
+            "endSequence": 676,
+            "startMs": 41050.8,
+            "endMs": 41677.9,
+            "durationMs": 627.1
+          },
+          "initResolved": {
+            "startSequence": 673,
+            "endSequence": 683,
+            "startMs": 41050.8,
+            "endMs": 41679.2,
+            "durationMs": 628.4
+          },
+          "factory": {
+            "startSequence": 674,
+            "endSequence": 675,
+            "startMs": 41051,
+            "endMs": 41677.6,
+            "durationMs": 626.6
+          },
+          "firstEngineRenderFrame0": {
+            "startSequence": 684,
+            "endSequence": 915,
+            "startMs": 41679.3,
+            "endMs": 92796.4,
+            "durationMs": 51117.1
+          },
+          "firstRendererRender": {
+            "startSequence": 685,
+            "endSequence": 914,
+            "startMs": 41679.4,
+            "endMs": 92796.2,
+            "durationMs": 51116.8
+          },
+          "constructorToHostReady": {
+            "startSequence": 656,
+            "endSequence": 918,
+            "startMs": 38710.5,
+            "endMs": 92796.8,
+            "durationMs": 54086.3
+          },
+          "largestUntracedInterEventGapsInsideFirstRender": [
+            {
+              "durationMs": 28029.3,
+              "from": {
+                "sequence": 835,
+                "type": "gl-api-return",
+                "at": 64604.89999999851,
+                "method": "linkProgram",
+                "call": 13
+              },
+              "to": {
+                "sequence": 836,
+                "type": "gl-api-entry",
+                "at": 92634.19999999553,
+                "method": "getProgramParameter",
+                "call": 37
+              }
+            },
+            {
+              "durationMs": 5834.1,
+              "from": {
+                "sequence": 823,
+                "type": "gl-api-return",
+                "at": 58767.39999999851,
+                "method": "linkProgram",
+                "call": 12
+              },
+              "to": {
+                "sequence": 824,
+                "type": "gl-api-entry",
+                "at": 64601.5,
+                "method": "getProgramParameter",
+                "call": 34
+              }
+            },
+            {
+              "durationMs": 3878.7,
+              "from": {
+                "sequence": 775,
+                "type": "gl-api-return",
+                "at": 52850.69999999553,
+                "method": "linkProgram",
+                "call": 8
+              },
+              "to": {
+                "sequence": 776,
+                "type": "gl-api-entry",
+                "at": 56729.39999999851,
+                "method": "getProgramParameter",
+                "call": 22
+              }
+            }
+          ]
+        }
+      ],
+      "oldEngine": {
+        "instance": 1,
+        "contextId": 1,
+        "canvasId": 1,
+        "renderEntries": 51,
+        "renderReturns": 51,
+        "renderThrows": 0,
+        "drawCallsSum": 32285,
+        "trianglesSum": 136516568,
+        "pointsSum": 8415,
+        "linesSum": 0,
+        "lastSubmitEntryAt": 33651.69999999553,
+        "lastSubmitReturnAt": 33654.19999999553,
+        "lastRendererMs": 2.5
+      },
+      "oldFinalState": {
+        "instance": 1,
+        "frames": 51,
+        "time": 8.286900000001484,
+        "running": false,
+        "dead": true
+      },
+      "lifecycle": {
+        "lastReleaseToDisposeEntry": {
+          "startSequence": 643,
+          "endSequence": 651,
+          "startMs": 33666.8,
+          "endMs": 38667.8,
+          "durationMs": 5001.0
+        },
+        "engineDispose": {
+          "startSequence": 651,
+          "endSequence": 652,
+          "startMs": 38667.8,
+          "endMs": 38674.7,
+          "durationMs": 6.9
+        },
+        "lastOldSubmitReturnToDisposeEntryMs": 5013.6,
+        "forcedContextLoss": false,
+        "observedContextLostEvents": 0
+      },
+      "drain": null,
+      "coverage": null,
+      "contexts": [
+        {
+          "contextId": 1,
+          "engineInstance": 1,
+          "canvas": {
+            "boundaryCanvasId": 1,
+            "connected": false,
+            "parent": null,
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 0,
+            "cssHeight": 0,
+            "instance": "1"
+          },
+          "api": {
+            "compileShader": {
+              "calls": 38,
+              "returns": 38,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "linkProgram": {
+              "calls": 19,
+              "returns": 19,
+              "throws": 0,
+              "totalMs": 0.1,
+              "maxMs": 0.1,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getShaderParameter": {
+              "calls": 0,
+              "returns": 0,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getProgramParameter": {
+              "calls": 57,
+              "returns": 57,
+              "throws": 0,
+              "totalMs": 6.7,
+              "maxMs": 1.3,
+              "pnames": {
+                "35714": 19,
+                "35718": 19,
+                "35721": 19
+              },
+              "detailCapped": false
+            }
+          },
+          "currentCall": null
+        },
+        {
+          "contextId": 2,
+          "engineInstance": 2,
+          "canvas": {
+            "boundaryCanvasId": 2,
+            "connected": true,
+            "parent": "cozy-world-mount",
+            "backingWidth": 960,
+            "backingHeight": 700,
+            "cssWidth": 960,
+            "cssHeight": 700,
+            "instance": "2"
+          },
+          "api": {
+            "compileShader": {
+              "calls": 38,
+              "returns": 38,
+              "throws": 0,
+              "totalMs": 0.1,
+              "maxMs": 0.1,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "linkProgram": {
+              "calls": 19,
+              "returns": 19,
+              "throws": 0,
+              "totalMs": 0.2,
+              "maxMs": 0.1,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getShaderParameter": {
+              "calls": 0,
+              "returns": 0,
+              "throws": 0,
+              "totalMs": 0,
+              "maxMs": 0,
+              "pnames": {},
+              "detailCapped": false
+            },
+            "getProgramParameter": {
+              "calls": 57,
+              "returns": 57,
+              "throws": 0,
+              "totalMs": 8.4,
+              "maxMs": 1.3,
+              "pnames": {
+                "35714": 19,
+                "35718": 19,
+                "35721": 19
+              },
+              "detailCapped": false
+            }
+          },
+          "currentCall": null
+        }
+      ],
+      "heartbeat": {
+        "countThroughWatermark": 34,
+        "maxObservedLagMs": 53775.5,
+        "samplingIntervalMs": 1000,
+        "meaning": "Observer event-loop lag, not GPU duration"
+      },
+      "pageErrors": [],
+      "caughtOrShaderErrorEvents": [],
+      "finalHostStatus": "ready",
+      "finalDOM": [
+        {
+          "state": "ready",
+          "motion": "paused",
+          "world": "nature:winter_lodge",
+          "connected": true,
+          "width": 960,
+          "height": 700,
+          "canvasCount": 1
+        }
+      ],
+      "reconciliation": {
+        "complete": true,
+        "recovered": 0,
+        "conflicts": [],
+        "error": null,
+        "documents": [
+          {
+            "documentId": "1791153645361-4b42b68a3343d8",
+            "watermark": 926,
+            "sourceEvents": 926,
+            "sourceUnique": 926,
+            "missing": [],
+            "persistedUniqueThroughWatermark": 926
+          }
+        ],
+        "disk": {
+          "file": "phases.jsonl",
+          "readbackCopy": "phases-readback.jsonl",
+          "sha256AtReadback": "c5d6dc2e0479d42d0269180c8246b22ebc58ed2fe9a535b886129113d6f097d4",
+          "bytesAtReadback": 378999,
+          "recordsAtReadback": 926,
+          "uniqueSequencedEvents": 926,
+          "duplicateKeys": [],
+          "conflictingKeys": [],
+          "contentMismatches": [],
+          "scope": "Read-back bytes before node-reconciliation marker and cleanup; full event identity/content comparison only through each in-page document watermark. Later heartbeats are outside this snapshot claim."
+        },
+        "sourceEventsSHA256": "b118025325b641c0572ebe5845f999e2cd36fd6626c61bbf01407f5f740786de"
+      },
+      "evidence": {
+        "diagnostic-sequence.json": {
+          "path": "evidence/undrained-control/diagnostic-sequence.json",
+          "sha256": "f93d41a32088714c019eec077b22e7382b54c30b8d4d5482d99c8195c4d6873b"
+        },
+        "instrumentation-manifest.json": {
+          "path": "evidence/undrained-control/instrumentation-manifest.json",
+          "sha256": "bdc6ad7263befadadc3ea26ee7b30414fbe5cbc0415b44d1f06bd8919e7e3f3b"
+        },
+        "runner-provenance.json": {
+          "path": "evidence/undrained-control/runner-provenance.json",
+          "sha256": "60c233e5043a23e5f04da80fbcd4a5ea11dbc7eaee45eb0885267248a5b64db2"
+        },
+        "reconciliation.json": {
+          "path": "evidence/undrained-control/reconciliation.json",
+          "sha256": "42e5436f755b2131786af088f98e323898ccc88f08ed7395b8f47af7a0137b72"
+        },
+        "reconciled-events.json": {
+          "path": "evidence/undrained-control/reconciled-events.json",
+          "sha256": "1e65b3845ab66aacc81becf82ff8e711b128fb2db6b9a4629da6e4a03bc67af4"
+        },
+        "phases-readback.jsonl": {
+          "path": "evidence/undrained-control/phases-readback.jsonl",
+          "sha256": "c5d6dc2e0479d42d0269180c8246b22ebc58ed2fe9a535b886129113d6f097d4"
+        }
+      }
+    }
+  },
+  "pngByteComparison": [
+    {
+      "file": "nature-winter_lodge-desktop.png",
+      "approvedReference": "../followup/evidence/final/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71",
+      "comparisons": [
+        {
+          "run": "drain",
+          "path": "evidence/drain/nature-winter_lodge-desktop.png",
+          "byteIdentical": true
+        },
+        {
+          "run": "covered-drain",
+          "path": "evidence/covered-drain/nature-winter_lodge-desktop.png",
+          "byteIdentical": true
+        },
+        {
+          "run": "undrained-control",
+          "path": "evidence/undrained-control/nature-winter_lodge-desktop.png",
+          "byteIdentical": true
+        }
+      ]
+    },
+    {
+      "file": "nature-winter_lodge-landscape-viewport.png",
+      "approvedReference": "../followup/evidence/final/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00",
+      "comparisons": [
+        {
+          "run": "drain",
+          "path": "evidence/drain/nature-winter_lodge-landscape-viewport.png",
+          "byteIdentical": true
+        },
+        {
+          "run": "covered-drain",
+          "path": "evidence/covered-drain/nature-winter_lodge-landscape-viewport.png",
+          "byteIdentical": true
+        },
+        {
+          "run": "undrained-control",
+          "path": "evidence/undrained-control/nature-winter_lodge-landscape-viewport.png",
+          "byteIdentical": true
+        }
+      ]
+    },
+    {
+      "file": "nature-winter_lodge-portrait.png",
+      "approvedReference": "../followup/evidence/final/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7",
+      "comparisons": [
+        {
+          "run": "drain",
+          "path": "evidence/drain/nature-winter_lodge-portrait.png",
+          "byteIdentical": true
+        },
+        {
+          "run": "covered-drain",
+          "path": "evidence/covered-drain/nature-winter_lodge-portrait.png",
+          "byteIdentical": true
+        },
+        {
+          "run": "undrained-control",
+          "path": "evidence/undrained-control/nature-winter_lodge-portrait.png",
+          "byteIdentical": true
+        }
+      ]
+    }
+  ],
+  "historicalReferences": [
+    {
+      "path": "../followup/evidence/final-original/nature-winter_lodge/verification.json",
+      "outcome": "Original winter recreation wait failed at unchanged 120-second ready gate after disposal assertions; first three worlds completed 78 checks."
+    },
+    {
+      "path": "../followup/evidence/final-winter-retry/verification.json",
+      "outcome": "One unchanged isolated winter retry failed at the same 120-second fresh-ready gate."
+    },
+    {
+      "path": "../recreation/evidence/final-original/nature-winter_lodge/verification.json",
+      "sha256": "f0ee8a3cd221f41be3fa0521793f1dd0146c59a32b578d2bf978d5ad24652b9a",
+      "groupFailureDetails": "../recreation/evidence/final-original/failure.json",
+      "sourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+      "bundleSHA256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+      "recordedGitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+      "versionBinding": "Size-guard production source subsequently carried by f1540653283a09ddb91427a2e1692466275db2c7; tested as working-tree source while base HEAD remained 6ba4eee62f490360decb1c51007e8d3e604a7315.",
+      "outcome": "Additional unchanged full-suite failure: 78 checks completed in the first three worlds; winter timed out at the unchanged 120-second fresh-ready gate after disposal assertions. No page/console error recorded; timeout host state unavailable in uninstrumented runner."
+    },
+    {
+      "path": "../recreation/MOTION_STATUS.json",
+      "sha256": "d5bc97d349c307a993b1c47ffc63184fadfc25fcbdc69b72e18ac48ba9aaaf4d",
+      "sourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+      "bundleSHA256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+      "outcome": "Historical pixel motion proof UNRUN: unchanged script correctly rejected failed winter verification prerequisite before browser creation/screenshots. This is separate from later candidate gates."
+    },
+    {
+      "path": "../recreation/DIAGNOSIS.md",
+      "outcome": "Earlier baseline and size-guard instrumented runs both completed recreation; no deterministic original-failure fix claim."
+    }
+  ],
+  "limits": [
+    "One covered and one undrained control; old completed submission counts and scene times differ, so this is not a matched-workload benchmark.",
+    "Latest fence completion concerns prior commands on the old GL stream; it does not prove physical GPU-memory reclamation, compositor presentation, or completion of later disposal commands.",
+    "Only compileShader/linkProgram/getShaderParameter/getProgramParameter native calls were timed. Other GL calls, JavaScript, observer overhead and browser/driver internals remain untraced.",
+    "Long synchronous renderer.render and heartbeat lag do not establish the internal GPU/driver cause.",
+    "The covered wait moves an observed old-context completion wait before disposal; it is not a production performance improvement or an unchanged original-gate pass.",
+    "PNG byte identity covers the three recorded fixed-pose images, not every animated/input state."
+  ]
+}

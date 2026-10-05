@@ -1,0 +1,13 @@
+{
+  "file": "before-morning.png",
+  "purpose": "Historical first-render comparison only; see morning-desktop.png for final output.",
+  "sha256": "3cd0f67977ab52d2b77e3768eabc15dfabfd4c67c3406cb68e71f0b6978f134b",
+  "bytes": 874174,
+  "sourceHash": "670d0544eba758352fb278b6eb42af567ef77050a687bcb74f1f0d0e3e9bc7de",
+  "bundleHash": "7b34c1c56f7946ef40feba0e14b790fd571c78dd1bab8e8ae4146e8c5f35b8bd",
+  "sourceInventory": "first-pass-report.json",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  }
+}

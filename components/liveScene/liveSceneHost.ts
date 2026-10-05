@@ -15,6 +15,8 @@ export interface LiveSceneEngine {
   start(): void;
   stop(): void;
   dispose(): void;
+  /** Optional read-only evidence, sampled only after dispose() returns. */
+  diagnostics?(): unknown;
   /** Turn the view slightly for a drag of `dx`, `dy` shorter sides of the view (scenes that can look around). */
   drag?(dx: number, dy: number): void;
   /** Ease the view back once the drag ends. */
@@ -24,8 +26,23 @@ export interface LiveSceneEngine {
 export interface LiveSceneHostOptions<E extends LiveSceneEngine> {
   /** Class given to the shared canvas (styles fade it in once ready). */
   canvasClass: string;
+  /** Idle retention after the last view closes. New worlds can use 0 to release GPU resources immediately. */
+  disposeDelayMs?: number;
   isSupported(): boolean;
   create(canvas: HTMLCanvasElement, onContextLost: () => void): E;
+}
+
+interface HostDisposalEvidence {
+  attempts: number;
+  returned: number;
+  phase: 'attempting' | 'returned' | 'threw';
+  attemptedAtMs: number;
+  returnedAtMs?: number;
+  threwAtMs?: number;
+  diagnosticsStatus: 'absent' | 'captured' | 'failed';
+  diagnostics?: unknown;
+  error?: true;
+  diagnosticsError?: true;
 }
 
 /*
@@ -44,6 +61,7 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
   private disposeTimer = 0;
   private observer: ResizeObserver | null = null;
   private observed: HTMLElement | null = null;
+  private disposalEvidence = new WeakMap<E, HostDisposalEvidence>();
 
   constructor(private readonly options: LiveSceneHostOptions<E>) {}
 
@@ -86,7 +104,9 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
     this.engine?.stop();
     this.observe(null);
     this.canvas?.remove();
-    this.disposeTimer = window.setTimeout(() => this.teardown(), 5000);
+    const delay = this.options.disposeDelayMs ?? 5000;
+    if (delay <= 0) this.teardown();
+    else this.disposeTimer = window.setTimeout(() => this.teardown(), delay);
   }
 
   private setStatus(status: LiveSceneStatus) {
@@ -105,22 +125,41 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
     canvas.className = this.options.canvasClass;
     canvas.setAttribute('aria-hidden', 'true');
     this.canvas = canvas;
+    let engine: E;
     try {
-      this.engine = this.options.create(canvas, () => this.fail());
+      engine = this.options.create(canvas, () => {
+        // A disposed engine can report context loss after its replacement
+        // has mounted. Only the canvas from this creation owns the failure.
+        if (this.canvas === canvas) this.fail();
+      });
     } catch {
-      this.fail();
+      if (this.canvas === canvas) this.fail();
       return;
     }
-    const engine = this.engine;
-    this.setStatus('loading');
-    this.configure(engine);
-    this.resize();
-    engine.init().then(() => {
-      if (this.engine !== engine) return;
-      engine.renderFrame(0);
-      this.setStatus('ready');
-      this.applyRunning();
-    }).catch(() => this.fail());
+    // Context loss may be reported synchronously inside create(), before
+    // the host can store the new engine. Do not revive that failed instance.
+    if (this.canvas !== canvas) {
+      this.disposeEngine(engine, canvas);
+      return;
+    }
+    this.engine = engine;
+    try {
+      this.setStatus('loading');
+      this.configure(engine);
+      this.resize();
+      engine.init().then(() => {
+        if (this.engine !== engine) return;
+        engine.renderFrame(0);
+        // A first draw/fence failure may synchronously tear down this engine.
+        if (this.engine !== engine) return;
+        this.setStatus('ready');
+        this.applyRunning();
+      }).catch(() => {
+        if (this.engine === engine) this.fail();
+      });
+    } catch {
+      if (this.engine === engine) this.fail();
+    }
   }
 
   private attachTop() {
@@ -164,13 +203,61 @@ export class LiveSceneHost<E extends LiveSceneEngine> {
     this.setStatus('failed');
   }
 
+  private disposeEngine(engine: E, canvas: HTMLCanvasElement | null) {
+    const evidence: HostDisposalEvidence = this.disposalEvidence.get(engine) ?? {
+      attempts: 0, returned: 0, phase: 'attempting',
+      attemptedAtMs: 0, diagnosticsStatus: 'absent',
+    };
+    this.disposalEvidence.set(engine, evidence);
+    const publish = () => {
+      try {
+        // A string snapshot stays valid on a retained, detached canvas. Never
+        // expose a live diagnostics object or let observation block disposal.
+        if (canvas) canvas.dataset.liveSceneDisposal = JSON.stringify(evidence);
+      } catch { /* observation cannot alter the lifecycle */ }
+    };
+    evidence.attempts++;
+    evidence.attemptedAtMs = performance.now();
+    evidence.phase = 'attempting';
+    evidence.diagnosticsStatus = 'absent';
+    delete evidence.diagnostics;
+    delete evidence.error;
+    delete evidence.diagnosticsError;
+    publish();
+    try { engine.dispose(); }
+    catch (error) {
+      evidence.phase = 'threw';
+      evidence.error = true;
+      evidence.threwAtMs = performance.now();
+      publish();
+      throw error;
+    }
+    evidence.returned++;
+    evidence.returnedAtMs = performance.now();
+    evidence.phase = 'returned';
+    publish();
+    try {
+      const diagnostics = engine.diagnostics;
+      if (typeof diagnostics === 'function') {
+        const serialized = JSON.stringify(diagnostics.call(engine));
+        if (typeof serialized !== 'string') throw new Error('Diagnostics are not JSON data');
+        evidence.diagnostics = JSON.parse(serialized);
+        evidence.diagnosticsStatus = 'captured';
+      }
+    } catch { evidence.diagnosticsStatus = 'failed'; evidence.diagnosticsError = true; }
+    publish();
+  }
+
   private teardown() {
     window.clearTimeout(this.disposeTimer);
     this.observe(null);
-    this.engine?.dispose();
+    const engine = this.engine;
+    const canvas = this.canvas;
     this.engine = null;
-    this.canvas?.remove();
     this.canvas = null;
+    canvas?.remove();
+    // Clear ownership first: dispose() can itself report context loss.
+    if (engine) this.disposeEngine(engine, canvas);
     if (this.status !== 'failed') this.status = 'loading';
   }
 }

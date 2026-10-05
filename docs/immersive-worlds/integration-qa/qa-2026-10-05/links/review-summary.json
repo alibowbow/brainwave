@@ -1,0 +1,303 @@
+{
+  "status": "wrapper-passed-artifact-finalization-discrepancy",
+  "wrapperStatus": "passed",
+  "strictExitCode": 0,
+  "elapsedTotalSeconds": 159.812,
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "7e6b7b89a2b4d14d8a28677bd101a81f26de5e6f2496d2da7ea9ece11808d24e",
+  "supportScripts": {
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc",
+    "verification-provenance.mjs": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2",
+    "cold-autoplay.mjs": "49e2a08e80c4a6ad9cd9e66e154163fe1c8a57e427cf44e9b0e5668fdc12d561",
+    "scene-disposal-contract.mjs": "76ce9456f52e919aecd59a5e85a3aae262929470a6692b14d4b92c079d8cbfed"
+  },
+  "checks": [
+    {
+      "name": "cold focus autoplay and one native retry",
+      "status": "passed"
+    },
+    {
+      "name": "warm hash, copy and history",
+      "status": "passed"
+    },
+    {
+      "name": "saved, last, reload and invalid links",
+      "status": "passed"
+    },
+    {
+      "name": "held readiness is cancelled by navigation",
+      "status": "passed"
+    }
+  ],
+  "cold": {
+    "bindingElapsedMs": 2773,
+    "bindingPayloadCount": 5,
+    "readyEvidence": {
+      "url": "http://127.0.0.1:38759/#/play/focus",
+      "hash": "#/play/focus",
+      "documentOrigin": 1791158090574.3,
+      "wall": 2814.10000000149,
+      "headings": [
+        "깊은 집중"
+      ],
+      "candidates": [
+        {
+          "title": "깊은 집중",
+          "selector": ".rainy-window[data-state=\"ready\"] .rainy-window-canvas",
+          "ready": true,
+          "canvases": [
+            {
+              "className": "rainy-window-canvas",
+              "width": 748,
+              "height": 422,
+              "frames": null
+            }
+          ]
+        }
+      ],
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "audio": {
+        "contexts": 1,
+        "states": [
+          "suspended"
+        ],
+        "analyserGraphs": 0,
+        "oscillators": 0,
+        "resumeCount": 1,
+        "resumeCalls": [
+          {
+            "activeGesture": false,
+            "state": "suspended",
+            "held": false
+          }
+        ],
+        "held": false
+      },
+      "inputs": [],
+      "nodeReceivedAt": 1791158093392
+    },
+    "beforeFirstClick": {
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "inputs": [],
+      "audio": {
+        "contexts": 1,
+        "states": [
+          "suspended"
+        ],
+        "analyserGraphs": 0,
+        "oscillators": 0,
+        "resumeCount": 1,
+        "resumeCalls": [
+          {
+            "activeGesture": false,
+            "state": "suspended",
+            "held": false
+          }
+        ],
+        "held": false
+      },
+      "timer": "남은 시간 40분 0초",
+      "lastSession": null
+    },
+    "firstInput": [
+      {
+        "type": "pointerdown",
+        "trusted": true,
+        "wall": 8075.20000000298,
+        "activation": true,
+        "hint": "blocked",
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "analyserGraphs": 0,
+          "oscillators": 0,
+          "resumeCount": 1,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended",
+              "held": false
+            }
+          ],
+          "held": false
+        },
+        "control": {
+          "name": "눌러서 재생",
+          "disabled": false,
+          "inert": false,
+          "visibility": "visible",
+          "effectiveOpacity": 1,
+          "hit": true
+        }
+      },
+      {
+        "type": "pointerup",
+        "trusted": true,
+        "wall": 8075.60000000149,
+        "activation": true,
+        "hint": "blocked",
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "analyserGraphs": 0,
+          "oscillators": 0,
+          "resumeCount": 1,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended",
+              "held": false
+            }
+          ],
+          "held": false
+        },
+        "control": {
+          "name": "눌러서 재생",
+          "disabled": false,
+          "inert": false,
+          "visibility": "visible",
+          "effectiveOpacity": 1,
+          "hit": true
+        }
+      },
+      {
+        "type": "click",
+        "trusted": true,
+        "wall": 8075.70000000298,
+        "activation": true,
+        "hint": "blocked",
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "analyserGraphs": 0,
+          "oscillators": 0,
+          "resumeCount": 1,
+          "resumeCalls": [
+            {
+              "activeGesture": false,
+              "state": "suspended",
+              "held": false
+            }
+          ],
+          "held": false
+        },
+        "control": {
+          "name": "눌러서 재생",
+          "disabled": false,
+          "inert": false,
+          "visibility": "visible",
+          "effectiveOpacity": 1,
+          "hit": true
+        }
+      }
+    ],
+    "firstGeometry": {
+      "x": 801.4609375,
+      "y": 112,
+      "width": 102.046875,
+      "height": 44,
+      "disabled": false,
+      "inert": false,
+      "visibility": "visible",
+      "effectiveOpacity": 1,
+      "hit": true,
+      "inViewport": true
+    },
+    "runningAudio": {
+      "contexts": 1,
+      "states": [
+        "running"
+      ],
+      "analyserGraphs": 1,
+      "oscillators": 2,
+      "resumeCount": 2,
+      "resumeCalls": [
+        {
+          "activeGesture": false,
+          "state": "suspended",
+          "held": false
+        },
+        {
+          "activeGesture": true,
+          "state": "suspended",
+          "held": false
+        }
+      ],
+      "held": false
+    },
+    "runningTimer": "남은 시간 39분 59초",
+    "maxRecordedRawReadMs": 4441.12797500001,
+    "recordedReadCount": 21,
+    "readinessLimitMs": 60000,
+    "rawReadLimitMs": 5000
+  },
+  "wrapperFinalProvenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "wrapperBrowserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-04T23:54:50.507Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:54:50.507Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:57:28.023Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:57:28.050Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:57:28.068Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:57:28.068Z"
+  },
+  "cleanupErrors": [],
+  "ownedStillAlive": [],
+  "artifactDiscrepancy": {
+    "rawReportFinishedAt": null,
+    "rawReportOwnershipConfirmed": false,
+    "rawReportHasFinalProvenance": false,
+    "rawReportSHA256": "47092151ab4d721060b5849f3a33e1480fdb0ce61ae35c089e32044fbe0ac5cb",
+    "rawReportMtime": 1791158248.0178788,
+    "description": "The wrapper final process observed a terminal report and enforced finishedAt/final provenance/owned termination before reporting PASS. A separate post-run file read instead returns the pre-cleanup report. Do not overwrite or fabricate raw final fields. Exact persistence cause unresolved."
+  },
+  "priorFailure": "local-links-20261004T234844Z preserved unchanged",
+  "gpu": "released",
+  "additionalRuns": 0
+}

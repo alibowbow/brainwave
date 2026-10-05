@@ -1,0 +1,702 @@
+{
+  "createdAt": "2026-10-04T20:18:15.722Z",
+  "expectedOriginalHead": "33aff89945cb6911279073e4156eca24ab4842b8",
+  "baselineGitHead": "69d5617f5a268e278b878941fed7190f4a0d3792",
+  "sourceManifest": [
+    {
+      "path": "CaveWorld.tsx",
+      "bytes": 295,
+      "sha256": "7944214ad0837208e3df69d1df8641f82cb4c1d2efe885b0d354341d38760fed"
+    },
+    {
+      "path": "DeepSeaWorld.tsx",
+      "bytes": 297,
+      "sha256": "2d97b5301a9ac922cfd4937ed51e09da1c2f40ce317e9be6bed97724917059ab"
+    },
+    {
+      "path": "deepWater.css",
+      "bytes": 593,
+      "sha256": "999b2870a65089515a5ac07396635adc3af707c9512d8c8800643a489b8fe7f6"
+    },
+    {
+      "path": "DeepWaterView.tsx",
+      "bytes": 6565,
+      "sha256": "78a4e2954a53477dc1d209c468979045c4be6ab42b299de9a2ea33b6b2e8aa25"
+    },
+    {
+      "path": "engine/cave.test.ts",
+      "bytes": 3390,
+      "sha256": "39b565cde59e1b7432032311a53c4dfe3095e33d187f6ea482434590de5fc450"
+    },
+    {
+      "path": "engine/cave.ts",
+      "bytes": 16583,
+      "sha256": "f7240f9e14769e1fd60152fa9f101b304a077a5c56a328d07fdf1aacdfb57533"
+    },
+    {
+      "path": "engine/DeepWaterEngine.test.ts",
+      "bytes": 6057,
+      "sha256": "ae186034b705f7aed0b2be428ec787b4149398708af0225b26efa50abb3a5b97"
+    },
+    {
+      "path": "engine/DeepWaterEngine.ts",
+      "bytes": 11530,
+      "sha256": "108bb91084021e1074cf88748ba519f53bae427a36a18c26ea08edfd97aa48d2"
+    },
+    {
+      "path": "engine/environment.ts",
+      "bytes": 7512,
+      "sha256": "b80990df282b99f22b4198a083a75bacfbb57473e788ea895fa13ff2177c5350"
+    },
+    {
+      "path": "engine/poolTarget.test.ts",
+      "bytes": 7261,
+      "sha256": "111d3ff11c45be55ebefcda21aa0e0a8508924eaeafd8a37e86ef8cb5f3eba27"
+    },
+    {
+      "path": "engine/poolTarget.ts",
+      "bytes": 2657,
+      "sha256": "18e74a2e1da8ff9ef3e37bd9fbd9ac8bfdfe4e4e24a534826d85675e16b88d7f"
+    },
+    {
+      "path": "engine/sea.test.ts",
+      "bytes": 2254,
+      "sha256": "242cfe0c9ad52fc1250ddd48fb4037277c1f05b76b87454157c251ce47bac110"
+    },
+    {
+      "path": "engine/sea.ts",
+      "bytes": 22471,
+      "sha256": "daca343f2556d0026a3d5713ffb642373712035774670050300394be4dd68d06"
+    },
+    {
+      "path": "engine/types.ts",
+      "bytes": 528,
+      "sha256": "93ba5980914bbb5cb0ce94b6259af447814ee1db8163c56de1d3245fcec17212"
+    },
+    {
+      "path": "engine/waterfall.test.ts",
+      "bytes": 2692,
+      "sha256": "a4db169502490aace2220615030b45aa821e09c541ca60b3ede8444f6108a9d8"
+    },
+    {
+      "path": "engine/waterfall.ts",
+      "bytes": 26361,
+      "sha256": "fb257aeb65b50739e10e0cc7546bf215d565e40f66acb77fb4a86fa5bfccbbf0"
+    },
+    {
+      "path": "host.ts",
+      "bytes": 940,
+      "sha256": "d41fc7b1ef6f46328ffddd558015274461ef6b1d35c6b94d95ab6e1ad32d1ba8"
+    },
+    {
+      "path": "qa/capture.mjs",
+      "bytes": 2157,
+      "sha256": "48b28715036b0121e68787f7a9229c99805f21cf780f518c98f990788afae8c0"
+    },
+    {
+      "path": "qa/finalize-evidence.mjs",
+      "bytes": 3921,
+      "sha256": "e08f34784ae0d377446378e004fc1ba5afd1860d9de219d59969a44b992cf90e"
+    },
+    {
+      "path": "qa/harness.css",
+      "bytes": 1113,
+      "sha256": "2d0cfe7b6fc212032e423daf419fd0eb7ec1d828d926deb11244e4cf7ecb27bf"
+    },
+    {
+      "path": "qa/harness.tsx",
+      "bytes": 6303,
+      "sha256": "aba6baafb0906348bdb90a14927d01bb244e5585c56f7749fd5d5cbdf07328a5"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 265,
+      "sha256": "e5d36bb0fb39ff34d0dc2eea29e9e4ce35965675aa781426f517f3d22ca3b696"
+    },
+    {
+      "path": "qa/overlay-checks.mjs",
+      "bytes": 9872,
+      "sha256": "8a21d53274afde9d33afeeefb0d9bec092d7ae727b40014fc691006c7843f0f8"
+    },
+    {
+      "path": "qa/probe-disposal.mjs",
+      "bytes": 1540,
+      "sha256": "fe61c0383586cfa40190fec54c60e3e89e19b9e566b7b289057cea4ecac25f98"
+    },
+    {
+      "path": "qa/verify-followup.mjs",
+      "bytes": 15768,
+      "sha256": "00329510f27b917e0e8a1ac4b05b30ca2cb7a0dbd18887765a92d8e41fb4e742"
+    },
+    {
+      "path": "qa/verify.mjs",
+      "bytes": 13716,
+      "sha256": "54564e7b567ead8437a7a4f69ec2c53dc0b3f8deac93466fdbd4f3d601b13b06"
+    },
+    {
+      "path": "qa/vite.config.ts",
+      "bytes": 550,
+      "sha256": "ffb9dddd1cbec3635febe6ec9442db85b62ce96e009b096d3ffc057b50caadfc"
+    },
+    {
+      "path": "WaterfallWorld.tsx",
+      "bytes": 305,
+      "sha256": "55c26be9b6f693f6292dc051fb33f648b87fef641fe69b79cffda1086b2751d5"
+    }
+  ],
+  "bundleManifest": [
+    {
+      "path": "assets/cave-CQ1VuEGY.js",
+      "bytes": 9957,
+      "sha256": "29e4801fbcf950ab4606d454d1d0eb198c6a990f814c1018561c874f89cc4d51"
+    },
+    {
+      "path": "assets/environment-BwBsOaRT.js",
+      "bytes": 14308,
+      "sha256": "4fdbb5831ad81d17106392638679993d293c21e5397289391eb5bc3490ff9624"
+    },
+    {
+      "path": "assets/index-BGE1GmaI.js",
+      "bytes": 772344,
+      "sha256": "7b1ce6bd4cabe05deb8ebd616a7cb676835565c88af185ba15d59e48641222c5"
+    },
+    {
+      "path": "assets/index-BSN8hT3m.css",
+      "bytes": 1765,
+      "sha256": "4384584f4e94757b33a72ba94a1ea366a4279652b5ab37631ab095071209063b"
+    },
+    {
+      "path": "assets/sea-BYBentU1.js",
+      "bytes": 14229,
+      "sha256": "f50c624ed7182df20795e46fb30a1618d5f957ec6dab860b6866fbcc63a15fab"
+    },
+    {
+      "path": "assets/waterfall-BUp2q6ts.js",
+      "bytes": 15282,
+      "sha256": "d535fe2724f297691146443aa812b29a3894cc6def4689a2532ec636638acef2"
+    },
+    {
+      "path": "index.html",
+      "bytes": 364,
+      "sha256": "911b37be21bc1aec6e7808a3109da60a6e5303c70a8e8abbe4c2d66fd3f94698"
+    }
+  ],
+  "environment": {
+    "renderer": "Chromium headless / SwiftShader software WebGL2",
+    "deviceScaleFactor": 1,
+    "viewportOnly": true,
+    "physicalFoldHardwareTested": false,
+    "hiddenState": "Synthetic document.hidden + visibilitychange; native tab switching not tested",
+    "pointerInput": "Playwright mouse and dispatched PointerEvent; scene raycasts and actual renderer used",
+    "browserVersion": "153.0.8010.0"
+  },
+  "checks": [
+    {
+      "scene": "waterfall",
+      "name": "static3D renders real first frame while active=true",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "static3D does not animate",
+      "pass": true,
+      "details": {
+        "frames": "1",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "normal pool target is complete with truthful extensions",
+      "pass": true,
+      "details": {
+        "type": "half-float",
+        "format": "RGBA16F",
+        "float": true,
+        "halfFloat": true,
+        "forcedByte": false,
+        "fallback": "none",
+        "status": 36053,
+        "complete": true
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "desktop nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "portrait nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "fold-inner nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "landscape nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "active=false freezes renderer and simulation",
+      "pass": true,
+      "details": {
+        "frames": "5",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "active=true advances simulation and changes real pixels",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "tap reaches actual raycast and bounded interaction callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": 0.045403094958948016
+        }
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "bounded look drag turns real camera",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "pointer cancellation clears drag without tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "completed drag is not treated as a tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.6,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.63,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.36,
+        "y": 0.65,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.73,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.35,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.35,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": -0.41093532474567657
+        }
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome native drag turns actual camera",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "only current surface captures the native mouse pointer",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "native drag releases capture without emitting tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "native button child, range, and link work without moving scene",
+      "pass": true,
+      "details": {
+        "controls": [
+          "button",
+          "range",
+          "link"
+        ]
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: button-child emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: range emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: select emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: link emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: slider emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: switch emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: tab emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: plain emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: foreign emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "pointercancel fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "pointercancel cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "blur fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "blur cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.6,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.63,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.36,
+        "y": 0.65,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.73,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.35,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.52,
+        "y": 0.55,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    }
+  ],
+  "scenes": {
+    "waterfall": {
+      "interaction": {
+        "x": 0.5,
+        "y": 0.75,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": 0.045403094958948016
+        }
+      }
+    }
+  },
+  "errors": [],
+  "status": "failed",
+  "failure": "AssertionError [ERR_ASSERTION]: waterfall: hidden chrome scene subtree: a visible real scene target is hittable\n    at check (file:///workspace/scratch/38b93d50f546/brainwave/components/immersiveWorlds/deepWater/qa/verify-followup.mjs:42:53)\n    at nativeTap (file:///workspace/scratch/38b93d50f546/brainwave/components/immersiveWorlds/deepWater/qa/overlay-checks.mjs:35:5)\n    at async verifyOverlay (file:///workspace/scratch/38b93d50f546/brainwave/components/immersiveWorlds/deepWater/qa/overlay-checks.mjs:85:21)\n    at async file:///workspace/scratch/38b93d50f546/brainwave/components/immersiveWorlds/deepWater/qa/verify-followup.mjs:106:3",
+  "failureDiagnostics": {
+    "host": {
+      "holders": 1,
+      "holderRunning": [
+        true
+      ],
+      "hasEngine": true,
+      "engineDisposed": false,
+      "status": "ready",
+      "disposeTimer": 0,
+      "topConnected": true,
+      "canvasConnected": true,
+      "hidden": false,
+      "visibility": "visible",
+      "time": 32937.89999999851,
+      "inputCounters": {
+        "drag": 7,
+        "touch": 20,
+        "releaseDrag": 25
+      },
+      "controlEvents": [
+        "button",
+        "range",
+        "link"
+      ],
+      "forcedByte": false
+    },
+    "state": {
+      "active": true,
+      "static3D": false,
+      "secondHolder": false,
+      "mounted": true,
+      "chrome": false
+    },
+    "savedCanvas": null
+  },
+  "note": "Preliminary failed attempt. Not counted as final passing evidence. PNGs from this attempt are superseded by the complete final run; only diagnostic and source/bundle identity are retained here."
+}

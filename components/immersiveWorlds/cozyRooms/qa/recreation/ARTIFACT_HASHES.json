@@ -1,0 +1,392 @@
+{
+  "algorithm": "SHA-256",
+  "base": "components/immersiveWorlds/cozyRooms/qa",
+  "exclusion": "This manifest itself; it is bound by the publication tree.",
+  "files": [
+    {
+      "file": "recreation/DIAGNOSIS.md",
+      "bytes": 12178,
+      "sha256": "25beff0f6773ef7740ac3a538af2de00c906e620db7f83668a1fbab29bb0cea2"
+    },
+    {
+      "file": "recreation/FINAL_RESULTS.json",
+      "bytes": 3288,
+      "sha256": "d01021650fe2c26eb2946df5992874966476dc12e5cf594617962f547a3d31e9"
+    },
+    {
+      "file": "recreation/HANDOFF.md",
+      "bytes": 9632,
+      "sha256": "eb0ea138e143e2ed791f470519cd9d22b13da37ee59ddea2719b219f03841960"
+    },
+    {
+      "file": "recreation/MOTION_STATUS.json",
+      "bytes": 969,
+      "sha256": "d5bc97d349c307a993b1c47ffc63184fadfc25fcbdc69b72e18ac48ba9aaaf4d"
+    },
+    {
+      "file": "recreation/PNG_MANIFEST.json",
+      "bytes": 5929,
+      "sha256": "7f577cc0e6e1fa85a133a516eccee71ed32a3f9dd70af998a584fccc2d75ea49"
+    },
+    {
+      "file": "recreation/README.md",
+      "bytes": 3063,
+      "sha256": "307d03e3ae772d7c2681258a1e43df5131ae2582feadcab13a612a45879eccb3"
+    },
+    {
+      "file": "recreation/clean.mjs",
+      "bytes": 4615,
+      "sha256": "796dc66f44769193f9108e438692a3c9e62db70dd0fb359e7ef75ca0bdb7de4b"
+    },
+    {
+      "file": "recreation/comparison.json",
+      "bytes": 55056,
+      "sha256": "6d2b905aca32db597a98716d1b25575cf652550ae16b4d9d8cdec31f5c22e015"
+    },
+    {
+      "file": "recreation/entry.mjs",
+      "bytes": 6808,
+      "sha256": "47d5b50821c85ce28e1cf7ef1b085721dd0894c88d8e462e0af224ef8d6ca1ac"
+    },
+    {
+      "file": "recreation/evidence/baseline-clean/diagnostic.json",
+      "bytes": 20380,
+      "sha256": "a742f1d1cbe4847764877fbd4929a0238f369e23a2863d653bc11d2d4cf889ac"
+    },
+    {
+      "file": "recreation/evidence/baseline-clean/execution.log",
+      "bytes": 1842,
+      "sha256": "d5f61af8c2b0bceb8283c244fc5876744d3fa5421d95b1d797884908359b703a"
+    },
+    {
+      "file": "recreation/evidence/baseline-clean/phases.jsonl",
+      "bytes": 87651,
+      "sha256": "916512ef50ec79d6d69d51f34bfd47af6f185fcd29755ab3aa98531a56f66142"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/execution.log",
+      "bytes": 1976,
+      "sha256": "382f8f57dffccb5acbcc19006dbbe7187d2e4c4cfa9f1e4232e81ab5a1e0b884"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/instrumentation-manifest.json",
+      "bytes": 6880,
+      "sha256": "9af67bf0a522f9fa01ac21fa0cacf4f6725cbe8a82a99e8e0678c957f477a547"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/phases.jsonl",
+      "bytes": 379670,
+      "sha256": "43c652dc57efbb027105868777fb0204564975055869466777095bcc3158b8cf"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/runner-provenance.json",
+      "bytes": 3070,
+      "sha256": "f82a014c200c7b2b7987a008b3ccb76dbb64f22c75e1ce14228adebbcaf2a73d"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/runner-source.mjs",
+      "bytes": 12766,
+      "sha256": "c6d971e76b68a8c63491afd49640371ebcefed329b7e1283c125f93fc8f86e77"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/runner.log",
+      "bytes": 1976,
+      "sha256": "382f8f57dffccb5acbcc19006dbbe7187d2e4c4cfa9f1e4232e81ab5a1e0b884"
+    },
+    {
+      "file": "recreation/evidence/baseline-original-sequence/verification.json",
+      "bytes": 5328,
+      "sha256": "40388bed07a3f8d9f83dd71473fd87fb4652273febdc126d4aa2e2f0f831c230"
+    },
+    {
+      "file": "recreation/evidence/final-build.log",
+      "bytes": 1746,
+      "sha256": "fafc104989f52f809779003cd63af24a4c1114771c2351367115dec43df3a1d9"
+    },
+    {
+      "file": "recreation/evidence/final-bundle-manifest.json",
+      "bytes": 4802,
+      "sha256": "65e1c3b16d4041a4819d05d16ee01a3a52861069679d382c36e068d0fa7a2d43"
+    },
+    {
+      "file": "recreation/evidence/final-gates/application-build.log",
+      "bytes": 2983,
+      "sha256": "802b872a28d98fc71a87ec58db97d4a40848d6cefdb9b034934f7ed3fbd0da2b"
+    },
+    {
+      "file": "recreation/evidence/final-gates/bundle-budget.log",
+      "bytes": 292,
+      "sha256": "5c4bd8de634a70fe3216a52acee22b78af1e9c75d7d41bdd850efadac8c8eaa5"
+    },
+    {
+      "file": "recreation/evidence/final-gates/execution.log",
+      "bytes": 73,
+      "sha256": "56de94c17c86c516ead222a0874dd5d3daaf8f547d7f558de8744e8e0f4a6630"
+    },
+    {
+      "file": "recreation/evidence/final-gates/gates.json",
+      "bytes": 3277,
+      "sha256": "5d2dd9950f427aa58144e3f231564f4d91eecb8eccdf82aa3b1e24263fb6f9da"
+    },
+    {
+      "file": "recreation/evidence/final-gates/typecheck.log",
+      "bytes": 158,
+      "sha256": "a152e1addbba51dac86ab313def1339ba26c3a28aca3654a0b21c8fa3679d3a7"
+    },
+    {
+      "file": "recreation/evidence/final-gates/unit-tests.log",
+      "bytes": 382,
+      "sha256": "a3a97bdf553939fa564127dcea035b5fac50363a09ca97f1cacd67389af3d941"
+    },
+    {
+      "file": "recreation/evidence/final-original/checkpoint.json",
+      "bytes": 15221,
+      "sha256": "f15e9b402e946e997c561a3d9344d0b8189b025ed670097347acb0c92d81082b"
+    },
+    {
+      "file": "recreation/evidence/final-original/execution.log",
+      "bytes": 8423,
+      "sha256": "24a745f272a627fa6e6bc204ca2ae56bf43e9bfedcf147b5ed094ef07665695c"
+    },
+    {
+      "file": "recreation/evidence/final-original/failure.json",
+      "bytes": 1111,
+      "sha256": "71080fa8e6a725fc87e4b0f32b1820b7e7400b29e6f2352eb998b47f5a02918b"
+    },
+    {
+      "file": "recreation/evidence/final-original/nature-winter_lodge/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "recreation/evidence/final-original/nature-winter_lodge/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "recreation/evidence/final-original/nature-winter_lodge/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "recreation/evidence/final-original/nature-winter_lodge/verification.json",
+      "bytes": 1774,
+      "sha256": "f0ee8a3cd221f41be3fa0521793f1dd0146c59a32b578d2bf978d5ad24652b9a"
+    },
+    {
+      "file": "recreation/evidence/final-original/power_nap/power_nap-desktop.png",
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "recreation/evidence/final-original/power_nap/power_nap-fold-inner-viewport.png",
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "recreation/evidence/final-original/power_nap/power_nap-portrait.png",
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "recreation/evidence/final-original/power_nap/verification.json",
+      "bytes": 4566,
+      "sha256": "1c841293a0d1adfe7629e2119df823c94e02a7fe27e016b2b7d24e603fe021f3"
+    },
+    {
+      "file": "recreation/evidence/final-original/power_nap-desktop.png",
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "recreation/evidence/final-original/power_nap-fold-inner-viewport.png",
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "recreation/evidence/final-original/power_nap-portrait.png",
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "recreation/evidence/final-original/relax/relax-chrome-visible.png",
+      "bytes": 517768,
+      "sha256": "2ae198a6dbe0b47adc6761f460f9f711aee5b4721e6850e2275fb6f4abd23b6a"
+    },
+    {
+      "file": "recreation/evidence/final-original/relax/relax-desktop.png",
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "recreation/evidence/final-original/relax/relax-portrait.png",
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "recreation/evidence/final-original/relax/verification.json",
+      "bytes": 4522,
+      "sha256": "845c5b0866bce864789ec65951add4d07c52571e01548a7fe31d369f6fc6ad89"
+    },
+    {
+      "file": "recreation/evidence/final-original/relax-chrome-visible.png",
+      "bytes": 517768,
+      "sha256": "2ae198a6dbe0b47adc6761f460f9f711aee5b4721e6850e2275fb6f4abd23b6a"
+    },
+    {
+      "file": "recreation/evidence/final-original/relax-desktop.png",
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "recreation/evidence/final-original/relax-portrait.png",
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "recreation/evidence/final-original/sleep_prep/sleep_prep-desktop.png",
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "recreation/evidence/final-original/sleep_prep/sleep_prep-portrait.png",
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "recreation/evidence/final-original/sleep_prep/verification.json",
+      "bytes": 4189,
+      "sha256": "c1d2748cf68a46a8568853fc0cec7d0111505dd95df55a5495c448da33f9ca5e"
+    },
+    {
+      "file": "recreation/evidence/final-original/sleep_prep-desktop.png",
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "recreation/evidence/final-original/sleep_prep-portrait.png",
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "recreation/evidence/motion-precondition.log",
+      "bytes": 430,
+      "sha256": "c894e3f9aa31b8bd7c68e7d012a4fd39674f9c9f1cb1eaca11c9247c11e48e23"
+    },
+    {
+      "file": "recreation/evidence/size-guard-clean/diagnostic.json",
+      "bytes": 20634,
+      "sha256": "e5c800bd39fa2bf2af76664d812a1b1882df1b9654b655c1c594e3c8de882781"
+    },
+    {
+      "file": "recreation/evidence/size-guard-clean/execution.log",
+      "bytes": 1844,
+      "sha256": "68b2f174cc0e93aecc1c627e72fb909dac49cc1b0ac77e1e9d795080f0ae4e70"
+    },
+    {
+      "file": "recreation/evidence/size-guard-clean/phases.jsonl",
+      "bytes": 53128,
+      "sha256": "8a8c614604d43a51bcc02952ce467c0f58b5220eb2dce4e06c5b758a1393a39a"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/execution.log",
+      "bytes": 1976,
+      "sha256": "1baf1c53da85a6f2aee30e762cf0f10f1dcf0a5c2f0614d4b00afe2971fabe54"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/instrumentation-manifest.json",
+      "bytes": 7078,
+      "sha256": "ea7dbfc6944beda727e928b193447f2633cfd9f00d65a99c738760321940f6b1"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/nature-winter_lodge-desktop.png",
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/nature-winter_lodge-landscape-viewport.png",
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/nature-winter_lodge-portrait.png",
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/phases.jsonl",
+      "bytes": 222206,
+      "sha256": "63c3c710c26d296e1a9ca9aaa47172950af856887e82cb3b9fc806f602c48b48"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/runner-provenance.json",
+      "bytes": 3681,
+      "sha256": "a3b4247136af2b7ff646c1d5a44d12140d12b25cb6100cd522fff2b1858f8372"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/runner-source.mjs",
+      "bytes": 13340,
+      "sha256": "992a87809376d87b90b9983d06cab2dbe0327be004517056b0f653ebf3a4f89b"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/runner.log",
+      "bytes": 1976,
+      "sha256": "1baf1c53da85a6f2aee30e762cf0f10f1dcf0a5c2f0614d4b00afe2971fabe54"
+    },
+    {
+      "file": "recreation/evidence/size-guard-original-sequence/verification.json",
+      "bytes": 5327,
+      "sha256": "a8d8357f184993fe6c1e28ad1ea2fe3a04264b3c7aa8f36155ddc104b5144171"
+    },
+    {
+      "file": "recreation/instrumentation.mjs",
+      "bytes": 4684,
+      "sha256": "04fd0ec2ffab0965ebc233436cbd869dc9a06fbd7f6a750c28f2354b8409ddcf"
+    },
+    {
+      "file": "recreation/original-sequence.mjs",
+      "bytes": 5525,
+      "sha256": "c68dd6eedff7712918d00a6f17287ab1c685ce5b03190943b3ed59faaac3bb18"
+    },
+    {
+      "file": "recreation-cycle/README.md",
+      "bytes": 1415,
+      "sha256": "ee2fb47ca022ba553c160d36f6a714de6e610bf1c9b3fb7e3e255feafab21de3"
+    },
+    {
+      "file": "recreation-cycle/evidence/final/execution.log",
+      "bytes": 3073,
+      "sha256": "15dd467a472ff30d153ffc87af5d1d602a62318debe3b91af68b28a73341b955"
+    },
+    {
+      "file": "recreation-cycle/evidence/final/progress.jsonl",
+      "bytes": 2356,
+      "sha256": "3aa76f9b560b436889be9a58ff4b591b96ac119433118d8bbe974fe0c2887686"
+    },
+    {
+      "file": "recreation-cycle/evidence/final/recreation-cycle.json",
+      "bytes": 26257,
+      "sha256": "caee2996b66e1e180bb1f5c64e1c39bb57531384a224c437ff714f037096850b"
+    },
+    {
+      "file": "recreation-cycle/verify.mjs",
+      "bytes": 17533,
+      "sha256": "9f76b4973f7267af59e2e5769e41e549ea64ac2a1ca606181c29a7988acb80dc"
+    }
+  ]
+}

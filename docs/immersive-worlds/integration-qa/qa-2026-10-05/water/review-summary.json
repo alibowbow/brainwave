@@ -1,0 +1,387 @@
+{
+  "status": "passed",
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "sourceDigest": "c592383fc8328e629f8c4200e33e825cadd8d87cac0cf7e1965a9a9db49af10f",
+  "distDigest": "c8d9e97fd04c652ead1adb182003221e4ecf1a58ba8ee1e7e6fc3f2c2e72bbae",
+  "sourceStable": true,
+  "distStable": true,
+  "applicationBound": true,
+  "errors": [],
+  "cold": {
+    "blocked": true,
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "priorTrusted": 0,
+    "audio": {
+      "contexts": 1,
+      "states": [
+        "suspended"
+      ],
+      "startCount": 0,
+      "stopCount": 0,
+      "sourceRoutes": 0,
+      "destinationEdges": 0
+    }
+  },
+  "actualFramesBeforePause": {
+    "from": 1,
+    "to": 3,
+    "elapsedMs": 3729.1999999955297,
+    "note": "Two actual frame submissions observed; this is not a physical-device FPS certification."
+  },
+  "nativeResponse": {
+    "pauseMs": 7.5,
+    "endMs": 53.899999998509884,
+    "pauseClickSendToAckMs": 10.64793599999939,
+    "endClickSendToAckMs": 53.36909999999989,
+    "pausePointerDown": {
+      "inputTarget": {
+        "visible": true,
+        "effectiveOpacity": 1,
+        "inert": false,
+        "hit": true,
+        "x": 186,
+        "y": 795,
+        "tag": "BUTTON"
+      },
+      "type": "pointerdown",
+      "trusted": true,
+      "pointerType": "mouse",
+      "label": "\uc77c\uc2dc\uc815\uc9c0",
+      "performanceMs": 8686.10000000149,
+      "eventTimeStamp": 8684.10000000149,
+      "wallMs": 1791156439116
+    },
+    "endPointerDown": {
+      "inputTarget": {
+        "visible": true,
+        "effectiveOpacity": 1,
+        "inert": false,
+        "hit": true,
+        "x": 238,
+        "y": 795,
+        "tag": "BUTTON"
+      },
+      "type": "pointerdown",
+      "trusted": true,
+      "pointerType": "mouse",
+      "label": "\uc138\uc158 \uc885\ub8cc",
+      "performanceMs": 8923,
+      "eventTimeStamp": 8921.79999999702,
+      "wallMs": 1791156439353
+    },
+    "routeAfter": "",
+    "worldAbsent": true
+  },
+  "disposal": {
+    "timing": {
+      "observedElapsedMs": 5106.10000000149,
+      "ackElapsedMs": 5107,
+      "deadlineMs": 20000,
+      "includesRetentionMs": 5000
+    },
+    "afterEndConnected": false,
+    "pausedSubmission": {
+      "pending": true,
+      "dirty": false,
+      "running": false,
+      "disposed": false,
+      "fault": null,
+      "submitted": 3,
+      "completed": 2,
+      "requestedSize": [
+        390,
+        776,
+        1
+      ],
+      "appliedSize": [
+        390,
+        776,
+        1
+      ]
+    },
+    "disposedSubmission": {
+      "pending": false,
+      "dirty": false,
+      "running": false,
+      "disposed": true,
+      "fault": null,
+      "submitted": 3,
+      "completed": 2,
+      "requestedSize": [
+        390,
+        776,
+        1
+      ],
+      "appliedSize": [
+        390,
+        776,
+        1
+      ]
+    },
+    "framesStableAfterDisposal": true,
+    "nativeContextLossAfterNormalEnd": [
+      {
+        "type": "webglcontextlost",
+        "trusted": true,
+        "eventTimeStamp": 13951.60000000149,
+        "performanceMs": 13951.79999999702,
+        "wallMs": 1791156444381
+      }
+    ],
+    "scope": "Native event followed normal owner teardown; no explicit active context-loss API was invoked."
+  },
+  "audio": {
+    "beforePause": {
+      "contexts": 1,
+      "states": [
+        "running"
+      ],
+      "startCount": 51,
+      "stopCount": 20,
+      "sourceRoutes": 36,
+      "destinationEdges": 1
+    },
+    "afterPause": {
+      "contexts": 1,
+      "states": [
+        "running"
+      ],
+      "startCount": 53,
+      "stopCount": 53,
+      "sourceRoutes": 0,
+      "destinationEdges": 0
+    },
+    "afterEnd": {
+      "contexts": 1,
+      "states": [
+        "running"
+      ],
+      "startCount": 53,
+      "stopCount": 53,
+      "sourceRoutes": 0,
+      "destinationEdges": 0
+    },
+    "assessment": {
+      "passed": true,
+      "problems": [],
+      "scope": "Observed native source routing and start cessation; no private engine gate access, no AudioContext.close requirement, no browser/WebGL cleanup inference"
+    }
+  },
+  "responseObservations": {
+    "heartbeatCount": 13,
+    "heartbeatMaxAckMs": 2399.5069730000005,
+    "heartbeatMedianAckMs": 7.91260499999953,
+    "heartbeatDelayed5s": 0,
+    "readMaxAckMs": 2602.6998590000003,
+    "largestHeartbeat": {
+      "kind": "heartbeat-ack",
+      "nodeMs": 6045.097515,
+      "wallISO": "2026-10-04T23:27:14.882Z",
+      "id": 18,
+      "durationMs": 2399.5069730000005,
+      "state": {
+        "performanceMs": 4450.79999999702,
+        "wallMs": 1791156434880,
+        "route": "#/play/nature/summer_valley",
+        "hidden": false,
+        "readyState": "complete",
+        "userActivation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "trustedInputCount": 0,
+        "worldPresent": true,
+        "state": "loading",
+        "motion": "paused",
+        "callbacks": 0,
+        "canvas": {
+          "dataset": {
+            "engine": "three.js r186",
+            "waterEdgeSubmission": "{\"pending\":true,\"dirty\":false,\"running\":false,\"disposed\":false,\"fault\":null,\"submitted\":1,\"completed\":0,\"requestedSize\":[390,776,1],\"appliedSize\":[390,776,1]}",
+            "waterEdgeRenderTargets": "{\"forcedByte\":false,\"colorBufferFloat\":true,\"colorBufferHalfFloat\":true,\"checks\":[{\"label\":\"valley-reflection-cube\",\"type\":\"half-float\",\"width\":128,\"height\":128,\"faces\":[36053,36053,36053,36053,36053,36053],\"complete\":true},{\"label\":\"valley-refraction-depth\",\"type\":\"unsigned-byte\",\"width\":390,\"height\":776,\"faces\":[36053],\"complete\":true}]}",
+            "frames": "1",
+            "time": "0.0000",
+            "drawCalls": "38",
+            "triangles": "663302"
+          },
+          "rect": {
+            "x": 0,
+            "y": 133,
+            "width": 390,
+            "height": 776
+          }
+        },
+        "buttons": [
+          {
+            "label": "\ucd95\uc18c",
+            "x": 53.84375,
+            "y": 33.5,
+            "width": 75.6875,
+            "height": 52,
+            "effectiveOpacity": 1,
+            "inert": false,
+            "visible": true,
+            "hit": true,
+            "disabled": false
+          },
+          {
+            "label": "\uc774 \ub8e8\ud2f4 \ub9c1\ud06c \ubcf5\uc0ac",
+            "x": 307.5,
+            "y": 33.5,
+            "width": 39,
+            "height": 35,
+            "effectiveOpacity": 1,
+            "inert": false,
+            "visible": true,
+            "hit": true,
+            "disabled": false
+          },
+          {
+            "label": "\uc804\uccb4 \ud654\uba74 \ubcf4\uae30",
+            "x": 354.5,
+            "y": 33.5,
+            "width": 39,
+            "height": 35,
+            "effectiveOpacity": 1,
+            "inert": false,
+            "visible": true,
+            "hit": true,
+            "disabled": true
+          },
+          {
+            "label": "\uc790\uc5f0 \ubcf4\uae30",
+            "x": 137.5,
+            "y": 170,
+            "width": 113,
+            "height": 40,
+            "effectiveOpacity": 0.95,
+            "inert": true,
+            "visible": false,
+            "hit": false,
+            "disabled": false
+          },
+          {
+            "label": "\uadf8\ub798\ud53d \ubcf4\uae30",
+            "x": 252.5,
+            "y": 170,
+            "width": 113,
+            "height": 40,
+            "effectiveOpacity": 0.95,
+            "inert": true,
+            "visible": false,
+            "hit": false,
+            "disabled": false
+          },
+          {
+            "label": "\uc7ac\uc0dd",
+            "x": 186,
+            "y": 860,
+            "width": 48,
+            "height": 48,
+            "effectiveOpacity": 1,
+            "inert": true,
+            "visible": false,
+            "hit": false,
+            "disabled": false
+          },
+          {
+            "label": "\uc138\uc158 \uc885\ub8cc",
+            "x": 238,
+            "y": 860,
+            "width": 44,
+            "height": 44,
+            "effectiveOpacity": 1,
+            "inert": true,
+            "visible": false,
+            "hit": false,
+            "disabled": false
+          },
+          {
+            "label": "\uc138\uc158 \uc138\ubd80 \uc870\uc808 \uc5f4\uae30",
+            "x": 288,
+            "y": 860,
+            "width": 44,
+            "height": 44,
+            "effectiveOpacity": 1,
+            "inert": true,
+            "visible": false,
+            "hit": false,
+            "disabled": false
+          }
+        ],
+        "blocked": false,
+        "inputTail": [],
+        "extra": {
+          "wall": 4450.89999999851,
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "clocks": [
+            0
+          ],
+          "contextCalls": [
+            {
+              "operation": "resume",
+              "wall": 338.29999999701977,
+              "context": 1
+            },
+            {
+              "operation": "resume",
+              "wall": 1539.6999999955297,
+              "context": 1
+            }
+          ],
+          "startCount": 0,
+          "stopCount": 0,
+          "starts": [],
+          "stops": [],
+          "sourceRoutesToDestination": [],
+          "destinationIncomingEdges": []
+        }
+      }
+    }
+  },
+  "close": {
+    "context-close": 5.63550000000032,
+    "owned-server-close": 29.85806600000069
+  },
+  "ownedBrowser": {
+    "pid": 51,
+    "launchedAt": "2026-10-04T23:27:10.367Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:27:10.367Z",
+        "pid": 51
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:27:25.490Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:27:25.514Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:27:25.520Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:27:25.520Z"
+  },
+  "limitations": [
+    "One summer_valley390x844 actual-App normal teardown only.",
+    "Separate active native-context-loss20s gate remains untested here.",
+    "No claim about another scene, desktop viewport, long-session load, physical-device frame rate, or complete GPU memory reclamation."
+  ]
+}

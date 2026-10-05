@@ -1,0 +1,128 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-04T23:54:49Z",
+  "case": "links",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T235449Z",
+  "report": "/workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T235449Z/evidence/links/link-verification.json",
+  "outerLimitSeconds": 480,
+  "cleanupReserveSeconds": 25,
+  "gpuGrant": "one separately selected existing verifier; no retries or implicit batch",
+  "browser": "/tmp/cosmic-browser-bin/chromium",
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "gitStatusAtStart": "M components/liveScene/liveSceneHost.test.ts\n M components/liveScene/liveSceneHost.ts\n M scripts/cold-autoplay.mjs\n M scripts/verify-audio-failures.mjs\n M scripts/verify-cafe-world.mjs\n M scripts/verify-cosmic-world.mjs\n M scripts/verify-immersive-worlds.mjs\n M scripts/verify-links.mjs\n M scripts/verify-scenes.mjs\n?? components/liveScene/cozyEngineDisposal.test.ts\n?? components/liveScene/sceneDisposalContract.test.ts\n?? scripts/cold-autoplay.test.ts\n?? scripts/press-scene-control.mjs\n?? scripts/scene-disposal-contract.mjs",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "7e6b7b89a2b4d14d8a28677bd101a81f26de5e6f2496d2da7ea9ece11808d24e",
+  "wrapperSHA256": "780e6269909b1842ee96611ef1ebb8ee54aba6f556d68dcfe2f222eb795bc8ef",
+  "supportScripts": {
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc",
+    "verification-provenance.mjs": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2",
+    "cold-autoplay.mjs": "49e2a08e80c4a6ad9cd9e66e154163fe1c8a57e427cf44e9b0e5668fdc12d561",
+    "scene-disposal-contract.mjs": "76ce9456f52e919aecd59a5e85a3aae262929470a6692b14d4b92c079d8cbfed"
+  },
+  "baseUrl": "http://127.0.0.1:38759/",
+  "previewCommand": [
+    "node",
+    "node_modules/vite/bin/vite.js",
+    "preview",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "38759",
+    "--strictPort"
+  ],
+  "previewPID": 10,
+  "servedIndexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+  "servedEntryAssets": {
+    "assets/index-CkDIijGa.js": {
+      "sha256": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "bytes": 418683
+    },
+    "assets/index-BXP0utCv.css": {
+      "sha256": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3",
+      "bytes": 103383
+    }
+  },
+  "command": [
+    "node",
+    "scripts/verify-links.mjs"
+  ],
+  "environmentOverrides": {
+    "SCENE_BASE_URL": "http://127.0.0.1:38759/",
+    "SCENE_BROWSER_PATH": "/tmp/cosmic-browser-bin/chromium",
+    "SCENE_SCREENSHOT_DIR": "/workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T235449Z/evidence"
+  },
+  "runnerPID": 28,
+  "browserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-04T23:54:50.507Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:54:50.507Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:57:28.023Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:57:28.050Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:57:28.068Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:57:28.068Z"
+  },
+  "exitCode": 0,
+  "reportStatus": "passed",
+  "failure": null,
+  "reportErrors": [],
+  "cleanupErrors": [],
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "checks": [
+    {
+      "name": "cold focus autoplay and one native retry",
+      "status": "passed"
+    },
+    {
+      "name": "warm hash, copy and history",
+      "status": "passed"
+    },
+    {
+      "name": "saved, last, reload and invalid links",
+      "status": "passed"
+    },
+    {
+      "name": "held readiness is cancelled by navigation",
+      "status": "passed"
+    }
+  ],
+  "ownedPids": [
+    10,
+    28
+  ],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 159.812,
+  "finishedAt": "2026-10-04T23:57:28Z"
+}

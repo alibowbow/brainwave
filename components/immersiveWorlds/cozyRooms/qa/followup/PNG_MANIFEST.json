@@ -1,0 +1,397 @@
+{
+  "note": "Actual PNG bytes, including retained rejected/failed-attempt evidence; final approved visuals are evidence/final and evidence/final-native. Original11 PNGs are identified in before-manifest.json.",
+  "images": [
+    {
+      "file": "evidence/final/nature-winter_lodge-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "evidence/final/nature-winter_lodge-landscape-viewport.png",
+      "width": 915,
+      "height": 412,
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "evidence/final/nature-winter_lodge-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "evidence/final/power_nap-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/final/power_nap-fold-inner-viewport.png",
+      "width": 673,
+      "height": 841,
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/final/power_nap-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/final/relax-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "evidence/final/relax-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "evidence/final/sleep_prep-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/final/sleep_prep-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "evidence/final-native/nature-winter_lodge-post-native-input-chrome.png",
+      "width": 960,
+      "height": 700,
+      "bytes": 573455,
+      "sha256": "e10299fea169fc7631eda7405ee785abd27809bcee38b211ed464ddcde6951f7"
+    },
+    {
+      "file": "evidence/final-native/power_nap-post-native-input-chrome.png",
+      "width": 960,
+      "height": 700,
+      "bytes": 795243,
+      "sha256": "6b4cd2d8099ec8fe68fdc52e0fb5cdd9b08c58223842bd6f149310d655013245"
+    },
+    {
+      "file": "evidence/final-native/relax-post-native-input-chrome.png",
+      "width": 960,
+      "height": 700,
+      "bytes": 517552,
+      "sha256": "bf11a1d8fc5147fde7af774264c625fd9b1c0a9138d1822fcffce8a4b9360ead"
+    },
+    {
+      "file": "evidence/final-native/sleep_prep-post-native-input-chrome.png",
+      "width": 960,
+      "height": 700,
+      "bytes": 339241,
+      "sha256": "84fda1b66f55ee3d28762e8dd716eb5f1d50112832feb722696dfa69922e4df2"
+    },
+    {
+      "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-landscape-viewport.png",
+      "width": 915,
+      "height": 412,
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "evidence/final-original/nature-winter_lodge/nature-winter_lodge-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "evidence/final-original/power_nap/power_nap-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/final-original/power_nap/power_nap-fold-inner-viewport.png",
+      "width": 673,
+      "height": 841,
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/final-original/power_nap/power_nap-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/final-original/power_nap-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/final-original/power_nap-fold-inner-viewport.png",
+      "width": 673,
+      "height": 841,
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/final-original/power_nap-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/final-original/relax/relax-chrome-visible.png",
+      "width": 960,
+      "height": 700,
+      "bytes": 517718,
+      "sha256": "1b124289ccc71dbcc2f606d88ee02fc63daaa66dc9e71ce5c7afeabc0e829ecb"
+    },
+    {
+      "file": "evidence/final-original/relax/relax-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "evidence/final-original/relax/relax-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "evidence/final-original/relax-chrome-visible.png",
+      "width": 960,
+      "height": 700,
+      "bytes": 517718,
+      "sha256": "1b124289ccc71dbcc2f606d88ee02fc63daaa66dc9e71ce5c7afeabc0e829ecb"
+    },
+    {
+      "file": "evidence/final-original/relax-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 811971,
+      "sha256": "56d99014e0e1db7f8e7ffaf0ccf9b2c023ea5e3730b863bd64f1be1632d513f2"
+    },
+    {
+      "file": "evidence/final-original/relax-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 360364,
+      "sha256": "0587033c6fd0bbdd3529261d701fa87e09a877bcb03f00ff4b39959258d6fc37"
+    },
+    {
+      "file": "evidence/final-original/sleep_prep/sleep_prep-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/final-original/sleep_prep/sleep_prep-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "evidence/final-original/sleep_prep-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/final-original/sleep_prep-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "evidence/final-winter-retry/nature-winter_lodge-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 912705,
+      "sha256": "d7d132a10db468f0990505e3974bc96b5978a096c24f5bf08606f62a100cea71"
+    },
+    {
+      "file": "evidence/final-winter-retry/nature-winter_lodge-landscape-viewport.png",
+      "width": 915,
+      "height": 412,
+      "bytes": 313258,
+      "sha256": "1f59b4818b84e47167064125aa48502fce1d43c745992d7c8bf4c8f9a7af9f00"
+    },
+    {
+      "file": "evidence/final-winter-retry/nature-winter_lodge-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/nature-winter_lodge-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 914780,
+      "sha256": "e335e09ad50954d24339969fe7feaa8a40efa8a617639b1d3ab85a54952e7081"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/nature-winter_lodge-landscape-viewport.png",
+      "width": 915,
+      "height": 412,
+      "bytes": 313335,
+      "sha256": "57c4fccfeb380dd3f18e20d8fbbc6df637f5505fea5641e7f3524bcf025079ec"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/nature-winter_lodge-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 346158,
+      "sha256": "81f3c372b495876a67f8cb557df98127f26707711c27eff83b623f4974c275aa"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/power_nap-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/power_nap-fold-inner-viewport.png",
+      "width": 673,
+      "height": 841,
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/power_nap-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/relax-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 819381,
+      "sha256": "4bfdfbdebdf3a8786eb13c950775b58cd4209f75587c5066f9d1fe01ca6be598"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/relax-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 369048,
+      "sha256": "3e195dd51e353ede5768452ad4df9f527c5e92ee50c9ea0cf50a6616aec5a7de"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/sleep_prep-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/intermediate-a738aea/sleep_prep-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/nature-winter_lodge-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 912258,
+      "sha256": "ca0af048b0f1bf6fc6c06cc0ab360595b2044173641b1c523c513f62aea6600c"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/nature-winter_lodge-landscape-viewport.png",
+      "width": 915,
+      "height": 412,
+      "bytes": 313283,
+      "sha256": "b47f55c05dd1a94ec38fb3d5bda053002ed0ee8c50b783bf0c9a357b56443c24"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/nature-winter_lodge-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 346221,
+      "sha256": "90a690adef22cb4dc5d02b2c214b28e9c32075c6a2f5113b4798b11e88ac8dc7"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/power_nap-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 1231975,
+      "sha256": "82ea23c4442fa7c266fd5a43b3922f848e3cf29f95b2c981a4e3c18fa29192f7"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/power_nap-fold-inner-viewport.png",
+      "width": 673,
+      "height": 841,
+      "bytes": 660518,
+      "sha256": "b475fbfeeee6b6208f641f1fe7612b16c6a6c523eabd9bdc54a86d6d17a0d470"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/power_nap-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 425676,
+      "sha256": "e9b7826d12f3de99168e7e3930fab148291d693460f591c716d8e3dca65cb504"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/relax-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 809226,
+      "sha256": "6cb04ac10f8e59286de022c2480486f9c53160e56c3abc90f85de358dc826470"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/relax-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 356915,
+      "sha256": "cda7dd71101b94f1329d2a6b59705f4111ba99f0a8b8d7aba8fda1e307e99bbf"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/sleep_prep-desktop.png",
+      "width": 1280,
+      "height": 850,
+      "bytes": 546519,
+      "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+    },
+    {
+      "file": "evidence/intermediate-ccc0595/sleep_prep-portrait.png",
+      "width": 412,
+      "height": 915,
+      "bytes": 181089,
+      "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+    }
+  ]
+}

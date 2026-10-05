@@ -1,0 +1,2 @@
+Link verification report: /workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T235449Z/evidence/links/link-verification.json
+PASS: cold-link autoplay policy fallback, one-tap retry, accurate timer/history, warm hash autoplay, all link families, Back/Forward, reload, idempotence, invalid links and cancelled startup.

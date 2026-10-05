@@ -1,20 +1,19 @@
-import { AMBIENCE_PRESETS, PRESETS, type BackgroundSoundType } from '../../types';
+import type { BackgroundSoundType } from '../../types';
+import { worldIdForSession } from '../immersiveWorlds/worldCatalog';
 
 /** Backdrops a session can show instead of an illustrated nature scene. */
 export type SessionBackdropVariant = 'campfire' | 'rainy-window' | 'oil-sea';
-
-const FOCUS_PRESET = PRESETS.find((preset) => preset.id === 'focus');
-const OCEAN_PRESET = AMBIENCE_PRESETS.find((preset) => preset.id === 'ocean_shore');
 
 /**
  * The deep-focus routine plays in front of the rainy night window, the ocean
  * shore in front of a sea painted in oils. Resuming either routine from
  * "last session" keeps the same place.
  */
-export function sessionBackdropFor(preset: { id: string; name: string } | null | undefined): SessionBackdropVariant | undefined {
+export function sessionBackdropFor(preset: { id: string; name: string; worldId?: unknown } | null | undefined): SessionBackdropVariant | undefined {
   if (!preset) return undefined;
-  if (preset.id === 'focus' || (preset.id === 'last' && preset.name === FOCUS_PRESET?.name)) return 'rainy-window';
-  if (preset.id === 'amb:ocean_shore' || (preset.id === 'last' && preset.name === OCEAN_PRESET?.name)) return 'oil-sea';
+  const worldId = worldIdForSession(preset);
+  if (worldId === 'focus') return 'rainy-window';
+  if (worldId === 'amb:ocean_shore') return 'oil-sea';
   if (preset.id === 'relax' || preset.id === 'amb:campfire_night') return 'campfire';
   return undefined;
 }

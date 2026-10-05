@@ -1,0 +1,23 @@
+{
+  "sourceSHA256": "e3e7a278bad36a8d12f80403b03972728c11fa07436335346ff796d8f664edfa",
+  "bundleSHA256": "0b0c53ed7a574d44f301bbd6ccaf4f72b9410616eaebd46a299551b927e5e516",
+  "recordedBy": "root from completed execution tool results",
+  "exitCodes": {
+    "npmTest": 0,
+    "typecheck": 0,
+    "buildAndBudget": 0,
+    "qaBuild": 0,
+    "revisedFourWorldGroup": 0,
+    "winterCycles": 0,
+    "actualContextLoss": 0,
+    "motionProof": 0
+  },
+  "reruns": 0,
+  "browserRuns": "four isolated group browsers, then one cycle browser, one context-loss browser, one motion browser; serial within this Work",
+  "failedGates": [],
+  "unrunChecks": [
+    "5000ms host grace, measured synchronous resource disposal, signaled GPU completion and physical GPU reclamation are distinct; physical reclamation remains UNRUN/unmeasured.",
+    "Pointer/cancel/blur/hidden stimuli include explicitly synthetic events; native trusted keyboard/click and actual extension context loss are separate. Real-tab backgrounding and Fold hardware UNRUN.",
+    "Full-app routing/audio integration and latest shared core693f495 integration UNRUN; shared host unchanged. Initial synchronous failure adaptation remains necessary on this old host."
+  ]
+}

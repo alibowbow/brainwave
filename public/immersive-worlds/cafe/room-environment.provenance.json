@@ -1,0 +1,60 @@
+{
+  "asset": "room-environment.hdr",
+  "sha256": "43bb5410f1ede07802bf3371ee2a9c3054abeaba1fb87eefb7bc992b1cac5d92",
+  "bytes": 1483920,
+  "provenance": "Generated locally from Three.js MIT-licensed built-in RoomEnvironment and PMREMGenerator; no third-party image downloaded.",
+  "threeVersion": "0.186.1",
+  "parameters": {
+    "sigma": 0.035,
+    "size": 256,
+    "near": 0.1,
+    "far": 100,
+    "position": [
+      0,
+      0,
+      0
+    ],
+    "sceneEnvironmentIntensity": 0.27
+  },
+  "bake": {
+    "width": 768,
+    "height": 1024,
+    "threeRevision": "186",
+    "extensions": {
+      "float": true,
+      "halfFloat": true
+    },
+    "framebufferStatus": 36053,
+    "glVendor": "WebKit",
+    "glRenderer": "WebKit WebGL",
+    "rowOrder": "WebGL readPixels bottom-row-first; preserve byte order and load flipY=false."
+  },
+  "quantization": {
+    "decoder": "Three r186 HDRLoader, HalfFloatType; RGBE scale divisor 255, with float16 conversion",
+    "sourceMaximum": 43,
+    "absoluteMaximum": 0.15625,
+    "relativeMaximum": 0.00392156862745098,
+    "meanAbsolute": 0.0010960767928433295,
+    "rootMeanSquare": 0.005969993069779311,
+    "channelCount": 2359296,
+    "nonzeroChannels": 1598976
+  },
+  "sourceSha256": {
+    "node_modules/three/examples/jsm/environments/RoomEnvironment.js": "55f466192cc84298755a424c5e040345006b2ee1455589b3b54126c2ea4123f4",
+    "node_modules/three/src/extras/PMREMGenerator.js": "78f7cc24a9aa22852f4c46052f39e5fe5507bee6313a824851ba899ed2219ecc"
+  },
+  "runtime": {
+    "mapping": "CubeUVReflectionMapping",
+    "type": "HalfFloatType",
+    "internalFormat": "RGBA16F",
+    "colorSpace": "LinearSRGBColorSpace",
+    "flipY": false,
+    "generateMipmaps": false,
+    "minFilter": "LinearFilter",
+    "magFilter": "LinearFilter",
+    "usage": "Sample-only texture; never attached to a framebuffer; bypass automatic PMREM."
+  },
+  "orientation": "Radiance scanlines intentionally keep WebGL readPixels bottom-row-first order. Override HDRLoader default flipY=true to false. Do not reinterpret as an equirectangular environment.",
+  "encoding": "Standard Radiance RGBE shared exponent (mantissa floor, scale 256), four-channel scanline RLE. Quantization measured using actual r186 HDRLoader HalfFloat decode.",
+  "reproduce": "SCENE_BROWSER_PATH=/path/to/chromium node components/immersiveWorlds/cafe/qa/bake-environment.mjs"
+}

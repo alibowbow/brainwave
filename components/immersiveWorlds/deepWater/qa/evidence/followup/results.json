@@ -1,0 +1,2795 @@
+{
+  "createdAt": "2026-10-04T20:22:03.373Z",
+  "expectedOriginalHead": "33aff89945cb6911279073e4156eca24ab4842b8",
+  "baselineGitHead": "30e5cc5b4d563f9eed159ba191a5f68523611963",
+  "sourceManifest": [
+    {
+      "path": "CaveWorld.tsx",
+      "bytes": 295,
+      "sha256": "7944214ad0837208e3df69d1df8641f82cb4c1d2efe885b0d354341d38760fed"
+    },
+    {
+      "path": "DeepSeaWorld.tsx",
+      "bytes": 297,
+      "sha256": "2d97b5301a9ac922cfd4937ed51e09da1c2f40ce317e9be6bed97724917059ab"
+    },
+    {
+      "path": "deepWater.css",
+      "bytes": 593,
+      "sha256": "999b2870a65089515a5ac07396635adc3af707c9512d8c8800643a489b8fe7f6"
+    },
+    {
+      "path": "DeepWaterView.tsx",
+      "bytes": 6565,
+      "sha256": "78a4e2954a53477dc1d209c468979045c4be6ab42b299de9a2ea33b6b2e8aa25"
+    },
+    {
+      "path": "engine/cave.test.ts",
+      "bytes": 3390,
+      "sha256": "39b565cde59e1b7432032311a53c4dfe3095e33d187f6ea482434590de5fc450"
+    },
+    {
+      "path": "engine/cave.ts",
+      "bytes": 16583,
+      "sha256": "f7240f9e14769e1fd60152fa9f101b304a077a5c56a328d07fdf1aacdfb57533"
+    },
+    {
+      "path": "engine/DeepWaterEngine.test.ts",
+      "bytes": 6057,
+      "sha256": "ae186034b705f7aed0b2be428ec787b4149398708af0225b26efa50abb3a5b97"
+    },
+    {
+      "path": "engine/DeepWaterEngine.ts",
+      "bytes": 11530,
+      "sha256": "108bb91084021e1074cf88748ba519f53bae427a36a18c26ea08edfd97aa48d2"
+    },
+    {
+      "path": "engine/environment.ts",
+      "bytes": 7512,
+      "sha256": "b80990df282b99f22b4198a083a75bacfbb57473e788ea895fa13ff2177c5350"
+    },
+    {
+      "path": "engine/poolTarget.test.ts",
+      "bytes": 7261,
+      "sha256": "111d3ff11c45be55ebefcda21aa0e0a8508924eaeafd8a37e86ef8cb5f3eba27"
+    },
+    {
+      "path": "engine/poolTarget.ts",
+      "bytes": 2657,
+      "sha256": "18e74a2e1da8ff9ef3e37bd9fbd9ac8bfdfe4e4e24a534826d85675e16b88d7f"
+    },
+    {
+      "path": "engine/sea.test.ts",
+      "bytes": 2254,
+      "sha256": "242cfe0c9ad52fc1250ddd48fb4037277c1f05b76b87454157c251ce47bac110"
+    },
+    {
+      "path": "engine/sea.ts",
+      "bytes": 22471,
+      "sha256": "daca343f2556d0026a3d5713ffb642373712035774670050300394be4dd68d06"
+    },
+    {
+      "path": "engine/types.ts",
+      "bytes": 528,
+      "sha256": "93ba5980914bbb5cb0ce94b6259af447814ee1db8163c56de1d3245fcec17212"
+    },
+    {
+      "path": "engine/waterfall.test.ts",
+      "bytes": 2692,
+      "sha256": "a4db169502490aace2220615030b45aa821e09c541ca60b3ede8444f6108a9d8"
+    },
+    {
+      "path": "engine/waterfall.ts",
+      "bytes": 26361,
+      "sha256": "fb257aeb65b50739e10e0cc7546bf215d565e40f66acb77fb4a86fa5bfccbbf0"
+    },
+    {
+      "path": "host.ts",
+      "bytes": 940,
+      "sha256": "d41fc7b1ef6f46328ffddd558015274461ef6b1d35c6b94d95ab6e1ad32d1ba8"
+    },
+    {
+      "path": "qa/capture.mjs",
+      "bytes": 2157,
+      "sha256": "48b28715036b0121e68787f7a9229c99805f21cf780f518c98f990788afae8c0"
+    },
+    {
+      "path": "qa/finalize-evidence.mjs",
+      "bytes": 3921,
+      "sha256": "e08f34784ae0d377446378e004fc1ba5afd1860d9de219d59969a44b992cf90e"
+    },
+    {
+      "path": "qa/harness.css",
+      "bytes": 1251,
+      "sha256": "0651b62709b89cf2492050a4807b51e6c4d091d48f9df9731176c84cd9738797"
+    },
+    {
+      "path": "qa/harness.tsx",
+      "bytes": 6303,
+      "sha256": "aba6baafb0906348bdb90a14927d01bb244e5585c56f7749fd5d5cbdf07328a5"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 265,
+      "sha256": "e5d36bb0fb39ff34d0dc2eea29e9e4ce35965675aa781426f517f3d22ca3b696"
+    },
+    {
+      "path": "qa/overlay-checks.mjs",
+      "bytes": 10340,
+      "sha256": "682418c043465bebf63a2a18f8beac3463e613af9d7de8e841147ff2243b20b0"
+    },
+    {
+      "path": "qa/probe-disposal.mjs",
+      "bytes": 1540,
+      "sha256": "fe61c0383586cfa40190fec54c60e3e89e19b9e566b7b289057cea4ecac25f98"
+    },
+    {
+      "path": "qa/verify-followup.mjs",
+      "bytes": 15854,
+      "sha256": "449b222f7a27a7a851fc925a87c85e77ccde3b1c067991276b80aaa91077438a"
+    },
+    {
+      "path": "qa/verify.mjs",
+      "bytes": 13716,
+      "sha256": "54564e7b567ead8437a7a4f69ec2c53dc0b3f8deac93466fdbd4f3d601b13b06"
+    },
+    {
+      "path": "qa/vite.config.ts",
+      "bytes": 550,
+      "sha256": "ffb9dddd1cbec3635febe6ec9442db85b62ce96e009b096d3ffc057b50caadfc"
+    },
+    {
+      "path": "WaterfallWorld.tsx",
+      "bytes": 305,
+      "sha256": "55c26be9b6f693f6292dc051fb33f648b87fef641fe69b79cffda1086b2751d5"
+    }
+  ],
+  "bundleManifest": [
+    {
+      "path": "assets/cave-CUETnBY0.js",
+      "bytes": 9957,
+      "sha256": "7923761e1defc9d99fda53e89b9416b9d6dd02e4764977910c32dd94ffe3322e"
+    },
+    {
+      "path": "assets/environment-LqflAGi4.js",
+      "bytes": 14308,
+      "sha256": "3de790466f5dc73e28c9e414157c344b1cf96abd4913a5f111b0cb7ecbfca108"
+    },
+    {
+      "path": "assets/index-BJWeVuN4.css",
+      "bytes": 1803,
+      "sha256": "0cf4fe44de1f54055560e3ade91f6d76dee830733928618337dc60a514eebd76"
+    },
+    {
+      "path": "assets/index-Qyqk-3iZ.js",
+      "bytes": 772348,
+      "sha256": "e68d058f1dee7b8ad141f34d0065932ba35c953e2658603f73ec002f379122cb"
+    },
+    {
+      "path": "assets/sea-CynPYbQT.js",
+      "bytes": 14229,
+      "sha256": "c4400edc2894cf7644bc46d9e81210a4009331904f2f19dfc3e7369731e376d9"
+    },
+    {
+      "path": "assets/waterfall-N0iJ9cAh.js",
+      "bytes": 15282,
+      "sha256": "3e5ef449693b9ca5700af68c9cadad43ea636c2e986847c15a7940d6e7468e14"
+    },
+    {
+      "path": "index.html",
+      "bytes": 364,
+      "sha256": "2079e7b93df25e774ffe75dcc508d1b05436e819b08d77774c3299a29cc14bca"
+    }
+  ],
+  "environment": {
+    "renderer": "Chromium headless / SwiftShader software WebGL2",
+    "deviceScaleFactor": 1,
+    "viewportOnly": true,
+    "physicalFoldHardwareTested": false,
+    "hiddenState": "Synthetic document.hidden + visibilitychange; native tab switching not tested",
+    "pointerInput": "Playwright mouse and dispatched PointerEvent; scene raycasts and actual renderer used",
+    "browserVersion": "153.0.8010.0"
+  },
+  "checks": [
+    {
+      "scene": "waterfall",
+      "name": "static3D renders real first frame while active=true",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "static3D does not animate",
+      "pass": true,
+      "details": {
+        "frames": "1",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "normal pool target is complete with truthful extensions",
+      "pass": true,
+      "details": {
+        "type": "half-float",
+        "format": "RGBA16F",
+        "float": true,
+        "halfFloat": true,
+        "forcedByte": false,
+        "fallback": "none",
+        "status": 36053,
+        "complete": true
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "desktop nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "portrait nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "fold-inner nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "landscape nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "active=false freezes renderer and simulation",
+      "pass": true,
+      "details": {
+        "frames": "5",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "active=true advances simulation and changes real pixels",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "tap reaches actual raycast and bounded interaction callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": 0.045403094958948016
+        }
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "bounded look drag turns real camera",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "pointer cancellation clears drag without tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "completed drag is not treated as a tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.6,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.63,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.36,
+        "y": 0.65,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": -0.055579391564051506
+        }
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "visible sibling chrome native drag turns actual camera",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "only current surface captures the native mouse pointer",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "native drag releases capture without emitting tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "native button child, range, and link work without moving scene",
+      "pass": true,
+      "details": {
+        "controls": [
+          "button",
+          "range",
+          "link"
+        ]
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: button-child emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: range emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: select emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: link emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: slider emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: switch emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: tab emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: plain emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "dispatched guard: foreign emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "pointercancel fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "pointercancel cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "blur fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "blur cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.6,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.63,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.36,
+        "y": 0.65,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "hidden chrome scene subtree: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": -0.014582028399288547
+        }
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "holder transfer cancels captured lower gesture without tap",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "overlay holder transfer reuses one original canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "stale lower holder ignores dispatched overlay input",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.6,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.63,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.36,
+        "y": 0.65,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "top fullscreen-style sibling chrome: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": 0.022013511869697487
+        }
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "top-holder removal cancels tap before canvas returns",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "same-task canvas out-and-back cancels stale pointer",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapid overlay holder reuse retains single original canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.6,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.65,
+        "y": 0.63,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.36,
+        "y": 0.65,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 0
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: missed raycast does not duplicate callbacks",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapidly reused overlay holder: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.75,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": 0.03704736213163279
+        }
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "chrome-visible nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "pause after interaction freezes simulation",
+      "pass": true,
+      "details": {
+        "frames": "92",
+        "time": "4.0000"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "paused pointer input emits no interaction",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "second holder reuses exact canvas and one context",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "closing second holder returns original canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "prefers-reduced-motion stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "96",
+        "time": "4.0500"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "application reduce-motion class stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "100",
+        "time": "4.1666"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "synthetic document.hidden signal stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "104",
+        "time": "4.2833"
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "synthetic visible signal resumes renderer",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapid mount cycle 1 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapid mount cycle 2 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "rapid mount cycle 3 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "last holder release disposes GPU renderer after grace period",
+      "pass": true,
+      "details": {
+        "observedSoftwareElapsedMs": 5038.699999999255
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "post-disposal remount creates new working canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "static3D renders real first frame while active=true",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "static3D does not animate",
+      "pass": true,
+      "details": {
+        "frames": "1",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "normal pool target is complete with truthful extensions",
+      "pass": true,
+      "details": {
+        "type": "half-float",
+        "format": "RGBA16F",
+        "float": true,
+        "halfFloat": true,
+        "forcedByte": false,
+        "fallback": "none",
+        "status": 36053,
+        "complete": true
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "desktop nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "portrait nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "fold-inner nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "landscape nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "active=false freezes renderer and simulation",
+      "pass": true,
+      "details": {
+        "frames": "6",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "active=true advances simulation and changes real pixels",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "tap reaches actual raycast and bounded interaction callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.00456835232854262
+        }
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "bounded look drag turns real camera",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "pointer cancellation clears drag without tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "completed drag is not treated as a tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "visible sibling chrome: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.09352426585990899
+        }
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "visible sibling chrome native drag turns actual camera",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "only current surface captures the native mouse pointer",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "native drag releases capture without emitting tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "native button child, range, and link work without moving scene",
+      "pass": true,
+      "details": {
+        "controls": [
+          "button",
+          "range",
+          "link"
+        ]
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: button-child emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: range emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: select emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: link emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: slider emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: switch emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: tab emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: plain emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "dispatched guard: foreign emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "pointercancel fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "pointercancel cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "blur fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "blur cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "hidden chrome scene subtree: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.07548744330695505
+        }
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "holder transfer cancels captured lower gesture without tap",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "overlay holder transfer reuses one original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "stale lower holder ignores dispatched overlay input",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "top fullscreen-style sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "top fullscreen-style sibling chrome: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.04174762949943879
+        }
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "top-holder removal cancels tap before canvas returns",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "same-task canvas out-and-back cancels stale pointer",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapid overlay holder reuse retains single original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapidly reused overlay holder: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "rapidly reused overlay holder: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.5,
+        "y": 0.68,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.0219044542253428
+        }
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "chrome-visible nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "pause after interaction freezes simulation",
+      "pass": true,
+      "details": {
+        "frames": "78",
+        "time": "3.2499"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "paused pointer input emits no interaction",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "second holder reuses exact canvas and one context",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "closing second holder returns original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "prefers-reduced-motion stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "82",
+        "time": "3.2999"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "application reduce-motion class stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "86",
+        "time": "3.4165"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "synthetic document.hidden signal stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "89",
+        "time": "3.4831"
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "synthetic visible signal resumes renderer",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapid mount cycle 1 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapid mount cycle 2 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "rapid mount cycle 3 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "last holder release disposes GPU renderer after grace period",
+      "pass": true,
+      "details": {
+        "observedSoftwareElapsedMs": 5018.199999999255
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "post-disposal remount creates new working canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "static3D renders real first frame while active=true",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "static3D does not animate",
+      "pass": true,
+      "details": {
+        "frames": "1",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "underwater scene has no artificial reflection target",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "desktop nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "portrait nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "fold-inner nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "landscape nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "active=false freezes renderer and simulation",
+      "pass": true,
+      "details": {
+        "frames": "6",
+        "time": "0.0000"
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "active=true advances simulation and changes real pixels",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "tap reaches actual raycast and bounded interaction callback",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "event": {
+          "world": "sea",
+          "kind": "organism-pulse",
+          "strength": 0.28,
+          "pan": 0.18
+        }
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "bounded look drag turns real camera",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "pointer cancellation clears drag without tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "completed drag is not treated as a tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "visible sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "visible sibling chrome: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "sea",
+          "kind": "organism-pulse",
+          "strength": 0.28,
+          "pan": 0.18
+        }
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "visible sibling chrome native drag turns actual camera",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "only current surface captures the native mouse pointer",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "native drag releases capture without emitting tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "native button child, range, and link work without moving scene",
+      "pass": true,
+      "details": {
+        "controls": [
+          "button",
+          "range",
+          "link"
+        ]
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: button-child emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: range emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: select emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: link emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: slider emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: switch emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: tab emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: plain emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "dispatched guard: foreign emits no scene drag or tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "pointercancel fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "pointercancel cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "blur fixture starts an actual look gesture",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "blur cancels gesture and prevents a later tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "hidden chrome scene subtree: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "hidden chrome scene subtree: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "sea",
+          "kind": "organism-pulse",
+          "strength": 0.28,
+          "pan": 0.18
+        }
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "holder transfer cancels captured lower gesture without tap",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "overlay holder transfer reuses one original canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "stale lower holder ignores dispatched overlay input",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "top fullscreen-style sibling chrome: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "top fullscreen-style sibling chrome: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "sea",
+          "kind": "organism-pulse",
+          "strength": 0.28,
+          "pan": 0.18
+        }
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "top-holder removal cancels tap before canvas returns",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "same-task canvas out-and-back cancels stale pointer",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "rapid overlay holder reuse retains single original canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "rapidly reused overlay holder: one native tap invokes one host touch",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "rapidly reused overlay holder: one tap emits exactly one real raycast callback",
+      "pass": true,
+      "details": {
+        "x": 0.63,
+        "y": 0.4,
+        "hit": true,
+        "touches": 1,
+        "callbacks": 1,
+        "event": {
+          "world": "sea",
+          "kind": "organism-pulse",
+          "strength": 0.28,
+          "pan": 0.18
+        }
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "chrome-visible nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "pause after interaction freezes simulation",
+      "pass": true,
+      "details": {
+        "frames": "81",
+        "time": "3.4001"
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "paused pointer input emits no interaction",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "second holder reuses exact canvas and one context",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "closing second holder returns original canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "prefers-reduced-motion stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "85",
+        "time": "3.4501"
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "application reduce-motion class stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "89",
+        "time": "3.5668"
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "synthetic document.hidden signal stops renderer",
+      "pass": true,
+      "details": {
+        "frames": "93",
+        "time": "3.6835"
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "synthetic visible signal resumes renderer",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "rapid mount cycle 1 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "rapid mount cycle 2 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "rapid mount cycle 3 reuses original canvas",
+      "pass": true
+    },
+    {
+      "scene": "sea",
+      "name": "last holder release disposes GPU renderer after grace period",
+      "pass": true,
+      "details": {
+        "observedSoftwareElapsedMs": 5025.60000000149
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "post-disposal remount creates new working canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "forced RGBA8 path renders complete real framebuffer",
+      "pass": true,
+      "details": {
+        "type": "byte",
+        "format": "RGBA8",
+        "float": true,
+        "halfFloat": true,
+        "forcedByte": true,
+        "fallback": "forced-byte",
+        "status": 36053,
+        "complete": true
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "byte-desktop nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "byte-portrait nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "byte-fold-inner nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "waterfall",
+      "name": "forced byte path animates without losing geometry",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "forced RGBA8 path renders complete real framebuffer",
+      "pass": true,
+      "details": {
+        "type": "byte",
+        "format": "RGBA8",
+        "float": true,
+        "halfFloat": true,
+        "forcedByte": true,
+        "fallback": "forced-byte",
+        "status": 36053,
+        "complete": true
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "byte-desktop nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "byte-portrait nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "byte-fold-inner nonzero parent-filling native DPR 1 canvas",
+      "pass": true
+    },
+    {
+      "scene": "cave",
+      "name": "forced byte path animates without losing geometry",
+      "pass": true
+    },
+    {
+      "scene": "all",
+      "name": "all captures follow native GPU fence completion",
+      "pass": true
+    },
+    {
+      "scene": "all",
+      "name": "zero JavaScript or shader errors",
+      "pass": true,
+      "details": []
+    },
+    {
+      "scene": "all",
+      "name": "rendered source remained unchanged during QA",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    {
+      "scene": "waterfall",
+      "name": "desktop",
+      "file": "waterfall-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "29be67cd3bd8e41316c29563f5d9c4bbc26e43c7d2dd3a40cf745d0d4ee689b7",
+      "bytes": 1434942,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "1",
+        "time": "0.0000",
+        "calls": "34",
+        "triangles": "369504",
+        "geometries": "29",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "portrait",
+      "file": "waterfall-portrait.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "42623a6af166c89c88958d47789c646373ac5cf4abab7b6c63e855395c7382c9",
+      "bytes": 439927,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "2",
+        "time": "0.0000",
+        "calls": "32",
+        "triangles": "368064",
+        "geometries": "29",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "fold-inner",
+      "file": "waterfall-fold-inner.png",
+      "width": 884,
+      "height": 1104,
+      "sha256": "0d149387176fd497c635ae9cddff347f1068a33b6962bb3190b4269a5af41a8a",
+      "bytes": 1247626,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "3",
+        "time": "0.0000",
+        "calls": "33",
+        "triangles": "368784",
+        "geometries": "30",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 884,
+        "height": 1104
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "landscape",
+      "file": "waterfall-landscape.png",
+      "width": 1104,
+      "height": 884,
+      "sha256": "937b2b777f9a979d7585002e3606a045e41d6e1f29d390d2735f1d035f1e98a7",
+      "bytes": 1354636,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "4",
+        "time": "0.0000",
+        "calls": "34",
+        "triangles": "369504",
+        "geometries": "30",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1104,
+        "height": 884
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "chrome-visible",
+      "file": "waterfall-chrome-visible.png",
+      "width": 800,
+      "height": 600,
+      "sha256": "d7ca14e19f420e1440b1239d8f6c11910953f2634208c0976a66c5e02761fe48",
+      "bytes": 675807,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "92",
+        "time": "4.0000",
+        "calls": "34",
+        "triangles": "369504",
+        "geometries": "30",
+        "yaw": "0.0045",
+        "running": "false",
+        "width": 800,
+        "height": 600
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "desktop",
+      "file": "cave-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "e79054dbd881962686c7b66c52726c11bce8aa90e83a1db4030a13d5137df062",
+      "bytes": 1011823,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "2",
+        "time": "0.0000",
+        "calls": "46",
+        "triangles": "105542",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "portrait",
+      "file": "cave-portrait.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "daad354f9d85bd6854e2747fee3029c747c0d922b22b596557b3b40703b16311",
+      "bytes": 303728,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "3",
+        "time": "0.0000",
+        "calls": "30",
+        "triangles": "92022",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "fold-inner",
+      "file": "cave-fold-inner.png",
+      "width": 884,
+      "height": 1104,
+      "sha256": "f1610582a8af8cbf0adca5ec974e87d5698421dbd4522aa87d920f53965f178e",
+      "bytes": 841832,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "4",
+        "time": "0.0000",
+        "calls": "38",
+        "triangles": "98982",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 884,
+        "height": 1104
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "landscape",
+      "file": "cave-landscape.png",
+      "width": 1104,
+      "height": 884,
+      "sha256": "0de7f1a3401002492ed20c9037f3ad6bc95bafe814a4e6e0ad375719f3609cbe",
+      "bytes": 938855,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "5",
+        "time": "0.0000",
+        "calls": "45",
+        "triangles": "104822",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1104,
+        "height": 884
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "chrome-visible",
+      "file": "cave-chrome-visible.png",
+      "width": 800,
+      "height": 600,
+      "sha256": "87458644ce9c4ea5c86111087c5a2a6318f632ed370f9d25660a5652950035cf",
+      "bytes": 479823,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "78",
+        "time": "3.2499",
+        "calls": "46",
+        "triangles": "105542",
+        "geometries": "60",
+        "yaw": "0.0108",
+        "running": "false",
+        "width": 800,
+        "height": 600
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "desktop",
+      "file": "sea-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "cbd896c2b8526dc1414f0216beaef8c7db14cae4f4c0a9b04b6a3e406beb250c",
+      "bytes": 680757,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "frames": "2",
+        "time": "0.0000",
+        "calls": "124",
+        "triangles": "174752",
+        "geometries": "86",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "portrait",
+      "file": "sea-portrait.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "2c65937451b8adebddf82ce42efd677c36079d506551f010e0f77ec7f22eb6cd",
+      "bytes": 251044,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "frames": "3",
+        "time": "0.0000",
+        "calls": "66",
+        "triangles": "134726",
+        "geometries": "86",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "fold-inner",
+      "file": "sea-fold-inner.png",
+      "width": 884,
+      "height": 1104,
+      "sha256": "f4ea920a7f514a9ecdc95c935b8fe01270219e895706630b3d455d6eb278ace0",
+      "bytes": 653527,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "frames": "4",
+        "time": "0.0000",
+        "calls": "87",
+        "triangles": "149528",
+        "geometries": "86",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 884,
+        "height": 1104
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "landscape",
+      "file": "sea-landscape.png",
+      "width": 1104,
+      "height": 884,
+      "sha256": "ae68b93251783d9ae798808b56b45ff6414b42710f60bde3fbdf6d3de6a6490c",
+      "bytes": 663378,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "frames": "5",
+        "time": "0.0000",
+        "calls": "117",
+        "triangles": "169712",
+        "geometries": "86",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1104,
+        "height": 884
+      }
+    },
+    {
+      "scene": "sea",
+      "name": "chrome-visible",
+      "file": "sea-chrome-visible.png",
+      "width": 800,
+      "height": 600,
+      "sha256": "fa72b1cd606bf065af013e2904a824a5a46310bff35aad7ee31cf2339215bca5",
+      "bytes": 348134,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "frames": "81",
+        "time": "3.4001",
+        "calls": "123",
+        "triangles": "174032",
+        "geometries": "87",
+        "yaw": "0.0079",
+        "running": "false",
+        "width": 800,
+        "height": 600
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "byte-desktop",
+      "file": "waterfall-byte-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "fb34eb32095e18169cb7e47dd73a509dd94528bb7e1dde91034874f30aa0b1e8",
+      "bytes": 1442154,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"byte\",\"format\":\"RGBA8\",\"float\":true,\"halfFloat\":true,\"forcedByte\":true,\"fallback\":\"forced-byte\",\"status\":36053,\"complete\":true}",
+        "frames": "2",
+        "time": "0.0000",
+        "calls": "34",
+        "triangles": "369504",
+        "geometries": "29",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "byte-portrait",
+      "file": "waterfall-byte-portrait.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "7231e37ce0641b70a82a2f7b73a37b7179ec1b5598c627ded9093b76db571b21",
+      "bytes": 444050,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"byte\",\"format\":\"RGBA8\",\"float\":true,\"halfFloat\":true,\"forcedByte\":true,\"fallback\":\"forced-byte\",\"status\":36053,\"complete\":true}",
+        "frames": "3",
+        "time": "0.0000",
+        "calls": "32",
+        "triangles": "368064",
+        "geometries": "29",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "scene": "waterfall",
+      "name": "byte-fold-inner",
+      "file": "waterfall-byte-fold-inner.png",
+      "width": 884,
+      "height": 1104,
+      "sha256": "802da58eb4404dac6c11069144da0f1e26b3437b8793eaf9a1df3964dff19ca5",
+      "bytes": 1256715,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"byte\",\"format\":\"RGBA8\",\"float\":true,\"halfFloat\":true,\"forcedByte\":true,\"fallback\":\"forced-byte\",\"status\":36053,\"complete\":true}",
+        "frames": "4",
+        "time": "0.0000",
+        "calls": "33",
+        "triangles": "368784",
+        "geometries": "30",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 884,
+        "height": 1104
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "byte-desktop",
+      "file": "cave-byte-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "28590c862d6441c9795ab81ab916e6536872293c9b18f4bb1a810410eec625f9",
+      "bytes": 1036613,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"byte\",\"format\":\"RGBA8\",\"float\":true,\"halfFloat\":true,\"forcedByte\":true,\"fallback\":\"forced-byte\",\"status\":36053,\"complete\":true}",
+        "frames": "2",
+        "time": "0.0000",
+        "calls": "46",
+        "triangles": "105542",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "byte-portrait",
+      "file": "cave-byte-portrait.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "989afeb31c7105df910063351f0f03e6cc6763a2f3166a75bed881459a1d2130",
+      "bytes": 314956,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"byte\",\"format\":\"RGBA8\",\"float\":true,\"halfFloat\":true,\"forcedByte\":true,\"fallback\":\"forced-byte\",\"status\":36053,\"complete\":true}",
+        "frames": "3",
+        "time": "0.0000",
+        "calls": "30",
+        "triangles": "92022",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "scene": "cave",
+      "name": "byte-fold-inner",
+      "file": "cave-byte-fold-inner.png",
+      "width": 884,
+      "height": 1104,
+      "sha256": "e5f3ae8b5114667676c34e36693f60d15ac1beb836b5b247bae1bdfabd400190",
+      "bytes": 868279,
+      "renderer": {
+        "engine": "three.js r186",
+        "gpuPending": "0",
+        "gpuState": "idle",
+        "poolTarget": "{\"type\":\"byte\",\"format\":\"RGBA8\",\"float\":true,\"halfFloat\":true,\"forcedByte\":true,\"fallback\":\"forced-byte\",\"status\":36053,\"complete\":true}",
+        "frames": "4",
+        "time": "0.0000",
+        "calls": "38",
+        "triangles": "98982",
+        "geometries": "59",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 884,
+        "height": 1104
+      }
+    }
+  ],
+  "scenes": {
+    "waterfall": {
+      "interaction": {
+        "x": 0.5,
+        "y": 0.75,
+        "event": {
+          "world": "waterfall",
+          "kind": "pool-ripple",
+          "strength": 0.22,
+          "pan": 0.045403094958948016
+        }
+      },
+      "beforeDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": true,
+          "engineDisposed": false,
+          "status": "ready",
+          "disposeTimer": 20,
+          "topConnected": null,
+          "canvasConnected": false,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 83458.70000000298,
+          "inputCounters": {
+            "drag": 8,
+            "touch": 25,
+            "releaseDrag": 33
+          },
+          "controlEvents": [
+            "button",
+            "range",
+            "link"
+          ],
+          "forcedByte": false
+        },
+        "state": {
+          "active": false,
+          "static3D": false,
+          "secondHolder": false,
+          "mounted": false,
+          "chrome": false
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "gpuPending": "2",
+          "gpuState": "busy",
+          "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+          "frames": "108",
+          "time": "4.4000",
+          "calls": "34",
+          "triangles": "369504",
+          "geometries": "30",
+          "yaw": "0.0026",
+          "running": "false"
+        }
+      },
+      "afterDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": false,
+          "status": "loading",
+          "disposeTimer": 20,
+          "topConnected": null,
+          "canvasConnected": null,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 88497.40000000224,
+          "inputCounters": {
+            "drag": 8,
+            "touch": 25,
+            "releaseDrag": 33
+          },
+          "controlEvents": [
+            "button",
+            "range",
+            "link"
+          ],
+          "forcedByte": false
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "gpuPending": "0",
+          "gpuState": "disposed",
+          "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+          "frames": "109",
+          "time": "4.4000",
+          "calls": "34",
+          "triangles": "369504",
+          "geometries": "30",
+          "yaw": "0.0026",
+          "running": "false",
+          "disposed": "true"
+        }
+      },
+      "finalRenderer": {
+        "engine": "three.js r186",
+        "gpuPending": "1",
+        "gpuState": "busy",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "1",
+        "time": "0.0000",
+        "calls": "34",
+        "triangles": "369504",
+        "geometries": "29",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 800,
+        "height": 600
+      }
+    },
+    "cave": {
+      "interaction": {
+        "x": 0.5,
+        "y": 0.68,
+        "event": {
+          "world": "cave",
+          "kind": "pool-ripple",
+          "strength": 0.35,
+          "pan": -0.00456835232854262
+        }
+      },
+      "beforeDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": true,
+          "engineDisposed": false,
+          "status": "ready",
+          "disposeTimer": 20,
+          "topConnected": null,
+          "canvasConnected": false,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 69055.30000000075,
+          "inputCounters": {
+            "drag": 8,
+            "touch": 5,
+            "releaseDrag": 13
+          },
+          "controlEvents": [
+            "button",
+            "range",
+            "link"
+          ],
+          "forcedByte": false
+        },
+        "state": {
+          "active": false,
+          "static3D": false,
+          "secondHolder": false,
+          "mounted": false,
+          "chrome": false
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "gpuPending": "2",
+          "gpuState": "busy",
+          "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+          "frames": "93",
+          "time": "3.5998",
+          "calls": "46",
+          "triangles": "105542",
+          "geometries": "60",
+          "yaw": "0.0069",
+          "running": "false"
+        }
+      },
+      "afterDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": false,
+          "status": "loading",
+          "disposeTimer": 20,
+          "topConnected": null,
+          "canvasConnected": null,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 74073.5,
+          "inputCounters": {
+            "drag": 8,
+            "touch": 5,
+            "releaseDrag": 13
+          },
+          "controlEvents": [
+            "button",
+            "range",
+            "link"
+          ],
+          "forcedByte": false
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "gpuPending": "0",
+          "gpuState": "disposed",
+          "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+          "frames": "94",
+          "time": "3.5998",
+          "calls": "46",
+          "triangles": "105542",
+          "geometries": "60",
+          "yaw": "0.0069",
+          "running": "false",
+          "disposed": "true"
+        }
+      },
+      "finalRenderer": {
+        "engine": "three.js r186",
+        "gpuPending": "1",
+        "gpuState": "busy",
+        "poolTarget": "{\"type\":\"half-float\",\"format\":\"RGBA16F\",\"float\":true,\"halfFloat\":true,\"forcedByte\":false,\"fallback\":\"none\",\"status\":36053,\"complete\":true}",
+        "frames": "1",
+        "time": "0.0000",
+        "calls": "46",
+        "triangles": "105542",
+        "geometries": "57",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 800,
+        "height": 600
+      }
+    },
+    "sea": {
+      "interaction": {
+        "x": 0.63,
+        "y": 0.4,
+        "event": {
+          "world": "sea",
+          "kind": "organism-pulse",
+          "strength": 0.28,
+          "pan": 0.18
+        }
+      },
+      "beforeDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": true,
+          "engineDisposed": false,
+          "status": "ready",
+          "disposeTimer": 20,
+          "topConnected": null,
+          "canvasConnected": false,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 31075.099999997765,
+          "inputCounters": {
+            "drag": 8,
+            "touch": 5,
+            "releaseDrag": 13
+          },
+          "controlEvents": [
+            "button",
+            "range",
+            "link"
+          ],
+          "forcedByte": false
+        },
+        "state": {
+          "active": false,
+          "static3D": false,
+          "secondHolder": false,
+          "mounted": false,
+          "chrome": false
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "gpuPending": "2",
+          "gpuState": "busy",
+          "frames": "96",
+          "time": "3.7503",
+          "calls": "121",
+          "triangles": "172592",
+          "geometries": "87",
+          "yaw": "0.0050",
+          "running": "false"
+        }
+      },
+      "afterDisposal": {
+        "host": {
+          "holders": 0,
+          "holderRunning": [],
+          "hasEngine": false,
+          "status": "loading",
+          "disposeTimer": 20,
+          "topConnected": null,
+          "canvasConnected": null,
+          "hidden": false,
+          "visibility": "visible",
+          "time": 36100.699999999255,
+          "inputCounters": {
+            "drag": 8,
+            "touch": 5,
+            "releaseDrag": 13
+          },
+          "controlEvents": [
+            "button",
+            "range",
+            "link"
+          ],
+          "forcedByte": false
+        },
+        "savedCanvas": {
+          "engine": "three.js r186",
+          "gpuPending": "0",
+          "gpuState": "disposed",
+          "frames": "97",
+          "time": "3.7503",
+          "calls": "121",
+          "triangles": "172592",
+          "geometries": "87",
+          "yaw": "0.0050",
+          "running": "false",
+          "disposed": "true"
+        }
+      },
+      "finalRenderer": {
+        "engine": "three.js r186",
+        "gpuPending": "1",
+        "gpuState": "busy",
+        "frames": "1",
+        "time": "0.0000",
+        "calls": "121",
+        "triangles": "172592",
+        "geometries": "83",
+        "yaw": "0.0000",
+        "running": "false",
+        "width": 800,
+        "height": 600
+      }
+    }
+  },
+  "errors": [],
+  "sourceManifestAfter": [
+    {
+      "path": "CaveWorld.tsx",
+      "bytes": 295,
+      "sha256": "7944214ad0837208e3df69d1df8641f82cb4c1d2efe885b0d354341d38760fed"
+    },
+    {
+      "path": "DeepSeaWorld.tsx",
+      "bytes": 297,
+      "sha256": "2d97b5301a9ac922cfd4937ed51e09da1c2f40ce317e9be6bed97724917059ab"
+    },
+    {
+      "path": "deepWater.css",
+      "bytes": 593,
+      "sha256": "999b2870a65089515a5ac07396635adc3af707c9512d8c8800643a489b8fe7f6"
+    },
+    {
+      "path": "DeepWaterView.tsx",
+      "bytes": 6565,
+      "sha256": "78a4e2954a53477dc1d209c468979045c4be6ab42b299de9a2ea33b6b2e8aa25"
+    },
+    {
+      "path": "engine/cave.test.ts",
+      "bytes": 3390,
+      "sha256": "39b565cde59e1b7432032311a53c4dfe3095e33d187f6ea482434590de5fc450"
+    },
+    {
+      "path": "engine/cave.ts",
+      "bytes": 16583,
+      "sha256": "f7240f9e14769e1fd60152fa9f101b304a077a5c56a328d07fdf1aacdfb57533"
+    },
+    {
+      "path": "engine/DeepWaterEngine.test.ts",
+      "bytes": 6057,
+      "sha256": "ae186034b705f7aed0b2be428ec787b4149398708af0225b26efa50abb3a5b97"
+    },
+    {
+      "path": "engine/DeepWaterEngine.ts",
+      "bytes": 11530,
+      "sha256": "108bb91084021e1074cf88748ba519f53bae427a36a18c26ea08edfd97aa48d2"
+    },
+    {
+      "path": "engine/environment.ts",
+      "bytes": 7512,
+      "sha256": "b80990df282b99f22b4198a083a75bacfbb57473e788ea895fa13ff2177c5350"
+    },
+    {
+      "path": "engine/poolTarget.test.ts",
+      "bytes": 7261,
+      "sha256": "111d3ff11c45be55ebefcda21aa0e0a8508924eaeafd8a37e86ef8cb5f3eba27"
+    },
+    {
+      "path": "engine/poolTarget.ts",
+      "bytes": 2657,
+      "sha256": "18e74a2e1da8ff9ef3e37bd9fbd9ac8bfdfe4e4e24a534826d85675e16b88d7f"
+    },
+    {
+      "path": "engine/sea.test.ts",
+      "bytes": 2254,
+      "sha256": "242cfe0c9ad52fc1250ddd48fb4037277c1f05b76b87454157c251ce47bac110"
+    },
+    {
+      "path": "engine/sea.ts",
+      "bytes": 22471,
+      "sha256": "daca343f2556d0026a3d5713ffb642373712035774670050300394be4dd68d06"
+    },
+    {
+      "path": "engine/types.ts",
+      "bytes": 528,
+      "sha256": "93ba5980914bbb5cb0ce94b6259af447814ee1db8163c56de1d3245fcec17212"
+    },
+    {
+      "path": "engine/waterfall.test.ts",
+      "bytes": 2692,
+      "sha256": "a4db169502490aace2220615030b45aa821e09c541ca60b3ede8444f6108a9d8"
+    },
+    {
+      "path": "engine/waterfall.ts",
+      "bytes": 26361,
+      "sha256": "fb257aeb65b50739e10e0cc7546bf215d565e40f66acb77fb4a86fa5bfccbbf0"
+    },
+    {
+      "path": "host.ts",
+      "bytes": 940,
+      "sha256": "d41fc7b1ef6f46328ffddd558015274461ef6b1d35c6b94d95ab6e1ad32d1ba8"
+    },
+    {
+      "path": "qa/capture.mjs",
+      "bytes": 2157,
+      "sha256": "48b28715036b0121e68787f7a9229c99805f21cf780f518c98f990788afae8c0"
+    },
+    {
+      "path": "qa/finalize-evidence.mjs",
+      "bytes": 3921,
+      "sha256": "e08f34784ae0d377446378e004fc1ba5afd1860d9de219d59969a44b992cf90e"
+    },
+    {
+      "path": "qa/harness.css",
+      "bytes": 1251,
+      "sha256": "0651b62709b89cf2492050a4807b51e6c4d091d48f9df9731176c84cd9738797"
+    },
+    {
+      "path": "qa/harness.tsx",
+      "bytes": 6303,
+      "sha256": "aba6baafb0906348bdb90a14927d01bb244e5585c56f7749fd5d5cbdf07328a5"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 265,
+      "sha256": "e5d36bb0fb39ff34d0dc2eea29e9e4ce35965675aa781426f517f3d22ca3b696"
+    },
+    {
+      "path": "qa/overlay-checks.mjs",
+      "bytes": 10340,
+      "sha256": "682418c043465bebf63a2a18f8beac3463e613af9d7de8e841147ff2243b20b0"
+    },
+    {
+      "path": "qa/probe-disposal.mjs",
+      "bytes": 1540,
+      "sha256": "fe61c0383586cfa40190fec54c60e3e89e19b9e566b7b289057cea4ecac25f98"
+    },
+    {
+      "path": "qa/verify-followup.mjs",
+      "bytes": 15854,
+      "sha256": "449b222f7a27a7a851fc925a87c85e77ccde3b1c067991276b80aaa91077438a"
+    },
+    {
+      "path": "qa/verify.mjs",
+      "bytes": 13716,
+      "sha256": "54564e7b567ead8437a7a4f69ec2c53dc0b3f8deac93466fdbd4f3d601b13b06"
+    },
+    {
+      "path": "qa/vite.config.ts",
+      "bytes": 550,
+      "sha256": "ffb9dddd1cbec3635febe6ec9442db85b62ce96e009b096d3ffc057b50caadfc"
+    },
+    {
+      "path": "WaterfallWorld.tsx",
+      "bytes": 305,
+      "sha256": "55c26be9b6f693f6292dc051fb33f648b87fef641fe69b79cffda1086b2751d5"
+    }
+  ],
+  "status": "passed"
+}

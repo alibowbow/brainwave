@@ -1,0 +1,38 @@
+{
+  "files": {
+    "cozy65-intake.md": {
+      "bytes": 4994,
+      "sha256": "ff86adfa7ae741f910d3cdd04dd85087985873c61b8b42c432dc67f8b7f20e41"
+    },
+    "cozy65-integrity-audit.json": {
+      "bytes": 29613,
+      "sha256": "9a05833f5b9835d9157b48d76cc5d42bb23de2995236e0edf7db925886a9c753"
+    },
+    "README.md": {
+      "bytes": 3613,
+      "sha256": "31280630607acebf3912c4ae9820a924f59ab3591d38e9254e34c27e23c3adbb"
+    },
+    "links-completed-report.json.gz": {
+      "bytes": 205401,
+      "sha256": "db280533f104fb8a6618a4eb48e8267e868e01b1a31a4fcb697a81ffc11c73ba"
+    },
+    "links-runner-summary.json": {
+      "bytes": 38693,
+      "sha256": "b3901836b7c65e330981f2806bce7960ba58d18ad877ab72a4d66bf69c2727e8"
+    },
+    "rain68-hash-audit.json": {
+      "bytes": 56963,
+      "sha256": "78a0b8cdeebb402425a24e2ee9abb297317baa171bba5b87ef21755e6cc3fcda"
+    },
+    "source-integrity.json": {
+      "bytes": 4590,
+      "sha256": "d4a88047b47c0909ed4b41d3e1a7106aeea9cff29ea43435f05305250b487896"
+    },
+    "rain68-intake.md": {
+      "bytes": 3947,
+      "sha256": "e8e7e929b6407e05aa5661abc618de5980a549df0e7337c69d15208d478101e7"
+    }
+  },
+  "linksRawSHA256": "de3ab0a506db817a407ca1ebdd2023b82758a6566cc0d398c7192a59d0f1981d",
+  "linksRawBytes": 1052250
+}

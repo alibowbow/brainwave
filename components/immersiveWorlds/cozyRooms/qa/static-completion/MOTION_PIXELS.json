@@ -1,0 +1,95 @@
+{
+  "sourceSHA256": "e3e7a278bad36a8d12f80403b03972728c11fa07436335346ff796d8f664edfa",
+  "bundleSHA256": "0b0c53ed7a574d44f301bbd6ccaf4f72b9410616eaebd46a299551b927e5e516",
+  "method": "Numerical analysis of original native screenshot pixels, without modifying images. Same viewport/canvas/camera input;12 actual scene frames per world. Hash differences corroborated by changed pixel counts and actual visual review.",
+  "results": [
+    {
+      "world": "relax",
+      "dimensions": [
+        800,
+        600
+      ],
+      "changedPixels": 85072,
+      "changedPixelsOver8of255": 1977,
+      "totalPixels": 480000,
+      "changedFraction": 0.17723333333333333,
+      "meanAbsoluteChannelDifference": 0.1718340277777778,
+      "changedBounds": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "beforeSHA256": "38fc5e3fe75772a40f49e3721562a535ad3ef4dcb519ece30905fafc03093a68",
+      "afterSHA256": "656649d22898fb4c9c9537132749948bcf95652bc9519efffc1f5815a9ffa7a3",
+      "framesAdvanced": 12,
+      "sceneTimeAdvanced": 0.5545000000014983
+    },
+    {
+      "world": "sleep_prep",
+      "dimensions": [
+        800,
+        600
+      ],
+      "changedPixels": 16507,
+      "changedPixelsOver8of255": 97,
+      "totalPixels": 480000,
+      "changedFraction": 0.034389583333333335,
+      "meanAbsoluteChannelDifference": 0.020513194444444445,
+      "changedBounds": [
+        195,
+        43,
+        617,
+        421
+      ],
+      "beforeSHA256": "b28e57e20c585c00311d0106435f3324b68a588645a0372e084ccbebe3682be0",
+      "afterSHA256": "7a66a2e8c910b9075c74d9a32987d795a85cbb31acd4d0260754667f9298a77d",
+      "framesAdvanced": 12,
+      "sceneTimeAdvanced": 0.5500000000000078
+    },
+    {
+      "world": "power_nap",
+      "dimensions": [
+        800,
+        600
+      ],
+      "changedPixels": 67022,
+      "changedPixelsOver8of255": 13070,
+      "totalPixels": 480000,
+      "changedFraction": 0.13962916666666667,
+      "meanAbsoluteChannelDifference": 0.7827993055555555,
+      "changedBounds": [
+        0,
+        0,
+        800,
+        434
+      ],
+      "beforeSHA256": "c9d29e0a0c6dbfac39667b2d5915304d7763d0456010c3322c3e27f03cbddb37",
+      "afterSHA256": "111c1a03eb55d1f6d91044538e8117a32a8877662e39adf2ee454ace610cc12d",
+      "framesAdvanced": 12,
+      "sceneTimeAdvanced": 0.5599000000044789
+    },
+    {
+      "world": "nature:winter_lodge",
+      "dimensions": [
+        800,
+        600
+      ],
+      "changedPixels": 30343,
+      "changedPixelsOver8of255": 838,
+      "totalPixels": 480000,
+      "changedFraction": 0.06321458333333334,
+      "meanAbsoluteChannelDifference": 0.06482638888888889,
+      "changedBounds": [
+        47,
+        0,
+        800,
+        600
+      ],
+      "beforeSHA256": "1b3fae5e59c03323f942643b4cc3dc7bae6cce52013fd2728f42398c13e51e7e",
+      "afterSHA256": "28aa8bd372af59f4f68e06bbe3021e58dddffdfbe76e4084663a5acf5d4179a0",
+      "framesAdvanced": 12,
+      "sceneTimeAdvanced": 0.5561000000014982
+    }
+  ]
+}

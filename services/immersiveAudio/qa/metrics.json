@@ -1,0 +1,1468 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-04T19:40:05.128Z",
+  "sourceSha256": {
+    "types.ts": "07331377db695e65907c808ce780c18c25037f26bae632c9179b3ea71bbd3333",
+    "synthesis.ts": "bd144637b2011245135b26f5ad3a00aef3394159757526c656734346e34ba7fc",
+    "controller.ts": "b1a99b11c2eda2ad3a581040b704452d2666ae414c2c8c924278fbc322e62751",
+    "profiles.ts": "09cca1460d48468109ee035c2bf2a18e157b515ee7bbcc69e956025ff3ea32a8",
+    "interaction.ts": "47cac9bf6117e6f6a659ddf4f86a347793e00e0e154ea5e226ca3f1151312b65",
+    "index.ts": "a1e6e6d114004d30d270fafccda7e009cde466d38edbf2672a2d36bbfaa1455a"
+  },
+  "harnessSha256": "c151fbea8545124cab8f8ec3475b24613b249d59e46fa6aee4779230c053fb43",
+  "environment": {
+    "browser": "Chromium 153.0.8010.0",
+    "node": "v24.19.0",
+    "rendering": "native OfflineAudioContext; injected gain output; no network/server",
+    "sampleRate": 48000,
+    "channels": 2,
+    "scheduledControlBlockFrames": 256
+  },
+  "evidenceBoundary": [
+    "Original procedural touch accents only, not production ambience recordings or completed scene mixes.",
+    "WAVs render the production controller at intensity 1, centered pan, output gain 1; no normalization or external recordings.",
+    "Measurements are digital full-scale sample statistics, not LUFS, listening-test, physical SPL, device, speaker or headphone measurements.",
+    "No listening or perceptual naturalness test was performed. Real-device audition and engine/UI integration remain core responsibilities.",
+    "Native ScriptProcessor is used only as a silent QA event scheduler. Production code contains no ScriptProcessor or standalone context.",
+    "Mute/gate/dispose intentionally disconnect immediately; only pause/release has the smooth 60 ms ramp."
+  ],
+  "examples": [
+    {
+      "name": "water-drop",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 50400,
+        "durationSeconds": 1.05,
+        "peak": 0.008623842149972916,
+        "peakDbfs": -41.285984027430416,
+        "rms": 0.0018506079810362637,
+        "rmsDbfs": -54.653711384033215,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0009332807676400989,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 40927,
+        "perChannel": [
+          {
+            "peak": 0.008623842149972916,
+            "rms": 0.0018506079810362637,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.008623842149972916,
+            "rms": 0.0018506079810362637,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      },
+      "file": "examples/water-drop.wav",
+      "sha256": "90173e900f2628383a0ea61ddd0d7ddb99af642153291461ecbf78aef3b0d0f8",
+      "bytes": 201644,
+      "wavEncoding": {
+        "format": "PCM signed 16-bit little endian",
+        "channels": 2,
+        "sampleRate": 48000,
+        "normalization": "none",
+        "quantizedPeak": 0.008636474609375,
+        "quantizedRms": 0.0018505912804169973
+      }
+    },
+    {
+      "name": "soft-rustle",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 69600,
+        "durationSeconds": 1.45,
+        "peak": 0.004714832175523043,
+        "peakDbfs": -46.53067522731962,
+        "rms": 0.0006355323182078807,
+        "rmsDbfs": -63.93724719448993,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.001779318554326892,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 60127,
+        "perChannel": [
+          {
+            "peak": 0.004714832175523043,
+            "rms": 0.0006355323182078807,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.004714832175523043,
+            "rms": 0.0006355323182078807,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      },
+      "file": "examples/soft-rustle.wav",
+      "sha256": "84df2a72e6f2ce8697618106e42bb623867ef2f86005fa10a2024f4b05df2162",
+      "bytes": 278444,
+      "wavEncoding": {
+        "format": "PCM signed 16-bit little endian",
+        "channels": 2,
+        "sampleRate": 48000,
+        "normalization": "none",
+        "quantizedPeak": 0.00469970703125,
+        "quantizedRms": 0.0006355275064371068
+      }
+    },
+    {
+      "name": "ceramic-touch",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 43200,
+        "durationSeconds": 0.9,
+        "peak": 0.007633885368704796,
+        "peakDbfs": -42.3450873150707,
+        "rms": 0.001385686741986804,
+        "rmsDbfs": -57.16669876538127,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0006592082791030407,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 33727,
+        "perChannel": [
+          {
+            "peak": 0.007633885368704796,
+            "rms": 0.001385686741986804,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.007633885368704796,
+            "rms": 0.001385686741986804,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      },
+      "file": "examples/ceramic-touch.wav",
+      "sha256": "cb4278cc6bb9625d06c78afca09cc677d86eebc38274769022d90dded698c2ab",
+      "bytes": 172844,
+      "wavEncoding": {
+        "format": "PCM signed 16-bit little endian",
+        "channels": 2,
+        "sampleRate": 48000,
+        "normalization": "none",
+        "quantizedPeak": 0.00762939453125,
+        "quantizedRms": 0.0013856906355568105
+      }
+    },
+    {
+      "name": "ember-tick",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 36000,
+        "durationSeconds": 0.75,
+        "peak": 0.003218207275494933,
+        "peakDbfs": -49.84771975349864,
+        "rms": 0.00038393706282784974,
+        "rmsDbfs": -68.31479923695991,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0010810300009325147,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 26528,
+        "perChannel": [
+          {
+            "peak": 0.003218207275494933,
+            "rms": 0.00038393706282784974,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.003218207275494933,
+            "rms": 0.00038393706282784974,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      },
+      "file": "examples/ember-tick.wav",
+      "sha256": "8f7d1f60eefe44d0c8be7d3a3dcd79acecc72b10a043485d2ac541caa2e9a44c",
+      "bytes": 144044,
+      "wavEncoding": {
+        "format": "PCM signed 16-bit little endian",
+        "channels": 2,
+        "sampleRate": 48000,
+        "normalization": "none",
+        "quantizedPeak": 0.003204345703125,
+        "quantizedRms": 0.0003839885712410803
+      }
+    },
+    {
+      "name": "soft-resonance",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 163201,
+        "durationSeconds": 3.4000208333333335,
+        "peak": 0.009570189751684666,
+        "peakDbfs": -40.38158902441588,
+        "rms": 0.00219303561989543,
+        "rmsDbfs": -53.17908628666477,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.00026657781563699245,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 153727,
+        "perChannel": [
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.00219303561989543,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.00219303561989543,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      },
+      "file": "examples/soft-resonance.wav",
+      "sha256": "4d735d7185c1368d1318f390ade56cea91f4f709ff6845e50950ba4eb5695c4f",
+      "bytes": 652848,
+      "wavEncoding": {
+        "format": "PCM signed 16-bit little endian",
+        "channels": 2,
+        "sampleRate": 48000,
+        "normalization": "none",
+        "quantizedPeak": 0.00958251953125,
+        "quantizedRms": 0.0021929737417311127
+      }
+    }
+  ],
+  "cases": [
+    {
+      "name": "unity-baseline",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.008623842149972916,
+        "peakDbfs": -41.285984027430416,
+        "rms": 0.0009481544434385244,
+        "rmsDbfs": -60.46241830661346,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0009332807676400989,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 40927,
+        "perChannel": [
+          {
+            "peak": 0.008623842149972916,
+            "rms": 0.0009481544434385244,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.008623842149972916,
+            "rms": 0.0009481544434385244,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "intensity-quarter",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.002155960537493229,
+        "peakDbfs": -53.32718385398966,
+        "rms": 0.0002370386108596311,
+        "rmsDbfs": -72.50361813317271,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.00023332019191002473,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 40927,
+        "perChannel": [
+          {
+            "peak": 0.002155960537493229,
+            "rms": 0.0002370386108596311,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.002155960537493229,
+            "rms": 0.0002370386108596311,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "output-gain-quarter",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.002155960537493229,
+        "peakDbfs": -53.32718385398966,
+        "rms": 0.0002370386108596311,
+        "rmsDbfs": -72.50361813317271,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.00023332019191002473,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 40927,
+        "perChannel": [
+          {
+            "peak": 0.002155960537493229,
+            "rms": 0.0002370386108596311,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.002155960537493229,
+            "rms": 0.0002370386108596311,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "output-gain-zero",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0,
+        "peakDbfs": null,
+        "rms": 0,
+        "rmsDbfs": null,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0,
+        "firstNonzeroFrame": null,
+        "lastNonzeroFrame": null,
+        "perChannel": [
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "zero-intensity",
+      "accepted": false,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 0,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0,
+        "peakDbfs": null,
+        "rms": 0,
+        "rmsDbfs": null,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0,
+        "firstNonzeroFrame": null,
+        "lastNonzeroFrame": null,
+        "perChannel": [
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "muted",
+      "accepted": false,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 0,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0,
+        "peakDbfs": null,
+        "rms": 0,
+        "rmsDbfs": null,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0,
+        "firstNonzeroFrame": null,
+        "lastNonzeroFrame": null,
+        "perChannel": [
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "gate-closed",
+      "accepted": false,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 0,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0,
+        "peakDbfs": null,
+        "rms": 0,
+        "rmsDbfs": null,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0,
+        "firstNonzeroFrame": null,
+        "lastNonzeroFrame": null,
+        "perChannel": [
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "inactive",
+      "accepted": false,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 0,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0,
+        "peakDbfs": null,
+        "rms": 0,
+        "rmsDbfs": null,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0,
+        "firstNonzeroFrame": null,
+        "lastNonzeroFrame": null,
+        "perChannel": [
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "paused-before-trigger",
+      "accepted": false,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 0,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0,
+        "peakDbfs": null,
+        "rms": 0,
+        "rmsDbfs": null,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0,
+        "firstNonzeroFrame": null,
+        "lastNonzeroFrame": null,
+        "perChannel": [
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "disposed-before-trigger",
+      "accepted": false,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 0,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0,
+        "peakDbfs": null,
+        "rms": 0,
+        "rmsDbfs": null,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0,
+        "firstNonzeroFrame": null,
+        "lastNonzeroFrame": null,
+        "perChannel": [
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0,
+            "rms": 0,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "pan-left",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.0115990424528718,
+        "peakDbfs": -38.711557240632,
+        "rms": 0.0009481544437850655,
+        "rmsDbfs": -60.46241830343885,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0012552597836474888,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 40927,
+        "perChannel": [
+          {
+            "peak": 0.0115990424528718,
+            "rms": 0.001275264912828057,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.0037687572184950113,
+            "rms": 0.00041435866184790025,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "pan-right",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.0115990424528718,
+        "peakDbfs": -38.711557240632,
+        "rms": 0.0009481544437850655,
+        "rmsDbfs": -60.46241830343885,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0012552597836474888,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 40927,
+        "perChannel": [
+          {
+            "peak": 0.0037687572184950113,
+            "rms": 0.00041435866184790025,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.0115990424528718,
+            "rms": 0.001275264912828057,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "pan-out-of-range-clamped",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.0115990424528718,
+        "peakDbfs": -38.711557240632,
+        "rms": 0.0009481544437850655,
+        "rmsDbfs": -60.46241830343885,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0012552597836474888,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 40927,
+        "perChannel": [
+          {
+            "peak": 0.0037687572184950113,
+            "rms": 0.00041435866184790025,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.0115990424528718,
+            "rms": 0.001275264912828057,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "maximum-allowed-overlap",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 2,
+      "eventLog": [
+        {
+          "at": 1.85,
+          "action": "trigger",
+          "kind": "soft-rustle",
+          "actualTime": 1.8533333333333333,
+          "accepted": true,
+          "voiceCount": 2
+        },
+        {
+          "at": 1.85,
+          "action": "trigger",
+          "kind": "water-drop",
+          "actualTime": 1.8533333333333333,
+          "accepted": false,
+          "voiceCount": 2
+        }
+      ],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.009570189751684666,
+        "peakDbfs": -40.38158902441588,
+        "rms": 0.0020580205412285683,
+        "rmsDbfs": -53.73100589664472,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0017843176610767841,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 153727,
+        "perChannel": [
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0020580205412285683,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0020580205412285683,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "pause-smooth-release",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [
+        {
+          "at": 0.8,
+          "action": "pause",
+          "actualTime": 0.8026666666666666,
+          "voiceCount": 1
+        }
+      ],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.009570189751684666,
+        "peakDbfs": -40.38158902441588,
+        "rms": 0.0016655653936445893,
+        "rmsDbfs": -55.568766226235255,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.00026657781563699245,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 41407,
+        "perChannel": [
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016655653936445893,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016655653936445893,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "resonance-comparison",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.009570189751684666,
+        "peakDbfs": -40.38158902441588,
+        "rms": 0.0020218851338778343,
+        "rmsDbfs": -53.88487041842188,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.00026657781563699245,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 153727,
+        "perChannel": [
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0020218851338778343,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0020218851338778343,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mid-voice-mute",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [
+        {
+          "at": 0.8,
+          "action": "state",
+          "state": {
+            "active": true,
+            "muted": true,
+            "gateOpen": true
+          },
+          "actualTime": 0.8026666666666666,
+          "voiceCount": 0
+        }
+      ],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.009570189751684666,
+        "peakDbfs": -40.38158902441588,
+        "rms": 0.0016478040689388866,
+        "rmsDbfs": -55.66188858138687,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0054993052035570145,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 38655,
+        "perChannel": [
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016478040689388866,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016478040689388866,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mid-voice-gate-close",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [
+        {
+          "at": 0.8,
+          "action": "state",
+          "state": {
+            "active": true,
+            "muted": false,
+            "gateOpen": false
+          },
+          "actualTime": 0.8026666666666666,
+          "voiceCount": 0
+        }
+      ],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.009570189751684666,
+        "peakDbfs": -40.38158902441588,
+        "rms": 0.0016478040689388866,
+        "rmsDbfs": -55.66188858138687,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.0054993052035570145,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 38655,
+        "perChannel": [
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016478040689388866,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016478040689388866,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mid-voice-dispose",
+      "accepted": true,
+      "triggerTime": 0.0026666666666666666,
+      "maxVoices": 1,
+      "eventLog": [
+        {
+          "at": 0.8,
+          "action": "dispose",
+          "actualTime": 0.8026666666666666,
+          "voiceCount": 0
+        }
+      ],
+      "measurements": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "frames": 192000,
+        "durationSeconds": 4,
+        "peak": 0.009570189751684666,
+        "peakDbfs": -40.38158902441588,
+        "rms": 0.0016456176636785833,
+        "rmsDbfs": -55.673421193440106,
+        "nonfiniteSamples": 0,
+        "allSamplesFinite": true,
+        "clippingSamples": 0,
+        "largestAdjacentStep": 0.002190899569541216,
+        "firstNonzeroFrame": 257,
+        "lastNonzeroFrame": 38527,
+        "perChannel": [
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016456176636785833,
+            "firstSample": 0,
+            "lastSample": 0
+          },
+          {
+            "peak": 0.009570189751684666,
+            "rms": 0.0016456176636785833,
+            "firstSample": 0,
+            "lastSample": 0
+          }
+        ]
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "water-drop: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "water-drop: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "water-drop: accepted in first native scheduler block",
+      "pass": true,
+      "triggerTime": 0.0026666666666666666
+    },
+    {
+      "name": "water-drop: audible digital signal bounded below 0.024",
+      "pass": true
+    },
+    {
+      "name": "water-drop: exact silent edges",
+      "pass": true
+    },
+    {
+      "name": "water-drop: short opening attack has no sample jump",
+      "pass": true,
+      "largestAdjacentStep": 0.0009332807676400989
+    },
+    {
+      "name": "soft-rustle: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "soft-rustle: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "soft-rustle: accepted in first native scheduler block",
+      "pass": true,
+      "triggerTime": 0.0026666666666666666
+    },
+    {
+      "name": "soft-rustle: audible digital signal bounded below 0.024",
+      "pass": true
+    },
+    {
+      "name": "soft-rustle: exact silent edges",
+      "pass": true
+    },
+    {
+      "name": "soft-rustle: short opening attack has no sample jump",
+      "pass": true,
+      "largestAdjacentStep": 0.001779318554326892
+    },
+    {
+      "name": "ceramic-touch: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "ceramic-touch: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "ceramic-touch: accepted in first native scheduler block",
+      "pass": true,
+      "triggerTime": 0.0026666666666666666
+    },
+    {
+      "name": "ceramic-touch: audible digital signal bounded below 0.024",
+      "pass": true
+    },
+    {
+      "name": "ceramic-touch: exact silent edges",
+      "pass": true
+    },
+    {
+      "name": "ceramic-touch: short opening attack has no sample jump",
+      "pass": true,
+      "largestAdjacentStep": 0.0006592082791030407
+    },
+    {
+      "name": "ember-tick: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "ember-tick: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "ember-tick: accepted in first native scheduler block",
+      "pass": true,
+      "triggerTime": 0.0026666666666666666
+    },
+    {
+      "name": "ember-tick: audible digital signal bounded below 0.024",
+      "pass": true
+    },
+    {
+      "name": "ember-tick: exact silent edges",
+      "pass": true
+    },
+    {
+      "name": "ember-tick: short opening attack has no sample jump",
+      "pass": true,
+      "largestAdjacentStep": 0.0010810300009325147
+    },
+    {
+      "name": "soft-resonance: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "soft-resonance: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "soft-resonance: accepted in first native scheduler block",
+      "pass": true,
+      "triggerTime": 0.0026666666666666666
+    },
+    {
+      "name": "soft-resonance: audible digital signal bounded below 0.024",
+      "pass": true
+    },
+    {
+      "name": "soft-resonance: exact silent edges",
+      "pass": true
+    },
+    {
+      "name": "soft-resonance: short opening attack has no sample jump",
+      "pass": true,
+      "largestAdjacentStep": 0.00026657781563699245
+    },
+    {
+      "name": "unity-baseline: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "unity-baseline: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "intensity-quarter: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "intensity-quarter: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "output-gain-quarter: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "output-gain-quarter: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "intensity scales actual waveform linearly",
+      "pass": true,
+      "maxError": 0
+    },
+    {
+      "name": "injected output gain scales actual waveform linearly",
+      "pass": true,
+      "maxError": 0
+    },
+    {
+      "name": "output-gain-zero: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "output-gain-zero: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "output-gain-zero: exact digital silence",
+      "pass": true
+    },
+    {
+      "name": "zero-intensity: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "zero-intensity: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "zero-intensity: exact digital silence",
+      "pass": true
+    },
+    {
+      "name": "zero-intensity: request rejected",
+      "pass": true
+    },
+    {
+      "name": "muted: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "muted: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "muted: exact digital silence",
+      "pass": true
+    },
+    {
+      "name": "muted: request rejected",
+      "pass": true
+    },
+    {
+      "name": "gate-closed: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "gate-closed: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "gate-closed: exact digital silence",
+      "pass": true
+    },
+    {
+      "name": "gate-closed: request rejected",
+      "pass": true
+    },
+    {
+      "name": "inactive: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "inactive: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "inactive: exact digital silence",
+      "pass": true
+    },
+    {
+      "name": "inactive: request rejected",
+      "pass": true
+    },
+    {
+      "name": "paused-before-trigger: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "paused-before-trigger: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "paused-before-trigger: exact digital silence",
+      "pass": true
+    },
+    {
+      "name": "paused-before-trigger: request rejected",
+      "pass": true
+    },
+    {
+      "name": "disposed-before-trigger: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "disposed-before-trigger: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "disposed-before-trigger: exact digital silence",
+      "pass": true
+    },
+    {
+      "name": "disposed-before-trigger: request rejected",
+      "pass": true
+    },
+    {
+      "name": "pan-left: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "pan-left: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "pan-right: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "pan-right: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "pan-out-of-range-clamped: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "pan-out-of-range-clamped: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "pan keeps rightward energy on right",
+      "pass": true
+    },
+    {
+      "name": "pan keeps leftward energy on left",
+      "pass": true
+    },
+    {
+      "name": "pan out of range matches bounded pan waveform",
+      "pass": true
+    },
+    {
+      "name": "left/right energy mirror symmetry",
+      "pass": true
+    },
+    {
+      "name": "maximum-allowed-overlap: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "maximum-allowed-overlap: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "two voices overlap and third request rejected",
+      "pass": true
+    },
+    {
+      "name": "maximum-allowed overlap remains quiet and unclipped",
+      "pass": true,
+      "peak": 0.009570189751684666
+    },
+    {
+      "name": "pause-smooth-release: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "pause-smooth-release: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "resonance-comparison: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "resonance-comparison: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "pause release follows native linear ramp ending at 60 ms",
+      "pass": true,
+      "pauseTime": 0.8026666666666666,
+      "releaseError": 3.536115400493145e-9,
+      "requestedReleaseSeconds": 0.06,
+      "schedulerControlLatencyFrames": 0,
+      "measuredRampSeconds": 0.06
+    },
+    {
+      "name": "pause tail becomes exact silence",
+      "pass": true,
+      "tailPeak": 0
+    },
+    {
+      "name": "mid-voice-mute: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "mid-voice-mute: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "mid-voice-mute: voice disconnected immediately",
+      "pass": true,
+      "peakAfter": 0,
+      "quantumAllowanceFrames": 128
+    },
+    {
+      "name": "mid-voice-gate-close: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "mid-voice-gate-close: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "mid-voice-gate-close: voice disconnected immediately",
+      "pass": true,
+      "peakAfter": 0,
+      "quantumAllowanceFrames": 128
+    },
+    {
+      "name": "mid-voice-dispose: finite and unclipped",
+      "pass": true
+    },
+    {
+      "name": "mid-voice-dispose: final voices released",
+      "pass": true,
+      "finalVoiceCount": 0
+    },
+    {
+      "name": "mid-voice-dispose: voice disconnected immediately",
+      "pass": true,
+      "peakAfter": 0,
+      "quantumAllowanceFrames": 128
+    },
+    {
+      "name": "native suspended context rejects before playback",
+      "pass": true
+    }
+  ],
+  "summary": {
+    "checksPassed": 95,
+    "checksFailed": 0,
+    "exampleCount": 5,
+    "comparisonCaseCount": 19
+  }
+}

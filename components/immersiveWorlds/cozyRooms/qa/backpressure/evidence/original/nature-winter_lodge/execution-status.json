@@ -1,0 +1,8 @@
+{
+  "exitCode": 0,
+  "startedAt": "2026-10-04T23:34:22Z",
+  "finishedAt": "2026-10-04T23:34:53.670636+00:00",
+  "originalGateMs": 120000,
+  "outerProcessBoundSeconds": 300,
+  "method": "First original unchanged verify invocation for this remaining world after group stopped at relax; not a retry"
+}

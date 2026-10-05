@@ -1,0 +1,187 @@
+{
+  "status": "failed",
+  "case": "links",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T234844Z",
+  "startedAt": "2026-10-04T23:48:44Z",
+  "finishedAt": "2026-10-04T23:49:47Z",
+  "elapsedTotalSeconds": 63.402,
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "10470ba9c367e510e5b31b7d743b530d9d0880b719eb8391a26bafd752327b48",
+  "supportScripts": {
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc",
+    "verification-provenance.mjs": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2",
+    "cold-autoplay.mjs": "42c8e8968e7db4b0de448f59cd3a9b85446b1863f7a81f8a3220cd19880fea05",
+    "scene-disposal-contract.mjs": "76ce9456f52e919aecd59a5e85a3aae262929470a6692b14d4b92c079d8cbfed"
+  },
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "failure": {
+    "step": "cold focus autoplay and one native retry",
+    "message": "cold ready binding for 깊은 집중 exceeded 60000ms",
+    "fixedReadinessDeadlineMs": 60000,
+    "actualReadinessElapsedMs": 60001,
+    "bindingPayloadCount": 0
+  },
+  "failureRawObservation": {
+    "url": "http://127.0.0.1:60175/#/play/focus",
+    "hash": "#/play/focus",
+    "wall": 60051.30000000447,
+    "documentOrigin": 1791157725595.8,
+    "readyState": "complete",
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "headings": [
+      "깊은 집중"
+    ],
+    "activeNavigation": [],
+    "hints": [
+      "blocked"
+    ],
+    "timer": "남은 시간 40분 0초",
+    "dialogs": 0,
+    "buttons": [
+      {
+        "name": "축소",
+        "disabled": false
+      },
+      {
+        "name": "이 루틴 링크 복사",
+        "disabled": false
+      },
+      {
+        "name": "전체 화면 보기",
+        "disabled": false
+      },
+      {
+        "name": "눌러서 재생",
+        "disabled": false
+      },
+      {
+        "name": "자연 보기",
+        "disabled": false
+      },
+      {
+        "name": "그래픽 보기",
+        "disabled": false
+      },
+      {
+        "name": "재생",
+        "disabled": false
+      },
+      {
+        "name": "세션 종료",
+        "disabled": false
+      },
+      {
+        "name": "세션 세부 조절 열기",
+        "disabled": false
+      }
+    ],
+    "lastSession": null,
+    "storageError": null,
+    "audio": {
+      "contexts": 1,
+      "states": [
+        "suspended"
+      ],
+      "analyserGraphs": 0,
+      "oscillators": 0,
+      "resumeCount": 1,
+      "resumeCalls": [
+        {
+          "activeGesture": false,
+          "state": "suspended",
+          "held": false
+        }
+      ],
+      "held": false
+    },
+    "scene": null,
+    "inputs": [],
+    "observationTiming": {
+      "phase": "fresh-read",
+      "nodeRequestedAt": 1791157785644,
+      "nodeAcknowledgedAt": 1791157785648,
+      "nodeFinishedAt": 1791157785648,
+      "elapsedMs": 3.443554999998014,
+      "limitMs": 5000,
+      "deadlineAt": null,
+      "userGesture": false,
+      "outcome": "acknowledged"
+    }
+  },
+  "gates": [
+    {
+      "name": "cold focus autoplay and one native retry",
+      "status": "failed before first native click; frozenTimer and callback checks not reached"
+    },
+    {
+      "name": "warm hash, copy and history",
+      "status": "not reached"
+    },
+    {
+      "name": "saved, last, reload and invalid links",
+      "status": "not reached"
+    },
+    {
+      "name": "held readiness is cancelled by navigation",
+      "status": "not reached"
+    }
+  ],
+  "classificationLimits": [
+    "No binding payloads were collected, including no initial non-ready payload; observer installation/delivery and actual renderer readiness remain distinguishable possibilities, not established causes.",
+    "scene:null comes from missing optional __coldSceneSnapshot hook, not a DOM canvas count. Do not infer absent canvas from this field.",
+    "The final raw CDP read acknowledged in 3.44 ms. The run supplies no App-stall finding.",
+    "Cold timer40:00/blocked/suspended/no-input facts are observations at failure; the complete first gate did not pass."
+  ],
+  "browserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-04T23:48:45.523Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:48:45.523Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:49:45.653Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:49:45.675Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:49:45.684Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:49:45.684Z"
+  },
+  "cleanupErrors": [],
+  "ownedStillAlive": [],
+  "gpu": "released after owned processes ended",
+  "retries": 0,
+  "rawEvidenceSHA256": "a1089aacc0ab9fbe38e62db6518abbe6ec0c938c1a2ac46a288043b1078993c0",
+  "wrapperSummarySHA256": "4c82b63947081e5ee83db02ac2880e4b49965c7f5cfbc36bd0fc576ffbafb406"
+}

@@ -1,0 +1,27 @@
+{
+  "passed": false,
+  "run": "Unmodified original verify-group.mjs; four separate world browsers; no retry",
+  "nodeExitCode": 1,
+  "sourceSHA256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+  "bundleSHA256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+  "timestamp": "2026-10-04T21:48:31.389Z",
+  "completedWorlds": [
+    "relax",
+    "sleep_prep",
+    "power_nap"
+  ],
+  "completedCheckLabels": 78,
+  "failureWorld": "nature:winter_lodge",
+  "failureLocation": "qa/verify.mjs:75:45",
+  "error": "page.waitForSelector: Timeout 120000ms exceeded while waiting for .cozy-world[data-state=\"ready\"] canvas to be visible",
+  "precedingDisposalAssertions": "passed before recreation wait",
+  "caughtPageOrConsoleErrors": [],
+  "actualHostStatusAtTimeout": "unavailable in uninstrumented runner; empty errors array does not exclude a caught host failure or synchronous block",
+  "evidence": [
+    "execution.log",
+    "checkpoint.json",
+    "nature-winter_lodge/verification.json"
+  ],
+  "noTimeoutOrAssertionChanged": true,
+  "historicalFailuresPreserved": true
+}

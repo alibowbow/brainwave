@@ -1,0 +1,69 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-04T22:45:29.667Z",
+  "finishedAt": "2026-10-04T22:45:55.753Z",
+  "failure": {
+    "step": "actual scops primary ends left and stream layer pans right through the existing app engine",
+    "message": "Error: non-gesture DOM/audio observation: exceeded 5000ms",
+    "stack": "Error: non-gesture DOM/audio observation: exceeded 5000ms\n    at Timeout.<anonymous> (file:///workspace/scratch/448e5748a57d/integration-audit/verify-audio-bridge.mjs:44:138)\n    at listOnTimeout (node:internal/timers:635:17)\n    at process.processTimers (node:internal/timers:571:7)"
+  },
+  "cleanup": [
+    {
+      "kind": "cleanup",
+      "message": "Error: browser process cleanup: exceeded 15000ms"
+    }
+  ],
+  "completedChecks": 0,
+  "laterNineChecksExecuted": false,
+  "sourceAndBuildUnchanged": true,
+  "servedBuildMatch": {
+    "checked": 17,
+    "mismatches": []
+  },
+  "actualPanners": [
+    {
+      "id": 30,
+      "pan": 0.5
+    },
+    {
+      "id": 23,
+      "pan": -0.38769277930259705
+    }
+  ],
+  "actualStreamPanner": [
+    {
+      "id": 72,
+      "pan": 0.3228657841682434
+    }
+  ],
+  "streamIdentity": {
+    "originalStream": 0.07,
+    "changedStream": 0.11,
+    "restoredStream": 0.07
+  },
+  "streamGainIds": [
+    69,
+    70
+  ],
+  "streamPannerId": 72,
+  "failureAudio": {
+    "contexts": 1,
+    "states": [
+      "running"
+    ],
+    "clocks": [
+      7.500045351473923
+    ],
+    "graphs": 1,
+    "masterPcm": {
+      "peak": 0.003588011022657156,
+      "rms": 0.0011849387551305464
+    }
+  },
+  "claimLimits": [
+    "No PCM direction conclusion",
+    "Exact timed-out observation not recorded; next outside script adds attachment/sample stage markers",
+    "No basis to dismiss stall as test-only or identify application root cause",
+    "Owned launchServer cleanup failure retained; no unknown process killed"
+  ]
+}

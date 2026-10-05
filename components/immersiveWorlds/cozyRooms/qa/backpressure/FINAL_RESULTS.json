@@ -1,0 +1,488 @@
+{
+  "status": "BLOCKED: one-batch admission verified, overall runtime acceptance failed on paused/static response timing",
+  "timestamp": "2026-10-04T23:40:32.237916+00:00",
+  "productionCommit": "56d3075eaf8cda076f7d25d53fac7b4026066bd9",
+  "runtimeCheckpoint": "aa2d01f1a87a11dc208c48ada0ce157e6a595c81",
+  "sourceSHA256": "c67f2b6e467841fbc3fe0897b6ff646db5dba968c3c5d54b896672c371e312a3",
+  "bundleSHA256": "597e78687fc1fc38eb317c6e4fb73ff41735d128c88804757d7135745980a947",
+  "engineSHA256": "8401b0e80ef802d9f0c3d527aa91a271ea0b25e8c043d68d30a60491a3671bba",
+  "originalGate": {
+    "status": "FAIL",
+    "method": "Original verify-group stopped on relax; each remaining previously unrun world then invoked once with identical original verify.mjs. No world was retried. Original test expressions/timeouts and browser bundle unchanged; passive1Hz observer and delegated assertions add timing overhead.",
+    "readyTimeoutMs": 120000,
+    "completedWorlds": 2,
+    "completedCheckLabels": 52,
+    "partialFailedWorlds": 2,
+    "worlds": [
+      {
+        "world": "relax",
+        "status": "FAIL",
+        "report": "evidence/original/relax/verification.json",
+        "reportSHA256": "16639fb49c4c19e75b8694b19c791f1b3422ce8be7b6b6a027d6d73025b7d282",
+        "completedCheckLabels": 0,
+        "firstFailure": {
+          "type": "original-assertion-failed",
+          "method": "equal",
+          "observedAt": "2026-10-04T23:32:33.022Z",
+          "error": {
+            "name": "AssertionError",
+            "message": "paused RAF does not advance\n\n8 !== 7\n",
+            "stack": "AssertionError [ERR_ASSERTION]: paused RAF does not advance\n\n8 !== 7\n\n    at strictAssert.<computed> [as equal] (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/backpressure/observe-original.mjs:25:23)\n    at freeze (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/verify.mjs:25:246)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/verify.mjs:72:3"
+          }
+        },
+        "sourceSHA256": "c67f2b6e467841fbc3fe0897b6ff646db5dba968c3c5d54b896672c371e312a3",
+        "bundleSHA256": "597e78687fc1fc38eb317c6e4fb73ff41735d128c88804757d7135745980a947",
+        "reconciledEvents": 11,
+        "reconciliationComplete": true,
+        "observationComplete": true,
+        "maxObservedInFlight": 1,
+        "maxObservedUnconfirmed": 1,
+        "lastDiagnostic": {
+          "instance": 1,
+          "taps": 8,
+          "lastHit": "log",
+          "frames": 8,
+          "time": 8.150000000000002,
+          "running": false,
+          "gpu": {
+            "submitted": 8,
+            "returned": 8,
+            "completed": 7,
+            "polls": 240,
+            "timeouts": 233,
+            "maxInFlight": 1,
+            "lastSubmit": 9480.29999999702,
+            "lastComplete": 9475.59999999404,
+            "lastWait": "CONDITION_SATISFIED",
+            "phase": "submitted",
+            "inFlight": 1,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 363.59999999403954,
+            "constructorEnd": 374.59999999403954,
+            "factoryStart": 382.5,
+            "factoryEnd": 1214.6999999955297,
+            "initEnd": 1215.2999999970198,
+            "firstRenderStart": 1226.2999999970198,
+            "firstRenderEnd": 1810,
+            "disposeStart": 0,
+            "disposeEnd": 0
+          },
+          "drawCalls": 222,
+          "triangles": 298348,
+          "memory": {
+            "geometries": 95,
+            "textures": 32
+          },
+          "lifetime": {
+            "created": 1,
+            "disposed": 0
+          },
+          "status": "ready",
+          "retired": []
+        }
+      },
+      {
+        "world": "sleep_prep",
+        "status": "FAIL",
+        "report": "evidence/original/sleep_prep/verification.json",
+        "reportSHA256": "a5add4abff8b07054c84fd84181d8ba07c2cc2875ea4badc2ad4b6a9460d5262",
+        "completedCheckLabels": 0,
+        "firstFailure": {
+          "type": "original-assertion-failed",
+          "method": "equal",
+          "observedAt": "2026-10-04T23:33:53.863Z",
+          "error": {
+            "name": "AssertionError",
+            "message": "paused RAF does not advance\n\n7 !== 6\n",
+            "stack": "AssertionError [ERR_ASSERTION]: paused RAF does not advance\n\n7 !== 6\n\n    at strictAssert.<computed> [as equal] (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/backpressure/observe-original.mjs:25:23)\n    at freeze (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/verify.mjs:25:246)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/verify.mjs:63:78"
+          }
+        },
+        "sourceSHA256": "c67f2b6e467841fbc3fe0897b6ff646db5dba968c3c5d54b896672c371e312a3",
+        "bundleSHA256": "597e78687fc1fc38eb317c6e4fb73ff41735d128c88804757d7135745980a947",
+        "reconciledEvents": 7,
+        "reconciliationComplete": true,
+        "observationComplete": true,
+        "maxObservedInFlight": 1,
+        "maxObservedUnconfirmed": 1,
+        "lastDiagnostic": {
+          "instance": 1,
+          "taps": 8,
+          "lastHit": "curtain",
+          "frames": 7,
+          "time": 8.100000000000001,
+          "running": false,
+          "gpu": {
+            "submitted": 7,
+            "returned": 7,
+            "completed": 6,
+            "polls": 164,
+            "timeouts": 158,
+            "maxInFlight": 1,
+            "lastSubmit": 5564.89999999851,
+            "lastComplete": 5558.20000000298,
+            "lastWait": "CONDITION_SATISFIED",
+            "phase": "submitted",
+            "inFlight": 1,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 363.80000000447035,
+            "constructorEnd": 378.30000000447035,
+            "factoryStart": 386.30000000447035,
+            "factoryEnd": 590.8000000044703,
+            "initEnd": 592.3999999985099,
+            "firstRenderStart": 649.6000000014901,
+            "firstRenderEnd": 1152.7000000029802,
+            "disposeStart": 0,
+            "disposeEnd": 0
+          },
+          "drawCalls": 520,
+          "triangles": 239398,
+          "memory": {
+            "geometries": 252,
+            "textures": 13
+          },
+          "lifetime": {
+            "created": 1,
+            "disposed": 0
+          },
+          "status": "ready",
+          "retired": []
+        }
+      },
+      {
+        "world": "power_nap",
+        "status": "PASS",
+        "report": "evidence/original/power_nap/verification.json",
+        "reportSHA256": "378936d0e0b2f4605fcf1de1791ff15de68896ae8165088c54826562203db33c",
+        "completedCheckLabels": 26,
+        "firstFailure": null,
+        "sourceSHA256": "c67f2b6e467841fbc3fe0897b6ff646db5dba968c3c5d54b896672c371e312a3",
+        "bundleSHA256": "597e78687fc1fc38eb317c6e4fb73ff41735d128c88804757d7135745980a947",
+        "reconciledEvents": 22,
+        "reconciliationComplete": true,
+        "observationComplete": true,
+        "maxObservedInFlight": 1,
+        "maxObservedUnconfirmed": 1,
+        "lastDiagnostic": {
+          "instance": 2,
+          "taps": 0,
+          "lastHit": "none",
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "gpu": {
+            "submitted": 1,
+            "returned": 1,
+            "completed": 0,
+            "polls": 0,
+            "timeouts": 0,
+            "maxInFlight": 1,
+            "lastSubmit": 20256.20000000298,
+            "lastComplete": 0,
+            "lastWait": "none",
+            "phase": "submitted",
+            "inFlight": 1,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 19631.70000000298,
+            "constructorEnd": 19640.60000000149,
+            "factoryStart": 19641,
+            "factoryEnd": 19964.5,
+            "initEnd": 19965.20000000298,
+            "firstRenderStart": 19973.80000000447,
+            "firstRenderEnd": 20256.20000000298,
+            "disposeStart": 0,
+            "disposeEnd": 0
+          },
+          "drawCalls": 405,
+          "triangles": 1649238,
+          "memory": {
+            "geometries": 207,
+            "textures": 19
+          },
+          "lifetime": {
+            "created": 2,
+            "disposed": 1
+          },
+          "status": "ready",
+          "retired": [
+            {
+              "instance": 1,
+              "frames": 7,
+              "time": 8.150000000000002,
+              "gpu": {
+                "submitted": 7,
+                "returned": 7,
+                "completed": 6,
+                "polls": 383,
+                "timeouts": 377,
+                "maxInFlight": 1,
+                "lastSubmit": 13198.80000000447,
+                "lastComplete": 13195.89999999851,
+                "lastWait": "TIMEOUT_EXPIRED",
+                "phase": "disposed",
+                "inFlight": 0,
+                "unconfirmed": 1,
+                "pending": null,
+                "pollScheduled": false,
+                "failure": null,
+                "cleanupErrors": []
+              },
+              "phases": {
+                "constructorStart": 365.20000000298023,
+                "constructorEnd": 377,
+                "factoryStart": 384.5,
+                "factoryEnd": 821,
+                "initEnd": 822.5,
+                "firstRenderStart": 833.3000000044703,
+                "firstRenderEnd": 1316.8000000044703,
+                "disposeStart": 19601.89999999851,
+                "disposeEnd": 19607.10000000149
+              }
+            }
+          ]
+        },
+        "freshFirstRenderMs": 282.3999999985099,
+        "freshConstructorToRenderReturnMs": 624.5,
+        "oldDisposeBodyMs": 5.200000002980232,
+        "oldSubmissionAccounting": {
+          "submitted": 7,
+          "returned": 7,
+          "completed": 6,
+          "polls": 383,
+          "timeouts": 377,
+          "maxInFlight": 1,
+          "lastSubmit": 13198.80000000447,
+          "lastComplete": 13195.89999999851,
+          "lastWait": "TIMEOUT_EXPIRED",
+          "phase": "disposed",
+          "inFlight": 0,
+          "unconfirmed": 1,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        }
+      },
+      {
+        "world": "nature:winter_lodge",
+        "status": "PASS",
+        "report": "evidence/original/nature-winter_lodge/verification.json",
+        "reportSHA256": "226089755d713d61bc8d052addb40c1ecdba7838816a179a84497c730fd61721",
+        "completedCheckLabels": 26,
+        "firstFailure": null,
+        "sourceSHA256": "c67f2b6e467841fbc3fe0897b6ff646db5dba968c3c5d54b896672c371e312a3",
+        "bundleSHA256": "597e78687fc1fc38eb317c6e4fb73ff41735d128c88804757d7135745980a947",
+        "reconciledEvents": 25,
+        "reconciliationComplete": true,
+        "observationComplete": true,
+        "maxObservedInFlight": 1,
+        "maxObservedUnconfirmed": 1,
+        "lastDiagnostic": {
+          "instance": 2,
+          "taps": 0,
+          "lastHit": "none",
+          "frames": 1,
+          "time": 8,
+          "running": false,
+          "gpu": {
+            "submitted": 1,
+            "returned": 1,
+            "completed": 0,
+            "polls": 0,
+            "timeouts": 0,
+            "maxInFlight": 1,
+            "lastSubmit": 24982.89999999851,
+            "lastComplete": 0,
+            "lastWait": "none",
+            "phase": "submitted",
+            "inFlight": 1,
+            "unconfirmed": 1,
+            "pending": null,
+            "pollScheduled": false,
+            "failure": null,
+            "cleanupErrors": []
+          },
+          "phases": {
+            "constructorStart": 23661.39999999851,
+            "constructorEnd": 23674,
+            "factoryStart": 23674.39999999851,
+            "factoryEnd": 24253.89999999851,
+            "initEnd": 24253.89999999851,
+            "firstRenderStart": 24266.09999999404,
+            "firstRenderEnd": 24982.89999999851,
+            "disposeStart": 0,
+            "disposeEnd": 0
+          },
+          "drawCalls": 632,
+          "triangles": 2675962,
+          "memory": {
+            "geometries": 343,
+            "textures": 31
+          },
+          "lifetime": {
+            "created": 2,
+            "disposed": 1
+          },
+          "status": "ready",
+          "retired": [
+            {
+              "instance": 1,
+              "frames": 7,
+              "time": 8.150000000000002,
+              "gpu": {
+                "submitted": 7,
+                "returned": 7,
+                "completed": 6,
+                "polls": 488,
+                "timeouts": 482,
+                "maxInFlight": 1,
+                "lastSubmit": 17249.09999999404,
+                "lastComplete": 17243.59999999404,
+                "lastWait": "TIMEOUT_EXPIRED",
+                "phase": "disposed",
+                "inFlight": 0,
+                "unconfirmed": 1,
+                "pending": null,
+                "pollScheduled": false,
+                "failure": null,
+                "cleanupErrors": []
+              },
+              "phases": {
+                "constructorStart": 366.69999999552965,
+                "constructorEnd": 382.09999999403954,
+                "factoryStart": 396.19999999552965,
+                "factoryEnd": 1059.0999999940395,
+                "initEnd": 1059.2999999970198,
+                "firstRenderStart": 1065.8999999985099,
+                "firstRenderEnd": 2169.5999999940395,
+                "disposeStart": 23633.89999999851,
+                "disposeEnd": 23639.59999999404
+              }
+            }
+          ]
+        },
+        "freshFirstRenderMs": 716.8000000044703,
+        "freshConstructorToRenderReturnMs": 1321.5,
+        "oldDisposeBodyMs": 5.699999995529652,
+        "oldSubmissionAccounting": {
+          "submitted": 7,
+          "returned": 7,
+          "completed": 6,
+          "polls": 488,
+          "timeouts": 482,
+          "maxInFlight": 1,
+          "lastSubmit": 17249.09999999404,
+          "lastComplete": 17243.59999999404,
+          "lastWait": "TIMEOUT_EXPIRED",
+          "phase": "disposed",
+          "inFlight": 0,
+          "unconfirmed": 1,
+          "pending": null,
+          "pollScheduled": false,
+          "failure": null,
+          "cleanupErrors": []
+        }
+      }
+    ]
+  },
+  "winterTwoFreshCycles": {
+    "status": "FAIL",
+    "report": "evidence/winter-cycles/recreation-cycle.json",
+    "reportSHA256": "cefeaa2458770738fb65c2ef47285c3a17ce2ce6c426b13e3aeaebd4b8457c0f",
+    "failure": {
+      "stage": "generation-1-native-enter",
+      "error": "AssertionError [ERR_ASSERTION]: one discrete action renders its stopped frame\n\n1 !== 2\n\n    at freshInput (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/recreation-cycle/verify.mjs:164:10)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/recreation-cycle/verify.mjs:238:5"
+    },
+    "freshGenerationsObserved": 2,
+    "verifiedDisposals": 1,
+    "completedInputCycles": 0,
+    "partial": "First old disposal and fresh engine/canvas2 ready succeeded. Native trusted Enter/click emitted cup.12; expected stopped frame1\u21922 not observed. Second cycle and final disposal UNRUN."
+  },
+  "actualContextLoss": {
+    "status": "FAIL",
+    "report": "evidence/context-loss/context-loss.json",
+    "reportSHA256": "7e2bf0adf7b90f5aa87f071598036c824276a85fdefccde353b9efb5c0d8a7b2",
+    "failure": {
+      "stage": "generation-1-native-input",
+      "error": "AssertionError [ERR_ASSERTION]: discrete action rendered a real stopped frame\n\n1 !== 2\n\n    at file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:197:12\n    at async bounded (file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:37:14)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/context-loss/verify.mjs:286:61"
+    },
+    "partial": "Actual running WEBGL_lose_context trusted event/isContextLost, failed UI, oldcanvas detach/stopped frame4, lifetime1/1 and fresh ready engine/canvas2 confirmed. Recovery native cup input emitted event but expected frame1\u21922 not observed. Paused-loss case/final disposal UNRUN.",
+    "physicalGPUReclamation": "UNMEASURED",
+    "warningCount": 2
+  },
+  "motionPixelProof": {
+    "status": "UNRUN",
+    "attemptExitCode": 1,
+    "pixelChecks": 0,
+    "reason": "Original four-world lifecycle failed; unchanged original motion-proof prerequisite rejects same-source failed relax report atline12 before opening browser. No partial passed-world report substituted."
+  },
+  "tooling": {
+    "typecheck": "PASS",
+    "unitTests": {
+      "status": "PASS",
+      "tests": 189,
+      "files": 26,
+      "newBackpressureTests": 26
+    },
+    "build": "PASS",
+    "bundleBudget": {
+      "status": "PASS",
+      "initialJSKiB": 402.6,
+      "initialJSLimitKiB": 410,
+      "CSSKiB": 99.5,
+      "CSSLimitKiB": 135
+    },
+    "remoteCI": "Pending publication; exact remote result will be recorded in PR65, not assumed from local tests."
+  },
+  "images": {
+    "status": "PASS",
+    "realPNGsInspected": 11,
+    "fixedPoseByteIdentical": 10,
+    "manifest": "PNG_MANIFEST.json",
+    "manifestSHA256": "6ad1b1cc9281972850d4250e4e07ca7cbf7239c7f624d96df9475d686f5d03db"
+  },
+  "unchangedOriginalHarnessHashes": {
+    "qa/verify.mjs": "87d6993d9fe2ff1f122706f523c9d2e1ba3e3591c2ed2d781d26a7bb4d49bad8",
+    "qa/verify-group.mjs": "d27bb25d8e0fbe5b3cfa7e3c0403518bde8b8bba4c0df53798e807192f7319c9",
+    "qa/chrome-checks.mjs": "b1174b5cf89bb57f909377095c12ac57ebd77c134a2fa053b9cfa2ec5c41f864",
+    "qa/motion-proof.mjs": "e59372d22b411f232de2712093e9f6e452b5b6d4379b77dea48ecb0b8467cf38",
+    "qa/main.tsx": "993eb008caf0ccd05bfb39172274d6997e37bc990f7b177d744c66304de6ca15",
+    "qa/index.html": "78f9c1916bba94ce57d449a7da43ffb3f692732cffaca6a2aaa9e0fee1aca7e6",
+    "qa/recreation-cycle/verify.mjs": "9f76b4973f7267af59e2e5769e41e549ea64ac2a1ca606181c29a7988acb80dc",
+    "qa/context-loss/verify.mjs": "5c71bc8887e44037c455baa0b6e8b7cad85b7d407c6ded4e7549717057dfe44c"
+  },
+  "scope": {
+    "onlyProductionChangeFrom024": "components/immersiveWorlds/cozyRooms/engine.ts",
+    "sharedHostSHA256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684",
+    "baseOriginal": "7373c1eeb5372fa9bebf41889ff2960643f3990e",
+    "publicationExpectedHead": "024922a3a14db4b7e0d3a4f085d598e7fa3df715",
+    "protectedMainAncestor": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+    "priorEvidence": "All preceding visual/recreation/GL/static-redraw failure artifacts unchanged; the old static unit double gains signaled WebGL and terminal-render-failure expectations, not relaxed original runtime gates."
+  },
+  "limits": [
+    "maxInFlight/unconfirmed are production-reported per-engine admission counters, not native GPU execution counts or a global cross-context bound.",
+    "A retained sync is deleted on dispose without counting completion. Winter old submitted7/completed6/unconfirmed1 at disposal; physical cleanup is unmeasured.",
+    "1Hz sampler cannot recover exact callback ordering inside180ms or while synchronous JS blocks. All65 in-page records reconcile to actual disk.",
+    "Dedicated cycle/contextloss snapshots omit GPU metrics; do not infer their exact fence/pending state from original-suite samples.",
+    "Host five-second retention, synchronous disposer body, actual loss events, observed fence completion and physical GPU reclamation are distinct.",
+    "Native keyboard/button input is distinguished from original synthetic pointer/cancel/blur/visibility events. Hardware FPS/thermal behavior, real tab hiding, hardware DPR change and integrated full-app routes/audio are untested.",
+    "No further retry, production modification, timeout relaxation, quality reduction, new permission, payment, settings, deployment deletion or main merge after the new failures."
+  ]
+}

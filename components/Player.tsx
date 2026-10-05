@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { type BackgroundSoundType, type BrainWaveType, type VisualMode, getBrainWaveLabel } from '../types';
 import { WAVE_ORDER, getSoundLabel, getWaveShortLabel, getWaveColor } from '../audioOptions';
-import type { SoundLayer, ToneMode } from '../services/audioEngine';
+import type { SoundLayer, SoundPlaybackSnapshot, ToneMode } from '../services/audioEngine';
 import type { MixVolumes } from '../audioLevels';
 import { Toggle } from './Toggle';
 import { SoundLayerPicker } from './SoundLayerPicker';
@@ -30,6 +30,9 @@ import { AuraVisualizer } from './AuraVisualizer';
 import { SessionBackdrop } from './SessionBackdrop';
 import type { SessionBackdropVariant } from './session/sessionBackdrop';
 import { VisualModeSwitch } from './VisualModeSwitch';
+import { immersiveWorldRegistry } from './immersiveWorlds/registry';
+import { SoundFailureNotice } from './session/SoundFailureNotice';
+import type { WorldInteractionHandler } from './immersiveWorlds/contract';
 
 interface PlayerProps {
   sessionName: string;
@@ -46,6 +49,8 @@ interface PlayerProps {
   currentBrainWave: BrainWaveType;
   onWaveChange: (val: BrainWaveType) => void;
   activeLayers: SoundLayer[];
+  playbackStates?: SoundPlaybackSnapshot;
+  onRetrySound?: (type: BackgroundSoundType) => void;
   onToggleLayer: (type: BackgroundSoundType) => void;
   onLayerVolume: (type: BackgroundSoundType, vol: number) => void;
   onBalanceLayers: () => void;
@@ -60,6 +65,8 @@ interface PlayerProps {
   getAnalyser: () => AnalyserNode | null;
   onImmersive: () => void;
   backgroundVariant?: SessionBackdropVariant;
+  worldId?: string;
+  onWorldInteraction?: WorldInteractionHandler;
   /** The fullscreen view covers the player; its scene can rest meanwhile. */
   sceneCovered?: boolean;
   subscribeEvents?: (cb: (type: BackgroundSoundType) => void) => () => void;
@@ -88,6 +95,8 @@ export const Player: React.FC<PlayerProps> = ({
   currentBrainWave,
   onWaveChange,
   activeLayers,
+  playbackStates = {},
+  onRetrySound,
   onToggleLayer,
   onLayerVolume,
   onBalanceLayers,
@@ -101,7 +110,7 @@ export const Player: React.FC<PlayerProps> = ({
   onVisualModeChange,
   getAnalyser,
   onImmersive,
-  backgroundVariant, sceneCovered = false, subscribeEvents, shareUrl,
+  backgroundVariant, worldId, sceneCovered = false, subscribeEvents, shareUrl, onWorldInteraction,
 }) => {
   const [breathingOn, setBreathingOn] = useState(false);
   const [panel, setPanel] = useState<'controls' | 'sounds'>('sounds');
@@ -110,18 +119,21 @@ export const Player: React.FC<PlayerProps> = ({
   const linkCopiedTimerRef = useRef<number | null>(null);
   const [sceneChromeVisible, setSceneChromeVisible] = useState(true);
   const sceneChromeTimerRef = useRef<number | null>(null);
+  const sceneChromeRef = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLElement>(null);
   const auraColor = brainwaveEnabled ? getWaveColor(currentBrainWave) : '#7886ff';
   // The rainy study and the painted sea are live 3D scenes: their lower third
   // stays visible under the controls, and a drag moves their view a little.
-  const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea';
+  const liveScene = backgroundVariant === 'rainy-window' || backgroundVariant === 'oil-sea' || immersiveWorldRegistry.has(worldId);
   const minutesLeft = Math.max(1, Math.ceil(timeLeft / 60));
   const progress = totalSeconds > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / totalSeconds)) : 0;
 
   const revealSceneChrome = useCallback(() => {
     setSceneChromeVisible(true);
     if (sceneChromeTimerRef.current != null) window.clearTimeout(sceneChromeTimerRef.current);
-    sceneChromeTimerRef.current = window.setTimeout(() => setSceneChromeVisible(false), 3600);
+    sceneChromeTimerRef.current = window.setTimeout(() => {
+      if (!sceneChromeRef.current?.contains(document.activeElement)) setSceneChromeVisible(false);
+    }, 3600);
   }, []);
 
   const holdSceneChrome = useCallback(() => {
@@ -216,37 +228,45 @@ export const Player: React.FC<PlayerProps> = ({
         </div>
       )}
 
+      <SoundFailureNotice active={isPlaying && !sceneCovered} layers={activeLayers} playbackStates={playbackStates} onRetrySound={onRetrySound} />
+
       <main inert={playbackHint === 'starting' ? true : undefined} aria-busy={playbackHint === 'starting'} className={`relative z-10 mx-auto grid w-full lg:grid ${visualMode === 'nature' && !detailsOpen ? 'max-w-none gap-0 p-0 lg:px-4 lg:pb-4' : 'max-w-[1500px] gap-5 px-3 py-3 sm:px-5 sm:py-5 lg:grid-cols-[minmax(0,1.45fr)_390px] lg:gap-6 lg:px-8 lg:py-7'}`}>
         <section
+          tabIndex={-1}
           data-scene-surface
           onPointerMove={visualMode === 'nature' ? revealSceneChrome : undefined}
-          onPointerDown={visualMode === 'nature' ? revealSceneChrome : undefined}
+          onPointerDown={visualMode === 'nature' ? (event) => {
+            revealSceneChrome();
+            if (event.target instanceof Element && !event.target.closest('button,input,select,textarea,a[href],[role="button"],[contenteditable="true"]')) event.currentTarget.focus({ preventScroll: true });
+          } : undefined}
           // The live scenes turn a little under a drag; only page scrolling (when the details are open) stays with the browser.
+          data-scene-scroll={detailsOpen ? 'true' : undefined}
           style={liveScene && visualMode === 'nature' ? { touchAction: detailsOpen ? 'pan-y' : 'none' } : undefined}
           className={`relative overflow-hidden border-white/8 bg-[#101522] shadow-[0_30px_90px_rgba(0,0,0,0.42)] ${visualMode === 'nature' ? 'min-h-[calc(100dvh-68px)] border-0 sm:mx-3 sm:min-h-[calc(100dvh-80px)] sm:rounded-[28px] sm:border lg:mx-0 lg:min-h-[calc(100dvh-94px)]' : 'min-h-[540px] rounded-[30px] border sm:min-h-[650px] lg:min-h-[calc(100dvh-134px)]'}`}
         >
-          <div className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
-            <SessionBackdrop variant={backgroundVariant} layers={activeLayers} active={isPlaying && !sceneCovered} subscribeEvents={subscribeEvents} />
+          <div data-scene-renderer className={`absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? 'opacity-100' : 'opacity-[0.78]'}`}>
+            <SessionBackdrop variant={backgroundVariant} worldId={worldId} layers={activeLayers} active={isPlaying && !sceneCovered} subscribeEvents={subscribeEvents} onWorldInteraction={onWorldInteraction} />
           </div>
           <div className={`pointer-events-none absolute inset-0 transition-colors duration-300 motion-reduce:transition-none ${visualMode === 'nature' ? (liveScene ? 'bg-gradient-to-b from-transparent via-transparent via-70% to-[#02050b]/55' : 'bg-gradient-to-b from-[#03110a]/8 via-transparent to-[#020807]/82') : 'bg-gradient-to-b from-[#050914]/42 via-[#050914]/46 to-[#050914]/92'}`} />
           {visualMode === 'graphics' ? <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(3,6,14,0.32)_72%,rgba(3,6,14,0.72)_100%)]" /> : null}
 
           {visualMode === 'nature' ? (
             <div
+              ref={sceneChromeRef}
               data-scene-drag
               onFocusCapture={holdSceneChrome}
               onBlurCapture={revealSceneChrome}
-              className={`absolute inset-0 z-20 transition-opacity duration-300 motion-reduce:transition-none ${sceneChromeVisible ? 'visible opacity-100' : 'invisible pointer-events-none opacity-0'}`}
+              className={`pointer-events-none absolute inset-0 z-20 ${sceneChromeVisible ? 'visible opacity-100' : 'invisible opacity-0'}`}
             >
               <VisualModeSwitch
                 value={visualMode}
                 onChange={handleVisualModeChange}
-                className="absolute left-1/2 top-[max(12px,env(safe-area-inset-top))] -translate-x-1/2"
+                className="pointer-events-auto absolute left-1/2 top-[max(12px,env(safe-area-inset-top))] -translate-x-1/2"
                 compact
                 quiet
               />
 
-              <div className="absolute bottom-[max(18px,calc(env(safe-area-inset-bottom)+18px))] left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/16 bg-black/58 p-1.5 pl-4 text-white shadow-[0_16px_45px_rgba(0,0,0,0.34)] backdrop-blur-md">
+              <div className="pointer-events-auto absolute bottom-[max(18px,calc(env(safe-area-inset-bottom)+18px))] left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/16 bg-black/58 p-1.5 pl-4 text-white shadow-[0_16px_45px_rgba(0,0,0,0.34)] backdrop-blur-md">
                 <div className="mr-1 min-w-[62px] text-center">
                   <p className="text-[8px] font-bold tracking-[0.14em] text-white/58">남은 시간</p>
                   <p className="mt-0.5 text-base font-semibold tabular-nums tracking-tight" aria-label={`남은 시간 ${Math.floor(timeLeft / 60)}분 ${timeLeft % 60}초`}>{formatTime(timeLeft)}</p>
@@ -323,19 +343,19 @@ export const Player: React.FC<PlayerProps> = ({
           )}
         </section>
 
-        {(visualMode === 'graphics' || detailsOpen) ? <aside ref={detailsRef} className="rounded-[28px] border border-white/8 bg-[#101522] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] lg:max-h-[calc(100dvh-134px)] lg:overflow-hidden">
+        {(visualMode === 'graphics' || detailsOpen) ? <aside ref={detailsRef} className="rounded-[28px] border border-white/8 bg-[#101522] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] lg:flex lg:max-h-[calc(100dvh-134px)] lg:flex-col lg:overflow-hidden">
           {visualMode === 'nature' ? (
-            <div className="mb-3 flex min-h-11 items-center justify-between px-2">
+            <div className="mb-3 flex min-h-11 shrink-0 items-center justify-between px-2">
               <div><p className="text-[9px] font-black tracking-[0.14em] text-emerald-300/70">SESSION</p><h2 className="mt-0.5 text-sm font-black">세션 조절</h2></div>
               <button type="button" onClick={() => setDetailsOpen(false)} aria-label="세션 조절 닫기" className="grid h-11 w-11 place-items-center rounded-full bg-white/6 text-white/58 transition-colors hover:bg-white/10 hover:text-white"><X size={17} /></button>
             </div>
           ) : null}
-          <div className="grid grid-cols-2 gap-1 rounded-[18px] bg-white/[0.035] p-1">
+          <div className="grid shrink-0 grid-cols-2 gap-1 rounded-[18px] bg-white/[0.035] p-1">
             <button type="button" onClick={() => setPanel('controls')} aria-pressed={panel === 'controls'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'controls' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><Activity size={14} /> 세션</button>
             <button type="button" onClick={() => setPanel('sounds')} aria-pressed={panel === 'sounds'} className={`flex min-h-10 items-center justify-center gap-2 rounded-[14px] text-[11px] font-black transition-all ${panel === 'sounds' ? 'bg-white text-slate-950 shadow-sm' : 'text-white/42 hover:text-white'}`}><SlidersHorizontal size={14} /> 믹서</button>
           </div>
 
-          <div className="mt-3 space-y-3 lg:max-h-[calc(100dvh-210px)] lg:overflow-y-auto lg:pr-1 scrollbar-hide">
+          <div className="mt-3 space-y-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 scrollbar-hide">
             {panel === 'controls' ? (
               <>
                 <section className="rounded-[20px] bg-white/[0.035] p-4">

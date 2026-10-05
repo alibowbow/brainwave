@@ -1,0 +1,905 @@
+{
+  "id": "amb:rainy_forest",
+  "group": "livingWoods",
+  "entry": "components/immersiveWorlds/livingWoods/RainyForestWorld.tsx",
+  "route": "#/play/amb/rainy_forest",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "viewportName": "portrait",
+  "status": "passed",
+  "stage": "finish",
+  "startedAt": "2026-10-04T22:09:30.139Z",
+  "cold": {
+    "freshBrowser": true,
+    "freshContext": true,
+    "storageSeeded": false,
+    "userInputSent": false
+  },
+  "sourceDigest": "f3e935fdecfd2ced1621a9f80739afb483411bb422d04d5b55aba9433229bf11",
+  "distDigest": "d2eb4b588acb0c67d2eec593aa9102fd208efbc33c7e8dedef3aa83b15502d7f",
+  "checks": [
+    {
+      "name": "exact cold route",
+      "pass": true,
+      "details": "http://127.0.0.1:4177/#/play/amb/rainy_forest"
+    },
+    {
+      "name": "no input or browser activation before/after first capture",
+      "pass": true,
+      "details": {
+        "before": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "after": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "still": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "fresh empty storage",
+      "pass": true,
+      "details": {
+        "local": 0,
+        "session": 0
+      }
+    },
+    {
+      "name": "real owned world ready",
+      "pass": true,
+      "details": {
+        "slot": true,
+        "state": "ready",
+        "worldClass": "living-woods living-woods-rainy",
+        "fallback": null
+      }
+    },
+    {
+      "name": "exact owner telemetry fields",
+      "pass": true,
+      "details": {
+        "expected": {
+          "stateAttribute": "data-status",
+          "motionAttribute": "data-motion",
+          "frameDatasetKey": "frames",
+          "timeDatasetKey": "time"
+        },
+        "actual": {
+          "state": "data-status",
+          "frame": "frames",
+          "time": "time"
+        }
+      }
+    },
+    {
+      "name": "one nonempty real canvas frame",
+      "pass": true,
+      "details": {
+        "width": 390,
+        "height": 776,
+        "frame": 1,
+        "frameField": "frames",
+        "time": 0,
+        "timeField": "time",
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "frames": "1",
+          "time": "0.0000",
+          "drawCalls": "92",
+          "triangles": "1639770",
+          "geometries": "57",
+          "textures": "9",
+          "targets": "[{\"x\":-0.38383386119699703,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.168215968989713,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.4075984428228497,\"y\":0.16475787759334298,\"visible\":true},{\"x\":0.9599815332973716,\"y\":0.5991747452383765,\"visible\":true},{\"x\":-0.11519446729757965,\"y\":0.7215454474080955,\"visible\":false}]",
+          "pendingSubmissions": "1",
+          "completedSubmissions": "0",
+          "pendingStaticFrame": "false"
+        },
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": 189,
+          "width": 390,
+          "height": 776
+        }
+      }
+    },
+    {
+      "name": "paused before first capture and never observed running",
+      "pass": true,
+      "details": [
+        {
+          "at": 1732.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2530.5,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ]
+    },
+    {
+      "name": "paused still does not advance scene time",
+      "pass": true,
+      "details": {
+        "before": 0,
+        "after": 0,
+        "still": 0,
+        "frames": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "canvas visible without style override",
+      "pass": true,
+      "details": {
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block"
+      }
+    },
+    {
+      "name": "native PNG has requested viewport",
+      "pass": true,
+      "details": {
+        "file": "cold-first-frame.png",
+        "sha256": "96a94efab6d8c78dc60be9a54f6c0eb70f52a974c260bbdf0b836cf66a48c339",
+        "bytes": 333346,
+        "width": 390,
+        "height": 844,
+        "method": "CDP Page.captureScreenshot; no CSS/animation/surface modifications"
+      }
+    },
+    {
+      "name": "zero scene callbacks before input",
+      "pass": true,
+      "details": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "served bytes match snapshotted production build",
+      "pass": true,
+      "details": []
+    },
+    {
+      "name": "no runtime or resource errors",
+      "pass": true,
+      "details": []
+    }
+  ],
+  "errors": [],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:4177/",
+      "status": 200,
+      "mimeType": "text/html",
+      "type": "Document",
+      "bytes": 2026,
+      "sha256": "89db36955093760a372918f0a7ba0e4c238979f270df7e9b4bbce71b6a68bedb",
+      "distFile": "index.html",
+      "expectedDistSha256": "89db36955093760a372918f0a7ba0e4c238979f270df7e9b4bbce71b6a68bedb",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/index-D2nj3flF.css",
+      "status": 200,
+      "mimeType": "text/css",
+      "type": "Stylesheet",
+      "bytes": 103375,
+      "sha256": "d1e8ad411e4b456b8b9041f1a0c292445df892f1bfcac089e98760422169ae55",
+      "distFile": "assets/index-D2nj3flF.css",
+      "expectedDistSha256": "d1e8ad411e4b456b8b9041f1a0c292445df892f1bfcac089e98760422169ae55",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/index-DE69dX8D.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 418646,
+      "sha256": "2b7d960c7a3f0c580a33fe1d8afa7957080b2489640411146050f56829ee843e",
+      "distFile": "assets/index-DE69dX8D.js",
+      "expectedDistSha256": "2b7d960c7a3f0c580a33fe1d8afa7957080b2489640411146050f56829ee843e",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/nature/backgrounds/rural-ghibli-v9.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 246052,
+      "sha256": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+      "distFile": "images/nature/backgrounds/rural-ghibli-v9.webp",
+      "expectedDistSha256": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/PretendardVariable-CJuje-Rk.woff2",
+      "status": 200,
+      "mimeType": "font/woff2",
+      "type": "Font",
+      "bytes": 2057688,
+      "sha256": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+      "distFile": "assets/PretendardVariable-CJuje-Rk.woff2",
+      "expectedDistSha256": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/presets/focus.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 27052,
+      "sha256": "2d9f030307ebe13047570e200e0a8adb42e11fb40f7606f54b42ea5dd24dc46e",
+      "distFile": "images/presets/focus.webp",
+      "expectedDistSha256": "2d9f030307ebe13047570e200e0a8adb42e11fb40f7606f54b42ea5dd24dc46e",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/presets/relax.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 28944,
+      "sha256": "9fa43bccfd8f996fbed3f8a5a1aa9c489681265e7f6e2f2923fc4e71cf9ed379",
+      "distFile": "images/presets/relax.webp",
+      "expectedDistSha256": "9fa43bccfd8f996fbed3f8a5a1aa9c489681265e7f6e2f2923fc4e71cf9ed379",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/presets/morning.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 36768,
+      "sha256": "58ea6a38ce98f7299ec0e29977db988921cd3dcdf31294baaf025924a5d13ff5",
+      "distFile": "images/presets/morning.webp",
+      "expectedDistSha256": "58ea6a38ce98f7299ec0e29977db988921cd3dcdf31294baaf025924a5d13ff5",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 5748,
+      "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+      "distFile": "assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "expectedDistSha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/immersiveSessionBridge-CjXM2rFV.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 22844,
+      "sha256": "ac5baa700213db11f5cbe57555ad8ad2348d0096cc6286dd2a6b1fb672ab690c",
+      "distFile": "assets/immersiveSessionBridge-CjXM2rFV.js",
+      "expectedDistSha256": "ac5baa700213db11f5cbe57555ad8ad2348d0096cc6286dd2a6b1fb672ab690c",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "status": 200,
+      "mimeType": "text/css",
+      "type": "Stylesheet",
+      "bytes": 3799,
+      "sha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+      "distFile": "assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "expectedDistSha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/Player-BSuNDBnE.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 23650,
+      "sha256": "22742f7e50414447cdc563baa63c269d5ff863c50971a77399ed9a01333cd2ff",
+      "distFile": "assets/Player-BSuNDBnE.js",
+      "expectedDistSha256": "22742f7e50414447cdc563baa63c269d5ff863c50971a77399ed9a01333cd2ff",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/Toggle-CeJH3ZmS.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 590,
+      "sha256": "0e36f0ec2e9647983050132e2c83cef692dd3f7ec1bbf4187b2531873da51f08",
+      "distFile": "assets/Toggle-CeJH3ZmS.js",
+      "expectedDistSha256": "0e36f0ec2e9647983050132e2c83cef692dd3f7ec1bbf4187b2531873da51f08",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/VolumeSlider-Zpvp0n61.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 1496,
+      "sha256": "be84ba7559259fadfe5fca3794750a6b821e71c7db3bf53c6e786ea8d454b0b3",
+      "distFile": "assets/VolumeSlider-Zpvp0n61.js",
+      "expectedDistSha256": "be84ba7559259fadfe5fca3794750a6b821e71c7db3bf53c6e786ea8d454b0b3",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/SoundLayerPicker-U-BHsjuy.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 2936,
+      "sha256": "9627f3ed4b4d145f52a48a3e98e4aea8f55095274c6e1079b361e17d983dbc1c",
+      "distFile": "assets/SoundLayerPicker-U-BHsjuy.js",
+      "expectedDistSha256": "9627f3ed4b4d145f52a48a3e98e4aea8f55095274c6e1079b361e17d983dbc1c",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/SoundFailureNotice-BRx7v_HJ.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 7375,
+      "sha256": "4fd44993a4b10a28fa9c3d40a308295e8c169c6071cea53868544efd4a43534e",
+      "distFile": "assets/SoundFailureNotice-BRx7v_HJ.js",
+      "expectedDistSha256": "4fd44993a4b10a28fa9c3d40a308295e8c169c6071cea53868544efd4a43534e",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/ImmersiveWorldSlot-YgM7QLQ7.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 12083,
+      "sha256": "157d0057ee1c38600777c2b941ef34881fd4391c14cd3dda7cfb4ac0147d01b4",
+      "distFile": "assets/ImmersiveWorldSlot-YgM7QLQ7.js",
+      "expectedDistSha256": "157d0057ee1c38600777c2b941ef34881fd4391c14cd3dda7cfb4ac0147d01b4",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/WorldSurface-C-tstfzs.css",
+      "status": 200,
+      "mimeType": "text/css",
+      "type": "Stylesheet",
+      "bytes": 748,
+      "sha256": "ccad5e0dce9e1c2d63f1d25a40c1de0db14cb438ca160355e53b7ce9ceecfb63",
+      "distFile": "assets/WorldSurface-C-tstfzs.css",
+      "expectedDistSha256": "ccad5e0dce9e1c2d63f1d25a40c1de0db14cb438ca160355e53b7ce9ceecfb63",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/world-RainyForestWorld-DF8XGkVh.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 291,
+      "sha256": "366bb205e088b728225c8c79c25f850faee003e6ec695ce3c8e5f2fe80c805a6",
+      "distFile": "assets/world-RainyForestWorld-DF8XGkVh.js",
+      "expectedDistSha256": "366bb205e088b728225c8c79c25f850faee003e6ec695ce3c8e5f2fe80c805a6",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/images/nature/backgrounds/eaves-v5.webp",
+      "status": 200,
+      "mimeType": "image/webp",
+      "type": "Image",
+      "bytes": 348810,
+      "sha256": "1a41f210ea52c136810da127eaefb610e5cd88f5900617448b694b251f45aca7",
+      "distFile": "images/nature/backgrounds/eaves-v5.webp",
+      "expectedDistSha256": "1a41f210ea52c136810da127eaefb610e5cd88f5900617448b694b251f45aca7",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/three-CT_5zKw3.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 5261,
+      "sha256": "beebfc924ab749e18b4913e66949942b92e593c160a4025990346f39c4fc9618",
+      "distFile": "assets/three-CT_5zKw3.js",
+      "expectedDistSha256": "beebfc924ab749e18b4913e66949942b92e593c160a4025990346f39c4fc9618",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/world-WorldSurface-B14bBJWn.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 85665,
+      "sha256": "c9d993f86b055cbf172306a129c4253b041e53b96a2677f80ce94a38b43f91ce",
+      "distFile": "assets/world-WorldSurface-B14bBJWn.js",
+      "expectedDistSha256": "c9d993f86b055cbf172306a129c4253b041e53b96a2677f80ce94a38b43f91ce",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/three-BMdRjXvH.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 3919,
+      "sha256": "6673a1e829ba68230666faad7222ff1b4787ae2f296cbcea06b70f2817330b01",
+      "distFile": "assets/three-BMdRjXvH.js",
+      "expectedDistSha256": "6673a1e829ba68230666faad7222ff1b4787ae2f296cbcea06b70f2817330b01",
+      "matchesDist": true
+    },
+    {
+      "url": "http://127.0.0.1:4177/assets/three-D97_sr9c.js",
+      "status": 200,
+      "mimeType": "text/javascript",
+      "type": "Script",
+      "bytes": 600456,
+      "sha256": "54a988dd8340588e474943c1b5c5c3ce9e7bcaed1bd109e4fe594ef1bc7e9d32",
+      "distFile": "assets/three-D97_sr9c.js",
+      "expectedDistSha256": "54a988dd8340588e474943c1b5c5c3ce9e7bcaed1bd109e4fe594ef1bc7e9d32",
+      "matchesDist": true
+    }
+  ],
+  "samples": [
+    {
+      "at": 13.5,
+      "href": "http://127.0.0.1:4177/#/play/amb/rainy_forest",
+      "documentState": "loading",
+      "visibility": "visible",
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "slotPresent": false,
+      "state": null,
+      "stateAttribute": null,
+      "worldDataset": null,
+      "callbackCount": 0,
+      "hint": null,
+      "canvas": null,
+      "slotCanvasCount": 0,
+      "pageCanvasCount": 0,
+      "trace": {
+        "events": [],
+        "motion": [],
+        "initialActivation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "initialStorage": {
+          "local": 0,
+          "session": 0
+        }
+      }
+    },
+    {
+      "at": 2529.699999999255,
+      "href": "http://127.0.0.1:4177/#/play/amb/rainy_forest",
+      "documentState": "complete",
+      "visibility": "visible",
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "slotPresent": true,
+      "worldId": "amb:rainy_forest",
+      "worldClass": "living-woods living-woods-rainy",
+      "state": "loading",
+      "stateAttribute": "data-status",
+      "motion": "paused",
+      "worldDataset": {
+        "world": "rainy",
+        "status": "loading",
+        "motion": "paused"
+      },
+      "callbackCount": 0,
+      "hint": "starting",
+      "fallbackText": null,
+      "canvas": {
+        "width": 390,
+        "height": 776,
+        "frame": 1,
+        "frameField": "frames",
+        "time": 0,
+        "timeField": "time",
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "frames": "1",
+          "time": "0.0000",
+          "drawCalls": "92",
+          "triangles": "1639770",
+          "geometries": "57",
+          "textures": "9",
+          "targets": "[{\"x\":-0.38383386119699703,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.168215968989713,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.4075984428228497,\"y\":0.16475787759334298,\"visible\":true},{\"x\":0.9599815332973716,\"y\":0.5991747452383765,\"visible\":true},{\"x\":-0.11519446729757965,\"y\":0.7215454474080955,\"visible\":false}]",
+          "pendingSubmissions": "1",
+          "completedSubmissions": "0",
+          "pendingStaticFrame": "false"
+        },
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": 133,
+          "width": 390,
+          "height": 776
+        }
+      },
+      "slotCanvasCount": 1,
+      "pageCanvasCount": 1,
+      "trace": {
+        "events": [],
+        "motion": [
+          {
+            "at": 1732.3999999985099,
+            "motion": "paused",
+            "state": "loading"
+          }
+        ],
+        "initialActivation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "initialStorage": {
+          "local": 0,
+          "session": 0
+        }
+      }
+    },
+    {
+      "at": 2685.599999997765,
+      "href": "http://127.0.0.1:4177/#/play/amb/rainy_forest",
+      "documentState": "complete",
+      "visibility": "visible",
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "slotPresent": true,
+      "worldId": "amb:rainy_forest",
+      "worldClass": "living-woods living-woods-rainy",
+      "state": "ready",
+      "stateAttribute": "data-status",
+      "motion": "paused",
+      "worldDataset": {
+        "world": "rainy",
+        "status": "ready",
+        "motion": "paused"
+      },
+      "callbackCount": 0,
+      "hint": "blocked",
+      "fallbackText": null,
+      "canvas": {
+        "width": 390,
+        "height": 776,
+        "frame": 1,
+        "frameField": "frames",
+        "time": 0,
+        "timeField": "time",
+        "dataset": {
+          "engine": "three.js r186",
+          "engineId": "1",
+          "frames": "1",
+          "time": "0.0000",
+          "drawCalls": "92",
+          "triangles": "1639770",
+          "geometries": "57",
+          "textures": "9",
+          "targets": "[{\"x\":-0.38383386119699703,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.168215968989713,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.4075984428228497,\"y\":0.16475787759334298,\"visible\":true},{\"x\":0.9599815332973716,\"y\":0.5991747452383765,\"visible\":true},{\"x\":-0.11519446729757965,\"y\":0.7215454474080955,\"visible\":false}]",
+          "pendingSubmissions": "1",
+          "completedSubmissions": "0",
+          "pendingStaticFrame": "false"
+        },
+        "opacity": "1",
+        "visibility": "visible",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": 189,
+          "width": 390,
+          "height": 776
+        }
+      },
+      "slotCanvasCount": 1,
+      "pageCanvasCount": 1,
+      "trace": {
+        "events": [],
+        "motion": [
+          {
+            "at": 1732.3999999985099,
+            "motion": "paused",
+            "state": "loading"
+          },
+          {
+            "at": 2530.5,
+            "motion": "paused",
+            "state": "ready"
+          }
+        ],
+        "initialActivation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "initialStorage": {
+          "local": 0,
+          "session": 0
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "claim": "Browser/context closure isolates cases; it does not prove React/engine dispose lifecycle.",
+    "contextClosed": true,
+    "browserClosed": true
+  },
+  "browserVersion": "153.0.8010.0",
+  "beforeCapture": {
+    "at": 2685.599999997765,
+    "href": "http://127.0.0.1:4177/#/play/amb/rainy_forest",
+    "documentState": "complete",
+    "visibility": "visible",
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "slotPresent": true,
+    "worldId": "amb:rainy_forest",
+    "worldClass": "living-woods living-woods-rainy",
+    "state": "ready",
+    "stateAttribute": "data-status",
+    "motion": "paused",
+    "worldDataset": {
+      "world": "rainy",
+      "status": "ready",
+      "motion": "paused"
+    },
+    "callbackCount": 0,
+    "hint": "blocked",
+    "fallbackText": null,
+    "canvas": {
+      "width": 390,
+      "height": 776,
+      "frame": 1,
+      "frameField": "frames",
+      "time": 0,
+      "timeField": "time",
+      "dataset": {
+        "engine": "three.js r186",
+        "engineId": "1",
+        "frames": "1",
+        "time": "0.0000",
+        "drawCalls": "92",
+        "triangles": "1639770",
+        "geometries": "57",
+        "textures": "9",
+        "targets": "[{\"x\":-0.38383386119699703,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.168215968989713,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.4075984428228497,\"y\":0.16475787759334298,\"visible\":true},{\"x\":0.9599815332973716,\"y\":0.5991747452383765,\"visible\":true},{\"x\":-0.11519446729757965,\"y\":0.7215454474080955,\"visible\":false}]",
+        "pendingSubmissions": "1",
+        "completedSubmissions": "0",
+        "pendingStaticFrame": "false"
+      },
+      "opacity": "1",
+      "visibility": "visible",
+      "display": "block",
+      "rect": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 776
+      }
+    },
+    "slotCanvasCount": 1,
+    "pageCanvasCount": 1,
+    "trace": {
+      "events": [],
+      "motion": [
+        {
+          "at": 1732.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2530.5,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ],
+      "initialActivation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "initialStorage": {
+        "local": 0,
+        "session": 0
+      }
+    }
+  },
+  "firstCapture": {
+    "file": "cold-first-frame.png",
+    "sha256": "96a94efab6d8c78dc60be9a54f6c0eb70f52a974c260bbdf0b836cf66a48c339",
+    "bytes": 333346,
+    "width": 390,
+    "height": 844,
+    "method": "CDP Page.captureScreenshot; no CSS/animation/surface modifications"
+  },
+  "afterCapture": {
+    "at": 4649.89999999851,
+    "href": "http://127.0.0.1:4177/#/play/amb/rainy_forest",
+    "documentState": "complete",
+    "visibility": "visible",
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "slotPresent": true,
+    "worldId": "amb:rainy_forest",
+    "worldClass": "living-woods living-woods-rainy",
+    "state": "ready",
+    "stateAttribute": "data-status",
+    "motion": "paused",
+    "worldDataset": {
+      "world": "rainy",
+      "status": "ready",
+      "motion": "paused"
+    },
+    "callbackCount": 0,
+    "hint": "blocked",
+    "fallbackText": null,
+    "canvas": {
+      "width": 390,
+      "height": 776,
+      "frame": 1,
+      "frameField": "frames",
+      "time": 0,
+      "timeField": "time",
+      "dataset": {
+        "engine": "three.js r186",
+        "engineId": "1",
+        "frames": "1",
+        "time": "0.0000",
+        "drawCalls": "92",
+        "triangles": "1639770",
+        "geometries": "57",
+        "textures": "9",
+        "targets": "[{\"x\":-0.38383386119699703,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.168215968989713,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.4075984428228497,\"y\":0.16475787759334298,\"visible\":true},{\"x\":0.9599815332973716,\"y\":0.5991747452383765,\"visible\":true},{\"x\":-0.11519446729757965,\"y\":0.7215454474080955,\"visible\":false}]",
+        "pendingSubmissions": "0",
+        "completedSubmissions": "1",
+        "pendingStaticFrame": "false"
+      },
+      "opacity": "1",
+      "visibility": "visible",
+      "display": "block",
+      "rect": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 776
+      }
+    },
+    "slotCanvasCount": 1,
+    "pageCanvasCount": 1,
+    "trace": {
+      "events": [],
+      "motion": [
+        {
+          "at": 1732.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2530.5,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ],
+      "initialActivation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "initialStorage": {
+        "local": 0,
+        "session": 0
+      }
+    }
+  },
+  "afterStillWindow": {
+    "at": 5652.800000000745,
+    "href": "http://127.0.0.1:4177/#/play/amb/rainy_forest",
+    "documentState": "complete",
+    "visibility": "visible",
+    "activation": {
+      "isActive": false,
+      "hasBeenActive": false
+    },
+    "slotPresent": true,
+    "worldId": "amb:rainy_forest",
+    "worldClass": "living-woods living-woods-rainy",
+    "state": "ready",
+    "stateAttribute": "data-status",
+    "motion": "paused",
+    "worldDataset": {
+      "world": "rainy",
+      "status": "ready",
+      "motion": "paused"
+    },
+    "callbackCount": 0,
+    "hint": "blocked",
+    "fallbackText": null,
+    "canvas": {
+      "width": 390,
+      "height": 776,
+      "frame": 1,
+      "frameField": "frames",
+      "time": 0,
+      "timeField": "time",
+      "dataset": {
+        "engine": "three.js r186",
+        "engineId": "1",
+        "frames": "1",
+        "time": "0.0000",
+        "drawCalls": "92",
+        "triangles": "1639770",
+        "geometries": "57",
+        "textures": "9",
+        "targets": "[{\"x\":-0.38383386119699703,\"y\":0.18288775254633788,\"visible\":false},{\"x\":1.168215968989713,\"y\":0.18894902647314815,\"visible\":false},{\"x\":0.4075984428228497,\"y\":0.16475787759334298,\"visible\":true},{\"x\":0.9599815332973716,\"y\":0.5991747452383765,\"visible\":true},{\"x\":-0.11519446729757965,\"y\":0.7215454474080955,\"visible\":false}]",
+        "pendingSubmissions": "0",
+        "completedSubmissions": "1",
+        "pendingStaticFrame": "false"
+      },
+      "opacity": "1",
+      "visibility": "visible",
+      "display": "block",
+      "rect": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 776
+      }
+    },
+    "slotCanvasCount": 1,
+    "pageCanvasCount": 1,
+    "trace": {
+      "events": [],
+      "motion": [
+        {
+          "at": 1732.3999999985099,
+          "motion": "paused",
+          "state": "loading"
+        },
+        {
+          "at": 2530.5,
+          "motion": "paused",
+          "state": "ready"
+        }
+      ],
+      "initialActivation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "initialStorage": {
+        "local": 0,
+        "session": 0
+      }
+    }
+  },
+  "finishedAt": "2026-10-04T22:09:35.905Z",
+  "worker": {
+    "code": 0,
+    "signal": null,
+    "timedOut": false,
+    "stdout": "",
+    "stderr": ""
+  }
+}

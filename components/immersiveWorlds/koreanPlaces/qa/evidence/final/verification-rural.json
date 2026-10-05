@@ -1,0 +1,1061 @@
+{
+  "generatedAt": "2026-10-04T20:58:37.464Z",
+  "mode": "full",
+  "renderer": "Chromium headless; ANGLE SwiftShader software WebGL",
+  "hardwareClaim": "Viewport tests only. No physical Fold, device FPS, battery, or thermal claims.",
+  "visibilityScope": "The mandatory hidden-state test uses a labelled synthetic visibilitychange; actual tab visibility is separately reported if observable.",
+  "browserExecutable": "/tmp/cosmic-browser-bin/chromium",
+  "repositoryHead": "bbc321dcf9fcaa107154c9802e6ef49e7021699c",
+  "source": {
+    "sha256": "6c2a3b97f5a94e804e92bd4b51405dd82d70b43e536d537fe01b66107250110e",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+        "sha256": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+        "sha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+        "sha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "sha256": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/korean-world.css",
+        "sha256": "8d7610a5096ac40d459aac156ae734534b311b3b9e0b0910602136f21a8547e1"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "sha256": "2230115d8465b08e75a551129ada8f90d43aa3bd200189e5f305ae09d5eb2dfc"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+        "sha256": "5d098234ce4a677cc6a9c8517358154608772052434e681d47bc561b1d53e349"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+        "sha256": "ece350f8939b1ed689e92054fa5c6df9324db318f63d7175c2fbee0e117d3c40"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+        "sha256": "9acd6784cb5b6a4adc47fcc732ffce9f8159ff5c943b285a2ab888dc3541c7b7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+        "sha256": "2e5be37d6fc43f75174a9c6fd82b8b5c997a63fd892b80121117a8ec82dcd75e"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+        "sha256": "97abe06eb9b074f5b9f1d8e9ab50868b9f46e7e12f848153f8b7579d58aadfa7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+        "sha256": "e72a91df76a38ef3b2d0f756189bbfa75b3ac04758b950612c5c1d6c18318800"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "sha256": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+        "sha256": "94a3cf03259bc54cefbeb10abc8619dc717a505f373709ac1f519101302a8cdc"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/types.ts",
+        "sha256": "30af4e3e663ed68a5569cd53f1094d26ad4874fd4e82fcb991b5b07f6dc2b25f"
+      },
+      {
+        "path": "components/liveScene/liveSceneHost.ts",
+        "sha256": "a1b85fea6a44a5a1240f738b9908cee9570d8a2f95b94d40ad544dc3fbf41684"
+      },
+      {
+        "path": "components/liveScene/look.ts",
+        "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a"
+      },
+      {
+        "path": "components/useSceneMotion.ts",
+        "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+      }
+    ]
+  },
+  "bundle": {
+    "sha256": "b3184ce18ee3b176045328c9823d970e72876e2d892c05cf73db2f42f262d6f3",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-BzR3cmn-.js",
+        "sha256": "718a6af6e071fd19ea875d6b42c1b87425cded91daaa3ed088e171d49e24b53f"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-UnPzUkqC.css",
+        "sha256": "e97fad7b3b8b0def05914d2f1cfee94a215c0ff2936214b47e11b524dc96ea13"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rural-1V06Wzie.js",
+        "sha256": "ae514e83575df256a7bd259efa5f16e519fffc9b5b33b8a851f2840d6a554e20"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/scops-BxMG0T-X.js",
+        "sha256": "2199cad9a842e7395aa171f2f4b89b7c34de0fb908a3de1121ced094191125e8"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/temple-BWvVDAub.js",
+        "sha256": "0e1e6d8947d0f1d2aff3cf88951b214accc26dd3abded335662feb7feca32d3c"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "sha256": "4a95738c52e8c5d9e63320c0d5a53c3a17fccd4fe65bc0c72603e35979ec96ab"
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "scene": "rural",
+      "viewport": "desktop",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+      "sha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+      "bytes": 915493,
+      "state": {
+        "scene": "rural",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "rural",
+          "frames": "1",
+          "time": "0.000",
+          "drawCalls": "252",
+          "triangles": "2548934",
+          "geometries": "247",
+          "textures": "3",
+          "running": "false",
+          "width": 1365,
+          "height": 900
+        },
+        "surfaces": [
+          {
+            "world": "rural",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": false,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": []
+      }
+    },
+    {
+      "scene": "rural",
+      "viewport": "chrome",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png",
+      "sha256": "4edbd86b988754cdbef5ac4a45c1bca2b386b1c8503bc567929f82115520ac54",
+      "bytes": 918291,
+      "state": {
+        "scene": "rural",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "rural",
+          "frames": "1",
+          "time": "0.000",
+          "drawCalls": "252",
+          "triangles": "2548934",
+          "geometries": "247",
+          "textures": "3",
+          "running": "false",
+          "width": 1365,
+          "height": 900
+        },
+        "surfaces": [
+          {
+            "world": "rural",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": true,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": []
+      },
+      "capturePhase": "Initial paused chrome-visible frame before interaction tests; interaction results are recorded separately in worlds[scene]."
+    },
+    {
+      "scene": "rural",
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+      "sha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+      "bytes": 245178,
+      "state": {
+        "scene": "rural",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "rural",
+          "frames": "2",
+          "time": "0.000",
+          "drawCalls": "251",
+          "triangles": "2525486",
+          "geometries": "247",
+          "textures": "3",
+          "running": "false",
+          "width": 390,
+          "height": 844
+        },
+        "surfaces": [
+          {
+            "world": "rural",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": false,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": []
+      }
+    },
+    {
+      "scene": "rural",
+      "viewport": "fold",
+      "width": 960,
+      "height": 700,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+      "sha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+      "bytes": 563404,
+      "state": {
+        "scene": "rural",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "rural",
+          "frames": "3",
+          "time": "0.000",
+          "drawCalls": "252",
+          "triangles": "2548934",
+          "geometries": "247",
+          "textures": "3",
+          "running": "false",
+          "width": 960,
+          "height": 700
+        },
+        "surfaces": [
+          {
+            "world": "rural",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": false,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": []
+      }
+    }
+  ],
+  "worlds": {
+    "rural": {
+      "viewport": {
+        "width": 683,
+        "height": 450
+      },
+      "motion": {
+        "method": "Compare two paused screenshot endpoints separated by at least three genuine native RAF animated frames; scheduler held=false",
+        "pass": true,
+        "beforeTime": "0.000",
+        "afterTime": "0.033",
+        "beforeFrames": "4",
+        "afterFrames": "7",
+        "pixelsChanged": true,
+        "scheduler": {
+          "held": false,
+          "pendingCallbacks": 0,
+          "controlledFrames": 0
+        }
+      },
+      "pause": {
+        "beforeTime": "0.033",
+        "afterTime": "0.033",
+        "beforeFrames": "7",
+        "afterFrames": "7",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "inputScheduler": "Scene RAF held between explicitly stepped real renders; input events remain trusted/native. Other browser RAF is unchanged.",
+      "interaction": {
+        "pass": true,
+        "fixture": "Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves",
+        "chromeVisible": true,
+        "raycastTapHitSiblingChrome": true,
+        "cancellationTarget": "Previously verified raycast target, after cooldown expired",
+        "cooldownSteps": [
+          {
+            "nativeTimestamp": 8499.762,
+            "callbacks": 1,
+            "beforeTime": "0.033",
+            "afterTime": "0.113",
+            "beforeFrames": "7",
+            "afterFrames": "8"
+          },
+          {
+            "nativeTimestamp": 8583.092,
+            "callbacks": 1,
+            "beforeTime": "0.113",
+            "afterTime": "0.193",
+            "beforeFrames": "8",
+            "afterFrames": "9"
+          },
+          {
+            "nativeTimestamp": 8683.088,
+            "callbacks": 1,
+            "beforeTime": "0.193",
+            "afterTime": "0.273",
+            "beforeFrames": "9",
+            "afterFrames": "10"
+          },
+          {
+            "nativeTimestamp": 8783.084,
+            "callbacks": 1,
+            "beforeTime": "0.273",
+            "afterTime": "0.353",
+            "beforeFrames": "10",
+            "afterFrames": "11"
+          },
+          {
+            "nativeTimestamp": 8866.414,
+            "callbacks": 1,
+            "beforeTime": "0.353",
+            "afterTime": "0.433",
+            "beforeFrames": "11",
+            "afterFrames": "12"
+          },
+          {
+            "nativeTimestamp": 8966.41,
+            "callbacks": 1,
+            "beforeTime": "0.433",
+            "afterTime": "0.513",
+            "beforeFrames": "12",
+            "afterFrames": "13"
+          },
+          {
+            "nativeTimestamp": 9049.74,
+            "callbacks": 1,
+            "beforeTime": "0.513",
+            "afterTime": "0.593",
+            "beforeFrames": "13",
+            "afterFrames": "14"
+          },
+          {
+            "nativeTimestamp": 9149.8,
+            "callbacks": 1,
+            "beforeTime": "0.593",
+            "afterTime": "0.673",
+            "beforeFrames": "14",
+            "afterFrames": "15"
+          },
+          {
+            "nativeTimestamp": 9233.13,
+            "callbacks": 1,
+            "beforeTime": "0.673",
+            "afterTime": "0.753",
+            "beforeFrames": "15",
+            "afterFrames": "16"
+          },
+          {
+            "nativeTimestamp": 9333.126,
+            "callbacks": 1,
+            "beforeTime": "0.753",
+            "afterTime": "0.833",
+            "beforeFrames": "16",
+            "afterFrames": "17"
+          },
+          {
+            "nativeTimestamp": 9433.122,
+            "callbacks": 1,
+            "beforeTime": "0.833",
+            "afterTime": "0.913",
+            "beforeFrames": "17",
+            "afterFrames": "18"
+          }
+        ],
+        "mouseDragFrame": {
+          "nativeTimestamp": 9616.448,
+          "callbacks": 1,
+          "beforeTime": "0.913",
+          "afterTime": "0.993",
+          "beforeFrames": "18",
+          "afterFrames": "19"
+        },
+        "mouseCapture": {
+          "pointer": {
+            "id": 1,
+            "type": "mouse"
+          },
+          "holders": [
+            "primary"
+          ],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8409.800000000745
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8410.5
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8413.60000000149
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8413.70000000298
+            }
+          ]
+        },
+        "mouseReleased": {
+          "pointer": {
+            "id": 1,
+            "type": "mouse"
+          },
+          "holders": [],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8409.800000000745
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8410.5
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8413.60000000149
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 8413.70000000298
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9466.800000000745
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9702.20000000298
+            }
+          ]
+        },
+        "captureCancellations": [
+          {
+            "reason": "pointercancel",
+            "start": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [
+                "primary"
+              ],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9733.400000002235
+                }
+              ]
+            },
+            "end": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9733.400000002235
+                },
+                {
+                  "type": "lostpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9750.10000000149
+                }
+              ]
+            },
+            "pass": true,
+            "method": "Real mouse pointer; labelled synthetic pointercancel cancellation then trusted pointermove/up"
+          },
+          {
+            "reason": "blur",
+            "start": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [
+                "primary"
+              ],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9783.400000002235
+                }
+              ]
+            },
+            "end": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9783.400000002235
+                },
+                {
+                  "type": "lostpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9800
+                }
+              ]
+            },
+            "pass": true,
+            "method": "Real mouse pointer; labelled synthetic blur cancellation then trusted pointermove/up"
+          },
+          {
+            "reason": "lostpointercapture",
+            "start": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [
+                "primary"
+              ],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9833.60000000149
+                }
+              ]
+            },
+            "end": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9833.60000000149
+                },
+                {
+                  "type": "lostpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 9850.10000000149
+                }
+              ]
+            },
+            "pass": true,
+            "method": "Real mouse pointer; native releasePointerCapture then trusted pointermove/up"
+          }
+        ],
+        "dragReachedLookHandler": true,
+        "dragNotTap": true,
+        "syntheticPointerCancelNotTap": true,
+        "syntheticBlurNotTap": true,
+        "interactiveChromeExclusions": [
+          {
+            "kind": "button",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "input",
+            "worldEvents": 0,
+            "uiActions": 3,
+            "pass": true
+          },
+          {
+            "kind": "link",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "rolebutton",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "roleslider",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "roleswitch",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "rolecheckbox",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "roletextbox",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          }
+        ],
+        "tap": {
+          "x": 137,
+          "y": 383,
+          "event": {
+            "scene": "nature:rural_summer_night",
+            "type": "grass",
+            "strength": 0.28,
+            "position": [
+              -1.4334282345206293,
+              0.58,
+              7.229915877219069
+            ]
+          }
+        },
+        "immediateTapBounded": true,
+        "initialCanvas": 1
+      },
+      "browserTouch": {
+        "pass": true,
+        "method": "Chromium CDP Input.dispatchTouchEvent; trusted browser touch input, not synthetic DOM dispatch and not physical-device hardware",
+        "chromeVisible": true,
+        "policy": {
+          "normal": "none",
+          "inlinePanY": "pan-y",
+          "restored": "none"
+        },
+        "touchCapture": {
+          "pointer": {
+            "id": 2,
+            "type": "touch"
+          },
+          "holders": [
+            "primary"
+          ],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9833.60000000149
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9850.10000000149
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9916.70000000298
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9954.10000000149
+            }
+          ]
+        },
+        "touchReleased": {
+          "pointer": {
+            "id": 2,
+            "type": "touch"
+          },
+          "holders": [],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9833.60000000149
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9850.10000000149
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9916.70000000298
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 9954.10000000149
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 2,
+              "pointerType": "touch",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 10166.800000000745
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 2,
+              "pointerType": "touch",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 10283.70000000298
+            }
+          ]
+        },
+        "touchDragFrame": {
+          "nativeTimestamp": 10266.396,
+          "callbacks": 1,
+          "beforeTime": "0.993",
+          "afterTime": "1.073",
+          "beforeFrames": "19",
+          "afterFrames": "20"
+        },
+        "dragReachedLookHandler": true,
+        "worldEvents": 0,
+        "trustedPointerCancels": 0
+      },
+      "secondHolder": {
+        "pass": true,
+        "originalIdentity": 1,
+        "cycles": [
+          {
+            "cycle": 1,
+            "secondaryIdentity": 1,
+            "returnedIdentity": 1,
+            "listeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              },
+              {
+                "holder": "secondary",
+                "pointerdown": 1
+              }
+            ],
+            "returnedListeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              }
+            ],
+            "coveredHolderInert": true,
+            "pass": true
+          },
+          {
+            "cycle": 2,
+            "secondaryIdentity": 1,
+            "returnedIdentity": 1,
+            "listeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              },
+              {
+                "holder": "secondary",
+                "pointerdown": 1
+              }
+            ],
+            "returnedListeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              }
+            ],
+            "coveredHolderInert": true,
+            "pass": true
+          },
+          {
+            "cycle": 3,
+            "secondaryIdentity": 1,
+            "returnedIdentity": 1,
+            "listeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              },
+              {
+                "holder": "secondary",
+                "pointerdown": 1
+              }
+            ],
+            "returnedListeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              }
+            ],
+            "coveredHolderInert": true,
+            "pass": true
+          }
+        ]
+      },
+      "reducedMotion": {
+        "beforeTime": "1.073",
+        "afterTime": "1.073",
+        "beforeFrames": "24",
+        "afterFrames": "24",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "static3D": {
+        "beforeTime": "1.073",
+        "afterTime": "1.073",
+        "beforeFrames": "24",
+        "afterFrames": "24",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "syntheticHidden": {
+        "method": "Own-property overrides of document.hidden/visibilityState plus visibilitychange, not actual tab hiding",
+        "beforeTime": "1.073",
+        "afterTime": "1.073",
+        "beforeFrames": "24",
+        "afterFrames": "24",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "mountUnmount": {
+        "pass": true,
+        "rapidRemountCount": 3,
+        "rapidIdentities": [
+          1,
+          1,
+          1
+        ],
+        "hostGraceMsFromSource": 5000,
+        "unmountRequestedAtMs": 23889.800000000745,
+        "detachedObservedAtMs": 23892.400000002235,
+        "cleanup": {
+          "canvasIdentity": 1,
+          "startedAtMs": 28890.5,
+          "completedAtMs": 29164.400000002235,
+          "contextLostAtMs": 29165.10000000149
+        },
+        "cleanupStartAfterUnmountRequestMs": 5000.699999999255,
+        "synchronousCleanupDurationMs": 273.9000000022352,
+        "contextLostAfterUnmountRequestMs": 5275.300000000745,
+        "detachedListeners": [
+          {
+            "holder": "primary",
+            "pointerdown": 0
+          }
+        ],
+        "detachedScheduler": {
+          "held": true,
+          "pendingCallbacks": 0,
+          "controlledFrames": 13
+        },
+        "rebuiltIdentity": 2,
+        "newCanvasAfterDisposal": true,
+        "method": "QA-only wrapper observes real synchronous WorldEngine.dispose entry/return; real webglcontextlost event is observed on the retained detached canvas. Host timer and resource methods are unchanged.",
+        "limitation": "Synchronous cleanup return and browser context loss are distinct from the 5000 ms host grace. No physical GPU driver memory profiler or reclamation latency measurement was available."
+      },
+      "createdAudioContexts": 0,
+      "finalInputScheduler": {
+        "held": true,
+        "pendingCallbacks": 1,
+        "controlledFrames": 13
+      },
+      "staticFirstFrame": {
+        "beforeTime": "0.000",
+        "afterTime": "0.000",
+        "beforeFrames": "1",
+        "afterFrames": "1",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "metrics": {
+        "engine": "three.js r186",
+        "world": "rural",
+        "frames": "1",
+        "time": "0.000",
+        "drawCalls": "252",
+        "triangles": "2548934",
+        "geometries": "247",
+        "textures": "3",
+        "running": "false",
+        "width": 683,
+        "height": 450
+      }
+    }
+  },
+  "errors": [],
+  "browserVersion": "153.0.8010.0",
+  "lifecycleViewport": {
+    "width": 683,
+    "height": 450
+  },
+  "lifecycleRendering": "683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.",
+  "actualTabVisibility": {
+    "hidden": false,
+    "visibilityState": "visible",
+    "tested": false,
+    "note": "Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified."
+  },
+  "pass": true,
+  "integrity": {
+    "sourceUnchangedDuringRun": true,
+    "bundleUnchangedDuringRun": true
+  },
+  "finishedAt": "2026-10-04T20:59:10.833Z"
+}

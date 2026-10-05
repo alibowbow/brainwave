@@ -1,0 +1,572 @@
+{
+  "passed": true,
+  "worlds": [
+    "relax",
+    "sleep_prep",
+    "power_nap",
+    "nature:winter_lodge"
+  ],
+  "timestamp": "2026-10-04T19:56:44.259526+00:00",
+  "gitHead": "30851e8667c822bf7f400974f469dfa454524454",
+  "source": {
+    "sha256": "86c8383a3720ffa60cecbfd022d5234945af17bf88ad8edb14741202b3ee645c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ]
+  },
+  "bundle": {
+    "sha256": "503b5400075a16a2562d8177e90159980553e5113b1ca47ccec7e62901d50d90",
+    "files": [
+      "assets/CozyWorld-B7EYPuDB.js",
+      "assets/CozyWorld-B7EYPuDB.js.map",
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/HearthWorld-B-9MW5o_.js",
+      "assets/HearthWorld-B-9MW5o_.js.map",
+      "assets/NapTerraceWorld-CIH7CZBt.js",
+      "assets/NapTerraceWorld-CIH7CZBt.js.map",
+      "assets/SleepRoomWorld-BjXtCI9Q.js",
+      "assets/SleepRoomWorld-BjXtCI9Q.js.map",
+      "assets/WinterLodgeWorld-BDQgEbcr.js",
+      "assets/WinterLodgeWorld-BDQgEbcr.js.map",
+      "assets/index-DNu5_49m.js",
+      "assets/index-DNu5_49m.js.map",
+      "assets/materials-CRXcM_cc.js",
+      "assets/materials-CRXcM_cc.js.map",
+      "index.html"
+    ]
+  },
+  "browser": "153.0.8010.0",
+  "renderer": "SwiftShader software WebGL; no device FPS or thermal claims",
+  "visibility": "synthetic document.hidden and visibilitychange; not actual browser tab switching",
+  "fold": "viewport emulation only; no Fold hardware tested",
+  "results": [
+    {
+      "world": "relax",
+      "snapshots": [
+        {
+          "file": "relax-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "1aa73b8d529c66c92a438008631354a9e9a3d9608e6d9a364af82fe8c6c8e777"
+        },
+        {
+          "file": "relax-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "a0689ab928485e09759b7d32d4e253728a12bdefc46195176461378a9b017f81"
+        },
+        {
+          "file": "relax-chrome-visible.png",
+          "width": 960,
+          "height": 700,
+          "sha256": "ddce6d3ae17ef1bb56fca86d2d53ddd89f5d2129b003fe5fc87e06a32e0aed2c"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-log",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 7,
+        "time": 8.047700000000745,
+        "running": false,
+        "targets": [
+          {
+            "action": "log",
+            "x": 0.47543731860430916,
+            "y": 0.6448388090234305,
+            "z": 0.9832925097298689
+          },
+          {
+            "action": "log",
+            "x": 0.48358727472100177,
+            "y": 0.6488665787006445,
+            "z": 0.9826187484157978
+          },
+          {
+            "action": "log",
+            "x": 0.4923066805762586,
+            "y": 0.6204402355554253,
+            "z": 0.9819132816200882
+          },
+          {
+            "action": "log",
+            "x": 0.5048888310675657,
+            "y": 0.6143833234763021,
+            "z": 0.9832709619032328
+          },
+          {
+            "action": "log",
+            "x": 0.5140340594559922,
+            "y": 0.6173956641776923,
+            "z": 0.9825957340770789
+          }
+        ],
+        "drawCalls": 271,
+        "triangles": 304994,
+        "memory": {
+          "geometries": 144,
+          "textures": 29
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    },
+    {
+      "world": "sleep_prep",
+      "snapshots": [
+        {
+          "file": "sleep_prep-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "811cbdf9de028a333cc3f1d64af90f66f624682255906d96c99af9530c65f982"
+        },
+        {
+          "file": "sleep_prep-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "9d99b44781739d5853b658453e284c77e2e510ce9913f808d7a883f75f4334d5"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-curtain",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 9,
+        "time": 8.095200000001492,
+        "running": false,
+        "targets": [
+          {
+            "action": "curtain",
+            "x": 0.340423600934045,
+            "y": 0.37635926394155983,
+            "z": 0.9829028480465697
+          },
+          {
+            "action": "curtain",
+            "x": 0.6948417730434866,
+            "y": 0.37963368035621176,
+            "z": 0.9832490750740214
+          },
+          {
+            "action": "lamp",
+            "x": 0.8748090372918853,
+            "y": 0.7033900466709939,
+            "z": 0.9708437318614971
+          },
+          {
+            "action": "lamp",
+            "x": 0.871975462016278,
+            "y": 0.49102810286960036,
+            "z": 0.9710755033103184
+          }
+        ],
+        "drawCalls": 520,
+        "triangles": 239398,
+        "memory": {
+          "geometries": 252,
+          "textures": 13
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    },
+    {
+      "world": "power_nap",
+      "snapshots": [
+        {
+          "file": "power_nap-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "83f01c3cc5d2a1100b9f63f27620fa822382bd08ef8966dc52e25d38313cc1c5"
+        },
+        {
+          "file": "power_nap-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "5567a6e97351801b39d4e994d3205d94a966fedc1d18843b6d5a39b152c97c98"
+        },
+        {
+          "file": "power_nap-fold-inner-viewport.png",
+          "width": 673,
+          "height": 841,
+          "sha256": "ce4783fee52ac691b7a76936dda3745dce9de594a206088722da9d95d10a741b"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-canopy",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 17,
+        "time": 8.209299999999999,
+        "running": false,
+        "targets": [
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.49571977026192016,
+            "y": 0.9166821626148216,
+            "z": 0.9641707234121167
+          },
+          {
+            "action": "canopy",
+            "x": 0.7517556104296906,
+            "y": 0.254163962668259,
+            "z": 0.9764287515672567
+          },
+          {
+            "action": "canopy",
+            "x": 0.7519757939146029,
+            "y": 0.41690773245268375,
+            "z": 0.976407261308326
+          }
+        ],
+        "drawCalls": 405,
+        "triangles": 1538742,
+        "memory": {
+          "geometries": 206,
+          "textures": 19
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    },
+    {
+      "world": "nature:winter_lodge",
+      "snapshots": [
+        {
+          "file": "nature-winter_lodge-desktop.png",
+          "width": 1280,
+          "height": 850,
+          "sha256": "5a2debc9b5416a0f7c1ac787b55b667efba9818912f77fca962ed446882b9d32"
+        },
+        {
+          "file": "nature-winter_lodge-portrait.png",
+          "width": 412,
+          "height": 915,
+          "sha256": "2a35e282e531d17d05e019d1d0e7cabf944ac98dbefc3b4410d8e6ff3252177e"
+        },
+        {
+          "file": "nature-winter_lodge-landscape-viewport.png",
+          "width": 915,
+          "height": 412,
+          "sha256": "acd23e8726fa9ca8961ab6c92864cd80bbeed15bcdd9af0c505c8099a159d841"
+        }
+      ],
+      "checks": [
+        "chrome-overlay-hit-tested-tap",
+        "chrome-overlay-drag",
+        "chrome-controls-excluded",
+        "chrome-own-button-click",
+        "chrome-cancel-and-blur",
+        "coalesced-up-not-tap",
+        "covered-holder-no-input",
+        "chrome-second-holder-one-handler",
+        "chrome-restored-holder-one-handler",
+        "chrome-remount-one-handler",
+        "real3D-first-frame",
+        "active-animation",
+        "direct-touch-cup",
+        "keyboard-actions",
+        "bounded-intensity",
+        "drag-not-tap",
+        "returning-drag-not-tap",
+        "pointer-cancel",
+        "paused-clock",
+        "same-canvas-second-holder",
+        "reduced-motion",
+        "static3D",
+        "synthetic-hidden",
+        "rapid-remount",
+        "delayed-disposal",
+        "recreate-after-disposal"
+      ],
+      "render": {
+        "instance": 1,
+        "taps": 0,
+        "lastHit": "none",
+        "frames": 10,
+        "time": 8.067299999998509,
+        "running": false,
+        "targets": [
+          {
+            "action": "cup",
+            "x": 0.10181518315902666,
+            "y": 0.8125590954840582,
+            "z": 0.9569004896133495
+          },
+          {
+            "action": "cup",
+            "x": 0.05333203807554232,
+            "y": 0.7656469701435584,
+            "z": 0.9568973537142805
+          },
+          {
+            "action": "lamp",
+            "x": 0.10734110039703582,
+            "y": 0.45051655710232014,
+            "z": 0.9673495917121584
+          },
+          {
+            "action": "lamp",
+            "x": 0.11272193902631739,
+            "y": 0.6027171884734851,
+            "z": 0.9672611221954316
+          },
+          {
+            "action": "log",
+            "x": 0.9014166310301769,
+            "y": 0.7447993194139689,
+            "z": 0.9780888288779535
+          },
+          {
+            "action": "log",
+            "x": 0.8820618065234387,
+            "y": 0.7299917457684144,
+            "z": 0.978233986558033
+          },
+          {
+            "action": "log",
+            "x": 0.8984047155439331,
+            "y": 0.7318613920202494,
+            "z": 0.9780736661665171
+          },
+          {
+            "action": "log",
+            "x": 0.914982900525795,
+            "y": 0.7337579540934209,
+            "z": 0.9779110377688689
+          },
+          {
+            "action": "log",
+            "x": 0.9300013682115167,
+            "y": 0.7279177483067474,
+            "z": 0.9777985014716816
+          },
+          {
+            "action": "log",
+            "x": 0.9102131606184402,
+            "y": 0.7130309270550499,
+            "z": 0.9779474039590198
+          },
+          {
+            "action": "log",
+            "x": 0.926970140295418,
+            "y": 0.7148018581462898,
+            "z": 0.9777829461693528
+          },
+          {
+            "action": "log",
+            "x": 0.9439714837510773,
+            "y": 0.7165986143815344,
+            "z": 0.977616090123694
+          },
+          {
+            "action": "log",
+            "x": 0.958808828231569,
+            "y": 0.7516784546944905,
+            "z": 0.9775269365320773
+          },
+          {
+            "action": "log",
+            "x": 0.938597395098235,
+            "y": 0.7364594775009718,
+            "z": 0.9776793847008284
+          },
+          {
+            "action": "log",
+            "x": 0.9557614073043874,
+            "y": 0.7384230588344688,
+            "z": 0.9775110094652187
+          },
+          {
+            "action": "log",
+            "x": 0.9731787152954805,
+            "y": 0.7404156174763706,
+            "z": 0.977340149452917
+          },
+          {
+            "action": "log",
+            "x": 0.9888709268073961,
+            "y": 0.7344619072992344,
+            "z": 0.9772218811362687
+          },
+          {
+            "action": "log",
+            "x": 0.9681941780821335,
+            "y": 0.7191585460238342,
+            "z": 0.9773783616758319
+          },
+          {
+            "action": "log",
+            "x": 0.985804268028285,
+            "y": 0.7210196365309749,
+            "z": 0.977205531218064
+          },
+          {
+            "action": "log",
+            "x": 1.00367769071575,
+            "y": 0.7229085568826294,
+            "z": 0.9770301163374812
+          },
+          {
+            "action": "log",
+            "x": 1.0191305303951814,
+            "y": 0.7589087258771514,
+            "z": 0.9769363631721307
+          },
+          {
+            "action": "log",
+            "x": 0.9979992705085475,
+            "y": 0.7432551155096999,
+            "z": 0.9770966651916748
+          },
+          {
+            "action": "log",
+            "x": 1.0160478582770125,
+            "y": 0.7453198932325588,
+            "z": 0.9769196124617282
+          },
+          {
+            "action": "log",
+            "x": 1.0343696498561488,
+            "y": 0.7474159257632346,
+            "z": 0.9767398796616769
+          }
+        ],
+        "drawCalls": 623,
+        "triangles": 2587884,
+        "memory": {
+          "geometries": 406,
+          "textures": 27
+        },
+        "lifetime": {
+          "created": 1,
+          "disposed": 0
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "isolatedBrowsers": true,
+  "reruns": [
+    {
+      "world": "nature:winter_lodge",
+      "firstAttempt": "120000ms timeout at ready canvas after disposal; no reported page/console errors",
+      "retry": "Full isolated verification passed on unchanged source and bundle",
+      "cause": "Not established; software WebGL restart contention is possible, not proven"
+    }
+  ]
+}

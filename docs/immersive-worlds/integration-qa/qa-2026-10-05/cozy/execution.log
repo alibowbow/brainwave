@@ -1,0 +1,13 @@
+PASS: targeted old Winter: separate post-failure detached-canvas quiet observation
+PASS: fresh actual Winter uses new canvas/instance, ready within 120s and native keyboard
+PASS: targeted fresh Winter: separate post-failure detached-canvas quiet observation
+PASS: actual fresh owner lifetime created/disposed advances once
+AssertionError [ERR_ASSERTION]: Independent diagnostics do not waive any failed lifecycle check
+    at file:///workspace/scratch/448e5748a57d/brainwave-integration/scripts/verify-scenes.mjs:594:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}

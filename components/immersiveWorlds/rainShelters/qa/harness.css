@@ -1,0 +1,17 @@
+html, body, #root { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #1b272a; font-family: "Pretendard Variable", sans-serif; }
+* { box-sizing: border-box; }
+#qa-stage, .qa-holder { position: absolute; inset: 0; width: 100%; height: 100%; }
+.qa-holder { isolation: isolate; }
+.qa-second { z-index: 2; }
+#qa-controls { position: fixed; z-index: 20; top: 8px; left: 8px; max-width: calc(100% - 16px); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px; border-radius: 9px; color: #fff; background: #152027ed; font: 12px/1.3 system-ui, sans-serif; }
+#qa-controls button { color: #f0f6f6; background: #304345; border: 1px solid #5b7274; border-radius: 5px; padding: 7px; cursor: pointer; }
+html[data-qa-capture="true"] #qa-controls { visibility: hidden; }
+
+.qa-drag-overlay { position: absolute; inset: 0; z-index: 4; }
+.qa-player-chrome { position: absolute; z-index: 5; left: 18px; bottom: 18px; display: flex; gap: 10px; align-items: center; padding: 8px; color: #fff; background: #152027ed; border-radius: 8px; }
+.qa-player-chrome button { padding: 8px; border: 1px solid #5b7274; border-radius: 5px; color: #fff; background: #304345; }
+.qa-player-chrome input { width: 100px; }
+html[data-qa-capture="true"] .qa-player-chrome { visibility: hidden; }
+html[data-qa-direct-canvas="true"] .qa-drag-overlay { pointer-events: none; }
+
+html[data-qa-capture="true"][data-qa-capture-chrome="true"] .qa-player-chrome { visibility: visible; }

@@ -388,6 +388,24 @@ describe('BinauralEngine multi-voice', () => {
     e.dispose();
   });
 
+  it('keeps the existing procedural bed audible when a hybrid recording fails', async () => {
+    const cache = sampleCache(async () => { throw new Error('offline'); });
+    e = new BinauralEngine(cache);
+    e.start(cfg([{ type: 'bamboo', volume: 0.7 }]));
+    const bed = (e as any).voices.get('bamboo');
+    const initialGain = bed.gain.gain.value;
+    await flushMicrotasks();
+
+    expect(cache.acquire).toHaveBeenCalledTimes(1);
+    expect(e.activeSampleTypes()).toEqual([]);
+    expect(e.activeSoundTypes()).toEqual(['bamboo']);
+    expect((e as any).voices.get('bamboo')).toBe(bed);
+    expect(initialGain).toBeGreaterThan(0);
+    expect(bed.gain.gain.value).toBe(initialGain);
+    expect(bed.sampleGain.gain.value).toBe(0);
+    e.dispose();
+  });
+
   it('does not revive a removed voice when its lazy sample resolves later', async () => {
     const buffer = new AudioBufferMock(1, 96_000) as unknown as AudioBuffer;
     const release = vi.fn();
@@ -570,4 +588,3 @@ describe('audio quality invariants', () => {
     expect(restored.bg).toBe(DEFAULT_MIX_VOLUMES.bg);
   });
 });
-

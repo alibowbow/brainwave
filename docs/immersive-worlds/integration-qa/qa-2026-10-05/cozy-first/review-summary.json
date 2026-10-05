@@ -1,0 +1,124 @@
+{
+  "status": "failed",
+  "scope": "Targeted actual App Winter disposal contract and fresh session; does not replace the original owner four-world 120s sequence.",
+  "finishedAt": "2026-10-04T23:41:52Z",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-cozy-disposal-20261004T234124Z",
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "failure": "AssertionError [ERR_ASSERTION]: renderer release exceeded fixed 20s including host retention",
+  "configuredTimeoutMs": 20000,
+  "actualWaitElapsedMs": 20057,
+  "remainingContractCriterion": [
+    "Three owned geometry/texture accounting is not empty"
+  ],
+  "oldWinter": {
+    "instance": 1,
+    "hostDisposeAttempts": 1,
+    "hostDisposeReturned": 1,
+    "disposeDurationMs": 7.200000002980232,
+    "disposeReturnAfterObservedDetachMs": 5004.5,
+    "diagnosticsAtDisposeReturn": {
+      "instance": 1,
+      "taps": 0,
+      "lastHit": "none",
+      "frames": 2,
+      "time": 8,
+      "running": false,
+      "targets": [],
+      "drawCalls": 699,
+      "triangles": 2707958,
+      "memory": {
+        "geometries": 0,
+        "textures": 1
+      },
+      "lifetime": {
+        "created": 1,
+        "disposed": 1
+      }
+    },
+    "listeners": {
+      "active": 0,
+      "added": 4,
+      "removed": 4
+    },
+    "glDeletes": {
+      "deleteShader": 38,
+      "deleteTexture": 30,
+      "deleteFramebuffer": 1,
+      "deleteVertexArray": 684,
+      "deleteBuffer": 1394,
+      "deleteProgram": 18
+    },
+    "connected": false,
+    "automaticContextLoss": false,
+    "automaticContextLossRequired": false,
+    "lastTwoNativeSamples": {
+      "elapsedMs": 106.29999999701977,
+      "frames": [
+        2,
+        2
+      ],
+      "glDraws": [
+        1398,
+        1398
+      ]
+    },
+    "dedicated500msQuietWindow": "not reached"
+  },
+  "newWinter": {
+    "instance": "not reached",
+    "lifetimeAdvance": "not reached",
+    "nativeKeyboardCallback": "not reached",
+    "secondDisposal": "not reached"
+  },
+  "resourceInterpretation": "Diagnostics are captured once after owner dispose returns; repeated dataset reads are not fresh live renderer-memory measurements. The textures=1 snapshot fails the unchanged zero-accounting predicate. It alone neither proves a resource leak nor a stalled dispose call.",
+  "originalOwner120sFourWorldFailure": "preserved separately; unchanged and not replaced by this test",
+  "browserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-04T23:41:25.463Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:41:25.463Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:41:50.758Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:41:50.804Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:41:50.809Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:41:50.809Z"
+  },
+  "cleanupErrors": [],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 28.341,
+  "rawEvidenceSHA256": "227329d820b2543e43247ac52fafdd8543195d160f38e679d8c2403377de25d9",
+  "wrapperSummarySHA256": "3c0d42c02f6b029473accf898c66d633fba5c9fc69181bf75c7c55bf02dab1e2"
+}

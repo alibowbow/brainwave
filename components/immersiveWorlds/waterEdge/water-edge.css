@@ -1,0 +1,6 @@
+.water-edge{position:absolute;inset:0;width:100%;height:100%;min-height:160px;overflow:hidden;isolation:isolate;touch-action:pan-y;background:#17272c;outline:none}
+.water-edge:focus-visible{outline:2px solid #c2d4c9;outline-offset:-3px}
+.water-edge-mount,.water-edge-canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.water-edge-canvas{touch-action:none}
+.water-edge-status{position:absolute;inset:0;display:grid;place-content:center;color:#d5ddd8;font:14px/1.5 sans-serif;text-align:center;padding:24px}
+.water-edge[data-state=ready] .water-edge-status{display:none}

@@ -1,0 +1,205 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-04T23:48:44Z",
+  "case": "links",
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T234844Z",
+  "report": "/workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T234844Z/evidence/links/link-verification.json",
+  "outerLimitSeconds": 480,
+  "cleanupReserveSeconds": 25,
+  "gpuGrant": "one separately selected existing verifier; no retries or implicit batch",
+  "browser": "/tmp/cosmic-browser-bin/chromium",
+  "head": "19c0561bff1b17d88c447a63fd8bb7e4315c8514",
+  "gitStatusAtStart": "M components/liveScene/liveSceneHost.test.ts\n M components/liveScene/liveSceneHost.ts\n M scripts/cold-autoplay.mjs\n M scripts/verify-audio-failures.mjs\n M scripts/verify-cafe-world.mjs\n M scripts/verify-cosmic-world.mjs\n M scripts/verify-immersive-worlds.mjs\n M scripts/verify-links.mjs\n M scripts/verify-scenes.mjs\n?? components/liveScene/cozyEngineDisposal.test.ts\n?? components/liveScene/sceneDisposalContract.test.ts\n?? scripts/cold-autoplay.test.ts\n?? scripts/press-scene-control.mjs\n?? scripts/scene-disposal-contract.mjs",
+  "build": {
+    "indexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+    "referencedAssets": {
+      "assets/index-CkDIijGa.js": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "assets/index-BXP0utCv.css": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3"
+    }
+  },
+  "scriptSHA256": "10470ba9c367e510e5b31b7d743b530d9d0880b719eb8391a26bafd752327b48",
+  "wrapperSHA256": "780e6269909b1842ee96611ef1ebb8ee54aba6f556d68dcfe2f222eb795bc8ef",
+  "supportScripts": {
+    "owned-browser.mjs": "312c42be7283da3ce5316f846141a3f26c105aea2f633bb5864213a4c02704dc",
+    "verification-provenance.mjs": "4fbdb7a4ea471c723d4ec7da1a89ed67ae9b59172f6d4d7f222b6ba569a534d2",
+    "cold-autoplay.mjs": "42c8e8968e7db4b0de448f59cd3a9b85446b1863f7a81f8a3220cd19880fea05",
+    "scene-disposal-contract.mjs": "76ce9456f52e919aecd59a5e85a3aae262929470a6692b14d4b92c079d8cbfed"
+  },
+  "baseUrl": "http://127.0.0.1:60175/",
+  "previewCommand": [
+    "node",
+    "node_modules/vite/bin/vite.js",
+    "preview",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "60175",
+    "--strictPort"
+  ],
+  "previewPID": 10,
+  "servedIndexSHA256": "fa2a50f739669d2ad5ec0b853ef6d99b392e30d16c4fc57c0310cd6e4f9706a1",
+  "servedEntryAssets": {
+    "assets/index-CkDIijGa.js": {
+      "sha256": "60d30e843a57e9c481ac594325a6a480862788dea211cde4ff6326b9eae0e549",
+      "bytes": 418683
+    },
+    "assets/index-BXP0utCv.css": {
+      "sha256": "dcee5f64d5861525344b6e320c966b33002eac5e49ea8f6429bc5e4b565fefc3",
+      "bytes": 103383
+    }
+  },
+  "command": [
+    "node",
+    "scripts/verify-links.mjs"
+  ],
+  "environmentOverrides": {
+    "SCENE_BASE_URL": "http://127.0.0.1:60175/",
+    "SCENE_BROWSER_PATH": "/tmp/cosmic-browser-bin/chromium",
+    "SCENE_SCREENSHOT_DIR": "/workspace/scratch/448e5748a57d/integration-audit/local-links-20261004T234844Z/evidence"
+  },
+  "runnerPID": 28,
+  "browserOwnership": {
+    "pid": 52,
+    "launchedAt": "2026-10-04T23:48:45.523Z",
+    "terminationConfirmed": true,
+    "forcedKill": false,
+    "events": [
+      {
+        "kind": "owned-browser-created",
+        "at": "2026-10-04T23:48:45.523Z",
+        "pid": 52
+      },
+      {
+        "kind": "owned-browser-close-send",
+        "at": "2026-10-04T23:49:45.653Z"
+      },
+      {
+        "kind": "owned-browser-exit",
+        "at": "2026-10-04T23:49:45.675Z",
+        "code": 0,
+        "signal": null
+      },
+      {
+        "kind": "owned-browser-close-ack",
+        "at": "2026-10-04T23:49:45.684Z"
+      }
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "finishedAt": "2026-10-04T23:49:45.684Z"
+  },
+  "exitCode": 1,
+  "reportStatus": "failed",
+  "failure": {
+    "step": "cold focus autoplay and one native retry",
+    "message": "cold ready binding for \uae4a\uc740 \uc9d1\uc911 exceeded 60000ms",
+    "stack": "Error: cold ready binding for \uae4a\uc740 \uc9d1\uc911 exceeded 60000ms\n    at Timeout.<anonymous> (file:///workspace/scratch/448e5748a57d/brainwave-integration/scripts/cold-autoplay.mjs:91:106)\n    at listOnTimeout (node:internal/timers:635:17)\n    at process.processTimers (node:internal/timers:571:7)",
+    "observation": {
+      "url": "http://127.0.0.1:60175/#/play/focus",
+      "hash": "#/play/focus",
+      "wall": 60051.30000000447,
+      "documentOrigin": 1791157725595.8,
+      "readyState": "complete",
+      "activation": {
+        "isActive": false,
+        "hasBeenActive": false
+      },
+      "headings": [
+        "\uae4a\uc740 \uc9d1\uc911"
+      ],
+      "activeNavigation": [],
+      "hints": [
+        "blocked"
+      ],
+      "timer": "\ub0a8\uc740 \uc2dc\uac04 40\ubd84 0\ucd08",
+      "dialogs": 0,
+      "buttons": [
+        {
+          "name": "\ucd95\uc18c",
+          "disabled": false
+        },
+        {
+          "name": "\uc774 \ub8e8\ud2f4 \ub9c1\ud06c \ubcf5\uc0ac",
+          "disabled": false
+        },
+        {
+          "name": "\uc804\uccb4 \ud654\uba74 \ubcf4\uae30",
+          "disabled": false
+        },
+        {
+          "name": "\ub20c\ub7ec\uc11c \uc7ac\uc0dd",
+          "disabled": false
+        },
+        {
+          "name": "\uc790\uc5f0 \ubcf4\uae30",
+          "disabled": false
+        },
+        {
+          "name": "\uadf8\ub798\ud53d \ubcf4\uae30",
+          "disabled": false
+        },
+        {
+          "name": "\uc7ac\uc0dd",
+          "disabled": false
+        },
+        {
+          "name": "\uc138\uc158 \uc885\ub8cc",
+          "disabled": false
+        },
+        {
+          "name": "\uc138\uc158 \uc138\ubd80 \uc870\uc808 \uc5f4\uae30",
+          "disabled": false
+        }
+      ],
+      "lastSession": null,
+      "storageError": null,
+      "audio": {
+        "contexts": 1,
+        "states": [
+          "suspended"
+        ],
+        "analyserGraphs": 0,
+        "oscillators": 0,
+        "resumeCount": 1,
+        "resumeCalls": [
+          {
+            "activeGesture": false,
+            "state": "suspended",
+            "held": false
+          }
+        ],
+        "held": false
+      },
+      "scene": null,
+      "inputs": [],
+      "observationTiming": {
+        "phase": "fresh-read",
+        "nodeRequestedAt": 1791157785644,
+        "nodeAcknowledgedAt": 1791157785648,
+        "nodeFinishedAt": 1791157785648,
+        "elapsedMs": 3.443554999998014,
+        "limitMs": 5000,
+        "deadlineAt": null,
+        "userGesture": false,
+        "outcome": "acknowledged"
+      }
+    }
+  },
+  "reportErrors": [],
+  "cleanupErrors": [],
+  "provenance": {
+    "valid": true,
+    "sourceStable": true,
+    "distStable": true,
+    "applicationBound": true,
+    "errors": []
+  },
+  "checks": [],
+  "ownedPids": [
+    10,
+    28
+  ],
+  "ownedStillAlive": [],
+  "elapsedTotalSeconds": 63.402,
+  "finishedAt": "2026-10-04T23:49:47Z"
+}

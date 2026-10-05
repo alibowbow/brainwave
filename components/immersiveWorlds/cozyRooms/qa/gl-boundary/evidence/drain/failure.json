@@ -1,0 +1,12 @@
+{
+  "diagnosticOnly": true,
+  "passed": false,
+  "error": "page.evaluate: Error: Old engine/canvas/frame/time/backing/CSS/submission state changed during drain\n    at l (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:77281)\n    at Object.drain (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:78780)\n    at async <anonymous>:329:30\n    at drainBeforeFinalUnmount (/workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/gl-boundary/runtime.mjs:56:38)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/gl-boundary/.generated-drain-11.mjs:81:3",
+  "lastEvent": {
+    "receivedAt": "2026-10-04T22:22:12.428Z",
+    "delivery": "node",
+    "type": "node-diagnostic-intervention-failed",
+    "error": "page.evaluate: Error: Old engine/canvas/frame/time/backing/CSS/submission state changed during drain\n    at l (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:77281)\n    at Object.drain (http://127.0.0.1:4215/assets/index-CRdQdscM.js:4228:78780)\n    at async <anonymous>:329:30\n    at drainBeforeFinalUnmount (/workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/gl-boundary/runtime.mjs:56:38)\n    at async file:///workspace/scratch/9bedca85494b/brainwave/components/immersiveWorlds/cozyRooms/qa/gl-boundary/.generated-drain-11.mjs:81:3",
+    "comparisonContinued": false
+  }
+}

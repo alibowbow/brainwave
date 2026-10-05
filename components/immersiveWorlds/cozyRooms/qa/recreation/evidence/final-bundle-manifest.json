@@ -1,0 +1,83 @@
+{
+  "timestamp": "2026-10-04T21:49:06.856Z",
+  "gitHead": "6ba4eee62f490360decb1c51007e8d3e604a7315",
+  "source": {
+    "sha256": "4d83102d72152dec1a831b592e3624d608197c2a9714d5a22a4ca2ea9807ee2c",
+    "files": [
+      "CozyWorld.tsx",
+      "HearthWorld.tsx",
+      "NapTerraceWorld.tsx",
+      "SleepRoomWorld.tsx",
+      "WinterLodgeWorld.tsx",
+      "contracts.ts",
+      "cozyRooms.css",
+      "engine.ts",
+      "fireDetail.ts",
+      "hearth.ts",
+      "materials.ts",
+      "napTerrace.ts",
+      "sleepRoom.ts",
+      "winterLodge.ts"
+    ],
+    "fileSHA256": {
+      "CozyWorld.tsx": "b7c92752ccbc0be952af4fc18d390068bc3231b69e5d34abb57c46d3b25edf45",
+      "HearthWorld.tsx": "df5bd2f58715e20322723889d2ac929a74bdb841ce199b8e58e24e0a23a08e06",
+      "NapTerraceWorld.tsx": "4a4dd1dbda3b06b5dbc950ac1a34c6c56f585f7691bbeeeae1a0644ec6fdc292",
+      "SleepRoomWorld.tsx": "2929793bf7253a6a9278bd89af82c1d321997f99e7459effc2290019e4197d78",
+      "WinterLodgeWorld.tsx": "fdfae5f274429cb1d6248a4ea37206c0a397ef6132f6c11bb36d68d0cf6aa248",
+      "contracts.ts": "ca3b85aadd7087c6223e63140423048000c4caa58a91c016ad7d1cdaffa19ca6",
+      "cozyRooms.css": "a183dc529a944beb80febd274e7c54ba7913b44c21d71a56f4ed1d706365501c",
+      "engine.ts": "20e8b1a9f161716087b9f6e15659e771381caa1f035aa8e6942102eba22f5674",
+      "fireDetail.ts": "797f47908f5f36630aa9b1627d690c7211b036e1670cffa06dc0c9b7e5ca7205",
+      "hearth.ts": "03ba91cfd3ae4ccbc90f1c488aa9da25370a38f7e0dbac9c6d6c48943dcbba33",
+      "materials.ts": "c4b269c21bde13aa3cecff36d76a5f267055e2292e837558fad211ed94dcb8ae",
+      "napTerrace.ts": "5570239b6dce38f7299211bb15668f4e4208b55112ce7a58760fcf956c32f664",
+      "sleepRoom.ts": "be04b438c4985649904b3919210ce1e819479bdbafa26b9219fe0071d4bbdb44",
+      "winterLodge.ts": "9b7af50b63fc48577de1fef6bb2646c0cd8fb37515bcbfc3111de4e88557568f"
+    }
+  },
+  "bundle": {
+    "sha256": "94d67a1b92ff2723ecd68620c2547ec8c036bb3f08907f2391cdde48067180be",
+    "files": [
+      "assets/CozyWorld-DFmtbpTc.css",
+      "assets/CozyWorld-ytSbzKp7.js",
+      "assets/CozyWorld-ytSbzKp7.js.map",
+      "assets/HearthWorld-Bhp1wYZq.js",
+      "assets/HearthWorld-Bhp1wYZq.js.map",
+      "assets/NapTerraceWorld-CJEFGunM.js",
+      "assets/NapTerraceWorld-CJEFGunM.js.map",
+      "assets/SleepRoomWorld-CwSgMfOq.js",
+      "assets/SleepRoomWorld-CwSgMfOq.js.map",
+      "assets/WinterLodgeWorld-6ksoT8O-.js",
+      "assets/WinterLodgeWorld-6ksoT8O-.js.map",
+      "assets/fireDetail-CHpiNEXL.js",
+      "assets/fireDetail-CHpiNEXL.js.map",
+      "assets/index-CLDB1DB6.js",
+      "assets/index-CLDB1DB6.js.map",
+      "assets/materials-Di5W0wSt.js",
+      "assets/materials-Di5W0wSt.js.map",
+      "index.html"
+    ],
+    "fileSHA256": {
+      "assets/CozyWorld-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "assets/CozyWorld-ytSbzKp7.js": "4fc6517c2749e4f6d0a42684cfd432aa285189e821bc25ac382d06dd1c901c4d",
+      "assets/CozyWorld-ytSbzKp7.js.map": "43791111038391fdc7ff3deab18a1b5a0dc12ea6ba7d0aca623894c291e4f4f8",
+      "assets/HearthWorld-Bhp1wYZq.js": "d88e6578e40c039c1580f6338626d724828da14c1708e28c3d97925c95fd6834",
+      "assets/HearthWorld-Bhp1wYZq.js.map": "3b6cd7bc1ba5fdd21746e5a7d43a071926ae0147e70149ffb1b0c1c94a1c5def",
+      "assets/NapTerraceWorld-CJEFGunM.js": "ba017714a4aa12b65c444b5c0882bdcb5707f43c8759b3c749df1eb58c4e4611",
+      "assets/NapTerraceWorld-CJEFGunM.js.map": "d1b7c295352835cc51192cf29cd81cae9e0068bacec19cdafd91a5fd1ae37807",
+      "assets/SleepRoomWorld-CwSgMfOq.js": "b75be2ba504ba21d2d42e0610afa638d29e4108dd43f7dc4c400c09a24f1a490",
+      "assets/SleepRoomWorld-CwSgMfOq.js.map": "0e44e9051ad96fad2daaf9af531edf0851b285458303cd2df8533d7291d6d642",
+      "assets/WinterLodgeWorld-6ksoT8O-.js": "0ab6158dea69dbb3deb04548425dc5b7c4ec5b6fcf3361bee15af17fd9937839",
+      "assets/WinterLodgeWorld-6ksoT8O-.js.map": "404cd5453dfccbd9d5a01b9ba19611a6740fe533525c56ca99ef09a49057fa6c",
+      "assets/fireDetail-CHpiNEXL.js": "0d469359d537a05fece00c32fad122404302c94a6b98356b6b7ed4f6763516bf",
+      "assets/fireDetail-CHpiNEXL.js.map": "eeff25d35250af13c0e4173d3e24f751d7c0b9d8ce0f20b407e99341dfb0ce93",
+      "assets/index-CLDB1DB6.js": "3c1c10afe03187b0dc57e24c8dd81a7732d0c493116820b4bf01a567b46b8c82",
+      "assets/index-CLDB1DB6.js.map": "217782a9ff439703c2b65e8f038be977ece18103c8c899714dede53248182b80",
+      "assets/materials-Di5W0wSt.js": "eecaa65695bccc361b58fc37aa0f9b195bd4bd6d0abbec992b0bb26773ab164a",
+      "assets/materials-Di5W0wSt.js.map": "278c0810728d1baeb149885d38f005170c0953a64ff0afd0849d57894ff2f756",
+      "index.html": "03ff5d793f7b50cc02d7bdc8473096359c70b0719b291312de72304cdfe00b2f"
+    }
+  },
+  "harness": "Unmodified original qa/index.html and qa/main.tsx; same Vite settings as verify.mjs"
+}

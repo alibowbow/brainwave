@@ -1,0 +1,14 @@
+(node:24) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{
+  "status": "failed",
+  "cases": [
+    {
+      "key": "cafe",
+      "status": "passed"
+    }
+  ],
+  "output": "/workspace/scratch/448e5748a57d/integration-audit/native-cafe-full-queued-20261004T225217Z",
+  "sourceStable": true
+}

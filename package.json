@@ -9,11 +9,16 @@
     "check:bundle": "node scripts/check-bundle.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --exclude '**/*.browser.test.ts'",
+    "verify:forest:isolated": "vitest run components/immersiveWorlds/forest/forest.browser.test.ts",
     "verify:scenes": "node scripts/verify-scenes.mjs",
     "verify:focus": "node scripts/verify-focus-scene.mjs",
     "verify:sea": "node scripts/verify-sea-scene.mjs",
-    "verify:links": "node scripts/verify-links.mjs"
+    "verify:links": "node scripts/verify-links.mjs",
+    "verify:audio": "node scripts/verify-audio-failures.mjs",
+    "verify:cafe": "node scripts/verify-cafe-world.mjs",
+    "verify:cosmic": "node scripts/verify-cosmic-world.mjs",
+    "verify:worlds": "node scripts/verify-immersive-worlds.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.555.0",

@@ -1,0 +1,13 @@
+AssertionError [ERR_ASSERTION]: renderer release exceeded fixed 20s including host retention
+    at releaseObserved (file:///workspace/scratch/448e5748a57d/brainwave-integration/scripts/verify-scenes.mjs:204:16)
+    at async file:///workspace/scratch/448e5748a57d/brainwave-integration/scripts/verify-scenes.mjs:296:112
+    at async check (file:///workspace/scratch/448e5748a57d/brainwave-integration/scripts/verify-scenes.mjs:26:9)
+    at async verifyLiveNature (file:///workspace/scratch/448e5748a57d/brainwave-integration/scripts/verify-scenes.mjs:296:7)
+    at async file:///workspace/scratch/448e5748a57d/brainwave-integration/scripts/verify-scenes.mjs:550:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}

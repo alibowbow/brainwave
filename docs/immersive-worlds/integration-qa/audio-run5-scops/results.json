@@ -1,0 +1,4653 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-04T22:45:29.667Z",
+  "baseUrl": "http://127.0.0.1:4175/",
+  "groups": [
+    "live",
+    "restore",
+    "status",
+    "cancel",
+    "scops"
+  ],
+  "sourceBefore": {
+    "head": "693f49529e0d5194710dbd8df10c59058491019c",
+    "builtIndexSha256": "878f5f2595630cc637845c65bc4aadb59fdf49d57769c27f45cc60952663c54e",
+    "builtAssets": {
+      "BrainwaveGuide-e30uayJ7.js": "e62eef1e2747bc363a82064014f11baef39d7119ebb6a04cb4ed856e7fc5c2da",
+      "BrainwaveGuidePage-yQuQ--Ar.js": "c2545f60d48c995e2f482dd52a9ed7554687152b1af9659adaf05c784b001b0b",
+      "CafeWorld-C9Qt3Lhc.css": "5f3115f07da313e97d715c3335327d03fc201ef5d257005a61462293eed5b30d",
+      "CosmicWorld-CYYMiYuf.css": "9054ee5b901493625b72b5555ca0004c96ab8bbe491b7ecf8450bff4ee39707d",
+      "DeepWaterView-Dd3CCiYP.css": "6b5818675eade70ecd2f1087249ec3506e456051110f11b10e906b6db6b16f0d",
+      "ForestWorld-BiYXXejK.css": "27df337ba71373e89d06e15207c98528408548f4fadb5571543e3f227a91d82a",
+      "ImmersiveMode-EF3DWvXS.js": "43dd749d975b22e05cc1e60cc29723760b945cf135c28f5398206b33a3f6d1ec",
+      "ImmersiveWorldSlot-DC_rdnzP.js": "a7eb31c86136353a2e935e1188506a2f082270873104a3d277416bd27b47c728",
+      "ImmersiveWorldSlot-DTqxEZbX.css": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+      "KoreanWorld-ChQ9t79Y.css": "bc3cbbc60ee10c8697e47134e18d56833cb13a0ed319951bd3f2b41baa68a5fc",
+      "NatureMode-BSEGqfA2.js": "696cb6d059af8e38f7e84e6e124bd02f6db0a4fedc3b2ed9fba592f6d3a745c0",
+      "NightWorld-ZuciVTVz.css": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c",
+      "OilSeaScene-DCK9DiR6.css": "727cf536c3f5416ae697b779b335edef98dc1bbf76f69ea69981061bff1483c8",
+      "OilSeaScene-DORNoZ_M.js": "0e1c30cf488bd063593e4244382aa81a7d6dbfa7d3d4902a5adee44dba4afe50",
+      "Player-CWroABXs.js": "ae4feca6fdf0bec19f5ffd52ad3146c18b5563710799fb4c9f90877ba8468881",
+      "RainyWindowScene-DhrhEdoT.js": "5aed94024dc94dde9353a1ab02b9b3f36bbdf8d9837178e7064015e92fdcb9f7",
+      "RainyWindowScene-RbMGMCWm.css": "4f1113996c4e5ac39dbc580c194a4acf0896b952ae88511282d0649461669d0d",
+      "RoutineLibrary-Cy7US6QG.js": "5bcc580ad0a85dfd146c9ccff9dce4f2a37174f74697f98a09879858f7633aea",
+      "SanctuaryView-BkvmUDvh.css": "88ec64ac19c82a18432d4842663ab711a0cb379b00a03d13552d737f0cfd4ce0",
+      "SessionReflection-HxJg7MbR.js": "56859d4fdf00c3f8b357a3152f60f501abd673f629712644da1965ee8afe524f",
+      "SessionSetup-RbzKXszU.js": "5f31484cfdb978ca648115425256ae2f7c25680d0dcc0c614fd6e19cee83c584",
+      "SettingsView-Dk12nVzj.js": "0829b377d86e9d2cdaa36656ea02ebe896d57c577c702191e40bd9943af5442a",
+      "ShelterWorld-DS072ibN.css": "9fcc756b9257814deb0ee0ff764eb760b33179d0a53a3b8b3c510bac641de024",
+      "SoundFailureNotice-BPt8attz.js": "c849aa400e769ff7ad6738d0a968df6408f48dac38387ae5345757afb6f54fd2",
+      "SoundLayerPicker-fQOwQa1I.js": "5e118438294ed98e12d16a7dfa50ce9eb33c3cbc34191cf3330c6092c3f4ec08",
+      "StatsDashboard-PFHdrfiI.js": "ec364f2cadf4e6980c526ca87a581eeda40bc741bbbb5bd4963790d611ac2f43",
+      "Toggle-JnqQKU9_.js": "21fbb8dbc0c27c4803816367de9a05a5221f1a6228d3a5172f3383566ec34545",
+      "VolumeSlider-CvfWQ7XM.js": "ea88a169e1ba8266f9ba5fdda2cbc29828ba0fc9a93844466d1b3a7d1d6d7ad9",
+      "WorldSurface-C-tstfzs.css": "ccad5e0dce9e1c2d63f1d25a40c1de0db14cb438ca160355e53b7ce9ceecfb63",
+      "WorldView-Ccq85m0N.css": "a8db9b5fbe5c06c6bfa537462956fdc4dc0c9d74fc79d498ebc7409ec9aa82e3",
+      "arrow-right-8Aij_2AC.js": "a7b76f0cda95c9444168786b3ac54c875b664644f178d458f8ea005e2e6c5fce",
+      "experience-BjkFeIbM.js": "f4971648857f98667b7589214314f4432f5d6dfa7af09616defef3ad299c2e37",
+      "immersiveSessionBridge-CUQTbsW6.js": "cca54daee9c1f9826a02dab1f7d9a2267aefa390cdf177dcab95ed266a717258",
+      "index-DFSibu4A.js": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05",
+      "index-Dxjefzym.css": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593",
+      "look-CY0gEWsC.js": "337f8ea02ddbefb4315478c74e3da5f4a77f00fe58a83ef8675770712820ddeb",
+      "materials-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "quality-Bjokd3qe.js": "f7de5ed31732657c5cca6528a14a30cc9048158ee71d51ea96ca29fe7bb0ec32",
+      "three--Qrk24iT.js": "29ecb6d7aaa2f0a7c76b85be4ce36af2ad05b02b28d121f74a157e65bdd0e403",
+      "three-B94qB-g_.js": "98a917cac242c5609d70faab3e5780a56372800f9a7cc81ad087181364ad7fa0",
+      "three-BcXOOer8.js": "3c06c474494a62811c946e334bff7f9aad317498a2b36d26d1916ac2104a8be2",
+      "three-FvgWsoYT.js": "1b081f04664c18ba4388bc92c9573a83e1ea3b55ab931bb55b543d1c6958db91",
+      "useLookDrag-D1QpQtiu.js": "e85834289b023af74c340bd643603f0823e02cc17c437732de00ff4e5ca7e18f",
+      "workbox-window.prod.es5-BBnX5xw4.js": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+      "world-AncientForestWorld-BfT-XUTD.js": "ab59f51a9de0ba5fe292a99d7e72b993e4149d6aad11556578f90b1b02121756",
+      "world-BambooWorld-BgXaTgvg.js": "ef1b5abe287a2544486412cc55cb5435d1de29ce851a0e93814f764d37761bea",
+      "world-CafeWorld-f2ykcV2Y.js": "6be2bf0b4b2679e71f6e3a2fd7d3fc2779841025d351a112ac5549d83beeeb52",
+      "world-CaveWorld-BEYOPO81.js": "eb548d14246323f003465aa66cdb0b941c20b95d3bf85885dc144364a192f268",
+      "world-CosmicWorld-CQJND7AO.js": "276e1a3d0e08453c15c83da867934dda4866020bdae23df7d2c094e2a4a154f0",
+      "world-DeepNightWorld-DQIRZuO7.js": "ed615f89de6bafbd02a6ce5a0630e671cce68811301b8a7a31a394ff099a84de",
+      "world-DeepSeaWorld-CieMUhea.js": "ba98e0fb3f876f20eaa73da3d07954c7fb0854beba5a9178450d151207eae41f",
+      "world-DeepWaterView-DQng8vQ5.js": "9db7476a0efbfff726ce2fafbadeec5d4feafcfecb45fd567fc00e65664efcb2",
+      "world-ForestWorld-DepLp5bw.js": "85c62249b97e5fc56faadd010464e96c1a96bfceb544eae8553ee6771178bc3f",
+      "world-GardenWindowWorld-DPFE9p2q.js": "1503d3e14b69d7f81d2a8cbf3802dacee2247b8b19562d20d48bfdb42a55ab3a",
+      "world-HearthWorld-SSZXYbCY.js": "8ae8093188c7091b8f4755776180f5abf3af858d3089737c683f73e31ad104c6",
+      "world-KoreanWorld-D1XKfW1n.js": "f95ab9c81773990c475c807db13daa5e5ae9c6e16f875781cfbf663e9876d327",
+      "world-LakesideCampWorld-Ds130w01.js": "a00df329edd854935e98c54d102188c39a83c0334b83bc49389645f44c907723",
+      "world-MeditationCourtWorld-DmfA9MNk.js": "baac1fe8c584736dd1ca0e49b4cecdc1c270d3a5eed54ebd7850f0a45d346dcd",
+      "world-MonsoonPorchWorld-CGxpX51D.js": "419d60ed971c5278ba034ac6c040e690e20ebfb1297b2dd59fa5a504039c5ee1",
+      "world-MorningPorchWorld-D-DtOQWv.js": "20b8552307d60dfa81089523d0b7099a13d56ba7f0154c4183d17a65ae200798",
+      "world-MountainCampfireWorld-PKSSTCOi.js": "e6d3335701c67cc979fe8bcb1b09da3e305229563c627ef540b156f5d1c2e380",
+      "world-NapTerraceWorld-B-y0t0vr.js": "2992f557f0dc419b2b0e08d1e5ec277dc35967cc22d5d68f32f6d87dcfc5fbbb",
+      "world-NightPondWorld-C0eOuane.js": "1af264ef4cfa43513db5f5ca00f58b99dbcfe9cb23b8df3ece9db4579f730857",
+      "world-NightWorld-B71hziAx.js": "071d3ef7c074db1668c63c5f03fd60ad1ff879b7b2d60edc5b9fb9a1ffcd2d4e",
+      "world-PebbleShoreWorld-JiUtRY4r.js": "8588575d90d82afa2cb5508f41056c8da9ec91de970d8673ad78689f6d92e963",
+      "world-RainTentWorld-CmhdRkp-.js": "b1763da703d996edee1090105eb9ead0ba7c295aed61a6742ff7ad1ee6b0b140",
+      "world-RainyForestWorld-1iXoEU4I.js": "f1070e49e154d13d7ecc62afe68da0ba2c9599870d0bcf34b25c36725c22d199",
+      "world-RuralSummerNightWorld-qFu4vnoy.js": "7f986d798fb9670fc3fef3829353c993213c879ae09ca3166a181cc23a85ad54",
+      "world-SanctuaryView-OXBKcPPP.js": "2f25161723de708496ae2033a63dee94fbab83a66501efbb4bf9f74e5240bf09",
+      "world-ScopsNightWorld-CJYKhOmd.js": "426124c2fccea470aaa434a17232e87ae828d8b0269019f5899844230b49e3f8",
+      "world-ShelterWorld-CGlwRV_e.js": "723841802b08430131e7be91262aaede89a82a9b568d3511129b2914076199ad",
+      "world-SleepRoomWorld-CPy1pMEs.js": "2db95faee725c280453a01dc38b7b9615c89dcfd73b786d16b79f1d8e7d5de15",
+      "world-SnowVillageWorld-CSDz7jDC.js": "cefe5aa5bcd3912b4eaefffed8da63147c026b7e8cf1a5d0756b7d72543c3324",
+      "world-SummerStormWorld-6bF-fJH-.js": "cb2657e111844f9596abbe98bb7e9aac9836f5a25e3ad3256a4ee5361310afa9",
+      "world-SummerValleyWorld-CpDNSI_Y.js": "eae6a0f5724504e5aa6cc7be8fcd6beb1cc80516b013f0dd78ef94a64cff536e",
+      "world-TempleWorld-F8v-UYK-.js": "58ea6e2a0a70640a9ee64574920f320b7ee2bca2e355f6298ec6e75c3790b179",
+      "world-WarmHeartWorld-BxeUp9VA.js": "2ae9ad2e58301a86fa11156638cce959fa3ddb10513e8283c7a2991742371594",
+      "world-WaterfallWorld-psYCkGvo.js": "1a0322d90e05b603501dee3e643f3694cfd6631bc6baf2425138b0697b472a23",
+      "world-WinterLodgeWorld-BtYMAQhe.js": "96e9afa3d82e00099d84e165e5672813fb0c94e306ca466eef386d30893db533",
+      "world-WorldSurface-3Jy_JejU.js": "40e36c9676816b19d973c54b799444ad9280023c02bb3001579ad3b534da5779",
+      "world-WorldView-CPGfnrUk.js": "3288a0d13f4ae2c7d2ec4e65401d35192a500b271044f091465851b1343f4468",
+      "world-cave-BfOZXQTt.js": "1894fd3952ba67098c98dcddcd5403383994d7502fa212d45c03e3ce2af16748",
+      "world-environment-DJQPnrUh.js": "6d49a1e5a5a0107a1ee391a50687b14da0c52ddc0067c2d6c2b4ee82523c67cd",
+      "world-fireDetail-Bz-rK0sF.js": "454b31ecca23766bc81f067b0799281558e182112287b84b924b03770303f18e",
+      "world-materials-DQyvN8Su.js": "135147cfcdf7d9b2a8004b8715d7aa913c9e8e854681d911a5d0c15cd96a44b1",
+      "world-renderTargets-B1PDlCOP.js": "ada2f939112bc9a99880271d624c599c2375dfc449089edd1d5bb0acf7691de1",
+      "world-rural-BmypkKDO.js": "6d11128acf66c172d2f1e22e84dc2ad77440cfecd79b6338b3138f2a68dd354b",
+      "world-scops-B80Xok_R.js": "a1a04bf15a62aba53e00b9dfc253b1a76cbc817e00ccbce5189773653e5e2f0b",
+      "world-sea-CVZMpvVf.js": "61aebfa4382bd97d744f2deda9d92fe720139d52bf9ddcff1928ff05b5a02d63",
+      "world-temple-05YLaH40.js": "6ee72792348aec5e03617a599e828835eb095b652469b3121bfb2b574dc92383",
+      "world-waterfall-Dh2vhhnF.js": "86bd14d534c57d2160cbc82c8a0f4fb37f6663e2b28168037d73729b6db1bc26"
+    },
+    "files": {
+      "App.tsx": "2a65e2963b9344dfbd73f2dfa47edca7adfc3b0674affcdbb57115caf1e90ba9",
+      "components/Player.tsx": "a90335757d6b9b67ff91fe7784f4548e63e2706cc2009ac79a11596e3024aa37",
+      "components/ImmersiveMode.tsx": "13384e202e7d6b2e596c35ad8dfa7ed9a41bc4bb70fbf21913bc07666dc9bd8e",
+      "sceneLayout.ts": "0de619c6184e1565f973b204afbf31a2e9cc92874cc6f36b5158f6df7f687df0",
+      "components/immersiveWorlds/koreanPlaces/scenes/scops.ts": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996",
+      "components/immersiveWorlds/koreanPlaces/WorldEngine.ts": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade",
+      "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a",
+      "services/audioEngine.ts": "69a2ac927ed5a86cead1ab50e49599ab7806e58cba71f6ad083c496d2d12e020",
+      "services/freshImmersiveSelection.ts": "21efe50b50d3e601efbfb196386ff91bb815f22d65325f06ca5153e8730f9be2",
+      "services/immersiveBridgeLoader.ts": "c612f4c2b2d99c05e39ddad8d112cc91387677754f779cc29a76b36798c2a98e",
+      "services/immersiveSessionBridge.ts": "d07fe121ec3dfe18a565528faef09a98b0e1c3f21ed85967b3e051f9b210bf52",
+      "components/immersiveWorlds/useImmersiveAudioBridge.ts": "4ee8909fa9859a94403269f0d432af758e008632ada85cf849e025f2a53ceac6",
+      "services/immersiveAudio/controller.ts": "b1a99b11c2eda2ad3a581040b704452d2666ae414c2c8c924278fbc322e62751",
+      "services/immersiveAudio/profiles.ts": "09cca1460d48468109ee035c2bf2a18e157b515ee7bbcc69e956025ff3ea32a8",
+      "services/immersiveAudio/interaction.ts": "47cac9bf6117e6f6a659ddf4f86a347793e00e0e154ea5e226ca3f1151312b65",
+      "components/immersiveWorlds/cafe/CafeEngine.ts": "5c6617559f37c8f39f05da6d99600479c5917316620218e8db52f62bd40ada74",
+      "components/NatureMode.tsx": "e91bcd6b6cc27883bd6de89049187ec599102c8e792de7c31270d486cdb54032"
+    }
+  },
+  "scriptSha256": "f0b40d86e4cec94f9fd7cb094bf57a6e03f9af7e67393482f0b651100f0565ec",
+  "scope": "Actual production app, one live renderer at a time, native mouse/wheel/keyboard controls and observed native Web Audio nodes. Selected cases cover cafe state integration, paused mixer clipping, or explicitly scoped scops source-pan/PCM observation; no audition or physical-device claim.",
+  "policy": {
+    "syntheticPointer": false,
+    "audioObservation": "Native constructors/connect/start/stop observed without replacing behavior in ordinary cases",
+    "fixtures": [
+      "Seeded saved/last-session records in isolated localStorage",
+      "Explicit HTTP503 for rain recording status case",
+      "Explicit held-resume fixture, later released through real trusted pointerdown, only for pending-start cancellation"
+    ]
+  },
+  "checks": [],
+  "errors": [
+    {
+      "kind": "cleanup",
+      "message": "Error: browser process cleanup: exceeded 15000ms"
+    }
+  ],
+  "servedResources": [
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/index-Dxjefzym.css",
+      "status": 200,
+      "bytes": 103359,
+      "sha256": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/index-DFSibu4A.js",
+      "status": 200,
+      "bytes": 418683,
+      "sha256": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "status": 200,
+      "bytes": 5748,
+      "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/immersiveSessionBridge-CUQTbsW6.js",
+      "status": 200,
+      "bytes": 22999,
+      "sha256": "cca54daee9c1f9826a02dab1f7d9a2267aefa390cdf177dcab95ed266a717258"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/Toggle-JnqQKU9_.js",
+      "status": 200,
+      "bytes": 590,
+      "sha256": "21fbb8dbc0c27c4803816367de9a05a5221f1a6228d3a5172f3383566ec34545"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/ImmersiveWorldSlot-DTqxEZbX.css",
+      "status": 200,
+      "bytes": 3799,
+      "sha256": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/Player-CWroABXs.js",
+      "status": 200,
+      "bytes": 23679,
+      "sha256": "ae4feca6fdf0bec19f5ffd52ad3146c18b5563710799fb4c9f90877ba8468881"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/SoundLayerPicker-fQOwQa1I.js",
+      "status": 200,
+      "bytes": 2936,
+      "sha256": "5e118438294ed98e12d16a7dfa50ce9eb33c3cbc34191cf3330c6092c3f4ec08"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/VolumeSlider-CvfWQ7XM.js",
+      "status": 200,
+      "bytes": 1496,
+      "sha256": "ea88a169e1ba8266f9ba5fdda2cbc29828ba0fc9a93844466d1b3a7d1d6d7ad9"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/SoundFailureNotice-BPt8attz.js",
+      "status": 200,
+      "bytes": 7375,
+      "sha256": "c849aa400e769ff7ad6738d0a968df6408f48dac38387ae5345757afb6f54fd2"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/ImmersiveWorldSlot-DC_rdnzP.js",
+      "status": 200,
+      "bytes": 12083,
+      "sha256": "a7eb31c86136353a2e935e1188506a2f082270873104a3d277416bd27b47c728"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/KoreanWorld-ChQ9t79Y.css",
+      "status": 200,
+      "bytes": 618,
+      "sha256": "bc3cbbc60ee10c8697e47134e18d56833cb13a0ed319951bd3f2b41baa68a5fc"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/world-ScopsNightWorld-CJYKhOmd.js",
+      "status": 200,
+      "bytes": 258,
+      "sha256": "426124c2fccea470aaa434a17232e87ae828d8b0269019f5899844230b49e3f8"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/look-CY0gEWsC.js",
+      "status": 200,
+      "bytes": 933,
+      "sha256": "337f8ea02ddbefb4315478c74e3da5f4a77f00fe58a83ef8675770712820ddeb"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/world-KoreanWorld-D1XKfW1n.js",
+      "status": 200,
+      "bytes": 8146,
+      "sha256": "f95ab9c81773990c475c807db13daa5e5ae9c6e16f875781cfbf663e9876d327"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/three--Qrk24iT.js",
+      "status": 200,
+      "bytes": 600474,
+      "sha256": "29ecb6d7aaa2f0a7c76b85be4ce36af2ad05b02b28d121f74a157e65bdd0e403"
+    },
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "url": "http://127.0.0.1:4175/assets/world-scops-B80Xok_R.js",
+      "status": 200,
+      "bytes": 19395,
+      "sha256": "a1a04bf15a62aba53e00b9dfc253b1a76cbc817e00ccbce5189773653e5e2f0b"
+    }
+  ],
+  "fixtures": [
+    {
+      "case": "scops actual source pan and stereo PCM",
+      "type": "Native stream fader edit identifies its gain/panner independently, then restores the original UI value; passive splitter/analyser taps only; no new AudioContext, destination route, scheduler or sound behavior replacement"
+    }
+  ],
+  "diagnostics": [
+    {
+      "label": "cold gate: waiting for blocked",
+      "at": "2026-10-04T22:45:30.478Z",
+      "snapshot": {
+        "url": "http://127.0.0.1:4175/#/play/nature/scops_night",
+        "readyState": "complete",
+        "wall": 250.20000000298023,
+        "activation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "hints": [],
+        "buttons": [
+          {
+            "text": "BrainwaveRITUAL SOUND STUDIO",
+            "label": "Brainwave 홈으로 이동",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "사운드 홈",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "자연의 소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "뇌파 가이드",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "리포트",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "라이트 모드로 전환",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "설정 열기",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "직접 조합하기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "바로 듣기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "소리 조절",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "20분 시작",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "추천 루틴 세부 조절",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "마음 챙김25분",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "수면 준비30분",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "전체",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "집중 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "사운드스케이프",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "자연 장면",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "즐겨찾기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "시골 여름밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "시골 여름밤시골 풀벌레",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 집중 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 집중알파 리듬과 빗소리로 주의를 한곳에 모으는 시간",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "불멍 힐링 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "불멍 힐링따뜻한 장작불 소리와 함께 하루의 속도를 낮추는 휴식",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "상쾌한 아침 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "상쾌한 아침새소리와 함께 가볍게 하루를 여는 아침 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "수면 준비 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "수면 준비잠들기 전 빛과 소리의 자극을 천천히 낮추는 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "파워 냅 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "파워 냅짧게 눈을 감고 호흡을 고르는 낮잠 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "마음 챙김 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "마음 챙김호흡과 현재의 감각에 조용히 머무는 명상 시간",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "아침 숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "아침 숲햇살 드는 숲, 시냇물과 새소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "비 오는 숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "비 오는 숲숲에 내리는 잔잔한 비",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "여름밤 연못 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "여름밤 연못풀벌레·부엉이의 밤",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "파도 해변 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "파도 해변바다와 갈매기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "폭포 계곡 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "폭포 계곡절벽 폭포와 시냇물",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "모닥불 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "모닥불 밤별밤의 모닥불과 풀벌레",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 밤풀벌레와 낮은 드론의 심야",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "눈 내리는 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "눈 내리는 밤포근한 겨울밤의 눈",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "여름 뇌우 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "여름 뇌우천둥과 빗속의 몰입",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "우주 명상 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "우주 명상드론·싱잉볼·풍경의 명상",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "카페 집중 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "카페 집중비 오는 창가의 백색소음",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 숲뻐꾸기와 딱따구리의 오지 숲",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "동굴 명상 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "동굴 명상울리는 물방울과 고요한 공명",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "텐트 속 빗소리 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "텐트 속 빗소리텐트 비 · 먼 천둥",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "비 오는 창가 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "비 오는 창가창가 비 · 처마 물방울",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "장마철 처마 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "장마철 처마처마 물방울 · 빗소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 바다 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 바다깊은 바다",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "몽돌 해변 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "몽돌 해변몽돌 해변 · 파도 · 바닷새",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "대나무숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "대나무숲대나무숲 · 새소리 · 시냇물",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "산사의 아침 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "산사의 아침산사의 종 · 숲바람 · 새소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "여름 계곡 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "여름 계곡시냇물 · 폭포 · 매미",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "소쩍새 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "소쩍새 밤소쩍새 · 밤 벌레 · 시냇물",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "모닥불 캠핑 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "모닥불 캠핑모닥불 · 밤 벌레 · 부엉이",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "포근한 심장 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "포근한 심장심장 박동 · 브라운",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "겨울 산장 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "겨울 산장겨울바람 · 모닥불",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "홈",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "자연음",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "뇌파",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "리포트",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "설정",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          }
+        ],
+        "worlds": [],
+        "visibleText": "Brainwave\nRITUAL SOUND STUDIO\n사운드 홈\n자연의 소리\n뇌파 가이드\n리포트\n\n10월 4일 (일)\n\n오늘의 소리 공간\n직접 조합하기\nREAL · 직접 녹음한 소리\n시골 여름밤\n\n시골 풀벌레\n\n바로 듣기\n소리 조절\n\n오늘의 추천 루틴\n\n불멍 힐링\n\n하루의 속도를 낮추고 남은 긴장을 풀어 주기 좋은 시간이에요.\n\n20분 시작\n마음 챙김\n25분\n수면 준비\n30분\n0%\n오늘 0/30분\n0일 연속\n\n30분 더하면 오늘 목표를 채워요.\n\n첫 사운드를 시작해 보세요\n\n다음부터 최근 믹스를 여기서 바로 재생할 수 있어요.\n\nALL SOUNDS\n\n전체 사운드\n사운드 검색\n전체\n집중 루틴\n사운드스케이프\n자연 장면\n즐겨찾기\n32개의 사운드\n카드에서 편집하거나 즉시 재생할 수 있습니다.\n자연 장면\n시골 여름밤\n\n시골 풀벌레\n\n타이머 선택\n1개 레이어\n편집\n재생\n집중 루틴\n깊은 집중\n\n알파 리듬과 빗소리로 주의를 한곳에 모으는 시간\n\n40분\n1개 레이어\n편집\n재생\n집중 루틴\n불멍 힐링\n\n따뜻한 장작불 소리와 함께 하루의 속도를 낮추는 휴식\n\n20분\n1개 레이어\n편집\n재생\n집중 루틴\n상쾌한 아침\n\n새소리와 함께 가볍게 하루를 여는 아침 루틴\n\n25분\n1개 레이어\n편집\n재생\n집중 루틴\n수면 준비\n\n잠들기 전 빛과 소리의 자극을 천천히 낮추는 루틴\n\n30분\n1개 레이어\n편집\n재생\n집중 루틴\n파워 냅\n\n짧게 눈을 감고 호흡을 고르는 낮잠 루틴\n\n15분\n1개 레이어\n편집\n재생\n집중 루틴\n마음 챙김\n\n호흡과 현재의 감각에 조용히 머무는 명상 시간\n\n25분\n0개 레이어\n편집\n재생\n사운드스케이프\n아침 숲\n\n햇살 드는 숲, 시냇물과 새소리\n\n30분\n3개 레이어\n편집\n재생\n사운드스케이프\n비 오는 숲\n\n숲에 내리는 잔잔한 비\n\n30분\n3개 레이어\n편집\n재생\n사운드스케이프\n여름밤 연못\n\n풀벌레·부엉이의 밤\n\n40분\n3개 레이어\n편집\n재생\n🌊\n사운드스케이프\n파도 해변\n\n바다와 갈매기\n\n25분\n2개 레이어\n편집\n재생\n사운드스케이프\n폭포 계곡\n\n절벽 폭포와 시냇물\n\n30분\n3개 레이어\n편집\n재생\n모든 오디오는 기기 안에서 조합됩니다.\n편안한 낮은 볼륨으로 시작하세요.",
+        "audio": {
+          "contexts": 0,
+          "states": [],
+          "clocks": [],
+          "resumes": [],
+          "media": [],
+          "graphs": 0,
+          "starts": [],
+          "stops": [],
+          "accents": [],
+          "masterPcm": null,
+          "minimizeInputs": [],
+          "trustedInputs": []
+        }
+      }
+    },
+    {
+      "label": "scops actual source pan and stereo PCM: console warning",
+      "at": "2026-10-04T22:45:30.549Z",
+      "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "label": "cold gate: waiting for blocked",
+      "at": "2026-10-04T22:45:30.606Z",
+      "snapshot": {
+        "url": "http://127.0.0.1:4175/",
+        "readyState": "complete",
+        "wall": 427.70000000298023,
+        "activation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "hints": [],
+        "buttons": [
+          {
+            "text": "BrainwaveRITUAL SOUND STUDIO",
+            "label": "Brainwave 홈으로 이동",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "사운드 홈",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "자연의 소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "뇌파 가이드",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "리포트",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "라이트 모드로 전환",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "설정 열기",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "직접 조합하기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "바로 듣기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "소리 조절",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "20분 시작",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "추천 루틴 세부 조절",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "마음 챙김25분",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "수면 준비30분",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "전체",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "집중 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "사운드스케이프",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "자연 장면",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "즐겨찾기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "시골 여름밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "시골 여름밤시골 풀벌레",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 집중 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 집중알파 리듬과 빗소리로 주의를 한곳에 모으는 시간",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "불멍 힐링 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "불멍 힐링따뜻한 장작불 소리와 함께 하루의 속도를 낮추는 휴식",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "상쾌한 아침 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "상쾌한 아침새소리와 함께 가볍게 하루를 여는 아침 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "수면 준비 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "수면 준비잠들기 전 빛과 소리의 자극을 천천히 낮추는 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "파워 냅 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "파워 냅짧게 눈을 감고 호흡을 고르는 낮잠 루틴",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "마음 챙김 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "마음 챙김호흡과 현재의 감각에 조용히 머무는 명상 시간",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "아침 숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "아침 숲햇살 드는 숲, 시냇물과 새소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "비 오는 숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "비 오는 숲숲에 내리는 잔잔한 비",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "여름밤 연못 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "여름밤 연못풀벌레·부엉이의 밤",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "파도 해변 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "파도 해변바다와 갈매기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "폭포 계곡 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "폭포 계곡절벽 폭포와 시냇물",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "모닥불 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "모닥불 밤별밤의 모닥불과 풀벌레",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 밤풀벌레와 낮은 드론의 심야",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "눈 내리는 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "눈 내리는 밤포근한 겨울밤의 눈",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "여름 뇌우 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "여름 뇌우천둥과 빗속의 몰입",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "우주 명상 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "우주 명상드론·싱잉볼·풍경의 명상",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "카페 집중 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "카페 집중비 오는 창가의 백색소음",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 숲뻐꾸기와 딱따구리의 오지 숲",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "동굴 명상 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "동굴 명상울리는 물방울과 고요한 공명",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "텐트 속 빗소리 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "텐트 속 빗소리텐트 비 · 먼 천둥",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "비 오는 창가 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "비 오는 창가창가 비 · 처마 물방울",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "장마철 처마 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "장마철 처마처마 물방울 · 빗소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "깊은 바다 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "깊은 바다깊은 바다",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "몽돌 해변 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "몽돌 해변몽돌 해변 · 파도 · 바닷새",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "대나무숲 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "대나무숲대나무숲 · 새소리 · 시냇물",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "산사의 아침 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "산사의 아침산사의 종 · 숲바람 · 새소리",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "여름 계곡 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "여름 계곡시냇물 · 폭포 · 매미",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "소쩍새 밤 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "소쩍새 밤소쩍새 · 밤 벌레 · 시냇물",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "모닥불 캠핑 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "모닥불 캠핑모닥불 · 밤 벌레 · 부엉이",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "포근한 심장 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "포근한 심장심장 박동 · 브라운",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "겨울 산장 즐겨찾기 추가",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "겨울 산장겨울바람 · 모닥불",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "편집",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "홈",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "자연음",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "뇌파",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "리포트",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          },
+          {
+            "text": "설정",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": true
+          }
+        ],
+        "worlds": [],
+        "visibleText": "Brainwave\nRITUAL SOUND STUDIO\n사운드 홈\n자연의 소리\n뇌파 가이드\n리포트\n\n10월 4일 (일)\n\n오늘의 소리 공간\n직접 조합하기\nREAL · 직접 녹음한 소리\n시골 여름밤\n\n시골 풀벌레\n\n바로 듣기\n소리 조절\n\n오늘의 추천 루틴\n\n불멍 힐링\n\n하루의 속도를 낮추고 남은 긴장을 풀어 주기 좋은 시간이에요.\n\n20분 시작\n마음 챙김\n25분\n수면 준비\n30분\n0%\n오늘 0/30분\n0일 연속\n\n30분 더하면 오늘 목표를 채워요.\n\n첫 사운드를 시작해 보세요\n\n다음부터 최근 믹스를 여기서 바로 재생할 수 있어요.\n\nALL SOUNDS\n\n전체 사운드\n사운드 검색\n전체\n집중 루틴\n사운드스케이프\n자연 장면\n즐겨찾기\n32개의 사운드\n카드에서 편집하거나 즉시 재생할 수 있습니다.\n자연 장면\n시골 여름밤\n\n시골 풀벌레\n\n타이머 선택\n1개 레이어\n편집\n재생\n집중 루틴\n깊은 집중\n\n알파 리듬과 빗소리로 주의를 한곳에 모으는 시간\n\n40분\n1개 레이어\n편집\n재생\n집중 루틴\n불멍 힐링\n\n따뜻한 장작불 소리와 함께 하루의 속도를 낮추는 휴식\n\n20분\n1개 레이어\n편집\n재생\n집중 루틴\n상쾌한 아침\n\n새소리와 함께 가볍게 하루를 여는 아침 루틴\n\n25분\n1개 레이어\n편집\n재생\n집중 루틴\n수면 준비\n\n잠들기 전 빛과 소리의 자극을 천천히 낮추는 루틴\n\n30분\n1개 레이어\n편집\n재생\n집중 루틴\n파워 냅\n\n짧게 눈을 감고 호흡을 고르는 낮잠 루틴\n\n15분\n1개 레이어\n편집\n재생\n집중 루틴\n마음 챙김\n\n호흡과 현재의 감각에 조용히 머무는 명상 시간\n\n25분\n0개 레이어\n편집\n재생\n사운드스케이프\n아침 숲\n\n햇살 드는 숲, 시냇물과 새소리\n\n30분\n3개 레이어\n편집\n재생\n사운드스케이프\n비 오는 숲\n\n숲에 내리는 잔잔한 비\n\n30분\n3개 레이어\n편집\n재생\n사운드스케이프\n여름밤 연못\n\n풀벌레·부엉이의 밤\n\n40분\n3개 레이어\n편집\n재생\n🌊\n사운드스케이프\n파도 해변\n\n바다와 갈매기\n\n25분\n2개 레이어\n편집\n재생\n사운드스케이프\n폭포 계곡\n\n절벽 폭포와 시냇물\n\n30분\n3개 레이어\n편집\n재생\n모든 오디오는 기기 안에서 조합됩니다.\n편안한 낮은 볼륨으로 시작하세요.",
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "clocks": [
+            0
+          ],
+          "resumes": [
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": false,
+              "held": false,
+              "wall": 411.5
+            }
+          ],
+          "media": [],
+          "graphs": 0,
+          "starts": [],
+          "stops": [],
+          "accents": [],
+          "masterPcm": null,
+          "minimizeInputs": [],
+          "trustedInputs": []
+        }
+      }
+    },
+    {
+      "label": "scops actual source pan and stereo PCM: console warning",
+      "at": "2026-10-04T22:45:30.622Z",
+      "message": "Service Worker registration blocked by Playwright"
+    },
+    {
+      "label": "scops actual source pan and stereo PCM: console warning",
+      "at": "2026-10-04T22:45:31.750Z",
+      "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "label": "cold gate: waiting for blocked",
+      "at": "2026-10-04T22:45:32.102Z",
+      "snapshot": {
+        "url": "http://127.0.0.1:4175/#/play/nature/scops_night",
+        "readyState": "complete",
+        "wall": 1954.8999999985099,
+        "activation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "hints": [
+          {
+            "state": "starting",
+            "text": "소리를 시작하고 있어요편안한 낮은 볼륨으로 시작하세요"
+          }
+        ],
+        "buttons": [
+          {
+            "text": "축소",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "링크 복사",
+            "label": "이 루틴 링크 복사",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "전체 화면",
+            "label": "전체 화면 보기",
+            "disabled": true,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "자연 보기",
+            "label": null,
+            "disabled": false,
+            "inert": true,
+            "hidden": false
+          },
+          {
+            "text": "그래픽 보기",
+            "label": null,
+            "disabled": false,
+            "inert": true,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "재생",
+            "disabled": false,
+            "inert": true,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "세션 종료",
+            "disabled": false,
+            "inert": true,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "세션 세부 조절 열기",
+            "disabled": false,
+            "inert": true,
+            "hidden": false
+          }
+        ],
+        "worlds": [
+          {
+            "tag": "DIV",
+            "classes": "absolute inset-0",
+            "attributes": {
+              "data-immersive-world-id": "nature:scops_night",
+              "data-world-callbacks": "0"
+            },
+            "rect": {
+              "width": 1066,
+              "height": 704
+            }
+          }
+        ],
+        "visibleText": "축소\n\nNOW PLAYING\n\n소쩍새 밤\n링크 복사\n전체 화면\n\n소리를 시작하고 있어요\n\n편안한 낮은 볼륨으로 시작하세요\n\n풍경을 준비하고 있어요\n자연 보기\n그래픽 보기\n\n남은 시간\n\n30:00",
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "clocks": [
+            0
+          ],
+          "resumes": [
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": false,
+              "held": false,
+              "wall": 411.5
+            },
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": false,
+              "held": false,
+              "wall": 1612.7999999970198
+            }
+          ],
+          "media": [],
+          "graphs": 0,
+          "starts": [],
+          "stops": [],
+          "accents": [],
+          "masterPcm": null,
+          "minimizeInputs": [],
+          "trustedInputs": []
+        }
+      }
+    },
+    {
+      "label": "scops actual source pan and stereo PCM: console warning",
+      "at": "2026-10-04T22:45:32.436Z",
+      "message": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+    },
+    {
+      "label": "cold gate: waiting for blocked",
+      "at": "2026-10-04T22:45:33.212Z",
+      "snapshot": {
+        "url": "http://127.0.0.1:4175/#/play/nature/scops_night",
+        "readyState": "complete",
+        "wall": 3076,
+        "activation": {
+          "isActive": false,
+          "hasBeenActive": false
+        },
+        "hints": [
+          {
+            "state": "blocked",
+            "text": "브라우저가 자동재생을 막았어요. 한 번 눌러 시작하세요.편안한 낮은 볼륨으로 시작하세요눌러서 재생"
+          }
+        ],
+        "buttons": [
+          {
+            "text": "축소",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "링크 복사",
+            "label": "이 루틴 링크 복사",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "전체 화면",
+            "label": "전체 화면 보기",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "눌러서 재생",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "자연 보기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "그래픽 보기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "재생",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "세션 종료",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "세션 세부 조절 열기",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          }
+        ],
+        "worlds": [
+          {
+            "tag": "DIV",
+            "classes": "absolute inset-0",
+            "attributes": {
+              "data-immersive-world-id": "nature:scops_night",
+              "data-world-callbacks": "0"
+            },
+            "rect": {
+              "width": 1066,
+              "height": 704
+            }
+          }
+        ],
+        "visibleText": "축소\n\nNOW PLAYING\n\n소쩍새 밤\n링크 복사\n전체 화면\n\n브라우저가 자동재생을 막았어요. 한 번 눌러 시작하세요.\n\n편안한 낮은 볼륨으로 시작하세요\n\n눌러서 재생\n자연 보기\n그래픽 보기\n\n남은 시간\n\n30:00",
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "suspended"
+          ],
+          "clocks": [
+            0
+          ],
+          "resumes": [
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": false,
+              "held": false,
+              "wall": 411.5
+            },
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": false,
+              "held": false,
+              "wall": 1612.7999999970198
+            }
+          ],
+          "media": [],
+          "graphs": 0,
+          "starts": [],
+          "stops": [],
+          "accents": [],
+          "masterPcm": null,
+          "minimizeInputs": [],
+          "trustedInputs": []
+        }
+      }
+    },
+    {
+      "label": "native button click: 눌러서 재생",
+      "at": "2026-10-04T22:45:33.229Z",
+      "geometry": {
+        "x": 707.5234375,
+        "y": 112,
+        "disabled": false,
+        "inert": false,
+        "hit": true,
+        "visibility": "visible",
+        "opacity": "1",
+        "effectiveOpacity": 1,
+        "chromeOpacity": null,
+        "chromeClass": null,
+        "chromeVisibility": null,
+        "scroll": null
+      },
+      "input": {
+        "type": "pointerdown",
+        "wall": 3087,
+        "target": "BUTTON",
+        "button": "눌러서 재생",
+        "hint": "blocked",
+        "graphs": 0,
+        "starts": 0,
+        "activation": true,
+        "control": {
+          "name": "눌러서 재생",
+          "visibility": "visible",
+          "opacity": "1",
+          "effectiveOpacity": 1,
+          "chromeOpacity": null,
+          "chromeClass": null,
+          "chromeVisibility": null,
+          "hit": true
+        }
+      }
+    },
+    {
+      "label": "native button click: 세션 세부 조절 열기",
+      "at": "2026-10-04T22:45:33.590Z",
+      "geometry": {
+        "x": 643,
+        "y": 734,
+        "disabled": false,
+        "inert": false,
+        "hit": true,
+        "visibility": "visible",
+        "opacity": "1",
+        "effectiveOpacity": 1,
+        "chromeOpacity": "1",
+        "chromeClass": "pointer-events-none absolute inset-0 z-20 visible opacity-100",
+        "chromeVisibility": "visible",
+        "scroll": null
+      },
+      "input": {
+        "type": "pointerdown",
+        "wall": 3409.2999999970198,
+        "target": "path",
+        "button": "",
+        "hint": null,
+        "graphs": 1,
+        "starts": 9,
+        "activation": true,
+        "control": {
+          "name": "세션 세부 조절 열기",
+          "visibility": "visible",
+          "opacity": "1",
+          "effectiveOpacity": 1,
+          "chromeOpacity": "1",
+          "chromeClass": "pointer-events-none absolute inset-0 z-20 visible opacity-100",
+          "chromeVisibility": "visible",
+          "hit": true
+        }
+      }
+    },
+    {
+      "label": "native range click: 시냇물",
+      "at": "2026-10-04T22:45:33.958Z",
+      "geometry": {
+        "x": 889,
+        "y": 721,
+        "disabled": false,
+        "inert": false,
+        "hit": true,
+        "visibility": "visible",
+        "opacity": "1",
+        "effectiveOpacity": 1,
+        "chromeOpacity": null,
+        "chromeClass": null,
+        "chromeVisibility": null,
+        "scroll": {
+          "x": 873,
+          "y": 497,
+          "delta": 224,
+          "needed": false
+        }
+      },
+      "input": {
+        "type": "pointerdown",
+        "wall": 3812.2999999970198,
+        "target": "INPUT",
+        "button": null,
+        "hint": null,
+        "graphs": 1,
+        "starts": 10,
+        "activation": true,
+        "control": {
+          "name": "시냇물",
+          "visibility": "visible",
+          "opacity": "1",
+          "effectiveOpacity": 1,
+          "chromeOpacity": null,
+          "chromeClass": null,
+          "chromeVisibility": null,
+          "hit": true
+        }
+      }
+    },
+    {
+      "label": "native range click: 시냇물",
+      "at": "2026-10-04T22:45:34.069Z",
+      "geometry": {
+        "x": 889,
+        "y": 721,
+        "disabled": false,
+        "inert": false,
+        "hit": true,
+        "visibility": "visible",
+        "opacity": "1",
+        "effectiveOpacity": 1,
+        "chromeOpacity": null,
+        "chromeClass": null,
+        "chromeVisibility": null,
+        "scroll": {
+          "x": 873,
+          "y": 497,
+          "delta": 224,
+          "needed": false
+        }
+      },
+      "input": {
+        "type": "pointerdown",
+        "wall": 3928.7999999970198,
+        "target": "INPUT",
+        "button": null,
+        "hint": null,
+        "graphs": 1,
+        "starts": 10,
+        "activation": true,
+        "control": {
+          "name": "시냇물",
+          "visibility": "visible",
+          "opacity": "1",
+          "effectiveOpacity": 1,
+          "chromeOpacity": null,
+          "chromeClass": null,
+          "chromeVisibility": null,
+          "hit": true
+        }
+      }
+    },
+    {
+      "label": "native button click: 세션 조절 닫기",
+      "at": "2026-10-04T22:45:34.137Z",
+      "geometry": {
+        "x": 1025,
+        "y": 141,
+        "disabled": false,
+        "inert": false,
+        "hit": true,
+        "visibility": "visible",
+        "opacity": "1",
+        "effectiveOpacity": 1,
+        "chromeOpacity": null,
+        "chromeClass": null,
+        "chromeVisibility": null,
+        "scroll": null
+      },
+      "input": {
+        "type": "pointerdown",
+        "wall": 3996.39999999851,
+        "target": "path",
+        "button": "",
+        "hint": null,
+        "graphs": 1,
+        "starts": 10,
+        "activation": true,
+        "control": {
+          "name": "세션 조절 닫기",
+          "visibility": "visible",
+          "opacity": "1",
+          "effectiveOpacity": 1,
+          "chromeOpacity": null,
+          "chromeClass": null,
+          "chromeVisibility": null,
+          "hit": true
+        }
+      }
+    },
+    {
+      "label": "stream identity from actual native fader and graph connections",
+      "originalStream": 0.07,
+      "changedStream": 0.11,
+      "restoredStream": 0.07,
+      "streamIdentity": {
+        "gainIds": [
+          69,
+          70
+        ],
+        "pannerId": 72,
+        "sourceChanges": [
+          {
+            "id": 69,
+            "target": 0.405,
+            "when": 0.7430385487528345,
+            "timeConstant": 0.08,
+            "wall": 3813.10000000149,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.48,
+            "when": 0.7430385487528345,
+            "timeConstant": 0.08,
+            "wall": 3813.10000000149,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0,
+            "when": 0.7662585034013606,
+            "timeConstant": 0.08,
+            "wall": 3835.60000000149,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0,
+            "when": 0.7662585034013606,
+            "timeConstant": 0.08,
+            "wall": 3835.60000000149,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.006750000000000001,
+            "when": 0.7894784580498866,
+            "timeConstant": 0.08,
+            "wall": 3848.7999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.008,
+            "when": 0.7894784580498866,
+            "timeConstant": 0.08,
+            "wall": 3848.7999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.013500000000000002,
+            "when": 0.7894784580498866,
+            "timeConstant": 0.08,
+            "wall": 3853.7000000029802,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.016,
+            "when": 0.7894784580498866,
+            "timeConstant": 0.08,
+            "wall": 3853.7000000029802,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.02025,
+            "when": 0.8126984126984127,
+            "timeConstant": 0.08,
+            "wall": 3871.7999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.024,
+            "when": 0.8126984126984127,
+            "timeConstant": 0.08,
+            "wall": 3871.7999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.027000000000000003,
+            "when": 0.8126984126984127,
+            "timeConstant": 0.08,
+            "wall": 3883.5,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.032,
+            "when": 0.8126984126984127,
+            "timeConstant": 0.08,
+            "wall": 3883.60000000149,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.03375,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3893.2999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.04000000000000001,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3893.2999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.0405,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3897.10000000149,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.048,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3897.10000000149,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.04725000000000001,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3900.2000000029802,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.05600000000000001,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3900.2999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.054000000000000006,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3903,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.064,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3903,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.06075,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3906.2999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.072,
+            "when": 0.8359183673469388,
+            "timeConstant": 0.08,
+            "wall": 3906.2999999970198,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.0675,
+            "when": 0.8591383219954648,
+            "timeConstant": 0.08,
+            "wall": 3909.5,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.08000000000000002,
+            "when": 0.8591383219954648,
+            "timeConstant": 0.08,
+            "wall": 3909.5,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 69,
+            "target": 0.07425000000000001,
+            "when": 0.8591383219954648,
+            "timeConstant": 0.08,
+            "wall": 3912.39999999851,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 69,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          },
+          {
+            "id": 70,
+            "target": 0.08800000000000001,
+            "when": 0.8591383219954648,
+            "timeConstant": 0.08,
+            "wall": 3912.39999999851,
+            "pannerId": 72,
+            "path": [
+              {
+                "id": 70,
+                "kind": "GainNode"
+              },
+              {
+                "id": 71,
+                "kind": "GainNode"
+              },
+              {
+                "id": 72,
+                "kind": "StereoPannerNode"
+              }
+            ]
+          }
+        ],
+        "excludedBusChanges": [
+          {
+            "id": 13,
+            "target": 0.4821844657705882,
+            "when": 0.7662585034013606,
+            "timeConstant": 0.08,
+            "wall": 3835.60000000149,
+            "pannerId": null
+          },
+          {
+            "id": 18,
+            "target": 0.4821844657705882,
+            "when": 0.7662585034013606,
+            "timeConstant": 0.08,
+            "wall": 3835.60000000149,
+            "pannerId": null
+          },
+          {
+            "id": 13,
+            "target": 0.4231950865797538,
+            "when": 0.7894784580498866,
+            "timeConstant": 0.08,
+            "wall": 3848.7999999970198,
+            "pannerId": null
+          },
+          {
+            "id": 18,
+            "target": 0.4231950865797538,
+            "when": 0.7894784580498866,
+            "timeConstant": 0.08,
+            "wall": 3848.7999999970198,
+            "pannerId": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "actual source panners before passive taps",
+      "spatial": {
+        "primary": {
+          "id": 33,
+          "frequency": 780,
+          "context": 1,
+          "clock": 0.18575963718820862,
+          "when": 0.18575963718820862,
+          "wall": 3243.7999999970198
+        },
+        "pans": [
+          {
+            "id": 30,
+            "pan": 0.5
+          },
+          {
+            "id": 23,
+            "pan": -0.38769277930259705
+          }
+        ],
+        "path": [
+          {
+            "id": 33,
+            "kind": "OscillatorNode"
+          },
+          {
+            "id": 37,
+            "kind": "BiquadFilterNode"
+          },
+          {
+            "id": 38,
+            "kind": "GainNode"
+          },
+          {
+            "id": 39,
+            "kind": "GainNode"
+          },
+          {
+            "id": 29,
+            "kind": "BiquadFilterNode"
+          },
+          {
+            "id": 30,
+            "kind": "StereoPannerNode"
+          },
+          {
+            "id": 19,
+            "kind": "GainNode"
+          },
+          {
+            "id": 21,
+            "kind": "GainNode"
+          },
+          {
+            "id": 22,
+            "kind": "BiquadFilterNode"
+          },
+          {
+            "id": 23,
+            "kind": "StereoPannerNode"
+          },
+          {
+            "id": 24,
+            "kind": "GainNode"
+          },
+          {
+            "id": 13,
+            "kind": "GainNode"
+          },
+          {
+            "id": 2,
+            "kind": "GainNode"
+          },
+          {
+            "id": 3,
+            "kind": "BiquadFilterNode"
+          },
+          {
+            "id": 4,
+            "kind": "DynamicsCompressorNode"
+          },
+          {
+            "id": 5,
+            "kind": "DynamicsCompressorNode"
+          },
+          {
+            "id": 6,
+            "kind": "WaveShaperNode"
+          },
+          {
+            "id": 7,
+            "kind": "GainNode"
+          },
+          {
+            "id": 1,
+            "kind": "AudioDestinationNode"
+          }
+        ],
+        "stream": [
+          {
+            "id": 72,
+            "pan": 0.3228657841682434
+          }
+        ],
+        "contexts": 1,
+        "clock": 0.9984580498866213
+      }
+    },
+    {
+      "label": "failure at actual scops primary ends left and stream layer pans right through the existing app engine",
+      "at": "2026-10-04T22:45:40.708Z",
+      "snapshot": {
+        "url": "http://127.0.0.1:4175/#/play/nature/scops_night",
+        "readyState": "complete",
+        "wall": 10568.39999999851,
+        "activation": {
+          "isActive": false,
+          "hasBeenActive": true
+        },
+        "hints": [],
+        "buttons": [
+          {
+            "text": "축소",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "링크 복사",
+            "label": "이 루틴 링크 복사",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "전체 화면",
+            "label": "전체 화면 보기",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "자연 보기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "그래픽 보기",
+            "label": null,
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "일시정지",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "세션 종료",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          },
+          {
+            "text": "",
+            "label": "세션 세부 조절 열기",
+            "disabled": false,
+            "inert": false,
+            "hidden": false
+          }
+        ],
+        "worlds": [
+          {
+            "tag": "DIV",
+            "classes": "absolute inset-0",
+            "attributes": {
+              "data-immersive-world-id": "nature:scops_night",
+              "data-world-callbacks": "0"
+            },
+            "rect": {
+              "width": 1066,
+              "height": 704
+            }
+          }
+        ],
+        "visibleText": "축소\n\nNOW PLAYING\n\n소쩍새 밤\n링크 복사\n전체 화면\n자연 보기\n그래픽 보기\n\n남은 시간\n\n29:59",
+        "audio": {
+          "contexts": 1,
+          "states": [
+            "running"
+          ],
+          "clocks": [
+            7.500045351473923
+          ],
+          "resumes": [
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": false,
+              "held": false,
+              "wall": 411.5
+            },
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": false,
+              "held": false,
+              "wall": 1612.7999999970198
+            },
+            {
+              "context": 1,
+              "state": "suspended",
+              "gesture": true,
+              "held": false,
+              "wall": 3087.7000000029802
+            }
+          ],
+          "media": [],
+          "graphs": 1,
+          "starts": [
+            {
+              "id": 26,
+              "context": 1,
+              "clock": 0.18575963718820862,
+              "wall": 3243.39999999851,
+              "loop": true,
+              "duration": 8,
+              "channels": 2,
+              "args": []
+            },
+            {
+              "id": 59,
+              "context": 1,
+              "clock": 0.18575963718820862,
+              "wall": 3244.2000000029802,
+              "loop": true,
+              "duration": 8,
+              "channels": 2,
+              "args": []
+            },
+            {
+              "id": 75,
+              "context": 1,
+              "clock": 0.18575963718820862,
+              "wall": 3246.10000000149,
+              "loop": true,
+              "duration": 8,
+              "channels": 2,
+              "args": []
+            },
+            {
+              "id": 78,
+              "context": 1,
+              "clock": 0.18575963718820862,
+              "wall": 3246.10000000149,
+              "loop": true,
+              "duration": 8,
+              "channels": 2,
+              "args": []
+            },
+            {
+              "id": 81,
+              "context": 1,
+              "clock": 0.18575963718820862,
+              "wall": 3246.2000000029802,
+              "loop": true,
+              "duration": 8,
+              "channels": 2,
+              "args": []
+            },
+            {
+              "id": 91,
+              "context": 1,
+              "clock": 0.18575963718820862,
+              "wall": 3246.39999999851,
+              "loop": false,
+              "duration": 8,
+              "channels": 2,
+              "args": [
+                0.18575963718820862,
+                6.978205594004703
+              ]
+            },
+            {
+              "id": 95,
+              "context": 1,
+              "clock": 0.2786394557823129,
+              "wall": 3347.7999999970198,
+              "loop": true,
+              "duration": 15.39997732426304,
+              "channels": 1,
+              "args": [
+                0,
+                8.293828387233964
+              ]
+            },
+            {
+              "id": 96,
+              "context": 1,
+              "clock": 0.301859410430839,
+              "wall": 3373.2000000029802,
+              "loop": true,
+              "duration": 24.055918367346937,
+              "channels": 2,
+              "args": [
+                0,
+                3.1905847167588024
+              ]
+            },
+            {
+              "id": 97,
+              "context": 1,
+              "clock": 0.3250793650793651,
+              "wall": 3390.7999999970198,
+              "loop": false,
+              "duration": 8,
+              "channels": 2,
+              "args": [
+                0.3250793650793651,
+                2.2795794665308104
+              ]
+            },
+            {
+              "id": 101,
+              "context": 1,
+              "clock": 0.626938775510204,
+              "wall": 3683.2999999970198,
+              "loop": false,
+              "duration": 8,
+              "channels": 2,
+              "args": [
+                0.626938775510204,
+                3.6381498998998767
+              ]
+            },
+            {
+              "id": 105,
+              "context": 1,
+              "clock": 0.9984580498866213,
+              "wall": 4050.2999999970198,
+              "loop": false,
+              "duration": 8,
+              "channels": 2,
+              "args": [
+                0.9984580498866213,
+                7.036032284648622
+              ]
+            },
+            {
+              "id": 118,
+              "context": 1,
+              "clock": 1.1377777777777778,
+              "wall": 4186.60000000149,
+              "loop": false,
+              "duration": 8,
+              "channels": 2,
+              "args": [
+                1.1377777777777778,
+                4.054550457733138
+              ]
+            },
+            {
+              "id": 122,
+              "context": 1,
+              "clock": 1.3699773242630386,
+              "wall": 4429.10000000149,
+              "loop": false,
+              "duration": 8,
+              "channels": 2,
+              "args": [
+                1.3699773242630386,
+                2.8372988070659186
+              ]
+            }
+          ],
+          "stops": [
+            {
+              "id": 91,
+              "clock": 0.18575963718820862,
+              "args": [
+                0.2771406938804304
+              ],
+              "wall": 3246.39999999851
+            },
+            {
+              "id": 97,
+              "clock": 0.3250793650793651,
+              "args": [
+                0.43389555617565984
+              ],
+              "wall": 3390.7999999970198
+            },
+            {
+              "id": 101,
+              "clock": 0.626938775510204,
+              "args": [
+                0.7725788489136682
+              ],
+              "wall": 3683.2999999970198
+            },
+            {
+              "id": 105,
+              "clock": 0.9984580498866213,
+              "args": [
+                1.118283430905066
+              ],
+              "wall": 4050.2999999970198
+            },
+            {
+              "id": 118,
+              "clock": 1.1377777777777778,
+              "args": [
+                1.2593124326111078
+              ],
+              "wall": 4186.70000000298
+            },
+            {
+              "id": 122,
+              "clock": 1.3699773242630386,
+              "args": [
+                1.4792087884441008
+              ],
+              "wall": 4429.10000000149
+            }
+          ],
+          "accents": [],
+          "masterPcm": {
+            "peak": 0.003588011022657156,
+            "rms": 0.0011849387551305464
+          },
+          "minimizeInputs": [],
+          "trustedInputs": [
+            {
+              "type": "pointerdown",
+              "wall": 3087,
+              "target": "BUTTON",
+              "button": "눌러서 재생",
+              "hint": "blocked",
+              "graphs": 0,
+              "starts": 0,
+              "activation": true,
+              "control": {
+                "name": "눌러서 재생",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": true
+              }
+            },
+            {
+              "type": "pointerdown",
+              "wall": 3409.2999999970198,
+              "target": "path",
+              "button": "",
+              "hint": null,
+              "graphs": 1,
+              "starts": 9,
+              "activation": true,
+              "control": {
+                "name": "세션 세부 조절 열기",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": "1",
+                "chromeClass": "pointer-events-none absolute inset-0 z-20 visible opacity-100",
+                "chromeVisibility": "visible",
+                "hit": true
+              }
+            },
+            {
+              "type": "pointerdown",
+              "wall": 3812.2999999970198,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": true
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3835.2000000029802,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3848.5,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3853.60000000149,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3871.39999999851,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3883.10000000149,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3892.89999999851,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3896.89999999851,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3900.10000000149,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3902.89999999851,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3906.2000000029802,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3909.39999999851,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3912.39999999851,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "pointerdown",
+              "wall": 3928.7999999970198,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": true
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3943.60000000149,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3951.7000000029802,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3954.7999999970198,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3965.60000000149,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3968.89999999851,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3972.2999999970198,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3975.60000000149,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "keydown",
+              "wall": 3978.60000000149,
+              "target": "INPUT",
+              "button": null,
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "시냇물",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": null
+              }
+            },
+            {
+              "type": "pointerdown",
+              "wall": 3996.39999999851,
+              "target": "path",
+              "button": "",
+              "hint": null,
+              "graphs": 1,
+              "starts": 10,
+              "activation": true,
+              "control": {
+                "name": "세션 조절 닫기",
+                "visibility": "visible",
+                "opacity": "1",
+                "effectiveOpacity": 1,
+                "chromeOpacity": null,
+                "chromeClass": null,
+                "chromeVisibility": null,
+                "hit": true
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Café semantic tap is the representative end-to-end audio bridge; this is not listening approval of30 mixes.",
+    "Source buffer/path measurements do not establish perceived loudness, naturalness or physical device output.",
+    "No screenshot or GPU performance pass is inferred from this run."
+  ],
+  "browserProcessId": 35,
+  "failure": {
+    "step": "actual scops primary ends left and stream layer pans right through the existing app engine",
+    "message": "Error: non-gesture DOM/audio observation: exceeded 5000ms",
+    "stack": "Error: non-gesture DOM/audio observation: exceeded 5000ms\n    at Timeout.<anonymous> (file:///workspace/scratch/448e5748a57d/integration-audit/verify-audio-bridge.mjs:44:138)\n    at listOnTimeout (node:internal/timers:635:17)\n    at process.processTimers (node:internal/timers:571:7)"
+  },
+  "sourceAfter": {
+    "head": "693f49529e0d5194710dbd8df10c59058491019c",
+    "builtIndexSha256": "878f5f2595630cc637845c65bc4aadb59fdf49d57769c27f45cc60952663c54e",
+    "builtAssets": {
+      "BrainwaveGuide-e30uayJ7.js": "e62eef1e2747bc363a82064014f11baef39d7119ebb6a04cb4ed856e7fc5c2da",
+      "BrainwaveGuidePage-yQuQ--Ar.js": "c2545f60d48c995e2f482dd52a9ed7554687152b1af9659adaf05c784b001b0b",
+      "CafeWorld-C9Qt3Lhc.css": "5f3115f07da313e97d715c3335327d03fc201ef5d257005a61462293eed5b30d",
+      "CosmicWorld-CYYMiYuf.css": "9054ee5b901493625b72b5555ca0004c96ab8bbe491b7ecf8450bff4ee39707d",
+      "DeepWaterView-Dd3CCiYP.css": "6b5818675eade70ecd2f1087249ec3506e456051110f11b10e906b6db6b16f0d",
+      "ForestWorld-BiYXXejK.css": "27df337ba71373e89d06e15207c98528408548f4fadb5571543e3f227a91d82a",
+      "ImmersiveMode-EF3DWvXS.js": "43dd749d975b22e05cc1e60cc29723760b945cf135c28f5398206b33a3f6d1ec",
+      "ImmersiveWorldSlot-DC_rdnzP.js": "a7eb31c86136353a2e935e1188506a2f082270873104a3d277416bd27b47c728",
+      "ImmersiveWorldSlot-DTqxEZbX.css": "e38a0e4c1d97736c0fe17042db93c39a024683a7d4d9f320aaba12325390d99b",
+      "KoreanWorld-ChQ9t79Y.css": "bc3cbbc60ee10c8697e47134e18d56833cb13a0ed319951bd3f2b41baa68a5fc",
+      "NatureMode-BSEGqfA2.js": "696cb6d059af8e38f7e84e6e124bd02f6db0a4fedc3b2ed9fba592f6d3a745c0",
+      "NightWorld-ZuciVTVz.css": "121b1f396cb1c1d4020bbe43379f6f654628cd518cc235e4fe431a427073541c",
+      "OilSeaScene-DCK9DiR6.css": "727cf536c3f5416ae697b779b335edef98dc1bbf76f69ea69981061bff1483c8",
+      "OilSeaScene-DORNoZ_M.js": "0e1c30cf488bd063593e4244382aa81a7d6dbfa7d3d4902a5adee44dba4afe50",
+      "Player-CWroABXs.js": "ae4feca6fdf0bec19f5ffd52ad3146c18b5563710799fb4c9f90877ba8468881",
+      "RainyWindowScene-DhrhEdoT.js": "5aed94024dc94dde9353a1ab02b9b3f36bbdf8d9837178e7064015e92fdcb9f7",
+      "RainyWindowScene-RbMGMCWm.css": "4f1113996c4e5ac39dbc580c194a4acf0896b952ae88511282d0649461669d0d",
+      "RoutineLibrary-Cy7US6QG.js": "5bcc580ad0a85dfd146c9ccff9dce4f2a37174f74697f98a09879858f7633aea",
+      "SanctuaryView-BkvmUDvh.css": "88ec64ac19c82a18432d4842663ab711a0cb379b00a03d13552d737f0cfd4ce0",
+      "SessionReflection-HxJg7MbR.js": "56859d4fdf00c3f8b357a3152f60f501abd673f629712644da1965ee8afe524f",
+      "SessionSetup-RbzKXszU.js": "5f31484cfdb978ca648115425256ae2f7c25680d0dcc0c614fd6e19cee83c584",
+      "SettingsView-Dk12nVzj.js": "0829b377d86e9d2cdaa36656ea02ebe896d57c577c702191e40bd9943af5442a",
+      "ShelterWorld-DS072ibN.css": "9fcc756b9257814deb0ee0ff764eb760b33179d0a53a3b8b3c510bac641de024",
+      "SoundFailureNotice-BPt8attz.js": "c849aa400e769ff7ad6738d0a968df6408f48dac38387ae5345757afb6f54fd2",
+      "SoundLayerPicker-fQOwQa1I.js": "5e118438294ed98e12d16a7dfa50ce9eb33c3cbc34191cf3330c6092c3f4ec08",
+      "StatsDashboard-PFHdrfiI.js": "ec364f2cadf4e6980c526ca87a581eeda40bc741bbbb5bd4963790d611ac2f43",
+      "Toggle-JnqQKU9_.js": "21fbb8dbc0c27c4803816367de9a05a5221f1a6228d3a5172f3383566ec34545",
+      "VolumeSlider-CvfWQ7XM.js": "ea88a169e1ba8266f9ba5fdda2cbc29828ba0fc9a93844466d1b3a7d1d6d7ad9",
+      "WorldSurface-C-tstfzs.css": "ccad5e0dce9e1c2d63f1d25a40c1de0db14cb438ca160355e53b7ce9ceecfb63",
+      "WorldView-Ccq85m0N.css": "a8db9b5fbe5c06c6bfa537462956fdc4dc0c9d74fc79d498ebc7409ec9aa82e3",
+      "arrow-right-8Aij_2AC.js": "a7b76f0cda95c9444168786b3ac54c875b664644f178d458f8ea005e2e6c5fce",
+      "experience-BjkFeIbM.js": "f4971648857f98667b7589214314f4432f5d6dfa7af09616defef3ad299c2e37",
+      "immersiveSessionBridge-CUQTbsW6.js": "cca54daee9c1f9826a02dab1f7d9a2267aefa390cdf177dcab95ed266a717258",
+      "index-DFSibu4A.js": "10da8ba2012686f5e0819431da4d9c4e152d9812d702571f9b5e1477b88acd05",
+      "index-Dxjefzym.css": "459a90145445d9802d6e64fbe847bfc0943e7bd8e65510a1956304c37a3b7593",
+      "look-CY0gEWsC.js": "337f8ea02ddbefb4315478c74e3da5f4a77f00fe58a83ef8675770712820ddeb",
+      "materials-DFmtbpTc.css": "288d5da5e236588082212d8f4561aff1d0cd99f976811f234736a9a687ab89ca",
+      "quality-Bjokd3qe.js": "f7de5ed31732657c5cca6528a14a30cc9048158ee71d51ea96ca29fe7bb0ec32",
+      "three--Qrk24iT.js": "29ecb6d7aaa2f0a7c76b85be4ce36af2ad05b02b28d121f74a157e65bdd0e403",
+      "three-B94qB-g_.js": "98a917cac242c5609d70faab3e5780a56372800f9a7cc81ad087181364ad7fa0",
+      "three-BcXOOer8.js": "3c06c474494a62811c946e334bff7f9aad317498a2b36d26d1916ac2104a8be2",
+      "three-FvgWsoYT.js": "1b081f04664c18ba4388bc92c9573a83e1ea3b55ab931bb55b543d1c6958db91",
+      "useLookDrag-D1QpQtiu.js": "e85834289b023af74c340bd643603f0823e02cc17c437732de00ff4e5ca7e18f",
+      "workbox-window.prod.es5-BBnX5xw4.js": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557",
+      "world-AncientForestWorld-BfT-XUTD.js": "ab59f51a9de0ba5fe292a99d7e72b993e4149d6aad11556578f90b1b02121756",
+      "world-BambooWorld-BgXaTgvg.js": "ef1b5abe287a2544486412cc55cb5435d1de29ce851a0e93814f764d37761bea",
+      "world-CafeWorld-f2ykcV2Y.js": "6be2bf0b4b2679e71f6e3a2fd7d3fc2779841025d351a112ac5549d83beeeb52",
+      "world-CaveWorld-BEYOPO81.js": "eb548d14246323f003465aa66cdb0b941c20b95d3bf85885dc144364a192f268",
+      "world-CosmicWorld-CQJND7AO.js": "276e1a3d0e08453c15c83da867934dda4866020bdae23df7d2c094e2a4a154f0",
+      "world-DeepNightWorld-DQIRZuO7.js": "ed615f89de6bafbd02a6ce5a0630e671cce68811301b8a7a31a394ff099a84de",
+      "world-DeepSeaWorld-CieMUhea.js": "ba98e0fb3f876f20eaa73da3d07954c7fb0854beba5a9178450d151207eae41f",
+      "world-DeepWaterView-DQng8vQ5.js": "9db7476a0efbfff726ce2fafbadeec5d4feafcfecb45fd567fc00e65664efcb2",
+      "world-ForestWorld-DepLp5bw.js": "85c62249b97e5fc56faadd010464e96c1a96bfceb544eae8553ee6771178bc3f",
+      "world-GardenWindowWorld-DPFE9p2q.js": "1503d3e14b69d7f81d2a8cbf3802dacee2247b8b19562d20d48bfdb42a55ab3a",
+      "world-HearthWorld-SSZXYbCY.js": "8ae8093188c7091b8f4755776180f5abf3af858d3089737c683f73e31ad104c6",
+      "world-KoreanWorld-D1XKfW1n.js": "f95ab9c81773990c475c807db13daa5e5ae9c6e16f875781cfbf663e9876d327",
+      "world-LakesideCampWorld-Ds130w01.js": "a00df329edd854935e98c54d102188c39a83c0334b83bc49389645f44c907723",
+      "world-MeditationCourtWorld-DmfA9MNk.js": "baac1fe8c584736dd1ca0e49b4cecdc1c270d3a5eed54ebd7850f0a45d346dcd",
+      "world-MonsoonPorchWorld-CGxpX51D.js": "419d60ed971c5278ba034ac6c040e690e20ebfb1297b2dd59fa5a504039c5ee1",
+      "world-MorningPorchWorld-D-DtOQWv.js": "20b8552307d60dfa81089523d0b7099a13d56ba7f0154c4183d17a65ae200798",
+      "world-MountainCampfireWorld-PKSSTCOi.js": "e6d3335701c67cc979fe8bcb1b09da3e305229563c627ef540b156f5d1c2e380",
+      "world-NapTerraceWorld-B-y0t0vr.js": "2992f557f0dc419b2b0e08d1e5ec277dc35967cc22d5d68f32f6d87dcfc5fbbb",
+      "world-NightPondWorld-C0eOuane.js": "1af264ef4cfa43513db5f5ca00f58b99dbcfe9cb23b8df3ece9db4579f730857",
+      "world-NightWorld-B71hziAx.js": "071d3ef7c074db1668c63c5f03fd60ad1ff879b7b2d60edc5b9fb9a1ffcd2d4e",
+      "world-PebbleShoreWorld-JiUtRY4r.js": "8588575d90d82afa2cb5508f41056c8da9ec91de970d8673ad78689f6d92e963",
+      "world-RainTentWorld-CmhdRkp-.js": "b1763da703d996edee1090105eb9ead0ba7c295aed61a6742ff7ad1ee6b0b140",
+      "world-RainyForestWorld-1iXoEU4I.js": "f1070e49e154d13d7ecc62afe68da0ba2c9599870d0bcf34b25c36725c22d199",
+      "world-RuralSummerNightWorld-qFu4vnoy.js": "7f986d798fb9670fc3fef3829353c993213c879ae09ca3166a181cc23a85ad54",
+      "world-SanctuaryView-OXBKcPPP.js": "2f25161723de708496ae2033a63dee94fbab83a66501efbb4bf9f74e5240bf09",
+      "world-ScopsNightWorld-CJYKhOmd.js": "426124c2fccea470aaa434a17232e87ae828d8b0269019f5899844230b49e3f8",
+      "world-ShelterWorld-CGlwRV_e.js": "723841802b08430131e7be91262aaede89a82a9b568d3511129b2914076199ad",
+      "world-SleepRoomWorld-CPy1pMEs.js": "2db95faee725c280453a01dc38b7b9615c89dcfd73b786d16b79f1d8e7d5de15",
+      "world-SnowVillageWorld-CSDz7jDC.js": "cefe5aa5bcd3912b4eaefffed8da63147c026b7e8cf1a5d0756b7d72543c3324",
+      "world-SummerStormWorld-6bF-fJH-.js": "cb2657e111844f9596abbe98bb7e9aac9836f5a25e3ad3256a4ee5361310afa9",
+      "world-SummerValleyWorld-CpDNSI_Y.js": "eae6a0f5724504e5aa6cc7be8fcd6beb1cc80516b013f0dd78ef94a64cff536e",
+      "world-TempleWorld-F8v-UYK-.js": "58ea6e2a0a70640a9ee64574920f320b7ee2bca2e355f6298ec6e75c3790b179",
+      "world-WarmHeartWorld-BxeUp9VA.js": "2ae9ad2e58301a86fa11156638cce959fa3ddb10513e8283c7a2991742371594",
+      "world-WaterfallWorld-psYCkGvo.js": "1a0322d90e05b603501dee3e643f3694cfd6631bc6baf2425138b0697b472a23",
+      "world-WinterLodgeWorld-BtYMAQhe.js": "96e9afa3d82e00099d84e165e5672813fb0c94e306ca466eef386d30893db533",
+      "world-WorldSurface-3Jy_JejU.js": "40e36c9676816b19d973c54b799444ad9280023c02bb3001579ad3b534da5779",
+      "world-WorldView-CPGfnrUk.js": "3288a0d13f4ae2c7d2ec4e65401d35192a500b271044f091465851b1343f4468",
+      "world-cave-BfOZXQTt.js": "1894fd3952ba67098c98dcddcd5403383994d7502fa212d45c03e3ce2af16748",
+      "world-environment-DJQPnrUh.js": "6d49a1e5a5a0107a1ee391a50687b14da0c52ddc0067c2d6c2b4ee82523c67cd",
+      "world-fireDetail-Bz-rK0sF.js": "454b31ecca23766bc81f067b0799281558e182112287b84b924b03770303f18e",
+      "world-materials-DQyvN8Su.js": "135147cfcdf7d9b2a8004b8715d7aa913c9e8e854681d911a5d0c15cd96a44b1",
+      "world-renderTargets-B1PDlCOP.js": "ada2f939112bc9a99880271d624c599c2375dfc449089edd1d5bb0acf7691de1",
+      "world-rural-BmypkKDO.js": "6d11128acf66c172d2f1e22e84dc2ad77440cfecd79b6338b3138f2a68dd354b",
+      "world-scops-B80Xok_R.js": "a1a04bf15a62aba53e00b9dfc253b1a76cbc817e00ccbce5189773653e5e2f0b",
+      "world-sea-CVZMpvVf.js": "61aebfa4382bd97d744f2deda9d92fe720139d52bf9ddcff1928ff05b5a02d63",
+      "world-temple-05YLaH40.js": "6ee72792348aec5e03617a599e828835eb095b652469b3121bfb2b574dc92383",
+      "world-waterfall-Dh2vhhnF.js": "86bd14d534c57d2160cbc82c8a0f4fb37f6663e2b28168037d73729b6db1bc26"
+    },
+    "files": {
+      "App.tsx": "2a65e2963b9344dfbd73f2dfa47edca7adfc3b0674affcdbb57115caf1e90ba9",
+      "components/Player.tsx": "a90335757d6b9b67ff91fe7784f4548e63e2706cc2009ac79a11596e3024aa37",
+      "components/ImmersiveMode.tsx": "13384e202e7d6b2e596c35ad8dfa7ed9a41bc4bb70fbf21913bc07666dc9bd8e",
+      "sceneLayout.ts": "0de619c6184e1565f973b204afbf31a2e9cc92874cc6f36b5158f6df7f687df0",
+      "components/immersiveWorlds/koreanPlaces/scenes/scops.ts": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996",
+      "components/immersiveWorlds/koreanPlaces/WorldEngine.ts": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade",
+      "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a",
+      "services/audioEngine.ts": "69a2ac927ed5a86cead1ab50e49599ab7806e58cba71f6ad083c496d2d12e020",
+      "services/freshImmersiveSelection.ts": "21efe50b50d3e601efbfb196386ff91bb815f22d65325f06ca5153e8730f9be2",
+      "services/immersiveBridgeLoader.ts": "c612f4c2b2d99c05e39ddad8d112cc91387677754f779cc29a76b36798c2a98e",
+      "services/immersiveSessionBridge.ts": "d07fe121ec3dfe18a565528faef09a98b0e1c3f21ed85967b3e051f9b210bf52",
+      "components/immersiveWorlds/useImmersiveAudioBridge.ts": "4ee8909fa9859a94403269f0d432af758e008632ada85cf849e025f2a53ceac6",
+      "services/immersiveAudio/controller.ts": "b1a99b11c2eda2ad3a581040b704452d2666ae414c2c8c924278fbc322e62751",
+      "services/immersiveAudio/profiles.ts": "09cca1460d48468109ee035c2bf2a18e157b515ee7bbcc69e956025ff3ea32a8",
+      "services/immersiveAudio/interaction.ts": "47cac9bf6117e6f6a659ddf4f86a347793e00e0e154ea5e226ca3f1151312b65",
+      "components/immersiveWorlds/cafe/CafeEngine.ts": "5c6617559f37c8f39f05da6d99600479c5917316620218e8db52f62bd40ada74",
+      "components/NatureMode.tsx": "e91bcd6b6cc27883bd6de89049187ec599102c8e792de7c31270d486cdb54032"
+    }
+  },
+  "servedBuildMatch": {
+    "checked": 17,
+    "mismatches": []
+  },
+  "finishedAt": "2026-10-04T22:45:55.753Z"
+}

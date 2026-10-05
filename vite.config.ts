@@ -1,4 +1,5 @@
 import path from 'path';
+import { readFile } from 'node:fs/promises';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -48,8 +49,27 @@ export default defineConfig(({ mode }) => {
             // Nature plates and cutouts are loaded per scene. Keeping them out
             // of the initial precache prevents the first visit from downloading
             // the entire illustration library.
-            globIgnores: ['**/images/nature/**', '**/assets/RainyWindowScene-*.js', '**/assets/OilSeaScene-*.js', '**/assets/three-*.js'],
+            globIgnores: ['**/images/nature/**', '**/immersive-worlds/**', '**/assets/world-*', '**/assets/immersiveSessionBridge-*.js', '**/assets/RainyWindowScene-*.js', '**/assets/OilSeaScene-*.js', '**/assets/three-*.js'],
+            // CSS chunk names can come from a shared material/view module.
+            // Use the emitted manifest, not guessed names, to keep all owned
+            // world styles on demand along with their actual renderer chunks.
+            manifestTransforms: [async (entries) => {
+              const manifest = JSON.parse(await readFile(path.resolve('dist/.vite/manifest.json'), 'utf8')) as Record<string, { file: string; css?: string[] }>;
+              const deferred = new Set(Object.values(manifest).filter(entry => /^assets\/(?:world-|RainyWindowScene-|OilSeaScene-)/.test(entry.file)).flatMap(entry => entry.css ?? []));
+              return { manifest: entries.filter(entry => !deferred.has(entry.url)), warnings: [] };
+            }],
             runtimeCaching: [
+              {
+                // Approved world chunks/assets are fetched on entry, never
+                // all thirty worlds at PWA installation time.
+                urlPattern: /\/(?:assets\/(?:world-[\w-]+|immersiveSessionBridge-[\w-]+)\.js|assets\/[\w-]+\.css|immersive-worlds\/.*\.(?:webp|png|jpe?g|avif|ktx2|glb|gltf|bin|hdr))$/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'immersive-worlds-v1',
+                  expiration: { maxEntries: 96, maxAgeSeconds: 60 * 60 * 24 * 90 },
+                  cacheableResponse: { statuses: [0, 200] },
+                },
+              },
               {
                 // The real-time scenes (the rainy study, the painted seaside) and
                 // three.js are fetched only when their routine plays, then kept
@@ -107,12 +127,17 @@ export default defineConfig(({ mode }) => {
         }),
       ],
       build: {
+        manifest: true,
         rollupOptions: {
           output: {
             // three.js is shared by the real-time scenes and split into a chunk
             // of its own; name it so the service worker can leave it to load
             // with the first scene that needs it.
-            chunkFileNames: (chunk) => (!chunk.isDynamicEntry && chunk.moduleIds.some((id) => id.includes('/node_modules/three/')) ? 'assets/three-[hash].js' : 'assets/[name]-[hash].js'),
+            chunkFileNames: (chunk) => {
+              if (!chunk.isDynamicEntry && chunk.moduleIds.some((id) => id.includes('/node_modules/three/'))) return 'assets/three-[hash].js';
+              if (chunk.moduleIds.some((id) => /\/components\/immersiveWorlds\/[^/]+\//.test(id))) return 'assets/world-[name]-[hash].js';
+              return 'assets/[name]-[hash].js';
+            },
           },
         },
       },

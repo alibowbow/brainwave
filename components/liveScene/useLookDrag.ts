@@ -18,7 +18,10 @@ export function useLookDrag<E extends LiveSceneEngine>(
     const root = rootRef.current;
     const holder = holderRef.current;
     if (!enabled || !root || !holder) return undefined;
-    const surface = root.closest<HTMLElement>('[data-scene-surface]') ?? root;
+    // A world may mark its own surface for a standalone harness. Inside the
+    // player, include the surrounding chrome's transparent drag targets too.
+    const surface = root.parentElement?.closest<HTMLElement>('[data-scene-surface]')
+      ?? root.closest<HTMLElement>('[data-scene-surface]') ?? root;
     let drag: { id: number; x: number; y: number } | null = null;
 
     const move = (event: PointerEvent) => {

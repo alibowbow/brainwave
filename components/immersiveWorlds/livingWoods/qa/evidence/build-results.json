@@ -1,0 +1,61 @@
+{
+  "codeRevision": "e29bcf6bb17c5852178a3060584195121543c109",
+  "baseRevision": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+  "typecheck": {
+    "command": "npm run typecheck",
+    "exitCode": 0
+  },
+  "unitTests": {
+    "command": "npm test -- --reporter=dot",
+    "exitCode": 0,
+    "filesPassed": 24,
+    "filesSkipped": 1,
+    "testsPassed": 149,
+    "testsSkipped": 1,
+    "skipExplanation": "Browser wrapper is opt-in; actual browser contract is executed separately by qa/run.mjs."
+  },
+  "existingAppBuild": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "scope": "Existing shared app; new entries remain isolated until the integration Work wires the registry."
+  },
+  "bundleBudget": {
+    "command": "npm run check:bundle",
+    "exitCode": 0,
+    "initialJavaScriptKiB": 402.6,
+    "initialJavaScriptBudgetKiB": 410,
+    "cssKiB": 99.5,
+    "cssBudgetKiB": 135
+  },
+  "ownership": {
+    "passed": true,
+    "changedTrackedPaths": [
+      "components/immersiveWorlds/livingWoods/AncientForestWorld.tsx",
+      "components/immersiveWorlds/livingWoods/BambooWorld.tsx",
+      "components/immersiveWorlds/livingWoods/INTEGRATION.md",
+      "components/immersiveWorlds/livingWoods/MorningPorchWorld.tsx",
+      "components/immersiveWorlds/livingWoods/REFERENCE_REVIEW.md",
+      "components/immersiveWorlds/livingWoods/RainyForestWorld.tsx",
+      "components/immersiveWorlds/livingWoods/WorldSurface.tsx",
+      "components/immersiveWorlds/livingWoods/engine.ts",
+      "components/immersiveWorlds/livingWoods/gesture.test.ts",
+      "components/immersiveWorlds/livingWoods/gesture.ts",
+      "components/immersiveWorlds/livingWoods/host.ts",
+      "components/immersiveWorlds/livingWoods/livingWoods.browser.test.ts",
+      "components/immersiveWorlds/livingWoods/livingWoods.css",
+      "components/immersiveWorlds/livingWoods/qa/.gitignore",
+      "components/immersiveWorlds/livingWoods/qa/README.md",
+      "components/immersiveWorlds/livingWoods/qa/diagnose-motion.mjs",
+      "components/immersiveWorlds/livingWoods/qa/harness.tsx",
+      "components/immersiveWorlds/livingWoods/qa/index.html",
+      "components/immersiveWorlds/livingWoods/qa/run.mjs",
+      "components/immersiveWorlds/livingWoods/scenes/ancientForest.ts",
+      "components/immersiveWorlds/livingWoods/scenes/bamboo.ts",
+      "components/immersiveWorlds/livingWoods/scenes/morningPorch.ts",
+      "components/immersiveWorlds/livingWoods/scenes/rainyForest.ts",
+      "components/immersiveWorlds/livingWoods/types.ts"
+    ],
+    "protectedOrSharedChanges": []
+  },
+  "sceneBuild": "See report.json for independent production build and exact bundle SHA-256."
+}

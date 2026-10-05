@@ -1,0 +1,42 @@
+{
+  "gitHead": "af147afa0c0565dbc0fa5afcfc98fd5c4fc4e408",
+  "at": "2026-10-04T22:21:01.658910+00:00",
+  "results": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "log": "gate-1-typecheck.log"
+    },
+    {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0,
+      "log": "gate-2-test.log"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "log": "gate-3-build.log"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "check:bundle"
+      ],
+      "exitCode": 0,
+      "log": "gate-4-check-bundle.log"
+    }
+  ],
+  "passed": true
+}

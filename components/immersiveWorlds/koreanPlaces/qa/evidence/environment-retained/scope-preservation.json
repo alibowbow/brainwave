@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "artifact": "KoreanPlaces environment compatibility scope preservation",
+  "createdAtUtc": "2026-10-04T22:51:02.099192+00:00",
+  "reviewer": "independent read-only ownership_check agent",
+  "refs": {
+    "testedSource": "cb0e122e6d7a5f9b65b60f0b0237440ba0ecf935",
+    "acceptedBaseline": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+    "originalBranchHead": "0e09a28a175b0aab8a52443c14a506f54b6998ee",
+    "inheritedMain": "14940149cc5c0fccb778b58d4d755a04aea55e53"
+  },
+  "testedSourceTree": "6d1a59833493763c69c0cfb396ce2b54a5abab90",
+  "method": "Read immutable git objects; compare modes/types/blob identities and exact file bytes; inspect the complete accepted-baseline-to-tested-source production diff. This file is evidence only.",
+  "scope": {
+    "ownedPrefix": "components/immersiveWorlds/koreanPlaces/",
+    "allTrackedChangesWithinOwnedPrefix": true,
+    "changedPathCount": 9,
+    "changes": [
+      {
+        "status": "M",
+        "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts"
+      },
+      {
+        "status": "A",
+        "path": "components/immersiveWorlds/koreanPlaces/environment.test.ts"
+      },
+      {
+        "status": "A",
+        "path": "components/immersiveWorlds/koreanPlaces/environment.ts"
+      },
+      {
+        "status": "M",
+        "path": "components/immersiveWorlds/koreanPlaces/qa/README.md"
+      },
+      {
+        "status": "A",
+        "path": "components/immersiveWorlds/koreanPlaces/qa/environmentQA.ts"
+      },
+      {
+        "status": "M",
+        "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx"
+      },
+      {
+        "status": "M",
+        "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs"
+      },
+      {
+        "status": "M",
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts"
+      },
+      {
+        "status": "M",
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts"
+      }
+    ],
+    "productionChanges": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "gitBlob": "db4e28612baae0f1b37fd888231867c64a8da9da",
+        "bytes": 7219,
+        "sha256": "37ef6d71fa94d47582c83d0c5ce7dea610e854755b16ebd8b5756aaab0cc8c9c",
+        "status": "M",
+        "acceptedBaseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+          "gitBlob": "ecb76c109f5cd714839520118373d5fea8008222",
+          "bytes": 7177,
+          "sha256": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade"
+        }
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/environment.ts",
+        "gitBlob": "1c264bdb75e195cedd1fc3f42a3d905f433f7267",
+        "bytes": 10609,
+        "sha256": "ae7cf184ec217e1402b5b2c03170a733f718e19b74ced10b7e45d8f1b5fce92d",
+        "status": "A",
+        "acceptedBaseline": null
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "gitBlob": "b1881dd6e57f4acd6fd5e0ebe759d209ef29896b",
+        "bytes": 33422,
+        "sha256": "ed4d40a721d640f0ec24abb67e1704f203bb7488e8345e18a3e2a70689db673e",
+        "status": "M",
+        "acceptedBaseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+          "gitBlob": "1f46e3c6496c0f475857bc772d2a1f7820900212",
+          "bytes": 33201,
+          "sha256": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996"
+        }
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+        "gitBlob": "c133f23e2e0045860186a1a933b1847a154d4698",
+        "bytes": 51309,
+        "sha256": "86eaac8f10b2f23da10e2f25318215d4999322a4a7785b25db85231ebd1055af",
+        "status": "M",
+        "acceptedBaseline": {
+          "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+          "gitBlob": "7602071ca66dfb1d81fffd2d52bc4ec8d980475c",
+          "bytes": 51085,
+          "sha256": "94a3cf03259bc54cefbeb10abc8619dc717a505f373709ac1f519101302a8cdc"
+        }
+      }
+    ],
+    "publicChanges": [],
+    "remoteHeadGuardPerformed": false,
+    "remoteHeadGuardNote": "No remote status claim is made here. Root performs the final publication guard separately."
+  },
+  "mainInheritance": {
+    "baseRef": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+    "trackedPathsChecked": 212,
+    "allModesTypesAndGitObjectsIdentical": true,
+    "mismatches": [],
+    "baseListingSha256": "96a79eacacce4c7366b911732cffcf7109cebfbffe351b0dd6a80ced4eafe048",
+    "testedListingSha256": "96a79eacacce4c7366b911732cffcf7109cebfbffe351b0dd6a80ced4eafe048",
+    "mainIsAncestor": true,
+    "additionalPathsVsMain": 91,
+    "additionalPathsAreOnlyOwnedKoreanPlaces": true,
+    "meaning": "Every path already tracked by the specified main commit is unchanged. The tested tree additionally contains KoreanPlaces files; the complete tree is not identical to main."
+  },
+  "protected": {
+    "sharedLiveSceneCore": {
+      "prefix": "components/liveScene/",
+      "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "trackedPathsChecked": 4,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "55a1abcf140810fe4ed3f6918e7aa0e1ae92bdcc0331d4e586136acc05c2c3e1",
+      "testedListingSha256": "55a1abcf140810fe4ed3f6918e7aa0e1ae92bdcc0331d4e586136acc05c2c3e1"
+    },
+    "rainyWindow": {
+      "prefix": "components/rainyWindow/",
+      "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "trackedPathsChecked": 22,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "72fd7b781684e9721a7c9ba88678971d2f260095c9ba56c30261aa954e439466",
+      "testedListingSha256": "72fd7b781684e9721a7c9ba88678971d2f260095c9ba56c30261aa954e439466"
+    },
+    "oilSea": {
+      "prefix": "components/oilSea/",
+      "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "trackedPathsChecked": 22,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "155e5c20df49c01d8f055a05fbde6e09afeccb1fa82dce429ff04d36f31c0516",
+      "testedListingSha256": "155e5c20df49c01d8f055a05fbde6e09afeccb1fa82dce429ff04d36f31c0516"
+    },
+    "existingNatureScenesAndRouting": {
+      "prefix": "components/nature/",
+      "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "trackedPathsChecked": 2,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "9d117c61d8f65f74c41397a1ad554c1bb78f68013d13921f46ca41ed9e31fed6",
+      "testedListingSha256": "9d117c61d8f65f74c41397a1ad554c1bb78f68013d13921f46ca41ed9e31fed6"
+    },
+    "allPublicAssets": {
+      "prefix": "public/",
+      "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "trackedPathsChecked": 75,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "ae79eecddc73132a0aeac8caba7b4383c9c2f1c43f1877674eb00286ff528459",
+      "testedListingSha256": "ae79eecddc73132a0aeac8caba7b4383c9c2f1c43f1877674eb00286ff528459"
+    },
+    "trackedAGENTS": {
+      "paths": [],
+      "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "trackedPathsChecked": 0,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "testedListingSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "note": "No tracked AGENTS.md path exists in this accepted snapshot."
+    },
+    "allPathsOutsideOwnedDirectory": {
+      "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+      "trackedPathsChecked": 212,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "96a79eacacce4c7366b911732cffcf7109cebfbffe351b0dd6a80ced4eafe048",
+      "testedListingSha256": "96a79eacacce4c7366b911732cffcf7109cebfbffe351b0dd6a80ced4eafe048"
+    },
+    "allOriginalPathsOutsideOwnedDirectory": {
+      "baseRef": "0e09a28a175b0aab8a52443c14a506f54b6998ee",
+      "trackedPathsChecked": 212,
+      "allModesTypesAndGitObjectsIdentical": true,
+      "mismatches": [],
+      "baseListingSha256": "96a79eacacce4c7366b911732cffcf7109cebfbffe351b0dd6a80ced4eafe048",
+      "testedListingSha256": "96a79eacacce4c7366b911732cffcf7109cebfbffe351b0dd6a80ced4eafe048"
+    }
+  },
+  "ruralSource": {
+    "tested": {
+      "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+      "gitBlob": "24ed1469c94472c6be14f12172cf49b813b77a19",
+      "bytes": 41411,
+      "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+    },
+    "acceptedBaseline": {
+      "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+      "gitBlob": "24ed1469c94472c6be14f12172cf49b813b77a19",
+      "bytes": 41411,
+      "sha256": "3514e55760822e785482eaa87781a97b120c4699bf5ffd48aa6b1e847f315b22"
+    },
+    "originalBranch": {
+      "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+      "gitBlob": "80792a24c63d6fe30e0f7e3e3c2207d6b08ecd3b",
+      "bytes": 35222,
+      "sha256": "7c32027e736c98501f0b30af5be0abd911c0db6ce4b6d319110fb0e51176dcfe"
+    },
+    "unchangedVsAcceptedBaseline": true,
+    "unchangedVsOriginalBranch": false,
+    "note": "The accepted baseline already contains the previous approved rural cloud polish. This environment-only correction does not change that rural source."
+  },
+  "ruralPublicOriginals": [
+    {
+      "path": "public/audio/nature/rural-crickets-jun-v1.mp3",
+      "gitBlob": "28cf3de4151f0b9e86a76f82ee1d9ff179f1f864",
+      "bytes": 727533,
+      "sha256": "a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c",
+      "sha256ByRef": {
+        "testedSource": "a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c",
+        "acceptedBaseline": "a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c",
+        "originalBranchHead": "a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c",
+        "inheritedMain": "a4659b256c675494ae51090ae2c4e13dae9e8f5fab9267dba0949d4029f63f9c"
+      },
+      "unchangedAcrossAllFourRefs": true
+    },
+    {
+      "path": "public/images/nature/backgrounds/rural-ghibli-v9.webp",
+      "gitBlob": "a4c689a38708bd854b778e35beee343dffdf1343",
+      "bytes": 246052,
+      "sha256": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+      "sha256ByRef": {
+        "testedSource": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+        "acceptedBaseline": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+        "originalBranchHead": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295",
+        "inheritedMain": "aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295"
+      },
+      "unchangedAcrossAllFourRefs": true
+    }
+  ],
+  "scenePreservation": [
+    {
+      "scene": "temple",
+      "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+      "onlyEdits": [
+        "helper import",
+        "internal factory renderer parameter",
+        "existing environment source delegated to checked native PMREM",
+        "owned environment dispose callback"
+      ],
+      "reversingOnlyThoseEditsReproducesExactAcceptedBaselineBytes": true,
+      "reconstructedBaselineSha256": "94a3cf03259bc54cefbeb10abc8619dc717a505f373709ac1f519101302a8cdc",
+      "acceptedBaselineSha256": "94a3cf03259bc54cefbeb10abc8619dc717a505f373709ac1f519101302a8cdc",
+      "gradientAndCanvasSetupUnchanged": true,
+      "gradientAndCanvasSetupSha256": "5759b9de665e717c7e2d55b913f7190ddf418331bee4926b4cee90765c96d726",
+      "environmentIntensityUnchanged": true,
+      "environmentIntensity": "0.7",
+      "dimensionsUnchanged": {
+        "source": [
+          512,
+          256
+        ],
+        "outputAndPingPong": [
+          384,
+          512
+        ],
+        "cubeSize": 128
+      },
+      "artGeometryMaterialsCameraLightsInteractionsUnchanged": true
+    },
+    {
+      "scene": "scops",
+      "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+      "onlyEdits": [
+        "helper import",
+        "internal factory renderer parameter",
+        "existing environment source delegated to checked native PMREM",
+        "owned environment dispose callback"
+      ],
+      "reversingOnlyThoseEditsReproducesExactAcceptedBaselineBytes": true,
+      "reconstructedBaselineSha256": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996",
+      "acceptedBaselineSha256": "6e0450f330a3ce0870a34abf4ccdfdaedd2db0e7b12c37b61beb53ab5e586996",
+      "gradientAndCanvasSetupUnchanged": true,
+      "gradientAndCanvasSetupSha256": "95591a4b6a9c341aa685f31c78e2e1a8957f987214381b9b03d072dcdc873ae2",
+      "environmentIntensityUnchanged": true,
+      "environmentIntensity": "0.28",
+      "dimensionsUnchanged": {
+        "source": [
+          256,
+          128
+        ],
+        "outputAndPingPong": [
+          336,
+          256
+        ],
+        "cubeSize": 64
+      },
+      "artGeometryMaterialsCameraLightsInteractionsUnchanged": true
+    }
+  ],
+  "worldEnginePreservation": {
+    "onlyEdits": [
+      "internal factory type accepts renderer",
+      "pass the existing renderer to the factory"
+    ],
+    "reversingOnlyThoseEditsReproducesExactAcceptedBaselineBytes": true,
+    "reconstructedBaselineSha256": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade",
+    "acceptedBaselineSha256": "2f6de4293392d8f07e0cd761a16ef2e0c4ae0e3d23fb6808b9f974a1a858aade",
+    "renderQualityAndLifecycleBodyUnchanged": true
+  },
+  "entryInputAndTypesPreservation": {
+    "baseRef": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+    "trackedPathsChecked": 7,
+    "allModesTypesAndGitObjectsIdentical": true,
+    "mismatches": [],
+    "baseListingSha256": "9e2fb9a7b724f62eb4986b251a1e69cbab744e3488f174dc75a6e33f53f0d4e0",
+    "testedListingSha256": "9e2fb9a7b724f62eb4986b251a1e69cbab744e3488f174dc75a6e33f53f0d4e0",
+    "paths": [
+      "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+      "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+      "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+      "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+      "components/immersiveWorlds/koreanPlaces/types.ts",
+      "components/immersiveWorlds/koreanPlaces/korean-world.css",
+      "components/immersiveWorlds/koreanPlaces/runtime.test.ts"
+    ]
+  },
+  "nativeContract": {
+    "threeVersion": "0.186.1",
+    "PMREMGenerator": {
+      "resolvedLocalPath": "/workspace/scratch/86dc58dce2fc/brainwave/node_modules/three/src/extras/PMREMGenerator.js",
+      "sha256": "78f7cc24a9aa22852f4c46052f39e5fe5507bee6313a824851ba899ed2219ecc"
+    },
+    "WebGLEnvironments": {
+      "resolvedLocalPath": "/workspace/scratch/86dc58dce2fc/brainwave/node_modules/three/src/renderers/webgl/WebGLEnvironments.js",
+      "sha256": "69d82f1752b3244682b480cdf31d88c508b4617c5035217061635a326601ff38"
+    },
+    "nativeConvolutionUnmodified": true,
+    "privateAllocateTargetsHookDependency": "Installed native source is SHA-pinned by the owned conformance test; future dependency updates require review.",
+    "outputAndPingPongTypeSelectedBeforeFirstGpuAllocation": true,
+    "bothActualFullSizedTargetsCheckedBeforeFirstNativeDraw": true,
+    "CubeUVBypassesImplicitAutomaticPMREM": true
+  },
+  "independentLifetimeReview": {
+    "result": "PASS — static source review; no blocking defect found in the intended supported paths",
+    "helperSha256": "ae7cf184ec217e1402b5b2c03170a733f718e19b74ced10b7e45d8f1b5fce92d",
+    "successfulOwnership": "Returned environment retains output, generator-owned ping-pong/LOD/materials, and original source until idempotent scene disposal.",
+    "failedAttemptOwnership": "Each failed output and generator is disposed before fresh byte retry. Source survives retries; final failure disposes source.",
+    "capabilityPolicy": "No eligible float extension or forced-byte selects byte first; advertised half-float still requires both actual framebuffer checks.",
+    "stateRestoration": [
+      "render target",
+      "active cube face",
+      "active mip level",
+      "XR enabled",
+      "autoClear",
+      "toneMapping"
+    ],
+    "apiAndSafetyPreserved": [
+      "active remains the only required default-entry prop",
+      "guarded chrome input and pointer/gesture handling unchanged",
+      "host transfer and disposal body unchanged",
+      "no AudioContext/player/shared audio edits",
+      "no global FPS/resolution downgrade",
+      "no art/camera/gradient/intensity/dimension changes relative to accepted baseline"
+    ],
+    "qualification": "Retaining successful native resources is closer to the original automatic-PMREM lifetime. It does not prove the cause of software GPU stalls or eliminate previously recorded failures.",
+    "testsExecutedByThisArtifactTask": [],
+    "runtimeEvidence": "Runtime, bundle, image and lifecycle evidence is maintained separately by the main work; this artifact does not replace it."
+  },
+  "limits": [
+    "Protected beach-wave and deep-focus behavior is preserved by complete inherited-main and outside-owned-file identity checks; no new behavioral test is claimed here.",
+    "No physical Fold, actual device FPS, battery or thermal measurement is claimed.",
+    "No remote branch, PR, CI or deployment check was performed for this artifact."
+  ]
+}

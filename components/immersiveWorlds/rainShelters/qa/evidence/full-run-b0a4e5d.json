@@ -1,0 +1,602 @@
+{
+  "schema": "brainwave-rain-shelters-qa-v1",
+  "startedAt": "2026-10-04T19:44:27.129Z",
+  "gitHead": "b0a4e5d668791a9bc826bf54a0890c4b78cc8bba",
+  "sourceTreeSHA256": "fbb1347787794b0ed4ae09189f6883e316b055a6c7792bcb56eae749346ed712",
+  "sourceHashes": {
+    "components/immersiveWorlds/rainShelters/engine/materials.ts": "c079a82516edac85c2aec706e53d5cd3b393a7cff980aa86dbf9be7807564d13",
+    "components/immersiveWorlds/rainShelters/engine/porch.ts": "f4553cd1d465b2d88bffa8ef3a538bd46f509f2928df32cbf40cc835e19d426f",
+    "components/immersiveWorlds/rainShelters/engine/ShelterEngine.ts": "b49435b9296deaae1399d20c325400a28732b1a9420207edbdb9a60c5671b865",
+    "components/immersiveWorlds/rainShelters/engine/storm.ts": "9531357b652939b844285020ba97084db093740d2f67e49412d17055ae1392b9",
+    "components/immersiveWorlds/rainShelters/engine/tent.ts": "3f83a24263d288465c56968253396e78a59fcacf1838bc508190f61764149817",
+    "components/immersiveWorlds/rainShelters/engine/types.ts": "50545f701fdca4b36cf56e44ff99759f105abe1619836be31e22d69ee649cb18",
+    "components/immersiveWorlds/rainShelters/engine/window.ts": "a10d300d093bf245525f77919922a13c0de74f8eef3dcbd93032582aaade4f5d",
+    "components/immersiveWorlds/rainShelters/GardenWindowWorld.tsx": "df8818e9365eaac5adc8e734679d96326ade00635c970ff82f62941fbbbef653",
+    "components/immersiveWorlds/rainShelters/MonsoonPorchWorld.tsx": "e24ee1a3d6cb415e53cb7579c7ea50aadb1789656e5cdf3dc9a76b986aeb3ae7",
+    "components/immersiveWorlds/rainShelters/qa/harness.css": "378f48653699eb43d332caba2933b5c76f790288c717467e23b6653b67574067",
+    "components/immersiveWorlds/rainShelters/qa/harness.tsx": "4a66c6da2717967be7466c3e44684dbedf22e6dc76775ffbeac3ba516bb4b8a3",
+    "components/immersiveWorlds/rainShelters/qa/index.html": "c399650b8d748711d50e261dcc894b31c7ccec264707dfe607506f21ba6321a1",
+    "components/immersiveWorlds/rainShelters/qa/run.mjs": "6d6e61d3469f6cc5014e85ef53b25084816697ba98741b8b3d90dd551422cdf4",
+    "components/immersiveWorlds/rainShelters/qa/verify.mjs": "420c5fcc301b82402fe9137397b7df4278b7e24134b7c63bfba8e0f645b8096f",
+    "components/immersiveWorlds/rainShelters/qa/vite.config.ts": "91fa1216f68c352d5abfa8166b50a9e8e0c9ee4df27d16c17b92a279e42b52d0",
+    "components/immersiveWorlds/rainShelters/rain-shelters.css": "0555b92028860ad82ed7b526849bbf87d4bb232a1cb37f1f9c76c28d58b05710",
+    "components/immersiveWorlds/rainShelters/RainTentWorld.tsx": "8bf04614cdf7f81821ffb791b24235fb22ff65613aa3a4a2eebb1d61fd9d9a18",
+    "components/immersiveWorlds/rainShelters/ShelterWorld.tsx": "92d13675c96245a985410585fadb2653b986410a12f5a1c9dce0793989110a1a",
+    "components/immersiveWorlds/rainShelters/SummerStormWorld.tsx": "b83c5fd2966f2a1263312db2f0ad475305fe9ba0044c04404163f12fcd975d3b"
+  },
+  "bundleHashes": {
+    "PretendardVariable-CJuje-Rk.woff2": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+    "index-D8YJ8BJE.js": "6c8e2c5ffeb2848d6b5065b76392c55d9475b2793d7f5795901bcda58d2fe52f",
+    "index-vOV6bk3X.css": "a76f7bab6925c5ffc7f80dbe5d4b2c133c9f0bc589e46a5e70fc16ca02de3ea4"
+  },
+  "mode": "isolated-built-QA-bundle",
+  "baseURL": "http://127.0.0.1:4175/",
+  "browser": {
+    "version": "153.0.8010.0",
+    "executable": "/workspace/scratch/2bd758a1b983/browser-runtime/chromium",
+    "renderer": "SwiftShader requested",
+    "viewportDeviceScaleFactor": 1
+  },
+  "worlds": [
+    {
+      "world": "window",
+      "checks": [
+        {
+          "name": "initial active=false renders a real first 3D frame",
+          "pass": true,
+          "frame": {
+            "frame": 2,
+            "time": 0,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 388,
+            "triangles": 1650648,
+            "geometries": 354,
+            "textures": 8
+          }
+        },
+        {
+          "name": "active animation advances frame and simulation time",
+          "pass": true,
+          "before": {
+            "frame": 2,
+            "time": 0,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 388,
+            "triangles": 1650648,
+            "geometries": 354,
+            "textures": 8
+          },
+          "after": {
+            "frame": 5,
+            "time": 0.0475,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 388,
+            "triangles": 1650648,
+            "geometries": 354,
+            "textures": 8
+          }
+        },
+        {
+          "name": "active=false stops motion and preserves rendered frame",
+          "pass": true,
+          "state": {
+            "frame": 5,
+            "time": 0.0475,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 388,
+            "triangles": 1650648,
+            "geometries": 354,
+            "textures": 8
+          }
+        },
+        {
+          "name": "native canvas pointer tap hits the intended 3D target",
+          "pass": true,
+          "ndc": [
+            0,
+            0
+          ],
+          "event": {
+            "world": "window",
+            "action": "glass-trace",
+            "value": 0.6600629387951894
+          }
+        },
+        {
+          "name": "accessible scene interaction emits one bounded event",
+          "pass": true,
+          "event": {
+            "world": "window",
+            "action": "glass-trace",
+            "value": 0.6731967628426321
+          }
+        }
+      ],
+      "screenshots": [
+        {
+          "file": "window-desktop.png",
+          "bytes": 1120472,
+          "sha256": "4c4bd0668dc30ad0a5822b624a6204961716118e829fd0d55ac694c9272a9d53",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "canvas": {
+            "frame": 5,
+            "time": 0.0475,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 388,
+            "triangles": 1650648,
+            "geometries": 354,
+            "textures": 8
+          }
+        },
+        {
+          "file": "window-portrait.png",
+          "bytes": 250362,
+          "sha256": "de3d11532e91f17677ae60d1548cd4b8eb0fce6658df5b7e478980d52bc4c344",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "canvas": {
+            "frame": 6,
+            "time": 0.0475,
+            "width": 390,
+            "height": 844,
+            "drawCalls": 205,
+            "triangles": 1645620,
+            "geometries": 354,
+            "textures": 8
+          }
+        }
+      ],
+      "errors": [
+        "page.screenshot: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\n    at capture (/workspace/scratch/ddda3b0f9309/brainwave/components/immersiveWorlds/rainShelters/qa/verify.mjs:107:32)\n    at async file:///workspace/scratch/ddda3b0f9309/brainwave/components/immersiveWorlds/rainShelters/qa/verify.mjs:172:7"
+      ],
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "pass": false
+    },
+    {
+      "world": "porch",
+      "checks": [
+        {
+          "name": "initial active=false renders a real first 3D frame",
+          "pass": true,
+          "frame": {
+            "frame": 2,
+            "time": 0,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 535,
+            "triangles": 445244,
+            "geometries": 414,
+            "textures": 6
+          }
+        },
+        {
+          "name": "active animation advances frame and simulation time",
+          "pass": true,
+          "before": {
+            "frame": 7,
+            "time": 0.0851,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 535,
+            "triangles": 445244,
+            "geometries": 414,
+            "textures": 6
+          },
+          "after": {
+            "frame": 11,
+            "time": 0.1518,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 535,
+            "triangles": 445244,
+            "geometries": 414,
+            "textures": 6
+          }
+        },
+        {
+          "name": "active=false stops motion and preserves rendered frame",
+          "pass": true,
+          "state": {
+            "frame": 12,
+            "time": 0.1684,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 535,
+            "triangles": 445244,
+            "geometries": 414,
+            "textures": 6
+          }
+        },
+        {
+          "name": "native canvas pointer tap hits the intended 3D target",
+          "pass": true,
+          "ndc": [
+            0.238,
+            -0.428
+          ],
+          "event": {
+            "world": "porch",
+            "action": "basin-ripple",
+            "value": 0.55
+          }
+        },
+        {
+          "name": "accessible scene interaction emits one bounded event",
+          "pass": true,
+          "event": {
+            "world": "porch",
+            "action": "basin-ripple",
+            "value": 0.55
+          }
+        },
+        {
+          "name": "visible player chrome overlay supports native bounded tap/drag while button and input stay separate",
+          "pass": true,
+          "event": {
+            "world": "porch",
+            "action": "basin-ripple",
+            "value": 0.55
+          }
+        },
+        {
+          "name": "drag is not tap and pointer cancellation releases gesture",
+          "pass": true,
+          "method": "synthetic pointerdown/move/up and pointerdown/cancel/up"
+        },
+        {
+          "name": "window blur cancels active gesture and subsequent pointerup emits no interaction",
+          "pass": true,
+          "method": "synthetic FocusEvent blur during pointer drag"
+        },
+        {
+          "name": "mid-drag second-holder transfer cancels old gesture, reuses identical canvas and returns with single interaction listeners",
+          "pass": true,
+          "sceneContexts": 1
+        },
+        {
+          "name": "prefers-reduced-motion freezes scene and change resumes it",
+          "pass": true
+        }
+      ],
+      "screenshots": [
+        {
+          "file": "porch-desktop.png",
+          "bytes": 1409340,
+          "sha256": "11761994f130f2a4511464330dcf8f0c441594e275919f65d76dad5dcef030ce",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "canvas": {
+            "frame": 12,
+            "time": 0.1684,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 535,
+            "triangles": 445244,
+            "geometries": 414,
+            "textures": 6
+          }
+        },
+        {
+          "file": "porch-portrait.png",
+          "bytes": 328296,
+          "sha256": "d8d253ec97c2bcd8be8af7cfe88864f0f9166443a2722a56f7d1bfbf58709278",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "canvas": {
+            "frame": 13,
+            "time": 0.1684,
+            "width": 390,
+            "height": 844,
+            "drawCalls": 307,
+            "triangles": 436736,
+            "geometries": 414,
+            "textures": 6
+          }
+        },
+        {
+          "file": "porch-fold-inner.png",
+          "bytes": 731943,
+          "sha256": "f6f24c998c6bac7c38562f9804c6f11ec47d168cb073f9ad8d363b51d17527d5",
+          "viewport": {
+            "width": 884,
+            "height": 768
+          },
+          "canvas": {
+            "frame": 14,
+            "time": 0.1684,
+            "width": 884,
+            "height": 768,
+            "drawCalls": 486,
+            "triangles": 443408,
+            "geometries": 414,
+            "textures": 6
+          }
+        },
+        {
+          "file": "porch-interaction.png",
+          "bytes": 950314,
+          "sha256": "4691b510c1e52cccdf82ad4ee3677f54dbe86568ed6b8e576421ed0d66f87046",
+          "viewport": {
+            "width": 1100,
+            "height": 800
+          },
+          "canvas": {
+            "frame": 37,
+            "time": 0.4885,
+            "width": 1100,
+            "height": 800,
+            "drawCalls": 525,
+            "triangles": 444864,
+            "geometries": 414,
+            "textures": 6
+          }
+        }
+      ],
+      "errors": [
+        "AssertionError [ERR_ASSERTION]: static interaction changes actual pixels\n    at file:///workspace/scratch/ddda3b0f9309/brainwave/components/immersiveWorlds/rainShelters/qa/verify.mjs:284:14"
+      ],
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "pass": false
+    },
+    {
+      "world": "storm",
+      "checks": [
+        {
+          "name": "initial active=false renders a real first 3D frame",
+          "pass": true,
+          "frame": {
+            "frame": 2,
+            "time": 0,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 69,
+            "triangles": 380496,
+            "geometries": 69,
+            "textures": 8
+          }
+        },
+        {
+          "name": "active animation advances frame and simulation time",
+          "pass": true,
+          "before": {
+            "frame": 5,
+            "time": 0.0334,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 69,
+            "triangles": 380496,
+            "geometries": 69,
+            "textures": 8
+          },
+          "after": {
+            "frame": 7,
+            "time": 0.0666,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 69,
+            "triangles": 380496,
+            "geometries": 69,
+            "textures": 8
+          }
+        },
+        {
+          "name": "active=false stops motion and preserves rendered frame",
+          "pass": true,
+          "state": {
+            "frame": 7,
+            "time": 0.0666,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 69,
+            "triangles": 380496,
+            "geometries": 69,
+            "textures": 8
+          }
+        },
+        {
+          "name": "native canvas pointer tap hits the intended 3D target",
+          "pass": true,
+          "ndc": [
+            0.31,
+            0.02
+          ],
+          "event": {
+            "world": "storm",
+            "action": "awning",
+            "value": 0.26
+          }
+        },
+        {
+          "name": "accessible scene interaction emits one bounded event",
+          "pass": true,
+          "event": {
+            "world": "storm",
+            "action": "awning",
+            "value": 0.9
+          }
+        },
+        {
+          "name": "visible player chrome overlay supports native bounded tap/drag while button and input stay separate",
+          "pass": true,
+          "event": {
+            "world": "storm",
+            "action": "awning",
+            "value": 0.26
+          }
+        },
+        {
+          "name": "drag is not tap and pointer cancellation releases gesture",
+          "pass": true,
+          "method": "synthetic pointerdown/move/up and pointerdown/cancel/up"
+        },
+        {
+          "name": "window blur cancels active gesture and subsequent pointerup emits no interaction",
+          "pass": true,
+          "method": "synthetic FocusEvent blur during pointer drag"
+        },
+        {
+          "name": "mid-drag second-holder transfer cancels old gesture, reuses identical canvas and returns with single interaction listeners",
+          "pass": true,
+          "sceneContexts": 1
+        },
+        {
+          "name": "prefers-reduced-motion freezes scene and change resumes it",
+          "pass": true
+        },
+        {
+          "name": "static3D canvas interaction visibly redraws exactly once without animation",
+          "pass": true,
+          "before": {
+            "sha256": "1a120d4f1e7e61dfe3251fd921d360d4e5753e726b2d17189412a191a21f8e85",
+            "bytes": 810033
+          },
+          "after": {
+            "sha256": "6513b7dcb739312156655d00b0ae7504968bc0eb56ee5b04643365363af28787",
+            "bytes": 798790
+          }
+        },
+        {
+          "name": "static3D preserves full 3D frame without animation",
+          "pass": true
+        },
+        {
+          "name": "synthetic hidden state pauses; visibility restoration resumes",
+          "pass": true,
+          "actualTabSwitch": false
+        },
+        {
+          "name": "three quick mount/unmount cycles reuse one live scene and one overlay listener",
+          "pass": true
+        },
+        {
+          "name": "delayed teardown releases WebGL context and later remount is fresh",
+          "pass": true,
+          "telemetry": {
+            "contexts": 1,
+            "losses": 0
+          },
+          "releasedContext": {
+            "connected": false,
+            "contextLost": true
+          }
+        },
+        {
+          "name": "fresh static3D first load renders a nonblank full 3D frame with no RAF",
+          "pass": true,
+          "frame": {
+            "frame": 2,
+            "time": 0,
+            "width": 1100,
+            "height": 800,
+            "drawCalls": 69,
+            "triangles": 380496,
+            "geometries": 69,
+            "textures": 8
+          },
+          "pixels": {
+            "sha256": "ebb97c1916576acfcc9f4ce167106611c0e7b560916d67f4e5f9a70162cc1145",
+            "bytes": 800645
+          }
+        }
+      ],
+      "screenshots": [
+        {
+          "file": "storm-desktop.png",
+          "bytes": 1179294,
+          "sha256": "b9dfe6ce05b2cdfd67036cdca0403926b563dfd00ba00c168922ead86bcd9f26",
+          "viewport": {
+            "width": 1440,
+            "height": 960
+          },
+          "canvas": {
+            "frame": 7,
+            "time": 0.0666,
+            "width": 1440,
+            "height": 960,
+            "drawCalls": 69,
+            "triangles": 380496,
+            "geometries": 69,
+            "textures": 8
+          }
+        },
+        {
+          "file": "storm-portrait.png",
+          "bytes": 306804,
+          "sha256": "ac46a3b1af04265e203793b3c8667aec7c41a9c9a8ac8a8a2eeac33500d7537a",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "canvas": {
+            "frame": 8,
+            "time": 0.0666,
+            "width": 390,
+            "height": 844,
+            "drawCalls": 76,
+            "triangles": 381232,
+            "geometries": 84,
+            "textures": 8
+          }
+        },
+        {
+          "file": "storm-interaction.png",
+          "bytes": 801740,
+          "sha256": "f789dacdf3ba091cf7e6d6c12705bc60d2391aa783c4a5dd360ec824096ffc2e",
+          "viewport": {
+            "width": 1100,
+            "height": 800
+          },
+          "canvas": {
+            "frame": 21,
+            "time": 0.2412,
+            "width": 1100,
+            "height": 800,
+            "drawCalls": 69,
+            "triangles": 380496,
+            "geometries": 84,
+            "textures": 8
+          }
+        }
+      ],
+      "errors": [],
+      "renderer": {
+        "webgl2": true,
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "All dimensions are browser viewport tests, not physical Fold hardware.",
+    "Hidden-state test explicitly overrides document.visibilityState; it is not a real browser-tab switch.",
+    "SwiftShader results establish rendering and behavior, not device FPS or thermal performance.",
+    "Second-holder test exercises shared canvas relocation; production App/fullscreen wiring belongs to integration.",
+    "The baseline shared player applies touch-action:none only to its protected worlds. Integration must extend that policy for these four IDs; this fixture does not mask it. Native mouse and synthetic touch gesture tests do not establish real mobile pan suppression."
+  ],
+  "finishedAt": "2026-10-04T19:54:13.907Z",
+  "pass": false
+}

@@ -1,0 +1,9 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+ RUN  v4.1.9 /workspace/scratch/5f64ba22f1db/brainwave-forest-refinement
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  16:37:53
+   Duration  299.98s (transform 79ms, setup 0ms, import 372ms, tests 299.25s, environment 0ms)

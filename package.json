@@ -18,7 +18,9 @@
     "verify:audio": "node scripts/verify-audio-failures.mjs",
     "verify:cafe": "node scripts/verify-cafe-world.mjs",
     "verify:cosmic": "node scripts/verify-cosmic-world.mjs",
-    "verify:worlds": "node scripts/verify-immersive-worlds.mjs"
+    "verify:worlds": "node scripts/verify-immersive-worlds.mjs",
+    "prebuild": "node scripts/prepare-mosi-assets.mjs",
+    "predev": "node scripts/prepare-mosi-assets.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.555.0",

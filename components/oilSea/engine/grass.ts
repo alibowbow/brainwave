@@ -268,7 +268,9 @@ export function createGrass(sunDirection: THREE.Vector3, count: number) {
         float petal = clamp((tuft.b - 0.46) / 0.4, 0.0, 1.0);
         if (petal > 0.0) {
           vec3 flower = mix(petalColour(vKind), centreColour(vKind), smoothstep(0.25, 0.75, tuft.b - tuft.g));
-          col = mix(col, flower * (vLight * 0.8 + vThrough * 0.25), petal);
+          // The petals take the light but not the blue of the shade, so a daisy stays white.
+          vec3 petalLight = mix(vec3(dot(vLight, vec3(0.3333))), vLight, 0.55);
+          col = mix(col, flower * (petalLight * 0.8 + vThrough * 0.25), petal);
         }
         gl_FragColor = vec4(mix(col, vHaze.rgb, vHaze.a), 1.0);
       }

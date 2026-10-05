@@ -1,0 +1,39 @@
+{
+  "sourceHead": "1897ea5295fa1a88777e3aae8f969d888df607d4",
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "status": "passed"
+    },
+    {
+      "command": "npm test",
+      "status": "passed",
+      "tests": 164,
+      "files": 24,
+      "newCompatibilityPolicyTests": 17
+    },
+    {
+      "command": "npm run build",
+      "status": "passed"
+    },
+    {
+      "command": "npm run check:bundle",
+      "status": "passed",
+      "initialJSKiB": 402.6,
+      "initialJSBudgetKiB": 410,
+      "cssKiB": 99.5,
+      "cssBudgetKiB": 135
+    },
+    {
+      "command": "npm exec vite build -- --config components/immersiveWorlds/rainShelters/qa/followup/vite.config.ts",
+      "status": "passed",
+      "jsBundle": "index-DeYwlQ_G.js"
+    }
+  ],
+  "resolvedDevelopmentFailures": [
+    "Initial QA instrumentation used target.uuid; corrected to target.texture.uuid.",
+    "Initial test constructor inference produced Texture|Texture[]; corrected explicit Texture generic."
+  ],
+  "scope": "Local command results observed from executor; remote CI is separate.",
+  "dependencyPolicy": "Existing package-lock exactly matches installed dependency source; no dependency or lockfile edits."
+}

@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-10-05T00:15:21.306Z",
+  "stage": "pre-publication",
+  "expectedOriginalHead": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+  "pr": {
+    "number": 53,
+    "head": "codex/rain-shelters-four-worlds",
+    "headSHA": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+    "draft": true
+  },
+  "remoteHeads": {
+    "original": "0dc8e935fb950bf43ede4ab96b3623649d2bc37f",
+    "main": "14940149cc5c0fccb778b58d4d755a04aea55e53",
+    "newBranchExists": false
+  },
+  "openRainRelatedPRs": [
+    {
+      "number": 53,
+      "title": "feat: four independent rain-shelter 3D worlds",
+      "url": "https://github.com/alibowbow/brainwave/pull/53"
+    },
+    {
+      "number": 48,
+      "title": "Draft: integrate 30 immersive worlds with guarded input and audio",
+      "url": "https://github.com/alibowbow/brainwave/pull/48"
+    },
+    {
+      "number": 61,
+      "title": "Add quiet immersive audio profiles and bounded touch accents",
+      "url": "https://github.com/alibowbow/brainwave/pull/61"
+    }
+  ],
+  "competingRainFollowup": false
+}

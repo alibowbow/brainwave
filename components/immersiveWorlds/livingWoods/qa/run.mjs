@@ -320,7 +320,10 @@ export async function runLivingWoodsQA() {
         assert.notEqual(cold.engine, engineId, 'mount after disposal gets a new engine');
         assert.equal(cold.time, 0, 'cold inactive mount draws without advancing simulation');
         assert.ok(cold.frames > 0 && cold.width > 0 && cold.height > 0, 'cold inactive first frame is nonzero');
-        const baselineResources = entry.metrics.find((item) => item.viewport === 'desktop');
+        // HDR render targets (bloom levels) scale with canvas size, so compare
+        // the recreated engine with the first engine at the same size.
+        const baselineResources = entry.metrics.find((item) => item.width === cold.width && item.height === cold.height)
+          ?? entry.metrics.find((item) => item.viewport === 'desktop');
         assert.equal(cold.geometries, baselineResources.geometries, 'new engine has the same geometry count after disposal');
         assert.equal(cold.textures, baselineResources.textures, 'new engine has the same texture count after disposal');
         entry.checks.delayedDisposal = { passed: true, gracePeriodWaitMs: 5500, detachedFramesStable: true, explicitDisposeFlag: disposed };

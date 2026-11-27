@@ -67,7 +67,7 @@ const report = {
     browser: null,
     headless: true,
     graphics: 'Chromium launched with ANGLE SwiftShader; no real-device performance claim.',
-    viewportChecks: 'Static visual captures: desktop 1280×800 and narrow portrait 390×844 for meditation normal/forced-byte and warm/snow preservation. Motion/interaction/lifecycle: native 640×480 browser viewport to limit software-GPU test contention. The production renderer settings are unchanged. Viewports only, not physical Fold hardware.',
+    viewportChecks: 'Static visual captures: desktop 1280×800 and narrow portrait 390×844 for meditation normal/forced-byte and fresh warm/snow HDR captures. Motion/interaction/lifecycle: native 640×480 browser viewport to limit software-GPU test contention. The production renderer settings are unchanged. Viewports only, not physical Fold hardware.',
     hiddenCheck: 'Synthetic own-property document.hidden/document.visibilityState override plus visibilitychange; not real OS/browser-tab switching.',
   },
   screenshots: [],
@@ -316,9 +316,10 @@ try {
     return { scenario, composition, context, basinPixels, screenshotSha256: buffer ? hash(buffer) : null };
   };
 
-  // Preserve all historical evidence and the two unrelated world implementations.
+  // Preserve all historical evidence and the old verifier. Warm heart and snow village were
+  // intentionally rebuilt for the shared HDR pipeline (see qa/README.md), so their sources
+  // are no longer pinned to the baseline; their pixels are recorded fresh below.
   const preserved = [
-    'warmHeart.ts', 'WarmHeartWorld.tsx', 'snowVillage.ts', 'SnowVillageWorld.tsx',
     'qa/verify.mjs',
     ...git('ls-tree', '-r', '--name-only', baselineCommit, `${relativeGroup}/qa/evidence`).split('\n').filter(Boolean).map((file) => file.slice(relativeGroup.length + 1)),
   ];
@@ -328,7 +329,7 @@ try {
     assert.equal(hash(actual), hash(baselineBytes), `baseline source/evidence preserved: ${relative}`);
     report.preservation.sourceFiles.push({ path: `${relativeGroup}/${relative}`, baselineSha256: hash(baselineBytes), actualSha256: hash(actual), identical: true });
   }
-  await checkpoint('warm/snow source and historical verifier/evidence preservation');
+  await checkpoint('historical verifier/evidence preservation');
 
   // Every composition is captured before the more expensive animated regressions.
   for (const scenario of ['normal', 'forced-byte']) {
@@ -352,19 +353,21 @@ try {
       await checkpoint(`meditation ${scenario} ${composition} actual render targets and pixels`);
     }
   }
+  // Warm heart and snow village intentionally changed (HDR upgrade): their complete,
+  // initially inactive first frames are captured fresh and recorded, never compared
+  // against the superseded historical hashes.
+  report.freshCaptures = [];
   for (const world of ['warm-heart', 'snow-village']) {
-    currentScenario = 'preservation-normal';
+    currentScenario = 'hdr-upgrade-fresh';
     for (const [composition, viewport] of [['desktop', { width: 1280, height: 800 }], ['portrait', { width: 390, height: 844 }]]) {
       await navigate(world, viewport, '&inactive=1');
-      await assertFrozen(`${world} ${composition} preserved initially inactive frame`);
+      await assertFrozen(`${world} ${composition} initially inactive complete first frame`);
       const file = `${world}-${composition}.png`;
       const buffer = await screenshot(`${world}-${composition}`);
       const baseline = baselineReport.screenshots.find((item) => item.file === file);
-      assert.ok(baseline, `historical pixel baseline exists for ${file}`);
-      const identical = hash(buffer) === baseline.sha256;
-      report.preservation.screenshots.push({ file, baselineSha256: baseline.sha256, actualSha256: hash(buffer), identical });
-      assert.ok(identical, `${world} ${composition} actual pixels exactly preserve approved baseline`);
-      await checkpoint(`${world} ${composition} exact normal pixel preservation`);
+      const post = await page.evaluate(() => document.querySelector('canvas.sanctuary-canvas')?.dataset.post ?? null);
+      report.freshCaptures.push({ file, sha256: hash(buffer), post, supersededBaselineSha256: baseline?.sha256 ?? null });
+      await checkpoint(`${world} ${composition} fresh HDR capture recorded`);
     }
   }
 

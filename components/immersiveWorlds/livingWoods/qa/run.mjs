@@ -27,7 +27,8 @@ async function browserPath() {
   const candidates = [process.env.SCENE_BROWSER_PATH, chromium.executablePath(), '/tmp/cosmic-browser-bin/chromium'];
   for (const candidate of candidates) {
     if (!candidate) continue;
-    try { await access(candidate); if ((await stat(candidate)).size > 100_000) return candidate; } catch { /* Try the next already-installed route. */ }
+    // An explicitly chosen executable may be a launcher script; the size check only skips stub candidates.
+    try { await access(candidate); if (candidate === process.env.SCENE_BROWSER_PATH || (await stat(candidate)).size > 100_000) return candidate; } catch { /* Try the next already-installed route. */ }
   }
   throw new Error('No installed Chromium executable. Run the repository CI browser-install step, then set SCENE_BROWSER_PATH if needed. This runner never downloads browsers.');
 }
@@ -79,9 +80,12 @@ export async function runLivingWoodsQA() {
     // Chromium's serverless single-process build cannot destroy/recreate an
     // implicit context per scene; keep one context alive for the whole run.
     const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
+    // Opt-in for slow software rendering on a loaded machine; the default limits are unchanged.
+    const qaTimeout = Number(process.env.LIVING_WOODS_QA_TIMEOUT || 60_000);
+    if (process.env.LIVING_WOODS_QA_TIMEOUT) await context.addInitScript((ms) => { window.__livingWoodsQADrainMs = ms; }, qaTimeout - 5_000);
     for (const world of worlds) {
       const page = await context.newPage();
-      page.setDefaultTimeout(60_000);
+      page.setDefaultTimeout(qaTimeout);
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
       page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -100,7 +104,7 @@ export async function runLivingWoodsQA() {
         let timeout;
         const data = await Promise.race([
           api('captureCanvas'),
-          new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error(`${world}: canvas readback exceeded 60 seconds`)), 60_000); }),
+          new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error(`${world}: canvas readback exceeded ${qaTimeout / 1000} seconds`)), qaTimeout); }),
         ]).finally(() => clearTimeout(timeout));
         assert.ok(data.startsWith('data:image/png;base64,'), 'canvas readback returns actual PNG bytes');
         return Buffer.from(data.slice('data:image/png;base64,'.length), 'base64');

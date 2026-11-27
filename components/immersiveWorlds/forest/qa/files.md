@@ -44,3 +44,17 @@ All changes stay inside the two assigned forest directories.
 - `qa/build-manifest.json`
 - `qa/forest-qa.mjs`
 - `qa/index.html`
+
+## HDR upgrade (2026-11)
+
+Added inside `components/immersiveWorlds/forest/` only; no shared, app or other
+family file changed, and the public preview bundle above was not rebuilt.
+
+- `forestLight.ts`: sun, canopy light cookie, shared surface patch (cookie, wind, translucency, underwater light)
+- `forestAtmosphere.ts`: HDR sky, canopy ambient probe, volume pass, post settings, per-path fog
+- `forestTrees.ts`: lofted trunks with buttresses and roots, limbs, crown lobes, bark and canopy materials
+- `forestFoliage.ts`: canopy sprig atlas, leaf-cluster, fern-frond, grass-tuft and litter-leaf geometry
+- `forestUndergrowth.ts`: forest-floor ground and material, ferns, grass, litter, twigs, floating leaves
+- `forestWater.ts`: pool reflection shader
+- `qa/capture-hdr.mjs`: before/after and animated captures of the isolated harness
+- `qa/evidence/hdr-upgrade/`: side-by-side BEFORE/AFTER JPGs and the capture reports

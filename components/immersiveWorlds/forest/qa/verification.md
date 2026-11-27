@@ -161,3 +161,46 @@ router/catalog owned elsewhere. Audio is a proposal only: existing `birds`,
 `stream`, `forest` and optional quiet `bamboo` layers. The callback supplies world
 position and gentle strength; there is no independent player or audio context.
 See `../integration.md` for exact engine limitations and layer asset IDs.
+
+## HDR upgrade (2026-11-27)
+
+Scope: `amb:morning_forest` only, all edits under `components/immersiveWorlds/forest/`.
+No shared render module, other family, app, registry or public preview file changed.
+The public preview bundle in `public/immersive-worlds/forest/qa/` was **not**
+rebuilt (outside this upgrade's write scope); it still serves the previous scene
+until the integration owner re-runs `build-qa.mjs`.
+
+### What changed
+
+- Rendering: the shared HDR pipeline, created only on the forest policy's
+  `native-half-float` path with every framebuffer check complete plus a
+  `hdr-pipeline-preflight` half-float/depth target. Forced-byte, native-byte and
+  `?post=off` keep the direct renderer. See `../integration.md`.
+- Light: one low warm sun (20° elevation) ahead of the seat, behind the canopy;
+  a procedural canopy cookie shared by all surfaces, the 32-step half-resolution
+  volume pass (shafts, ground mist, aerial perspective) and the canopy's own
+  holes. Ambient is a PMREM of a canopy-occluded probe plus two small bounce lights.
+- Trees: lofted, ridged trunks with buttress lobes, root flare and surface roots,
+  curved limbs and forks, world-space furrowed bark with lichen, rain streaks, wet
+  foot and moss on the side away from the sun. Crown lobes of ~27k instanced,
+  alpha-cut sprig clusters with crown-scale normals, translucency toward the sun
+  and three-level wind (shared trunk bend, branch sway, leaf flutter).
+- Undergrowth: instanced fern fronds (two LODs), grass/sedge tufts, fallen leaves,
+  twigs, saplings, a sub-canopy of young trees and three mossy fallen trunks.
+- Pool: crisp planar reflection with analytic wavelets, depth-dependent
+  transparency to a silty bed with refracted-sun caustics, sun glitter, floating
+  leaves; wet, eroded, mossy stones from `rockGeometry`/`rockSurface`.
+- Near plants keep their geometry, dew and touch response; their blades are now
+  shaded procedurally (midrib, laterals, areole net) with a wet clearcoat.
+- Grade: warm highlights, cool shadows, light bloom above an HDR threshold.
+
+### Evidence
+
+Fresh captures for this upgrade are in `qa/evidence/hdr-upgrade/` (BEFORE = the
+previous direct renderer at the merge base, AFTER = this upgrade on the HDR
+path), recorded with `qa/capture-hdr.mjs` in headless Chromium/SwiftShader at
+1280×800 and 390×844, DPR 1. The historical JPEGs, CI JSON reports and their
+image hashes above remain tied to the earlier runs and were not modified; no
+verification script compares against approved historical image hashes, so none
+needed re-baselining. The browser test still compares two frames from the same
+run.

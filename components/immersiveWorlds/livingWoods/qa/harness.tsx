@@ -29,6 +29,8 @@ declare global {
 
 const interactions: unknown[] = [];
 const params = new URLSearchParams(location.search);
+// QA comparison only: `post=off` keeps the previous direct renderer instead of the HDR pipeline.
+(window as Window & { __livingWoodsQADirect?: boolean }).__livingWoodsQADirect = params.get('post') === 'off';
 const requested = params.get('world') as WorldName;
 const world = requested in worlds ? requested : 'morning';
 

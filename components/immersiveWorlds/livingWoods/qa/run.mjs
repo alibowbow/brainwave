@@ -68,7 +68,7 @@ export async function runLivingWoodsQA() {
   };
   const executablePath = await browserPath();
   report.environment.browserExecutable = executablePath;
-  const server = await preview({ ...options, preview: { host: '127.0.0.1', port: 0, strictPort: false } });
+  const server = await preview({ ...options, preview: { host: '127.0.0.1', port: Number(process.env.LIVING_WOODS_PORT || 0), strictPort: !!process.env.LIVING_WOODS_PORT } });
   const address = server.httpServer.address();
   assert.ok(address && typeof address !== 'string');
   const base = `http://127.0.0.1:${address.port}`;

@@ -40,3 +40,13 @@ export function advanceCosmicQuality(
   }
   return { quality, slowFor, fastFor, reflectionSize };
 }
+
+/** What the HDR pipeline keeps at each tier. Reduced quality drops AO and shortens the dust march. */
+export interface CosmicPostTier {
+  ao: boolean;
+  volumeSteps: number;
+}
+
+export function cosmicPostTier(quality: CosmicQualityState['quality']): CosmicPostTier {
+  return quality === 1 ? { ao: true, volumeSteps: 32 } : { ao: false, volumeSteps: 20 };
+}

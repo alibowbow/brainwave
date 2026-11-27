@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import { LookSpring } from '../../liveScene/look';
-import { createCosmicSky } from './sky';
-import { createGarden, seededRandom } from './garden';
+import { HdrPipeline, type PostSettings } from '../shared/render/hdrPipeline';
+import { createCosmicSky, COSMIC_PLANET_CENTER, COSMIC_SUN_COLOR, COSMIC_SUN_DIRECTION, COSMIC_SUN_IRRADIANCE } from './sky';
+import { createGarden, seededRandom, COSMIC_DETAIL_LAYER } from './garden';
+import { createDustVolume, type DustVolume } from './spaceDust';
 import { prepareCosmicReflection, type CosmicReflectionMode } from './reflectionTarget';
-import { createCosmicQualityState, advanceCosmicQuality } from './qualityPolicy';
+import { createCosmicQualityState, advanceCosmicQuality, cosmicPostTier } from './qualityPolicy';
 
 export interface CosmicTouch {
   kind: 'plant' | 'light' | 'water';
@@ -18,16 +20,28 @@ export function cosmicPixelRatio(width:number,height:number,dpr:number,quality=1
   return Math.min(Math.max(.5,dpr),2,Math.sqrt(3_600_000/area))*quality;
 }
 
+// The isolated harness can request the direct (pre-pipeline) path for QA comparisons.
+let directPreferred=false;
+export function preferDirectCosmicRendering(value:boolean){directPreferred=value;}
+
+/** Shared HDR pipeline look: one star key, soft bloom on emissive sources, cool shadows. */
+export const COSMIC_POST:Partial<PostSettings>={
+  exposure:1.3,bloomStrength:.085,bloomThreshold:0,aoStrength:.8,aoRadius:.55,
+  saturation:1.03,contrast:1.07,shadowTint:[.90,.96,1.10],highlightTint:[1.06,1.0,.91],vignette:.42,grain:.022,
+};
+
 export class CosmicEngine implements LiveSceneEngine {
   private renderer:THREE.WebGLRenderer;
   private scene=new THREE.Scene();
   private camera=new THREE.PerspectiveCamera(52,1,.1,300);
   private sky:ReturnType<typeof createCosmicSky>|null=null;
   private garden:ReturnType<typeof createGarden>|null=null;
+  private post:HdrPipeline|null=null;
+  private dust:DustVolume|null=null;
   private lightSeeds:THREE.Points|null=null;
   private seedLocations:THREE.Vector3[]=[];
   private pointUniforms:{[key:string]:THREE.IUniform}|null=null;
-  private pulseLight=new THREE.PointLight('#accfd0',0,4,2);
+  private pulseLight=new THREE.PointLight('#9fe3d2',0,4.5,2);
   private pulse:{position:THREE.Vector3;age:number}|null=null;
   private pulseCount=0;
   private lastPulse=-10;
@@ -52,13 +66,15 @@ export class CosmicEngine implements LiveSceneEngine {
     this.renderer=new THREE.WebGLRenderer({canvas:options.canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
     this.renderer.outputColorSpace=THREE.SRGBColorSpace;
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure=1.12;
+    this.renderer.toneMappingExposure=COSMIC_POST.exposure!;
     this.renderer.shadowMap.enabled=true;
-    this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type=THREE.PCFShadowMap;
     this.renderer.shadowMap.autoUpdate=false;
-    this.renderer.setClearColor('#101a2b');
+    this.renderer.setClearColor('#000000');
     this.camera.position.set(0,1.65,5.8);
     this.camera.lookAt(0,2.0,-20);
+    this.camera.layers.enable(COSMIC_DETAIL_LAYER);
+    this.ray.layers.enableAll();
     this.originalQuaternion.copy(this.camera.quaternion);
     this.onLost=(event)=>{event.preventDefault();if(!this.disposed)this.options.onContextLost();};
     options.canvas.addEventListener('webglcontextlost',this.onLost);
@@ -67,21 +83,42 @@ export class CosmicEngine implements LiveSceneEngine {
 
   async init(){
     if(this.disposed)return;
-    this.sky=createCosmicSky();this.garden=createGarden();
+    this.sky=createCosmicSky();this.garden=createGarden({noise:this.sky.noise});
     // Reflector has not rendered/allocated yet. Choose a legal format and check
     // its actual framebuffer before compileAsync or the first reflection draw.
     this.reflection=prepareCosmicReflection(this.renderer,this.garden.water.getRenderTarget(),this.options.reflectionMode);
     this.scene.add(this.sky.group,this.garden.group);
     this.garden.setAspect(this.width/this.height);this.sky.group.rotation.y=this.width/this.height<.8?.18:0;
-    const hemi=new THREE.HemisphereLight('#b9d6e1','#394147',2.05);this.scene.add(hemi);
-    this.scene.fog=new THREE.FogExp2('#344b5b',.009);
-    const key=new THREE.DirectionalLight('#ffddb0',3.5);key.position.set(-7,12,8);key.castShadow=true;
-    key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-14;key.shadow.camera.right=14;
-    key.shadow.camera.top=15;key.shadow.camera.bottom=-14;key.shadow.camera.near=.5;key.shadow.camera.far=60;
-    key.shadow.normalBias=.06;key.shadow.bias=-.0002;this.scene.add(key);
-    const rim=new THREE.DirectionalLight('#88d9e8',1.8);rim.position.set(6,5,-12);this.scene.add(rim);
-    const warm=new THREE.PointLight('#e7c896',20,10,2);warm.position.set(-3,2.8,.3);this.scene.add(warm,this.pulseLight);
+    // One-off bakes: nebula cube (half float) and band albedo; the nebula also
+    // becomes the image-based ambient light, so shadowed faces take its colour.
+    const environment=this.sky.prepare(this.renderer);
+    if(environment){this.scene.environment=environment;this.scene.environmentIntensity=1.4;}
+    else this.scene.add(new THREE.HemisphereLight('#4b5a7a','#1b1a24',.35));
+    // One dominant key: the star. Shadow map covers the seated terrace.
+    const key=new THREE.DirectionalLight(COSMIC_SUN_COLOR,COSMIC_SUN_IRRADIANCE);
+    key.position.copy(COSMIC_SUN_DIRECTION).multiplyScalar(40).add(new THREE.Vector3(0,0,-1));
+    key.target.position.set(0,0,-1);key.castShadow=true;
+    key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-11;key.shadow.camera.right=11;
+    key.shadow.camera.top=11;key.shadow.camera.bottom=-11;key.shadow.camera.near=10;key.shadow.camera.far=75;
+    key.shadow.normalBias=.04;key.shadow.bias=-.0003;this.scene.add(key,key.target);
+    // Coloured bounce from the sunlit side of the gas giant; no flat fill.
+    const bounce=new THREE.DirectionalLight(new THREE.Color(.95,.76,.55),.5);
+    bounce.position.copy(COSMIC_PLANET_CENTER).normalize().multiplyScalar(30);this.scene.add(bounce,this.pulseLight);
     this.buildSeeds();this.scene.updateMatrixWorld(true);
+    if(!directPreferred){
+      const sky=this.sky;
+      this.post=HdrPipeline.create(this.renderer,{settings:COSMIC_POST,volume:()=>{
+        this.dust=createDustVolume({noise:sky.noise,sun:COSMIC_SUN_DIRECTION,sunColor:COSMIC_SUN_COLOR.clone().multiply(new THREE.Color(.86,.92,1.0)).multiplyScalar(.030*COSMIC_SUN_IRRADIANCE),
+          ambient:new THREE.Color(.006,.008,.014),density:.016,maxDistance:95});
+        return this.dust;
+      }});
+    }
+    this.applyPostTier();
+    this.post?.setSize(this.width,this.height,this.renderer.getPixelRatio());
+    this.garden.setPostActive(!!this.post);
+    // Without the volume pass, a little aerial perspective keeps depth readable.
+    if(!this.post)this.scene.fog=new THREE.FogExp2(new THREE.Color(.010,.012,.022),.0065);
+    this.options.canvas.dataset.post=this.post?JSON.stringify(this.post.report):'direct';
     this.renderer.shadowMap.needsUpdate=true;
     // compileAsync can be cancelled safely by disposal after a rapid route change.
     await this.renderer.compileAsync(this.scene,this.camera);
@@ -89,23 +126,39 @@ export class CosmicEngine implements LiveSceneEngine {
     this.ready=true;this.renderFrame(0);
   }
 
+  /** The reduced quality tier drops AO and shortens the dust march. */
+  private applyPostTier(){
+    const tier=cosmicPostTier(this.qualityState.quality);
+    if(this.post)this.post.settings.aoStrength=tier.ao?COSMIC_POST.aoStrength!:0;
+    this.dust?.setSteps(tier.volumeSteps);
+  }
+
   private buildSeeds(){
-    const random=seededRandom(312);const positions:number[]=[],phases:number[]=[],sizes:number[]=[];
-    for(let i=0;i<70;i++){
-      const p=new THREE.Vector3((random()-.5)*13,.45+random()*5,2-random()*19);
-      this.seedLocations.push(p);positions.push(p.x,p.y,p.z);phases.push(random()*Math.PI*2);sizes.push(13+random()*17);
+    const random=seededRandom(312);const positions:number[]=[],phases:number[]=[],sizes:number[]=[],warmth:number[]=[];
+    for(let i=0;i<90;i++){
+      const p=new THREE.Vector3((random()-.5)*14,.35+random()*5.2,2.2-random()*20);
+      this.seedLocations.push(p);positions.push(p.x,p.y,p.z);phases.push(random()*Math.PI*2);sizes.push(10+random()*16);warmth.push(random()<.7?1:0);
     }
     // A reachable light for keyboard and portrait view, quietly floating above the basin.
     this.seedLocations[0].set(.65,1.15,-1.2);positions.splice(0,3,.65,1.15,-1.2);
     const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
     geo.setAttribute('aPhase',new THREE.Float32BufferAttribute(phases,1));geo.setAttribute('aSize',new THREE.Float32BufferAttribute(sizes,1));
+    geo.setAttribute('aWarm',new THREE.Float32BufferAttribute(warmth,1));
     this.pointUniforms={uTime:{value:0},uDpr:{value:1},uPulse:{value:new THREE.Vector3(0,0,0)},uAge:{value:20}};
     const mat=new THREE.ShaderMaterial({uniforms:this.pointUniforms,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
-      vertexShader:`attribute float aPhase;attribute float aSize;uniform float uTime;uniform float uDpr;uniform vec3 uPulse;uniform float uAge;varying float vGlow;
-      void main(){vec3 p=position;p.x+=sin(uTime*.07+aPhase)*.1;p.y+=sin(uTime*.11+aPhase)*.065;
+      vertexShader:`attribute float aPhase;attribute float aSize;attribute float aWarm;uniform float uTime;uniform float uDpr;uniform vec3 uPulse;uniform float uAge;
+      varying float vGlow;varying vec3 vColor;
+      void main(){vec3 p=position;p.x+=sin(uTime*.07+aPhase)*.12;p.y+=sin(uTime*.11+aPhase*1.3)*.075;p.z+=cos(uTime*.05+aPhase)*.09;
       float influence=exp(-distance(p,uPulse)*1.4)*sin(clamp(uAge/8.,0.,1.)*3.14159);
-      vGlow=.45+influence*.4;vec4 mv=modelViewMatrix*vec4(p,1.);gl_PointSize=clamp(aSize*uDpr*4./-mv.z,2.,21.*uDpr);gl_Position=projectionMatrix*mv;}`,
-      fragmentShader:`varying float vGlow;void main(){float d=length(gl_PointCoord-.5);float a=(exp(-d*d*40.)*.8+exp(-d*d*9.)*.16)*(1.-smoothstep(.3,.5,d));gl_FragColor=vec4(vec3(.61,.85,.82),a*vGlow);#include <tonemapping_fragment>\n#include <colorspace_fragment>}`.replace(';#include',';\n#include')
+      float breath=.72+.28*sin(uTime*.23+aPhase*2.);
+      vec4 view=modelViewMatrix*vec4(p,1.);float near=1.-smoothstep(9.,22.,-view.z);
+      vGlow=(.42*breath+influence*1.8)*(.25+.75*near);vColor=mix(vec3(.78,.93,1.0),vec3(1.0,.78,.48),aWarm);
+      gl_PointSize=clamp(aSize*uDpr*4./-view.z,2.,24.*uDpr);gl_Position=projectionMatrix*view;}`,
+      fragmentShader:`varying float vGlow;varying vec3 vColor;void main(){float d=length(gl_PointCoord-.5);float mask=1.-smoothstep(.36,.5,d);
+      vec3 c=vColor*vGlow*(exp(-d*d*70.)*2.6+exp(-d*d*12.)*.32);gl_FragColor=vec4(c,mask);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+      }`
     });
     this.lightSeeds=new THREE.Points(geo,mat);this.lightSeeds.name='cosmic-near-light-seeds';this.scene.add(this.lightSeeds);
   }
@@ -115,6 +168,8 @@ export class CosmicEngine implements LiveSceneEngine {
     this.width=Math.max(1,width);this.height=Math.max(1,height);this.dpr=dpr;
     this.renderer.setPixelRatio(cosmicPixelRatio(this.width,this.height,dpr,this.qualityState.quality));
     this.renderer.setSize(this.width,this.height,false);
+    this.post?.setSize(this.width,this.height,this.renderer.getPixelRatio());
+    if(this.post)this.options.canvas.dataset.post=JSON.stringify(this.post.report);
     this.camera.aspect=this.width/this.height;
     this.garden?.setAspect(this.camera.aspect);if(this.sky)this.sky.group.rotation.y=this.camera.aspect<.8?.18:0;
     this.renderer.shadowMap.needsUpdate=true;
@@ -135,11 +190,13 @@ export class CosmicEngine implements LiveSceneEngine {
     this.camera.rotateY(this.look.yaw);this.camera.rotateX(this.look.pitch);
     if(this.pulse)this.pulse.age+=safeDt;
     const envelope=this.pulse?Math.sin(Math.min(1,this.pulse.age/8)*Math.PI):0;
-    this.pulseLight.intensity=envelope*.5;
+    this.pulseLight.intensity=envelope*1.2;
     if(this.pulse && this.pulse.age>=8)this.pulse=null;
     this.sky?.update(this.time);this.garden?.update(this.time,this.pulse);
+    if(this.dust&&this.garden){this.garden.writeOccluders(this.dust.occluders);this.garden.writeMist(this.dust.mist);}
     if(this.pointUniforms){this.pointUniforms.uTime.value=this.time;this.pointUniforms.uAge.value=this.pulse?.age??20;if(this.pulse)this.pointUniforms.uPulse.value.copy(this.pulse.position);}
-    this.renderer.render(this.scene,this.camera);
+    if(this.post)this.post.render(this.scene,this.camera,this.time);
+    else this.renderer.render(this.scene,this.camera);
     const data=this.options.canvas.dataset;
     data.frame=String(this.frame);data.time=this.time.toFixed(4);data.yaw=this.look.yaw.toFixed(5);data.pitch=this.look.pitch.toFixed(5);
     data.pulses=String(this.pulseCount);data.drawCalls=String(this.renderer.info.render.calls);data.triangles=String(this.renderer.info.render.triangles);
@@ -161,6 +218,7 @@ export class CosmicEngine implements LiveSceneEngine {
     this.qualityState=advanceCosmicQuality(this.qualityState,rawDt);
     if(this.qualityState.quality!==previousQuality){
       this.reflection?.setSize(this.qualityState.reflectionSize);
+      this.applyPostTier();
       this.setSize(this.width,this.height,this.dpr);
     }
     this.raf=requestAnimationFrame(this.tick);
@@ -170,7 +228,7 @@ export class CosmicEngine implements LiveSceneEngine {
   drag(dx:number,dy:number){if(this.running)this.look.drag(dx,dy);}
   releaseDrag(){this.look.release();}
 
-  getDiagnostics(){return{reflection:this.reflection?.getDiagnostics()??null,shadow:this.sky?.getShadowState()??null,quality:{...this.qualityState}};}
+  getDiagnostics(){return{reflection:this.reflection?.getDiagnostics()??null,shadow:this.sky?.getShadowState()??null,quality:{...this.qualityState},post:this.post?{...this.post.report}:null};}
 
   touch(x:number,y:number):CosmicTouch|null{
     if(!this.running||!this.garden||this.time-this.lastPulse<1.2)return null;
@@ -192,6 +250,8 @@ export class CosmicEngine implements LiveSceneEngine {
   dispose(){
     if(this.disposed)return;this.stop();this.disposed=true;this.ready=false;
     this.options.canvas.removeEventListener('webglcontextlost',this.onLost);
+    this.post?.dispose();this.post=null;this.dust=null;
+    this.scene.environment=null;
     this.garden?.dispose();this.sky?.dispose();this.garden=null;this.sky=null;this.reflection=null;
     if(this.lightSeeds){this.lightSeeds.geometry.dispose();(this.lightSeeds.material as THREE.Material).dispose();this.lightSeeds=null;}
     this.scene.traverse(o=>{if(o instanceof THREE.Light && 'shadow' in o)(o as THREE.DirectionalLight).shadow?.dispose();});

@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { createCosmicSky } from '../sky';
+import { createCosmicSky, COSMIC_PLANET_CENTER, COSMIC_RING_SHADOW_EDGES, COSMIC_SUN_DIRECTION } from '../sky';
 
+// The shader's star direction and umbra edges are exported so this check
+// always evaluates the same occlusion the ring fragment uses.
 const localCenter = new THREE.Vector3(19, 24, -78);
-const sunlight = new THREE.Vector3(-.78, .40, .28).normalize();
+const sunlight = COSMIC_SUN_DIRECTION.clone();
 
 function ringUniform(sky: ReturnType<typeof createCosmicSky>) {
   const rings = sky.group.getObjectByName('aurelia-dust-rings') as THREE.Mesh<
@@ -23,11 +25,15 @@ function ringShadow(worldPoint: THREE.Vector3, center: THREE.Vector3) {
   const toCenter = center.clone().sub(worldPoint);
   const projection = toCenter.dot(sunlight);
   const distance = Math.sqrt(Math.max(0, toCenter.lengthSq() - projection ** 2));
-  const shadow = THREE.MathUtils.smoothstep(distance, 15.5, 17.3);
+  const shadow = THREE.MathUtils.smoothstep(distance, COSMIC_RING_SHADOW_EDGES[0], COSMIC_RING_SHADOW_EDGES[1]);
   return THREE.MathUtils.lerp(1, shadow, THREE.MathUtils.smoothstep(projection, 0, 2));
 }
 
 describe('cosmic ring shadow world coordinates', () => {
+  it('keeps the planet at the approved local placement', () => {
+    expect(COSMIC_PLANET_CENTER.toArray()).toEqual(localCenter.toArray());
+  });
+
   it('preserves the desktop center and has both lit and occluded ring geometry', () => {
     const sky = createCosmicSky();
     try {

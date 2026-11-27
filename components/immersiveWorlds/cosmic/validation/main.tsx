@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import CosmicWorld from '../CosmicWorld';
+import {preferDirectCosmicRendering} from '../CosmicEngine';
 import type {BackgroundSoundType} from '../../../../types';
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './validation.css';
+// ?post=off renders the direct (pre-pipeline) path for before/after comparison.
+if(new URLSearchParams(location.search).get('post')==='off')preferDirectCosmicRendering(true);
 const listeners=new Set<(t:BackgroundSoundType)=>void>();
 function Harness(){
  const [active,setActive]=useState(!new URLSearchParams(location.search).has('still')),[mounted,setMounted]=useState(true),[second,setSecond]=useState(false),[events,setEvents]=useState(0);

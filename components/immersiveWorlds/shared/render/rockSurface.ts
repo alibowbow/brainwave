@@ -34,6 +34,8 @@ export interface RockSurfaceOptions {
   wetBand?: number;
   algae?: THREE.ColorRepresentation;
   algaeAmount?: number;
+  /** Moss on upward-facing stone, e.g. where daylight reaches (0..1). */
+  moss?: { color: THREE.ColorRepresentation; amount: number };
   /** Light reflected off sunlit water, dancing on nearby stone. */
   caustics?: { centre: THREE.Vector3; radius: number; color: THREE.Color; time: { value: number } };
   /** Unique key: each distinct option set compiles to its own program. */
@@ -68,11 +70,12 @@ export function applyRockSurface(material: THREE.MeshStandardMaterial, options: 
       shader.uniforms.uCausticColor = { value: caustics.color };
     }
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vRockWorld;')
-      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvRockWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+      .replace('#include <common>', '#include <common>\nvarying vec3 vRockWorld;\nvarying vec3 vRockNormal;')
+      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvRockWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvRockNormal = normalize(mat3(modelMatrix) * objectNormal);');
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>
 varying vec3 vRockWorld;
+varying vec3 vRockNormal;
 ${GLSL_NOISE}
 ${options.caustics ? 'uniform float uRockTime; uniform vec3 uCausticCentre; uniform vec3 uCausticColor;' : ''}
 float rockCrackAt(vec3 p) {
@@ -102,11 +105,14 @@ float rockDrip = smoothstep(0.42, 0.72, bwFbm3(vec3(rockP.x * 2.2, rockP.y * 0.1
 float rockWet = clamp(max(max(${f(o.wetness)}, rockBand), rockDrip), 0.0, 1.0);
 rockColor = mix(rockColor, ${vec3(o.algae)} * (0.8 + 0.4 * rockMid), rockBand * ${f(o.algaeAmount)} * smoothstep(-0.4, 0.2, rockAbove));
 rockColor *= mix(1.0, 0.58, rockWet);
+float rockMoss = 0.0;
+${options.moss ? `rockMoss = smoothstep(0.3, 0.75, normalize(vRockNormal).y + 0.3 * bwNoise(rockP * 2.3 + 6.0)) * smoothstep(0.05, 0.3, rockAbove) * ${f(options.moss.amount)};
+rockColor = mix(rockColor, ${vec3(options.moss.color)} * (0.65 + 0.5 * rockMid + 0.25 * bwNoise(rockP * 9.0)), rockMoss);` : ''}
 diffuseColor.rgb = rockColor;
 `)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
 roughnessFactor = mix(${f(o.dryRoughness)}, ${f(o.wetRoughness)}, rockWet) * (0.9 + 0.2 * rockMid);
-roughnessFactor = clamp(roughnessFactor + rockCrack * 0.15, 0.04, 1.0);
+roughnessFactor = clamp(mix(roughnessFactor + rockCrack * 0.15, 0.92, rockMoss), 0.04, 1.0);
 `)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
 {

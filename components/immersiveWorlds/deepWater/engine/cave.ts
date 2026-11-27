@@ -19,7 +19,7 @@ const WATER_Y = 0.02;
 const APERTURE_THETA = 1.285;
 const APERTURE_Z = -18.2;
 const SHAFT_FOOT = new THREE.Vector3(-2, 0.03, -12.3);
-const SUN = new THREE.Color(1.0, 0.86, 0.66);
+const SUN = new THREE.Color(1.0, 0.82, 0.58);
 const smooth = (a: number, b: number, x: number) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
 /** Opening in (theta, z) space; also used to keep displacement away from it. */
@@ -185,7 +185,8 @@ void main() {
     vec3 p = ro + rd * ((float(i) + jitter) * dt);
     float shaft = shaftDensity(p, axis, axisLength, u1, u2) * uShaftDensity;
     float height = max(p.y - uWaterY, 0.0);
-    float mist = uMistDensity * exp(-height * 0.75) * (0.55 + 0.45 * bwValue(p * 0.3 + vec3(uTime * 0.03, 0.0, uTime * 0.01)));
+    // Broad cave haze plus a thin bank of mist lying on the still water.
+    float mist = uMistDensity * (exp(-height * 0.75) + 1.6 * exp(-height * 3.2)) * (0.4 + 0.6 * bwValue(p * 0.3 + vec3(uTime * 0.03, 0.0, uTime * 0.01)));
     float extinction = shaft + mist;
     vec3 radiance = uSun * phase * shaft + uAmbient * mist;
     float stepT = exp(-extinction * dt);
@@ -244,7 +245,7 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   const towardSun = shaftAxis.clone().normalize().negate();
 
   // --- Light: daylight through the roof is the only strong source. -------------
-  scene.add(new THREE.HemisphereLight('#6d93a3', '#2a241c', 0.34));
+  scene.add(new THREE.HemisphereLight('#4f86a0', '#1c1a18', 0.17));
   const spot = new THREE.SpotLight(SUN, 11, 0, Math.atan(3.3 / shaftLength), .55, 0);
   spot.map = shaftCookie();
   spot.castShadow = true; spot.shadow.mapSize.set(2048, 2048);
@@ -262,16 +263,20 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   const passage = new THREE.PointLight('#7fa7cf', 320, 42, 2);
   passage.position.set(-1.0, 3.4, -44);
   // Just enough fill for the seated ledge to read in the dark.
-  const near = new THREE.PointLight('#8ba3b4', 20, 16, 2);
+  const near = new THREE.PointLight('#8ba3b4', 14, 16, 2);
   near.position.set(1.2, 4.2, 8.6);
-  scene.add(bounce, waterBounce, passage, near);
+  // The glowworm colony washes the roof with the faintest cyan.
+  const colonyGlow = new THREE.PointLight('#4fc3d6', 7, 30, 2);
+  colonyGlow.position.set(.5, 10.5, -7);
+  scene.add(bounce, waterBounce, passage, near, colonyGlow);
 
   // --- Materials: world-space procedural stone. --------------------------------
   // Sunlit water throws moving caustics onto the stone around the shaft's foot.
   const caustics = { centre: new THREE.Vector3(SHAFT_FOOT.x, WATER_Y, SHAFT_FOOT.z), radius: 5.2, color: new THREE.Color(.75, 1.0, .86).multiplyScalar(.9), time: timeUniform };
-  const limestone = createRockMaterial('#9b927f', { key: 'cave-wall', caustics, scale: 1, bump: 1.25, stain: '#7a5432', stainAmount: .42, cavity: .62, strata: .7, waterY: WATER_Y, wetBand: 1.1, drips: .32, dryRoughness: .82, wetRoughness: .2 }, { side: THREE.DoubleSide });
+  const limestone = createRockMaterial('#8e8c84', { key: 'cave-wall', caustics, scale: 1, bump: 1.25, stain: '#7a5432', stainAmount: .42, cavity: .62, strata: .7, waterY: WATER_Y, wetBand: 1.1, drips: .32, dryRoughness: .82, wetRoughness: .2 }, { side: THREE.DoubleSide });
   const calcite = createRockMaterial('#cfc3a8', { key: 'cave-calcite', caustics, scale: 1.6, bump: .7, stain: '#b48a5a', stainAmount: .25, cavity: .3, strata: .2, waterY: WATER_Y, wetness: .35, drips: .5, dryRoughness: .5, wetRoughness: .14, algaeAmount: 0 });
   const wetStone = createRockMaterial('#8a897d', { key: 'cave-wet-stone', caustics, scale: 1.3, bump: 1.4, stain: '#3e3a30', stainAmount: .3, cavity: .7, strata: .3, waterY: WATER_Y, wetBand: .9, wetness: .25, drips: .2, dryRoughness: .78, wetRoughness: .16, algae: '#33402a', algaeAmount: .45 });
+  const mossyStone = createRockMaterial('#7d7c70', { key: 'cave-mossy', caustics, moss: { color: '#6b8a2e', amount: .95 }, scale: 1.3, bump: 1.2, cavity: .6, strata: .3, waterY: WATER_Y, wetBand: .5, wetness: .2, drips: .1, dryRoughness: .8, wetRoughness: .18, algae: '#33402a', algaeAmount: .5 });
   const bedStone = createRockMaterial('#4d544d', { key: 'cave-bed', scale: .9, bump: .8, cavity: .5, strata: .1, wetness: 1, dryRoughness: .5, wetRoughness: .3, algae: '#2c3a2a', algaeAmount: .6, waterY: WATER_Y });
 
   // --- Cavern shell. -------------------------------------------------------------
@@ -336,7 +341,7 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
 
   const pool = createPool(renderer, scene, {
     width: 31, depth: 70, y: WATER_Y, color: '#2f6f66', position: [0, WATER_Y, -16], distortion: .5,
-    clear: { deepColor: '#021012', glow: { x: SHAFT_FOOT.x, z: SHAFT_FOOT.z, radius: 3.2, color: new THREE.Color(.55, .78, .62).multiplyScalar(3) }, lightDirection: towardSun, glint: 6 },
+    clear: { deepColor: '#01141a', glow: { x: SHAFT_FOOT.x, z: SHAFT_FOOT.z, radius: 3.6, color: new THREE.Color(.3, .9, .78).multiplyScalar(2.6) }, lightDirection: towardSun, glint: 6 },
   });
 
   // --- Dripstones: clustered stalactites, a few stalagmites and buttresses. ------
@@ -396,12 +401,91 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   boulder([-1.15, -.12, 5.8], [1.85, .56, 2.35], 163, wetStone, 14);
   boulder([-1.6, -.22, 4.3], [1.5, .44, 1.4], 187, wetStone, 12);
   // A low island catches the foot of the shaft: the brightest, warmest stone in view.
-  boulder([-3.6, -.5, -13.2], [1.8, .64, 1.5], 211, wetStone, 16);
+  boulder([-3.6, -.5, -13.2], [1.8, .64, 1.5], 211, mossyStone, 16);
   for (let i = 0; i < 23; i++) {
     const s = Math.sin(i * 19.79) * .5 + .5;
     const side = i % 2 === 0 ? -1 : 1;
     boulder([side * (7.2 + s * 2.2), -.69 + s * .18, 8 - i * 1.45], [.28 + s * .6, .17 + s * .25, .42 + s * .76], 100 + i, wetStone, 6);
   }
+
+  // --- Roots of the trees above hang through the opening into the light. --------
+  const rootRandom = seeded(313);
+  const rootGeometries: THREE.BufferGeometry[] = [];
+  for (let k = 0; k < 34; k++) {
+    const a = rootRandom() * Math.PI * 2, ring = rootRandom() * .7;
+    const start = wallPoint(APERTURE_THETA + Math.cos(a) * THREE.MathUtils.lerp(.08, .15, ring), APERTURE_Z + Math.sin(a) * THREE.MathUtils.lerp(1.8, 3.2, ring));
+    start.y -= .15;
+    const drop = 1.2 + rootRandom() ** 1.8 * 10.5;
+    const points = Array.from({ length: 9 }, (_, i) => {
+      const t = i / 8;
+      return new THREE.Vector3(start.x + Math.sin(t * 2.7 + k) * .22 * t + (rootRandom() - .5) * .06, start.y - drop * t, start.z + Math.cos(t * 2.1 + k * 1.7) * .22 * t + (rootRandom() - .5) * .06);
+    });
+    const curve = new THREE.CatmullRomCurve3(points);
+    const tubular = 48, radial = 7;
+    const tube = new THREE.TubeGeometry(curve, tubular, .018 + rootRandom() * .045, radial, false);
+    // Taper each root toward its tip.
+    const rootPosition = tube.attributes.position as THREE.BufferAttribute;
+    const centre = new THREE.Vector3(), vertex = new THREE.Vector3();
+    for (let i = 0; i <= tubular; i++) {
+      curve.getPointAt(i / tubular, centre);
+      const taper = 1 - .75 * i / tubular;
+      for (let j = 0; j <= radial; j++) {
+        const index = i * (radial + 1) + j;
+        vertex.fromBufferAttribute(rootPosition, index).sub(centre).multiplyScalar(taper).add(centre);
+        rootPosition.setXYZ(index, vertex.x, vertex.y, vertex.z);
+      }
+    }
+    tube.deleteAttribute('uv'); tube.computeVertexNormals();
+    rootGeometries.push(tube);
+  }
+  const roots = new THREE.Mesh(mergeGeometries(rootGeometries), new THREE.MeshStandardMaterial({ color: '#3b2d21', roughness: .72 }));
+  rootGeometries.forEach(geometry => geometry.dispose());
+  roots.name = 'cave-hanging-roots'; roots.castShadow = true; roots.receiveShadow = true;
+  scene.add(roots);
+
+  // --- Glowworm colony: blue-green lures and beaded silk threads on the roof. -----
+  // Each breathes slowly on its own phase; the still pool mirrors them like stars.
+  const wormRandom = seeded(9001);
+  const wormPositions: number[] = [], wormGlow: number[] = [], wormPhase: number[] = [];
+  for (let attempt = 0; attempt < 160000 && wormGlow.length < 27000; attempt++) {
+    const theta = .22 + wormRandom() * (Math.PI - .44), z = 15 - wormRandom() * 64;
+    if (apertureDistance(theta, z) < 5) continue;
+    // Cheap rejection on the undisplaced wall before the full surface evaluation.
+    const rough = baseWall(theta, z);
+    if (rough.y < 3.6) continue;
+    const colony = smooth(-.1, .35, fbm3(rough.x * .16 + 3, rough.y * .16, z * .16, 3));
+    if (wormRandom() > colony) continue;
+    const p = wallPoint(theta, z);
+    const inward = new THREE.Vector3(rough.centreX - p.x, -3 - p.y, 0).normalize();
+    p.addScaledVector(inward, .05);
+    const phase = wormRandom(), bright = .55 + wormRandom() * .45;
+    wormPositions.push(p.x, p.y, p.z); wormGlow.push(bright); wormPhase.push(phase);
+    const thread = .06 + wormRandom() ** 2 * .4;
+    for (let k = 1; k <= 2; k++) {
+      wormPositions.push(p.x, p.y - thread * k / 2, p.z);
+      wormGlow.push(bright * (.3 - k * .08)); wormPhase.push(phase);
+    }
+  }
+  const wormGeometry = new THREE.BufferGeometry();
+  wormGeometry.setAttribute('position', new THREE.Float32BufferAttribute(wormPositions, 3));
+  wormGeometry.setAttribute('glow', new THREE.Float32BufferAttribute(wormGlow, 1));
+  wormGeometry.setAttribute('phase', new THREE.Float32BufferAttribute(wormPhase, 1));
+  const glowworms = new THREE.Points(wormGeometry, new THREE.ShaderMaterial({
+    uniforms: { uPixelRatio: { value: Math.min(renderer.getPixelRatio(), 2) }, uTime: timeUniform },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: `uniform float uPixelRatio;uniform float uTime;attribute float glow;attribute float phase;varying float vGlow;
+      void main(){vec4 mv=modelViewMatrix*vec4(position,1.);
+        vGlow=glow*(.72+.28*sin(uTime*(.12+phase*.2)+phase*40.));
+        gl_PointSize=clamp(46./-mv.z,1.3,3.4)*uPixelRatio;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader: `varying float vGlow;void main(){float d=length(gl_PointCoord-.5)*2.;float core=1.-smoothstep(0.,1.,d);
+      // Kept below white so the hue survives the tone curve; bloom supplies the halo.
+      gl_FragColor=vec4(vec3(.16,.78,1.)*2.4*vGlow*core,1.);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`,
+  }));
+  glowworms.name = 'cave-glowworms';
+  scene.add(glowworms);
 
   // --- Daylight beyond the opening: bright sky behind a leafy canopy. -----------
   const skyMaterial = new THREE.ShaderMaterial({
@@ -477,8 +561,8 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   return {
     scene, camera, target,
     post: {
-      exposure: 1.3, bloomStrength: .085, bloomThreshold: 0, aoStrength: 1, aoRadius: .9,
-      saturation: .96, contrast: 1.1, shadowTint: [.9, 1.0, 1.08], highlightTint: [1.07, 1.0, .9], vignette: .5, grain: .03,
+      exposure: 1.25, bloomStrength: .1, bloomThreshold: 0, aoStrength: 1, aoRadius: .9,
+      saturation: 1.06, contrast: 1.14, shadowTint: [.86, .98, 1.12], highlightTint: [1.1, 1.0, .84], vignette: .55, grain: .03,
     },
     prepare(live) {
       // A tiny radiance probe: dark rock, the bright opening and teal water glow.
@@ -502,7 +586,7 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
         vertexShader: FULLSCREEN_VERTEX, fragmentShader: VOLUME_FRAGMENT, depthTest: false, depthWrite: false, toneMapped: false,
         uniforms: {
           uApex: { value: aperture.clone() }, uFoot: { value: SHAFT_FOOT.clone() }, uTopRadius: { value: 1.25 }, uFootRadius: { value: 3.4 },
-          uSun: { value: new THREE.Vector3(SUN.r, SUN.g, SUN.b).multiplyScalar(4.2) }, uAmbient: { value: new THREE.Vector3(.08, .12, .13) },
+          uSun: { value: new THREE.Vector3(SUN.r, SUN.g, SUN.b).multiplyScalar(4.2) }, uAmbient: { value: new THREE.Vector3(.05, .11, .14) },
           uShaftDensity: { value: .05 }, uMistDensity: { value: .045 }, uWaterY: { value: WATER_Y },
         },
       });

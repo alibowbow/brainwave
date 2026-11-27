@@ -1,13 +1,19 @@
 import * as THREE from 'three';
 import { LiveSceneHost, type LiveSceneEngine, type LiveSceneHolder } from '../../liveScene/liveSceneHost';
 import type { CozyWorldId, WorldBuild, WorldFactory } from './contracts';
+import { HdrPipeline } from '../shared/render/hdrPipeline';
 
 let serial=0;
 const lifetime={created:0,disposed:0};
 const retired:Array<Record<string,unknown>>=[];
+// The owned QA harness can request the previous direct path for comparisons.
+let directPreferred=false;
+export function preferCozyDirectRendering(direct:boolean){directPreferred=direct;}
 export class CozyEngine implements LiveSceneEngine {
   private renderer: THREE.WebGLRenderer;
   private world: WorldBuild | null=null;
+  /** HDR image pipeline; null keeps the direct renderer path (no float targets, tests, QA comparison). */
+  private post: HdrPipeline | null=null;
   private raf=0; private time=8; private last=0; private dead=false;
   private look=new THREE.Vector2(); private aim=new THREE.Vector2();
   private rotation=new THREE.Quaternion();
@@ -39,7 +45,8 @@ export class CozyEngine implements LiveSceneEngine {
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure=1.12;
     this.renderer.shadowMap.enabled=true;
-    this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    // r18x removed PCFSoftShadowMap; PCF with a per-light radius is the soft path.
+    this.renderer.shadowMap.type=THREE.PCFShadowMap;
     this.canvas.addEventListener('webglcontextlost',this.contextLost);
     if(typeof document!=='undefined')document.addEventListener?.('visibilitychange',this.visibilityChanged);
     this.phases.constructorEnd=performance.now();
@@ -51,8 +58,23 @@ export class CozyEngine implements LiveSceneEngine {
     try{
       this.gpu.phase='factory';this.phases.factoryStart=performance.now();this.requestImage();this.world=this.factory();this.phases.factoryEnd=performance.now();
       this.gpu.phase='init';this.world.resize(this.aspect);this.rotation.copy(this.world.camera.quaternion);this.world.update(this.time,0);
+      this.gpu.phase='post';this.preparePost(this.world);
       this.gpu.phase='initialized';this.phases.initEnd=performance.now();
     }catch(error){this.fail(error,false);throw error;}
+  }
+  /** HDR is the quality path; without float targets the direct path remains. Runs once, before the first frame. */
+  private preparePost(world:WorldBuild){
+    if(!directPreferred){
+      try{this.post=HdrPipeline.create(this.renderer,{settings:world.post,volume:world.createVolume?()=>world.createVolume!():null});}
+      catch{this.post=null;}
+    }
+    // The direct path keeps the same exposure curve, without bloom/AO/grade.
+    if(!this.post&&world.post?.exposure)this.renderer.toneMappingExposure=world.post.exposure;
+    // Sizes already applied are forwarded; later sizes go through applySize.
+    if(this.post&&this.requestedSize&&!this.sizeDirty)this.post.setSize(this.requestedSize.width,this.requestedSize.height,this.requestedSize.dpr);
+    world.setPostActive?.(!!this.post);
+    world.prepare?.(this.renderer);
+    this.canvas.dataset.post=this.post?JSON.stringify(this.post.report):'direct';
   }
   setSize(width:number,height:number,dpr:number){
     if(this.dead||this.failure)return;
@@ -79,6 +101,8 @@ export class CozyEngine implements LiveSceneEngine {
     if(this.renderer.getPixelRatio()!==ratio){this.staticFrameCurrent=false;this.renderer.setPixelRatio(ratio);}
     this.renderer.getSize(this.rendererSize);
     if(this.rendererSize.x!==w||this.rendererSize.y!==h){this.staticFrameCurrent=false;this.renderer.setSize(w,h,false);}
+    // Same deferred point as the backing buffer; a no-op for unchanged sizes.
+    if(this.post){this.post.setSize(w,h,ratio);this.canvas.dataset.post=JSON.stringify(this.post.report);}
     if(this.world){this.world.resize(this.aspect);this.world.camera.aspect=this.aspect;this.world.camera.updateProjectionMatrix();this.rotation.copy(this.world.camera.quaternion);}
     this.sizeDirty=false;
   }
@@ -155,7 +179,10 @@ export class CozyEngine implements LiveSceneEngine {
     if(this.gpu.submitted===1)this.phases.firstRenderStart=performance.now();
     this.submitting=true;
     try{
-      this.renderer.render(this.world.scene,this.world.camera);this.gpu.returned++;
+      // The HDR pipeline replaces only this single scene draw; fences cover all of its passes.
+      if(this.post)this.post.render(this.world.scene,this.world.camera,this.time);
+      else this.renderer.render(this.world.scene,this.world.camera);
+      this.gpu.returned++;
       if(this.gpu.submitted===1)this.phases.firstRenderEnd=performance.now();
       if(this.dead||this.failure||this.gl.isContextLost())throw new Error(this.failure??'Cozy engine lost during render');
       this.gpu.lastSubmit=performance.now();this.gpu.phase='fence';
@@ -217,7 +244,7 @@ export class CozyEngine implements LiveSceneEngine {
       const materials=(hit.object as THREE.Mesh).material;const m=Array.isArray(materials)?materials[hit.face?.materialIndex??0]:materials;if(m&&!m.transparent){this.lastHit='occluded:'+hit.object.type;break;}
     }return null;
   }
-  diagnostics(){const targets:Array<{action:string;x:number;y:number;z:number}>=[];if(this.world){this.world.scene.updateMatrixWorld(true);this.world.scene.traverse(o=>{if(o.userData.cozyAction){const p=o.getWorldPosition(new THREE.Vector3()).project(this.world!.camera);targets.push({action:o.userData.cozyAction,x:(p.x+1)/2,y:(1-p.y)/2,z:p.z});}});}return {instance:this.instance,taps:this.taps,lastHit:this.lastHit,frames:this.frames,time:this.time,running:!!this.raf,image:this.imageSnapshot(),gpu:this.gpuSnapshot(),phases:{...this.phases},targets,drawCalls:this.renderer.info.render.calls,triangles:this.renderer.info.render.triangles,memory:{...this.renderer.info.memory},lifetime:{...lifetime}};}
+  diagnostics(){const targets:Array<{action:string;x:number;y:number;z:number}>=[];if(this.world){this.world.scene.updateMatrixWorld(true);this.world.scene.traverse(o=>{if(o.userData.cozyAction){const p=o.getWorldPosition(new THREE.Vector3()).project(this.world!.camera);targets.push({action:o.userData.cozyAction,x:(p.x+1)/2,y:(1-p.y)/2,z:p.z});}});}return {instance:this.instance,taps:this.taps,lastHit:this.lastHit,frames:this.frames,time:this.time,running:!!this.raf,post:this.post?.report??null,image:this.imageSnapshot(),gpu:this.gpuSnapshot(),phases:{...this.phases},targets,drawCalls:this.renderer.info.render.calls,triangles:this.renderer.info.render.triangles,memory:{...this.renderer.info.memory},lifetime:{...lifetime}};}
   private imageSnapshot(){return {...this.image,dirty:this.image.requestedRevision>this.image.submittedRevision,awaitingCompletion:this.image.submittedRevision>this.image.completedRevision,sizeDirty:this.sizeDirty};}
   private gpuSnapshot(){return {...this.gpu,inFlight:this.sync?1:0,unconfirmed:this.gpu.submitted-this.gpu.completed,pending:this.pendingDt,pollScheduled:this.poll!==null,failure:this.failure,cleanupErrors:[...this.cleanupErrors]};}
   dispose(){
@@ -247,6 +274,8 @@ export class CozyEngine implements LiveSceneEngine {
       textures.forEach(texture=>clean(()=>texture.dispose()));geometries.forEach(geometry=>clean(()=>geometry.dispose()));materials.forEach(material=>clean(()=>material.dispose()));
       clean(()=>world.dispose?.());
     }
+    const post=this.post;this.post=null;
+    if(post)clean(()=>post.dispose());
     clean(()=>this.renderer.dispose());lifetime.disposed++;
     this.phases.disposeEnd=performance.now();this.gpu.phase='disposed';
     retired.push({instance:this.instance,frames:this.frames,time:this.time,image:this.imageSnapshot(),gpu:this.gpuSnapshot(),phases:{...this.phases}});

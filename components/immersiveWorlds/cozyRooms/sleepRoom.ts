@@ -1,294 +1,447 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldBuild } from './contracts';
-import { wood, fabric, rough, rounded } from './materials';
+import { batchStatic, clothSheet, cushion, stoneBlock } from './geometry';
+import { captureRoomProbe, createRoomVolume } from './lighting';
+import { createWoodMaterial } from '../shared/render/woodSurface';
+import { applyFabricSurface, createFabricMaterial } from '../shared/render/fabricSurface';
+import { createGlazeMaterial, createPlasterMaterial, patchSurface } from '../shared/render/interiorSurface';
+import { GLSL_NOISE } from '../shared/render/glsl';
+import { fbm3, noise3, seeded } from '../shared/render/noise';
 
-/** Original procedural bedroom. No borrowed artwork, external models or audio. */
+/*
+ * 수면 준비: reclined in bed at night, facing a tall window between linen
+ * curtains. The moon is the key light: a cold, shadowed beam through the
+ * curtain gap that lays the window bars across the floor and the foot of the
+ * bed, with dust drifting in it. The curtains glow faintly where moonlight
+ * passes through them. A ceramic bedside lamp gives the only warm pool and can
+ * be dimmed; the curtain gap can be widened. Original procedural work.
+ */
+
+const WIN = { x0: -1.35, x1: 1.75, y0: 0.8, y1: 3.75, z: -4.12 };
+const MOON_DIR = new THREE.Vector3(0.22, -0.4, 1).normalize(); // direction the light travels
+
+const NIGHT_VERTEX = /* glsl */ `
+varying vec3 vWorld;
+varying vec3 vNormalW;
+void main() {
+  #ifdef USE_INSTANCING
+  mat4 m = modelMatrix * instanceMatrix;
+  #else
+  mat4 m = modelMatrix;
+  #endif
+  vec4 w = m * vec4(position, 1.0);
+  vWorld = w.xyz; vNormalW = normalize(mat3(m) * normal);
+  gl_Position = projectionMatrix * viewMatrix * w;
+}
+`;
+
+const NIGHT_SKY = /* glsl */ `
+${GLSL_NOISE}
+uniform vec3 uMoon;
+uniform float uTime;
+varying vec3 vWorld;
+void main() {
+  vec3 d = normalize(vWorld - cameraPosition);
+  float h = d.y;
+  vec3 sky = mix(vec3(0.05, 0.08, 0.16), vec3(0.012, 0.022, 0.06), smoothstep(0.0, 0.55, h));
+  float md = acos(clamp(dot(d, uMoon), -1.0, 1.0));
+  // Moonlit haze: a broad glow around the moon and a paler band at the horizon.
+  sky += vec3(0.12, 0.15, 0.22) * exp(-md * 3.0) + vec3(0.05, 0.06, 0.08) * exp(-max(h, 0.0) * 9.0);
+  vec2 cp = d.xz / max(h + 0.15, 0.05);
+  float cloud = smoothstep(0.05, 0.75, bwFbm3(vec3(cp * vec2(0.5, 1.4) + vec2(uTime * 0.004, 0.0), 2.0)) + 0.1) * smoothstep(0.02, 0.25, h);
+  // Clouds near the moon are silver-edged; elsewhere they hide stars.
+  sky = mix(sky, vec3(0.06, 0.075, 0.11) + vec3(0.25, 0.27, 0.3) * exp(-md * 4.0), cloud * 0.7);
+  vec3 sp = d * 520.0; vec3 cell = floor(sp); vec3 hs = bwHash3(cell);
+  float star = step(0.9955, hs.x) * smoothstep(0.5, 0.0, length(fract(sp) - 0.5 - (hs.yzx - 0.5) * 0.4) * 2.0);
+  sky += vec3(0.85, 0.9, 1.0) * star * (1.0 - cloud) * smoothstep(0.05, 0.3, h) * (0.65 + 0.35 * sin(uTime * (0.2 + hs.z * 0.3) + hs.y * 40.0)) * 2.2;
+  // A crescent: a bright disc with an offset dark limb, and a soft halo.
+  vec3 side = normalize(cross(uMoon, vec3(0.0, 1.0, 0.0)));
+  float disc = smoothstep(0.0145, 0.0125, md);
+  float limb = smoothstep(0.0125, 0.0105, acos(clamp(dot(d, normalize(uMoon + side * 0.009 + vec3(0.0, 0.004, 0.0))), -1.0, 1.0)));
+  sky += vec3(1.0, 0.97, 0.88) * disc * (1.0 - limb) * 22.0 + vec3(0.5, 0.55, 0.65) * exp(-md * 55.0) * 0.6;
+  gl_FragColor = vec4(sky, 1.0);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}
+`;
+
+const NIGHT_LAND = /* glsl */ `
+${GLSL_NOISE}
+uniform vec3 uMoon;
+uniform float uLeaf;
+varying vec3 vWorld;
+varying vec3 vNormalW;
+void main() {
+  vec3 n = normalize(vNormalW) * (gl_FrontFacing ? 1.0 : -1.0);
+  float var = bwNoise(vWorld * 0.7) * 0.5 + bwNoise(vWorld * 3.0) * 0.25;
+  // Leaf clusters: high-frequency relief breaks the moonlit side into sprays.
+  float sprays = bwNoise(vWorld * 6.0) * 0.6 + bwNoise(vWorld * 15.0) * 0.4;
+  vec3 nn = normalize(n + uLeaf * 0.6 * vec3(bwNoise(vWorld * 5.0), bwNoise(vWorld * 5.0 + 3.1), bwNoise(vWorld * 5.0 + 7.3)));
+  float lit = clamp(dot(nn, uMoon), 0.0, 1.0) * mix(1.0, smoothstep(-0.2, 0.5, sprays), uLeaf);
+  vec3 albedo = mix(vec3(0.03, 0.04, 0.038), vec3(0.05, 0.065, 0.045), uLeaf) * (0.65 + 0.6 * var);
+  vec3 view = normalize(cameraPosition - vWorld);
+  float rim = pow(1.0 - abs(dot(n, view)), 3.0) * uLeaf * 0.6;
+  vec3 color = albedo * (vec3(0.025, 0.03, 0.05) + vec3(0.5, 0.58, 0.8) * (lit * 0.9 + rim));
+  float dist = length(vWorld - cameraPosition);
+  color = mix(color, vec3(0.03, 0.045, 0.08), 1.0 - exp(-dist * 0.03));
+  gl_FragColor = vec4(color, 1.0);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}
+`;
+
 export function createSleepRoomWorld(): WorldBuild {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#101c32');
-  scene.fog = new THREE.FogExp2('#111e31', 0.017);
-  const camera = new THREE.PerspectiveCamera(46, 1, 0.06, 80);
-  const walnut = wood('#846147', 3);
-  const darkWood = wood('#594332', 3);
-  const linen = fabric('#bac1bd', 12);
-  linen.bumpScale = 0.0018;
-  const sheet = fabric('#d8ddd5', 12);
-  sheet.bumpScale = 0.0015;
-  const curtainMaterial = fabric('#c5c7bf', 9);
-  curtainMaterial.bumpScale = 0.0014;
-  curtainMaterial.side = THREE.DoubleSide;
-  const plaster = rough('#63717a', 0.98);
-  const ceiling = rough('#646e70', 0.97);
-  const brass = new THREE.MeshStandardMaterial({ color: '#ae8852', roughness: 0.42, metalness: 0.74 });
-  const cream = rough('#c7b798', 0.79);
-  const teal = rough('#607975', 0.87);
+  scene.background = new THREE.Color(0.01, 0.015, 0.03);
+  const camera = new THREE.PerspectiveCamera(46, 1, 0.06, 120);
+  const random = seeded(0x51ee9);
+  const matrix = new THREE.Matrix4(), euler = new THREE.Euler(), quat = new THREE.Quaternion(), pos = new THREE.Vector3(), scl = new THREE.Vector3();
+  const place = (geometry: THREE.BufferGeometry, x: number, y: number, z: number, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1) => {
+    matrix.compose(pos.set(x, y, z), quat.setFromEuler(euler.set(rx, ry, rz)), scl.set(sx, sy, sz));
+    return geometry.applyMatrix4(matrix);
+  };
   let destination: THREE.Object3D = scene;
-  const add = <T extends THREE.Object3D>(object: T, x = 0, y = 0, z = 0): T => {
-    object.position.set(x, y, z); destination.add(object); return object;
+  const add = (geometry: THREE.BufferGeometry, material: THREE.Material, shadow = true) => {
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.castShadow = shadow; mesh.receiveShadow = true; destination.add(mesh); return mesh;
   };
-  const box = (w: number, h: number, d: number, material: THREE.Material, x: number, y: number, z: number, bevel = 0): THREE.Mesh => {
-    const mesh = bevel ? rounded(w, h, d, bevel, material) : new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
-    mesh.castShadow = true; mesh.receiveShadow = true; return add(mesh, x, y, z);
-  };
-  const tube = (points: THREE.Vector3[], radius: number, mat: THREE.Material, segments = 32): THREE.Mesh => {
-    const mesh = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), segments, radius, 6, false), mat);
-    mesh.castShadow = true; return add(mesh);
-  };
+  const timeUniform = { value: 0 };
 
-  // Localized bedside warmth against moonlit linen. The lamp is intentionally steady.
-  add(new THREE.HemisphereLight('#b0c7e1', '#55534d', 1.5));
-  const moonlight = add(new THREE.DirectionalLight('#c1d7ff', 1.5), -3.5, 5.8, -9);
-  moonlight.target.position.set(0.8, 0.3, 2.8); scene.add(moonlight.target);
-  moonlight.castShadow = true;
-  moonlight.shadow.mapSize.set(1024, 1024);
-  moonlight.shadow.camera.left = -4; moonlight.shadow.camera.right = 4;
-  moonlight.shadow.camera.top = 4; moonlight.shadow.camera.bottom = -3;
-  moonlight.shadow.camera.near = 0.4; moonlight.shadow.camera.far = 22;
-  moonlight.shadow.bias = -0.00035; moonlight.shadow.normalBias = 0.015;
-  const lampLight = add(new THREE.PointLight('#ffd59c', 16, 7.5, 2), 1.63, 1.68, -0.96);
-  lampLight.castShadow = true; lampLight.shadow.mapSize.set(512, 512);
-  lampLight.shadow.bias = -0.0007; lampLight.shadow.normalBias = 0.01;
-  add(new THREE.PointLight('#ddb289', 1.0, 4.2, 2), -1.4, 0.55, 1.4);
+  // --- Materials --------------------------------------------------------------
+  const paint = createPlasterMaterial('#8d96a0', { key: 'sleep-wall', floorY: 0, stains: 0.25, bump: 0.6 });
+  const ceilingPaint = createPlasterMaterial('#8a9096', { key: 'sleep-ceiling', stains: 0.15, bump: 0.5 });
+  const floor = createWoodMaterial('#7a5a40', { key: 'sleep-floor', axis: 'z', rings: 22, figure: 0.65, pores: 0.35, wear: 0.25, varnish: 0.55, roughness: 0.42, planks: { width: 0.18, length: 2.1, bevel: 0.0035, tone: 0.3 } });
+  const walnut = createWoodMaterial('#5a3d2a', { key: 'sleep-walnut', axis: 'x', rings: 30, figure: 0.8, pores: 0.5, wear: 0.1, varnish: 0.6, roughness: 0.4 });
+  const walnutY = createWoodMaterial('#5a3d2a', { key: 'sleep-walnut-y', axis: 'y', rings: 30, figure: 0.8, pores: 0.5, wear: 0.1, varnish: 0.6, roughness: 0.4 });
+  const frameWood = createWoodMaterial('#d9d2c4', { key: 'sleep-frame', axis: 'y', rings: 30, figure: 0.15, pores: 0.1, wear: 0.05, varnish: 0.25, roughness: 0.5 });
+  const frameWoodX = createWoodMaterial('#d9d2c4', { key: 'sleep-frame-x', axis: 'x', rings: 30, figure: 0.15, pores: 0.1, wear: 0.05, varnish: 0.25, roughness: 0.5 });
+  const linen = createFabricMaterial('#c3c8c4', { key: 'sleep-duvet', weave: 'plain', threads: [420, 420], heather: 0.6, threadContrast: 0.5, fuzz: 0.4, depth: 0.0004, sheen: 0.5, sheenColor: '#eef2f2', roughness: 0.9 }, { side: THREE.DoubleSide });
+  const sheet = createFabricMaterial('#dfe1da', { key: 'sleep-sheet', weave: 'plain', threads: [500, 500], heather: 0.3, fuzz: 0.3, depth: 0.0003, sheen: 0.4, roughness: 0.88 }, { side: THREE.DoubleSide });
+  const curtainLinen = applyFabricSurface(new THREE.MeshPhysicalMaterial({ color: '#cfcfc6', roughness: 0.95, sheen: 0.4, sheenColor: '#ffffff', side: THREE.DoubleSide }), { key: 'sleep-curtain', weave: 'plain', threads: [260, 260], heather: 0.5, fuzz: 0.3, depth: 0.0004 });
+  const rugWool = createFabricMaterial('#7c7466', { key: 'sleep-rug', weave: 'knit', threads: [70, 110], heather: 0.9, fuzz: 1, depth: 0.0025, roughness: 0.98,
+    pattern: 'fbBase *= 0.85 + 0.25 * step(0.5, fract(fbUv.x * 1.6 + 0.25 * sin(fbUv.y * 3.0)));' }, { side: THREE.DoubleSide });
+  const brass = patchSurface(new THREE.MeshStandardMaterial({ color: '#b08b55', metalness: 1, roughness: 0.32 }), {
+    key: 'sleep-brass', color: 'float brN = bwFbm3(vSurfaceWorld * 14.0); diffuseColor.rgb *= 0.75 + 0.3 * brN;', roughness: 'roughnessFactor = clamp(roughnessFactor + 0.2 * brN, 0.12, 1.0);',
+  });
+  const lampGlaze = createGlazeMaterial('#4f6e6a', { key: 'sleep-lamp', pool: '#2a3e3c', speckle: 0.4, scale: 4 });
+  const shadeLinen = createFabricMaterial('#e0cda4', { key: 'sleep-shade', weave: 'plain', threads: [300, 300], roughness: 0.9 }, { side: THREE.DoubleSide, emissive: '#ffa955', emissiveIntensity: 1 });
+  const glassMaterial = new THREE.MeshPhysicalMaterial({ color: '#000000', roughness: 0.22, specularIntensity: 0.12, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+  const drinkGlass = new THREE.MeshPhysicalMaterial({ color: '#cfdde2', roughness: 0.06, metalness: 0, transparent: true, opacity: 0.18, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1 });
+  const paper = new THREE.MeshStandardMaterial({ color: '#cbc4ae', roughness: 0.92 });
+  const bookCloth = createFabricMaterial('#41584f', { key: 'sleep-book', weave: 'plain', threads: [500, 500], roughness: 0.8 });
 
-  // Actual room shell and individual boards, with a true opening beyond the glass.
-  box(7, 0.16, 10, darkWood, 0, -0.15, 0);
-  for (let i = 0; i < 18; i++) {
-    const plank = box(0.374, 0.075, 10, i % 4 === 0 ? walnut : darkWood, -3.21 + i * 0.38, -0.032, 0);
-    plank.receiveShadow = true;
+  // --- Lights: moon key, lamp pool, the room's own bounce --------------------
+  const moon = new THREE.DirectionalLight(new THREE.Color(0.62, 0.72, 1.0), 5.5);
+  moon.position.copy(MOON_DIR).multiplyScalar(-14).add(new THREE.Vector3(0.2, 1.5, -1.5));
+  moon.target.position.set(0.2, 1.5, -1.5);
+  moon.castShadow = true; moon.shadow.mapSize.set(2048, 2048);
+  Object.assign(moon.shadow.camera, { left: -4.5, right: 4.5, top: 4.5, bottom: -4.5, near: 4, far: 26 });
+  moon.shadow.bias = -0.0004; moon.shadow.normalBias = 0.02; moon.shadow.radius = 4;
+  moon.shadow.autoUpdate = false; moon.shadow.needsUpdate = true;
+  scene.add(moon, moon.target);
+  scene.add(new THREE.HemisphereLight('#2a3a5c', '#141110', 0.05));
+
+  // --- Room shell ----------------------------------------------------------------
+  const wallShape = new THREE.Shape();
+  wallShape.moveTo(-3.6, 0); wallShape.lineTo(3.6, 0); wallShape.lineTo(3.6, 4.6); wallShape.lineTo(-3.6, 4.6); wallShape.closePath();
+  const hole = new THREE.Path(); hole.moveTo(WIN.x0, WIN.y0); hole.lineTo(WIN.x1, WIN.y0); hole.lineTo(WIN.x1, WIN.y1); hole.lineTo(WIN.x0, WIN.y1); hole.closePath();
+  wallShape.holes.push(hole);
+  // Back wall with real thickness: inner face, reveals and outer face.
+  add(place(new THREE.ShapeGeometry(wallShape), 0, 0, WIN.z + 0.11), paint, true);
+  for (const [x, ry] of [[WIN.x0, Math.PI / 2], [WIN.x1, -Math.PI / 2]] as const) add(place(new THREE.PlaneGeometry(0.24, WIN.y1 - WIN.y0), x, (WIN.y0 + WIN.y1) / 2, WIN.z - 0.01, 0, ry), paint);
+  add(place(new THREE.PlaneGeometry(WIN.x1 - WIN.x0, 0.24), (WIN.x0 + WIN.x1) / 2, WIN.y1, WIN.z - 0.01, Math.PI / 2), paint);
+  add(place(new THREE.PlaneGeometry(7.2, 4.6), -3.6, 2.3, 0.4, 0, Math.PI / 2, 0, 9.0 / 7.2), paint, false);
+  add(place(new THREE.PlaneGeometry(7.2, 4.6), 3.6, 2.3, 0.4, 0, -Math.PI / 2, 0, 9.0 / 7.2), paint, false);
+  add(place(new THREE.PlaneGeometry(7.2, 4.6), 0, 2.3, 4.9, 0, Math.PI), paint, false);
+  add(place(new THREE.PlaneGeometry(7.2, 9.1), 0, 0, 0.4, -Math.PI / 2), floor, false).name = 'sleep-floor';
+  add(place(new THREE.PlaneGeometry(7.2, 9.1), 0, 4.6, 0.4, Math.PI / 2), ceilingPaint, false);
+  for (const [w, x, z, ry] of [[7.2, 0, WIN.z + 0.125, 0], [9.0, -3.585, 0.4, Math.PI / 2], [9.0, 3.585, 0.4, Math.PI / 2]] as const) add(place(stoneBlock(w, 0.14, 0.025, 2 + x, 0.02, 0.004), x, 0.07, z, 0, ry), walnut);
+  // Window: painted timber casement, sill, bars that the moon will cast.
+  const frameParts: Array<[THREE.BufferGeometry, THREE.Material]> = [
+    [place(stoneBlock(0.11, WIN.y1 - WIN.y0, 0.14, 21, 0.02, 0.008), WIN.x0 + 0.055, (WIN.y0 + WIN.y1) / 2, WIN.z), frameWood],
+    [place(stoneBlock(0.11, WIN.y1 - WIN.y0, 0.14, 22, 0.02, 0.008), WIN.x1 - 0.055, (WIN.y0 + WIN.y1) / 2, WIN.z), frameWood],
+    [place(stoneBlock(WIN.x1 - WIN.x0, 0.11, 0.14, 23, 0.02, 0.008), (WIN.x0 + WIN.x1) / 2, WIN.y1 - 0.055, WIN.z), frameWoodX],
+    [place(stoneBlock(WIN.x1 - WIN.x0, 0.12, 0.14, 24, 0.02, 0.008), (WIN.x0 + WIN.x1) / 2, WIN.y0 + 0.06, WIN.z), frameWoodX],
+    [place(stoneBlock(0.065, WIN.y1 - WIN.y0 - 0.2, 0.1, 25, 0.02, 0.006), (WIN.x0 + WIN.x1) / 2, (WIN.y0 + WIN.y1) / 2, WIN.z), frameWood],
+    [place(stoneBlock(WIN.x1 - WIN.x0 - 0.2, 0.06, 0.09, 26, 0.02, 0.006), (WIN.x0 + WIN.x1) / 2, 2.55, WIN.z), frameWoodX],
+    [place(stoneBlock(WIN.x1 - WIN.x0 + 0.26, 0.05, 0.36, 27, 0.04, 0.008), (WIN.x0 + WIN.x1) / 2, WIN.y0 - 0.02, WIN.z + 0.14), frameWoodX],
+  ];
+  frameParts.forEach(([g, m]) => add(g, m));
+  const pane = new THREE.Mesh(new THREE.PlaneGeometry(WIN.x1 - WIN.x0, WIN.y1 - WIN.y0), glassMaterial);
+  pane.position.set((WIN.x0 + WIN.x1) / 2, (WIN.y0 + WIN.y1) / 2, WIN.z - 0.02); pane.renderOrder = 8; pane.userData.dynamic = true; scene.add(pane);
+  // A small plant on the sill, a silhouette against the sky.
+  const potGlaze = createGlazeMaterial('#8b6a52', { key: 'sleep-pot', pool: '#5a3f2c', speckle: 0.6, scale: 6 });
+  add(place(new THREE.LatheGeometry([[0, 0], [0.07, 0], [0.085, 0.02], [0.095, 0.13], [0.1, 0.15], [0.092, 0.152], [0.085, 0.14], [0, 0.13]].map(([r, h]) => new THREE.Vector2(r, h)), 32), -0.85, WIN.y0 + 0.005, WIN.z + 0.18), potGlaze);
+  const leafShape = new THREE.Shape(); leafShape.moveTo(0, 0); leafShape.quadraticCurveTo(0.035, 0.05, 0, 0.13); leafShape.quadraticCurveTo(-0.035, 0.05, 0, 0);
+  const leafBase = new THREE.ShapeGeometry(leafShape, 6); leafBase.deleteAttribute('uv');
+  const plantLeaves: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < 26; i++) {
+    const a = random() * Math.PI * 2, tilt = 0.25 + random() * 0.9, s = 0.7 + random() * 0.7;
+    plantLeaves.push(place(leafBase.clone(), -0.85 + Math.cos(a) * 0.03, WIN.y0 + 0.14 + random() * 0.08, WIN.z + 0.18 + Math.sin(a) * 0.03, 0, a, tilt, s, s, s).toNonIndexed());
   }
-  box(2.1, 4.8, 0.22, plaster, -2.55, 2.3, -4.12);
-  box(1.7, 4.8, 0.22, plaster, 2.75, 2.3, -4.12);
-  box(3.3, 0.82, 0.22, plaster, 0.2, 0.36, -4.12);
-  box(3.3, 0.94, 0.22, plaster, 0.2, 4.23, -4.12);
-  box(0.22, 4.8, 10, plaster, -3.6, 2.3, 0);
-  box(0.22, 4.8, 10, plaster, 3.6, 2.3, 0);
-  box(7.4, 0.15, 10, ceiling, 0, 4.68, 0);
-  box(7.0, 0.17, 0.08, darkWood, 0, 0.08, -3.97);
-  box(0.08, 0.17, 9, darkWood, -3.47, 0.08, 0.5);
+  const plantMaterial = new THREE.MeshStandardMaterial({ color: '#2e4a33', roughness: 0.6, side: THREE.DoubleSide });
+  add(mergeGeometries(plantLeaves, false)!, plantMaterial);
+  plantLeaves.forEach(g => g.dispose()); leafBase.dispose();
 
-  const windowFrame = wood('#807465', 2);
-  box(0.11, 3.07, 0.22, windowFrame, -1.41, 2.28, -3.98);
-  box(0.11, 3.07, 0.22, windowFrame, 1.81, 2.28, -3.98);
-  box(3.3, 0.11, 0.22, windowFrame, 0.2, 3.78, -3.98);
-  box(3.3, 0.12, 0.42, walnut, 0.2, 0.79, -3.9, 0.015);
-  box(0.065, 2.91, 0.15, windowFrame, 0.27, 2.29, -4.0);
-  box(3.17, 0.065, 0.12, windowFrame, 0.2, 1.49, -4.0);
-  const glass = new THREE.MeshPhysicalMaterial({ color: '#b8d4e7', roughness: 0.12, metalness: 0.05, transparent: true, opacity: 0.075, depthWrite: false, side: THREE.DoubleSide });
-  box(3.14, 2.9, 0.018, glass, 0.2, 2.29, -4.035);
-  // Tiny brass sash catch reads as worked hardware at the curtain opening.
-  box(0.1, 0.025, 0.06, brass, 0.25, 1.53, -3.88, 0.009);
-
-  // Quiet night garden occupies real depth behind the opening, not a flat backdrop.
-  const hillMaterial = new THREE.MeshStandardMaterial({ color: '#21364c', roughness: 1 });
-  const hill = new THREE.PlaneGeometry(52, 10, 64, 1);
-  const hp = hill.attributes.position;
-  for (let i = 0; i < hp.count; i++) {
-    const x = hp.getX(i); const top = hp.getY(i) > 0;
-    hp.setY(i, top ? 0.6 + 0.45 * Math.sin(x * 0.31) + 0.25 * Math.sin(x * 0.72) : -7);
-  }
-  hill.computeVertexNormals(); add(new THREE.Mesh(hill, hillMaterial), 0, 0.7, -29);
-  const nightBark = rough('#273136', 1);
-  const leafMat = new THREE.MeshStandardMaterial({ color: '#284446', roughness: 0.96, side: THREE.DoubleSide });
-  const leafGeo = new THREE.BufferGeometry();
-  const leafPositions: number[] = [], leafIndices: number[] = [];
-  for (let row=0; row<=10; row++) {
-    const t=row/10, half=Math.sin(t*Math.PI)*0.048;
-    leafPositions.push(-half,t*0.18,Math.sin(t*Math.PI)*0.008, 0,t*0.18,Math.sin(t*Math.PI)*0.022, half,t*0.18,Math.sin(t*Math.PI)*0.008);
-    if(row<10) for(let col=0;col<2;col++){const n=row*3+col;leafIndices.push(n,n+3,n+1,n+1,n+3,n+4);}
-  }
-  leafGeo.setAttribute('position',new THREE.Float32BufferAttribute(leafPositions,3));
-  leafGeo.setIndex(leafIndices); leafGeo.computeVertexNormals();
-  const leaves = new THREE.InstancedMesh(leafGeo, leafMat, 1300);
-  const tmp = new THREE.Object3D(); let leafIndex = 0;
-  const rand = (i: number) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
-  for (let t = 0; t < 5; t++) {
-    const tx = [-4.9, 3.6, -4.8, 5.5, -7.8][t];
-    const tz = [-10, -11, -19, -21, -23][t];
-    const h = [5.5, 4.8, 5.6, 7, 6.1][t];
-    tube([new THREE.Vector3(tx, -1, tz), new THREE.Vector3(tx + 0.11, h * 0.3, tz + 0.08), new THREE.Vector3(tx - 0.19, h * 0.68, tz - 0.08)], 0.075, nightBark, 12);
-    for (let b = 0; b < 5; b++) {
-      const sign = b % 2 ? 1 : -1;
-      const by = 1.02 + b * 0.57 + rand(b+t*11)*0.24;
-      const endpoint = new THREE.Vector3(tx + sign * (1.1 + rand(b + t * 22) * 0.7), by + 0.48 + rand(b+t*29)*0.98, tz - 0.4 + rand(b * 3 + t));
-      tube([new THREE.Vector3(tx, by, tz), new THREE.Vector3(tx + sign * 0.64, by + 0.4, tz + 0.05), endpoint], 0.025, nightBark, 12);
-      for(let twig=0;twig<5;twig++) {
-        const u=0.25+twig*0.15;
-        const start=new THREE.Vector3(tx,by,tz).lerp(endpoint,u);
-        const tip=start.clone().add(new THREE.Vector3(sign*(0.28+rand(twig+t*17)*0.26),0.4+rand(twig+43)*0.4,(rand(twig+t*4)-0.5)*0.5));
-        tube([start,start.clone().lerp(tip,0.5).add(new THREE.Vector3(0,-0.03,0)),tip],0.009,nightBark,7);
-        for(let j=0;j<10 && leafIndex<1300;j++) {
-          const q=leafIndex*7;const p=start.clone().lerp(tip,0.22+j*0.082);
-          tmp.position.copy(p);tmp.position.x+=(j%2?1:-1)*0.025;
-          tmp.rotation.set((rand(q+4)-0.5)*1.6,(rand(q+5)-0.5)*2.2,(j%2?1:-1)*(0.65+rand(q+6)*0.65));
-          tmp.scale.setScalar(0.8+rand(q+7)*0.8);tmp.updateMatrix();leaves.setMatrixAt(leafIndex++,tmp.matrix);
-        }
+  // --- Night garden outside -------------------------------------------------------
+  const moonSky = MOON_DIR.clone().negate();
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(90, 48, 24), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, uniforms: { uMoon: { value: new THREE.Vector3(0.04, 0.23, -1).normalize() }, uTime: timeUniform }, vertexShader: 'varying vec3 vWorld; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vWorld = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }', fragmentShader: NIGHT_SKY }));
+  sky.renderOrder = -10; sky.frustumCulled = false; scene.add(sky);
+  const land = (leaf: number) => new THREE.ShaderMaterial({ vertexShader: NIGHT_VERTEX, fragmentShader: NIGHT_LAND, side: THREE.DoubleSide, uniforms: { uMoon: { value: moonSky.clone() }, uLeaf: { value: leaf } } });
+  const groundMaterial = land(0);
+  const garden = new THREE.PlaneGeometry(80, 60, 80, 60); garden.rotateX(-Math.PI / 2);
+  const gp = garden.attributes.position;
+  for (let i = 0; i < gp.count; i++) { const x = gp.getX(i), z = gp.getZ(i) - 34; gp.setXYZ(i, x, -0.6 + fbm3(x * 0.08, 0, z * 0.08, 3) * 0.6 + Math.max(0, -z - 22) * 0.18 * (0.6 + 0.4 * Math.sin(x * 0.11)), z); }
+  garden.computeVertexNormals();
+  scene.add(new THREE.Mesh(garden, groundMaterial));
+  // Trees: leafy silhouettes drawn per pixel on camera-facing cards. Each crown
+  // is a ragged cloud of leaf sprays with a moonlit edge and a branching trunk.
+  const treeCards: THREE.BufferGeometry[] = [];
+  const trees: Array<[number, number, number, number]> = [[-4.4, -10, 6.2, 4.6], [4.2, -11.5, 5.6, 4.4], [-8.2, -19, 7.4, 5.6], [7.0, -21, 8.2, 6.0], [-1.4, -26, 6.8, 5.2], [11, -26, 7, 5.4], [-13, -24, 7.6, 6]];
+  const eye = new THREE.Vector3(-0.2, 1.3, 2.9);
+  trees.forEach(([x, z, h, w], index) => {
+    const card = new THREE.PlaneGeometry(w, h);
+    card.translate(0, h / 2, 0);
+    const yaw = Math.atan2(eye.x - x, eye.z - z);
+    card.rotateY(yaw); card.translate(x, -0.6, z);
+    const seeds = new Float32Array(card.attributes.position.count).fill(index * 7.31 + 1);
+    card.setAttribute('treeSeed', new THREE.BufferAttribute(seeds, 1));
+    treeCards.push(card);
+  });
+  const treeMaterial = new THREE.ShaderMaterial({
+    side: THREE.DoubleSide,
+    uniforms: { uMoon: { value: moonSky.clone() }, uTime: timeUniform },
+    vertexShader: `attribute float treeSeed; varying vec2 vUv; varying float vSeed; varying vec3 vWorld;
+      void main(){ vUv = uv; vSeed = treeSeed; vec4 w = modelMatrix * vec4(position, 1.0); vWorld = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `${GLSL_NOISE}
+      uniform vec3 uMoon; uniform float uTime; varying vec2 vUv; varying float vSeed; varying vec3 vWorld;
+      float crown(vec2 p) {
+        vec2 c = p - vec2(0.5, 0.62);
+        float r = length(c * vec2(1.0, 1.25));
+        float body = 0.42 + 0.12 * bwNoise(vec3(c * 3.0, vSeed)) - r;
+        float sprays = bwFbm3(vec3(p * 9.0, vSeed + 1.0)) * 0.16 + bwNoise(vec3(p * 30.0, vSeed + 2.0)) * 0.05;
+        return body + sprays;
       }
-    }
-  }
-  leaves.count = leafIndex; leaves.instanceMatrix.needsUpdate = true; add(leaves);
-  const moon = add(new THREE.Mesh(new THREE.SphereGeometry(0.28, 32, 24), new THREE.MeshBasicMaterial({ color: '#edf1dc', fog: false })), -0.9, 4.22, -19.6);
-  // The dark limb leaves an unchanging soft crescent, with no blinking or visual pulse.
-  add(new THREE.Mesh(new THREE.SphereGeometry(0.264, 32, 24), new THREE.MeshBasicMaterial({ color: '#101c32', fog: false })), -0.8, 4.26, -19.39);
-  moon.userData.label = 'distant crescent moon';
-  const haloCanvas=document.createElement('canvas');haloCanvas.width=haloCanvas.height=128;
-  const haloContext=haloCanvas.getContext('2d')!;const haloGradient=haloContext.createRadialGradient(64,64,1,64,64,64);
-  haloGradient.addColorStop(0,'rgba(182,210,229,0.13)');haloGradient.addColorStop(0.26,'rgba(150,181,212,0.065)');haloGradient.addColorStop(1,'rgba(100,145,188,0)');
-  haloContext.fillStyle=haloGradient;haloContext.fillRect(0,0,128,128);
-  const moonHalo=add(new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(haloCanvas),transparent:true,depthWrite:false,fog:false})), -0.9,4.22,-19.5);
-  moonHalo.scale.set(1.8,1.8,1);
-  const stars = new THREE.BufferGeometry(); const starPos: number[] = [];
-  for (let i = 0; i < 34; i++) starPos.push((rand(i + 80) - 0.5) * 30, 3.5 + rand(i + 180) * 9, -28 - rand(i + 250) * 8);
-  stars.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-  add(new THREE.Points(stars, new THREE.PointsMaterial({ color: '#b7cce0', size: 0.022, transparent: true, opacity: 0.55, depthWrite: false })));
+      void main() {
+        vec2 p = vUv;
+        p.x += sin(uTime * 0.2 + vSeed) * 0.004 * p.y;
+        float d = crown(p);
+        // Trunk and two main limbs into the crown.
+        float trunk = 0.022 + 0.01 * (1.0 - p.y);
+        float t0 = abs(p.x - 0.5 - 0.03 * sin(p.y * 6.0 + vSeed)) - trunk;
+        float limbL = abs(p.x - 0.5 + (p.y - 0.3) * 0.5) - 0.012;
+        float limbR = abs(p.x - 0.5 - (p.y - 0.34) * 0.45) - 0.01;
+        float wood = min(t0, min(limbL * step(0.3, p.y), limbR * step(0.34, p.y)));
+        float woodMask = step(wood, 0.0) * step(p.y, 0.62);
+        // Holes in the crown let the sky through.
+        float holes = smoothstep(0.55, 0.75, bwNoise(vec3(p * 14.0, vSeed + 5.0))) * smoothstep(0.02, 0.12, d);
+        if (d < 0.0 && woodMask < 0.5) discard;
+        if (holes > 0.5 && woodMask < 0.5) discard;
+        // Moonlit edge: the crown's gradient points toward the moon side.
+        vec2 e = vec2(0.006, 0.0);
+        vec2 grad = vec2(crown(p + e.xy) - crown(p - e.xy), crown(p + e.yx) - crown(p - e.yx));
+        vec2 moon2 = normalize(vec2(uMoon.x, uMoon.y));
+        float edge = smoothstep(0.08, 0.0, d) * clamp(dot(normalize(-grad + 1e-5), moon2), 0.0, 1.0);
+        float sprayLight = smoothstep(0.1, 0.6, bwNoise(vec3(p * 22.0, vSeed + 3.0)));
+        vec3 color = vec3(0.012, 0.017, 0.02) + vec3(0.11, 0.14, 0.2) * edge * (0.4 + 0.6 * sprayLight);
+        float dist = length(vWorld - cameraPosition);
+        color = mix(color, vec3(0.03, 0.045, 0.08), 1.0 - exp(-dist * 0.025));
+        gl_FragColor = vec4(color, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+  });
+  const treeMesh = new THREE.Mesh(mergeGeometries(treeCards, false)!, treeMaterial); treeMesh.name = 'sleep-garden-trees';
+  scene.add(treeMesh);
+  treeCards.forEach(g => g.dispose());
+  // Low hills beyond the garden.
+  const hills = new THREE.PlaneGeometry(160, 30, 160, 4);
+  const hp = hills.attributes.position;
+  for (let i = 0; i < hp.count; i++) { const x = hp.getX(i); if (hp.getY(i) > 0) hp.setY(i, 3 + 3.2 * (0.5 + fbm3(x * 0.02, 0, 3, 4)) + 1.2 * Math.sin(x * 0.05)); else hp.setY(i, -8); }
+  hills.computeVertexNormals();
+  const hillMesh = new THREE.Mesh(hills, land(0)); hillMesh.position.set(0, 0, -48); scene.add(hillMesh);
 
-  // Two unequal, deeply pleated linen panels. Their silhouette and hems are geometry.
-  const rod = add(new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 4.0, 12), brass), 0.18, 4.01, -3.62);
-  rod.rotation.z = Math.PI / 2;
+  // --- Curtains: deep pleats, real hems, faint moon glow through the linen ---------
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 4.1, 16), brass); rod.rotation.z = Math.PI / 2; rod.position.set(0.2, 4.02, WIN.z + 0.5); rod.castShadow = true; scene.add(rod);
+  for (const x of [-1.86, 2.26]) { const finial = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 12), brass); finial.position.set(x, 4.02, WIN.z + 0.5); scene.add(finial); }
   const curtainState: { mesh: THREE.Mesh; base: Float32Array; side: number }[] = [];
+  const curtainGlow = { value: 0.0 };
+  const curtainMaterial = curtainLinen;
+  const previous = curtainMaterial.onBeforeCompile;
+  curtainMaterial.onBeforeCompile = (shader, renderer) => {
+    previous.call(curtainMaterial, shader, renderer);
+    shader.uniforms.uCurtainGlow = curtainGlow;
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform float uCurtainGlow;')
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+// Moonlight transmitted through the weave, stronger in the thin pleat valleys.
+totalEmissiveRadiance += vec3(0.42, 0.5, 0.72) * uCurtainGlow * (0.6 + 0.4 * (1.0 - fbH)) * smoothstep(${(WIN.y0 - 0.2).toFixed(2)}, ${(WIN.y0 + 0.4).toFixed(2)}, vSurfaceWorld.y) * (1.0 - smoothstep(${(WIN.y1 - 0.2).toFixed(2)}, ${(WIN.y1 + 0.3).toFixed(2)}, vSurfaceWorld.y));`);
+  };
   for (const side of [-1, 1]) {
-    const width = side < 0 ? 1.18 : 0.99;
-    const geo = new THREE.PlaneGeometry(width, 3.34, 48, 44);
-    const pos = geo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i), y = pos.getY(i); const down = (1.67 - y) / 3.34;
-      pos.setXYZ(i, x + side * Math.sin(down * Math.PI) * 0.055, y + (Math.cos(x * 12.5) - 1) * 0.025 * down, Math.sin(x * 22.5 + Math.sin(x * 5.6) * 0.65 + down * 0.12) * (0.045 + down * 0.042) + Math.sin(x * 9.3 + 0.5) * down * 0.027);
+    const width = side < 0 ? 1.2 : 1.02;
+    const geo = new THREE.PlaneGeometry(width, 3.4, 72, 48);
+    const p = geo.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i); const down = (1.7 - y) / 3.4;
+      const pleat = Math.sin(x * 26 + Math.sin(x * 5.6) * 0.7) * (0.04 + down * 0.035) + Math.sin(x * 9.3 + 0.5) * down * 0.025;
+      p.setXYZ(i, x + side * Math.sin(down * Math.PI) * 0.05, y + (Math.cos(x * 13) - 1) * 0.02 * down, pleat);
     }
     geo.computeVertexNormals();
-    const mesh = add(new THREE.Mesh(geo, curtainMaterial), side < 0 ? -1.09 : 1.54, 2.23, -3.57);
-    mesh.castShadow = false; mesh.receiveShadow = true; mesh.userData.cozyAction = 'curtain';
-    curtainState.push({ mesh, base: new Float32Array(pos.array), side });
+    const mesh = new THREE.Mesh(geo, curtainMaterial);
+    mesh.position.set(side < 0 ? -1.08 : 1.52, 2.27, WIN.z + 0.45); mesh.castShadow = true; mesh.receiveShadow = true; mesh.userData.cozyAction = 'curtain';
+    scene.add(mesh);
+    curtainState.push({ mesh, base: new Float32Array(p.array), side });
     for (let j = 0; j < 9; j++) {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.006, 6, 12), brass);
-      ring.rotation.y = Math.PI / 2; add(ring, mesh.position.x - width * 0.45 + j * width * 0.1125, 3.98, -3.62);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.032, 0.005, 6, 16), brass);
+      ring.rotation.y = Math.PI / 2; ring.position.set(mesh.position.x - width * 0.45 + j * width * 0.1125, 3.99, WIN.z + 0.5); ring.userData.dynamic = true; scene.add(ring);
     }
   }
 
-  // Grounded walnut bed, tailored linen mattress and a draped, stitched duvet.
-  box(2.48, 0.25, 4.85, darkWood, -0.12, 0.35, 1.82, 0.07);
-  box(2.32, 0.25, 4.68, sheet, -0.12, 0.57, 1.86, 0.095);
-  for (const x of [-1.15, 0.91]) for (const z of [-0.05, 3.6]) box(0.13, 0.35, 0.13, darkWood, x, 0.12, z, 0.025);
-  const duvetGeometry = new THREE.PlaneGeometry(2.71, 4.67, 80, 110);
-  duvetGeometry.rotateX(-Math.PI / 2);
+  // --- Bed: walnut frame, mattress, quilted duvet, folded sheet ---------------------
+  add(place(stoneBlock(2.5, 0.26, 4.85, 31, 0.04, 0.03, 0, 0.12), -0.12, 0.35, 1.82), walnut);
+  add(place(stoneBlock(2.5, 0.6, 0.07, 32, 0.04, 0.02, 0, 0.06), -0.12, 0.42, -0.6), walnut).name = 'sleep-footboard';
+  for (const x of [-1.33, 1.09]) for (const z of [-0.55, 4.2]) add(place(stoneBlock(0.1, 0.36, 0.1, 33 + x + z, 0.03, 0.01), x, 0.18, z), walnutY);
+  add(place(cushion(2.34, 0.26, 4.7, 0.18, 40, 3), -0.12, 0.6, 1.86), sheet);
   const quiltHeight = (x: number, z: number) => {
     const edge = Math.max(0, (Math.abs(x) - 1.02) / 0.34);
-    const knee = Math.exp(-((x + 0.22) ** 2 / 0.56 + (z - 0.42) ** 2 / 0.5)) * 0.32;
-    const turn = Math.exp(-((z - 1.57) ** 2) / 0.045) * 0.095;
-    return 0.76 + knee + turn - edge * edge * 0.36 + Math.sin(z * 8.2 + x * 1.9) * 0.023 + Math.sin(x * 11.7 + z * 3.6) * 0.013;
+    const knee = Math.exp(-((x + 0.22) ** 2 / 0.56 + (z - 0.42) ** 2 / 0.5)) * 0.3;
+    const feet = Math.exp(-((x + 0.1) ** 2 / 0.4 + (z + 1.4) ** 2 / 0.3)) * 0.12;
+    const turn = Math.exp(-((z - 1.57) ** 2) / 0.045) * 0.09;
+    // Quilting channels: the stitched lines pull the down in, the bays puff out.
+    const channel = Math.pow(Math.abs(Math.sin((x + 1.3) * Math.PI / 0.46)), 0.6) * 0.022;
+    return 0.74 + knee + feet + turn + channel - edge * edge * 0.36 + Math.sin(z * 8.2 + x * 1.9) * 0.018 + noise3(x * 2, z * 2, 5) * 0.025;
   };
-  const quiltPos = duvetGeometry.attributes.position;
-  for (let i = 0; i < quiltPos.count; i++) quiltPos.setY(i, quiltHeight(quiltPos.getX(i), quiltPos.getZ(i)));
-  duvetGeometry.computeVertexNormals();
-  const duvet = add(new THREE.Mesh(duvetGeometry, linen), -0.12, 0, 1.63); duvet.receiveShadow = true; duvet.castShadow = true;
-  // Long tailored seams follow the real folds; subdued thread avoids a graphic grid.
-  const thread = rough('#8b958d', 1);
-  for (const seamX of [-0.78, -0.32, 0.14, 0.6, 1.01]) {
-    const p: THREE.Vector3[] = [];
-    for (let j = 0; j < 36; j++) { const z = -2.24 + j * 4.51 / 35; p.push(new THREE.Vector3(seamX - 0.12, quiltHeight(seamX, z) + 0.006, z + 1.63)); }
-    const stitch = tube(p, 0.0009, thread, 50); stitch.castShadow = false;
-  }
-  // Folded-over top sheet, with a rounded curl rather than a featureless plane.
-  const foldGeo = new THREE.PlaneGeometry(2.36, 0.44, 64, 12); foldGeo.rotateX(-Math.PI / 2);
-  const fp = foldGeo.attributes.position;
-  for (let i = 0; i < fp.count; i++) { const x = fp.getX(i), z = fp.getZ(i); fp.setY(i, 0.79 + Math.sin((z + 0.22) / 0.44 * Math.PI) * 0.095 + Math.sin(x * 9) * 0.012 - Math.max(0, Math.abs(x) - 1.05) * 1.15); }
-  foldGeo.computeVertexNormals(); const fold = add(new THREE.Mesh(foldGeo, sheet), -0.12, 0, 3.24); fold.castShadow = true; fold.receiveShadow = true;
+  const duvet = clothSheet(110, 140, (u, v, target) => {
+    const x = (u - 0.5) * 2.71, z = 2.24 - v * 4.67;
+    const over = Math.max(0, Math.abs(x) - 1.18);
+    target.set(x - Math.sign(x) * over * 0.3, quiltHeight(Math.min(Math.abs(x), 1.18) * Math.sign(x), z) - over * 1.6, z + 1.63);
+  }, 0.03, [2.71, 4.67]);
+  const duvetMesh = add(duvet, linen); duvetMesh.name = 'sleep-duvet';
+  const fold = clothSheet(80, 14, (u, v, target) => {
+    const x = (u - 0.5) * 2.36, z = 0.22 - v * 0.44;
+    target.set(x, 0.79 + Math.sin((z + 0.22) / 0.44 * Math.PI) * 0.095 + Math.sin(x * 9) * 0.012 - Math.max(0, Math.abs(x) - 1.05) * 1.15, z + 3.24);
+  }, 0.012, [2.36, 0.44]);
+  add(fold, sheet);
 
-  // Low bedside cabinet: rounded edges, recessed drawers, real knob and joint gaps.
-  const bedside = new THREE.Group(); scene.add(bedside);
-  bedside.add(lampLight); destination = bedside;
-  box(0.84, 0.70, 0.73, darkWood, 1.66, 0.4, -1.0, 0.035);
-  box(0.92, 0.055, 0.81, walnut, 1.66, 0.77, -1.0, 0.023);
-  for (let y = 0.24; y <= 0.59; y += 0.29) {
-    box(0.73, 0.25, 0.035, walnut, 1.66, y + 0.03, -0.612, 0.014);
-    const knob = add(new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.02, 0.026, 12), brass), 1.66, y + 0.06, -0.58); knob.rotation.x = Math.PI / 2;
+  // --- Bedside: walnut cabinet, ceramic lamp, book, a glass of water ----------------
+  const bedside = new THREE.Group(); bedside.userData.dynamic = true; scene.add(bedside);
+  destination = bedside;
+  add(place(stoneBlock(0.84, 0.66, 0.72, 41, 0.03, 0.02), 1.66, 0.4, -1.0), walnut);
+  add(place(stoneBlock(0.92, 0.05, 0.8, 42, 0.03, 0.012), 1.66, 0.755, -1.0), walnut);
+  for (const y of [0.25, 0.55]) {
+    add(place(stoneBlock(0.74, 0.25, 0.03, 43 + y, 0.02, 0.008), 1.66, y, -0.625), walnut);
+    const knob = add(place(new THREE.CylinderGeometry(0.022, 0.016, 0.03, 16), 1.66, y + 0.03, -0.6, Math.PI / 2), brass); knob.castShadow = false;
   }
-  // A turned ceramic lamp and individually ridged shade are recognizable at close range.
-  const baseProfile: THREE.Vector2[] = [[0,0],[0.13,0],[0.15,0.04],[0.135,0.075],[0.12,0.12],[0.145,0.23],[0.13,0.29],[0.07,0.34],[0.055,0.38]].map(([x,y]) => new THREE.Vector2(x,y));
-  const lampBase = add(new THREE.Mesh(new THREE.LatheGeometry(baseProfile, 40), teal), 1.63, 0.8, -0.96);
-  lampBase.castShadow = true; lampBase.userData.cozyAction = 'lamp';
-  add(new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.24, 12), brass), 1.63, 1.27, -0.96);
-  const shadeGeo = new THREE.CylinderGeometry(0.23, 0.37, 0.45, 192, 12, true);
-  const sp = shadeGeo.attributes.position;
-  for (let i = 0; i < sp.count; i++) {
-    const x = sp.getX(i), z = sp.getZ(i), r = Math.hypot(x,z), a = Math.atan2(z,x);
-    const ridge = 1 + Math.cos(a * 32) * 0.009;
-    sp.setXYZ(i, x * ridge, sp.getY(i), z * ridge);
-    if (r === 0) sp.setZ(i, 0.001);
-  }
-  shadeGeo.computeVertexNormals();
-  const shadeMat = new THREE.MeshStandardMaterial({ color: '#e1cc9f', roughness: 0.89, side: THREE.DoubleSide, emissive: '#d09852', emissiveIntensity: 0.48 });
-  const shade = add(new THREE.Mesh(shadeGeo, shadeMat), 1.63, 1.49, -0.96); shade.userData.cozyAction = 'lamp';
-  for (const [r,y] of [[0.232,1.715],[0.372,1.265]]) { const ring = add(new THREE.Mesh(new THREE.TorusGeometry(r, 0.007, 6, 64), cream), 1.63, y, -0.96); ring.rotation.x = Math.PI / 2; }
-  // Closed book, linen bookmark, glazed dish and small glass: varied useful objects.
-  const bookCover = rough('#4b625b', 0.9);
-  box(0.25, 0.014, 0.34, bookCover, 1.41, 0.818, -0.8, 0.008);
-  box(0.234, 0.045, 0.32, rough('#c9c2aa', 1), 1.41, 0.845, -0.8, 0.004);
-  box(0.25, 0.012, 0.34, bookCover, 1.41, 0.876, -0.8, 0.007);
-  box(0.035, 0.003, 0.11, fabric('#a47454'), 1.45, 0.824, -0.61);
-  const cupGlass = new THREE.MeshPhysicalMaterial({ color: '#cadae0', roughness: 0.13, transparent: true, opacity: 0.24, metalness: 0.12, side: THREE.DoubleSide, depthWrite: false });
-  const glassProfile = [[0.053,0],[0.062,0.016],[0.065,0.18],[0.06,0.18],[0.057,0.02],[0.052,0.015]].map(([x,y])=>new THREE.Vector2(x,y));
-  add(new THREE.Mesh(new THREE.LatheGeometry(glassProfile, 28), cupGlass), 1.92, 0.802, -0.77);
-  const water = add(new THREE.Mesh(new THREE.CircleGeometry(0.057, 32), new THREE.MeshPhysicalMaterial({ color: '#a7c3cb', roughness: 0.12, transparent: true, opacity: 0.3, metalness: 0.2 })), 1.92, 0.918, -0.77); water.rotation.x = -Math.PI/2;
-
+  const lampBase = add(new THREE.LatheGeometry([[0, 0], [0.12, 0], [0.14, 0.03], [0.15, 0.1], [0.12, 0.2], [0.14, 0.3], [0.1, 0.36], [0.05, 0.39], [0.04, 0.41], [0, 0.41]].map(([r, h]) => new THREE.Vector2(r, h)), 48), lampGlaze);
+  lampBase.position.set(1.63, 0.78, -0.96);
+  lampBase.userData.cozyAction = 'lamp';
+  add(place(new THREE.CylinderGeometry(0.012, 0.012, 0.22, 10), 1.63, 1.3, -0.96), brass);
+  const shadeGeometry = new THREE.CylinderGeometry(0.21, 0.34, 0.42, 96, 8, true);
+  const sp = shadeGeometry.attributes.position;
+  for (let i = 0; i < sp.count; i++) { const a = Math.atan2(sp.getZ(i), sp.getX(i)); const pleat = 1 + Math.cos(a * 30) * 0.012; sp.setX(i, sp.getX(i) * pleat); sp.setZ(i, sp.getZ(i) * pleat); }
+  shadeGeometry.computeVertexNormals();
+  const shade = new THREE.Mesh(shadeGeometry, shadeLinen); shade.position.set(1.63, 1.5, -0.96); shade.userData.cozyAction = 'lamp'; shade.castShadow = false; bedside.add(shade);
+  const lampDown = new THREE.SpotLight('#ffc78a', 5, 0, 1.15, 0.8, 2);
+  lampDown.position.set(1.63, 1.42, -0.96); lampDown.target.position.set(1.4, 0, -0.5);
+  lampDown.castShadow = true; lampDown.shadow.mapSize.set(1024, 1024); lampDown.shadow.radius = 4; lampDown.shadow.bias = -0.0008; lampDown.shadow.normalBias = 0.015;
+  lampDown.shadow.camera.near = 0.1; lampDown.shadow.camera.far = 6; lampDown.shadow.autoUpdate = false; lampDown.shadow.needsUpdate = true;
+  bedside.add(lampDown, lampDown.target);
+  const lampGlow = new THREE.PointLight('#ffb978', 3.2, 0, 2); lampGlow.position.set(1.63, 1.52, -0.96); bedside.add(lampGlow);
+  add(place(stoneBlock(0.25, 0.03, 0.34, 51, 0.01, 0.006), 1.41, 0.795, -0.8, 0, 0.1), bookCloth);
+  add(place(new THREE.BoxGeometry(0.235, 0.022, 0.325), 1.415, 0.795, -0.797, 0, 0.1), paper);
+  add(place(new THREE.LatheGeometry([[0.05, 0], [0.058, 0.004], [0.062, 0.16], [0.057, 0.16], [0.053, 0.008], [0, 0.006]].map(([r, h]) => new THREE.Vector2(r, h)), 32), 1.92, 0.78, -0.77), drinkGlass, false);
+  const water = add(place(new THREE.CircleGeometry(0.052, 32), 1.92, 0.89, -0.77, -Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: '#90aab4', roughness: 0.04, transparent: true, opacity: 0.35, depthWrite: false }), false);
+  water.renderOrder = 3;
   destination = scene;
 
-  // A quiet, asymmetrical left wall detail and a woven rug support room scale.
-  box(0.72, 0.92, 0.052, walnut, -2.32, 2.57, -3.95, 0.008);
-  box(0.64, 0.84, 0.015, rough('#b7b2a0', 1), -2.32, 2.57, -3.914);
-  const drawing = rough('#727f79', 1);
-  tube([new THREE.Vector3(-2.42,2.26,-3.898), new THREE.Vector3(-2.44,2.50,-3.898), new THREE.Vector3(-2.34,2.78,-3.898)], 0.007, drawing, 20);
-  for (let i=0;i<5;i++) { const leaf = new THREE.Mesh(leafGeo, drawing); leaf.position.set(-2.42 + i*0.015,2.39+i*0.066,-3.886); leaf.scale.set(0.29,0.26,0.3); leaf.rotation.z=(i%2?-1:1)*0.95; scene.add(leaf); }
-  const rug = box(3.25, 0.024, 3.55, fabric('#756d5b', 6), -0.12, 0.027, 1.37, 0.025); rug.receiveShadow = true;
+  // --- Rug, framed print -------------------------------------------------------------
+  add(clothSheet(60, 60, (u, v, target) => target.set(-1.75 + u * 3.25, 0.012 + Math.max(0, noise3(u * 4, 1, v * 4)) * 0.008, 0.6 - v * 3.0), 0.014, [3.25, 3.0]), rugWool, false);
+  add(place(stoneBlock(0.72, 0.92, 0.04, 61, 0.02, 0.008), -2.32, 2.57, WIN.z + 0.14), walnut);
+  const printMaterial = patchSurface(new THREE.MeshStandardMaterial({ color: '#c9c3b0', roughness: 0.95 }), {
+    key: 'sleep-print',
+    color: `
+vec2 pp = (vSurfaceWorld.xy - vec2(-2.32, 2.57)) / vec2(0.32, 0.42);
+// A quiet botanical line study: one stem and leaves, ink pooled at the strokes.
+float stem = abs(pp.x + 0.12 * sin(pp.y * 2.2) + 0.05);
+float ink = smoothstep(0.03, 0.0, stem) * step(-0.75, pp.y) * step(pp.y, 0.7);
+for (int i = 0; i < 5; i++) {
+  float fy = -0.5 + float(i) * 0.26; float s = mod(float(i), 2.0) < 0.5 ? 1.0 : -1.0;
+  vec2 q = pp - vec2(-0.05 + 0.12 * sin(fy * 2.2) * -1.0, fy);
+  q = mat2(0.8, -0.6 * s, 0.6 * s, 0.8) * q;
+  float leaf = length(q * vec2(1.0, 2.6) - vec2(0.18 * s, 0.0)) - 0.16;
+  ink = max(ink, smoothstep(0.02, 0.0, abs(leaf)) * 0.9);
+}
+diffuseColor.rgb = mix(diffuseColor.rgb * (0.95 + 0.05 * bwNoise(vSurfaceWorld * 80.0)), vec3(0.2, 0.25, 0.23), ink * 0.85);`,
+  });
+  add(place(new THREE.PlaneGeometry(0.64, 0.84), -2.32, 2.57, WIN.z + 0.165), printMaterial, false);
 
-  let lampBright = true;
-  let lampLevel = 1;
-  let curtainOpen = false;
-  let curtainGap = 0;
-  let currentTime = 0;
+  batchStatic(scene);
+
+  let lampBright = true, lampLevel = 1, curtainOpen = false, curtainGap = 0, currentTime = 0;
+  let probe: THREE.WebGLRenderTarget | null = null;
+  let volumeUniforms: Record<string, THREE.IUniform> | null = null;
+  const gapRange = () => {
+    // Open span of the window between the curtain edges, in window coordinates [-1, 1].
+    const cx = (WIN.x0 + WIN.x1) / 2, half = (WIN.x1 - WIN.x0) / 2;
+    const left = -1.08 + 0.6 - curtainGap * 0.6, right = 1.52 - 0.51 + curtainGap * 0.6;
+    return [(left - cx) / half, (right - cx) / half];
+  };
   const resize = (aspect: number) => {
     camera.aspect = aspect;
-    // The bedside vignette is staged nearer the opening in narrow portrait.
-    // This keeps a useful physical lamp target, with its shadow and light source together.
     bedside.position.set(aspect < 0.82 ? -1.04 : 0, 0, aspect < 0.82 ? -0.7 : 0);
-    if (aspect < 0.82) {
-      // Narrow layout brings the lamp toward the lower right while keeping real bed linen near.
-      camera.fov = 52;
-      camera.position.set(0.15, 1.30, 2.34);
-      camera.lookAt(0.25, 1.78, -3.45);
-    } else if (aspect < 1.32) {
-      camera.fov = 48;
-      camera.position.set(-0.15, 1.31, 2.66);
-      camera.lookAt(0.12, 1.62, -3.32);
-    } else {
-      camera.fov = 45;
-      camera.position.set(-0.22, 1.29, 2.9);
-      camera.lookAt(0.06, 1.55, -3.1);
-    }
+    if (aspect < 0.82) { camera.fov = 52; camera.position.set(0.15, 1.30, 2.34); camera.lookAt(0.25, 1.78, -3.45); }
+    else if (aspect < 1.32) { camera.fov = 48; camera.position.set(-0.15, 1.31, 2.66); camera.lookAt(0.12, 1.62, -3.32); }
+    else { camera.fov = 45; camera.position.set(-0.22, 1.29, 2.9); camera.lookAt(0.06, 1.55, -3.1); }
     camera.updateProjectionMatrix();
+    lampDown.shadow.needsUpdate = true; moon.shadow.needsUpdate = true;
   };
   resize(16 / 9);
   return {
     scene, camera, resize,
+    post: {
+      exposure: 1.8, bloomStrength: 0.075, bloomThreshold: 0, aoStrength: 0.9, aoRadius: 0.4,
+      saturation: 0.98, contrast: 1.07, shadowTint: [0.86, 0.94, 1.12], highlightTint: [1.05, 1.0, 0.94], vignette: 0.5, grain: 0.03,
+    },
+    createVolume() {
+      const [min, max] = gapRange();
+      const effect = createRoomVolume({
+        haze: 0.032, dust: 0.65, anisotropy: 0.5, maxDistance: 9,
+        beam: { centre: new THREE.Vector3((WIN.x0 + WIN.x1) / 2, (WIN.y0 + WIN.y1) / 2, WIN.z), right: new THREE.Vector3((WIN.x1 - WIN.x0) / 2, 0, 0), up: new THREE.Vector3(0, (WIN.y1 - WIN.y0) / 2, 0), direction: MOON_DIR.clone(), color: new THREE.Color(0.24, 0.29, 0.43), gap: { min, max, transmit: 0.03 } },
+        ambient: new THREE.Color(0.002, 0.003, 0.005),
+      });
+      volumeUniforms = effect.uniforms;
+      return effect;
+    },
+    prepare(renderer) {
+      probe = captureRoomProbe(renderer, scene, new THREE.Vector3(0, 1.5, 0.5), 0.9, { hide: [pane] });
+    },
     update(time, dt) {
-      currentTime = time;
+      currentTime = time; timeUniform.value = time;
       const ease = dt > 0 ? 1 - Math.exp(-dt * 3.2) : 1;
-      lampLevel += ((lampBright ? 1 : 0.36) - lampLevel) * ease;
-      lampLight.intensity = 16 * lampLevel;
-      shadeMat.emissiveIntensity = 0.14 + lampLevel * 0.34;
+      lampLevel += ((lampBright ? 1 : 0.3) - lampLevel) * ease;
+      lampDown.intensity = 5 * lampLevel; lampGlow.intensity = 3.2 * lampLevel;
+      shadeLinen.emissiveIntensity = 0.12 + lampLevel * 0.95;
+      const previousGap = curtainGap;
       curtainGap += ((curtainOpen ? 0.27 : 0) - curtainGap) * ease;
+      curtainGlow.value = 0.12;
       for (const item of curtainState) {
         const p = item.mesh.geometry.attributes.position;
         for (let i = 0; i < p.count; i++) {
-          const x = item.base[i*3], y = item.base[i*3+1], z = item.base[i*3+2];
-          const down = Math.max(0, (1.67-y)/3.34);
-          p.setXYZ(i, x + item.side * curtainGap * (0.2 + down*0.8), y, z + Math.sin(currentTime*0.37 + x*2.3 + item.side) * 0.022 * down*down);
+          const x = item.base[i * 3], y = item.base[i * 3 + 1], z = item.base[i * 3 + 2];
+          const down = Math.max(0, (1.7 - y) / 3.4);
+          p.setXYZ(i, x + item.side * curtainGap * (0.2 + down * 0.8), y, z + Math.sin(currentTime * 0.37 + x * 2.3 + item.side) * 0.02 * down * down);
         }
         p.needsUpdate = true; item.mesh.geometry.computeVertexNormals();
       }
+      if (Math.abs(curtainGap - previousGap) > 1e-4) moon.shadow.needsUpdate = true;
+      if (volumeUniforms) { const [min, max] = gapRange(); volumeUniforms.uGap.value.set(min, max, 0.05); }
     },
     interact(action) {
       if (action === 'lamp') { lampBright = !lampBright; return { type: 'lamp', intensity: 0.16 }; }
       if (action === 'curtain') { curtainOpen = !curtainOpen; return { type: 'curtain', intensity: 0.2 }; }
       return null;
     },
+    dispose() { probe?.dispose(); probe = null; },
   };
 }

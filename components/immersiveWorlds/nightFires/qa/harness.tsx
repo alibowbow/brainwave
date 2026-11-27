@@ -3,9 +3,11 @@ import { createRoot } from 'react-dom/client';
 import MountainCampfireWorld from '../MountainCampfireWorld';
 import DeepNightWorld from '../DeepNightWorld';
 import LakesideCampWorld from '../LakesideCampWorld';
-import { getNightDiagnostics } from '../nightEngine';
+import { getNightDiagnostics, preferDirectNightRendering } from '../nightEngine';
 import type { NightWorldId, NightInteraction } from '../worldTypes';
 const query = new URLSearchParams(location.search);
+// post=off captures the previous direct renderer for comparisons.
+if (query.get('post') === 'off') preferDirectNightRendering(true);
 const worlds = { mountain: MountainCampfireWorld, deep: DeepNightWorld, lakeside: LakesideCampWorld };
 const world = (query.get('world') ?? 'mountain') as NightWorldId;
 const Scene = worlds[world] ?? worlds.mountain;

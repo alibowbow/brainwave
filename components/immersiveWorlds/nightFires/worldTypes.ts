@@ -1,4 +1,5 @@
 import type * as THREE from 'three';
+import type { PostSettings, VolumeEffect } from '../shared/render/hdrPipeline';
 
 export type NightWorldId = 'mountain' | 'deep' | 'lakeside';
 export type NightInteractionKind = 'log-embers' | 'lantern-brightness';
@@ -29,4 +30,12 @@ export interface WorldRecipe {
   interact: (kind: NightInteractionKind) => number;
   /** For owned resources not attached to the scene graph. */
   dispose?: () => void;
+  /** GPU-dependent setup (radiance probes) that needs the live renderer. */
+  prepare?: (renderer: THREE.WebGLRenderer) => void;
+  /** Image settings for the shared HDR pipeline. */
+  post?: Partial<PostSettings>;
+  /** Participating media (haze, mist, smoke); owned by the pipeline once created. */
+  createVolume?: () => VolumeEffect;
+  /** Told whether the HDR pipeline runs, so a world can adjust its fallbacks. */
+  setPostActive?: (active: boolean) => void;
 }

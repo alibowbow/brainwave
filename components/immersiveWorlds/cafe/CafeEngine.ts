@@ -1,120 +1,200 @@
 import * as T from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
+import { HdrPipeline, type PostSettings } from '../shared/render/hdrPipeline';
+import { FullscreenPass } from '../shared/render/targets';
 import { loadCafeEnvironment } from './environment';
 import { cafeFramebuffer, cafeTargetState, configureCafeTarget, preserveCafeReflectorState, requireCafeFramebuffer, restoreCafeTargetState, selectCafeTargetType, withCafeTargetState, type CafeTargetPreference } from './renderTargets';
 import { LookSpring } from '../../liveScene/look';
-import { buildCafe, type CafeInteraction } from './world';
+import { buildCafe, cafeShot, type CafeInteraction } from './world';
+import { cafeGlassShader, createCafeDepthVolume, createExteriorBokeh } from './glass';
+import { bakeCafeProbes, type CafeProbes } from './probe';
 
-/** High-quality native-resolution renderer. No frame cap and no software-GPU quality downgrade. */
+export type CafePostPreference = 'auto' | 'off';
+
+/** Warm interior, cool exterior: split-tone grade over the fitted ACES curve. */
+export const CAFE_POST: Partial<PostSettings> = {
+  exposure: 1.0,
+  bloomStrength: .1,
+  bloomThreshold: 0,
+  aoStrength: .9,
+  aoRadius: .32,
+  saturation: 1.04,
+  contrast: 1.06,
+  shadowTint: [.95, .98, 1.06],
+  highlightTint: [1.08, 1.0, .88],
+  vignette: .5,
+  grain: .03,
+};
+
+const KEY_INTENSITY = 5.2, LAMP_GLOW = .9, BOUNCE = .22, SHADE_EMISSIVE = 1.15;
+const BULB = new T.Color('#ffd2a0').multiplyScalar(30);
+const LAMP_TINT = new T.Color('#ffc58a');
+
+/**
+ * High-quality native-resolution renderer. No frame cap and no software-GPU
+ * quality downgrade. Per frame: the scene without the glass into `target`
+ * (refraction source, linear radiance plus depth), the exterior bokeh pass at
+ * half resolution, then the full scene with the rain glass, either through the
+ * shared HDR pipeline (half-float, AO, depth-of-field volume, bloom, grade) or
+ * directly to the canvas when float targets are unavailable.
+ */
 export class CafeEngine {
   private readonly renderer:T.WebGLRenderer;
-  private readonly camera=new T.PerspectiveCamera(45,1,.04,80);
+  private readonly camera=new T.PerspectiveCamera(45,1,.04,90);
   private readonly world=buildCafe();
   private readonly look=new LookSpring({yaw:.052,pitch:.027},{follow:.20,settle:1.35});
   private readonly raycaster=new T.Raycaster();
   private readonly target:T.WebGLRenderTarget;
+  private readonly bokeh:T.WebGLRenderTarget;
+  private readonly bokehMaterial:T.ShaderMaterial;
+  private readonly pass=new FullscreenPass();
   private readonly capability:ReturnType<typeof selectCafeTargetType>;
   private targetChecks:ReturnType<typeof requireCafeFramebuffer>[]=[];
-  private shadowTarget:T.WebGLRenderTarget|null=null;
+  private shadowTargets:Array<{label:string;target:T.WebGLRenderTarget}>=[];
   private targetFallbackReason:string|null=null;
   private readonly glass:Reflector;
   private environment:T.DataTexture|null=null;
+  private probes:CafeProbes|null=null;
+  private post:HdrPipeline|null=null;
+  private volume:ReturnType<typeof createCafeDepthVolume>|null=null;
+  private shot=cafeShot(0);
   private raf=0; private last=0;private ready=false;private disposed=false;private time=0;private width=1;private height=1;private ratio=1;
   private wipeAge=99;private cupPulse=0;private lampLevel=1;private lampTarget=1;
   private frames=0;
   private readonly lost=(event:Event)=>{event.preventDefault();this.onContextLost();};
-  constructor(private readonly canvas:HTMLCanvasElement,private readonly onContextLost:()=>void,preference:CafeTargetPreference='auto') {
+  constructor(private readonly canvas:HTMLCanvasElement,private readonly onContextLost:()=>void,preference:CafeTargetPreference='auto',private readonly postPreference:CafePostPreference='auto') {
     this.renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
     this.renderer.outputColorSpace=T.SRGBColorSpace;
-    this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.02;
+    this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=CAFE_POST.exposure!;
     this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=T.PCFShadowMap;
     this.renderer.shadowMap.autoUpdate=false;
     try { this.capability=selectCafeTargetType(this.renderer,preference); }
     catch(error){this.world.dispose();this.renderer.dispose();this.renderer.forceContextLoss();throw error;}
     this.target=configureCafeTarget(new T.WebGLRenderTarget(1,1,{depthBuffer:true}),this.capability.type);
+    // Depth of the refraction pass: the bokeh pass and the drops use it to keep
+    // only what lies beyond the glass. Sample-only, WebGL2 core.
+    this.target.depthTexture=new T.DepthTexture(1,1,T.UnsignedIntType);
+    // Mips let the bokeh gather read a pre-filtered source matched to its tap spacing.
+    this.target.texture.generateMipmaps=true;this.target.texture.minFilter=T.LinearMipmapLinearFilter;
+    this.bokeh=configureCafeTarget(new T.WebGLRenderTarget(1,1,{depthBuffer:false}),this.capability.type);
+    this.bokehMaterial=createExteriorBokeh({glassZ:this.world.glass.z,lamps:this.world.exterior.lamps});
+    this.bokehMaterial.uniforms.tColor.value=this.target.texture;
+    this.bokehMaterial.uniforms.tDepth.value=this.target.depthTexture;
+    // On a byte target highlights clip at 1; weight them more so discs still read.
+    this.bokehMaterial.uniforms.uHighlightBoost.value=this.capability.type===T.HalfFloatType?.35:2.2;
     const g=this.world.glass;
     // Three's planar reflection utility provides correct moving perspective and oblique clipping.
-    // Rain/refraction below is an original shader; no reference-page source is used.
-    this.glass=new Reflector(new T.PlaneGeometry(g.w,g.h),{textureWidth:512,textureHeight:512,multisample:0,clipBias:.003,shader:{
-      name:'CafeRainGlass',uniforms:{color:{value:new T.Color('#e5eced')},tDiffuse:{value:null},textureMatrix:{value:new T.Matrix4()},sceneColor:{value:null},resolution:{value:new T.Vector2(1,1)},time:{value:0},wipe:{value:new T.Vector2(-2,-2)},wipeAge:{value:99}},
-      vertexShader:`varying vec2 vUv;varying vec4 vReflect;uniform mat4 textureMatrix;void main(){vUv=uv;vReflect=textureMatrix*vec4(position,1.);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-      fragmentShader:`uniform sampler2D tDiffuse,sceneColor;uniform vec2 resolution,wipe;uniform float time,wipeAge;varying vec2 vUv;varying vec4 vReflect;
-      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-      vec4 drops(vec2 uv,vec2 grid,float speed){vec2 p=uv*grid;vec2 id=floor(p);float h=hash(vec2(id.x,2.));p.y+=time*speed*(.3+h);id=floor(p);vec2 q=fract(p)-.5;h=hash(id);q.x-=(h-.5)*.62;q.y-=(hash(id+7.)-.5)*.44;float r=.075+.11*hash(id+8.);vec2 n=q/vec2(r,r*(1.05+speed*3.));float d=length(n);float body=1.-smoothstep(.72,1.,d);float keep=step(.55,h);float trail=exp(-abs(q.x)*230.)*smoothstep(.02,.08,q.y)*(1.-smoothstep(.08,.5,q.y))*step(.01,speed)*.15;float rim=smoothstep(.66,.84,d)*(1.-smoothstep(.84,1.05,d))*keep;return vec4(n*body*.006*keep,(body+trail)*keep,rim);}
-      vec3 blurred(vec2 uv,float radius){vec2 px=radius/resolution;vec3 c=texture2D(sceneColor,uv).rgb*.24;c+=texture2D(sceneColor,uv+vec2(px.x,0)).rgb*.12;c+=texture2D(sceneColor,uv-vec2(px.x,0)).rgb*.12;c+=texture2D(sceneColor,uv+vec2(0,px.y)).rgb*.12;c+=texture2D(sceneColor,uv-vec2(0,px.y)).rgb*.12;c+=texture2D(sceneColor,uv+px*.7).rgb*.07;c+=texture2D(sceneColor,uv-px*.7).rgb*.07;c+=texture2D(sceneColor,uv+vec2(-px.x,px.y)*.7).rgb*.07;c+=texture2D(sceneColor,uv+vec2(px.x,-px.y)*.7).rgb*.07;return c;}
-      void main(){vec4 a=drops(vUv,vec2(81.,47.),0.);vec4 b=drops(vUv+vec2(.12,.34),vec2(29.,18.),.095);vec4 beads=drops(vUv+.37,vec2(137.,83.),0.);vec2 shift=a.xy+b.xy+beads.xy*.24;vec2 screen=gl_FragCoord.xy/resolution;float water=clamp(a.z+b.z+beads.z*.3,0.,1.);float edge=pow(abs(vUv.x-.5)*2.,3.)*.065+pow(1.-vUv.y,4.)*.065;vec2 wipeDelta=(vUv-wipe)*vec2(1.8,1.);float clearPatch=exp(-dot(wipeDelta,wipeDelta)/.016)*exp(-wipeAge*.075);float fog=edge*(1.-clearPatch);vec3 outside=blurred(clamp(screen+shift,vec2(.01),vec2(.99)),mix(3.4,1.,water)+fog*26.);vec2 mirror=vReflect.xy/vReflect.w+shift*.3;vec3 inside=texture2D(tDiffuse,mirror).rgb;vec3 c=mix(outside,inside,.035+edge*.15);c=mix(c,vec3(.17,.22,.25),fog);c*=1.-(a.w+b.w)*.12;c+=vec3(.58,.66,.69)*max(0.,-shift.y)*7.;c+=vec3(.7,.78,.81)*pow(max(0.,shift.y)*150.,3.)*.055;gl_FragColor=vec4(c,1.);
-      #include <tonemapping_fragment>
-      #include <colorspace_fragment>}`,
-
-    }});
+    // Rain/refraction/condensation is an original shader; no reference-page source is used.
+    this.glass=new Reflector(new T.PlaneGeometry(g.w,g.h),{textureWidth:512,textureHeight:512,multisample:0,clipBias:.003,shader:cafeGlassShader(new T.Vector2(g.w,g.h))});
     // Reflector's constructor creates a lazy HalfFloat target. Set its format
     // before setRenderTarget/initRenderTarget/any scene rendering can allocate it.
     configureCafeTarget(this.glass.getRenderTarget(),this.capability.type);
     preserveCafeReflectorState(this.glass);
-    (this.glass.material as T.ShaderMaterial).uniforms.sceneColor.value=this.target.texture;
+    const u=this.glassUniforms;
+    u.tSharp.value=this.target.texture;u.tSharpDepth.value=this.target.depthTexture;u.tBokeh.value=this.bokeh.texture;
     this.glass.position.set(g.x,g.y,g.z);this.world.scene.add(this.glass);this.glass.userData.interaction='window';this.world.interactables.push(this.glass);
     canvas.addEventListener('webglcontextlost',this.lost);
     canvas.dataset.engine='three-webgl2';canvas.dataset.lifecycle='created';
   }
+  private get glassUniforms(){return (this.glass.material as T.ShaderMaterial).uniforms;}
   async init(){
     if(this.disposed)return;
-    let environment:T.DataTexture;
-    try{environment=await loadCafeEnvironment();}catch(error){if(this.disposed)return;throw error;}
-    if(this.disposed){environment.dispose();return;}
-    this.environment=environment;this.world.scene.environment=environment;this.world.scene.environmentIntensity=.27;
+    if(this.capability.type===T.HalfFloatType){
+      // A code-generated probe of this café and its street (PMREM needs half-float targets).
+      try{
+        this.probes=withCafeTargetState(this.renderer,()=>bakeCafeProbes(this.renderer,{glass:this.world.glass,lamp:new T.Vector3(this.shot.lamp.x,this.shot.lamp.y+.39,this.shot.lamp.z),pendants:this.world.pendantPositions}));
+      }catch{this.probes=null;}
+    }
+    if(this.probes){
+      this.world.scene.environment=this.probes.room.texture;this.world.scene.environmentIntensity=1;
+      this.world.exterior.setEnvironment(this.probes.street.texture);
+    }else{
+      let environment:T.DataTexture;
+      try{environment=await loadCafeEnvironment();}catch(error){if(this.disposed)return;throw error;}
+      if(this.disposed){environment.dispose();return;}
+      // The baked RoomEnvironment is bright and neutral: keep it a dim fill so it
+      // does not flatten the lamp-lit look on the byte path.
+      this.environment=environment;this.world.scene.environment=environment;this.world.scene.environmentIntensity=.16;
+    }
+    if(this.disposed){this.probes?.dispose();this.probes=null;return;}
     // Match r186's actual PCF target: RGBA8 + depth comparison texture, no VSM
-    // blur targets. Allocate/check it before the first shadow draw.
-    const shadow=this.world.key.shadow,size=Math.min(2048,this.renderer.capabilities.maxTextureSize);
-    shadow.mapSize.set(size,size);
-    shadow.map=this.shadowTarget=configureCafeTarget(new T.WebGLRenderTarget(size,size),T.UnsignedByteType);
-    shadow.map.depthTexture=new T.DepthTexture(size,size,T.UnsignedIntType);
-    shadow.map.depthTexture.format=T.DepthFormat;shadow.map.depthTexture.compareFunction=T.LessEqualCompare;
-    shadow.map.depthTexture.minFilter=shadow.map.depthTexture.magFilter=T.LinearFilter;
+    // blur targets. Allocate/check each before the first shadow draw.
+    const max=this.renderer.capabilities.maxTextureSize;
+    this.world.shadowCasters.forEach((light,index)=>{
+      const size=Math.min(index?1024:2048,max),shadow=light.shadow;
+      shadow.mapSize.set(size,size);
+      const target=configureCafeTarget(new T.WebGLRenderTarget(size,size),T.UnsignedByteType);
+      target.depthTexture=new T.DepthTexture(size,size,T.UnsignedIntType);
+      target.depthTexture.format=T.DepthFormat;target.depthTexture.compareFunction=T.LessEqualCompare;
+      target.depthTexture.minFilter=target.depthTexture.magFilter=T.LinearFilter;
+      shadow.map=target;this.shadowTargets.push({label:index?`pcf-shadow-${index}`:'pcf-shadow',target});
+    });
+    if(this.postPreference!=='off'&&this.capability.type===T.HalfFloatType){
+      const lights=[...this.world.pendantPositions.map(position=>({position,color:new T.Color('#ffc98e'),strength:.0016})),{position:new T.Vector3(),color:LAMP_TINT.clone(),strength:.0009}];
+      this.post=HdrPipeline.create(this.renderer,{settings:CAFE_POST,volume:()=>(this.volume=createCafeDepthVolume({color:this.target.texture,glass:this.world.glass,lights}))});
+    }
     this.ready=true;this.setSize(this.width,this.height,this.ratio);this.renderer.shadowMap.needsUpdate=true;this.renderFrame(0);this.canvas.dataset.lifecycle='ready';
   }
   setSize(width:number,height:number,devicePixelRatio:number){
     this.width=Math.max(1,width);this.height=Math.max(1,height);this.ratio=Math.min(2,Math.max(1,devicePixelRatio));
     this.renderer.setPixelRatio(this.ratio);this.renderer.setSize(this.width,this.height,false);
-    this.target.setSize(Math.round(this.width*this.ratio),Math.round(this.height*this.ratio));
-    this.glass.getRenderTarget().setSize(Math.round(this.width*this.ratio*.65),Math.round(this.height*this.ratio*.65));
-    const shader=this.glass.material as T.ShaderMaterial;shader.uniforms.resolution.value.set(this.width*this.ratio,this.height*this.ratio);
+    const pw=Math.round(this.width*this.ratio),ph=Math.round(this.height*this.ratio);
+    this.target.setSize(pw,ph);
+    this.bokeh.setSize(Math.max(1,Math.round(pw/2)),Math.max(1,Math.round(ph/2)));
+    this.glass.getRenderTarget().setSize(Math.round(pw*.65),Math.round(ph*.65));
+    this.glassUniforms.resolution.value.set(pw,ph);
+    const b=this.bokehMaterial.uniforms;b.uSourceSize.value.set(pw,ph);b.uMaxRadius.value=Math.max(4,ph*.037);
     this.camera.aspect=this.width/this.height;this.renderer.shadowMap.needsUpdate=true;
     // Portrait keeps the near cup and table lamp together; wider views reveal the room to the right.
-    this.camera.fov=43+7*(1-T.MathUtils.smoothstep(this.camera.aspect,.48,1.35));this.camera.updateProjectionMatrix();
+    const portrait=1-T.MathUtils.smoothstep(this.camera.aspect,.48,1.35);
+    this.shot=this.world.arrange(portrait);
+    this.camera.fov=this.shot.fov;this.camera.updateProjectionMatrix();
     if(this.ready){
       // Check real dimensions as well as the tiny capability probe. On a driver
       // allocation failure, discard HDR storage and select RGBA8 before reallocating.
-      const checks=[cafeFramebuffer(this.renderer,this.target,'refraction'),cafeFramebuffer(this.renderer,this.glass.getRenderTarget(),'reflection')];
+      const scene=[[this.target,'refraction'],[this.bokeh,'bokeh'],[this.glass.getRenderTarget(),'reflection']] as const;
+      const checks=scene.map(([target,label])=>cafeFramebuffer(this.renderer,target,label));
       if(this.capability.type===T.HalfFloatType&&checks.some(check=>!check.complete)){
         this.targetFallbackReason='HalfFloat framebuffer incomplete at scene dimensions';
         this.capability.type=T.UnsignedByteType;
-        for(const target of [this.target,this.glass.getRenderTarget()]){target.dispose();configureCafeTarget(target,T.UnsignedByteType);}
+        for(const [target] of scene){target.dispose();configureCafeTarget(target,T.UnsignedByteType);}
+        // The pipeline relies on the same half-float storage; keep the direct path.
+        this.post?.dispose();this.post=null;this.volume=null;
+        this.bokehMaterial.uniforms.uHighlightBoost.value=2.2;
       }
-      this.targetChecks=[requireCafeFramebuffer(this.renderer,this.target,'refraction'),requireCafeFramebuffer(this.renderer,this.glass.getRenderTarget(),'reflection'),requireCafeFramebuffer(this.renderer,this.shadowTarget!,'pcf-shadow')];
-      this.canvas.dataset.targets=JSON.stringify({capability:this.capability,fallbackReason:this.targetFallbackReason,targets:this.targetChecks,environment:{kind:'baked-cubeuv',type:this.environment!.type,internalFormat:this.environment!.internalFormat,mapping:this.environment!.mapping,width:this.environment!.image.width,height:this.environment!.image.height,runtimePmrem:false}});
+      this.post?.setSize(this.width,this.height,this.ratio);
+      this.targetChecks=[...scene.map(([target,label])=>requireCafeFramebuffer(this.renderer,target,label)),...this.shadowTargets.map(({target,label})=>requireCafeFramebuffer(this.renderer,target,label))];
+      const env=this.probes?this.probes.room.texture:this.environment!,image=env.image as {width:number;height:number};
+      this.canvas.dataset.targets=JSON.stringify({capability:this.capability,fallbackReason:this.targetFallbackReason,targets:this.targetChecks,environment:{kind:this.probes?'cafe-probe':'baked-cubeuv',type:env.type,internalFormat:env.internalFormat,mapping:env.mapping,width:image.width,height:image.height,runtimePmrem:!!this.probes}});
+      this.canvas.dataset.post=this.post?JSON.stringify(this.post.report):'direct';
     }
   }
   renderFrame(dt:number){
     if(!this.ready||this.disposed)return;
     const step=Math.min(.05,Math.max(0,dt));this.time+=step;this.wipeAge+=step;this.look.update(step);
     this.cupPulse=Math.max(0,this.cupPulse-step*.4);this.lampLevel+= (this.lampTarget-this.lampLevel)*(1-Math.exp(-step*1.2));
-    this.world.steamUniforms.time.value=this.time;this.world.steamUniforms.pulse.value=this.cupPulse;
-    this.world.cup.rotation.z=Math.sin(this.time*3.0)*this.cupPulse*.006;
-    this.world.lampLight.intensity=2.6*this.lampLevel;this.world.shadeMat.emissiveIntensity=.24*this.lampLevel;
-    (this.glass.material as T.ShaderMaterial).uniforms.time.value=this.time;
-    (this.glass.material as T.ShaderMaterial).uniforms.wipeAge.value=this.wipeAge;
-    const portrait=1-T.MathUtils.smoothstep(this.camera.aspect,.48,1.35);
-    this.camera.position.set(T.MathUtils.lerp(.10,-.70,portrait),T.MathUtils.lerp(1.53,1.44,portrait),T.MathUtils.lerp(3.50,3.12,portrait));
-    const aim=new T.Vector3(T.MathUtils.lerp(-.40,-1.35,portrait),1.30,-1.7);
-    this.world.cup.position.x=this.world.saucer.position.x=this.world.steam.position.x=this.world.cupContact.position.x=T.MathUtils.lerp(-.64,-.93,portrait);
-    this.world.lamp.position.x=this.world.lampLight.position.x=this.world.key.position.x=this.world.lampContact.position.x=T.MathUtils.lerp(-1.15,-1.29,portrait);
-    this.world.key.target.position.x=this.world.cup.position.x+.16;
-    this.world.lamp.scale.setScalar(T.MathUtils.lerp(1,.8,portrait));
-    this.camera.lookAt(aim);this.camera.rotateY(this.look.yaw);this.camera.rotateX(this.look.pitch);this.camera.updateMatrixWorld();
+    const w=this.world,level=this.lampLevel;
+    w.update(this.time);
+    w.steamUniforms.time.value=this.time;w.steamUniforms.pulse.value=this.cupPulse;
+    w.steamUniforms.light.value.copy(LAMP_TINT).multiplyScalar(1.5*level);
+    w.cup.rotation.z=Math.sin(this.time*3.0)*this.cupPulse*.012;
+    w.key.intensity=KEY_INTENSITY*level;w.lampLight.intensity=LAMP_GLOW*level;w.bounce.intensity=BOUNCE*level;
+    w.shadeMat.emissiveIntensity=SHADE_EMISSIVE*level;w.bulbMaterial.color.copy(BULB).multiplyScalar(level);
+    const u=this.glassUniforms;
+    u.time.value=this.time;u.wipeAge.value=this.wipeAge;
+    u.lampPosition.value.copy(w.key.position);u.lampGlow.value.copy(LAMP_TINT).multiplyScalar(.75*level);
+    if(this.volume){const lights=this.volume.uniforms.uLights.value as T.Vector4[];const last=lights[w.pendantPositions.length];last.set(w.key.position.x,w.key.position.y+.02,w.key.position.z,.0009*level);}
+    this.camera.position.copy(this.shot.camera);
+    this.camera.lookAt(this.shot.aim);this.camera.rotateY(this.look.yaw);this.camera.rotateX(this.look.pitch);this.camera.updateMatrixWorld();
+    const b=this.bokehMaterial.uniforms;
+    b.uInverseProjection.value.copy(this.camera.projectionMatrixInverse);b.uCameraWorld.value.copy(this.camera.matrixWorld);b.uTime.value=this.time;
     withCafeTargetState(this.renderer,()=>{
       try{
-        this.glass.visible=false;this.renderer.setRenderTarget(this.target);this.renderer.render(this.world.scene,this.camera);
-        this.glass.visible=true;this.renderer.setRenderTarget(null);this.renderer.render(this.world.scene,this.camera);
+        this.glass.visible=false;this.renderer.setRenderTarget(this.target);this.renderer.render(w.scene,this.camera);
+        this.pass.render(this.renderer,this.bokehMaterial,this.bokeh);
+        this.glass.visible=true;
+        if(this.post)this.post.render(w.scene,this.camera,this.time);
+        else{this.renderer.setRenderTarget(null);this.renderer.render(w.scene,this.camera);}
       }finally{this.glass.visible=true;}
     });
     this.frames++;
@@ -132,10 +212,26 @@ export class CafeEngine {
     this.raycaster.setFromCamera(new T.Vector2(x*2-1,1-y*2),this.camera);
     const hit=this.raycaster.intersectObjects(this.world.interactables,false)[0];
     const kind=hit?.object.userData.interaction as CafeInteraction|undefined;
-    if(kind==='window'&&hit.uv){(this.glass.material as T.ShaderMaterial).uniforms.wipe.value.copy(hit.uv);this.wipeAge=0;}
+    if(kind==='window'&&hit.uv){this.glassUniforms.wipe.value.copy(hit.uv);this.wipeAge=0;}
     if(kind==='cup')this.cupPulse=1;
     if(kind==='lamp')this.lampTarget=this.lampTarget>.9?.78:1;
     return kind??null;
+  }
+  /** Harness-only: viewport-relative points (0..1) that land on each interactive object. */
+  interactionPointsForQA(){
+    const project=(v:T.Vector3)=>{const q=v.clone().project(this.camera);return {x:(q.x+1)/2,y:(1-q.y)/2};};
+    const s=this.shot,g=this.world.glass,scale=s.lampScale;
+    return {
+      cup:project(new T.Vector3(s.cup.x,s.cup.y+.07,s.cup.z+.04)),
+      lamp:project(new T.Vector3(s.lamp.x,s.lamp.y+.43*scale,s.lamp.z+.12*scale)),
+      window:project(new T.Vector3(s.cup.x*.4+s.lamp.x*.6+.1,g.y+.55,g.z)),
+    };
+  }
+  /** Paused harness-only: move scene time forward (rain, steam, patrons) and draw one frame. */
+  advanceForQA(seconds:number){
+    if(this.raf||!this.ready)throw new Error('Advancing time requires a ready paused scene');
+    const step=Math.max(0,Math.min(600,seconds));this.time+=step;this.wipeAge+=step;this.renderFrame(0);
+    return {time:this.time};
   }
   /** Paused harness-only check of real GL target/face/mip restoration. */
   verifyTargetStateForQA(){
@@ -151,5 +247,10 @@ export class CafeEngine {
       return {face:4,mip:1,probeRestored,reflectorRestored,frameRestored,glError:gl.getError()};
     }finally{restoreCafeTargetState(this.renderer,saved);probe.dispose();}
   }
-  dispose(){if(this.disposed)return;this.stop();this.disposed=true;this.canvas.removeEventListener('webglcontextlost',this.lost);this.glass.dispose();this.target.dispose();this.environment?.dispose();this.world.dispose();this.renderer.dispose();this.renderer.forceContextLoss();this.canvas.dataset.lifecycle='disposed';}
+  dispose(){if(this.disposed)return;this.stop();this.disposed=true;this.canvas.removeEventListener('webglcontextlost',this.lost);
+    this.post?.dispose();this.post=null;this.volume=null;
+    this.pass.dispose();this.bokehMaterial.dispose();this.bokeh.dispose();
+    this.glass.dispose();this.target.depthTexture?.dispose();this.target.dispose();
+    this.environment?.dispose();this.probes?.dispose();this.probes=null;
+    this.world.dispose();this.renderer.dispose();this.renderer.forceContextLoss();this.canvas.dataset.lifecycle='disposed';}
 }

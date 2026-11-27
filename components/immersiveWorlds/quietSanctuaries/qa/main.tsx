@@ -5,7 +5,7 @@ import MeditationCourtWorld from '../MeditationCourtWorld';
 import WarmHeartWorld from '../WarmHeartWorld';
 import SnowVillageWorld from '../SnowVillageWorld';
 import type { SanctuaryBuilder, SanctuaryInteraction, SanctuaryKind, SanctuaryProps } from '../worldTypes';
-import { SanctuaryHost } from '../SanctuaryEngine';
+import { preferDirectSanctuaryRendering, SanctuaryHost } from '../SanctuaryEngine';
 import SanctuaryView from '../SanctuaryView';
 import { createMeditationCourtBuilder } from '../meditation';
 import { captureRendererState, checkMeditationTarget, restoreRendererState, type TargetDiagnostics } from '../meditationTargets';
@@ -65,6 +65,8 @@ const worlds = {
   'snow-village': SnowVillageWorld,
 };
 const query = new URLSearchParams(location.search);
+// post=off renders warm heart and snow village through the previous direct path for comparisons.
+if (query.get('post') === 'off') preferDirectSanctuaryRendering(true);
 const requested = query.get('world');
 const kind: SanctuaryKind = requested && requested in worlds ? requested as SanctuaryKind : 'meditation';
 const targetMode = kind === 'meditation' && query.get('targets') === 'byte' ? 'force-byte' : 'auto';

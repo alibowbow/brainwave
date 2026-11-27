@@ -2,12 +2,18 @@ import * as THREE from 'three';
 import type { LiveSceneEngine, LiveSceneHolder } from '../../liveScene/liveSceneHost';
 import { LiveSceneHost } from '../../liveScene/liveSceneHost';
 import { LookSpring } from '../../liveScene/look';
+import { HdrPipeline } from '../shared/render/hdrPipeline';
 import type { SanctuaryBuilder, SanctuaryKind, SanctuaryWorld } from './worldTypes';
+
+// The isolated QA harness can request the previous direct path for comparisons.
+let directPreferred = false;
+export function preferDirectSanctuaryRendering(value: boolean) { directPreferred = value; }
 
 let nextEngineId = 0;
 export class SanctuaryEngine implements LiveSceneEngine {
   private renderer: THREE.WebGLRenderer;
   private world: SanctuaryWorld | null = null;
+  private post: HdrPipeline | null = null;
   private width = 1;
   private height = 1;
   private elapsed = 0;
@@ -28,14 +34,26 @@ export class SanctuaryEngine implements LiveSceneEngine {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.08;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // three r18x maps PCFSoftShadowMap to PCF with a warning; PCF with a per-light radius is identical.
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     canvas.dataset.engineId = String(++nextEngineId);
     canvas.dataset.interactions = '0';
     this.lost = (event) => { event.preventDefault(); if (!this.disposed) onLost(); };
     canvas.addEventListener('webglcontextlost', this.lost);
   }
   async init() {
-    this.world = this.build(this.renderer);
+    const world = this.build(this.renderer);
+    this.world = world;
+    // Worlds opt in to HDR with post settings; the others keep the direct path untouched.
+    if (world.post) {
+      world.prepare?.(this.renderer);
+      if (!directPreferred) {
+        this.post = HdrPipeline.create(this.renderer, { settings: world.post, volume: world.createVolume ? () => world.createVolume!() : null });
+        this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+      }
+      world.setPostActive?.(!!this.post);
+      this.canvas.dataset.post = this.post ? JSON.stringify(this.post.report) : 'direct';
+    }
     this.resizeCamera();
   }
   setSize(width: number, height: number, dpr: number) {
@@ -44,6 +62,8 @@ export class SanctuaryEngine implements LiveSceneEngine {
     // Native CSS resolution is never lowered. Cap only supersampling above 2x.
     this.renderer.setPixelRatio(Math.min(Math.max(dpr, 1), 2));
     this.renderer.setSize(this.width, this.height, false);
+    this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+    if (this.post) this.canvas.dataset.post = JSON.stringify(this.post.report);
     this.resizeCamera();
   }
   private resizeCamera() {
@@ -62,7 +82,8 @@ export class SanctuaryEngine implements LiveSceneEngine {
     this.lookQuaternion.setFromEuler(this.lookEuler);
     this.world.camera.quaternion.copy(this.baseQuaternion).multiply(this.lookQuaternion);
     this.world.update(this.elapsed, step);
-    this.renderer.render(this.world.scene, this.world.camera);
+    if (this.post) this.post.render(this.world.scene, this.world.camera, this.elapsed);
+    else this.renderer.render(this.world.scene, this.world.camera);
     this.canvas.dataset.frame = String(++this.frame);
     this.canvas.dataset.elapsed = this.elapsed.toFixed(4);
     this.canvas.dataset.drawCalls = String(this.renderer.info.render.calls);
@@ -99,6 +120,8 @@ export class SanctuaryEngine implements LiveSceneEngine {
     this.disposed = true;
     this.stop();
     this.canvas.removeEventListener('webglcontextlost', this.lost);
+    this.post?.dispose();
+    this.post = null;
     if (this.world) {
       const geometries = new Set<THREE.BufferGeometry>();
       const materials = new Set<THREE.Material>();

@@ -15,6 +15,8 @@ Optional environment variables:
 - `SCENE_SOURCE_REVISION`: exact Git revision label supplied by the caller. Regardless of that label, the report lists exact source-file and bundled-file SHA-256 hashes.
 - `LIVING_WOODS_WORLDS=morning,rainy,ancient,bamboo`: choose scenes for diagnosis.
 - `LIVING_WOODS_SCREENSHOTS_ONLY=1` (or `QA_CAPTURE_ONLY=1`, `--capture-only`): capture cold inactive viewport frames and stable paused pixels only, without motion/interaction/lifecycle checks. The report labels this reduced scope.
+- `LIVING_WOODS_PORT`: serve the isolated preview on a fixed port (default: any free port).
+- `LIVING_WOODS_QA_TIMEOUT` (ms): opt-in longer per-wait, readback and GPU-drain limits for heavily loaded machines running software WebGL; the default limits are unchanged.
 - `LIVING_WOODS_BROWSER_TEST=1`: opt into the same runner through Vitest. Default `npm test` skips this wrapper because current CI installs the browser only afterward.
 
 ## Look captures (HDR upgrade)

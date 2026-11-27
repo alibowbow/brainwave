@@ -57,6 +57,18 @@ Add `environment=forced-byte` to select the byte environment policy before scene
 
 The chrome fixture reproduces the actual `Player` / `ImmersiveMode` DOM relationship: a `data-scene-surface` ancestor contains a scene layer and a sibling full-cover `data-scene-drag` overlay. It uses the real world entries, while the buttons are isolated test UI, not imports of the shared Player components. Tests assert that mouse taps really hit this overlay, that drags reach look, and that UI controls receive their own input without causing scene interactions. Button, input, link and button/slider/switch/checkbox/textbox role probes are deliberately placed over a previously verified raycast target. Real mouse and browser-emulated touch must be captured only by the active scene surface and released on completion. Additional captured mouse gestures test labelled synthetic pointercancel/blur and native lostpointercapture cancellation. Three holder round trips check that each mounted surface has exactly one pointerdown handler and covered holders reject both taps and drags.
 
+## Visual quality captures (HDR upgrade)
+
+`capture-quality.mjs` builds this harness, renders each world's first static frame at 1280×800 and 390×844 (DPR 1) in headless Chromium with SwiftShader, and writes PNGs plus a `report.json` (pipeline report, draw calls, triangles, page/shader errors). It serves the build with `vite preview` on port 4315 (`KOREAN_QA_PORT` overrides).
+
+```sh
+KOREAN_QA_OUTPUT=/tmp/kp/after node components/immersiveWorlds/koreanPlaces/qa/capture-quality.mjs
+KOREAN_QA_QUERY=post=off KOREAN_QA_OUTPUT=/tmp/kp/direct node components/immersiveWorlds/koreanPlaces/qa/capture-quality.mjs   # direct fallback renderer
+KOREAN_QA_ACTIVE=24 KOREAN_QA_OUTPUT=/tmp/kp/active node components/immersiveWorlds/koreanPlaces/qa/capture-quality.mjs         # after animated frames
+```
+
+`KOREAN_QA_SCENES` and `KOREAN_QA_VIEWPORTS` (comma lists) narrow a run; `KOREAN_QA_SKIP_BUILD=1` reuses the last build. `post=off` is a harness-only query that asks the engine for the direct path used when float colour targets are unavailable. Software rendering grades appearance only; it says nothing about device frame rate. Before/after comparisons are kept in `evidence/hdr-upgrade/`.
+
 ## Evidence
 
 PNG captures use desktop 1365×900, narrow portrait 390×844, and landscape/Fold-inner-sized 960×700 viewports for each world. Full verification also saves one **initial paused chrome-visible** PNG per world, immediately after the initial desktop capture and before any resizing, motion or interaction tests. That PNG establishes initial visible chrome and composition; it is not a post-interaction frame. Actual subsequent interaction results are recorded in the JSON. These are viewport tests, not physical Fold hardware tests. Screenshot-only mode loads paused so still-image review does not consume continuous software rendering. The full suite separately exercises genuine motion between two paused screenshot endpoints.

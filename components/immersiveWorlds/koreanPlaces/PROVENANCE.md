@@ -2,6 +2,10 @@
 
 All new scene geometry, shaders, texture-generation code, materials and interaction/lifecycle code in this group were independently authored for this task. Textures are deterministic procedural CanvasTextures generated in the browser. No new external images, models, recordings, fonts, paid services or subscriptions are required. Three.js and React are existing project dependencies under their existing licenses.
 
+## HDR upgrade (shared render pipeline)
+
+The upgraded worlds add only code: the shared HDR pipeline, rock surface and noise modules in `components/immersiveWorlds/shared/render/`, plus this group's own procedural kit (`scenes/kit.ts`), dancheong painter (`scenes/dancheong.ts`), hip-and-gable roof builder (`scenes/koreanRoof.ts`), temple and owl/forest parts. Dancheong-style motifs, bracket profiles, roof forms, plumage, bark, wood grain, tiles, skies and clouds are original procedural interpretations of general Korean architectural and natural vocabulary; no pattern sheet, photograph, model or texture file was copied or loaded. The before/after JPGs in `qa/evidence/hdr-upgrade/` are screenshots of the rendered scenes (and, for rural, the existing approved reference image placed beside the render for comparison only).
+
 ## Approved rural image
 
 Inspected the actual pixels of the existing repository asset `public/images/nature/backgrounds/rural-ghibli-v9.webp` at base commit `14940149cc5c0fccb778b58d4d755a04aea55e53`. File SHA-256: `aa5bf392be8e9d7a1ae7df45aa1c157b914d2fe4ec0ce7c62d7eee136fcb2295`.

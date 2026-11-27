@@ -322,7 +322,8 @@ export async function runLivingWoodsQA() {
         assert.ok(cold.frames > 0 && cold.width > 0 && cold.height > 0, 'cold inactive first frame is nonzero');
         // HDR render targets (bloom levels) scale with canvas size, so compare
         // the recreated engine with the first engine at the same size.
-        const baselineResources = entry.metrics.find((item) => item.width === cold.width && item.height === cold.height)
+        const recorded = [...entry.metrics, entry.checks.motionCounters?.before, entry.checks.motionCounters?.after].filter(Boolean);
+        const baselineResources = recorded.find((item) => item.width === cold.width && item.height === cold.height)
           ?? entry.metrics.find((item) => item.viewport === 'desktop');
         assert.equal(cold.geometries, baselineResources.geometries, 'new engine has the same geometry count after disposal');
         assert.equal(cold.textures, baselineResources.textures, 'new engine has the same texture count after disposal');

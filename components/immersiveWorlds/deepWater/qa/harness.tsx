@@ -7,6 +7,7 @@ import type { DeepWaterInteraction, WorldKind } from '../engine/types';
 import './harness.css';
 import { deepWaterHosts } from '../host';
 import { preferBytePoolTargets } from '../engine/poolTarget';
+import { preferDirectRendering } from '../engine/DeepWaterEngine';
 import type { WebGLRenderer } from 'three';
 
 declare global {
@@ -44,6 +45,11 @@ sceneHost.releaseDrag = (...args) => { inputCounters.releaseDrag++; return relea
 if (params.get('reflection') === 'byte') {
   const configure = host.configure.bind(host);
   host.configure = engine => { configure(engine); preferBytePoolTargets(engine.renderer); };
+}
+// Before/after comparisons: `post=off` keeps the previous direct renderer path.
+if (params.get('post') === 'off') {
+  const configure = host.configure.bind(host);
+  host.configure = engine => { configure(engine); preferDirectRendering(engine.renderer); };
 }
 const waitGPUIdle = async () => {
   if (!host.engine) throw new Error('Cannot verify GPU completion without a live scene engine');

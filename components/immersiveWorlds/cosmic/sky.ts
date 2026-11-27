@@ -174,13 +174,10 @@ void main() {
 #else
   vec4 nebula = nebulaMarch(d);
 #endif
-  // Fine ridged filaments restore crispness lost to the cube resolution; they
-  // modulate existing gas only, so empty space stays empty.
-  vec4 fineTap = texture(uNoise, d * 9.1 + .2);
-  float filament = 1.0 - abs(fineTap.g - .5) * 2.0;
-  float wisp = 1.0 - abs(texture(uNoise, d * 23.0 + 1.7).b - .5) * 2.0;
-  float structure = .62 + .55 * filament * filament + .25 * wisp * wisp * wisp;
-  vec3 color = nebula.rgb * uNebulaGain * structure;
+  // Gentle fine grain restores some crispness lost to the cube resolution; it
+  // only modulates existing gas, so empty space stays empty.
+  float grain = texture(uNoise, d * 7.3 + .2).b;
+  vec3 color = nebula.rgb * uNebulaGain * (.84 + .32 * grain);
   // The star: tiny bright disc with limb darkening and a soft corona.
   float c = clamp(dot(d, uStarLocal), -1.0, 1.0);
   float angle = acos(c);

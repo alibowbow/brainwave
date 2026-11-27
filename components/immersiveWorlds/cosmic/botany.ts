@@ -550,7 +550,7 @@ function createMaterial(uniforms: BotanyUniforms, kind: 'leaf' | 'stem' | 'polle
         // Only nearby anthers glow; far away they would sparkle like glitter.
         float pollenNear = 1.0 - smoothstep(4.0, 11.0, length(vViewPosition));
         float pollenBreath = 0.7 + 0.3 * sin(uBotanyTime * 0.17 + vBotanyData.x * 2.3);
-        outgoingLight += vec3(1.0, 0.72, 0.34) * (0.04 + 1.5 * pollenNear) * pollenBreath + vec3(0.30, 0.95, 0.72) * vBotanyTouch * 1.5;
+        outgoingLight += vec3(1.0, 0.72, 0.34) * (0.03 + 0.42 * pollenNear) * pollenBreath + vec3(0.30, 0.95, 0.72) * vBotanyTouch * 1.5;
         #include <opaque_fragment>
       `);
     } else {

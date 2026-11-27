@@ -112,7 +112,11 @@ Island foliage, island waterfalls and mist live on `COSMIC_DETAIL_LAYER`, which
 the main camera and the touch raycaster include but the pond reflection skips.
 
 Before/after evidence (BEFORE = the previous renderer, AFTER = this upgrade,
-SwiftShader, DPR 1) is in [validation/evidence/hdr-upgrade](validation/evidence/hdr-upgrade).
+SwiftShader, DPR 1, reduced-motion stills at time 0) is in
+[validation/evidence/hdr-upgrade](validation/evidence/hdr-upgrade):
+`cosmic-compare-desktop.jpg` and `cosmic-compare-portrait.jpg` (1280×800 and
+390×844), the full-size AFTER stills, `*-direct.jpg` for the direct fallback
+(`?post=off`), `*-active.jpg` after animated frames, and the capture reports.
 `node components/immersiveWorlds/cosmic/validation/capture-quality.mjs` builds
 the isolated harness into a temporary folder and writes PNGs
 (`COSMIC_QA_QUERY=post=off` for the direct path, `COSMIC_QA_ACTIVE=<frames>`

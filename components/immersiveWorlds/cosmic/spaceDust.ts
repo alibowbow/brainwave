@@ -74,7 +74,9 @@ void main() {
   float maxT = min(surface, uMaxDistance);
   float cosTheta = dot(rd, uSun);
   float phase = (bwPhase(cosTheta, .62) * .7 + bwPhase(cosTheta, .05) * .3) * 12.5663706;
-  float jitter = bwIgn(gl_FragCoord.xy + mod(uFrame, 16.0) * 5.3);
+  // Static per-pixel jitter: there is no temporal accumulation, so a moving
+  // pattern would shimmer; the depth-aware blur hides the fixed one.
+  float jitter = bwIgn(gl_FragCoord.xy);
   vec3 scatter = vec3(0.0);
   float transmittance = 1.0;
   float previous = 0.0;

@@ -153,9 +153,9 @@ export class CosmicEngine implements LiveSceneEngine {
       float breath=.72+.28*sin(uTime*.23+aPhase*2.);
       vec4 view=modelViewMatrix*vec4(p,1.);float near=1.-smoothstep(9.,22.,-view.z);
       vGlow=(.42*breath+influence*1.8)*(.25+.75*near);vColor=mix(vec3(.78,.93,1.0),vec3(1.0,.78,.48),aWarm);
-      gl_PointSize=clamp(aSize*uDpr*4./-view.z,2.,24.*uDpr);gl_Position=projectionMatrix*view;}`,
+      gl_PointSize=clamp(aSize*uDpr*3.2/-view.z,2.,15.*uDpr);gl_Position=projectionMatrix*view;}`,
       fragmentShader:`varying float vGlow;varying vec3 vColor;void main(){float d=length(gl_PointCoord-.5);float mask=1.-smoothstep(.36,.5,d);
-      vec3 c=vColor*vGlow*(exp(-d*d*70.)*2.6+exp(-d*d*12.)*.32);gl_FragColor=vec4(c,mask);
+      vec3 c=vColor*vGlow*(exp(-d*d*48.)*1.6+exp(-d*d*11.)*.26);gl_FragColor=vec4(c,mask);
       #include <tonemapping_fragment>
       #include <colorspace_fragment>
       }`

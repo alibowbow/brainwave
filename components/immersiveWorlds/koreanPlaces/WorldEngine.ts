@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { LiveSceneHost, type LiveSceneEngine, type LiveSceneHolder } from '../../liveScene/liveSceneHost';
 import { LookSpring } from '../../liveScene/look';
+import { HdrPipeline } from '../shared/render/hdrPipeline';
 import type { SceneContent, WorldId, WorldInteraction } from './types';
 
 type Factory = (renderer: THREE.WebGLRenderer) => SceneContent;
@@ -10,10 +11,15 @@ const factories: Record<WorldId, () => Promise<Factory>> = {
   rural: () => import('./scenes/rural').then(m => m.createRuralScene),
 };
 
+// Only the isolated QA harness calls this, to capture the direct fallback path.
+let qaDirectRendering = false;
+export function configureRenderingQA(options: { direct?: boolean } = {}) { qaDirectRendering = !!options.direct; }
+
 /** One renderer per world, transported between player and fullscreen by LiveSceneHost. */
 export class WorldEngine implements LiveSceneEngine {
   private renderer: THREE.WebGLRenderer;
   private content: SceneContent | null = null;
+  private post: HdrPipeline | null = null;
   private frame = 0;
   private last = 0;
   private time = 0;
@@ -32,7 +38,8 @@ export class WorldEngine implements LiveSceneEngine {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // PCF in r186 is filtered by each light's shadow.radius (PCFSoft was removed).
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.contextLost = event => { event.preventDefault(); onLost(); };
     canvas.addEventListener('webglcontextlost', this.contextLost);
     canvas.dataset.world = id;
@@ -44,9 +51,18 @@ export class WorldEngine implements LiveSceneEngine {
       if (this.disposed) return;
       this.content = factory(this.renderer);
       this.renderer.toneMappingExposure = this.content.scene.userData.exposure ?? 1;
+      this.createPost(this.content);
       this.content.resize(this.width / this.height);
       this.cameraBase.copy(this.content.camera.quaternion);
-      await this.renderer.compileAsync(this.content.scene, this.content.camera);
+      // With the HDR pipeline the scene renders into a float target, whose program
+      // variants (linear output, no tone mapping) differ from the canvas ones:
+      // compile those, so the first visible frame does not recompile every material.
+      const variant = this.post ? new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }) : null;
+      const previous = variant ? this.renderer.getRenderTarget() : null;
+      if (variant) this.renderer.setRenderTarget(variant);
+      const compiling = this.renderer.compileAsync(this.content.scene, this.content.camera);
+      if (variant) this.renderer.setRenderTarget(previous);
+      try { await compiling; } finally { variant?.dispose(); }
     } catch (error) {
       // The shared host's rejection path is not generation-scoped. A late
       // rejected import/compile from a retired engine must not tear down its successor.
@@ -54,11 +70,30 @@ export class WorldEngine implements LiveSceneEngine {
     }
   }
 
+  /** HDR is the quality path. Without colour-renderable float targets (or if the
+   * pipeline cannot be built) the engine keeps rendering directly, as before. */
+  private createPost(content: SceneContent) {
+    if (!qaDirectRendering && typeof this.renderer.getContext === 'function') {
+      try {
+        this.post = HdrPipeline.create(this.renderer, { settings: content.post, volume: content.createVolume ? () => content.createVolume!() : null });
+        this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+      } catch {
+        this.post?.dispose(); this.post = null;
+      }
+    }
+    content.setPostActive?.(!!this.post);
+    this.canvas.dataset.post = this.post ? JSON.stringify(this.post.report) : 'direct';
+  }
+
   setSize(width: number, height: number, dpr: number) {
     if (this.disposed) return;
     this.width = Math.max(1, width); this.height = Math.max(1, height);
     this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)));
     this.renderer.setSize(this.width, this.height, false);
+    if (this.post) {
+      this.post.setSize(this.width, this.height, this.renderer.getPixelRatio());
+      this.canvas.dataset.post = JSON.stringify(this.post.report);
+    }
     if (this.content) {
       this.content.resize(this.width / this.height);
       this.cameraBase.copy(this.content.camera.quaternion);
@@ -74,7 +109,8 @@ export class WorldEngine implements LiveSceneEngine {
     this.content.camera.quaternion.copy(this.cameraBase);
     this.content.camera.rotateY(this.look.yaw);
     this.content.camera.rotateX(this.look.pitch);
-    this.renderer.render(this.content.scene, this.content.camera);
+    if (this.post) this.post.render(this.content.scene, this.content.camera, this.time);
+    else this.renderer.render(this.content.scene, this.content.camera);
     this.canvas.dataset.frames = String(++this.rendered);
     this.canvas.dataset.time = this.time.toFixed(3);
     this.canvas.dataset.drawCalls = String(this.renderer.info.render.calls);
@@ -109,6 +145,7 @@ export class WorldEngine implements LiveSceneEngine {
     if (this.disposed) return;
     this.disposed = true; this.stop();
     this.canvas.removeEventListener('webglcontextlost', this.contextLost);
+    this.post?.dispose(); this.post = null;
     const geometries = new Set<THREE.BufferGeometry>();
     const materials = new Set<THREE.Material>();
     const textures = new Set<THREE.Texture>();

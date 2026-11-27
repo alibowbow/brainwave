@@ -1,0 +1,2374 @@
+{
+  "generatedAt": "2026-11-27T21:40:16.961Z",
+  "mode": "full",
+  "renderer": "Chromium headless; ANGLE SwiftShader software WebGL",
+  "hardwareClaim": "Viewport tests only. No physical Fold, device FPS, battery, or thermal claims.",
+  "visibilityScope": "The mandatory hidden-state test uses a labelled synthetic visibilitychange; actual tab visibility is separately reported if observable.",
+  "browserExecutable": "/opt/pw-browsers/chromium",
+  "repositoryHead": "46f7f71ca3158218294d332cbc1be3018df7f556",
+  "source": {
+    "sha256": "e49cc86ef12e198e68821cc492d9658f28b76a5770d72b5e13d236c154434116",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/KoreanWorld.tsx",
+        "sha256": "07114da6db74ca17b07c32fe715bc4912f05b9be184d71a98f4db92c1145b40a"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "sha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/ScopsNightWorld.tsx",
+        "sha256": "594677c1cf3cfb69079a8e7f80c5948fa10efbd76f7b03f08f4038dbe46a372f"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/TempleWorld.tsx",
+        "sha256": "b46c7c7da9c556801d80eb64cc54a351252a12d54464cc37afbc39d1fa463bb8"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/WorldEngine.ts",
+        "sha256": "5b03193394627e5f6e9075f5fe619312d4ca4166b1c7f832d6bc99380cb15ae9"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/environment.test.ts",
+        "sha256": "012b672c2e197d9e39fbcd4896952803f240db47a5cb76e5c6c00d2a7408dece"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/environment.ts",
+        "sha256": "ae7cf184ec217e1402b5b2c03170a733f718e19b74ced10b7e45d8f1b5fce92d"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/korean-world.css",
+        "sha256": "8d7610a5096ac40d459aac156ae734534b311b3b9e0b0910602136f21a8547e1"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/capture-quality.mjs",
+        "sha256": "cc63479183ccce5f1315b6aa2672dd686698a49061c40be5c7a60da8b062011a"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/environmentQA.ts",
+        "sha256": "9bebbdb34c17421b026ee93e4c7a66b72d9541af2290ace418aeef4f12a01a5d"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "sha256": "c1a1ac9fd47001b9f0e9bff8d90e1061630e95786c9cd6e82a6bdedb3c828a6a"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/main.tsx",
+        "sha256": "bc15f08930df7bde446400000e96b0bc3a980c90be5d4abf503756f2b1ef232d"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/qa.css",
+        "sha256": "ece350f8939b1ed689e92054fa5c6df9324db318f63d7175c2fbee0e117d3c40"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/sceneScheduler.ts",
+        "sha256": "9acd6784cb5b6a4adc47fcc732ffce9f8159ff5c943b285a2ab888dc3541c7b7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/verify.mjs",
+        "sha256": "882e45617d355f0063c7012ed01d027f8d96b332dd1d44dcdeb86d708a9de5a9"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/vite.config.ts",
+        "sha256": "97abe06eb9b074f5b9f1d8e9ab50868b9f46e7e12f848153f8b7579d58aadfa7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/runtime.test.ts",
+        "sha256": "e72a91df76a38ef3b2d0f756189bbfa75b3ac04758b950612c5c1d6c18318800"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/dancheong.ts",
+        "sha256": "07c7259274a2899701b3eeaf8e0115cd361c7b5f3c71270a85719527413974e7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/kit.test.ts",
+        "sha256": "954766c08d839dcb016c5b0af7d447b0a5a50721da2c638c99e0488ef7f36e52"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/kit.ts",
+        "sha256": "da2d685f92b1e971858cf57d001a4f68445d5b015354215f39649cde22c1eab0"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/koreanRoof.ts",
+        "sha256": "8092aed0a00037b503c32058eb322abf15b6280d20b28c57b6e0031a454def99"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "sha256": "5de141b885a169c2a957bd6c8e03322d47d2d3437cf2cc549ff01f982b24899e"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/scops.ts",
+        "sha256": "6eac50848b5845a0ffdde31714cf2c0dd1d5dc4b27e49f94eb1185cdd601abd8"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/scopsParts.ts",
+        "sha256": "8b9e1d52faa32c08ff461dcc7390931a3c60f53c62dd97b355a8028a1fe987d7"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/temple.ts",
+        "sha256": "631272abe288299e5dd23ea436b573026d39b3face6df2b632791bc71fe32526"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/templeParts.ts",
+        "sha256": "599ff9093735eba30bcd5bbd2652ec0a0734ed272e7e5fc1a04354da9c2e4787"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/types.ts",
+        "sha256": "2a3e4e7db328a8f25a6b42983ceaa29f8c1a54512b1abcfe0823f81ccf92e1be"
+      },
+      {
+        "path": "components/liveScene/liveSceneHost.ts",
+        "sha256": "2fc5b3e6dd0ea1cf164b8a9b2a493f9c0351f5834980cbec02d5e7e0f4f950db"
+      },
+      {
+        "path": "components/liveScene/look.ts",
+        "sha256": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a"
+      },
+      {
+        "path": "components/useSceneMotion.ts",
+        "sha256": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77"
+      }
+    ]
+  },
+  "bundle": {
+    "sha256": "ffae6b1d24da3932b7da073d4217c3a10f73b1dbd53e1749884abec110a120c7",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-CVZy7ll_.js",
+        "sha256": "d4fe16f6da929ce8b612540b074b95d331896fc2dba5732a069163c09d8bcff3"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/index-UnPzUkqC.css",
+        "sha256": "e97fad7b3b8b0def05914d2f1cfee94a215c0ff2936214b47e11b524dc96ea13"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/kit-BZ2l8apC.js",
+        "sha256": "6b9563b41bf7bb6bce72be37037322d7d624461c8b67bc3af2e4981f6bb263ab"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rockGeometry-BbfRIr99.js",
+        "sha256": "1baa1e9eb342e5ce5bb9b7388dac0860c0349db6a18d118e7206a101303defec"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/rural-nWWBUyT2.js",
+        "sha256": "82e890f7e47cb14d1c17f92c32ff7532fcea33b7508ef3663f0a7b98fb8b35ba"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/scops-DpDaRK80.js",
+        "sha256": "f1395893ff20016ab42fb0bda362861ee9edfea84eacefe89df1ff40f8068dc5"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/assets/temple-woFnxQMo.js",
+        "sha256": "b97a74ad285f1cd9e5d3c85abf01b57e482b90a67508275a8b07143e77fc5e5c"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/dist/components/immersiveWorlds/koreanPlaces/qa/index.html",
+        "sha256": "5166bc359a6015f6112249099e82b215e297b9278af1fb4b731df079d97bd7ca"
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "scene": "scops",
+      "viewport": "desktop",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/debug-hdr-scops/scops-desktop.png",
+      "sha256": "237964ab20bd9c06ae32f18f03edea3820f3197278740daa93f5c031e5071464",
+      "bytes": 1610158,
+      "state": {
+        "scene": "scops",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "scops",
+          "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":6}",
+          "frames": "1",
+          "time": "0.000",
+          "drawCalls": "93",
+          "triangles": "250560",
+          "geometries": "55",
+          "textures": "22",
+          "running": "false",
+          "width": 1365,
+          "height": 900
+        },
+        "surfaces": [
+          {
+            "world": "scops",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": false,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": [],
+        "environment": {
+          "mode": "normal",
+          "audits": [
+            {
+              "scope": "scene",
+              "observedAtMs": 488.2000000011176,
+              "event": {
+                "phase": "generation",
+                "scene": "scops",
+                "forceByte": false,
+                "extensions": {
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true
+                },
+                "sourceSize": {
+                  "width": 256,
+                  "height": 128
+                },
+                "cubeSize": 64,
+                "width": 336,
+                "height": 256,
+                "attempts": [
+                  {
+                    "type": "half-float",
+                    "targets": [
+                      {
+                        "role": "output",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      },
+                      {
+                        "role": "ping-pong",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      }
+                    ],
+                    "success": true,
+                    "discarded": false
+                  }
+                ],
+                "selectedType": "half-float",
+                "environmentMapping": 306,
+                "glErrorsBefore": [],
+                "generationErrors": [],
+                "stateBefore": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "stateAfter": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "restored": true,
+                "success": true,
+                "disposed": false
+              }
+            }
+          ],
+          "observations": [],
+          "rendererCleanupCalls": [],
+          "renderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 1,
+              "zeroDtCalls": 1,
+              "renderedFrames": 1,
+              "lastCallAtMs": 1283.5999999996275,
+              "lastReturnAtMs": 24164.400000000373
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scene": "scops",
+      "viewport": "chrome",
+      "width": 1365,
+      "height": 900,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/debug-hdr-scops/scops-chrome.png",
+      "sha256": "79272f7525bec1c9202fe9ec13459944a9d64ee3be6cb32fc42a312debd8f5ef",
+      "bytes": 1607297,
+      "state": {
+        "scene": "scops",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "scops",
+          "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":6}",
+          "frames": "1",
+          "time": "0.000",
+          "drawCalls": "93",
+          "triangles": "250560",
+          "geometries": "55",
+          "textures": "22",
+          "running": "false",
+          "width": 1365,
+          "height": 900
+        },
+        "surfaces": [
+          {
+            "world": "scops",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": true,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": [],
+        "environment": {
+          "mode": "normal",
+          "audits": [
+            {
+              "scope": "scene",
+              "observedAtMs": 488.2000000011176,
+              "event": {
+                "phase": "generation",
+                "scene": "scops",
+                "forceByte": false,
+                "extensions": {
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true
+                },
+                "sourceSize": {
+                  "width": 256,
+                  "height": 128
+                },
+                "cubeSize": 64,
+                "width": 336,
+                "height": 256,
+                "attempts": [
+                  {
+                    "type": "half-float",
+                    "targets": [
+                      {
+                        "role": "output",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      },
+                      {
+                        "role": "ping-pong",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      }
+                    ],
+                    "success": true,
+                    "discarded": false
+                  }
+                ],
+                "selectedType": "half-float",
+                "environmentMapping": 306,
+                "glErrorsBefore": [],
+                "generationErrors": [],
+                "stateBefore": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "stateAfter": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "restored": true,
+                "success": true,
+                "disposed": false
+              }
+            }
+          ],
+          "observations": [],
+          "rendererCleanupCalls": [],
+          "renderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 1,
+              "zeroDtCalls": 1,
+              "renderedFrames": 1,
+              "lastCallAtMs": 1283.5999999996275,
+              "lastReturnAtMs": 24164.400000000373
+            }
+          ]
+        }
+      },
+      "capturePhase": "Initial paused chrome-visible frame before interaction tests; interaction results are recorded separately in worlds[scene]."
+    },
+    {
+      "scene": "scops",
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/debug-hdr-scops/scops-portrait.png",
+      "sha256": "4eff48b9f77e6b49c555fb1b3197ec8ea3e4fbc00a14c58669fcaa244b38b48a",
+      "bytes": 492998,
+      "state": {
+        "scene": "scops",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "scops",
+          "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":5}",
+          "frames": "3",
+          "time": "0.000",
+          "drawCalls": "91",
+          "triangles": "250558",
+          "geometries": "55",
+          "textures": "21",
+          "running": "false",
+          "width": 390,
+          "height": 844
+        },
+        "surfaces": [
+          {
+            "world": "scops",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": false,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": [],
+        "environment": {
+          "mode": "normal",
+          "audits": [
+            {
+              "scope": "scene",
+              "observedAtMs": 488.2000000011176,
+              "event": {
+                "phase": "generation",
+                "scene": "scops",
+                "forceByte": false,
+                "extensions": {
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true
+                },
+                "sourceSize": {
+                  "width": 256,
+                  "height": 128
+                },
+                "cubeSize": 64,
+                "width": 336,
+                "height": 256,
+                "attempts": [
+                  {
+                    "type": "half-float",
+                    "targets": [
+                      {
+                        "role": "output",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      },
+                      {
+                        "role": "ping-pong",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      }
+                    ],
+                    "success": true,
+                    "discarded": false
+                  }
+                ],
+                "selectedType": "half-float",
+                "environmentMapping": 306,
+                "glErrorsBefore": [],
+                "generationErrors": [],
+                "stateBefore": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "stateAfter": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "restored": true,
+                "success": true,
+                "disposed": false
+              }
+            }
+          ],
+          "observations": [],
+          "rendererCleanupCalls": [],
+          "renderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 3,
+              "zeroDtCalls": 3,
+              "renderedFrames": 3,
+              "lastCallAtMs": 82719.90000000037,
+              "lastReturnAtMs": 82748.59999999963
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scene": "scops",
+      "viewport": "fold",
+      "width": 960,
+      "height": 700,
+      "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/debug-hdr-scops/scops-fold.png",
+      "sha256": "8a84e8be82a517770bcc72509cbfc31c36862c8446b35a271306dff34549546d",
+      "bytes": 928632,
+      "state": {
+        "scene": "scops",
+        "canvasCount": 1,
+        "canvasIdentity": 1,
+        "canvasHolder": "primary",
+        "canvas": {
+          "engine": "three.js r186",
+          "world": "scops",
+          "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":6}",
+          "frames": "5",
+          "time": "0.000",
+          "drawCalls": "93",
+          "triangles": "250560",
+          "geometries": "55",
+          "textures": "22",
+          "running": "false",
+          "width": 960,
+          "height": 700
+        },
+        "surfaces": [
+          {
+            "world": "scops",
+            "state": "ready",
+            "motion": "paused"
+          }
+        ],
+        "events": [],
+        "subscribers": 0,
+        "audioDispatches": 0,
+        "chromeActions": [],
+        "chromeVisible": false,
+        "visibility": "visible",
+        "hidden": false,
+        "disposalObservations": [],
+        "environment": {
+          "mode": "normal",
+          "audits": [
+            {
+              "scope": "scene",
+              "observedAtMs": 488.2000000011176,
+              "event": {
+                "phase": "generation",
+                "scene": "scops",
+                "forceByte": false,
+                "extensions": {
+                  "colorBufferFloat": true,
+                  "colorBufferHalfFloat": true
+                },
+                "sourceSize": {
+                  "width": 256,
+                  "height": 128
+                },
+                "cubeSize": 64,
+                "width": 336,
+                "height": 256,
+                "attempts": [
+                  {
+                    "type": "half-float",
+                    "targets": [
+                      {
+                        "role": "output",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      },
+                      {
+                        "role": "ping-pong",
+                        "type": "half-float",
+                        "width": 336,
+                        "height": 256,
+                        "format": "RGBA",
+                        "internalFormat": "RGBA16F",
+                        "status": 36053,
+                        "statusName": "FRAMEBUFFER_COMPLETE",
+                        "errors": [],
+                        "stateBefore": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "stateAfter": {
+                          "target": null,
+                          "cubeFace": 0,
+                          "mip": 0
+                        },
+                        "restored": true
+                      }
+                    ],
+                    "success": true,
+                    "discarded": false
+                  }
+                ],
+                "selectedType": "half-float",
+                "environmentMapping": 306,
+                "glErrorsBefore": [],
+                "generationErrors": [],
+                "stateBefore": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "stateAfter": {
+                  "target": null,
+                  "cubeFace": 0,
+                  "mip": 0
+                },
+                "restored": true,
+                "success": true,
+                "disposed": false
+              }
+            }
+          ],
+          "observations": [],
+          "rendererCleanupCalls": [],
+          "renderStatistics": [
+            {
+              "rendererId": 1,
+              "renderFrameCalls": 5,
+              "zeroDtCalls": 5,
+              "renderedFrames": 5,
+              "lastCallAtMs": 108129.09999999963,
+              "lastReturnAtMs": 108132.40000000037
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "worlds": {
+    "scops": {
+      "viewport": {
+        "width": 683,
+        "height": 450
+      },
+      "initialEnvironment": {
+        "pass": true,
+        "observation": {
+          "label": "before lifecycle",
+          "observedAtMs": 133925.30000000075,
+          "framebufferStatus": 36053,
+          "errors": [],
+          "contextLost": false,
+          "sceneEnvironmentType": 1016,
+          "sceneEnvironmentMapping": 306
+        },
+        "generationCount": 1,
+        "audit": {
+          "phase": "generation",
+          "scene": "scops",
+          "forceByte": false,
+          "extensions": {
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true
+          },
+          "sourceSize": {
+            "width": 256,
+            "height": 128
+          },
+          "cubeSize": 64,
+          "width": 336,
+          "height": 256,
+          "attempts": [
+            {
+              "type": "half-float",
+              "targets": [
+                {
+                  "role": "output",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                },
+                {
+                  "role": "ping-pong",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                }
+              ],
+              "success": true,
+              "discarded": false
+            }
+          ],
+          "selectedType": "half-float",
+          "environmentMapping": 306,
+          "glErrorsBefore": [],
+          "generationErrors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true,
+          "success": true,
+          "disposed": false
+        }
+      },
+      "motion": {
+        "method": "Compare two paused screenshot endpoints separated by at least three genuine native RAF animated frames; scheduler held=false",
+        "pass": true,
+        "beforeTime": "0.000",
+        "afterTime": "0.323",
+        "beforeFrames": "6",
+        "afterFrames": "12",
+        "pixelsChanged": true,
+        "scheduler": {
+          "held": false,
+          "pendingCallbacks": 0,
+          "controlledFrames": 0
+        }
+      },
+      "pause": {
+        "beforeTime": "0.323",
+        "afterTime": "0.323",
+        "beforeFrames": "12",
+        "afterFrames": "12",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "inputScheduler": "Scene RAF held between explicitly stepped real renders; input events remain trusted/native. Other browser RAF is unchanged.",
+      "interaction": {
+        "pass": true,
+        "fixture": "Real world component under Player/Immersive-style sibling data-scene-drag overlay; not the shared app chrome components themselves",
+        "chromeVisible": true,
+        "raycastTapHitSiblingChrome": true,
+        "cancellationTarget": "Previously verified raycast target, after cooldown expired",
+        "cooldownSteps": [
+          {
+            "nativeTimestamp": 218306.758,
+            "callbacks": 1,
+            "beforeTime": "0.323",
+            "afterTime": "0.403",
+            "beforeFrames": "12",
+            "afterFrames": "13"
+          },
+          {
+            "nativeTimestamp": 228423.02,
+            "callbacks": 1,
+            "beforeTime": "0.403",
+            "afterTime": "0.483",
+            "beforeFrames": "13",
+            "afterFrames": "14"
+          },
+          {
+            "nativeTimestamp": 241605.826,
+            "callbacks": 1,
+            "beforeTime": "0.483",
+            "afterTime": "0.563",
+            "beforeFrames": "14",
+            "afterFrames": "15"
+          },
+          {
+            "nativeTimestamp": 252472.058,
+            "callbacks": 1,
+            "beforeTime": "0.563",
+            "afterTime": "0.643",
+            "beforeFrames": "15",
+            "afterFrames": "16"
+          },
+          {
+            "nativeTimestamp": 263504.95,
+            "callbacks": 1,
+            "beforeTime": "0.643",
+            "afterTime": "0.723",
+            "beforeFrames": "16",
+            "afterFrames": "17"
+          },
+          {
+            "nativeTimestamp": 276004.45,
+            "callbacks": 1,
+            "beforeTime": "0.723",
+            "afterTime": "0.803",
+            "beforeFrames": "17",
+            "afterFrames": "18"
+          },
+          {
+            "nativeTimestamp": 287537.322,
+            "callbacks": 1,
+            "beforeTime": "0.803",
+            "afterTime": "0.883",
+            "beforeFrames": "18",
+            "afterFrames": "19"
+          },
+          {
+            "nativeTimestamp": 296220.2,
+            "callbacks": 1,
+            "beforeTime": "0.883",
+            "afterTime": "0.963",
+            "beforeFrames": "19",
+            "afterFrames": "20"
+          },
+          {
+            "nativeTimestamp": 307403.1,
+            "callbacks": 1,
+            "beforeTime": "0.963",
+            "afterTime": "1.043",
+            "beforeFrames": "20",
+            "afterFrames": "21"
+          },
+          {
+            "nativeTimestamp": 319586,
+            "callbacks": 1,
+            "beforeTime": "1.043",
+            "afterTime": "1.123",
+            "beforeFrames": "21",
+            "afterFrames": "22"
+          },
+          {
+            "nativeTimestamp": 330902.214,
+            "callbacks": 1,
+            "beforeTime": "1.123",
+            "afterTime": "1.203",
+            "beforeFrames": "22",
+            "afterFrames": "23"
+          }
+        ],
+        "mouseDragFrame": {
+          "nativeTimestamp": 341501.8,
+          "callbacks": 1,
+          "beforeTime": "1.203",
+          "afterTime": "1.283",
+          "beforeFrames": "23",
+          "afterFrames": "24"
+        },
+        "mouseCapture": {
+          "pointer": {
+            "id": 1,
+            "type": "mouse"
+          },
+          "holders": [
+            "primary"
+          ],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218175.30000000075
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218177.80000000075
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218212.59999999963
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218212.80000000075
+            }
+          ]
+        },
+        "mouseReleased": {
+          "pointer": {
+            "id": 1,
+            "type": "mouse"
+          },
+          "holders": [],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218175.30000000075
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218177.80000000075
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218212.59999999963
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 218212.80000000075
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 341340.4000000004
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352687.4000000004
+            }
+          ]
+        },
+        "captureCancellations": [
+          {
+            "reason": "pointercancel",
+            "start": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [
+                "primary"
+              ],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352718.4000000004
+                }
+              ]
+            },
+            "end": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352718.4000000004
+                },
+                {
+                  "type": "lostpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352735.0999999996
+                }
+              ]
+            },
+            "pass": true,
+            "method": "Real mouse pointer; labelled synthetic pointercancel cancellation then trusted pointermove/up"
+          },
+          {
+            "reason": "blur",
+            "start": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [
+                "primary"
+              ],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352768.5
+                }
+              ]
+            },
+            "end": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352768.5
+                },
+                {
+                  "type": "lostpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352785.2000000011
+                }
+              ]
+            },
+            "pass": true,
+            "method": "Real mouse pointer; labelled synthetic blur cancellation then trusted pointermove/up"
+          },
+          {
+            "reason": "lostpointercapture",
+            "start": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [
+                "primary"
+              ],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352819.2000000011
+                }
+              ]
+            },
+            "end": {
+              "pointer": {
+                "id": 1,
+                "type": "mouse"
+              },
+              "holders": [],
+              "events": [
+                {
+                  "type": "gotpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352819.2000000011
+                },
+                {
+                  "type": "lostpointercapture",
+                  "pointerId": 1,
+                  "pointerType": "mouse",
+                  "trusted": true,
+                  "holder": "primary",
+                  "atMs": 352836.2000000011
+                }
+              ]
+            },
+            "pass": true,
+            "method": "Real mouse pointer; native releasePointerCapture then trusted pointermove/up"
+          }
+        ],
+        "dragReachedLookHandler": true,
+        "dragNotTap": true,
+        "syntheticPointerCancelNotTap": true,
+        "syntheticBlurNotTap": true,
+        "interactiveChromeExclusions": [
+          {
+            "kind": "button",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "input",
+            "worldEvents": 0,
+            "uiActions": 3,
+            "pass": true
+          },
+          {
+            "kind": "link",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "rolebutton",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "roleslider",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "roleswitch",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "rolecheckbox",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          },
+          {
+            "kind": "roletextbox",
+            "worldEvents": 0,
+            "uiActions": 1,
+            "pass": true
+          }
+        ],
+        "tap": {
+          "x": 512,
+          "y": 338,
+          "event": {
+            "scene": "nature:scops_night",
+            "type": "lantern",
+            "strength": 1,
+            "position": [
+              1.15,
+              0.45,
+              1.5
+            ]
+          }
+        },
+        "immediateTapBounded": true,
+        "initialCanvas": 1
+      },
+      "browserTouch": {
+        "pass": true,
+        "method": "Chromium CDP Input.dispatchTouchEvent; trusted browser touch input, not synthetic DOM dispatch and not physical-device hardware",
+        "chromeVisible": true,
+        "policy": {
+          "normal": "none",
+          "inlinePanY": "pan-y",
+          "restored": "none"
+        },
+        "touchCapture": {
+          "pointer": {
+            "id": 2,
+            "type": "touch"
+          },
+          "holders": [
+            "primary"
+          ],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352819.2000000011
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352836.2000000011
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352918.5
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352960.7000000011
+            }
+          ]
+        },
+        "touchReleased": {
+          "pointer": {
+            "id": 2,
+            "type": "touch"
+          },
+          "holders": [],
+          "events": [
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352819.2000000011
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352836.2000000011
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352918.5
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 1,
+              "pointerType": "mouse",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 352960.7000000011
+            },
+            {
+              "type": "gotpointercapture",
+              "pointerId": 2,
+              "pointerType": "touch",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 353235.2000000011
+            },
+            {
+              "type": "lostpointercapture",
+              "pointerId": 2,
+              "pointerType": "touch",
+              "trusted": true,
+              "holder": "primary",
+              "atMs": 364173.0999999996
+            }
+          ]
+        },
+        "touchDragFrame": {
+          "nativeTimestamp": 353334.738,
+          "callbacks": 1,
+          "beforeTime": "1.283",
+          "afterTime": "1.363",
+          "beforeFrames": "24",
+          "afterFrames": "25"
+        },
+        "dragReachedLookHandler": true,
+        "worldEvents": 0,
+        "trustedPointerCancels": 0
+      },
+      "secondHolder": {
+        "pass": true,
+        "originalIdentity": 1,
+        "cycles": [
+          {
+            "cycle": 1,
+            "secondaryIdentity": 1,
+            "returnedIdentity": 1,
+            "listeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              },
+              {
+                "holder": "secondary",
+                "pointerdown": 1
+              }
+            ],
+            "returnedListeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              }
+            ],
+            "coveredHolderInert": true,
+            "pass": true
+          },
+          {
+            "cycle": 2,
+            "secondaryIdentity": 1,
+            "returnedIdentity": 1,
+            "listeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              },
+              {
+                "holder": "secondary",
+                "pointerdown": 1
+              }
+            ],
+            "returnedListeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              }
+            ],
+            "coveredHolderInert": true,
+            "pass": true
+          },
+          {
+            "cycle": 3,
+            "secondaryIdentity": 1,
+            "returnedIdentity": 1,
+            "listeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              },
+              {
+                "holder": "secondary",
+                "pointerdown": 1
+              }
+            ],
+            "returnedListeners": [
+              {
+                "holder": "primary",
+                "pointerdown": 1
+              }
+            ],
+            "coveredHolderInert": true,
+            "pass": true
+          }
+        ]
+      },
+      "reducedMotion": {
+        "beforeTime": "1.363",
+        "afterTime": "1.363",
+        "beforeFrames": "29",
+        "afterFrames": "29",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "static3D": {
+        "beforeTime": "1.363",
+        "afterTime": "1.363",
+        "beforeFrames": "29",
+        "afterFrames": "29",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "syntheticHidden": {
+        "method": "Own-property overrides of document.hidden/visibilityState plus visibilitychange, not actual tab hiding",
+        "beforeTime": "1.363",
+        "afterTime": "1.363",
+        "beforeFrames": "29",
+        "afterFrames": "29",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "externalAudioEvent": {
+        "pass": true,
+        "event": "scops",
+        "subscribers": 1,
+        "dispatches": 1,
+        "limitation": "Checks existing-engine event subscription and dispatch. It does not claim actual sound playback quality or visually classify the tiny owl animation."
+      },
+      "afterInputEnvironment": {
+        "pass": true,
+        "observation": {
+          "label": "after real input, motion and pause policies",
+          "observedAtMs": 407287,
+          "framebufferStatus": 36053,
+          "errors": [],
+          "contextLost": false,
+          "sceneEnvironmentType": 1016,
+          "sceneEnvironmentMapping": 306
+        },
+        "generationCount": 1,
+        "audit": {
+          "phase": "generation",
+          "scene": "scops",
+          "forceByte": false,
+          "extensions": {
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true
+          },
+          "sourceSize": {
+            "width": 256,
+            "height": 128
+          },
+          "cubeSize": 64,
+          "width": 336,
+          "height": 256,
+          "attempts": [
+            {
+              "type": "half-float",
+              "targets": [
+                {
+                  "role": "output",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                },
+                {
+                  "role": "ping-pong",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                }
+              ],
+              "success": true,
+              "discarded": false
+            }
+          ],
+          "selectedType": "half-float",
+          "environmentMapping": 306,
+          "glErrorsBefore": [],
+          "generationErrors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true,
+          "success": true,
+          "disposed": false
+        }
+      },
+      "rendererCleanupCalls": [
+        {
+          "rendererId": 1,
+          "method": "dispose",
+          "startedAtMs": 483805.9000000004,
+          "completedAtMs": 483806.0999999996
+        },
+        {
+          "rendererId": 1,
+          "method": "forceContextLoss",
+          "startedAtMs": 483806.0999999996,
+          "completedAtMs": 484231
+        }
+      ],
+      "renderStatisticsAfterRemount": [
+        {
+          "rendererId": 1,
+          "renderFrameCalls": 35,
+          "zeroDtCalls": 17,
+          "renderedFrames": 35,
+          "lastCallAtMs": 453967.2000000011,
+          "lastReturnAtMs": 453972.2000000011
+        },
+        {
+          "rendererId": 2,
+          "renderFrameCalls": 1,
+          "zeroDtCalls": 1,
+          "renderedFrames": 1,
+          "lastCallAtMs": 485115.5999999996,
+          "lastReturnAtMs": 492904.30000000075
+        }
+      ],
+      "rebuiltEnvironment": {
+        "pass": true,
+        "observation": {
+          "label": "after disposal and remount",
+          "observedAtMs": 513751.9000000004,
+          "framebufferStatus": 36053,
+          "errors": [],
+          "contextLost": false,
+          "sceneEnvironmentType": 1016,
+          "sceneEnvironmentMapping": 306
+        },
+        "generationCount": 2,
+        "audit": {
+          "phase": "generation",
+          "scene": "scops",
+          "forceByte": false,
+          "extensions": {
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true
+          },
+          "sourceSize": {
+            "width": 256,
+            "height": 128
+          },
+          "cubeSize": 64,
+          "width": 336,
+          "height": 256,
+          "attempts": [
+            {
+              "type": "half-float",
+              "targets": [
+                {
+                  "role": "output",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                },
+                {
+                  "role": "ping-pong",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                }
+              ],
+              "success": true,
+              "discarded": false
+            }
+          ],
+          "selectedType": "half-float",
+          "environmentMapping": 306,
+          "glErrorsBefore": [],
+          "generationErrors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true,
+          "success": true,
+          "disposed": false
+        }
+      },
+      "environmentDisposal": [
+        {
+          "scope": "scene",
+          "observedAtMs": 483805.7000000011,
+          "event": {
+            "phase": "dispose",
+            "scene": "scops",
+            "forceByte": false,
+            "extensions": {
+              "colorBufferFloat": true,
+              "colorBufferHalfFloat": true
+            },
+            "sourceSize": {
+              "width": 256,
+              "height": 128
+            },
+            "cubeSize": 64,
+            "width": 336,
+            "height": 256,
+            "attempts": [
+              {
+                "type": "half-float",
+                "targets": [
+                  {
+                    "role": "output",
+                    "type": "half-float",
+                    "width": 336,
+                    "height": 256,
+                    "format": "RGBA",
+                    "internalFormat": "RGBA16F",
+                    "status": 36053,
+                    "statusName": "FRAMEBUFFER_COMPLETE",
+                    "errors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true
+                  },
+                  {
+                    "role": "ping-pong",
+                    "type": "half-float",
+                    "width": 336,
+                    "height": 256,
+                    "format": "RGBA",
+                    "internalFormat": "RGBA16F",
+                    "status": 36053,
+                    "statusName": "FRAMEBUFFER_COMPLETE",
+                    "errors": [],
+                    "stateBefore": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "stateAfter": {
+                      "target": null,
+                      "cubeFace": 0,
+                      "mip": 0
+                    },
+                    "restored": true
+                  }
+                ],
+                "success": true,
+                "discarded": false
+              }
+            ],
+            "selectedType": "half-float",
+            "environmentMapping": 306,
+            "glErrorsBefore": [],
+            "generationErrors": [],
+            "stateBefore": {
+              "target": null,
+              "cubeFace": 0,
+              "mip": 0
+            },
+            "stateAfter": {
+              "target": null,
+              "cubeFace": 0,
+              "mip": 0
+            },
+            "restored": true,
+            "success": true,
+            "disposed": true
+          }
+        }
+      ],
+      "mountUnmount": {
+        "pass": true,
+        "rapidRemountCount": 3,
+        "rapidIdentities": [
+          1,
+          1,
+          1
+        ],
+        "hostGraceMsFromSource": 5000,
+        "unmountRequestedAtMs": 478801.7000000011,
+        "detachedObservedAtMs": 478805,
+        "cleanup": {
+          "canvasIdentity": 1,
+          "startedAtMs": 483802.9000000004,
+          "completedAtMs": 484231,
+          "contextLostAtMs": 484232.0999999996
+        },
+        "cleanupStartAfterUnmountRequestMs": 5001.199999999255,
+        "synchronousCleanupDurationMs": 428.09999999962747,
+        "contextLostAfterUnmountRequestMs": 5430.39999999851,
+        "detachedListeners": [
+          {
+            "holder": "primary",
+            "pointerdown": 0
+          }
+        ],
+        "detachedScheduler": {
+          "held": true,
+          "pendingCallbacks": 0,
+          "controlledFrames": 13
+        },
+        "rebuiltIdentity": 2,
+        "newCanvasAfterDisposal": true,
+        "method": "QA-only wrapper observes real synchronous WorldEngine.dispose entry/return; real webglcontextlost event is observed on the retained detached canvas. Host timer and resource methods are unchanged.",
+        "limitation": "Synchronous cleanup return and browser context loss are distinct from the 5000 ms host grace. No physical GPU driver memory profiler or reclamation latency measurement was available."
+      },
+      "createdAudioContexts": 0,
+      "finalInputScheduler": {
+        "held": true,
+        "pendingCallbacks": 1,
+        "controlledFrames": 13
+      },
+      "staticFirstFrame": {
+        "beforeTime": "0.000",
+        "afterTime": "0.000",
+        "beforeFrames": "1",
+        "afterFrames": "1",
+        "pendingSceneRAF": 0,
+        "pixelsIdentical": true,
+        "pass": true
+      },
+      "staticEnvironment": {
+        "pass": true,
+        "observation": {
+          "label": "static first frame",
+          "observedAtMs": 30095.400000000373,
+          "framebufferStatus": 36053,
+          "errors": [],
+          "contextLost": false,
+          "sceneEnvironmentType": 1016,
+          "sceneEnvironmentMapping": 306
+        },
+        "generationCount": 1,
+        "audit": {
+          "phase": "generation",
+          "scene": "scops",
+          "forceByte": false,
+          "extensions": {
+            "colorBufferFloat": true,
+            "colorBufferHalfFloat": true
+          },
+          "sourceSize": {
+            "width": 256,
+            "height": 128
+          },
+          "cubeSize": 64,
+          "width": 336,
+          "height": 256,
+          "attempts": [
+            {
+              "type": "half-float",
+              "targets": [
+                {
+                  "role": "output",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                },
+                {
+                  "role": "ping-pong",
+                  "type": "half-float",
+                  "width": 336,
+                  "height": 256,
+                  "format": "RGBA",
+                  "internalFormat": "RGBA16F",
+                  "status": 36053,
+                  "statusName": "FRAMEBUFFER_COMPLETE",
+                  "errors": [],
+                  "stateBefore": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "stateAfter": {
+                    "target": null,
+                    "cubeFace": 0,
+                    "mip": 0
+                  },
+                  "restored": true
+                }
+              ],
+              "success": true,
+              "discarded": false
+            }
+          ],
+          "selectedType": "half-float",
+          "environmentMapping": 306,
+          "glErrorsBefore": [],
+          "generationErrors": [],
+          "stateBefore": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "stateAfter": {
+            "target": null,
+            "cubeFace": 0,
+            "mip": 0
+          },
+          "restored": true,
+          "success": true,
+          "disposed": false
+        }
+      },
+      "metrics": {
+        "engine": "three.js r186",
+        "world": "scops",
+        "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":5}",
+        "frames": "1",
+        "time": "0.000",
+        "drawCalls": "91",
+        "triangles": "250558",
+        "geometries": "55",
+        "textures": "21",
+        "running": "false",
+        "width": 683,
+        "height": 450
+      },
+      "sentinelProbe": {
+        "method": "Real byte cube framebuffer face=2/mip=1, XR enabled, autoClear false and Reinhard tone mapping; same source dimensions as runtime; dedicated QA gradient, not a scene screenshot",
+        "sourceSize": {
+          "width": 256,
+          "height": 128
+        },
+        "callerState": {
+          "target": null,
+          "cubeFace": 0,
+          "mip": 0,
+          "xrEnabled": false,
+          "autoClear": true,
+          "toneMapping": 4
+        },
+        "before": {
+          "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+          "cubeFace": 2,
+          "mip": 1,
+          "xrEnabled": true,
+          "autoClear": false,
+          "toneMapping": 2
+        },
+        "after": {
+          "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+          "cubeFace": 2,
+          "mip": 1,
+          "xrEnabled": true,
+          "autoClear": false,
+          "toneMapping": 2
+        },
+        "statusBefore": 36053,
+        "statusAfter": 36053,
+        "errorsBefore": [],
+        "bindingErrors": [],
+        "errorsAfter": [],
+        "selectedTextureType": 1016,
+        "selectedMapping": 306,
+        "restored": true,
+        "finalState": {
+          "target": null,
+          "cubeFace": 0,
+          "mip": 0,
+          "xrEnabled": false,
+          "autoClear": true,
+          "toneMapping": 4
+        },
+        "finalErrors": [],
+        "callerRestored": true,
+        "audits": [
+          {
+            "scope": "sentinel",
+            "observedAtMs": 133917.40000000037,
+            "event": {
+              "phase": "generation",
+              "scene": "scops",
+              "forceByte": false,
+              "extensions": {
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true
+              },
+              "sourceSize": {
+                "width": 256,
+                "height": 128
+              },
+              "cubeSize": 64,
+              "width": 336,
+              "height": 256,
+              "attempts": [
+                {
+                  "type": "half-float",
+                  "targets": [
+                    {
+                      "role": "output",
+                      "type": "half-float",
+                      "width": 336,
+                      "height": 256,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA16F",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "stateAfter": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "restored": true
+                    },
+                    {
+                      "role": "ping-pong",
+                      "type": "half-float",
+                      "width": 336,
+                      "height": 256,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA16F",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "stateAfter": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "restored": true
+                    }
+                  ],
+                  "success": true,
+                  "discarded": false
+                }
+              ],
+              "selectedType": "half-float",
+              "environmentMapping": 306,
+              "glErrorsBefore": [],
+              "generationErrors": [],
+              "stateBefore": {
+                "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                "cubeFace": 2,
+                "mip": 1
+              },
+              "stateAfter": {
+                "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                "cubeFace": 2,
+                "mip": 1
+              },
+              "restored": true,
+              "success": true,
+              "disposed": false
+            }
+          },
+          {
+            "scope": "sentinel",
+            "observedAtMs": 133918.40000000037,
+            "event": {
+              "phase": "dispose",
+              "scene": "scops",
+              "forceByte": false,
+              "extensions": {
+                "colorBufferFloat": true,
+                "colorBufferHalfFloat": true
+              },
+              "sourceSize": {
+                "width": 256,
+                "height": 128
+              },
+              "cubeSize": 64,
+              "width": 336,
+              "height": 256,
+              "attempts": [
+                {
+                  "type": "half-float",
+                  "targets": [
+                    {
+                      "role": "output",
+                      "type": "half-float",
+                      "width": 336,
+                      "height": 256,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA16F",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "stateAfter": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "restored": true
+                    },
+                    {
+                      "role": "ping-pong",
+                      "type": "half-float",
+                      "width": 336,
+                      "height": 256,
+                      "format": "RGBA",
+                      "internalFormat": "RGBA16F",
+                      "status": 36053,
+                      "statusName": "FRAMEBUFFER_COMPLETE",
+                      "errors": [],
+                      "stateBefore": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "stateAfter": {
+                        "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                        "cubeFace": 2,
+                        "mip": 1
+                      },
+                      "restored": true
+                    }
+                  ],
+                  "success": true,
+                  "discarded": false
+                }
+              ],
+              "selectedType": "half-float",
+              "environmentMapping": 306,
+              "glErrorsBefore": [],
+              "generationErrors": [],
+              "stateBefore": {
+                "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                "cubeFace": 2,
+                "mip": 1
+              },
+              "stateAfter": {
+                "target": "d42fb596-47e7-4c32-9fa5-88c6cc5fa15f",
+                "cubeFace": 2,
+                "mip": 1
+              },
+              "restored": true,
+              "success": true,
+              "disposed": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "errors": [],
+  "environmentMode": "normal",
+  "timeoutScale": 8,
+  "cleanupDiagnosticMode": null,
+  "ruralPreservation": {
+    "baseline": "174aa43bffa4ead7723dfc7c4c6f9a86e35f8600",
+    "method": "Exact git-baseline/current file bytes; this record is not a new rural render or a performance claim.",
+    "files": [
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/scenes/rural.ts",
+        "baselineSha256": null,
+        "currentSha256": "5de141b885a169c2a957bd6c8e03322d47d2d3437cf2cc549ff01f982b24899e",
+        "unchanged": false,
+        "baselineError": "fatal: path 'components/immersiveWorlds/koreanPlaces/scenes/rural.ts' exists on disk, but not in '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600'"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx",
+        "baselineSha256": null,
+        "currentSha256": "4f55c69b5d09a79ddd1f27706ce2b77cc09aaca73b3c0c04c053669eaa049522",
+        "unchanged": false,
+        "baselineError": "fatal: path 'components/immersiveWorlds/koreanPlaces/RuralSummerNightWorld.tsx' exists on disk, but not in '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600'"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png",
+        "baselineSha256": null,
+        "currentSha256": "b20c3be86feae3854c1611259898a24393553f9b2d1af642d5f1a7d2542e8e77",
+        "unchanged": false,
+        "baselineError": "fatal: path 'components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-desktop.png' exists on disk, but not in '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600'"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png",
+        "baselineSha256": null,
+        "currentSha256": "210b9f08a266c8c43893159c067be7c4439d178b2cb10ada35e0820e4c928449",
+        "unchanged": false,
+        "baselineError": "fatal: path 'components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-portrait.png' exists on disk, but not in '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600'"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png",
+        "baselineSha256": null,
+        "currentSha256": "7565fd15dfcfe9ef03a9afc9d6adef107b21159a0f1ca305f8738dd9d78a3cf1",
+        "unchanged": false,
+        "baselineError": "fatal: path 'components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-fold.png' exists on disk, but not in '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600'"
+      },
+      {
+        "path": "components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png",
+        "baselineSha256": null,
+        "currentSha256": "4edbd86b988754cdbef5ac4a45c1bca2b386b1c8503bc567929f82115520ac54",
+        "unchanged": false,
+        "baselineError": "fatal: path 'components/immersiveWorlds/koreanPlaces/qa/evidence/final/rural-chrome.png' exists on disk, but not in '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600'"
+      }
+    ],
+    "pass": false,
+    "enforced": false,
+    "note": "Rural source intentionally upgraded (toon/HDR); see qa/evidence/hdr-upgrade for the reference comparison."
+  },
+  "dependencySource": {
+    "package": "three",
+    "version": "0.186.1",
+    "sha256": "b36cdb5da45b3a221db3e501ade49f8ec899d08c45ab56b961414b3cc9364023",
+    "files": [
+      {
+        "path": "node_modules/three/package.json",
+        "sha256": "f9c474a27c920b9435353a6235968f4453436bee0444fac7e5fd289c8fa463de"
+      },
+      {
+        "path": "node_modules/three/src/extras/PMREMGenerator.js",
+        "sha256": "78f7cc24a9aa22852f4c46052f39e5fe5507bee6313a824851ba899ed2219ecc"
+      },
+      {
+        "path": "node_modules/three/src/renderers/webgl/WebGLEnvironments.js",
+        "sha256": "69d82f1752b3244682b480cdf31d88c508b4617c5035217061635a326601ff38"
+      }
+    ]
+  },
+  "browserVersion": "158.0.8127.36",
+  "lifecycleViewport": {
+    "width": 683,
+    "height": 450
+  },
+  "lifecycleRendering": "683x450 genuine native-RAF motion probe, then QA-only held scene RAF for input/lifecycle. Controlled steps use real native RAF timestamps after >=85ms real wait and real WebGL render + gl.finish. No production frame cap, DPR change, fabricated dt, or direct world-time mutation. Full-size scene screenshots remain unchanged.",
+  "actualTabVisibility": {
+    "hidden": false,
+    "visibilityState": "visible",
+    "tested": false,
+    "note": "Headless Chromium did not hide the original page; actual tab-hide behavior remains unverified."
+  },
+  "pass": true,
+  "integrity": {
+    "sourceUnchangedDuringRun": true,
+    "dependencySourceUnchangedDuringRun": true,
+    "bundleUnchangedDuringRun": true
+  },
+  "finishedAt": "2026-11-27T21:49:22.355Z"
+}

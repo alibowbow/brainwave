@@ -2,7 +2,21 @@
 
 Three independent first-person worlds are implemented. The coordinator's visible-chrome input issue is fixed inside this group. Only the two assigned nightFires roots change. Shared core, protected worlds, package files and CI remain untouched. PR #60 stays draft and must not be merged by this worker.
 
-## Latest: limited material refinement
+## Latest: HDR night upgrade (2026-11-27)
+
+Goal: lift the three worlds from "PS2" toward console-era night rendering with code only (no external models, textures or HDRIs). The engine now renders through the shared HDR pipeline (half-float MSAA, SSAO, half-resolution volume pass, bloom, ACES grade); without float targets, or with `?post=off`, it keeps the direct renderer with simple fog.
+
+| World | What changed |
+| --- | --- |
+| Mountain (`amb:campfire_night`) | Ray-marched HDR flame with log occlusion, GPU embers, glowing coals and alligator-charred logs, sooted faceted ring stones; flickering shadowed fire key plus a low bounce light; crescent-moon key, Milky Way with dust rift and star grain, power-law star field; eroded ranges with forest/rock/snow shading and aerial haze, valley mist, smoke plume, heat shimmer over ridges and stars; card-based spruce, world-space ground, twigs and litter. |
+| Deep night (`amb:deep_night`) | Gibbous moon over four eroded ridge layers with forward-scattering haze and valley mist; HDR house windows; dry-stone masonry wall, laid paving, world-space wood bench; lantern as warm local key with an air glow. |
+| Lakeside (`nature:campfire`) | Violet afterglow and setting crescent; lake shader reflecting the same sky plus a precomputed skyline of eroded, forested headlands, with moon glints; tent canvas glowing from inside; the same fire system; merged faceted shingle; fabric and wood shaders; leaf-card birches. |
+
+BEFORE/AFTER (1280×800 and 390×844, deviceScaleFactor 1, SwiftShader, paused time zero): [mountain](qa/evidence/hdr-upgrade/mountain-compare-desktop.jpg) / [portrait](qa/evidence/hdr-upgrade/mountain-compare-portrait.jpg), [deep](qa/evidence/hdr-upgrade/deep-compare-desktop.jpg) / [portrait](qa/evidence/hdr-upgrade/deep-compare-portrait.jpg), [lakeside](qa/evidence/hdr-upgrade/lakeside-compare-desktop.jpg) / [portrait](qa/evidence/hdr-upgrade/lakeside-compare-portrait.jpg). Animated frames: `qa/evidence/hdr-upgrade/*-active.jpg`.
+
+Reproduce: `NIGHT_QA_OUTPUT=/tmp/night node components/immersiveWorlds/nightFires/qa/capture-quality.mjs` (builds the isolated harness, serves it on 127.0.0.1:4312, fails on any page/shader error). `NIGHT_QA_ACTIVE=<frames>` captures after animation, `NIGHT_QA_QUERY=post=off` the direct path. SwiftShader grades appearance only: no phone GPU, FPS, thermal or battery measurement was made. Shadow maps re-render only on layout changes; the volume pass marches 34 steps at half resolution.
+
+## Material refinement (earlier)
 
 Remote PR head `813b4ef7f468366e330893f13c27962249f1c3b5` was read before this follow-up. Final material source is `6623c083888e2baece9da11436fe35694a7fcebf`. This revision changes fire-only log/coal surfaces and geometry in `scenery.ts`, the Lakeside water fragment shader, and an initial paused-portrait capture in the QA runner. Independent source comparison confirms that DeepNight, guarded chrome input, holder ownership, scene cameras/lights, flame/spark animation and audio remain unchanged. The slower, broader water waves are intentional shader changes; the engine update loop is unchanged.
 

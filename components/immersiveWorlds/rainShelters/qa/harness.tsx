@@ -5,7 +5,7 @@ import GardenWindowWorld from '../GardenWindowWorld';
 import MonsoonPorchWorld from '../MonsoonPorchWorld';
 import SummerStormWorld from '../SummerStormWorld';
 import type { ShelterInteraction, WorldKind } from '../engine/types';
-import { setShelterDirectRendering } from '../engine/ShelterEngine';
+import { setShelterDirectRendering, setShelterQaResolutionScale } from '../engine/ShelterEngine';
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './harness.css';
 
@@ -15,6 +15,8 @@ const selected = query.get('world');
 const world: WorldKind = selected && selected in worlds ? selected as WorldKind : 'tent';
 // Before/after comparisons: `post=off` keeps the previous direct renderer path.
 if (query.get('post') === 'off') setShelterDirectRendering(true);
+// Behaviour runs under software WebGL can draw at reduced resolution (`qaScale=0.3`).
+if (query.get('qaScale')) setShelterQaResolutionScale(Number(query.get('qaScale')));
 
 function Harness() {
   const [active, setActive] = useState(query.get('paused') !== '1');

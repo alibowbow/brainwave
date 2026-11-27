@@ -7,6 +7,10 @@ import { HdrPipeline, supportsHdrTargets } from '../../shared/render/hdrPipeline
 // Owned QA can request the previous direct render path for comparisons.
 let preferDirect = false;
 export function setShelterDirectRendering(direct: boolean) { preferDirect = direct; }
+// Owned QA only: behaviour checks under a software renderer may draw at a
+// fraction of the resolution. Production never calls this (scale stays 1).
+let qaResolutionScale = 1;
+export function setShelterQaResolutionScale(scale: number) { qaResolutionScale = Math.min(1, Math.max(0.1, scale)); }
 
 export class ShelterEngine implements LiveSceneEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -66,8 +70,13 @@ export class ShelterEngine implements LiveSceneEngine {
 
   setSize(width: number, height: number, dpr: number) {
     this.width = Math.max(1, width); this.height = Math.max(1, height);
-    this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)));
+    this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)) * qaResolutionScale);
     this.renderer.setSize(this.width, this.height, false);
+    // three keeps the construction-time 300×150 scissor until someone sets one, and
+    // rounds/floors scaled rectangles differently. Normalise both now so the render
+    // target audits restore exactly the same state at any device pixel ratio.
+    this.renderer.setScissor(0, 0, this.width, this.height);
+    this.renderer.setRenderTarget(null);
     this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
     if (this.post) this.canvas.dataset.post = JSON.stringify(this.post.report);
     this.applyComposition();

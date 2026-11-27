@@ -408,41 +408,6 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
     boulder([side * (7.2 + s * 2.2), -.69 + s * .18, 8 - i * 1.45], [.28 + s * .6, .17 + s * .25, .42 + s * .76], 100 + i, wetStone, 6);
   }
 
-  // --- Roots of the trees above hang through the opening into the light. --------
-  const rootRandom = seeded(313);
-  const rootGeometries: THREE.BufferGeometry[] = [];
-  for (let k = 0; k < 34; k++) {
-    const a = rootRandom() * Math.PI * 2, ring = rootRandom() * .7;
-    const start = wallPoint(APERTURE_THETA + Math.cos(a) * THREE.MathUtils.lerp(.08, .15, ring), APERTURE_Z + Math.sin(a) * THREE.MathUtils.lerp(1.8, 3.2, ring));
-    start.y -= .15;
-    const drop = 1.2 + rootRandom() ** 1.8 * 10.5;
-    const points = Array.from({ length: 9 }, (_, i) => {
-      const t = i / 8;
-      return new THREE.Vector3(start.x + Math.sin(t * 2.7 + k) * .22 * t + (rootRandom() - .5) * .06, start.y - drop * t, start.z + Math.cos(t * 2.1 + k * 1.7) * .22 * t + (rootRandom() - .5) * .06);
-    });
-    const curve = new THREE.CatmullRomCurve3(points);
-    const tubular = 48, radial = 7;
-    const tube = new THREE.TubeGeometry(curve, tubular, .018 + rootRandom() * .045, radial, false);
-    // Taper each root toward its tip.
-    const rootPosition = tube.attributes.position as THREE.BufferAttribute;
-    const centre = new THREE.Vector3(), vertex = new THREE.Vector3();
-    for (let i = 0; i <= tubular; i++) {
-      curve.getPointAt(i / tubular, centre);
-      const taper = 1 - .75 * i / tubular;
-      for (let j = 0; j <= radial; j++) {
-        const index = i * (radial + 1) + j;
-        vertex.fromBufferAttribute(rootPosition, index).sub(centre).multiplyScalar(taper).add(centre);
-        rootPosition.setXYZ(index, vertex.x, vertex.y, vertex.z);
-      }
-    }
-    tube.deleteAttribute('uv'); tube.computeVertexNormals();
-    rootGeometries.push(tube);
-  }
-  const roots = new THREE.Mesh(mergeGeometries(rootGeometries), new THREE.MeshStandardMaterial({ color: '#3b2d21', roughness: .72 }));
-  rootGeometries.forEach(geometry => geometry.dispose());
-  roots.name = 'cave-hanging-roots'; roots.castShadow = true; roots.receiveShadow = true;
-  scene.add(roots);
-
   // --- Glowworm colony: blue-green lures and beaded silk threads on the roof. -----
   // Each breathes slowly on its own phase; the still pool mirrors them like stars.
   const wormRandom = seeded(9001);

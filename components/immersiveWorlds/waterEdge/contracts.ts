@@ -1,4 +1,5 @@
 import type * as THREE from 'three';
+import type { PostSettings, VolumeEffect } from '../shared/render/hdrPipeline';
 
 export type WaterEdgeKind = 'night-pond' | 'summer-valley' | 'pebble-shore';
 export interface WaterEdgeInteraction {
@@ -23,5 +24,13 @@ export interface WorldScene {
   interact(x: number, y: number, time: number): WaterEdgeInteraction | null;
   /** Dispose extra resources; engine handles scene geometry/materials/textures. */
   dispose?(): void;
+  /** Image settings for the shared HDR pipeline (tone curve, bloom, grade). */
+  post?: Partial<PostSettings>;
+  /** Optional participating medium (mist, light shafts); owned by the pipeline once created. */
+  createVolume?(): VolumeEffect;
+  /** Told whether the HDR pipeline runs, so a world can adapt its direct fallback. */
+  setPostActive?(active: boolean): void;
+  /** Called after each resize with the drawing-buffer size, for world-owned render targets. */
+  setDrawingSize?(width: number, height: number): void;
 }
 export type WorldFactory = (renderer: THREE.WebGLRenderer) => WorldScene;

@@ -13,7 +13,7 @@ SANCTUARY_CAPTURE_ACTIVE=90 …        # animated frames: snow falls, the warm s
 SANCTUARY_CAPTURE_TAP=.5,.6 …        # tap before an animated capture
 ```
 
-`?post=off` in the harness URL calls `preferDirectSanctuaryRendering(true)`. Any page, console or shader error fails the capture run. Before/after evidence is committed under `evidence/hdr-upgrade/`; the older `evidence/` and `compat-evidence/` files are historical and unchanged. SwiftShader images grade appearance only; no device frame rate was measured.
+`?post=off` in the harness URL calls `preferDirectSanctuaryRendering(true)`. Any page, console or shader error fails the capture run. Before/after evidence is committed under `evidence/hdr-upgrade/` (`<world>-compare-desktop.jpg` and `<world>-compare-portrait.jpg`: the previous renderer beside the HDR upgrade, both initially inactive first frames; `<world>-active-portrait.jpg`: that first frame beside a frame after 30 animated frames and a real tap); the older `evidence/` and `compat-evidence/` files are historical and unchanged. SwiftShader images grade appearance only; no device frame rate was measured.
 
 ## Render-target compatibility verifier
 

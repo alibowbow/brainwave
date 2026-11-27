@@ -116,7 +116,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   const slate = covered(new THREE.MeshStandardMaterial({ color: '#3c434c', roughness: .62 }), 'slate', .5);
   const brass = new THREE.MeshStandardMaterial({ color: '#b08448', metalness: 1, roughness: .32 });
   const iron = covered(new THREE.MeshStandardMaterial({ color: '#23272b', metalness: .65, roughness: .5 }), 'iron', .6);
-  const ice = new THREE.MeshStandardMaterial({ color: '#d4e6f6', roughness: .06, metalness: 0, envMapIntensity: 1.6 });
+  const ice = new THREE.MeshStandardMaterial({ color: '#e6edf3', roughness: .12, metalness: 0, envMapIntensity: .7 });
   const glassPane = new THREE.MeshStandardMaterial({ color: '#9fb4c4', transparent: true, opacity: .14, roughness: .04, metalness: .1, depthWrite: false });
   const darkGlass = new THREE.MeshStandardMaterial({ color: '#141c26', roughness: .08, metalness: .2 });
   const interiors = [interiorTexture(11), interiorTexture(23), interiorTexture(37)];
@@ -504,7 +504,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   }
   // Small tapered icicles carry the roof load without dominating the view.
   for (let i = 0; i < 24; i++) {
-    const len = 0.05 + Math.pow(random(), 2) * 0.24;
+    const len = 0.04 + Math.pow(random(), 2.5) * 0.2;
     const icicle = mesh(new THREE.ConeGeometry(0.012 + random() * 0.01, len, 6, 3), ice);
     const ip = icicle.geometry.getAttribute('position');
     for (let k = 0; k < ip.count; k++) ip.setX(k, ip.getX(k) + Math.sin(ip.getY(k) * 40 + i) * .002);
@@ -571,7 +571,15 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
   const dustCount = 60, dustPositions = new Float32Array(dustCount * 3), dustVelocity = new Float32Array(dustCount * 3);
   for (let i = 0; i < dustCount; i++) dustPositions[i * 3 + 1] = -20;
   const dustGeo = new THREE.BufferGeometry(); dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-  const dustMat = new THREE.PointsMaterial({ color: new THREE.Color(.55, .6, .7), size: 0.022, transparent: true, opacity: 0, depthWrite: false });
+  // Round, soft powder grains (a tiny generated sprite; never square points).
+  const grainSize = 32, grainData = new Uint8Array(grainSize * grainSize * 4);
+  for (let y = 0; y < grainSize; y++) for (let x = 0; x < grainSize; x++) {
+    const r = Math.hypot(x + .5 - grainSize / 2, y + .5 - grainSize / 2) / (grainSize / 2);
+    grainData.set([255, 255, 255, Math.round(255 * Math.max(0, 1 - r) ** 1.6)], (y * grainSize + x) * 4);
+  }
+  const grainSprite = new THREE.DataTexture(grainData, grainSize, grainSize, THREE.RGBAFormat);
+  grainSprite.needsUpdate = true;
+  const dustMat = new THREE.PointsMaterial({ color: new THREE.Color(.55, .6, .7), map: grainSprite, size: 0.03, transparent: true, opacity: 0, depthWrite: false });
   const dust = new THREE.Points(dustGeo, dustMat); dust.frustumCulled = false; scene.add(dust); let dustAge = 10;
   const raycaster = new THREE.Raycaster();
 
@@ -649,8 +657,8 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
           { position: windowGlows[0], color: new THREE.Color(1, .62, .3).multiplyScalar(.012) },
         ],
         smoke: [
-          { base: chimneys[0], radius: .26, height: 7, density: 1.3 },
-          { base: chimneys[1], radius: .28, height: 7.5, density: 1.15 },
+          { base: chimneys[0], radius: .26, height: 7, density: 2.4 },
+          { base: chimneys[1], radius: .28, height: 7.5, density: 2.1 },
         ],
         wind: new THREE.Vector2(.42, -.12),
         smokeLight: new THREE.Color(.03, .02, .012),

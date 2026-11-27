@@ -49,7 +49,7 @@ const f = (n: number) => n.toFixed(5);
 /** Settled snow: blue subsurface wrap, ice glints, ripples and lumps. */
 export function createSnowMaterial(options: SnowOptions, params: THREE.MeshStandardMaterialParameters = {}) {
   const o = {
-    color: '#f1f5fb', scatter: '#6d98dc', wrap: 0.55, ambientTint: '#c4d5f4', sparkle: 26, sparkleDensity: 0.14,
+    color: '#f1f5fb', scatter: '#86a5d8', wrap: 0.5, ambientTint: '#c9d8f2', sparkle: 26, sparkleDensity: 0.14,
     sparkleScale: 170, ripple: 1, rippleDirection: [0.8, 0.6] as [number, number], roughness: 0.72, ...options,
   };
   const material = new THREE.MeshStandardMaterial({ color: o.color, roughness: o.roughness, metalness: 0, ...params });

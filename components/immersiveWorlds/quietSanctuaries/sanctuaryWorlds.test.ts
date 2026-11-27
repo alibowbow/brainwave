@@ -5,6 +5,8 @@ import { buildSnowVillage, groundHeight, laneCenter } from './snowVillage';
 import type { SanctuaryWorld } from './worldTypes';
 
 // Builders are pure scene construction; the renderer is only used by prepare().
+// Building and raycasting ~0.4M triangles on the CPU is slow on a loaded machine.
+const BUILD_TIMEOUT = 60_000;
 const renderer = {} as THREE.WebGLRenderer;
 const ndcOf = (world: SanctuaryWorld, point: THREE.Vector3) => {
   world.camera.updateMatrixWorld(true);
@@ -32,7 +34,7 @@ describe('warm heart (HDR upgrade)', () => {
       expect(event).toEqual({ kind: 'warmth', strength: .27, x: 0 });
       world.update(.5, .05);
     } finally { dispose(world); }
-  });
+  }, BUILD_TIMEOUT);
 
   it('breathes slowly and smoothly, never in sharp beats', () => {
     let maxStep = 0;
@@ -64,7 +66,7 @@ describe('snow village (HDR upgrade)', () => {
       expect(world.interact(ndcOf(world, new THREE.Vector3(-.45, .95, .96)))).toBeUndefined();
       world.update(1, .05);
     } finally { dispose(world); }
-  });
+  }, BUILD_TIMEOUT);
 
   it('keeps the lane trodden in the middle and banked at the sides', () => {
     for (const z of [-4, -12, -26]) {

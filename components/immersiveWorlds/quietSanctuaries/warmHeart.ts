@@ -165,12 +165,12 @@ vec3 tWarp = tp + (tw.rgb - .5) * 1.1;
 float tBig = 1.0 - abs(texture(uTissueNoise, tWarp * .1 + .5).g * 2.0 - 1.0);
 float tSmall = 1.0 - abs(texture(uTissueNoise, tWarp * .33 + .13).b * 2.0 - 1.0);
 float tAA = clamp(1.4 - length(fwidth(tp)) * 9.0, 0.0, 1.0);
-float tVein = clamp(smoothstep(.93, .99, tBig) * .9 + .45 * smoothstep(.95, .995, tSmall) * smoothstep(.4, .62, tn.a) * tAA, 0.0, 1.0);
+float tVein = clamp(smoothstep(.94, .99, tBig) * .8 + .3 * smoothstep(.96, .995, tSmall) * smoothstep(.4, .62, tn.a) * tAA, 0.0, 1.0);
 float tCells = bwNoise(tp * 7.5) * tAA;
 // Fine silky fibrils running along the chamber, faded before they alias.
 float tFibre = bwNoise(vec3(tp.x * 34.0, tp.y * 34.0, tp.z * 2.2)) * clamp(1.4 - length(fwidth(tp)) * 40.0, 0.0, 1.0);
 diffuseColor.rgb *= .8 + .28 * tMottle + .05 * tCells + .06 * tFibre;
-diffuseColor.rgb = mix(diffuseColor.rgb, ${glsl(o.vein)}, tVein * .5);
+diffuseColor.rgb = mix(diffuseColor.rgb, ${glsl(o.vein)}, tVein * .32);
 translucentThin = ${f(o.thin)} * vTissueThin * (1.0 - .22 * tVein) * (.85 + .3 * tMottle) * (.92 + .16 * tFibre);
 `,
     });
@@ -226,8 +226,8 @@ normal = bwSurfaceBump(-vViewPosition, normal, tVein * .006 + tMottle * .008 + t
   }
 
   const wallTissue = tissue({ key: 'wall', color: '#c4838a', vein: '#a8303a', thin: .3, glow: .05, roughness: .85, clearcoat: 0, lift: .018, scale: .9, bump: .1, outside: .6, sheen: .12 });
-  const veilTissue = tissue({ key: 'veil', color: '#fbdccc', vein: '#cc3a36', thin: 1.0, glow: .12, roughness: .42, clearcoat: .5, lift: .022, sheen: .5, bump: .7, outside: .9 });
-  const roseTissue = tissue({ key: 'rose', color: '#f5b8b8', vein: '#c0303c', thin: .85, glow: .1, roughness: .44, clearcoat: .5, lift: .02, sheen: .45, bump: .7, outside: .8 });
+  const veilTissue = tissue({ key: 'veil', color: '#fbdccc', vein: '#e0685a', thin: 1.0, glow: .12, roughness: .42, clearcoat: .5, lift: .022, sheen: .5, bump: .7, outside: .9 });
+  const roseTissue = tissue({ key: 'rose', color: '#f5b8b8', vein: '#d8545a', thin: .85, glow: .1, roughness: .44, clearcoat: .5, lift: .02, sheen: .45, bump: .7, outside: .8 });
   const floorTissue = tissue({ key: 'floor', color: '#b47a72', vein: '#a03038', thin: .22, glow: .04, roughness: .62, clearcoat: .3, lift: .008, scale: 1.2, bump: .5, outside: .15 });
 
   const knit = knitMaps();
@@ -276,7 +276,9 @@ if (uTouchAge >= 0.0 && uTouchAge < 14.0) {
     const floorCalm = smooth(s, -.95, -.45);
     const folds = fbm3(c * 1.25 + 4, s * 1.25, z * .2, 4) * .55 + fbm3(c * 3.1, s * 3.1 + 2, z * .55 + 9, 3) * .14;
     const pleat = .07 * Math.sin(theta * 6 + z * .35 + fbm3(c, s, z * .3 + 3, 2) * 4) * smooth(s, -.3, .3);
-    const r = 1 + (folds + pleat) * floorCalm * .4;
+    // Folds recess outward freely but barely bulge inward, so they never pierce the petals.
+    const relief = folds + pleat;
+    const r = 1 + (relief > 0 ? relief : relief * .18) * floorCalm * .4;
     const cx = .22 * Math.sin(z * .21), cy = centreY + .18 * Math.sin(z * .17 + 1) + (1 - prof) * .35;
     return point(cx + c * 4.35 * prof * r, cy + s * ry * prof * r, z + fbm3(c * 2, s * 2, z * .4, 2) * .35 * floorCalm);
   };

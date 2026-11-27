@@ -1,366 +1,614 @@
 import * as THREE from 'three';
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldBuilder } from './types';
-import { material, rng, addRain } from './materials';
+import { rng } from './materials';
+import { GLSL_NOISE } from '../../shared/render/glsl';
+import { fbm3, noise3 } from '../../shared/render/noise';
+import { createRockMaterial } from '../../shared/render/rockSurface';
+import { applyWetSurface } from '../../shared/render/wetSurface';
+import { createRainLayer, createRainSplashes } from '../../shared/render/rainStreaks';
+import { assignProbe, captureProbe, captureSkyProbe, createMist, createSky } from './atmosphere';
+import { applyBark, applyFoliage, applyGround, patch } from './surfaces';
+import { boulderGeometry, fernFronds, leafletGeometry, limbGeometry, trunkGeometry } from './geometry';
+import { createLantern } from './props';
 
-/** Original procedural shelter: view from a quilt into a wet, layered cedar wood. */
+/*
+ * Original procedural shelter: lying in a sleeping bag inside a wet tunnel
+ * tent, looking out of the door into a misty cedar wood. The canvas itself is
+ * the main light inside: overcast daylight soaks through it, the sleeves and
+ * seams show as darker bands and beaded water sits and slides on the outside.
+ * A small paraffin lantern is the warm key; rain, drips off the door hood,
+ * splashes, puddles and mist live outside.
+ */
+
+const ARCHES = [0, 0.43, 0.88];
+const ROOF_Z0 = -1.72, ROOF_LENGTH = 6.1;
+const GROUND_Y = -0.115;
+const EYE = new THREE.Vector3(0.05, 0.82, 1.7);
+
+function canopyPoint(u: number, v: number) {
+  const a = u * Math.PI;
+  const z = ROOF_Z0 + v * ROOF_LENGTH;
+  // Fabric sags between the pole arches and gathers into the sleeves.
+  let span = 1, nearest = 1;
+  for (let k = 0; k < ARCHES.length; k++) {
+    const next = ARCHES[k + 1] ?? 1;
+    if (v >= ARCHES[k] && v <= next) span = (v - ARCHES[k]) / (next - ARCHES[k]);
+    nearest = Math.min(nearest, Math.abs(v - ARCHES[k]) * ROOF_LENGTH);
+  }
+  const sag = 0.07 * Math.pow(Math.sin(Math.PI * Math.min(1, span)), 1.4) * (0.35 + 0.65 * Math.sin(a));
+  const gather = (v < 0.05 ? 0.004 : 0.014) * Math.exp(-nearest * 7) * Math.sin(a * 46 + noise3(a * 3, z, 1) * 3);
+  const tension = 0.009 * Math.sin(a * 13 + z * 5.3 + noise3(a, z * 0.7, 4) * 2) * Math.sin(Math.PI * Math.min(1, span));
+  const r = 2.1 - sag + gather + tension + 0.006 * fbm3(a * 2, z * 1.4, 2, 3);
+  return new THREE.Vector3(Math.cos(a) * r, 0.025 + Math.sin(a) * r, z);
+}
+
+const FABRIC_GLSL = /* glsl */ `
+float fabricDrops(vec2 q, float t, out float core, out float trail) {
+  // Static beads, two sizes.
+  float beads = 0.0; core = 0.0; trail = 0.0;
+  for (int i = 0; i < 2; i++) {
+    float size = i == 0 ? 0.075 : 0.17;
+    vec2 cell = floor(q / size);
+    vec3 h = bwHash3(vec3(cell, float(i) + 3.0));
+    vec2 c = (cell + 0.25 + 0.5 * h.xy) * size;
+    float r = size * (0.07 + 0.12 * h.z * h.z);
+    float d = length((q - c) * vec2(1.0, 0.8)) / r;
+    float present = step(0.74, h.z);
+    // Seen through the canvas a bead is a soft blotch with a faint focused core.
+    beads = max(beads, (1.0 - smoothstep(0.2, 1.7, d)) * present);
+    core = max(core, exp(-d * d * 16.0) * present);
+  }
+  // Drops that slowly slide downhill, leaving a darker wet trail.
+  vec2 lane = vec2(q.y / 0.16, 0.0);
+  float laneId = floor(lane.x);
+  vec3 h = bwHash3(vec3(laneId, 17.0, 1.0));
+  float x = (laneId + 0.25 + 0.5 * h.x) * 0.16;
+  float head = fract(t * (0.012 + 0.02 * h.y) + h.z) * 3.2;
+  float dx = abs(q.y - x - 0.004 * sin(q.x * 37.0 + h.x * 9.0));
+  float along = q.x - head;
+  float slider = (1.0 - smoothstep(0.004, 0.008, length(vec2(dx, along * 0.7)))) * step(0.35, h.y);
+  trail = (1.0 - smoothstep(0.0015, 0.003, dx)) * smoothstep(-0.6, 0.0, along) * (1.0 - step(0.0, along)) * step(0.35, h.y);
+  beads = max(beads, slider);
+  return beads;
+}
+float fabricImpacts(vec2 q, float t) {
+  vec2 cell = floor(q / 0.085);
+  vec3 h = bwHash3(vec3(cell, 29.0));
+  float age = fract(t * (0.7 + 0.8 * h.z) + h.x * 7.0);
+  vec2 c = (cell + 0.2 + 0.6 * h.xy) * 0.085;
+  float d = length(q - c);
+  float ring = exp(-pow((d - age * 0.018) / 0.003, 2.0));
+  return ring * (1.0 - smoothstep(0.0, 0.3, age)) * step(0.3, h.z);
+}
+`;
+
+type FabricKind = 'vault' | 'flap' | 'visor' | 'back';
+
+function fabricMaterial(kind: FabricKind, time: { value: number }, sky: THREE.Color, ground: THREE.Color, transmit: number) {
+  const material = new THREE.MeshStandardMaterial({ color: '#c2b996', roughness: 0.86, side: THREE.DoubleSide });
+  material.defines = { USE_UV: '', [`FABRIC_${kind.toUpperCase()}`]: '' };
+  material.onBeforeCompile = shader => {
+    shader.uniforms.uTime = time;
+    shader.uniforms.uSkyOutside = { value: sky };
+    shader.uniforms.uGroundOutside = { value: ground };
+    shader.uniforms.uTransmit = { value: transmit };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nuniform float uTime;\nvarying vec3 vFabricWorld;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+      // The canvas breathes very slightly in the gusts.
+      transformed += objectNormal * sin(uTime * 0.37 + position.z * 0.9 + position.x * 0.5) * sin(uTime * 0.23 + position.y * 1.7) * 0.004;`)
+      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvFabricWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', `#include <common>
+uniform float uTime;
+uniform vec3 uSkyOutside, uGroundOutside;
+uniform float uTransmit;
+varying vec3 vFabricWorld;
+float fabricWrinkle;
+${GLSL_NOISE}
+${FABRIC_GLSL}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+vec3 fp = vFabricWorld;
+vec3 fabricOut;
+vec2 dropQ;        // (metres downhill, metres across the slope)
+float sleeve = 0.0, hem = 0.0, ridge = 0.0;
+#if defined(FABRIC_VAULT) || defined(FABRIC_VISOR)
+  float ang = atan(fp.y - 0.025, fp.x);
+  fabricOut = normalize(vec3(fp.x, fp.y - 0.025, 0.0));
+  dropQ = vec2(abs(ang - 1.5708) * 2.1, fp.z);
+  #ifdef FABRIC_VAULT
+  for (int k = 0; k < 3; k++) {
+    float z = ${ROOF_Z0.toFixed(3)} + ${ROOF_LENGTH.toFixed(3)} * (k == 0 ? ${ARCHES[0].toFixed(3)} : k == 1 ? ${ARCHES[1].toFixed(3)} : ${ARCHES[2].toFixed(3)});
+    float d = abs(fp.z - z);
+    sleeve = max(sleeve, 1.0 - smoothstep(0.034, 0.05, d));
+    // Twin stitch lines along each sleeve.
+    sleeve = max(sleeve, 0.55 * exp(-pow((d - 0.058) / 0.0025, 2.0)));
+  }
+  // Felled panel seams run the length of the tent: a double layer with two stitch rows.
+  for (int k = 0; k < 4; k++) {
+    float s = k == 0 ? 0.55 : k == 1 ? 1.02 : k == 2 ? 2.12 : 2.59;
+    float d = abs(ang - s) * 2.1;
+    sleeve = max(sleeve, 0.5 * (1.0 - smoothstep(0.007, 0.011, d)));
+    sleeve = max(sleeve, 0.4 * exp(-pow((d - 0.014) / 0.0016, 2.0)));
+  }
+  hem = 1.0 - smoothstep(0.09, 0.16, fp.y);
+  ridge = 0.6 * (1.0 - smoothstep(0.012, 0.02, abs(ang - 1.5708) * 2.1));
+  #endif
+#else
+  fabricOut = vec3(0.0, 0.0, ${kind === 'back' ? '1.0' : '-1.0'});
+  dropQ = vec2(2.3 - fp.y, fp.x);
+  hem = 1.0 - smoothstep(0.08, 0.14, fp.y);
+#endif
+// Weave and ripstop, faded out before they alias.
+vec2 threads = vec2(dropQ.x, dropQ.y) * 230.0;
+float fw = max(fwidth(threads.x), fwidth(threads.y));
+float weave = mix(0.5, 0.5 + 0.5 * sin(threads.x * 6.2832) * sin(threads.y * 6.2832), 1.0 - smoothstep(0.2, 0.55, fw));
+vec2 grid = abs(fract(dropQ * 16.0) - 0.5);
+float ripstop = (1.0 - smoothstep(0.0, 0.03, min(grid.x, grid.y))) * (1.0 - smoothstep(0.02, 0.06, fwidth(dropQ.x * 16.0)));
+float core, trail;
+float beads = fabricDrops(dropQ, uTime, core, trail);
+float impacts = fabricImpacts(dropQ, uTime);
+float soak = smoothstep(0.55, 0.15, fabricOut.y) * 0.5 + trail * 0.6;
+vec3 outside = mix(uGroundOutside, uSkyOutside, pow(smoothstep(-0.7, 1.0, fabricOut.y), 1.8));
+// The wet canopy overhead shades the fly in soft, uneven patches.
+float dapple = bwFbm3(vec3(fp.x * 1.1, fp.z * 1.1, 2.0)) + 0.5 * bwFbm3(vec3(fp.x * 0.3, fp.z * 0.3, 8.0));
+outside *= 0.5 + 0.65 * smoothstep(-0.75, 0.75, dapple);
+float transmit = uTransmit * (0.86 + 0.14 * weave) * (1.0 - 0.06 * ripstop) * (1.0 - 0.82 * sleeve) * (1.0 - 0.45 * hem) * (1.0 - 0.5 * ridge);
+transmit *= (1.0 - 0.22 * beads) * (1.0 - 0.22 * soak) * (1.0 - 0.25 * impacts);
+transmit += uTransmit * 0.3 * core * (1.0 - sleeve);
+diffuseColor.rgb *= (0.9 + 0.1 * weave) * (1.0 - 0.25 * sleeve) * (1.0 - 0.12 * soak);
+// Fine tension wrinkles, stretched along the panel, catch the lantern light.
+fabricWrinkle = bwNoise(vec3(dropQ.x * 3.0, dropQ.y * 11.0, 4.0)) * 0.6 + bwNoise(vec3(dropQ.x * 9.0 + dropQ.y * 4.0, dropQ.y * 20.0, 9.0)) * 0.25;
+transmit *= 1.0 + 0.12 * fabricWrinkle;
+totalEmissiveRadiance += outside * transmit * diffuseColor.rgb;
+`)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+{
+  vec3 pos = -vViewPosition;
+  vec3 dpdx = dFdx(pos), dpdy = dFdy(pos);
+  vec2 dh = vec2(dFdx(fabricWrinkle), dFdy(fabricWrinkle)) * 0.004;
+  vec3 r1 = cross(dpdy, normal), r2 = cross(normal, dpdx);
+  float det = dot(dpdx, r1);
+  normal = normalize(abs(det) * normal - sign(det) * (dh.x * r1 + dh.y * r2));
+}`);
+  };
+  material.customProgramCacheKey = () => `tent-fabric-${kind}-v2`;
+  return material;
+}
+
+function quiltMaterial() {
+  const material = new THREE.MeshStandardMaterial({ color: '#2b5c60', roughness: 0.64 });
+  material.defines = { USE_UV: '' };
+  material.onBeforeCompile = shader => {
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', `#include <common>\n${GLSL_NOISE}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+vec2 rq = vUv * vec2(60.0, 150.0);
+vec2 rg = abs(fract(rq) - 0.5);
+float rip = (1.0 - smoothstep(0.0, 0.06, min(rg.x, rg.y))) * (1.0 - smoothstep(0.03, 0.08, fwidth(rq.x)));
+float down = bwNoise(vec3(vUv * vec2(9.0, 30.0), 2.0));
+diffuseColor.rgb *= 0.92 + 0.1 * down - 0.08 * rip;`)
+      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+roughnessFactor *= 0.9 + 0.2 * rip + 0.1 * down;`);
+  };
+  material.customProgramCacheKey = () => 'tent-quilt-v2';
+  return material;
+}
+
 export const buildTent: WorldBuilder = ({ scene, camera }) => {
   const random = rng(190719);
-  scene.background = new THREE.Color('#586d69');
-  scene.fog = new THREE.FogExp2('#677e78', 0.052);
-  scene.add(new THREE.HemisphereLight('#b7d3d3', '#343b2b', 1.15));
-  const sky = new THREE.DirectionalLight('#c5e0df', 1.8);
-  sky.position.set(-6, 12, -10); scene.add(sky);
-  const bounce = new THREE.PointLight('#efd9b3', 1.4, 7, 2);
-  bounce.position.set(0, 1.3, 2); scene.add(bounce);
+  const time = { value: 0 };
+  scene.background = new THREE.Color('#7f8f8c');
+  const disposables: { dispose(): void }[] = [];
 
-  const canvasTexture = (paint: (c: CanvasRenderingContext2D) => void, size = 512) => {
-    const canvas = document.createElement('canvas'); canvas.width = canvas.height = size;
-    const context = canvas.getContext('2d')!; paint(context);
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 4;
-    return texture;
-  };
-  const fabricMap = canvasTexture(c => {
-    c.fillStyle = '#bbb59f'; c.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 512; i += 2) {
-      c.strokeStyle = i % 4 ? 'rgba(55,43,28,.08)' : 'rgba(247,228,177,.13)';
-      c.beginPath(); c.moveTo(i, 0); c.lineTo(i, 512); c.stroke();
-      c.beginPath(); c.moveTo(0, i); c.lineTo(512, i); c.stroke();
-    }
-    for (let i = 0; i < 5500; i++) {
-      c.fillStyle = `rgba(32,29,21,${random() * .06})`;
-      c.fillRect(random() * 512, random() * 512, 1, 1);
-    }
-    for (let k = 0; k < 7; k++) {
-      const x = random() * 512;
-      const gradient = c.createLinearGradient(x - 12, 0, x + 12, 0);
-      gradient.addColorStop(0, 'rgba(50,41,28,0)');
-      gradient.addColorStop(.5, 'rgba(50,41,28,.055)');
-      gradient.addColorStop(1, 'rgba(240,226,179,0)');
-      c.fillStyle = gradient; c.fillRect(x - 12, 0, 24, 512);
-    }
+  // ---- Sky and light ----------------------------------------------------------
+  const glowDirection = new THREE.Vector3(-0.35, 0.55, -0.75).normalize();
+  const sky = createSky({
+    time, zenith: new THREE.Color(2.3, 2.5, 2.6), horizon: new THREE.Color(1.3, 1.45, 1.5),
+    cloudDark: new THREE.Color(1.05, 1.15, 1.2), cloudLight: new THREE.Color(2.1, 2.25, 2.3),
+    glowDirection, glow: new THREE.Color(0.7, 0.66, 0.58), ground: new THREE.Color(0.1, 0.12, 0.09), coverage: 0.85, scale: 0.8, drift: 0.012,
   });
-  fabricMap.repeat.set(6, 12);
-  const canvas = new THREE.MeshStandardMaterial({
-    map: fabricMap, color: '#d5d2b7', roughness: .94, side: THREE.DoubleSide,
-    bumpMap: fabricMap, bumpScale: .006,
-  });
-  const seamMaterial = material('fabric', '#796444', .97);
-  const poleMaterial = new THREE.MeshStandardMaterial({ color: '#3e4947', metalness: .7, roughness: .38 });
-  const cordMaterial = new THREE.MeshStandardMaterial({ color: '#d3bd8c', roughness: .94 });
-  const mesh = (geometry: THREE.BufferGeometry, mat: THREE.Material, x = 0, y = 0, z = 0, parent: THREE.Object3D = scene) => {
-    const object = new THREE.Mesh(geometry, mat); object.position.set(x, y, z); parent.add(object); return object;
-  };
-  const tube = (points: THREE.Vector3[], radius: number, mat: THREE.Material, parent: THREE.Object3D = scene, segments = 32) =>
-    mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), segments, radius, 6, false), mat, 0, 0, 0, parent);
+  scene.add(sky.mesh);
+  // Overcast daylight: a broad soft key from the bright part of the sky.
+  const key = new THREE.DirectionalLight('#e3ecec', 1.25);
+  key.name = 'tent-overcast-key';
+  key.position.set(-5, 13, -11); key.target.position.set(0, 0, -6);
+  key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
+  Object.assign(key.shadow.camera, { left: -12, right: 12, top: 12, bottom: -10, near: 1, far: 45 });
+  key.shadow.bias = -0.0008; key.shadow.normalBias = 0.03; key.shadow.radius = 4;
+  // The world is static apart from foliage sway: render the key shadow once, and
+  // again only while something that casts it moves (saves a pass every frame).
+  key.shadow.autoUpdate = false; key.shadow.needsUpdate = true;
+  scene.add(key, key.target);
+  // Daylight spilling through the door onto the groundsheet and quilt (stands in for GI).
+  const doorSpill = new THREE.PointLight('#b8cbc8', 0.55, 5.5, 2);
+  doorSpill.position.set(0, 1.1, -1.2); scene.add(doorSpill);
+  const fallbackFill = new THREE.HemisphereLight('#b7d3d3', '#343b2b', 0.9);
+  fallbackFill.visible = false; scene.add(fallbackFill);
 
-  // The tent is a folded fabric vault, open at the front, with individual tension ribs.
-  const canopyGeometry = new THREE.BufferGeometry();
-  const positions: number[] = [], uv: number[] = [], indices: number[] = [];
-  const na = 72, nz = 44;
-  const canopyPoint = (u: number, v: number) => {
-    const a = u * Math.PI;
-    const z = -1.72 + v * 6.1;
-    const bulge = .052 * Math.sin(v * Math.PI) * Math.sin(a * 19 + v * 7)
-      + .025 * Math.sin(a * 31 + v * 17) * Math.sin(a);
-    return new THREE.Vector3(Math.cos(a) * (2.08 + bulge), .025 + Math.sin(a) * (2.12 + bulge), z);
+  // ---- Canvas -------------------------------------------------------------------
+  const outsideSky = new THREE.Color(2.15, 2.4, 2.5), outsideGround = new THREE.Color(0.1, 0.105, 0.095);
+  const vault = fabricMaterial('vault', time, outsideSky, outsideGround, 0.25);
+  const flapFabric = fabricMaterial('flap', time, outsideSky, outsideGround, 0.09);
+  const visorFabric = fabricMaterial('visor', time, outsideSky, outsideGround, 0.2);
+  const backFabric = fabricMaterial('back', time, outsideSky, outsideGround, 0.1);
+  const interior: THREE.Object3D[] = [];
+  const mesh = (geometry: THREE.BufferGeometry, mat: THREE.Material, parent: THREE.Object3D = scene) => {
+    const object = new THREE.Mesh(geometry, mat); parent.add(object); return object;
   };
-  for (let j = 0; j <= nz; j++) for (let i = 0; i <= na; i++) {
-    const p = canopyPoint(i / na, j / nz); positions.push(p.x, p.y, p.z); uv.push(i / na, j / nz);
-  }
-  for (let j = 0; j < nz; j++) for (let i = 0; i < na; i++) {
-    const a = j * (na + 1) + i, b = a + na + 1;
-    indices.push(a, b, a + 1, b, b + 1, a + 1);
-  }
-  canopyGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  canopyGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
-  canopyGeometry.setIndex(indices); canopyGeometry.computeVertexNormals(); mesh(canopyGeometry, canvas);
-  for (const v of [0, .43, .88]) {
-    const points = Array.from({ length: 45 }, (_, i) => canopyPoint(i / 44, v));
-    tube(points, .027, poleMaterial);
-    // A sewn sleeve alongside the inner pole gives the canopy readable construction.
-    tube(points.map(p => p.clone().add(new THREE.Vector3(0, -.024, .034))), .017, seamMaterial);
-  }
-  for (const u of [.16, .36, .65, .84]) {
-    tube(Array.from({ length: 26 }, (_, i) => canopyPoint(u, i / 25).multiply(new THREE.Vector3(.993, .994, 1))), .008, seamMaterial);
-  }
-  const groundsheet = mesh(new THREE.PlaneGeometry(4.17, 6.35, 10, 18), material('fabric', '#514c38', .99), 0, .018, 1.27);
-  groundsheet.rotation.x = -Math.PI / 2;
-  // Visible welded floor seams and a raised perimeter prevent the flat-box interior look.
-  for (const x of [-1.85, 1.85]) tube([
-    new THREE.Vector3(x, .055, -1.65), new THREE.Vector3(x, .055, 1), new THREE.Vector3(x, .07, 4.15),
-  ], .019, seamMaterial);
-
-  const entrance = new THREE.Group(); scene.add(entrance);
-  const flaps: THREE.Mesh[] = [];
-  for (const side of [-1, 1]) {
-    const g = new THREE.BufferGeometry(); const pp: number[] = [], uu: number[] = [], ii: number[] = [];
-    const rows = 36, cols = 20;
+  const grid = (cols: number, rows: number, point: (u: number, v: number) => THREE.Vector3) => {
+    const positions: number[] = [], uv: number[] = [], indices: number[] = [];
     for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) {
-      const v = j / rows, u = i / cols;
-      const y = .035 + v * 2.085;
-      const outer = 2.09 * Math.sqrt(Math.max(0, 1 - v * v));
-      const inner = .96 * Math.pow(1 - v, .58) + .02;
-      const x = side * THREE.MathUtils.lerp(inner, Math.max(inner, outer), u);
-      const fold = .085 * Math.sin(u * 8 * Math.PI + v * 5) * Math.sin(Math.PI * u);
-      pp.push(x, y, -1.65 + fold + .05 * Math.sin(v * 13)); uu.push(u, v);
+      const p = point(i / cols, j / rows); positions.push(p.x, p.y, p.z); uv.push(i / cols, j / rows);
     }
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
       const a = j * (cols + 1) + i, b = a + cols + 1;
-      ii.push(a, b, a + 1, b, b + 1, a + 1);
+      indices.push(a, b, a + 1, b, b + 1, a + 1);
     }
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pp, 3));
-    g.setAttribute('uv', new THREE.Float32BufferAttribute(uu, 2)); g.setIndex(ii); g.computeVertexNormals();
-    const flap = mesh(g, canvas, 0, 0, 0, entrance); flaps.push(flap);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geometry.setIndex(indices); geometry.computeVertexNormals();
+    return geometry;
+  };
+  const canopy = mesh(grid(128, 96, canopyPoint), vault);
+  canopy.name = 'tent-canvas-vault'; canopy.castShadow = true; canopy.receiveShadow = true;
+  // Closed rear panel so the inside is a real enclosure (it also shapes the probe).
+  const back = mesh(grid(48, 12, (u, v) => {
+    const p = canopyPoint(u, 1); return new THREE.Vector3(p.x * (1 - v), 0.025 + (p.y - 0.025) * (1 - v), p.z - 0.04 * Math.sin(Math.PI * v));
+  }), backFabric);
+  back.castShadow = true;
+  // Door hood: the fly reaches past the front arch and sheds water off its lip.
+  const LIP_Z = -2.2;
+  const visorPoint = (u: number, v: number) => {
+    const a = THREE.MathUtils.lerp(0.17, 0.83, u) * Math.PI;
+    const p = canopyPoint(a / Math.PI, 0);
+    const r = THREE.MathUtils.lerp(2.06, 1.96, v);
+    const droop = 0.1 * v * v + 0.015 * Math.sin(a * 21) * v;
+    return new THREE.Vector3(Math.cos(a) * r, 0.025 + Math.sin(a) * r - droop, THREE.MathUtils.lerp(p.z, LIP_Z, v));
+  };
+  const visor = mesh(grid(64, 10, visorPoint), visorFabric);
+  visor.castShadow = true;
+
+  const poleMaterial = new THREE.MeshStandardMaterial({ color: '#59625f', metalness: 0.85, roughness: 0.32 });
+  const webbing = new THREE.MeshStandardMaterial({ color: '#4a3d2a', roughness: 0.95 });
+  const cord = new THREE.MeshStandardMaterial({ color: '#c9ad78', roughness: 0.9 });
+  for (const v of ARCHES) {
+    const z = ROOF_Z0 + v * ROOF_LENGTH;
+    const points = Array.from({ length: 48 }, (_, i) => { const a = (0.012 + i / 47 * 0.976) * Math.PI; return new THREE.Vector3(Math.cos(a) * 2.068, 0.025 + Math.sin(a) * 2.068, z); });
+    mesh(limbGeometry(points, 0.012, 0.012, 8, 64), poleMaterial).castShadow = true;
+  }
+  // Hanging loop and a short gear cord along the ridge.
+  const ridgeLine = Array.from({ length: 20 }, (_, i) => { const p = canopyPoint(0.5, 0.06 + i / 19 * 0.8); p.y -= 0.06 + 0.05 * Math.sin(Math.PI * i / 19); return p; });
+  mesh(limbGeometry(ridgeLine, 0.004, 0.004, 5, 40), cord);
+
+  // Groundsheet: a coated bathtub floor; the doorstep is wet.
+  // Coated groundsheet: welded seams, creases from lying on it, grit tracked in at the door.
+  const floorMaterial = applyWetSurface(patch(new THREE.MeshStandardMaterial({ color: '#4b4834', roughness: 0.55 }), {
+    key: 'tent-groundsheet', fragmentCommon: 'float sheetHeight;',
+    color: `{
+  vec3 p = vSurfWorld;
+  float crease = bwNoise(vec3(p.x * 2.2, 0.0, p.z * 0.7)) * 0.6 + bwNoise(vec3(p.x * 6.0 + p.z * 2.0, 1.0, p.z * 1.5)) * 0.3;
+  float seam = exp(-pow((abs(p.x) - 1.02) / 0.006, 2.0));
+  float grime = smoothstep(0.6, -1.4, p.z) * (0.5 + 0.5 * bwFbm3(p * 3.0));
+  diffuseColor.rgb *= (0.88 + 0.12 * crease) * (1.0 + 0.25 * seam) * (1.0 - 0.3 * grime);
+  sheetHeight = crease * 0.6 + seam * 0.8;
+}`,
+    roughness: 'roughnessFactor *= 0.9 + 0.2 * sheetHeight;',
+    normal: 'normal = shelterBump(normal, sheetHeight, 0.0025 * shelterDetail(0.08));',
+  }), {
+    key: 'tent-floor', time, wetness: 0.85, darkening: 0.7, wetRoughness: 0.08, puddles: 0.6, puddleSize: 0.35, rippleDensity: 14, ripples: 0.5,
+    shelter: { normal: new THREE.Vector3(0, 0, -1), offset: 1.35, softness: 0.18 },
+  });
+  const floorGeometry = new THREE.PlaneGeometry(4.15, 6.4, 40, 60);
+  floorGeometry.rotateX(-Math.PI / 2);
+  const fpos = floorGeometry.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < fpos.count; i++) {
+    const x = fpos.getX(i), z = fpos.getZ(i);
+    const edge = Math.max(0, Math.abs(x) - 1.82) / 0.26;
+    fpos.setY(i, 0.018 + edge * edge * 0.2 + 0.006 * noise3(x * 3, 0, z * 3));
+  }
+  floorGeometry.computeVertexNormals();
+  const floor = mesh(floorGeometry, floorMaterial); floor.position.z = 1.25; floor.receiveShadow = true;
+  for (const x of [-1.84, 1.84]) mesh(limbGeometry([new THREE.Vector3(x, 0.07, -1.68), new THREE.Vector3(x, 0.07, 1.2), new THREE.Vector3(x, 0.075, 4.3)], 0.012, 0.012, 6, 20), webbing);
+  interior.push(canopy, back, floor);
+
+  // ---- Door panels (interaction) ------------------------------------------------
+  const entrance = new THREE.Group(); scene.add(entrance);
+  const flaps: THREE.Mesh[] = [];
+  const zipperMaterial = new THREE.MeshStandardMaterial({ color: '#24221d', roughness: 0.5, metalness: 0.3 });
+  for (const side of [-1, 1]) {
+    const geometry = grid(24, 44, (u, v) => {
+      const y = 0.035 + v * 2.085;
+      const outer = 2.09 * Math.sqrt(Math.max(0, 1 - v * v));
+      const inner = 0.96 * Math.pow(1 - v, 0.58) + 0.02;
+      const x = side * THREE.MathUtils.lerp(inner, Math.max(inner, outer), u);
+      // Soft vertical drapes gathered toward the tie-back, never regular pleats.
+      const gather = Math.sin(Math.PI * u) * (0.4 + 0.6 * Math.exp(-Math.pow((v - 0.31) / 0.25, 2)));
+      const fold = (0.032 * Math.sin(u * 5.3 * Math.PI + v * 3 + side) + 0.014 * Math.sin(u * 13.7 + v * 7.1) + 0.012 * noise3(u * 4, v * 3, side * 5)) * gather;
+      return new THREE.Vector3(x, y, -1.65 + fold + 0.05 * Math.sin(v * 13));
+    });
+    const flap = mesh(geometry, flapFabric, entrance); flaps.push(flap); flap.castShadow = true;
     const edge = Array.from({ length: 40 }, (_, j) => {
       const v = j / 39;
-      return new THREE.Vector3(side * (.96 * Math.pow(1 - v, .58) + .02), .035 + v * 2.085, -1.585 + .05 * Math.sin(v * 13));
+      return new THREE.Vector3(side * (0.96 * Math.pow(1 - v, 0.58) + 0.02), 0.035 + v * 2.085, -1.6 + 0.05 * Math.sin(v * 13));
     });
-    const zipper = tube(edge, .014, seamMaterial, flap);
-    const stitches = new THREE.BufferGeometry(); const ss: number[] = [];
-    for (let i = 1; i < edge.length - 1; i++) {
-      const p = edge[i]; ss.push(p.x - .01, p.y, p.z + .02, p.x + .01, p.y + .007, p.z + .02);
-    }
-    stitches.setAttribute('position', new THREE.Float32BufferAttribute(ss, 3));
-    zipper.add(new THREE.LineSegments(stitches, new THREE.LineBasicMaterial({ color: '#dbc697', transparent: true, opacity: .8 })));
-    const tie = mesh(new THREE.TorusGeometry(.045, .011, 6, 18), cordMaterial, side * 1.09, .65, -1.48, flap);
-    tie.rotation.y = .3;
-  }
-  // Far-front rain fly and taut guy ropes are visible around the entrance at wider angles.
-  for (const s of [-1, 1]) {
-    tube([new THREE.Vector3(s * 1.95, .25, -1.72), new THREE.Vector3(s * 2.85, .04, -3.7)], .01, cordMaterial);
-    mesh(new THREE.CylinderGeometry(.017, .022, .24, 5), poleMaterial, s * 2.85, .03, -3.7).rotation.z = s * .25;
+    mesh(limbGeometry(edge, 0.011, 0.011, 6, 60), zipperMaterial, flap);
+    const tie = mesh(new THREE.TorusGeometry(0.045, 0.009, 8, 24), cord, flap);
+    tie.position.set(side * 1.09, 0.65, -1.5); tie.rotation.y = 0.3;
   }
   const openingShape = new THREE.Shape();
-  openingShape.moveTo(-1.22, .03); openingShape.lineTo(1.22, .03);
-  openingShape.quadraticCurveTo(.77, 1.32, 0, 2.1);
-  openingShape.quadraticCurveTo(-.77, 1.32, -1.22, .03);
-  const openingHit = mesh(new THREE.ShapeGeometry(openingShape), new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false, side: THREE.DoubleSide }), 0, 0, -1.57);
+  openingShape.moveTo(-1.22, 0.03); openingShape.lineTo(1.22, 0.03);
+  openingShape.quadraticCurveTo(0.77, 1.32, 0, 2.1);
+  openingShape.quadraticCurveTo(-0.77, 1.32, -1.22, 0.03);
+  const openingHit = mesh(new THREE.ShapeGeometry(openingShape), new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false, side: THREE.DoubleSide }));
+  openingHit.position.z = -1.57;
   openingHit.name = 'tent-entrance-interaction';
 
-  // A soft down quilt fills the near view with a broad, curved surface and stitched baffles.
-  const quiltMaterial = material('fabric', '#294c50', .94);
-  quiltMaterial.map?.repeat.set(2, 2); quiltMaterial.bumpMap?.repeat.set(2, 2); quiltMaterial.bumpScale = .004;
-  const quiltGeo = new THREE.BufferGeometry(); const qp: number[] = [], qu: number[] = [], qi: number[] = [];
-  const qx = 52, qz = 100;
+  // ---- Sleeping bag and blanket -------------------------------------------------
   const quiltPoint = (u: number, v: number, seam = false) => {
-    const z = -.78 + v * 4;
-    const width = .54 + .28 * Math.sin(v * Math.PI * .69);
+    const z = -0.78 + v * 4;
+    const width = 0.54 + 0.28 * Math.sin(v * Math.PI * 0.69);
     const xx = (u * 2 - 1) * width;
-    const puff = Math.pow(Math.max(0, 1 - Math.pow(u * 2 - 1, 2)), .65);
-    const baffle = seam ? -.004 : .044 * Math.pow(Math.sin(v * Math.PI * 13), 2);
-    const fold = .013 * Math.sin(u * 31 + v * 17) * (1 - puff);
-    return new THREE.Vector3(xx - .03, .04 + puff * (.245 + .08 * v + baffle) + fold, z);
+    const puff = Math.pow(Math.max(0, 1 - Math.pow(u * 2 - 1, 2)), 0.65);
+    const baffle = seam ? -0.004 : 0.044 * Math.pow(Math.sin(v * Math.PI * 13), 2);
+    // Down shifts inside each baffle; the shell creases where it is compressed.
+    const crease = 0.014 * Math.sin(u * 31 + v * 17) * (1 - puff) + 0.012 * noise3(u * 7, v * 26, 3) * puff + 0.006 * Math.abs(noise3(u * 22, v * 60, 9)) * puff;
+    return new THREE.Vector3(xx - 0.03, 0.04 + puff * (0.245 + 0.08 * v + baffle) + crease, z);
   };
-  for (let j = 0; j <= qz; j++) for (let i = 0; i <= qx; i++) {
-    const p = quiltPoint(i / qx, j / qz); qp.push(p.x, p.y, p.z); qu.push(i / qx * 2, j / qz * 5);
-  }
-  for (let j = 0; j < qz; j++) for (let i = 0; i < qx; i++) {
-    const a = j * (qx + 1) + i, b = a + qx + 1; qi.push(a, b, a + 1, b, b + 1, a + 1);
-  }
-  quiltGeo.setAttribute('position', new THREE.Float32BufferAttribute(qp, 3));
-  quiltGeo.setAttribute('uv', new THREE.Float32BufferAttribute(qu, 2)); quiltGeo.setIndex(qi); quiltGeo.computeVertexNormals();
-  mesh(quiltGeo, quiltMaterial);
-  const quiltThread = new THREE.MeshStandardMaterial({ color: '#819590', roughness: 1 });
-  for (let row = 1; row < 13; row++) {
-    tube(Array.from({ length: 40 }, (_, i) => quiltPoint(i / 39, row / 13, true).add(new THREE.Vector3(0, .004, 0))), .0035, quiltThread, scene, 39);
-  }
-  tube(Array.from({ length: 40 }, (_, i) => quiltPoint(.975, i / 39).add(new THREE.Vector3(.007, .008, 0))), .012, seamMaterial);
-  // An asymmetrically folded blanket edge lays across the sleeping bag, close enough to read weave.
-  const blanket = mesh(new THREE.PlaneGeometry(.85, .62, 30, 20), material('fabric', '#998363', 1), -.49, .20, 1.63);
-  const bp = blanket.geometry.attributes.position;
-  for (let i = 0; i < bp.count; i++) bp.setZ(i, .025 * Math.sin(bp.getX(i) * 35) + .02 * Math.cos(bp.getY(i) * 14));
-  blanket.geometry.computeVertexNormals(); blanket.rotation.set(-Math.PI / 2, .05, -.26);
-
-  // Lantern: metal, glass, warm emitter, handle and cage are separate spatial surfaces.
-  const lantern = new THREE.Group(); lantern.position.set(-.88, .027, .40); scene.add(lantern);
-  const brass = new THREE.MeshStandardMaterial({ color: '#554b32', metalness: .78, roughness: .32 });
-  const warm = new THREE.MeshStandardMaterial({ color: '#ffd48a', emissive: '#ffbd64', emissiveIntensity: 1.9, roughness: .5 });
-  const glass = new THREE.MeshPhysicalMaterial({ color: '#faecd1', transparent: true, opacity: .15, roughness: .12, metalness: .08, side: THREE.DoubleSide, depthWrite: false });
-  mesh(new THREE.CylinderGeometry(.12, .155, .075, 24), brass, 0, .055, 0, lantern);
-  mesh(new THREE.CylinderGeometry(.104, .11, .245, 24, 1, true), glass, 0, .215, 0, lantern);
-  mesh(new THREE.CylinderGeometry(.047, .06, .175, 20), warm, 0, .19, 0, lantern);
-  mesh(new THREE.CylinderGeometry(.15, .13, .035, 24), brass, 0, .352, 0, lantern);
-  mesh(new THREE.ConeGeometry(.12, .075, 24), brass, 0, .4, 0, lantern);
-  mesh(new THREE.CylinderGeometry(.038, .038, .028, 16), brass, 0, .446, 0, lantern);
-  for (let i = 0; i < 6; i++) {
-    const a = i * Math.PI / 3;
-    tube([new THREE.Vector3(Math.cos(a) * .125, .075, Math.sin(a) * .125), new THREE.Vector3(Math.cos(a) * .132, .22, Math.sin(a) * .132), new THREE.Vector3(Math.cos(a) * .121, .355, Math.sin(a) * .121)], .009, brass, lantern, 12);
-  }
-  tube(Array.from({ length: 22 }, (_, i) => {
-    const a = i / 21 * Math.PI; return new THREE.Vector3(Math.cos(a) * .13, .385 + Math.sin(a) * .16, 0);
-  }), .009, brass, lantern, 22);
-  const lanternLight = new THREE.PointLight('#ffce86', 5.2, 4.8, 2); lanternLight.position.set(-.88, .26, .40); scene.add(lanternLight);
-  // Local pooled warm light is restrained, with a soft grounding shadow beneath the lantern.
-  const shadowMap = canvasTexture(c => {
-    const g = c.createRadialGradient(256, 256, 15, 256, 256, 250);
-    g.addColorStop(0, 'rgba(0,0,0,.65)'); g.addColorStop(.48, 'rgba(0,0,0,.2)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-    c.fillStyle = g; c.fillRect(0, 0, 512, 512);
-  });
-  const shadowMat = new THREE.MeshBasicMaterial({ map: shadowMap, transparent: true, depthWrite: false });
-  const lanternShadow = mesh(new THREE.PlaneGeometry(.8, .75), shadowMat, -.88, .031, .40); lanternShadow.rotation.x = -Math.PI / 2;
-
-  // Wet forest floor: irregular terrain and dark shallow pools beyond the fly.
-  const forestFloor = new THREE.PlaneGeometry(46, 48, 68, 68);
-  const fp = forestFloor.attributes.position;
-  for (let i = 0; i < fp.count; i++) {
-    const x = fp.getX(i), y = fp.getY(i);
-    fp.setZ(i, .09 * Math.sin(x * .47) * Math.cos(y * .39) + .025 * Math.sin(x * 2.4 + y));
-  }
-  forestFloor.computeVertexNormals();
-  const floor = mesh(forestFloor, material('earth', '#353c2b', .91), 0, -.115, -19); floor.rotation.x = -Math.PI / 2;
-  const puddleMaterial = new THREE.MeshStandardMaterial({ color: '#638379', roughness: .2, metalness: .33, transparent: true, opacity: .64 });
-  for (let i = 0; i < 9; i++) {
-    const shape = new THREE.Shape(); const rx = .32 + random() * .9, rz = .25 + random() * .8;
-    for (let k = 0; k <= 30; k++) {
-      const a = k / 30 * Math.PI * 2, r = 1 + .13 * Math.sin(a * 3) + .1 * Math.cos(a * 5);
-      const x = Math.cos(a) * rx * r, y = Math.sin(a) * rz * r; if (!k) shape.moveTo(x, y); else shape.lineTo(x, y);
-    }
-    const pool = mesh(new THREE.ShapeGeometry(shape), puddleMaterial, (random() - .5) * 8, -.007, -3.1 - random() * 9); pool.rotation.x = -Math.PI / 2;
-  }
-
-  const bark = material('wood', '#343d31', .99);
-  const barkLight = material('wood', '#485244', .96);
-  const trees = new THREE.Group(); scene.add(trees);
-  // Trunks and branch roots taper and bend; foliage is built from flattened branch sprays, never spheres.
-  const leafMat = material('leaf', '#385644', .94); leafMat.side = THREE.DoubleSide;
-  const leafGeo = new THREE.BufferGeometry(); const lp: number[] = [], lu: number[] = [], li: number[] = [];
-  for (let j = 0; j <= 8; j++) for (let k = 0; k < 3; k++) {
-    const t = j / 8, side = k - 1;
-    lp.push(side * Math.sin(t * Math.PI) * .23, t - .5, Math.sin(t * Math.PI) * (.06 - Math.abs(side) * .04)); lu.push(k / 2, t);
-  }
-  for (let j = 0; j < 8; j++) for (let k = 0; k < 2; k++) {
-    const a = j * 3 + k; li.push(a, a + 1, a + 3, a + 1, a + 4, a + 3);
-  }
-  leafGeo.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3)); leafGeo.setAttribute('uv', new THREE.Float32BufferAttribute(lu, 2)); leafGeo.setIndex(li); leafGeo.computeVertexNormals();
-  const foliage = new THREE.InstancedMesh(leafGeo, leafMat, 8000); foliage.instanceMatrix.setUsage(THREE.StaticDrawUsage); trees.add(foliage);
-  const transform = new THREE.Object3D(); let leafCount = 0;
-  const addLeaf = (x: number, y: number, z: number, sx: number, sy: number, angle: number) => {
-    if (leafCount >= 8000) return;
-    transform.position.set(x, y, z); transform.rotation.set(.8 + random() * 1.1, random() * Math.PI * 2, angle);
-    transform.scale.set(sx, sy, 1); transform.updateMatrix(); foliage.setMatrixAt(leafCount++, transform.matrix);
+  const quiltGeometry = grid(64, 160, (u, v) => quiltPoint(u, v));
+  const quiltUv = quiltGeometry.attributes.uv as THREE.BufferAttribute;
+  for (let i = 0; i < quiltUv.count; i++) quiltUv.setXY(i, quiltUv.getX(i) * 2, quiltUv.getY(i) * 5);
+  const quilt = mesh(quiltGeometry, quiltMaterial()); quilt.castShadow = true; quilt.receiveShadow = true;
+  const thread = new THREE.MeshStandardMaterial({ color: '#7d918b', roughness: 0.9 });
+  const threads: THREE.BufferGeometry[] = [];
+  for (let row = 1; row < 13; row++) threads.push(limbGeometry(Array.from({ length: 24 }, (_, i) => quiltPoint(i / 23, row / 13, true).add(new THREE.Vector3(0, 0.003, 0))), 0.0025, 0.0025, 4, 40));
+  threads.push(limbGeometry(Array.from({ length: 30 }, (_, i) => quiltPoint(0.975, i / 29).add(new THREE.Vector3(0.007, 0.008, 0))), 0.009, 0.009, 6, 60));
+  mesh(mergeGeometries(threads)!, thread).receiveShadow = true;
+  threads.forEach(g => g.dispose());
+  const woolMaterial = new THREE.MeshStandardMaterial({ color: '#9a8163', roughness: 0.98 });
+  woolMaterial.defines = { USE_UV: '' };
+  woolMaterial.onBeforeCompile = shader => {
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', `#include <common>\n${GLSL_NOISE}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+vec2 wq = vUv * vec2(90.0, 70.0);
+float twill = sin((wq.x + wq.y) * 3.1416) * 0.5 + 0.5;
+float fuzz = bwNoise(vec3(vUv * 40.0, 1.0)) * 0.5 + 0.5;
+float check = step(0.5, fract(vUv.x * 3.0)) * step(0.5, fract(vUv.y * 2.4));
+diffuseColor.rgb *= mix(0.85 + 0.15 * twill * (1.0 - smoothstep(0.2, 0.6, fwidth(wq.x))), 1.0, 0.3) * (0.85 + 0.3 * fuzz);
+diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.32), check * 0.6);`);
   };
-  for (let i = 0; i < 38; i++) {
-    let x = (random() - .5) * 34, z = -4.3 - random() * 29;
-    if (i < 5) { x = [-3.1, 3.7, -1.7, 1.4, -.45][i]; z = [-5.5, -7.2, -10, -12, -20][i]; }
-    const h = 7 + random() * 9, r = .13 + random() * .26;
-    const trunk = mesh(new THREE.CylinderGeometry(r * .38, r, h, 13, 12), i % 3 ? bark : barkLight, x, h / 2 - .1, z, trees);
-    const tp = trunk.geometry.attributes.position;
-    for (let k = 0; k < tp.count; k++) {
-      const yy = tp.getY(k), a = Math.atan2(tp.getZ(k), tp.getX(k));
-      const ridge = 1 + .08 * Math.sin(a * 5 + Math.sin(yy * .8));
-      tp.setX(k, tp.getX(k) * ridge + .055 * Math.sin(yy * 1.2 + i)); tp.setZ(k, tp.getZ(k) * ridge);
-    }
-    trunk.geometry.computeVertexNormals(); trunk.rotation.z = (random() - .5) * .09;
-    for (let k = 0; k < 4; k++) {
-      const a = random() * Math.PI * 2;
-      tube([new THREE.Vector3(x, .23, z), new THREE.Vector3(x + Math.cos(a) * r * 1.7, .025, z + Math.sin(a) * r * 1.7), new THREE.Vector3(x + Math.cos(a) * r * 3, -.04, z + Math.sin(a) * r * 3)], r * .18, bark, trees, 10);
-    }
-    for (let b = 0; b < 5; b++) {
-      const a = random() * Math.PI * 2, yy = 3.6 + b * h * .105, len = 1.3 + random() * 1.6;
-      const end = new THREE.Vector3(x + Math.cos(a) * len, yy + .38, z + Math.sin(a) * len);
-      tube([new THREE.Vector3(x, yy, z), new THREE.Vector3((x + end.x) / 2, yy + .1, (z + end.z) / 2), end], r * .17, bark, trees, 10);
-      for (let l = 0; l < 25; l++) {
-        const f = .12 + random() * .93;
-        addLeaf(THREE.MathUtils.lerp(x, end.x, f) + (random() - .5) * .8, yy + .4 * f + (random() - .5) * .45, THREE.MathUtils.lerp(z, end.z, f) + (random() - .5) * .8, .3 + random() * .38, .34 + random() * .45, a);
+  woolMaterial.customProgramCacheKey = () => 'tent-wool-v1';
+  const blanket = mesh(grid(40, 30, (u, v) => {
+    const x = (u - 0.5) * 0.85, z = (v - 0.5) * 0.62;
+    return new THREE.Vector3(x, 0.025 * Math.sin(x * 35) + 0.02 * Math.cos(z * 14) + 0.03 * Math.exp(-((u - 0.85) ** 2) * 40), z);
+  }), woolMaterial);
+  blanket.position.set(-0.49, 0.2, 1.63); blanket.rotation.set(0.05, -0.26, 0);
+  blanket.castShadow = blanket.receiveShadow = true;
+  interior.push(quilt, blanket);
+
+  // ---- Paraffin lantern: the warm key inside ------------------------------------
+  const lantern = createLantern({ intensity: 3.6 });
+  scene.add(lantern.group, lantern.light);
+  lantern.place(-0.88, 0.027, 0.4);
+  interior.push(lantern.group);
+
+  // ---- The wood beyond the door --------------------------------------------------
+  const outside = new THREE.Group(); scene.add(outside);
+  const terrainHeight = (x: number, z: number) => {
+    const away = THREE.MathUtils.smoothstep(-z, 1.8, 5);
+    return GROUND_Y + away * (0.16 * fbm3(x * 0.18, 0, z * 0.18, 3) + 0.05 * noise3(x * 0.9, 2, z * 0.9)) + 0.012 * noise3(x * 4, 1, z * 4);
+  };
+  const terrainGeometry = new THREE.PlaneGeometry(56, 52, 150, 150);
+  terrainGeometry.rotateX(-Math.PI / 2);
+  const tp = terrainGeometry.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < tp.count; i++) {
+    // Denser vertices close to the door, wider strips far away.
+    const t = (tp.getZ(i) + 26) / 52;
+    const zz = -1.4 - Math.pow(1 - t, 1.6) * 50;
+    const xx = tp.getX(i) * (0.3 + 0.7 * Math.min(1, -zz / 16));
+    tp.setXYZ(i, xx, terrainHeight(xx, zz), zz);
+  }
+  terrainGeometry.computeVertexNormals();
+  const soil = applyWetSurface(applyGround(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92 }), {
+    key: 'tent-forest', soil: '#3b3326', litter: ['#4a2e17', '#6e4d26'], litterAmount: 0.6, moss: '#405a28', mossAmount: 0.45,
+  }), { key: 'tent-forest', time, wetness: 0.85, darkening: 0.62, wetRoughness: 0.46, puddles: 0.32, puddleSize: 1.2, ripples: 1, rippleDensity: 8 });
+  const terrain = mesh(terrainGeometry, soil, outside); terrain.receiveShadow = true; terrain.name = 'tent-forest-floor';
+
+  // Cedars: buttressed, bending trunks merged into one draw with world-space bark.
+  const barkMaterial = applyWetSurface(applyBark(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.82 }), {
+    key: 'tent-cedar', plate: '#6e4c36', crevice: '#160f0b', lichen: '#7f8c78', lichenAmount: 0.12, moss: '#3e5a24', mossHeight: 1.3, scale: 7,
+  }), { key: 'tent-bark', time, wetness: 0.75, darkening: 0.6, wetRoughness: 0.3, streaks: 0.6 });
+  const woody: THREE.BufferGeometry[] = [];
+  const leafMatrices: THREE.Matrix4[] = [], leafColors: THREE.Color[] = [];
+  const dummy = new THREE.Object3D();
+  const sprayLeaf = (position: THREE.Vector3, direction: THREE.Vector3, size: number) => {
+    dummy.position.copy(position);
+    dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
+    dummy.rotateY(random() * Math.PI * 2);
+    dummy.scale.set(size * 0.8, size, size);
+    dummy.updateMatrix(); leafMatrices.push(dummy.matrix.clone());
+    leafColors.push(new THREE.Color().setHSL(0.24 + random() * 0.07, 0.32 + random() * 0.18, 0.18 + random() * 0.1, THREE.SRGBColorSpace));
+  };
+  const treeSpots: [number, number][] = [[-3.1, -5.5], [3.7, -7.2], [-1.7, -10], [1.4, -12], [-0.45, -20], [-5.2, -8.4], [5.8, -11.5], [0.4, -15.6]];
+  for (let i = 0; i < 46; i++) {
+    let [x, z] = treeSpots[i] ?? [(random() - 0.5) * 40, -6 - random() * 30];
+    if (i >= treeSpots.length && Math.abs(x) < 2.2 && z > -9) x += Math.sign(x || 1) * 3;
+    const h = 9 + random() * 9, r = 0.16 + random() * 0.24;
+    const base = new THREE.Vector3(x, terrainHeight(x, z), z);
+    woody.push(trunkGeometry(base, h, r, i + 1, { lean: new THREE.Vector2((random() - 0.5) * 0.5, (random() - 0.5) * 0.5), sides: i < 8 ? 20 : 12 }));
+    // Lower dead twigs and higher living branches with drooping sprays.
+    const branches = 7;
+    for (let b = 0; b < branches; b++) {
+      const a = random() * Math.PI * 2, y = 2.6 + b * h * 0.09 + random() * 0.6, length = (b < 2 ? 0.7 : 1.4) + random() * 1.5;
+      const start = new THREE.Vector3(x + Math.cos(a) * r * 0.5, base.y + y, z + Math.sin(a) * r * 0.5);
+      const end = new THREE.Vector3(x + Math.cos(a) * length, base.y + y + 0.25 - length * 0.18, z + Math.sin(a) * length);
+      const mid = start.clone().lerp(end, 0.5).add(new THREE.Vector3(0, 0.18, 0));
+      woody.push(limbGeometry([start, mid, end], r * 0.16, 0.012, 5, 6));
+      if (b < 2) continue;
+      for (let l = 0; l < 34; l++) {
+        const f = 0.25 + random() * 0.8;
+        const p = start.clone().lerp(end, f).add(new THREE.Vector3((random() - 0.5) * 0.7, (random() - 0.65) * 0.5, (random() - 0.5) * 0.7));
+        const droop = new THREE.Vector3(Math.cos(a) * 0.6 + (random() - 0.5), -0.35 - random() * 0.6, Math.sin(a) * 0.6 + (random() - 0.5));
+        sprayLeaf(p, droop, 0.26 + random() * 0.3);
       }
     }
   }
-  // All static woody pieces share two draw calls; their uneven silhouettes remain full geometry.
-  trees.updateMatrixWorld(true);
-  for (const mat of [bark, barkLight]) {
-    const parts = trees.children.filter((object): object is THREE.Mesh => object instanceof THREE.Mesh && !(object instanceof THREE.InstancedMesh) && object.material === mat);
-    const geometries = parts.map(object => object.geometry.clone().applyMatrix4(object.matrix));
-    const combined = mergeGeometries(geometries, false);
-    if (combined) mesh(combined, mat, 0, 0, 0, trees);
-    for (const part of parts) { trees.remove(part); part.geometry.dispose(); }
-    for (const geometry of geometries) geometry.dispose();
+  // Fallen, moss-covered log.
+  const logPath = [new THREE.Vector3(-4.3, GROUND_Y + 0.14, -4.6), new THREE.Vector3(-2.9, GROUND_Y + 0.2, -5.3), new THREE.Vector3(-1.2, GROUND_Y + 0.16, -6.1), new THREE.Vector3(0.1, GROUND_Y + 0.1, -6.6)];
+  woody.push(limbGeometry(logPath, 0.24, 0.19, 14, 24));
+  const trees = mesh(mergeGeometries(woody)!, barkMaterial, outside);
+  trees.name = 'tent-cedar-trunks'; trees.castShadow = true; trees.receiveShadow = true;
+  woody.forEach(g => g.dispose());
+
+  // Ferns and saplings at human scale either side of the muddy door.
+  const fernStems: THREE.BufferGeometry[] = [];
+  const fernMatrices: THREE.Matrix4[] = [];
+  for (let f = 0; f < 34; f++) {
+    const x = (random() - 0.5) * 14, z = -2.6 - random() * 13;
+    if (Math.abs(x) < 0.7 && z > -5) continue;
+    fernFronds(new THREE.Vector3(x, terrainHeight(x, z), z), 0.65 + random() * 0.6, 7 + Math.floor(random() * 4), random, fernStems, fernMatrices);
   }
-  // Fern rosettes sit at human scale on both sides of the muddy opening.
-  const fernStems: number[] = [];
-  for (let f = 0; f < 28; f++) {
-    const x = (random() - .5) * 13, z = -2.8 - random() * 12;
-    if (Math.abs(x) < .55 && z > -5) continue;
-    for (let k = 0; k < 7; k++) {
-      const a = k / 7 * Math.PI * 2 + random() * .25, len = .6 + random() * .65;
-      const point = (v: number) => new THREE.Vector3(x + Math.cos(a) * len * v, .025 + Math.sin(v * Math.PI * .85) * len * .68, z + Math.sin(a) * len * v);
-      for (let j = 1; j < 10; j++) {
-        const p = point(j / 10), q = point((j - 1) / 10); fernStems.push(p.x, p.y, p.z, q.x, q.y, q.z);
-        for (const s of [-1, 1]) {
-          const size = .15 * Math.sin(j / 10 * Math.PI) + .045;
-          if (leafCount < 8000) {
-            const direction = new THREE.Vector3(Math.cos(a + s * 1.25), .25, Math.sin(a + s * 1.25)).normalize();
-            transform.position.set(p.x + direction.x * size * .5, p.y, p.z + direction.z * size * .5);
-            transform.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
-            transform.scale.set(size * .85, size * 1.6, 1); transform.updateMatrix(); foliage.setMatrixAt(leafCount++, transform.matrix);
-          }
-        }
+  const stemMaterial = new THREE.MeshStandardMaterial({ color: '#3f5428', roughness: 0.7 });
+  const fernStemMesh = mesh(mergeGeometries(fernStems)!, stemMaterial, outside);
+  fernStems.forEach(g => g.dispose());
+  fernStemMesh.castShadow = true;
+  const leafMaterial = applyWetSurface(applyFoliage(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.42, side: THREE.DoubleSide }), {
+    key: 'tent-leaf', translucency: new THREE.Color(0.55, 0.85, 0.3), strength: 0.9,
+  }), { key: 'tent-leaf', time, wetness: 0.6, darkening: 0.85, wetRoughness: 0.22 });
+  const leafGeometry = leafletGeometry(5, 0.3, 0.07);
+  const canopyLeaves = new THREE.InstancedMesh(leafGeometry, leafMaterial, leafMatrices.length);
+  leafMatrices.forEach((m, i) => { canopyLeaves.setMatrixAt(i, m); canopyLeaves.setColorAt(i, leafColors[i]); });
+  canopyLeaves.castShadow = true; canopyLeaves.receiveShadow = true; outside.add(canopyLeaves);
+  const fernLeaves = new THREE.InstancedMesh(leafletGeometry(4, 0.22, 0.05), leafMaterial, fernMatrices.length);
+  const fernColor = new THREE.Color();
+  fernMatrices.forEach((m, i) => { fernLeaves.setMatrixAt(i, m); fernLeaves.setColorAt(i, fernColor.setHSL(0.21 + random() * 0.06, 0.42 + random() * 0.2, 0.22 + random() * 0.1, THREE.SRGBColorSpace)); });
+  fernLeaves.castShadow = true; fernLeaves.receiveShadow = true; outside.add(fernLeaves);
+
+  // Sedge and grass tufts break up the floor between ferns.
+  const bladeGeometry = (() => {
+    const positions: number[] = [], indices: number[] = [];
+    for (let b = 0; b < 9; b++) {
+      const dir = b / 9 * Math.PI * 2 + random() * 0.6, lean = 0.25 + random() * 0.4, h = 0.1 + random() * 0.16, w = 0.004 + random() * 0.004;
+      const start = positions.length / 3;
+      for (let j = 0; j <= 4; j++) {
+        const t = j / 4, cx = Math.cos(dir) * lean * t * t * h * 2, cz = Math.sin(dir) * lean * t * t * h * 2, y = h * t;
+        const ww = w * (1 - t * 0.9);
+        positions.push(cx - Math.sin(dir) * ww, y, cz + Math.cos(dir) * ww, cx + Math.sin(dir) * ww, y, cz - Math.cos(dir) * ww);
+        if (j < 4) { const k = start + j * 2; indices.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); }
       }
     }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); g.setIndex(indices); g.computeVertexNormals(); return g;
+  })();
+  const tufts = new THREE.InstancedMesh(bladeGeometry, leafMaterial, 260);
+  for (let i = 0; i < 260; i++) {
+    const x = (random() - 0.5) * (2 + i / 260 * 12), z = -1.95 - Math.pow(random(), 1.3) * 11;
+    dummy.position.set(x, terrainHeight(x, z), z); dummy.rotation.set(0, random() * 6.28, 0); dummy.scale.setScalar(0.7 + random() * 0.9); dummy.updateMatrix();
+    tufts.setMatrixAt(i, dummy.matrix); tufts.setColorAt(i, fernColor.setHSL(0.15 + random() * 0.08, 0.25 + random() * 0.15, 0.14 + random() * 0.1, THREE.SRGBColorSpace));
   }
-  foliage.count = leafCount; foliage.instanceMatrix.needsUpdate = true;
-  const fernLines = new THREE.BufferGeometry(); fernLines.setAttribute('position', new THREE.Float32BufferAttribute(fernStems, 3));
-  trees.add(new THREE.LineSegments(fernLines, new THREE.LineBasicMaterial({ color: '#526b40' })));
+  tufts.receiveShadow = true; outside.add(tufts);
 
-  const rockMat = material('stone', '#454d42', .83);
-  const rockInst = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), rockMat, 60); scene.add(rockInst);
+  // Stones: faceted, wet and mossy; one merged draw.
+  const stoneMaterial = createRockMaterial('#6b6c62', { key: 'tent-stone', scale: 2.2, bump: 1.1, wetness: 0.75, drips: 0.15, dryRoughness: 0.7, wetRoughness: 0.18, moss: { color: '#4a6a2a', amount: 0.85 }, cavity: 0.6, strata: 0.15, stainAmount: 0.2 });
+  const stones: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < 34; i++) {
+    const x = (random() - 0.5) * 16, z = -2.3 - random() * 16;
+    if (Math.abs(x) < 0.9 && z > -3.2) continue;
+    const s = 0.08 + Math.pow(random(), 2) * 0.55;
+    const g = boulderGeometry(i * 3 + 7, s > 0.3 ? 5 : 3);
+    g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, terrainHeight(x, z) + s * 0.18, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, random() * 6.28, 0)), new THREE.Vector3(s * (1.2 + random()), s * 0.55, s)));
+    stones.push(g);
+  }
+  const stoneMesh = mesh(mergeGeometries(stones)!, stoneMaterial, outside);
+  stones.forEach(g => g.dispose());
+  stoneMesh.castShadow = true; stoneMesh.receiveShadow = true;
+
+  // Water beads on the exposed front pole.
+  const beadMaterial = new THREE.MeshStandardMaterial({ color: '#9fb7b0', metalness: 0, roughness: 0.03, transparent: true, opacity: 0.7 });
+  const beads = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), beadMaterial, 60);
   for (let i = 0; i < 60; i++) {
-    transform.position.set((random() - .5) * 18, -.08, -2.4 - random() * 18);
-    transform.rotation.set(random(), random() * 6.2, random());
-    const scale = .06 + random() * .22; transform.scale.set(scale * 1.6, scale * .55, scale); transform.updateMatrix(); rockInst.setMatrixAt(i, transform.matrix);
+    const p = canopyPoint(0.06 + i / 59 * 0.88, 0);
+    const r = 0.006 + random() * 0.01;
+    dummy.position.set(p.x * 0.985, 0.025 + (p.y - 0.025) * 0.985 - 0.014, p.z); dummy.rotation.set(0, 0, 0); dummy.scale.set(r, r * 1.35, r); dummy.updateMatrix();
+    beads.setMatrixAt(i, dummy.matrix);
   }
-  const fallenLog = mesh(new THREE.CylinderGeometry(.18, .22, 3.8, 10), bark, -2.3, .18, -5.5); fallenLog.rotation.set(0, -.32, Math.PI / 2);
-  const cutMap = canvasTexture(c => {
-    c.fillStyle = '#948063'; c.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 32; i++) {
-      c.beginPath(); c.ellipse(249, 265, 6 + i * 8.3, 5 + i * 7.7, .12, 0, Math.PI * 2);
-      c.strokeStyle = `rgba(53,42,29,${.1 + random() * .2})`; c.lineWidth = 1 + random() * 2.5; c.stroke();
-    }
-    c.strokeStyle = '#443f30'; c.lineWidth = 3;
-    for (let i = 0; i < 5; i++) { const a = random() * 6.28; c.beginPath(); c.moveTo(256 + Math.cos(a) * 245, 256 + Math.sin(a) * 245); c.lineTo(256 + Math.cos(a + .1) * 100, 256 + Math.sin(a + .1) * 100); c.stroke(); }
-  });
-  const cutFace = mesh(new THREE.CircleGeometry(.216, 20), new THREE.MeshStandardMaterial({ map: cutMap, color: '#aaa18b', roughness: .92 }), 0, -1.905, 0, fallenLog); cutFace.rotation.x = Math.PI / 2;
+  scene.add(beads);
 
-  const rain = addRain(scene, { count: 1400, width: 29, height: 17, depth: 27, z: -16, speed: 8.5, color: '#d0e1de', opacity: .29 });
-  // Tiny beaded water follows the exposed front pole, distinct from rain behind the tent.
-  const beadMat = new THREE.MeshPhysicalMaterial({ color: '#c1ded4', metalness: .05, roughness: .06, transparent: true, opacity: .63 });
-  const beads = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 6, 5), beadMat, 47); scene.add(beads);
-  for (let i = 0; i < 47; i++) {
-    const a = .09 + i / 46 * (Math.PI - .18), r = .01 + random() * .012;
-    transform.position.set(Math.cos(a) * 2.09, Math.sin(a) * 2.12, -1.75); transform.rotation.set(0, 0, 0); transform.scale.set(r, r * 1.4, r); transform.updateMatrix(); beads.setMatrixAt(i, transform.matrix);
+  // ---- Rain ----------------------------------------------------------------------
+  const rainSky = new THREE.Color(1.15, 1.25, 1.3);
+  const rainLayers = [
+    createRainLayer({ time, count: 1600, min: new THREE.Vector3(-3.2, GROUND_Y - 0.1, -5), max: new THREE.Vector3(3.2, 4.2, -2.3), speed: 7.2, width: 0.0019, shutter: 0.032, radiance: rainSky, opacity: 0.6, boost: 1.7, seed: 1, wind: new THREE.Vector2(0.06, 0.02), nearFade: 0.8 }),
+    createRainLayer({ time, count: 5200, min: new THREE.Vector3(-9, GROUND_Y - 0.1, -14), max: new THREE.Vector3(9, 8, -5), speed: 7.6, width: 0.0016, shutter: 0.03, radiance: rainSky, opacity: 0.55, boost: 1.3, seed: 2, wind: new THREE.Vector2(0.06, 0.02) }),
+    createRainLayer({ time, count: 9000, min: new THREE.Vector3(-24, GROUND_Y - 0.1, -42), max: new THREE.Vector3(24, 16, -14), speed: 8, width: 0.0015, shutter: 0.03, radiance: rainSky, opacity: 0.5, boost: 1, seed: 3, wind: new THREE.Vector2(0.06, 0.02) }),
+  ];
+  // Drips off the door hood: they fall from rest and accelerate.
+  const drips = createRainLayer({ time, count: 42, gravity: true, dripPause: 2.2, min: new THREE.Vector3(-1.62, GROUND_Y, LIP_Z - 0.03), max: new THREE.Vector3(1.62, 1.88, LIP_Z + 0.02), sag: 0.82, width: 0.003, shutter: 0.02, radiance: new THREE.Color(1.6, 1.7, 1.75), opacity: 0.9, boost: 1.5, seed: 9 });
+  rainLayers.forEach(layer => outside.add(layer.mesh));
+  scene.add(drips.mesh);
+  const splashPoints: number[] = [];
+  for (let i = 0; i < 420; i++) {
+    const x = (random() - 0.5) * (2.4 + i / 420 * 6), z = -2.35 - Math.pow(random(), 1.5) * 7;
+    splashPoints.push(x, terrainHeight(x, z) + 0.01, z);
   }
-  for (let sideIndex = 0; sideIndex < 2; sideIndex++) {
-    const s = sideIndex ? 1 : -1;
-    const edgeBeads = new THREE.InstancedMesh(beads.geometry, beadMat, 24); flaps[sideIndex].add(edgeBeads);
-    for (let i = 0; i < 24; i++) {
-      const v = .08 + random() * .86, r = .007 + random() * .006;
-      transform.position.set(s * (.96 * Math.pow(1 - v, .58) + .03 + random() * .05), .035 + v * 2.085, -1.54 + .05 * Math.sin(v * 13));
-      transform.rotation.set(0, 0, 0); transform.scale.set(r, r * 1.7, r * .65); transform.updateMatrix(); edgeBeads.setMatrixAt(i, transform.matrix);
-    }
-  }
+  for (let i = 0; i < 30; i++) { const x = (random() - 0.5) * 3; splashPoints.push(x, terrainHeight(x, LIP_Z) + 0.01, LIP_Z + (random() - 0.5) * 0.05); }
+  const splashes = createRainSplashes({ points: splashPoints, time, size: 0.05, rate: 1.6, jitter: 0.15, radiance: new THREE.Color(1.1, 1.2, 1.25), opacity: 0.5 });
+  outside.add(splashes.mesh);
+  disposables.push(...rainLayers, drips, splashes);
 
-  let opening = .68, targetOpening = .68;
+  // ---- State ----------------------------------------------------------------------
+  let opening = 0.68, targetOpening = 0.68;
   const raycaster = new THREE.Raycaster();
+  const probes: THREE.WebGLRenderTarget[] = [];
   return {
-    update(time, dt) {
+    post: {
+      exposure: 1.1, bloomStrength: 0.07, bloomThreshold: 0, aoStrength: 0.85, aoRadius: 0.26,
+      saturation: 1.0, contrast: 1.1, shadowTint: [0.9, 0.97, 1.06], highlightTint: [1.03, 1.0, 0.96], vignette: 0.5, grain: 0.03,
+    },
+    createVolume: () => createMist({
+      skyLight: new THREE.Color(0.66, 0.75, 0.74), glowLight: new THREE.Color(0.12, 0.12, 0.11), glowDirection,
+      density: 0.03, heightFalloff: 0.18, groundY: GROUND_Y,
+      shelter: { normal: new THREE.Vector3(0, 0, -1), offset: 2.0, softness: 1.6 },
+      maxDistance: 80, curtains: 0.7, curtainScale: 8, wind: new THREE.Vector2(0.25, 0.05),
+    }),
+    prepare(renderer, hdr) {
+      if (!hdr) return;
+      const skyProbe = captureSkyProbe(renderer, sky.material);
+      probes.push(skyProbe);
+      scene.environment = skyProbe.texture;
+      scene.environmentIntensity = 1;
+      const hide = [...rainLayers.map(l => l.mesh), drips.mesh, splashes.mesh];
+      // Wet ground and leaves reflect the wood itself, not just open sky.
+      const wood = captureProbe(renderer, scene, new THREE.Vector3(0.3, 1.1, -6.5), hide, 128);
+      probes.push(wood);
+      scene.environment = wood.texture;
+      const inside = captureProbe(renderer, scene, EYE, hide, 128);
+      probes.push(inside);
+      // The canvas already carries its own glow; little extra fill keeps its gradient.
+      for (const fabric of [vault, flapFabric, visorFabric, backFabric]) { fabric.envMap = inside.texture; fabric.envMapIntensity = 0.22; }
+      for (const object of interior) assignProbe(object, inside.texture, 1);
+      assignProbe(beads, inside.texture, 1.2);
+    },
+    setPostActive(active) {
+      fallbackFill.visible = !active && !scene.environment;
+      if (!active) { scene.fog = new THREE.FogExp2('#7d918d', 0.045); [...rainLayers, drips].forEach(layer => layer.setBoost(1)); }
+    },
+    setViewHeight(pixels) { [...rainLayers, drips].forEach(layer => layer.setViewHeight(pixels)); },
+    update(t, dt) {
+      time.value = t;
       opening = THREE.MathUtils.damp(opening, targetOpening, 2.1, dt);
-      const spread = .8 + opening * .38;
+      const spread = 0.8 + opening * 0.38;
+      if (Math.abs(flaps[0].scale.x - spread) > 1e-4) key.shadow.needsUpdate = true;
       flaps[0].scale.x = spread; flaps[1].scale.x = spread;
-      flaps[0].position.x = -.10 * opening; flaps[1].position.x = .10 * opening;
-      lanternLight.intensity = 5.2 + Math.sin(time * .71) * .055;
-      rain.update(time);
+      flaps[0].position.x = -0.1 * opening; flaps[1].position.x = 0.1 * opening;
+      lantern.update(t);
     },
     resize(aspect) {
-      const portrait = aspect < .82;
-      lantern.position.set(portrait ? -.62 : -.88, .027, portrait ? -.52 : .40);
-      lanternLight.position.set(lantern.position.x, .26, lantern.position.z);
-      lanternShadow.position.set(lantern.position.x, .031, lantern.position.z);
+      const portrait = aspect < 0.82;
+      lantern.place(portrait ? -0.62 : -0.88, 0.027, portrait ? -0.52 : 0.4);
       camera.fov = portrait ? 69 : 62;
-      camera.position.set(portrait ? 0 : .10, portrait ? .75 : .78, portrait ? 1.77 : 2.05);
-      camera.lookAt(portrait ? 0 : .02, portrait ? .84 : .83, -6);
+      camera.position.set(portrait ? 0 : 0.1, portrait ? 0.75 : 0.78, portrait ? 1.77 : 2.05);
+      camera.lookAt(portrait ? 0 : 0.02, portrait ? 0.84 : 0.83, -6);
       camera.updateProjectionMatrix();
     },
     interact(x, y, explicit = false, immediate = false) {
@@ -369,9 +617,14 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
         const hit = raycaster.intersectObjects([...flaps, openingHit], false)[0];
         if (!hit) return null;
       }
-      targetOpening = targetOpening > .5 ? .2 : .95;
+      targetOpening = targetOpening > 0.5 ? 0.2 : 0.95;
       if (immediate) opening = targetOpening;
       return { action: 'opening', value: targetOpening };
+    },
+    dispose() {
+      disposables.forEach(d => d.dispose());
+      probes.forEach(p => p.dispose());
+      scene.environment = null;
     },
   };
 };

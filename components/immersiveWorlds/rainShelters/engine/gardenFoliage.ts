@@ -33,7 +33,8 @@ export function gardenLeafGeometry(variant: number) {
 
 export function gardenSepalGeometry(variant: number) {
   const positions: number[] = [], uv: number[] = [], indices: number[] = [];
-  const rows = 8, columns = 6;
+  // Sepals are ~1 cm on screen and drawn in two passes; 5x4 cells keep their cupped form.
+  const rows = 5, columns = 4;
   for (let row = 0; row <= rows; row++) {
     const t = row / rows, envelope = Math.pow(Math.max(0, Math.sin(Math.PI * t)), 0.55);
     const width = envelope * (0.41 + t * 0.16);

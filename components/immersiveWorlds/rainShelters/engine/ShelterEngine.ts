@@ -2,12 +2,18 @@ import * as THREE from 'three';
 import type { LiveSceneEngine } from '../../../liveScene/liveSceneHost';
 import type { ShelterInteraction, WorldBuilder, WorldKind, WorldRecipe } from './types';
 import { prepareRainShadowTargets } from './renderTargets';
+import { HdrPipeline, supportsHdrTargets } from '../../shared/render/hdrPipeline';
+
+// Owned QA can request the previous direct render path for comparisons.
+let preferDirect = false;
+export function setShelterDirectRendering(direct: boolean) { preferDirect = direct; }
 
 export class ShelterEngine implements LiveSceneEngine {
   readonly renderer: THREE.WebGLRenderer;
   readonly scene = new THREE.Scene();
   readonly camera = new THREE.PerspectiveCamera(56, 1, .055, 240);
   private recipe: WorldRecipe | null = null;
+  private post: HdrPipeline | null = null;
   private raf = 0;
   private running = false;
   private disposed = false;
@@ -22,6 +28,11 @@ export class ShelterEngine implements LiveSceneEngine {
   private lookRotation = new THREE.Quaternion();
   private euler = new THREE.Euler(0, 0, 0, 'YXZ');
   private contextLost: (event: Event) => void;
+  // At most two complete frames may be queued on the GPU; a slow GPU then
+  // skips submissions instead of stalling the page. Skipped time is kept.
+  private fences: WebGLSync[] = [];
+  private skipped = 0;
+  private demandRaf = 0;
 
   constructor(private canvas: HTMLCanvasElement, private kind: WorldKind, private builder: WorldBuilder, onLost: () => void) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
@@ -36,8 +47,20 @@ export class ShelterEngine implements LiveSceneEngine {
   }
 
   async init() {
-    this.recipe = this.builder({ scene: this.scene, camera: this.camera, renderer: this.renderer });
+    const recipe = this.builder({ scene: this.scene, camera: this.camera, renderer: this.renderer });
+    this.recipe = recipe;
     prepareRainShadowTargets(this.renderer, this.scene);
+    this.applyComposition();
+    // Probes and the HDR image pipeline need renderable float targets; without
+    // them (or when QA asks) the world keeps the previous direct render path.
+    const hdr = supportsHdrTargets(this.renderer);
+    recipe.prepare?.(this.renderer, hdr);
+    if (hdr && !preferDirect) {
+      this.post = HdrPipeline.create(this.renderer, { settings: recipe.post, volume: recipe.createVolume ? () => recipe.createVolume!() : null });
+      this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+    }
+    recipe.setPostActive?.(!!this.post);
+    this.canvas.dataset.post = this.post ? JSON.stringify(this.post.report) : 'direct';
     this.applyComposition();
   }
 
@@ -45,18 +68,43 @@ export class ShelterEngine implements LiveSceneEngine {
     this.width = Math.max(1, width); this.height = Math.max(1, height);
     this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)));
     this.renderer.setSize(this.width, this.height, false);
+    this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+    if (this.post) this.canvas.dataset.post = JSON.stringify(this.post.report);
     this.applyComposition();
   }
 
   private applyComposition() {
     this.camera.aspect = this.width / this.height;
     this.recipe?.resize(this.camera.aspect);
+    this.recipe?.setViewHeight?.(this.height * this.renderer.getPixelRatio());
     this.camera.updateProjectionMatrix();
     this.baseRotation.copy(this.camera.quaternion);
   }
 
+  private gpuBusy() {
+    const gl = this.renderer.getContext() as WebGL2RenderingContext;
+    if (typeof gl.fenceSync !== 'function') return false;
+    while (this.fences.length) {
+      const status = gl.clientWaitSync(this.fences[0], 0, 0);
+      if (status === gl.TIMEOUT_EXPIRED) break;
+      gl.deleteSync(this.fences.shift()!);
+    }
+    return this.fences.length >= 2;
+  }
+
+  private scheduleDemandFrame() {
+    if (this.demandRaf || this.disposed) return;
+    this.demandRaf = requestAnimationFrame(() => { this.demandRaf = 0; if (!this.running) this.renderFrame(0); });
+  }
+
   renderFrame(dt: number) {
     if (this.disposed || !this.recipe) return;
+    if (this.gpuBusy()) {
+      // The loop will come back; a paused/demand frame retries on the next RAF.
+      if (this.running) this.skipped += Math.max(0, dt); else this.scheduleDemandFrame();
+      return;
+    }
+    dt += this.skipped; this.skipped = 0;
     const safeDt = Math.max(0, Math.min(dt, .06)); this.elapsed += safeDt;
     this.look.lerp(this.targetLook, safeDt === 0 ? 1 : 1 - Math.exp(-safeDt * 7));
     this.euler.set(this.look.y, this.look.x, 0);
@@ -65,7 +113,13 @@ export class ShelterEngine implements LiveSceneEngine {
     this.camera.updateMatrixWorld();
     this.recipe.update(this.elapsed, safeDt);
     this.renderer.setRenderTarget(null);
-    this.renderer.render(this.scene, this.camera);
+    if (this.post) this.post.render(this.scene, this.camera, this.elapsed);
+    else this.renderer.render(this.scene, this.camera);
+    const gl = this.renderer.getContext() as WebGL2RenderingContext;
+    if (typeof gl.fenceSync === 'function') {
+      const fence = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+      if (fence) { this.fences.push(fence); gl.flush(); }
+    }
     this.canvas.dataset.frame = String(++this.frame);
     this.canvas.dataset.time = this.elapsed.toFixed(4);
     this.canvas.dataset.drawCalls = String(this.renderer.info.render.calls);
@@ -85,7 +139,7 @@ export class ShelterEngine implements LiveSceneEngine {
     this.raf = requestAnimationFrame(tick);
   }
 
-  stop() { this.running = false; cancelAnimationFrame(this.raf); this.raf = 0; this.targetLook.set(0, 0); }
+  stop() { this.running = false; cancelAnimationFrame(this.raf); this.raf = 0; this.skipped = 0; this.targetLook.set(0, 0); }
   drag(dx: number, dy: number) { this.targetLook.set(THREE.MathUtils.clamp(-dx * .24, -.15, .15), THREE.MathUtils.clamp(-dy * .18, -.09, .09)); }
   releaseDrag() { this.targetLook.set(0, 0); }
 
@@ -99,7 +153,12 @@ export class ShelterEngine implements LiveSceneEngine {
   dispose() {
     if (this.disposed) return;
     this.disposed = true; this.stop();
+    cancelAnimationFrame(this.demandRaf); this.demandRaf = 0;
+    const gl = this.renderer.getContext() as WebGL2RenderingContext;
+    if (typeof gl.deleteSync === 'function') this.fences.forEach(fence => gl.deleteSync(fence));
+    this.fences = [];
     this.canvas.removeEventListener('webglcontextlost', this.contextLost);
+    this.post?.dispose(); this.post = null;
     this.recipe?.dispose?.();
     const geometries = new Set<THREE.BufferGeometry>();
     const materials = new Set<THREE.Material>(); const textures = new Set<THREE.Texture>();

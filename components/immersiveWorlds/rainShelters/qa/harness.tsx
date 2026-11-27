@@ -5,6 +5,7 @@ import GardenWindowWorld from '../GardenWindowWorld';
 import MonsoonPorchWorld from '../MonsoonPorchWorld';
 import SummerStormWorld from '../SummerStormWorld';
 import type { ShelterInteraction, WorldKind } from '../engine/types';
+import { setShelterDirectRendering } from '../engine/ShelterEngine';
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './harness.css';
 
@@ -12,6 +13,8 @@ const worlds = { tent: RainTentWorld, window: GardenWindowWorld, porch: MonsoonP
 const query = new URLSearchParams(window.location.search);
 const selected = query.get('world');
 const world: WorldKind = selected && selected in worlds ? selected as WorldKind : 'tent';
+// Before/after comparisons: `post=off` keeps the previous direct renderer path.
+if (query.get('post') === 'off') setShelterDirectRendering(true);
 
 function Harness() {
   const [active, setActive] = useState(query.get('paused') !== '1');

@@ -326,9 +326,17 @@ const bump = (fn: string, scale: string) => /* glsl */ `
 }`;
 
 /** Cracked concrete farm road: slab joints, hairline cracks, tyre polish, crumbling edges with moss, damp patches and puddles that mirror the sky. */
-export function createRoadMaterial() {
+export function createRoadMaterial(lamps: { positions: THREE.Vector3[]; colors: THREE.Vector3[] }) {
   const material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .7, metalness: 0 });
-  return worldPatch(material, 'road-v2', `${PATH_GLSL}
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    shader.uniforms.uRoadLamp = { value: lamps.positions };
+    shader.uniforms.uRoadLampColor = { value: lamps.colors };
+  };
+  return worldPatch(material, 'road-v3', `${PATH_GLSL}
+uniform vec3 uRoadLamp[3];
+uniform vec3 uRoadLampColor[3];
 float roadLateral(vec3 p) { return (p.x - ruralPathX(p.z)) / ${ROAD_HALF.toFixed(3)}; }
 float roadAlong(vec3 p) { return -p.z; }
 // Map cracking: edges of an irregular cell pattern, only where the slab has failed.
@@ -380,24 +388,32 @@ float rLat = roadLateral(rp);
 float rAlong = roadAlong(rp);
 float rSlab = floor(rAlong / 4.8 + 0.5);
 vec3 rSlabTone = bwHash3(vec3(rSlab, 7.0, 1.0));
-vec3 concrete = mix(vec3(0.44, 0.43, 0.4), vec3(0.56, 0.55, 0.51), rSlabTone.x);
+vec3 concrete = mix(vec3(0.33, 0.325, 0.3), vec3(0.43, 0.42, 0.39), rSlabTone.x);
 concrete *= 0.86 + 0.18 * bwFbm3(rp * vec3(0.6, 1.0, 0.25) + rSlabTone * 11.0);
+concrete *= 1.0 - 0.28 * smoothstep(-0.1, 0.45, bwFbm3(rp * vec3(0.18, 1.0, 0.12) + 13.0));
 // Aggregate speckle and fine pores.
 float speck = bwValue(rp * 61.0);
 concrete *= 0.92 + 0.16 * smoothstep(0.55, 0.95, speck) - 0.08 * smoothstep(0.45, 0.05, speck);
-// Tyre tracks are worn darker and smoother; the crown between them collects grit.
-float track = exp(-pow((abs(rLat) - 0.52) / 0.17, 2.0));
-concrete *= 1.0 - 0.13 * track;
+// Tyre tracks are worn darker and smoother, stained with soil; the crown between them collects grit.
+float track = exp(-pow((abs(rLat) - 0.52) / 0.15, 2.0)) * (0.75 + 0.25 * bwNoise(vec3(rp.x * 3.0, 0.0, rp.z * 0.4)));
+concrete *= 1.0 - 0.4 * track;
+concrete = mix(concrete, concrete * vec3(0.92, 0.88, 0.82), track * 0.5);
 // Joints, cracks and the crumbling edge hold soil and moss.
 float joint = 1.0 - smoothstep(0.0, 0.03, abs(fract(rAlong / 4.8 + 0.5) - 0.5) * 4.8);
 float crack = roadCrack(rp);
 float edge = smoothstep(0.82, 1.0, abs(rLat));
+// Old repairs: black crack sealant poured along joints and the worst cracks, a little proud and glossy.
+float sealed = max(joint, crack * smoothstep(0.1, 0.4, bwNoise(vec3(rp.x * 0.5, 7.0, rp.z * 0.5))));
+float sealWidth = 1.0 - smoothstep(0.0, 0.06, abs(fract(rAlong / 4.8 + 0.5) - 0.5) * 4.8);
+float sealant = max(sealWidth * step(0.3, bwHash3(vec3(floor(rAlong / 4.8 + 0.5), 3.0, 1.0)).x), crack * smoothstep(0.2, 0.5, bwNoise(vec3(rp.x * 0.5, 7.0, rp.z * 0.5))));
 float soil = max(max(joint, crack), edge * smoothstep(-0.2, 0.4, bwFbm3(rp * 1.6)));
 float moss = soil * smoothstep(-0.1, 0.5, bwNoise(rp * 2.3 + 5.0));
 concrete = mix(concrete, vec3(0.1, 0.085, 0.07), soil * 0.75);
 concrete = mix(concrete, vec3(0.08, 0.11, 0.05), moss * 0.7);
+concrete = mix(concrete, vec3(0.022, 0.021, 0.02), sealant * 0.92);
 // Damp dark patches and puddles.
-float damp = smoothstep(0.0, 0.5, bwFbm3(rp * vec3(0.4, 1.0, 0.18) + 2.0)) * 0.6 + edge * 0.4;
+// Damp toward the paddy edges (capillary water) and in low patches.
+float damp = smoothstep(0.0, 0.5, bwFbm3(rp * vec3(0.4, 1.0, 0.18) + 2.0)) * 0.5 + smoothstep(0.6, 1.0, abs(rLat)) * 0.6;
 float rPuddle = roadPuddle(rp);
 concrete *= 1.0 - damp * 0.3 - roadPuddleHalo(rp) * 0.35;
 concrete = mix(concrete, concrete * 0.32, rPuddle);
@@ -406,7 +422,27 @@ diffuseColor.rgb *= concrete;`)
 roughnessFactor = mix(0.78, 0.55, track) - damp * 0.3;
 roughnessFactor = mix(roughnessFactor, 0.95, soil * 0.6);
 roughnessFactor = mix(roughnessFactor, roughnessFactor * 0.55, roadPuddleHalo(rp));
+roughnessFactor = mix(roughnessFactor, 0.32, sealant);
 roughnessFactor = mix(roughnessFactor, 0.03, rPuddle);`)
+      .replace('#include <lights_physical_fragment>', `#include <lights_physical_fragment>
+{
+  // Rough concrete is mostly matte; damp patches, sealant and puddles keep their sheen.
+  float specK = mix(0.28, 1.0, max(max(rPuddle, sealant * 0.7), damp * 0.45));
+  material.specularColor *= specK; material.specularColorBlended *= specK; material.specularF90 *= specK;
+}`)
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+{
+  // Puddles mirror the farmhouse windows and yard lamp as wavering streaks.
+  vec3 rV = normalize(cameraPosition - vRwWorld);
+  vec3 rR = reflect(-rV, vec3(0.0, 1.0, 0.0));
+  float rF = 0.02 + 0.98 * pow(1.0 - max(rV.y, 0.0), 5.0);
+  vec3 lampR = vec3(0.0);
+  for (int i = 0; i < 3; i++) {
+    float a2 = 2.0 * (1.0 - dot(rR, normalize(uRoadLamp[i] - vRwWorld)));
+    lampR += uRoadLampColor[i] * (exp(-a2 / 0.00002) * 1.5 + exp(-a2 / 0.0008) * 0.012);
+  }
+  totalEmissiveRadiance += lampR * rF * rPuddle;
+}`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
 {
   float bE = 0.008;
@@ -440,6 +476,25 @@ diffuseColor.rgb *= earth;`)
 roughnessFactor = mix(0.92, 0.3, wetLine);`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
 ${bump('earthHeight', '0.004')}`);
+  });
+}
+
+/** The wooded hill's surface where crowns thin out: a lumpy, matte canopy rather than bare ground. */
+export function createCanopySurfaceMaterial() {
+  const material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 1 });
+  return worldPatch(material, 'canopy-surface', `
+float canopyLumps(vec3 p) { return bwFbm3(p * 0.32) * 0.7 + bwNoise(p * 1.3) * 0.3; }`, shader => {
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <color_fragment>', `#include <color_fragment>
+{
+  float l = canopyLumps(vRwWorld);
+  vec3 c = mix(vec3(0.016, 0.026, 0.016), vec3(0.04, 0.055, 0.03), smoothstep(-0.4, 0.5, l));
+  diffuseColor.rgb *= c * (0.8 + 0.4 * bwValue(vRwWorld * 2.1));
+}`)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+${bump('canopyLumps', '0.6')}`)
+      .replace('#include <lights_physical_fragment>', `#include <lights_physical_fragment>
+material.specularColor *= 0.15; material.specularColorBlended *= 0.15; material.specularF90 *= 0.15;`);
   });
 }
 
@@ -676,7 +731,7 @@ export function plantMaterial(key: string, time: { value: number }, o: { height:
   return applyFoliageShading(material, {
     key: `rural-${key}`,
     wind: { time, mode: 'height', height: o.height, sway: o.sway, flutter: o.flutter ?? o.sway * .3, direction: [1, -.35], speed: .8 },
-    translucency: { tint: o.translucency ?? '#cde68a', back: .25, forward: .5 },
+    translucency: { tint: o.translucency ?? '#cde68a', back: .2, forward: .3 },
   });
 }
 
@@ -727,14 +782,16 @@ export function cardCrown(seed: number, cards: number, radius: THREE.Vector3, si
     const bitangent = facing.clone().cross(tangent).normalize();
     const s = size * (.75 + random() * .5), half = s * .5;
     const v0 = positions.length / 3, variant = random() < .5 ? 0 : .5;
-    const depth = Math.min(1, centre.clone().divide(radius).length() + .1);
-    const shade = .22 + .78 * Math.pow(Math.max(0, out.y * .5 + .5), 1.3) * Math.pow(depth, 1.4);
     for (const [cx, cy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
       const p = centre.clone().addScaledVector(tangent, cx * half).addScaledVector(bitangent, cy * half);
       positions.push(p.x, p.y, p.z);
-      const n = out;
+      const local = p.clone().divide(radius);
+      const n = new THREE.Vector3(local.x, local.y + .3, local.z).normalize();
       normals.push(n.x, n.y, n.z);
       uvs.push(variant + (cx + 1) * .25, (cy + 1) * .5);
+      // Occlusion grows smoothly toward the crown core and its underside.
+      const depth = THREE.MathUtils.clamp(local.length(), 0, 1.15);
+      const shade = (.16 + .84 * THREE.MathUtils.smoothstep(depth, .2, 1.05)) * (.55 + .45 * THREE.MathUtils.clamp(n.y * .5 + .5, 0, 1));
       colors.push(shade, shade, shade);
     }
     indices.push(v0, v0 + 1, v0 + 2, v0, v0 + 2, v0 + 3);
@@ -785,7 +842,8 @@ uniform float uMist;
 void main() {
   vec3 ro, rd; float surface;
   bwSceneRay(vUv, ro, rd, surface);
-  float maxT = min(surface, 420.0);
+  // Sky pixels stop at 160 m: the dome already carries the distant glow, and silhouettes keep clean edges.
+  float maxT = min(surface, 160.0);
   float cosT = dot(rd, uMoonDir);
   float phase = (0.4 * bwPhase(cosT, 0.5) + 0.6 * bwPhase(cosT, 0.05)) * 12.5663706;
   float jitter = bwIgn(gl_FragCoord.xy);
@@ -799,9 +857,10 @@ void main() {
     vec3 p = ro + rd * t;
     float haze = uHaze * exp(-max(p.y, 0.0) / 14.0);
     // Thin ground mist lies over the flooded paddies, drifting slowly, thinner over the road.
-    float drift = smoothstep(0.3, 0.75, bwValue(p * vec3(0.09, 0.6, 0.12) + vec3(uTime * 0.025, 0.0, uTime * 0.01)));
-    float paddy = smoothstep(-44.0, -36.0, p.z) * smoothstep(0.8, 2.6, abs(p.x - ruralPathX(p.z)));
-    float mist = uMist * exp(-max(p.y, 0.0) / 0.55) * (0.15 + 0.85 * drift) * (0.25 + 0.75 * paddy) * smoothstep(3.0, 14.0, t);
+    vec3 mq = p * vec3(0.075, 0.5, 0.11) + vec3(uTime * 0.018, 0.0, uTime * 0.007);
+    float drift = smoothstep(0.52, 0.85, bwValue(mq) * 0.65 + bwValue(mq * 2.3 + 4.1) * 0.35);
+    float paddy = smoothstep(-37.0, -33.0, p.z) * smoothstep(0.8, 2.6, abs(p.x - ruralPathX(p.z)));
+    float mist = uMist * exp(-max(p.y, 0.0) / 0.4) * drift * paddy * smoothstep(3.0, 12.0, t);
     float density = haze + mist;
     vec3 toLamp = uLamp - p;
     vec3 lamp = uLampColor / (1.0 + dot(toLamp, toLamp) * 0.9);

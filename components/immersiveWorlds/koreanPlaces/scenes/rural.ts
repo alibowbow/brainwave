@@ -7,12 +7,12 @@ import { FULLSCREEN_VERTEX } from '../../shared/render/targets';
 import type { VolumeEffect } from '../../shared/render/hdrPipeline';
 import { buildTree, concatGeometries, type TreeBuild } from '../../shared/render/treeGeometry';
 import { applyFoliageShading } from '../../shared/render/foliageShading';
-import { bambooSprayTexture, broadleafClusterTexture } from '../../shared/render/foliageTextures';
+import { bambooSprayTexture, broadleafClusterTexture, litterTexture } from '../../shared/render/foliageTextures';
 import { applyBarkSurface } from '../../shared/render/barkSurface';
 import { fbm3, seeded } from '../../shared/render/noise';
 import { bakeStatic, canvasTexture, glowTexture, lathe } from './kit';
 import {
-  cardCrown, cloudUniforms, faceCards, createCloudDome, createEarthMaterial, createPaddyWaterMaterial, createRenderMaterial, createRoadMaterial,
+  cardCrown, cloudUniforms, createCanopySurfaceMaterial, faceCards, createCloudDome, createEarthMaterial, createPaddyWaterMaterial, createRenderMaterial, createRoadMaterial,
   createRoofTileMaterial, createTimberMaterial, fleabane, grassClump, inPaddy, PADDY_BACK, pathX, pineNeedleTexture, plantMaterial, riceHill, rosette,
   RIDGES, ROAD_HALF, RURAL_VOLUME_FRAGMENT, skylineTexture, YARD,
 } from './ruralParts';
@@ -31,6 +31,8 @@ const moonDirection = (azimuth: number, elevation: number) => new THREE.Vector3(
 const MOON_ELEVATION = 18;
 const MOON_COLOR = new THREE.Color('#c9d8ff');
 const ROAD_Y = .34;
+/** The farmyard sits on a raised plot above the paddies. */
+const YARD_Y = .62;
 const roadCrown = (lateral: number) => ROAD_Y + .05 * (1 - lateral * lateral);
 
 export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
@@ -81,7 +83,7 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
     let y = -.12;
     const back = smooth(-z, -PADDY_BACK, -PADDY_BACK + 3);
     y = THREE.MathUtils.lerp(y, .3 + hillRise(x, z), back);
-    y = THREE.MathUtils.lerp(y, .33, yardMask(x, z));
+    y = THREE.MathUtils.lerp(y, YARD_Y, yardMask(x, z));
     return y;
   };
   {
@@ -101,24 +103,27 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
   water.name = 'Paddy water'; scene.add(water);
 
   /* ---------------------------------------------------------------- road */
-  const roadMaterial = createRoadMaterial();
+  const lampPositions = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()], lampColors = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+  const roadMaterial = createRoadMaterial({ positions: lampPositions, colors: lampColors });
   const shoulderMaterial = createEarthMaterial('shoulder', { grass: .9, mud: 1 });
   {
     const columns = 15, positions: number[] = [], indices: number[] = [];
     const sPositions: number[] = [], sIndices: number[] = [];
     const rows: number[] = [];
-    for (let z = 12.5; z > -25.5; z -= z > -2 ? .25 : .5) rows.push(z);
+    for (let z = 12.5; z > -23.6; z -= z > -2 ? .25 : .5) rows.push(z);
+    // The last few metres climb onto the raised yard.
+    const ramp = (z: number) => (YARD_Y - ROAD_Y + .04) * smooth(-z, 18.5, 23.4);
     rows.forEach((z, i) => {
       const cx = pathX(z), crumble = (s: number) => (random() - .5) * .07 + Math.sin(z * 3.1 + s) * .03;
       const left = -1 + crumble(1) / ROAD_HALF, right = 1 + crumble(2) / ROAD_HALF;
       for (let c = 0; c < columns; c++) {
         const lat = THREE.MathUtils.lerp(left, right, c / (columns - 1));
-        positions.push(cx + lat * ROAD_HALF, roadCrown(lat) + (random() - .5) * .004, z);
+        positions.push(cx + lat * ROAD_HALF, roadCrown(lat) + ramp(z) + (random() - .5) * .004, z);
       }
       // Shoulders: the slab edge drops, then a grassy bank slopes into the paddy.
       for (const [side, edge] of [[-1, left], [1, right]] as const) {
         const base = cx + edge * ROAD_HALF;
-        const ring = [[0, roadCrown(edge) - .005], [.01, ROAD_Y - .1], [.35 + random() * .1, ROAD_Y - .17 + random() * .03], [.75 + random() * .15, .08], [1.05 + random() * .2, -.08]];
+        const ring = [[0, roadCrown(edge) - .005 + ramp(z)], [.01, ROAD_Y - .1 + ramp(z)], [.35 + random() * .1, ROAD_Y - .17 + random() * .03 + ramp(z) * .8], [.75 + random() * .15, .08 + ramp(z) * .5], [1.05 + random() * .2, -.08]];
         for (const [out, y] of ring) sPositions.push(base + side * out, y, z);
       }
       if (i < rows.length - 1) {
@@ -195,6 +200,26 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
     });
   }
 
+  /* ------------------------------------------------------ fallen leaves */
+  {
+    const leafMap = own(litterTexture({ seed: 71, colors: ['#5f4a33', '#6e5a37', '#3f3324', '#74663f'] }));
+    const card = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2);
+    const uv = card.attributes.uv as THREE.BufferAttribute;
+    const leaves = new THREE.InstancedMesh(card, new THREE.MeshStandardMaterial({ map: leafMap, roughness: .8, alphaTest: .5, side: THREE.DoubleSide }), 140);
+    const m = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), pos = new THREE.Vector3();
+    for (let i = 0; i < 140; i++) {
+      const z = 9 - Math.pow(random(), 1.6) * 30, lat = (random() * 2 - 1) * (random() < .6 ? 1 : .5), x = pathX(z) + lat * ROAD_HALF;
+      pos.set(x, roadCrown(lat) + .006, z);
+      q.setFromEuler(new THREE.Euler((random() - .5) * .3, random() * Math.PI * 2, (random() - .5) * .3));
+      const size = .07 + random() * .06; sc.set(size, 1, size);
+      leaves.setMatrixAt(i, m.compose(pos, q, sc));
+      leaves.setColorAt(i, new THREE.Color().setHSL(.08 + random() * .05, .4, .35 + random() * .2));
+    }
+    // One quadrant of the 2x2 leaf atlas per card.
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * .5, uv.getY(i) * .5);
+    leaves.receiveShadow = true; leaves.name = 'Fallen leaves'; scene.add(leaves); disposables.push(leaves);
+  }
+
   /* ------------------------------------------------ grass and wildflowers */
   {
     const grassMaterial = plantMaterial('ridge-grass', time, { height: .45, sway: .03, translucency: '#b8d77a', roughness: .6 });
@@ -223,7 +248,17 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
       put(d < 16 ? near : far, x, y, z, .7 + random() * .7 + (out > .8 ? .2 : 0));
       if (random() < .1) put(flowers, x + side * .2, y, z, .75 + random() * .45);
       // Weeds pushing through the cracked slab edge.
-      if (random() < .08) put(near, pathX(z) + side * (ROAD_HALF - .05 - random() * .12), ROAD_Y + .02, z, .35 + random() * .25);
+      if (random() < .22) put(d < 16 ? near : far, pathX(z) + side * (ROAD_HALF - .04 - random() * .14), ROAD_Y + .01, z, .3 + random() * .35);
+    }
+    // Grass in the transverse slab joints (every 4.8 m), thickest toward the edges.
+    for (let k = 0; k < 9; k++) {
+      const z = 2.4 - 4.8 * k;
+      for (let i = 0; i < 14; i++) {
+        const lat = (random() * 2 - 1), x = pathX(z) + lat * ROAD_HALF;
+        if (Math.abs(lat) < .55 && random() < .7) continue;
+        if (!inView(x, z, 1)) continue;
+        put(Math.abs(z - eye.z) < 16 ? near : far, x, roadCrown(lat) - .01, z + (random() - .5) * .03, .25 + random() * .3 * Math.abs(lat));
+      }
     }
     const parts: Array<[THREE.BufferGeometry, THREE.Material, THREE.Matrix4[], string]> = [
       [grassClump(21, 13, .36), grassMaterial, near, 'Grass near'], [grassClump(22, 6, .36), grassMaterial, far, 'Grass far'], [fleabane(23), flowerMaterial, flowers, 'Fleabane'],
@@ -245,8 +280,8 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
   const massAtlas = own(broadleafClusterTexture({ seed: 43, palette: { base: '#34502a', light: '#3f5e30', dark: '#283d1e', stem: '#3a3125' }, round: .5, leafScale: .55, density: 2.4 }));
   const pineAtlas = own(pineNeedleTexture(77));
   const foliageMaterials: THREE.MeshStandardMaterial[] = [];
-  const foliage = (map: THREE.Texture, key: string, wind: boolean, tint = '#c4e08a', transmit = 1) => applyFoliageShading(own2(new THREE.MeshPhysicalMaterial({ map, vertexColors: true, side: THREE.DoubleSide, alphaTest: .5, alphaToCoverage: true, roughness: .82, envMapIntensity: .3, specularIntensity: .3 })), {
-    key: `rural-${key}`, sharedNormals: true, coverage: true, translucency: { tint, back: .1 * transmit, forward: .35 * transmit },
+  const foliage = (map: THREE.Texture, key: string, wind: boolean, tint = '#c4e08a', transmit = 1) => applyFoliageShading(own2(new THREE.MeshPhysicalMaterial({ map, vertexColors: true, side: THREE.DoubleSide, alphaTest: .5, alphaToCoverage: true, roughness: .92, envMapIntensity: .3, specularIntensity: .12 })), {
+    key: `rural-${key}`, sharedNormals: true, coverage: true, translucency: { tint, back: .05 * transmit, forward: .06 * transmit },
     wind: wind ? { time, mode: 'attribute', sway: .05, flutter: .012, speed: .6 } : { time, mode: 'height', height: 6, sway: .02, flutter: .006, speed: .5 },
   });
   const crownMaterial = foliage(massAtlas, 'hill-crowns', false, '#b4cf86', .5);
@@ -254,14 +289,17 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
   const barkMaterial = applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .9 }), { key: 'rural-bark', plate: '#5c574e', fissure: '#1d1915', lichen: { color: '#8c9478', amount: .25 }, moss: { color: '#34461f', amount: .3 } });
   // The village grove: an old zelkova by the lane, a persimmon in the yard and oaks behind the house.
   const groveSpecs: Array<[number, number, number, number, 'broadleaf' | 'column', number]> = [
-    [-16, -44, 16.5, .75, 'broadleaf', .6], [14.2, -28.5, 6.8, .2, 'broadleaf', .45], [21, -44, 12, .4, 'broadleaf', .45],
+    [-16, -42, 19, .85, 'broadleaf', .68], [14.2, -28.5, 6.8, .2, 'broadleaf', .45], [21, -44, 12, .4, 'broadleaf', .45],
     [3.5, -45.5, 13, .42, 'column', .3], [-30, -46, 10.5, .35, 'broadleaf', .45], [33, -42, 9, .3, 'broadleaf', .45],
   ];
   const grove: TreeBuild[] = groveSpecs.map(([x, z, h, r, form, spread], i) => buildTree({
     seed: 300 + i, base: new THREE.Vector3(x, groundY(x, z) - .1, z), height: h, radius: r, form,
-    gnarl: .35, flare: .6, crownStart: i === 0 ? .32 : .4, limbs: i === 0 ? 8 : 6, levels: i < 2 ? 2 : 1, children: 3, spread, curl: .25,
+    gnarl: i === 0 ? .5 : .35, flare: .6, crownStart: i === 0 ? .3 : .4, limbs: i === 0 ? 7 : 6, levels: i < 2 ? 2 : 1, children: 3, spread, curl: .25,
     radial: i === 0 ? 14 : 9, ringsPerMetre: 1.5, displace: 0, flex: .25,
-    leaves: { cardsPerTwig: i === 0 ? 11 : 12, size: i === 1 ? .9 : 1.25, reach: .8, crownNormals: 1, shade: [.2, 1], fill: .25 },
+    // The zelkova's leaves gather in clumps at the limb ends, with sky between them.
+    leaves: i === 0
+      ? { cardsPerTwig: 10, size: .95, reach: .45, crownNormals: 1, shade: [.15, 1], fill: 0 }
+      : { cardsPerTwig: 14, size: i === 1 ? .8 : 1.0, reach: .8, crownNormals: 1, shade: [.2, 1], fill: .25 },
   }));
   grove.forEach(t => skylineSamples.push([t.crown.centre.x, t.crown.centre.y + t.crown.radius.y * .85, t.crown.centre.z, t.crown.radius.x * .9]));
   {
@@ -303,7 +341,7 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
   }
   // The wooded hill behind the village: oak and chestnut crowns with red pines standing above them on the crest.
   const hillY = (x: number, z: number) => {
-    const crest = 15 + 6 * Math.sin(x * .021 + .7) + 4 * Math.sin(x * .047 + 2) + fbm3(x * .03, 7, 0, 3) * 5;
+    const crest = 15 + 6 * Math.sin(x * .021 + .7) + 4 * Math.sin(x * .047 + 2) + fbm3(x * .03, 7, 0, 3) * 5 - 9 * Math.exp(-(((x + 30) / 13) ** 2));
     const front = smooth(-z, 46, 82), back = 1 - smooth(-z, 92, 125);
     return groundY(x, Math.max(z, -60)) * (1 - front) + crest * front * back + Math.max(0, -z - 46) * .04;
   };
@@ -315,13 +353,13 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
     for (const z of zs) for (const x of xs) positions.push(x, hillY(x, z), z);
     for (let r = 0; r < zs.length - 1; r++) for (let c = 0; c < xs.length - 1; c++) { const a = r * xs.length + c, b = a + 1, d = a + xs.length, e = d + 1; indices.push(a, b, d, b, e, d); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); g.setIndex(indices); g.computeVertexNormals();
-    const hill = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: '#101a10', roughness: 1 })); hill.name = 'Wooded hill'; scene.add(hill);
+    const hill = new THREE.Mesh(g, createCanopySurfaceMaterial()); hill.name = 'Wooded hill'; scene.add(hill);
   }
   {
     const toViewer = new THREE.Vector3(0, .12, 1).normalize();
     const archetypes = [
-      cardCrown(51, 110, new THREE.Vector3(3.2, 2.6, 3.2), 1.35, { view: toViewer }), cardCrown(52, 90, new THREE.Vector3(2.4, 2.9, 2.4), 1.25, { view: toViewer }),
-      cardCrown(53, 60, new THREE.Vector3(2.2, 1.6, 2.2), 1.2, { view: toViewer }), cardCrown(54, 64, new THREE.Vector3(3.4, 1.4, 3.0), 1.3, { pads: 4, flat: .75, view: toViewer, facing: .45 }),
+      cardCrown(51, 170, new THREE.Vector3(3.2, 2.6, 3.2), .95, { view: toViewer }), cardCrown(52, 140, new THREE.Vector3(2.4, 2.9, 2.4), .9, { view: toViewer }),
+      cardCrown(53, 95, new THREE.Vector3(2.2, 1.6, 2.2), .85, { view: toViewer }), cardCrown(54, 90, new THREE.Vector3(3.4, 1.4, 3.0), 1.0, { pads: 4, flat: .75, view: toViewer, facing: .45 }),
     ];
     const lists: THREE.Matrix4[][] = archetypes.map(() => []), tints: THREE.Color[][] = archetypes.map(() => []);
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3();
@@ -340,10 +378,12 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
       const jx = x + (random() - .5) * 3.2, jz = z + (random() - .5) * 3;
       if (Math.abs(jx - eye.x) > (eye.z - jz) * 1.25 + 8) continue;
       const crest = -jz > 70;
-      if (random() < .07) continue;
+      // Stands and clearings: big masses broken by gaps, not an even texture.
+      const stand = fbm3(jx * .025, 3, jz * .04, 3);
+      if (stand < -.28 && random() < .55) continue;
       const kind = crest && random() < .18 ? 3 : random() < .45 ? 0 : random() < .6 ? 1 : 2;
       const emergent = random() < .1 ? 1.5 + random() * .5 : 1;
-      plant(jx, jz, kind, (.85 + random() * .5) * emergent, kind === 3 ? 2.5 + random() * 3 : (emergent - 1) * 6);
+      plant(jx, jz, kind, (.7 + random() * .4 + Math.max(0, stand) * 1.2) * emergent, kind === 3 ? 2.5 + random() * 3 : (emergent - 1) * 6);
     }
     // Low shrubs and saplings close the hill foot behind the houses.
     for (let x = -75; x < 75; x += 2.2) plant(x + (random() - .5) * 1.5, -40.5 - random() * 4, 2, .55 + random() * .35);
@@ -384,7 +424,12 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
   ridgeLayer(-520, 70, 40, 16, '#1a2630', 2.9);
 
   /* ----------------------------------------------------------- farmhouse */
-  const house = new THREE.Group(); house.position.set(7.4, .33, -31.2); house.rotation.y = -.32; scene.add(house);
+  const house = new THREE.Group(); house.position.set(7.4, YARD_Y, -31.2); house.rotation.y = -.32; scene.add(house);
+  {
+    // Packed earth of the yard: worn paler where people walk, darker by the walls.
+    const yard = new THREE.Mesh(new THREE.PlaneGeometry(YARD.x1 - YARD.x0 - .6, YARD.z1 - YARD.z0 - .6, 24, 24).rotateX(-Math.PI / 2), createEarthMaterial('yard', { grass: .2, packed: .9 }));
+    yard.position.set((YARD.x0 + YARD.x1) / 2, YARD_Y + .015, (YARD.z0 + YARD.z1) / 2); yard.receiveShadow = true; yard.name = 'Yard'; scene.add(yard);
+  }
   const plaster = createRenderMaterial('#d8d2c2', 'house', .9);
   const plinthMaterial = createRenderMaterial('#6f6c66', 'plinth', .2);
   const postWood = createTimberMaterial('posts', 'y', '#5a4634');
@@ -449,6 +494,16 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
   // Rafter tails under the eave, parallel to the roof.
   const rafterZ = D / 2 - .3 + eave * .5, rafterY = ridgeY - (rafterZ + .3) * Math.tan(pitch) - .16;
   for (let x = -W / 2 - .5; x <= W / 2 + .5; x += .45) box(.08, .1, eave + .3, darkWood, x, rafterY, rafterZ).rotation.x = pitch;
+  // Eave gutter and a downpipe at the corner.
+  const gutterY = ridgeY - Math.tan(pitch) * run - .2, gutterZ = -.3 + run + .02;
+  const gutter = new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, W + 1.2, 10, 1, true, 0, Math.PI), new THREE.MeshStandardMaterial({ color: '#7d8382', roughness: .45, metalness: .6, side: THREE.DoubleSide }));
+  gutter.rotation.z = Math.PI / 2; gutter.rotation.x = Math.PI; gutter.position.set(0, gutterY, gutterZ); gutter.castShadow = true; house.add(gutter);
+  const downpipe = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, gutterY, 8), gutter.material); downpipe.position.set(W / 2 + .5, gutterY / 2, gutterZ - .05); house.add(downpipe);
+  // A low bench under the eave beside the door, a pair of rubber shoes on the stepping stone.
+  box(1.5, .05, .32, boardWood, -3.6, BASE + .42 + .02, D / 2 + .9);
+  for (const x of [-4.2, -3.0]) box(.06, .44, .26, postWood, x, BASE + .2, D / 2 + .9);
+  box(1.0, .14, .5, plinthMaterial, -.8, BASE - .05, D / 2 + .95);
+  for (const dx of [-.12, .12]) { const shoe = new THREE.Mesh(new THREE.CapsuleGeometry(.045, .16, 4, 8), new THREE.MeshStandardMaterial({ color: '#d9d4c8', roughness: .55 })); shoe.rotation.x = Math.PI / 2; shoe.position.set(-.8 + dx, BASE + .06, D / 2 + .95); shoe.scale.set(1, 1, .6); house.add(shoe); }
   // A bare bulb under the eave by the door: the yard light.
   const bulbPosition = new THREE.Vector3(1.45, BASE + WALL - .5, D / 2 + .35);
   const bulbMaterial = new THREE.MeshBasicMaterial(); bulbMaterial.color.setRGB(60, 36, 15, THREE.LinearSRGBColorSpace);
@@ -456,13 +511,16 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
   const shade = new THREE.Mesh(lathe([[.03, .1], [.07, .07], [.15, -.01], [.155, -.02]], 20), new THREE.MeshStandardMaterial({ color: '#2f4a3c', roughness: .45, metalness: .3, side: THREE.DoubleSide }));
   shade.position.copy(bulbPosition).add(new THREE.Vector3(0, .02, 0)); house.add(shade);
   box(.02, .42, .02, darkWood, bulbPosition.x, bulbPosition.y + .3, bulbPosition.z);
-  const lamp = new THREE.PointLight('#ffb067', 9, 20, 1.5); lamp.position.copy(bulbPosition).add(new THREE.Vector3(0, -.12, .05)); house.add(lamp);
+  const lamp = new THREE.PointLight('#ffb067', 11, 22, 1.5); lamp.position.copy(bulbPosition).add(new THREE.Vector3(0, -.12, .05)); house.add(lamp);
   const doorGlow = new THREE.PointLight('#ff9e52', 4, 11, 1.6); doorGlow.position.set(-.8, BASE + 1.2, D / 2 + .7); house.add(doorGlow);
   const glow = own(glowTexture(64, 2.2));
   const bulbHalo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color: '#ffbf7a', transparent: true, opacity: .5, depthWrite: false, blending: THREE.AdditiveBlending }));
   bulbHalo.position.copy(bulbPosition); bulbHalo.scale.setScalar(.9); bulbHalo.userData.keep = true; house.add(bulbHalo);
   // 평상: a low wooden platform in the yard, and 장독대 jars on a stone stand.
-  const platform = new THREE.Group(); platform.position.set(-4.4, 0, D / 2 + 1.6); platform.rotation.y = .25; house.add(platform);
+  const platform = new THREE.Group(); platform.position.set(-3.2, 0, D / 2 + 2.4); platform.rotation.y = .3; house.add(platform);
+  // A folded blanket and a tray left on the platform.
+  box(.7, .06, .5, new THREE.MeshStandardMaterial({ color: '#6f4a52', roughness: .9 }), .4, .52, -.2, platform);
+  box(.42, .03, .3, boardWood, -.5, .5, .15, platform);
   for (let i = 0; i < 9; i++) box(2.1, .05, .17, boardWood, 0, .46, -.72 + i * .18, platform);
   for (const x of [-.95, .95]) for (const z of [-.7, .7]) box(.1, .44, .1, postWood, x, .22, z, platform);
   const jarMaterial = new THREE.MeshPhysicalMaterial({ color: '#3a2418', roughness: .32, clearcoat: .8, clearcoatRoughness: .25 });
@@ -595,9 +653,9 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
     lampWorld.copy(bulbPosition).applyMatrix4(house.matrixWorld);
     doorWorld.set(-.8, BASE + 1.3, doorZ + .05).applyMatrix4(house.matrixWorld);
     sideWorld.set(W / 2 + .02, BASE + 1.85, -.8).applyMatrix4(house.matrixWorld);
-    const positions = waterMaterial.uniforms.uLampPos.value as THREE.Vector3[], colors = waterMaterial.uniforms.uLampColor.value as THREE.Vector3[];
-    positions[0].copy(lampWorld); positions[1].copy(doorWorld); positions[2].copy(sideWorld);
-    colors[0].set(16, 9.5, 4.2); colors[1].set(3.2, 2.0, 1.0); colors[2].set(1.6, 1.0, .5);
+    waterMaterial.uniforms.uLampPos.value = lampPositions; waterMaterial.uniforms.uLampColor.value = lampColors;
+    lampPositions[0].copy(lampWorld); lampPositions[1].copy(doorWorld); lampPositions[2].copy(sideWorld);
+    lampColors[0].set(16, 9.5, 4.2); lampColors[1].set(3.2, 2.0, 1.0); lampColors[2].set(1.6, 1.0, .5);
   };
   // Radiance probe: the same night sky, the moon's glow and the dark treeline, as an HDR equirect.
   let environment: { texture: THREE.Texture; dispose(): void } | null = null;
@@ -685,7 +743,7 @@ export function createRuralScene(renderer?: THREE.WebGLRenderer): SceneContent {
       volumeUniforms = {
         uMoonDir: { value: moonDir.clone() }, uMoonColor: { value: new THREE.Vector3(MOON_COLOR.r, MOON_COLOR.g, MOON_COLOR.b).multiplyScalar(.22) },
         uAmbient: { value: new THREE.Vector3(.008, .012, .022) }, uLamp: { value: lampWorld }, uLampColor: { value: new THREE.Vector3(1, .55, .22).multiplyScalar(.08) },
-        uHaze: { value: .001 }, uMist: { value: .013 },
+        uHaze: { value: .0011 }, uMist: { value: .03 },
       };
       return { material: new THREE.ShaderMaterial({ vertexShader: FULLSCREEN_VERTEX, fragmentShader: RURAL_VOLUME_FRAGMENT, depthTest: false, depthWrite: false, toneMapped: false, uniforms: volumeUniforms }) };
     },

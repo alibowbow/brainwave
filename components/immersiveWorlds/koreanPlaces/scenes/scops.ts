@@ -12,11 +12,11 @@ import { cardCrown, grassClump, plantMaterial } from './ruralParts';
 import { buildOwl, forestFloor, NIGHT_SKY_GLSL, oakBark } from './scopsParts';
 
 /** Toward the moon: low over the far ridge, up and to the left of the stream. */
-const MOON = new THREE.Vector3(-.17, .25, -.95).normalize();
+const MOON = new THREE.Vector3(-.07, .25, -.97).normalize();
 const MOON_COLOR = new THREE.Color('#a9c2ff');
 // Meanders right near the porch, then bends left under the moon so its light can lie on the water.
-const riverX = (z: number) => 3.3 + Math.sin((-z - 10) * .074) * 2.6 + Math.max(0, z + 12) * .22 - 9 * THREE.MathUtils.smoothstep(-z, 16, 45);
-const RIVER_GLSL = 'float riverX(float z) { return 3.3 + sin((-z - 10.0) * 0.074) * 2.6 + max(0.0, z + 12.0) * 0.22 - 9.0 * smoothstep(16.0, 45.0, -z); }';
+const riverX = (z: number) => 1.0 + Math.sin(-z * .11 - 1) * 1.1 - 5 * THREE.MathUtils.smoothstep(-z, 26, 50);
+const RIVER_GLSL = 'float riverX(float z) { return 1.0 + sin(-z * 0.11 - 1.0) * 1.1 - 5.0 * smoothstep(26.0, 50.0, -z); }';
 
 const SKY_FRAGMENT = /* glsl */ `
 ${KP_NOISE}
@@ -78,7 +78,7 @@ float foamAmount(vec2 p, vec2 f) {
     float down = dot(d, f), side = dot(d, across);
     float bow = exp(-pow((length(d) - r * 1.05) / (r * 0.25), 2.0)) * smoothstep(0.3 * r, -0.6 * r, down);
     float wake = exp(-side * side / (r * r * (0.5 + max(down, 0.0) * 0.8))) * smoothstep(0.0, r * 0.6, down) * exp(-max(down, 0.0) / (r * 5.0));
-    foam += bow * 0.9 + wake * 0.8;
+    foam += bow * 1.3 + wake * 1.1;
   }
   // Foam breaks into drifting flecks and lines.
   float flecks = smoothstep(0.05, 0.55, bwNoise(vec3(dot(p, across) * 7.0, dot(p, f) * 2.5 - uTime * 0.9, uTime * 0.15)) + 0.2);
@@ -106,13 +106,18 @@ void main() {
   float bank = 1.0 - smoothstep(0.1, 0.34, R.y + (canopy - 0.5) * 0.16);
   refl = mix(refl, vec3(0.003, 0.0045, 0.006), bank * 0.88);
   // Moon glitter: small facets on the moving surface flash where they face the moon.
-  vec2 cell = floor(vec2(dot(p, vec2(-f.y, f.x)) * 14.0, dot(p, f) * 6.0 - uTime * 2.2));
-  vec3 facet = bwHash3(vec3(cell, floor(uTime * 1.5)));
+  vec2 gq = vec2(dot(p, vec2(-f.y, f.x)) * 18.0, dot(p, f) * 7.0 - uTime * 2.2);
+  vec2 cell = floor(gq), inCell = fract(gq) - 0.5;
+  vec3 facet = bwHash3(vec3(cell, 4.0));
+  // Each facet lives a moment, then another takes its place: a soft spot, offset within its cell.
+  float life = sin(fract(uTime * (0.6 + facet.z) + facet.x) * 3.14159);
+  vec2 spotOffset = (facet.xy - 0.5) * 0.5;
+  float spot = exp(-dot((inCell - spotOffset) * vec2(2.6, 1.3), (inCell - spotOffset) * vec2(2.6, 1.3)) * 9.0) * life;
   vec3 nf = normalize(n + vec3((facet.x - 0.5) * 0.95, 0.0, (facet.y - 0.5) * 0.95));
   vec3 Rf = reflect(-V, nf);
-  float glitter = pow(max(dot(Rf, uMoonDir), 0.0), 110.0) * step(0.5, facet.z) / (1.0 + footprint * 12.0);
+  float glitter = pow(max(dot(Rf, uMoonDir), 0.0), 110.0) * spot * step(0.4, facet.z) / (1.0 + footprint * 10.0);
   float moonGlint = pow(max(dot(R, uMoonDir), 0.0), 900.0) * 6.0 + pow(max(dot(R, uMoonDir), 0.0), 60.0) * 0.14;
-  refl += vec3(0.75, 0.85, 1.0) * (moonGlint + glitter * 9.0) * canopy * (1.0 - bank * 0.5);
+  refl += vec3(0.75, 0.85, 1.0) * (moonGlint + glitter * 9.0) * mix(0.6, 1.0, canopy) * (1.0 - bank * 0.5);
   vec3 toLamp = uLantern - vWorld;
   float lamp = pow(max(dot(R, normalize(toLamp)), 0.0), 120.0) * 3.5 / (1.0 + dot(toLamp, toLamp) * 0.06);
   // Shallow, clear water over a stony bed near the banks.
@@ -232,7 +237,7 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
   });
   const stars = new THREE.Points(starGeo, starMat); stars.renderOrder = -9; stars.frustumCulled = false; scene.add(stars);
 
-  const hemi = new THREE.HemisphereLight('#2f4468', '#0b0d0a', .3); scene.add(hemi);
+  const hemi = new THREE.HemisphereLight('#3a5280', '#0b0d0a', .55); scene.add(hemi);
   const moonLight = new THREE.DirectionalLight(MOON_COLOR, 1.9);
   moonLight.target.position.set(0, 0, -6); moonLight.position.copy(moonLight.target.position).addScaledVector(MOON, 40);
   moonLight.castShadow = true; moonLight.shadow.mapSize.set(2048, 2048);
@@ -243,7 +248,7 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
   const envCtx = envCanvas.getContext('2d')!; const envGradient = envCtx.createLinearGradient(0, 0, 0, 128);
   envGradient.addColorStop(0, '#1b2740'); envGradient.addColorStop(.46, '#41506a'); envGradient.addColorStop(.52, '#1f2a24'); envGradient.addColorStop(1, '#0d100c');
   envCtx.fillStyle = envGradient; envCtx.fillRect(0, 0, 256, 128);
-  const moonGlow = envCtx.createRadialGradient(57, 54, 1, 57, 54, 16); moonGlow.addColorStop(0, 'rgba(200,215,255,.6)'); moonGlow.addColorStop(1, 'rgba(200,215,255,0)');
+  const moonGlow = envCtx.createRadialGradient(61, 54, 1, 61, 54, 16); moonGlow.addColorStop(0, 'rgba(200,215,255,.6)'); moonGlow.addColorStop(1, 'rgba(200,215,255,0)');
   envCtx.fillStyle = moonGlow; envCtx.fillRect(0, 0, 256, 128);
   const envTexture = new THREE.CanvasTexture(envCanvas); envTexture.colorSpace = THREE.SRGBColorSpace; envTexture.mapping = THREE.EquirectangularReflectionMapping;
   const checkedEnvironment = createCheckedEnvironment(renderer, envTexture, 'scops'); scene.environment = checkedEnvironment.texture; scene.environmentIntensity = .4;
@@ -254,7 +259,8 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
   const postWood = applyWood(new THREE.MeshStandardMaterial({ color: '#ffffff' }), { axis: 'y', light: '#5d4c3c', dark: '#33281f', rings: 9, roughness: [.7, .85], key: 'porch-post' });
   const tableWood = applyWood(new THREE.MeshStandardMaterial({ color: '#ffffff' }), { axis: 'x', light: '#7a5a3d', dark: '#3f2c1d', polish: 1, rings: 14, roughness: [.35, .5], key: 'scops-table' });
   const bark = oakBark('scops');
-  const stone = createRockMaterial('#8d8e86', { key: 'scops-stream-stone-v2', scale: 1.6, bump: 1.1, stainAmount: .12, cavity: .6, waterY: -.66, wetBand: .45, wetness: .25, dryRoughness: .62, wetRoughness: .07, algae: '#2e3a22', algaeAmount: .35, moss: { color: '#3b4a24', amount: .3 } });
+  const stone = createRockMaterial('#8d8e86', { key: 'scops-stream-stone-v3', scale: 1.6, bump: 1.1, stain: '#b4b5a2', stainAmount: .28, cavity: .6, waterY: -.66, wetBand: .14, wetness: 0, dryRoughness: .78, wetRoughness: .07, algae: '#2e3a22', algaeAmount: .35, moss: { color: '#3b4a24', amount: .3 } });
+  const mossyStone = createRockMaterial('#7d8076', { key: 'scops-stream-stone-moss', scale: 1.3, bump: 1.2, stain: '#a9ab98', stainAmount: .18, cavity: .65, waterY: -.66, wetBand: .14, wetness: 0, dryRoughness: .85, wetRoughness: .08, algae: '#2e3a22', algaeAmount: .45, moss: { color: '#41522a', amount: .7 } });
 
   /* ------------------------------------------------------------- porch */
   for (let i = 0; i < 19; i++) {
@@ -318,16 +324,24 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
   const water = add(staticRoot, riverGeo, waterMaterial, [0, 0, 0], false); water.receiveShadow = false; water.userData.keep = true;
   // Stream stones and a few larger mossy boulders.
   const stoneGeos = [0, 1, 2, 3, 4].map(s => boulderGeometry(s + 11, 2));
+  // Angular blocks keep hard facets.
+  const blockGeos = [0, 1].map(s => { const g = boulderGeometry(s + 51, 1).toNonIndexed(); g.computeVertexNormals(); return g; });
   for (let i = 0; i < 90; i++) {
     const z = 1 - random() * 60, side = random() > .5 ? 1 : -1;
-    const s = .16 + random() * .32;
-    const m = add(staticRoot, stoneGeos[i % 5].clone(), stone, [riverX(z) + side * (1.2 + random() * .5), -.66 + s * .12, z]);
-    m.scale.set(s * 1.3, s * (.7 + random() * .25), s * (.85 + random() * .45)); m.rotation.set((random() - .5) * .4, random() * 6.28, (random() - .5) * .4);
+    const s = .16 + random() * .32, kind = i % 3;
+    const geometry = kind === 2 ? blockGeos[i % 2] : stoneGeos[i % 5];
+    const m = add(staticRoot, geometry.clone(), random() < .4 ? mossyStone : stone, [riverX(z) + side * (1.25 + random() * .55), -.66 + s * (kind === 1 ? .05 : .12), z]);
+    if (kind === 1) m.scale.set(s * 2.0, s * (.32 + random() * .12), s * (1.4 + random() * .5));
+    else if (kind === 2) m.scale.set(s * 1.2, s * (.8 + random() * .3), s * (.9 + random() * .4));
+    else m.scale.set(s * 1.3, s * (.7 + random() * .25), s * (.85 + random() * .45));
+    m.rotation.set((random() - .5) * (kind === 1 ? .15 : .4), random() * 6.28, (random() - .5) * (kind === 1 ? .15 : .4));
   }
+  blockGeos.forEach(g => g.dispose());
   const bigStoneGeos = [0, 1, 2].map(k => boulderGeometry(k + 31, 3));
   midRocks.forEach(({ x, y: z, z: r }, i) => {
     const m = add(staticRoot, bigStoneGeos[i % 3].clone(), stone, [x, -.7 + r * .18, z]);
-    m.scale.set(r * 2.3, r * 1.25, r * 2.0); m.rotation.set((random() - .5) * .3, random() * 6.28, (random() - .5) * .3);
+    m.scale.set(r * 2.2, r * (.75 + random() * .3), r * 1.8); m.rotation.set((random() - .5) * .35, random() * 6.28, (random() - .5) * .35);
+    m.material = i % 3 === 1 ? mossyStone : stone;
   });
   bigStoneGeos.forEach(g => g.dispose());
   for (let i = 0; i < 10; i++) {
@@ -366,22 +380,22 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
 
   /* ------------------------------------------------------------- forest */
   const leafMaps = [
-    own(broadleafClusterTexture({ seed: 31, palette: { base: '#3f5d2a', light: '#62823c', dark: '#25391a', stem: '#463a2b' }, round: .35, leafScale: .72, density: 1.7 })),
-    own(broadleafClusterTexture({ seed: 77, palette: { base: '#466230', light: '#6c8a44', dark: '#29401c', stem: '#4a3c2c' }, round: .5, leafScale: .7, density: 1.8 })),
+    own(broadleafClusterTexture({ seed: 31, palette: { base: '#3d5a2a', light: '#52703a', dark: '#283d1c', stem: '#463a2b' }, round: .35, leafScale: .55, density: 2.3 })),
+    own(broadleafClusterTexture({ seed: 77, palette: { base: '#425e2e', light: '#57743c', dark: '#2a401d', stem: '#4a3c2c' }, round: .5, leafScale: .55, density: 2.3 })),
   ];
-  const leafMats = leafMaps.map((map, i) => applyFoliage(new THREE.MeshStandardMaterial({ map, color: '#ffffff', roughness: .82, side: THREE.DoubleSide, alphaTest: .5, alphaToCoverage: true }), { translucency: '#9cc47a', wrap: .5, key: `scops-leaves-v2-${i}` }));
+  const leafMats = leafMaps.map((map, i) => crownShaded(applyFoliage(new THREE.MeshStandardMaterial({ map, color: '#ffffff', roughness: .95, side: THREE.DoubleSide, alphaTest: .5, alphaToCoverage: true }), { translucency: '#3f5530', wrap: .45, key: `scops-leaves-v3-${i}` }), `scops-${i}`));
   const cardGeo = new THREE.PlaneGeometry(1, 1);
   { const uv = cardGeo.attributes.uv as THREE.BufferAttribute; for (let i = 0; i < uv.count; i++) uv.setX(i, uv.getX(i) * .5); }
-  const leafMatrices: THREE.Matrix4[][] = [[], []], leafColors: THREE.Color[][] = [[], []];
+  const leafMatrices: THREE.Matrix4[][] = [[], []], leafColors: THREE.Color[][] = [[], []], leafCrowns: THREE.Vector4[][] = [[], []];
   const o = new THREE.Object3D();
   const cluster = (centre: THREE.Vector3, radius: number, baseCount: number, baseSize: number) => {
     const count = Math.round(baseCount * 1.7), size = baseSize * .68;
     for (let j = 0; j < count; j++) {
       const a = random() * Math.PI * 2, r = Math.pow(random(), .6) * radius;
       o.position.set(centre.x + Math.cos(a) * r, centre.y + (random() - .4) * radius * .7, centre.z + Math.sin(a) * r * .8);
-      o.rotation.set(-Math.PI / 2 + (random() - .5) * 1.8, random() * Math.PI * 2, (random() - .5) * 1.2, 'YXZ');
+      o.rotation.set((random() - .5) * 1.1, (random() - .5) * 1.2, random() * Math.PI * 2, 'YXZ');
       const s = size * (.7 + random() * .6); o.scale.set(s, s, s); o.updateMatrix();
-      const k = j % 2; leafMatrices[k].push(o.matrix.clone());
+      const k = j % 2; leafMatrices[k].push(o.matrix.clone()); leafCrowns[k].push(new THREE.Vector4(centre.x, centre.y, centre.z, radius));
       // Outer leaves catch more moonlight than the shaded crown interior.
       const outer = Math.min(1, r / Math.max(radius, .01));
       leafColors[k].push(new THREE.Color().setHSL(.22 + random() * .08, .28 + random() * .22, .14 + outer * .14 + random() * .1));
@@ -449,7 +463,7 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
   const sightlines = [new THREE.Vector3(0, 1.33, 4.05), new THREE.Vector3(.22, 1.22, 3.6)];
   const owlAt = new THREE.Vector3(-1.28, 2.55, -4.84);
   leafMatrices.forEach((list, k) => {
-    const kept: THREE.Matrix4[] = [], keptColors: THREE.Color[] = [];
+    const kept: THREE.Matrix4[] = [], keptColors: THREE.Color[] = [], keptCrowns: number[] = [];
     list.forEach((matrix, i) => {
       const e = matrix.elements, x = e[12], y = e[13], z = e[14], size = Math.hypot(e[0], e[1], e[2]);
       const blocks = sightlines.some(eye => {
@@ -457,12 +471,15 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
         const dx = x - THREE.MathUtils.lerp(eye.x, owlAt.x, t), dy = y - THREE.MathUtils.lerp(eye.y, owlAt.y, t);
         const rx = .32 * t + size * .5, ry = .45 * t + size * .4; return dx * dx / (rx * rx) + dy * dy / (ry * ry) < 1;
       });
-      if (!blocks) { kept.push(matrix); keptColors.push(leafColors[k][i]); }
+      if (!blocks) { kept.push(matrix); keptColors.push(leafColors[k][i]); keptCrowns.push(...leafCrowns[k][i].toArray()); }
     });
     const canopyMesh = new THREE.InstancedMesh(cardGeo, leafMats[k], kept.length);
     kept.forEach((m, i) => { canopyMesh.setMatrixAt(i, m); canopyMesh.setColorAt(i, keptColors[i]); });
+    canopyMesh.geometry = cardGeo.clone();
+    canopyMesh.geometry.setAttribute('aCrown', new THREE.InstancedBufferAttribute(new Float32Array(keptCrowns), 4));
     canopyMesh.castShadow = true; canopyMesh.receiveShadow = true; canopyMesh.name = `canopy-${k}`; scene.add(canopyMesh);
   });
+  cardGeo.dispose();
   // Grass and ferns frame the view below the decking.
   const grassTime = { value: 0 };
   const grassMat = plantMaterial('scops-grass', grassTime, { height: .5, sway: .025, translucency: '#7fa05a', roughness: .65 });
@@ -513,10 +530,10 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
 
   /* ---------------------------------------------------------------- owl */
   const owl = buildOwl();
-  owl.group.position.set(-1.28, 2.29, -4.84); owl.group.rotation.y = .12; owl.group.scale.setScalar(1.22);
+  owl.group.position.set(-1.28, 2.29, -4.84); owl.group.rotation.y = .12; owl.group.scale.setScalar(.82);
   scene.add(owl.group);
   // Soft moonlit-sky bounce from the open stream side: reveals plumage without a spotlight.
-  const owlFill = new THREE.PointLight('#8fa6d8', .5, 2.6, 2); owlFill.position.set(-.7, 2.75, -3.7); scene.add(owlFill);
+  const owlFill = new THREE.PointLight('#8fa6d8', .08, 2.6, 2); owlFill.position.set(-.7, 2.75, -3.7); scene.add(owlFill);
   const lidMeshes = owl.lids;
   // Merge the static plumage (wings, tail, feet); the body and head keep animating.
   owl.body.userData.keep = true;
@@ -566,7 +583,7 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
   };
   function resize(aspect: number) {
     camera.aspect = aspect;
-    if (aspect < .8) { camera.fov = 58; camera.position.set(.22, 1.22, 3.6); camera.lookAt(.2, 1.35, -5.8); table.position.set(.37, 0, .84); lanternLight.position.set(.37, 1.3, 1.12); }
+    if (aspect < .8) { camera.fov = 58; camera.position.set(.22, 1.22, 3.6); camera.lookAt(.2, 1.35, -5.8); table.position.set(.78, 0, 1.0); lanternLight.position.set(.78, 1.3, 1.28); }
     else { camera.fov = 52; camera.position.set(0, 1.33, 4.05); camera.lookAt(.2, 1.15, -10); table.position.set(1.15, 0, 1.5); lanternLight.position.set(1.15, 1.3, 1.78); }
     lanternWorld.set(table.position.x, 1.0, table.position.z);
     starMat.uniforms.uScale.value = Math.max(1, Math.min(2, (renderer.domElement.height || 720) / 720));
@@ -583,7 +600,7 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
     const closing = time < blinkUntil ? Math.sin((blinkUntil - time) / .18 * Math.PI) : 0;
     lidMeshes.forEach(lid => { lid.scale.y = .05 + closing; });
     const callAge = time - callStart, callWeight = callAge >= 0 && callAge < 1.35 ? Math.sin(callAge / 1.35 * Math.PI) : 0;
-    owl.head.rotation.y = Math.sin(time * .12) * .12 + Math.sin(time * .047) * .08;
+    owl.head.rotation.y = Math.sin(time * .07) * .05 + Math.sin(time * .031) * .04;
     owl.head.rotation.x = callWeight * -.065;
     owl.body.scale.y = 1 + callWeight * .03;
     owl.tufts.forEach((t, i) => { t.rotation.x = -.15 + Math.sin(time * .2 + i) * .03; });
@@ -622,4 +639,28 @@ export function createScopsScene(renderer: THREE.WebGLRenderer): SceneContent {
       }) };
     },
   };
+}
+
+/** Shades instanced leaf cards with their clump's normal (per-instance aCrown = centre, radius), so a clump reads as one soft volume. */
+function crownShaded<T extends THREE.MeshStandardMaterial>(material: T, key: string): T {
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec4 aCrown;\nvarying vec3 vCrownN;')
+      .replace('#include <worldpos_vertex>', `#include <worldpos_vertex>
+{
+  vec4 crownW = vec4(transformed, 1.0);
+  #ifdef USE_INSTANCING
+    crownW = instanceMatrix * crownW;
+  #endif
+  crownW = modelMatrix * crownW;
+  vCrownN = normalize(crownW.xyz - aCrown.xyz + vec3(0.0, aCrown.w * 0.3, 0.0));
+}`);
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vCrownN;')
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+normal = normalize(mix(normal, (viewMatrix * vec4(vCrownN, 0.0)).xyz, 0.85));`);
+  };
+  const base = material.customProgramCacheKey.bind(material);
+  material.customProgramCacheKey = () => `${base()}|kp-crown-${key}`;
+  return material;
 }

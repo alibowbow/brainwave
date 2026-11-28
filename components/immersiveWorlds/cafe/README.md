@@ -71,7 +71,7 @@ The user rated the procedural worlds as PS2-level and asked for PS4/PS5-era rend
 - `cafe-compare-desktop.jpg` and `cafe-compare-portrait.jpg` show BEFORE beside AFTER.
 - `cafe-render-paths-desktop.jpg` shows the HDR pipeline, the direct path (`?post=off`) and forced byte targets (`?targets=byte`).
 - `cafe-motion-portrait.jpg` shows t = 0 beside t = 12.2 s: beads, runners and steam move.
-- `verify-auto.json` and `verify-byte.json` are `verify.mjs` runs against the committed built pilot. Each passed 29/29 checks with zero runtime or shader errors. The auto run used source `f34449a`. The byte run used `d89e557`, which changes only the verifier: it now waits for frames after Resume before the drag check, removing a race that showed up under slow software rendering. Both used the same pilot bundle.
+- `verify-auto.json` and `verify-byte.json` are `verify.mjs` runs against the committed built pilot. Each passed 29/29 checks with zero runtime or shader errors. `verify-auto.json` was rerun for the café identity revision below: source `f9f2c43`, bundle `cafe-pilot-DGwiC4cN.mjs`, with the cup, lamp and window taps found by the engine's own raycast in the new shot. `verify-byte.json` was not rerun and still records the first HDR pass: source `d89e557`, which changed only the verifier to wait for frames after Resume before the drag check, removing a race under slow software rendering.
 
 The older screenshots under `qa/screenshots/` and `qa/VALIDATION.md` are historical evidence of the previous scene and were not changed.
 

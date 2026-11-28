@@ -67,7 +67,28 @@ export interface GroundOptions {
   /** Darkens wet ground near a waterline at this height, over `wetBand` metres. */
   wetBelow?: number;
   wetBand?: number;
+  /** Fallen conifer needles strewn over the ground (fades to their average tint with distance). */
+  needles?: { color: THREE.ColorRepresentation; amount: number; scale?: number };
 }
+
+/** Needle litter: in each cell a short, thin, randomly oriented stroke (3x3 cell search). */
+const GLSL_NEEDLES = /* glsl */ `
+float groundNeedleLayer(vec2 p, float seed) {
+  vec2 cell = floor(p), f = fract(p);
+  float m = 0.0;
+  for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+    vec2 g = vec2(float(i), float(j));
+    vec3 h = bwHash3(vec3(cell + g, seed));
+    vec2 o = g + h.xy - f;
+    float a = h.z * 6.2831853;
+    vec2 dir = vec2(cos(a), sin(a));
+    float along = abs(dot(o, dir)), across = abs(dot(o, vec2(-dir.y, dir.x)));
+    float s = (1.0 - smoothstep(0.5, 0.64, along)) * (1.0 - smoothstep(0.03, 0.075, across + along * 0.04));
+    m = max(m, s * (0.55 + 0.45 * h.x));
+  }
+  return m;
+}
+`;
 
 /** World-space forest floor: soil, needle litter, grass patches, gravel and hearth ash. */
 export function createGroundMaterial(options: GroundOptions, params: THREE.MeshStandardMaterialParameters = {}) {
@@ -83,6 +104,7 @@ ${GLSL_NOISE}
 ${GLSL_BUMP}
 float groundAA(float frequency) { return clamp(1.6 - length(fwidth(vGroundWorld)) * frequency * 2.2, 0.0, 1.0); }
 float groundPebble(vec3 p) { return smoothstep(0.5, 0.66, bwNoise(p * 6.3 + 11.0)) * groundAA(6.3); }
+${o.needles ? GLSL_NEEDLES : ''}
 `)
       .replace('#include <color_fragment>', `#include <color_fragment>
 vec3 gp = vGroundWorld * ${f(o.scale)};
@@ -105,6 +127,20 @@ ${o.hearth ? `{
   vec3 ash = mix(vec3(0.035, 0.032, 0.03), vec3(0.2, 0.19, 0.18), smoothstep(0.2, 0.75, gMid * 0.6 + gFine * 0.6 + 0.3));
   gColor = mix(gColor, ash, gAsh * 0.9);
 }` : ''}
+${o.needles ? `float gNeedle = 0.0;
+{
+  float needleScale = ${f(o.needles.scale ?? 24)};
+  // Needles are thin: fade them before a pixel spans one, never leaving speckle.
+  float needleAA = groundAA(needleScale * 2.0);
+  float n1 = groundNeedleLayer(vGroundWorld.xz * needleScale, 3.0);
+  float n2 = groundNeedleLayer(vGroundWorld.xz * needleScale * 1.37 + 17.0, 7.0);
+  float patchy = 0.45 + 0.55 * smoothstep(-0.3, 0.5, gMid + gLitter);
+  gNeedle = max(n1, n2 * 0.85) * needleAA * ${f(o.needles.amount)} * patchy * (1.0 - gAsh);
+  vec3 needleColor = ${glslColor(o.needles.color)} * (0.7 + 0.5 * gFine + 0.35 * n2);
+  gColor = mix(gColor, needleColor, gNeedle);
+  // Beyond resolution the strewn needles leave their average tint.
+  gColor = mix(gColor, ${glslColor(o.needles.color)} * 0.8, (1.0 - needleAA) * 0.3 * ${f(o.needles.amount)} * patchy * (1.0 - gAsh));
+}` : ''}
 ${o.wetBelow !== undefined ? `float gWet = 1.0 - smoothstep(${f(o.wetBelow)}, ${f(o.wetBelow + (o.wetBand ?? 0.12))}, vGroundWorld.y + ${f((o.wetBand ?? 0.12) * 0.25)} * gMid);
 gColor *= mix(1.0, 0.6, gWet);` : 'float gWet = 0.0;'}
 diffuseColor.rgb *= gColor;
@@ -114,7 +150,7 @@ roughnessFactor = clamp(roughnessFactor * (0.92 + 0.12 * gMid) - gPebble * 0.12 
 `)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
 {
-  float h = gMid * 0.05 + gFine * 0.012 + gGrain * 0.003 + gPebble * 0.02 + gLitter * 0.004 - gAsh * 0.01;
+  float h = gMid * 0.05 + gFine * 0.012 + gGrain * 0.003 + gPebble * 0.02 + gLitter * 0.004 - gAsh * 0.01${o.needles ? ' + gNeedle * 0.0025' : ''};
   normal = nightBump(-vViewPosition, normal, h, ${f(o.bump)});
 }
 `);

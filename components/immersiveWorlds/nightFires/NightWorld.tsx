@@ -7,8 +7,8 @@ import './night-world.css';
 
 const labels = {
   mountain: { title: '모닥불 밤', description: '바다가 보이는 언덕의 모닥불 곁에서 보랏빛 노을과 첫 별, 잔잔히 밀려오는 물결을 바라봅니다.' },
-  deep: { title: '깊은 밤', description: '언덕 위 나무 벤치에서 고요한 산과 멀리 켜진 집의 불빛을 바라봅니다.' },
-  lakeside: { title: '모닥불 캠핑', description: '보랏빛 호숫가, 텐트와 작은 모닥불 곁에 앉아 쉽니다.' },
+  deep: { title: '깊은 밤', description: '돌담 전망대의 나무 쉼터에 놓인 랜턴 곁에서, 안개가 천천히 흐르는 계곡과 달빛 어린 산, 멀리 켜진 집의 불빛을 바라봅니다.' },
+  lakeside: { title: '모닥불 캠핑', description: '보랏빛 호숫가, 텐트와 작은 모닥불 곁에 앉아 물 위로 일렁이는 초승달 빛과 건너편 오두막 불빛을 바라봅니다.' },
 };
 const actions: Record<NightWorldId, NightInteractionKind[]> = { mountain: ['log-embers'], deep: ['lantern-brightness'], lakeside: ['log-embers', 'lantern-brightness'] };
 const actionLabels = { 'log-embers': '장작에 작은 불씨 피우기', 'lantern-brightness': '랜턴 밝기 조절' };

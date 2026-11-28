@@ -45,6 +45,8 @@ export interface SnowfallOptions {
   ambient: THREE.Color;
   /** Up to four warm point lights: position and linear radiance at 1 m. */
   lights?: Array<{ position: THREE.Vector3; color: THREE.Color }>;
+  /** Additive glow (motes of light) instead of the default alpha-blended flakes. */
+  additive?: boolean;
 }
 
 const VERTEX = /* glsl */ `
@@ -134,6 +136,7 @@ export function createSnowfall(options: SnowfallOptions) {
     const size = layer.max.clone().sub(layer.min);
     const material = new THREE.ShaderMaterial({
       vertexShader: VERTEX, fragmentShader: FRAGMENT, transparent: true, depthWrite: false, toneMapped: false,
+      blending: options.additive ? THREE.AdditiveBlending : THREE.NormalBlending,
       uniforms: {
         uTime: time, uPixelScale: pixelScale,
         uBoxMin: { value: layer.min.clone() }, uBoxSize: { value: size },

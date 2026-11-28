@@ -92,7 +92,14 @@ Everything remains procedural code: world-space timber/bark/ground/wet-surface s
   - **Fly.** The polka-dot beads are replaced. Beads of uneven sizes gather in clusters and cast soft shadows wider than themselves, with a small focused core just downhill. A few drops slide slowly on meandering paths and leave dark trails, and soaked patches darken the lower walls and seams.
   - **Wood.** The wood outside is darker and deeper. Cedar foliage hangs in spray cards. Vine-maple saplings and salal mounds form an understory, and a muddy footpath with rain-filled hollows winds away from the door.
 - **Shared and family modules.** Shared changes are additive only: the `rainStreaks` options above and `createRunoff(...).setViewHeight`. New family module `engine/wetFoliage.ts` holds the wet leaf-card material, clipped-shrub cards, hanging spray cards and grass tufts. `engine/atmosphere.ts` gains the `heavy` sky.
-- **QA.** The harness accepts `t=<seconds>` to start the scene clock at any moment. `capture-quality.mjs` accepts `RAIN_QA_TIMEOUT` for a busy machine.
+- **QA.** The harness accepts `t=<seconds>` to start the scene clock at any moment. `capture-quality.mjs` accepts `RAIN_QA_TIMEOUT` for a busy machine. It also reports `sceneTriangles`: every visible triangle of the scene, counted before frustum culling, which is the steady-state cost of the main pass. The renderer counter for the first frame also includes the one-off shadow-map passes, because shadow maps are rendered once (they are static).
+- **Budget.** The steady-state main pass is about 0.66M triangles for the porch, 0.75M for the storm and 0.39M for the tent. That keeps all three under the 0.9M phone budget.
+- **Added shader cost.**
+  - Leaf cards use a clearcoat film and alpha-to-coverage.
+  - The storm sky evaluates about 35 noise octaves per sky pixel, fewer than the roughly 48 of the sky it replaces.
+  - Gust-band rain layers evaluate two noise octaves per vertex.
+  - Grass waves cost one noise call per vertex and one per terrain fragment.
+  - No full-screen passes were added.
 
 ## QA separation
 

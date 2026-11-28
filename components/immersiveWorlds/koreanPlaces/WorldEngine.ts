@@ -13,7 +13,12 @@ const factories: Record<WorldId, () => Promise<Factory>> = {
 
 // Only the isolated QA harness calls this, to capture the direct fallback path.
 let qaDirectRendering = false;
-export function configureRenderingQA(options: { direct?: boolean } = {}) { qaDirectRendering = !!options.direct; }
+let qaStartTime = 0;
+/** `startTime` (seconds) lets captures grade a chosen moment of the scene's animation. */
+export function configureRenderingQA(options: { direct?: boolean; startTime?: number } = {}) {
+  qaDirectRendering = !!options.direct;
+  qaStartTime = Math.max(0, options.startTime ?? 0);
+}
 
 /** One renderer per world, transported between player and fullscreen by LiveSceneHost. */
 export class WorldEngine implements LiveSceneEngine {
@@ -43,6 +48,7 @@ export class WorldEngine implements LiveSceneEngine {
     this.contextLost = event => { event.preventDefault(); onLost(); };
     canvas.addEventListener('webglcontextlost', this.contextLost);
     canvas.dataset.world = id;
+    this.time = qaStartTime;
   }
 
   async init() {

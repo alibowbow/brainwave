@@ -12,7 +12,7 @@ Each entry requires only `{ active: boolean }`. Put it in a positioned parent wi
 
 Use the same component for the player and fullscreen. The existing read-only `LiveSceneHost` transports one canvas per world to the most recently acquired holder, returns it to the previous holder on release, and disposes it five seconds after the final release. Do not mount a different renderer for fullscreen. A top inactive holder pauses even if the lower holder is active.
 
-The world geometries are independently authored and dynamically imported. Rural alone uses toon rendering. Default output uses antialiasing, native device pixel ratio up to 2, and a normal requestAnimationFrame loop; no blanket low-FPS mode. QA renderer counters are observations of this executor, not device FPS/thermal claims.
+The world geometries are independently authored and dynamically imported. All three worlds use physically based materials and the shared HDR pipeline; rural no longer uses toon rendering. Default output uses antialiasing, native device pixel ratio up to 2, and a normal requestAnimationFrame loop; no blanket low-FPS mode. QA renderer counters are observations of this executor, not device FPS/thermal claims.
 
 ## Interactions and existing audio
 

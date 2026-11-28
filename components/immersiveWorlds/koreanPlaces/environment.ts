@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-type EnvironmentScene = 'temple' | 'scops';
+type EnvironmentScene = 'temple' | 'scops' | 'rural';
 export type EnvironmentType = 'half-float' | 'unsigned-byte';
 export interface EnvironmentState { target: string | null; cubeFace: number; mip: number }
 export interface EnvironmentTargetAudit {

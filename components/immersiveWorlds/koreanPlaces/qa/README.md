@@ -26,7 +26,7 @@ Both environment modes run the same full input/motion/pause/reduced-motion/stati
 
 Each report records helper events for the real scene: actual target types, RGBA16F/RGBA8 formats, dimensions, framebuffer completeness, `getError` results, and renderer target/cube-face/mip state before and after generation. Independent read-only checks inspect the real scene's assigned environment texture and the rendered GL context after initial captures, actual interaction/policy tests, disposal/remount, and static-first-frame load. A separate restoration probe binds an actual UnsignedByte cube target at face 2/mip 1, enables XR, disables autoClear, selects Reinhard tone mapping, then generates an environment from a QA gradient at the scene's native source dimensions (Temple 512×256; Scops 256×128). It checks FBO completeness and state preservation before disposing that probe and restoring the caller. Probe events are labelled `scope: sentinel`; they are not scene pixel evidence. Application environment disposal and regeneration are separately asserted during the existing genuine host cleanup/remount test.
 
-Every run also hashes the unchanged Rural scene source/entry and approved desktop/portrait/Fold/chrome PNG files against commit `174aa43bffa4ead7723dfc7c4c6f9a86e35f8600`. That byte-preservation record does not claim a rerender; the separate Rural screenshots-only command produces new actual images for a separate pixel comparison.
+Every run also hashes the Rural scene source/entry and approved desktop/portrait/Fold/chrome PNG files against commit `174aa43bffa4ead7723dfc7c4c6f9a86e35f8600`. Rural has since been rebuilt, so that record is informational and not enforced. It does not claim a rerender; the separate Rural screenshots-only command produces new actual images for a separate pixel comparison.
 
 ### Bounded cleanup diagnostics
 
@@ -67,7 +67,7 @@ KOREAN_QA_QUERY=post=off KOREAN_QA_OUTPUT=/tmp/kp/direct node components/immersi
 KOREAN_QA_ACTIVE=24 KOREAN_QA_OUTPUT=/tmp/kp/active node components/immersiveWorlds/koreanPlaces/qa/capture-quality.mjs         # after animated frames
 ```
 
-`KOREAN_QA_SCENES` and `KOREAN_QA_VIEWPORTS` (comma lists) narrow a run; `KOREAN_QA_SKIP_BUILD=1` reuses the last build. `post=off` is a harness-only query that asks the engine for the direct path used when float colour targets are unavailable. Software rendering grades appearance only; it says nothing about device frame rate. Before/after comparisons are kept in `evidence/hdr-upgrade/`.
+`KOREAN_QA_QUERY=t=12` starts the scene clock at 12 s (a harness-only `t=<seconds>` query), so two captures a few seconds apart grade motion (clouds, ripples, rice, fireflies). `KOREAN_QA_SCENES` and `KOREAN_QA_VIEWPORTS` (comma lists) narrow a run; `KOREAN_QA_SKIP_BUILD=1` reuses the last build. `post=off` is a harness-only query that asks the engine for the direct path used when float colour targets are unavailable. Software rendering grades appearance only; it says nothing about device frame rate. Before/after comparisons are kept in `evidence/hdr-upgrade/`.
 
 ## Evidence
 

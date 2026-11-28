@@ -8,7 +8,8 @@ import { VOLUME_PRELUDE, type VolumeEffect } from '../../shared/render/hdrPipeli
 import { FULLSCREEN_VERTEX } from '../../shared/render/targets';
 import { applyFoliage, crownGeometry, leafAtlas, type Crown } from '../render/foliage';
 import { barkMaterial, growTree, limbGeometry } from '../render/trees';
-import { boulderGeometry, pebbleGeometry } from '../render/stones';
+import { pebbleGeometry, streamBoulderGeometry, trimBuried } from '../render/stones';
+import { mossMaterial, mossShellGeometry } from '../render/moss';
 import { radianceProbe } from '../render/surfaces';
 
 /*
@@ -297,7 +298,7 @@ vRockNormal = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * objectNormal)
     applyRockSurface(material, { ...graniteOptions, key, moss: moss > 0 ? { color: '#4f6b22', amount: moss } : undefined, algaeAmount: moss > 0 ? .55 : .25, ...clear });
     return withStreamGLSL(material);
   };
-  const boulderMaterial = graniteMaterial('valley-boulder', '#a29d8f', .75);
+  const boulderMaterial = graniteMaterial('valley-boulder', '#a29d8f', .3);
   const cobbleMaterial = graniteMaterial('valley-cobble', '#ffffff', 0, true);
 
   // --- Terrain: bed and banks as one surface. ---------------------------------
@@ -372,7 +373,11 @@ roughnessFactor = mix(0.95, 0.35, wet * shore);`)
   // --- Stones. ----------------------------------------------------------------
   section(11);
   const dummy = new THREE.Object3D();
-  const cobbleShapes = [pebbleGeometry(5, 3, .35), pebbleGeometry(9, 3, .2), pebbleGeometry(14, 3, .5), pebbleGeometry(21, 1, .35)];
+  // Near cobbles are finer and cast shadows; distant and buried halves are cheap.
+  const cobbleShapes = [
+    trimBuried(pebbleGeometry(5, 3, .35), -.6), trimBuried(pebbleGeometry(9, 3, .2), -.6), trimBuried(pebbleGeometry(14, 3, .5), -.6),
+    trimBuried(pebbleGeometry(5, 2, .35), -.6), trimBuried(pebbleGeometry(14, 2, .5), -.6), trimBuried(pebbleGeometry(21, 1, .35), -.6),
+  ];
   const cobbleSets: THREE.Matrix4[][] = cobbleShapes.map(() => []);
   const cobbleColors: THREE.Color[][] = cobbleShapes.map(() => []);
   const tones = ['#d4c8ae', '#b0ab9c', '#e3d6bb', '#a3aaa2', '#c9b39a', '#ddd2bf', '#948f84'];
@@ -385,7 +390,8 @@ roughnessFactor = mix(0.95, 0.35, wet * shore);`)
     dummy.position.set(x, groundHeight(x, z) + sy * .45, z);
     dummy.rotation.set((random() - .5) * .3, random() * Math.PI * 2, (random() - .5) * .3);
     dummy.scale.set(sx, sy, sz); dummy.updateMatrix();
-    const variant = z < -16 ? 3 : Math.floor(random() * 3);
+    const pickShape = random();
+    const variant = z < -16 ? 5 : z < -5 ? 3 + Math.floor(pickShape * 2) : Math.floor(pickShape * 3);
     cobbleSets[variant].push(dummy.matrix.clone());
     cobbleColors[variant].push(new THREE.Color(tones[Math.floor(random() * tones.length)]));
   }
@@ -404,12 +410,21 @@ roughnessFactor = mix(0.95, 0.35, wet * shore);`)
     [-2.8, .2, -18.5, 1.3, .72, 1.2, 7], [.35, .04, -22.4, .9, .4, .7, 6],
     [-.75, .06, 5.8, .7, .34, .61, 14], [3.53, .5, 4.3, 1.18, .88, 1.05, 14],
   ];
+  // Granite with crisp fracture faces and a weathered joint; moss grows as a
+  // real cushion on the shaded crowns, clear of the splash line.
+  const moss = mossMaterial({ key: 'valley-moss', lightDirection: SUN_DIR, lightColor: SUN.clone().multiplyScalar(6) });
   boulders.forEach(([x, y, z, sx, sy, sz, detail], i) => {
-    const mesh = new THREE.Mesh(boulderGeometry(101 + i * 13, detail, { facets: 9, rounding: .5, relief: 1.6, base: .25 }), boulderMaterial);
+    const geometry = streamBoulderGeometry(101 + i * 13, detail);
+    const mesh = new THREE.Mesh(geometry, boulderMaterial);
     mesh.position.set(x, y, z); mesh.scale.set(sx, sy, sz);
     mesh.rotation.set(random() * .16, random() * 6, random() * .12);
     mesh.castShadow = mesh.receiveShadow = true; mesh.name = `summer-valley-boulder-${i}`;
     scene.add(mesh); boulderObjects.push(mesh);
+    mesh.updateMatrix();
+    const cushion = new THREE.Mesh(mossShellGeometry(geometry, mesh.matrix, i * 3.7 + 1.3, WATER_Y, .035 / Math.max(sy, .3)), moss);
+    cushion.position.copy(mesh.position); cushion.scale.copy(mesh.scale); cushion.rotation.copy(mesh.rotation);
+    cushion.receiveShadow = true; cushion.name = `summer-valley-moss-${i}`;
+    scene.add(cushion);
   });
 
   // --- Trees, understory and their shared leaf material. ----------------------
@@ -476,6 +491,46 @@ roughnessFactor = mix(0.95, 0.35, wet * shore);`)
   ));
   leaves.name = 'summer-valley-leaves'; leaves.receiveShadow = true;
   scene.add(leaves);
+
+  // --- Forested ridges beyond the valley's end: layers of aerial perspective.
+  section(29);
+  const ridgePositions: number[] = [], ridgeLayers: number[] = [], ridgeIndex: number[] = [];
+  ([[-70, 11, .36, 2.3], [-92, 17, .56, 5.1]] as Array<[number, number, number, number]>).forEach(([z0, height, haze, seed]) => {
+    const columns = 260, start = ridgePositions.length / 3;
+    for (let i = 0; i <= columns; i++) {
+      const x = -80 + 160 * i / columns;
+      const z = z0 + 5 * Math.sin(x * .05 + seed);
+      const side = Math.abs(x - streamCenter(z0)) * .3;
+      // Crowns: rounded bumps a few metres across along the skyline.
+      const crowns = Math.pow(Math.abs(Math.sin(x * .55 + seed * 3 + noise3(x * .2, seed, 0) * 2)), .5) * 1.3 + noise3(x * 1.3, seed, 2) * .5;
+      const top = height * (.55 + .45 * fbm3(x * .025 + seed, seed, 0, 3)) + side + crowns;
+      ridgePositions.push(x, -4, z, x, top, z);
+      ridgeLayers.push(haze, haze);
+      if (i < columns) { const a = start + i * 2; ridgeIndex.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
+    }
+  });
+  const ridgeGeometry = new THREE.BufferGeometry();
+  ridgeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(ridgePositions, 3));
+  ridgeGeometry.setAttribute('aHaze', new THREE.Float32BufferAttribute(ridgeLayers, 1));
+  ridgeGeometry.setIndex(ridgeIndex);
+  const ridges = new THREE.Mesh(ridgeGeometry, new THREE.ShaderMaterial({
+    side: THREE.DoubleSide,
+    vertexShader: 'attribute float aHaze;varying float vHaze;varying vec3 vRidgeWorld;void main(){vHaze=aHaze;vec4 w=modelMatrix*vec4(position,1.);vRidgeWorld=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
+    fragmentShader: `${GLSL_NOISE}
+      varying float vHaze;varying vec3 vRidgeWorld;
+      void main(){
+        vec3 p=vRidgeWorld;
+        float crowns=bwNoise(p*vec3(.32,.45,.32))*.55+bwNoise(p*vec3(.9,1.2,.9))*.3;
+        vec3 forest=mix(vec3(.04,.075,.035),vec3(.1,.15,.06),crowns*.5+.5);
+        // Valley mist pools at the foot of each ridge; the sky colour is the haze.
+        float haze=clamp(vHaze+.25*(1.-smoothstep(0.,9.,p.y)),0.,.95);
+        gl_FragColor=vec4(mix(forest,vec3(.92,1.12,1.22),haze),1.);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+  }));
+  ridges.name = 'summer-valley-distant-ridges'; ridges.renderOrder = -4;
+  scene.add(ridges);
 
   // --- Ferns and grass. -------------------------------------------------------
   section(31);
@@ -716,6 +771,69 @@ float waterAlpha;
   motes.name = 'summer-valley-sunlit-motes'; motes.frustumCulled = false;
   scene.add(motes);
 
+  // Drifting seed fluff, crossing the valley on the breeze, lit where the canopy opens.
+  section(67);
+  const seedCount = 64, seedPositions = new Float32Array(seedCount * 3), seedPhase = new Float32Array(seedCount);
+  for (let i = 0; i < seedCount; i++) {
+    const z = 2.5 - random() * 18;
+    seedPositions.set([streamCenter(z), .5 + random() * 3.2, z], i * 3); seedPhase[i] = random();
+  }
+  const seedGeometry = new THREE.BufferGeometry();
+  seedGeometry.setAttribute('position', new THREE.BufferAttribute(seedPositions, 3));
+  seedGeometry.setAttribute('phase', new THREE.BufferAttribute(seedPhase, 1));
+  const seeds = new THREE.Points(seedGeometry, new THREE.ShaderMaterial({
+    uniforms: moteUniforms, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: `uniform float uTime;uniform float uPixelRatio;uniform sampler2D tCookie;uniform mat4 uSunMatrix;attribute float phase;varying float vLight;varying float vSpin;
+      void main(){
+        float u=fract(uTime*.0075+phase);
+        vec3 p=position+vec3((u-.5)*16.,sin(uTime*.23+phase*30.)*.25+(u-.5)*.6,sin(uTime*.11+phase*17.)*.6);
+        vec4 c=uSunMatrix*vec4(p,1.);vec2 uv=c.xy/c.w;float lit=(uv.x>0.&&uv.x<1.&&uv.y>0.&&uv.y<1.)?texture2D(tCookie,uv).r:0.;
+        vLight=(lit*1.6+.3)*smoothstep(0.,.08,u)*(1.-smoothstep(.92,1.,u));
+        vSpin=uTime*.4+phase*20.;
+        vec4 mv=modelViewMatrix*vec4(p,1.);gl_PointSize=clamp(70./-mv.z,2.,10.)*uPixelRatio;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader: `varying float vLight;varying float vSpin;void main(){
+        vec2 q=gl_PointCoord-.5;float r=length(q)*2.;float a=atan(q.y,q.x)+vSpin;
+        float rays=pow(abs(cos(a*4.)),10.)*(1.-smoothstep(.2,1.,r));
+        float core=exp(-r*r*22.);
+        gl_FragColor=vec4(vec3(2.4,2.3,2.05)*vLight*(core+rays*.55),1.);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+  }));
+  seeds.name = 'summer-valley-drifting-seeds'; seeds.frustumCulled = false;
+  scene.add(seeds);
+
+  // Dragonflies patrolling over the water well beyond the seat: slow drifts and hovers.
+  section(71);
+  const flyBody = mergeGeometries([
+    new THREE.CylinderGeometry(.0042, .0024, .07, 6).rotateZ(Math.PI / 2),
+    new THREE.SphereGeometry(.006, 6, 4).translate(.037, 0, 0),
+    new THREE.SphereGeometry(.0048, 6, 4).translate(.025, 0, 0),
+  ]);
+  const flyMaterial = new THREE.MeshStandardMaterial({ color: '#163a3c', metalness: .5, roughness: .3 });
+  const wingGeometry = new THREE.PlaneGeometry(.011, .042).rotateX(-Math.PI / 2);
+  const wingMaterial = new THREE.MeshStandardMaterial({ color: '#d9ecf0', emissive: '#7a8c88', transparent: true, opacity: .55, roughness: .12, metalness: .2, side: THREE.DoubleSide, depthWrite: false });
+  const flies = ([[.8, .55, -1.2, 0], [-1.1, .8, -5.6, 2.1], [-1.5, .48, -.4, 4.2]] as Array<[number, number, number, number]>).map(([dx, y, z, phase]) => {
+    const group = new THREE.Group();
+    group.add(new THREE.Mesh(flyBody, flyMaterial));
+    const wings: THREE.Mesh[] = [];
+    for (const [wx, side] of [[.018, 1], [.018, -1], [.004, 1], [.004, -1]] as Array<[number, number]>) {
+      const wing = new THREE.Mesh(wingGeometry, wingMaterial);
+      wing.position.set(wx, .002, side * .022); wing.rotation.set(side * .22, side * (wx > .01 ? .12 : -.18), 0);
+      group.add(wing); wings.push(wing);
+    }
+    group.scale.setScalar(2.1);
+    group.name = 'summer-valley-dragonfly';
+    scene.add(group);
+    return { group, wings, home: new THREE.Vector3(streamCenter(z) + dx, y, z), phase, heading: 0 };
+  });
+  const flyPosition = (home: THREE.Vector3, phase: number, time: number, out: THREE.Vector3) => {
+    // Warped time: the insect drifts, slows almost to a hover, then drifts on.
+    const s = time * .32 + phase, w = s + .82 * Math.sin(s);
+    return out.set(home.x + 1.3 * Math.sin(w * .5), home.y + .1 * Math.sin(w * 1.3) + .03 * Math.sin(time * 1.7 + phase), Math.min(.2, home.z + .8 * Math.sin(w * .37 + 1)));
+  };
+  const flyNow = new THREE.Vector3(), flyNext = new THREE.Vector3();
+
   const raycaster = new THREE.Raycaster();
   const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -WATER_Y);
   const hit = new THREE.Vector3();
@@ -740,8 +858,8 @@ float waterAlpha;
         vertexShader: FULLSCREEN_VERTEX, fragmentShader: VOLUME_FRAGMENT, depthTest: false, depthWrite: false, toneMapped: false,
         uniforms: {
           tCookie: { value: cookie }, uSunMatrix: { value: sun.shadow.matrix }, uSunDir: { value: SUN_DIR.clone() },
-          uSunColor: { value: new THREE.Vector3(SUN.r, SUN.g, SUN.b).multiplyScalar(1.3) }, uAmbient: { value: new THREE.Vector3(.02, .035, .035) },
-          uDensity: { value: .02 }, uWaterY: { value: WATER_Y },
+          uSunColor: { value: new THREE.Vector3(SUN.r, SUN.g, SUN.b).multiplyScalar(1.45) }, uAmbient: { value: new THREE.Vector3(.02, .035, .035) },
+          uDensity: { value: .024 }, uWaterY: { value: WATER_Y },
         },
       });
       return { material };
@@ -753,6 +871,15 @@ float waterAlpha;
     setDrawingSize() { moteUniforms.uPixelRatio.value = Math.min(2, renderer.getPixelRatio()); },
     update(time, dt) {
       clock.value = time;
+      flies.forEach(f => {
+        flyPosition(f.home, f.phase, time, flyNow); flyPosition(f.home, f.phase, time + .4, flyNext);
+        f.group.position.copy(flyNow);
+        const target = Math.atan2(-(flyNext.z - flyNow.z), flyNext.x - flyNow.x);
+        const turn = Math.atan2(Math.sin(target - f.heading), Math.cos(target - f.heading));
+        f.heading += turn * (dt ? Math.min(1, dt * 2) : 1);
+        f.group.rotation.y = f.heading;
+        f.wings.forEach((wing, i) => { wing.rotation.x = (i % 2 ? -.22 : .22) + Math.sin(time * 31 + i * 1.7 + f.phase) * .3; });
+      });
       fish.forEach(f => {
         const step = Math.min(dt, .1);
         f.targetTurn *= Math.exp(-step * .15);

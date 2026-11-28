@@ -152,8 +152,10 @@ float impacts = fabricImpacts(dropQ, uTime);
 float soak = smoothstep(0.55, 0.15, fabricOut.y) * 0.5 + trail * 0.6;
 vec3 outside = mix(uGroundOutside, uSkyOutside, pow(smoothstep(-0.7, 1.0, fabricOut.y), 1.8));
 // The wet canopy overhead shades the fly in soft, uneven patches.
-float dapple = bwFbm3(vec3(fp.x * 1.1, fp.z * 1.1, 2.0)) + 0.5 * bwFbm3(vec3(fp.x * 0.3, fp.z * 0.3, 8.0));
-outside *= 0.5 + 0.65 * smoothstep(-0.75, 0.75, dapple);
+// Evaluated along the cloth (not projected from above, which smeared into bands on
+// the steep walls) and strongest on the roof, where the canopy overhangs.
+float dapple = bwFbm3(vec3(dropQ * 1.1, 2.0)) + 0.5 * bwFbm3(vec3(dropQ * 0.3, 8.0));
+outside *= mix(1.0, 0.5 + 0.65 * smoothstep(-0.75, 0.75, dapple), smoothstep(0.1, 0.7, fabricOut.y));
 float transmit = uTransmit * (0.86 + 0.14 * weave) * (1.0 - 0.06 * ripstop) * (1.0 - 0.82 * sleeve) * (1.0 - 0.45 * hem) * (1.0 - 0.5 * ridge);
 transmit *= (1.0 - 0.22 * beads) * (1.0 - 0.22 * soak) * (1.0 - 0.25 * impacts);
 transmit += uTransmit * 0.3 * core * (1.0 - sleeve);
@@ -222,8 +224,12 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
   key.shadow.autoUpdate = false; key.shadow.needsUpdate = true;
   scene.add(key, key.target);
   // Daylight spilling through the door onto the groundsheet and quilt (stands in for GI).
-  const doorSpill = new THREE.PointLight('#b8cbc8', 0.55, 5.5, 2);
+  const doorSpill = new THREE.PointLight('#d6d3c8', 0.55, 5.5, 2);
   doorSpill.position.set(0, 1.1, -1.2); scene.add(doorSpill);
+  // Warm light bounced off the lit canvas and groundsheet fills the far wall, where the
+  // sleeping bag shades it from the lantern (otherwise an olive, stain-like band).
+  const wallBounce = new THREE.PointLight('#e8c9a0', 0.35, 2.8, 2);
+  wallBounce.position.set(1.35, 0.55, 0.9); scene.add(wallBounce);
   const fallbackFill = new THREE.HemisphereLight('#b7d3d3', '#343b2b', 0.9);
   fallbackFill.visible = false; scene.add(fallbackFill);
 
@@ -563,7 +569,8 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
   return {
     post: {
       exposure: 1.1, bloomStrength: 0.07, bloomThreshold: 0, aoStrength: 0.85, aoRadius: 0.26,
-      saturation: 1.0, contrast: 1.1, shadowTint: [0.9, 0.97, 1.06], highlightTint: [1.03, 1.0, 0.96], vignette: 0.5, grain: 0.03,
+      // Neutral shadows: a cool split-tone turned the dim canvas walls green.
+      saturation: 1.0, contrast: 1.1, shadowTint: [0.99, 0.97, 0.97], highlightTint: [1.02, 1.0, 0.97], vignette: 0.5, grain: 0.03,
     },
     createVolume: () => createMist({
       skyLight: new THREE.Color(0.66, 0.75, 0.74), glowLight: new THREE.Color(0.12, 0.12, 0.11), glowDirection,
@@ -582,10 +589,16 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
       const wood = captureProbe(renderer, scene, new THREE.Vector3(0.3, 1.1, -6.5), hide, 128);
       probes.push(wood);
       scene.environment = wood.texture;
+      // The teal sleeping bag fills the lower half of the probe and stained the canvas
+      // green; the bounce the walls receive is captured from a warm neutral bag instead.
+      const bag = quilt.material as THREE.MeshStandardMaterial;
+      const bagColor = bag.color.clone();
+      bag.color.set('#6a5a48');
       const inside = captureProbe(renderer, scene, EYE, hide, 128);
+      bag.color.copy(bagColor);
       probes.push(inside);
       // The canvas already carries its own glow; little extra fill keeps its gradient.
-      for (const fabric of [vault, flapFabric, visorFabric, backFabric]) { fabric.envMap = inside.texture; fabric.envMapIntensity = 0.22; }
+      for (const fabric of [vault, flapFabric, visorFabric, backFabric]) { fabric.envMap = inside.texture; fabric.envMapIntensity = 0.18; }
       for (const object of interior) assignProbe(object, inside.texture, 1);
       assignProbe(beads, inside.texture, 1.2);
     },

@@ -143,10 +143,12 @@ function allocateRefraction(renderer: THREE.WebGLRenderer, width: number, height
     ? ['half-float', 'unsigned-byte'] : ['unsigned-byte'];
   const errors: string[] = [];
   for (const storage of candidates) {
+    // Mipmapped: the glass prefilters its out-of-focus garden from the mip chain
+    // (three regenerates it after each refraction render).
     const target = new THREE.WebGLRenderTarget(width, height, {
-      minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: true,
+      minFilter: THREE.LinearMipmapLinearFilter, magFilter: THREE.LinearFilter, depthBuffer: true,
       type: storage === 'half-float' ? THREE.HalfFloatType : THREE.UnsignedByteType,
-      format: THREE.RGBAFormat, generateMipmaps: false, samples: 0,
+      format: THREE.RGBAFormat, generateMipmaps: true, samples: 0,
     });
     target.texture.internalFormat = storage === 'half-float' ? 'RGBA16F' : 'RGBA8';
     target.texture.name = 'rainShelters.windowRefraction';

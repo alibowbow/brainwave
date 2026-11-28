@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldBuilder } from './types';
 import { GLSL_NOISE } from '../../shared/render/glsl';
 import { fbm3, noise3 } from '../../shared/render/noise';
@@ -184,9 +184,14 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   }
   scene.add(flowers);
 
-  // Shelterbelt: lumpy crowns with leafy relief, dissolving into the rain.
+  // Shelterbelt: each tree is a loose cluster of leafy lobes with ragged, see-through
+  // edges, dissolving into the rain (one smooth blob per tree read as a row of bushes).
   const treeRandom = seedRandom(90123);
-  const crownGeo = new THREE.IcosahedronGeometry(1, 5);
+  // Welded, so the lobes shade smoothly at this lower tessellation.
+  const crownSource = new THREE.IcosahedronGeometry(1, 3);
+  crownSource.deleteAttribute('normal'); crownSource.deleteAttribute('uv');
+  const crownGeo = mergeVertices(crownSource);
+  crownSource.dispose();
   const cp = crownGeo.attributes.position;
   const crownColors: number[] = [];
   const point = new THREE.Vector3();
@@ -209,6 +214,10 @@ float crownLeaves = bwNoise(vCrownWorld * 1.6) * 0.5 + 0.5;
 diffuseColor.rgb *= 0.65 + 0.55 * crownLeaves;`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
 {
+  // Toward its silhouette a lobe breaks into leaf clumps with sky between them.
+  float facing = abs(dot(normal, normalize(vViewPosition)));
+  float clumps = bwNoise(vCrownWorld * 1.7) * 0.5 + 0.5 + 0.3 * bwNoise(vCrownWorld * 4.3);
+  if (clumps > 0.34 + facing * 1.25) discard;
   float foot = length(fwidth(vCrownWorld));
   float h = bwNoise(vCrownWorld * 2.4) + 0.5 * bwNoise(vCrownWorld * 5.1);
   vec3 pos = -vViewPosition; vec3 dpdx = dFdx(pos), dpdy = dFdy(pos);
@@ -217,9 +226,9 @@ diffuseColor.rgb *= 0.65 + 0.55 * crownLeaves;`)
   normal = normalize(abs(det) * normal - sign(det) * (dh.x * r1 + dh.y * r2));
 }`);
   };
-  crownMaterial.customProgramCacheKey = () => 'storm-crowns-v2';
-  const trees = 96;
-  const crowns = new THREE.InstancedMesh(crownGeo, crownMaterial, trees * 4);
+  crownMaterial.customProgramCacheKey = () => 'storm-crowns-v3';
+  const trees = 96, lobes = 7;
+  const crowns = new THREE.InstancedMesh(crownGeo, crownMaterial, trees * lobes);
   const trunkGeometry = new THREE.CylinderGeometry(0.08, 0.17, 1, 7);
   const trunks = new THREE.InstancedMesh(trunkGeometry, new THREE.MeshStandardMaterial({ color: 0x3a3a30, roughness: 0.9 }), trees);
   for (let t = 0; t < trees; t++) {
@@ -230,14 +239,18 @@ diffuseColor.rgb *= 0.65 + 0.55 * crownLeaves;`)
     dummy.position.set(x, ground + h * 0.35, z); dummy.rotation.set(0, treeRandom() * 0.4, (treeRandom() - 0.5) * 0.07);
     dummy.scale.set(1, h * 0.7, 1); dummy.updateMatrix(); trunks.setMatrixAt(t, dummy.matrix);
     const breadth = 0.82 + treeRandom() * 0.55, lean = (treeRandom() - 0.5) * 0.36;
-    for (let c = 0; c < 4; c++) {
-      const side = c === 0 ? 0 : c === 1 ? -1 : c === 2 ? 1 : 0, size = c === 0 ? 1 : 0.45 + treeRandom() * 0.25;
-      dummy.position.set(x + h * (lean + side * (0.24 + treeRandom() * 0.1)), ground + h * (c === 0 ? 0.82 : c === 3 ? 1.05 : 0.56 + treeRandom() * 0.15), z + (treeRandom() - 0.5) * h * 0.42);
+    for (let c = 0; c < lobes; c++) {
+      // A central mass, then lobes around it at uneven heights: some high and narrow,
+      // some low and spreading, so every crown has its own ragged outline.
+      const angle = c * 2.4 + treeRandom() * 1.2, reach = c === 0 ? 0 : 0.2 + treeRandom() * 0.24;
+      const size = c === 0 ? 0.7 : 0.32 + treeRandom() * 0.26;
+      const rise = c === 0 ? 0.78 : 0.48 + treeRandom() * 0.58;
+      dummy.position.set(x + h * (lean * rise + Math.cos(angle) * reach * breadth), ground + h * rise, z + Math.sin(angle) * h * reach * 0.6);
       dummy.rotation.set(treeRandom() * 0.7, treeRandom() * Math.PI * 2, (treeRandom() - 0.5) * 0.7);
-      dummy.scale.set(h * 0.39 * breadth * size, h * (0.39 + treeRandom() * 0.15) * size, h * (0.34 + treeRandom() * 0.11) * size);
-      dummy.updateMatrix(); crowns.setMatrixAt(t * 4 + c, dummy.matrix);
+      dummy.scale.set(h * 0.39 * breadth * size, h * (0.36 + treeRandom() * 0.16) * size, h * (0.34 + treeRandom() * 0.11) * size);
+      dummy.updateMatrix(); crowns.setMatrixAt(t * lobes + c, dummy.matrix);
       grassColor.setHSL(0.24 + treeRandom() * 0.04, distant ? 0.18 : 0.28, (distant ? 0.2 : 0.17) + treeRandom() * 0.06, THREE.SRGBColorSpace);
-      crowns.setColorAt(t * 4 + c, grassColor);
+      crowns.setColorAt(t * lobes + c, grassColor);
     }
   }
   crowns.name = 'layered-shelterbelt-crowns'; crowns.castShadow = true; scene.add(crowns, trunks);

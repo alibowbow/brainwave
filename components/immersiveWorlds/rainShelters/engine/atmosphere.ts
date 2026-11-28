@@ -85,6 +85,32 @@ void main() {
     * (0.6 + 0.4 * (bwNoise(vec3(azimuth * 40.0 + up * 3.0, 5.0, t)) * 0.5 + 0.5));
   float shaftZone = smoothstep(0.02, 0.07, up) * (1.0 - smoothstep(0.16, 0.3, up));
   sky = mix(sky, mix(uHorizon, uCloudDark, 0.6), shafts * shaftZone * (1.0 - band * gap) * 0.6);
+  // A lower layer of heaped storm cloud with volume. Its thickness is read as a height
+  // field and lit from the hidden sun: flanks facing it catch silver light, thick cores
+  // stay dark, and wherever the cloud thickens upward the eye meets a shadowed belly.
+  // The heaps pile up toward the horizon, in front of the far clearing and its rain shafts.
+  {
+    vec2 sunDir = normalize(uGlowDir.xz + 1e-4);
+    vec2 upSky = -normalize(d.xz + 1e-4);
+    vec2 pl = d.xz / (h + 0.1) * uScale * 0.95 + vec2(t * 1.7, t * 0.5) + 31.0;
+    float tl = t * 0.12;
+    float pile = 0.12 * (1.0 - smoothstep(0.05, 0.3, up)) - 0.06;
+    float heap = bwFbm5(vec3(pl, tl)) * 0.5 + 0.5 + pile;
+    float heapSun = bwFbm5(vec3(pl + sunDir * 0.06, tl)) * 0.5 + 0.5 + pile;
+    float heapUp = bwFbm5(vec3(pl + upSky * 0.08, tl)) * 0.5 + 0.5 + pile;
+    // Their flat bases float a few degrees up, above the bright clearing.
+    float heapBody = smoothstep(0.47, 0.55, heap) * smoothstep(0.035, 0.085, up) * (1.0 - smoothstep(0.22, 0.45, up));
+    float lit = clamp((heap - heapSun) * 7.0 + 0.5, 0.0, 1.0);
+    float belly = clamp((heapUp - heap) * 7.0, 0.0, 1.0);
+    float core = smoothstep(0.55, 0.78, heap);
+    // Heavy rain cloud: slate cores and bellies, silver only where a flank faces the sun.
+    vec3 litSide = mix(uCloudLight, uHorizon, 0.35) * 0.62 + uGlow * glow * 0.5;
+    float light = clamp(lit * (1.0 - 0.85 * belly) * (1.0 - 0.6 * core) + 0.06, 0.0, 1.0);
+    vec3 heapColor = mix(uCloudDark * 1.1, litSide, light * light);
+    // Thin, sun-facing rims glow.
+    heapColor += uGlow * glow * (1.0 - smoothstep(0.47, 0.53, heap)) * lit * 0.45;
+    sky = mix(sky, heapColor, heapBody * 0.92);
+  }
 #endif
   sky = mix(uGround, sky, smoothstep(-0.04, 0.0, up));
   gl_FragColor = vec4(sky, 1.0);

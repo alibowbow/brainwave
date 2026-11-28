@@ -31,7 +31,8 @@ export function createLantern(options: { intensity: number; color?: THREE.ColorR
   const flame = add(new THREE.SphereGeometry(0.018, 16, 12), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.62, 0.26).multiplyScalar(22) }));
   flame.scale.set(0.8, 2.1, 0.8); flame.position.y = 0.19;
   const light = new THREE.PointLight(options.color ?? '#ffa456', options.intensity, options.distance ?? 7, 2);
-  light.castShadow = true; light.shadow.mapSize.set(512, 512); light.shadow.bias = -0.002; light.shadow.radius = 6; light.shadow.camera.near = 0.02;
+  // A flame is not a point: a coarse map with wide filtering keeps every shadow soft-edged.
+  light.castShadow = true; light.shadow.mapSize.set(256, 256); light.shadow.bias = -0.003; light.shadow.radius = 10; light.shadow.camera.near = 0.02;
   light.shadow.autoUpdate = false; light.shadow.needsUpdate = true;
   const base = options.intensity;
   return {

@@ -136,7 +136,10 @@ void main() {
   float pixelScale = uResolution.y / 800.0;
   // Touch trace: a wiped path that slowly mists over again.
   vec2 traceDelta = (vUv - uTouch) * vec2(GLASS.x / GLASS.y, 1.0);
-  float wiped = exp(-dot(traceDelta, traceDelta) * 48.0) * uTouchStrength;
+  float wipe = exp(-dot(traceDelta, traceDelta) * 48.0);
+  float wiped = wipe * uTouchStrength;
+  // The water pushed aside gathers in a faint bright rim around the cleared patch.
+  float wipeRim = smoothstep(0.12, 0.35, wipe) * (1.0 - smoothstep(0.35, 0.7, wipe)) * uTouchStrength;
 
   // Running drops: each lane releases a drop that creeps, pauses and slides, drawing a
   // clean lane through the beads with a few small beads it left behind.
@@ -232,6 +235,10 @@ void main() {
   float lampHaze = exp(-dot(lampDelta, lampDelta) * 9.0);
   float lampShade = 1.0 - smoothstep(0.035, 0.07, length(lampDelta * vec2(1.0, 1.25)));
   colour += uRoom * 0.03 + uLampColor * (0.05 * lampHaze + 0.13 * lampShade) * (0.7 + 0.3 * mist);
+  // A freshly wiped patch is clearer than the glass around it: deeper, more saturated
+  // colour without the veil of film and mist, ringed by the water pushed aside.
+  float wipedLum = bwLuma(colour);
+  colour = mix(vec3(wipedLum), colour, 1.0 + 0.3 * wiped) * (1.0 - 0.16 * wiped) + vec3(0.12, 0.125, 0.125) * wipeRim;
   gl_FragColor = vec4(colour, 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

@@ -8,7 +8,8 @@ import { createRockMaterial } from '../shared/render/rockSurface';
 import { bakeNightEnvironment, createNightSky } from '../shared/render/skyNight';
 import { applySnowCover, createSnowMaterial } from '../shared/render/snowSurface';
 import { createSnowfall } from '../shared/render/snowFall';
-import { coniferGeometry, createFoliageMaterial, createTerrainMaterial, distantSpruceGeometry, needleSprayTexture, ridgeGeometry } from '../nightFires/landscape';
+import { createTerrainMaterial, ridgeGeometry } from '../nightFires/landscape';
+import { createSnowFirMaterial, snowFirGeometry } from './snowFir';
 import { createSnowNightVolume } from './atmosphere';
 import { createDoorLamps, createPlasterMaterial, createWoodMaterial, doorLampUniforms, GLSL_DOOR_LAMPS, GLSL_VILLAGE_GROUND, interiorTexture } from './villageMaterials';
 import { createCloudDeck } from './atmosphere';
@@ -197,7 +198,7 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
       float inside = (1.0 - smoothstep(hs.x - blur, hs.x + blur, abs(local.x))) * (1.0 - smoothstep(hs.y - blur, hs.y + blur, abs(local.y)));
       float mullion = smoothstep(.012, .03 + blur * .5, abs(local.x)) * smoothstep(.01, .026 + blur * .5, abs(local.y - hs.y * .06));
       vec3 lv = normalize(-toP);
-      shape = inside * mix(.2, 1.0, mullion) * max(dot(n, lv), 0.0) * 3.2 / (dot(toP, toP) * .5 + .4);
+      shape = inside * mix(.2, 1.0, mullion) * max(dot(n, lv), 0.0) * 4.6 / (dot(toP, toP) * .5 + .4);
     }
     spill += glow * .55 + uSpillColor[i] * shape;
   }
@@ -247,6 +248,7 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
   };
   const lampGlass = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .72, .4).multiplyScalar(9) });
   const sprigGeometry = new THREE.IcosahedronGeometry(1, 1);
+  const potClay = new THREE.MeshStandardMaterial({ color: '#6a3f30', roughness: .85 });
   const sprigMaterial = applySnowCover(new THREE.MeshStandardMaterial({ color: '#1f3326', roughness: .9 }), { key: 'village-sprig', threshold: .5, amount: .7, scale: 12 });
   const doorGlass = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .66, .34).multiplyScalar(6) });
   const flameMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .62, .28).multiplyScalar(26) });
@@ -349,11 +351,12 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
   ];
   const rangeMaterial = createTerrainMaterial({ key: 'snow-village-ranges', rock: '#4a5260', forest: '#1d2a2e', snow: '#d2dbe6', treeLine: 18, snowLine: 8, bump: 1.2 });
   for (const geometry of ranges) { const range = new THREE.Mesh(geometry, rangeMaterial); range.receiveShadow = true; scene.add(range); }
-  // A dark forest band on the rises: instanced spruce silhouettes with snow on their tiers.
+  // A dark forest band on the rises: instanced snow-laden firs (few tiers, low detail).
+  const firMaterial = createSnowFirMaterial('village-fir');
   {
-    const geometry = distantSpruceGeometry(9);
-    const material = applySnowCover(new THREE.MeshStandardMaterial({ color: '#1e2c2b', roughness: .9 }), { key: 'distant-spruce', threshold: .35, amount: .9, scale: 9 });
-    const count = 520;
+    const geometry = snowFirGeometry({ seed: 91, height: 1, radius: .32, tiers: 7, sectors: 12, rings: 1 });
+    const material = firMaterial;
+    const count = 360;
     const forest = new THREE.InstancedMesh(geometry, material, count);
     const matrix = new THREE.Matrix4(), q = new THREE.Quaternion(), scale = new THREE.Vector3();
     let placed = 0;
@@ -494,8 +497,8 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
     const wallMesh = mesh(geometry, mat, parent); wallMesh.position.z = z - 0.31; return wallMesh;
   };
   let windowSeed = 0;
-  const addWindow = (parent: THREE.Group, x: number, y: number, z: number, w: number, h: number, on: number, side = false) => {
-    const win = new THREE.Group(); win.position.set(x, y, z); if (side) win.rotation.y = -Math.PI / 2; parent.add(win);
+  const addWindow = (parent: THREE.Group, x: number, y: number, z: number, w: number, h: number, on: number, turn = 0, pairedShutters = false) => {
+    const win = new THREE.Group(); win.position.set(x, y, z); win.rotation.y = turn; parent.add(win);
     // The interior glows at HDR strength; a faint glass pane reflects the sky in front of it.
     const interior = on > 0.22 ? windowLit(windowSeed++, on > 0.65 ? 5.2 * on : 2.2 * on) : darkGlass;
     box(0, 0, -0.3, w + 0.02, h + 0.02, 0.02, interior, win);
@@ -508,10 +511,12 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
     box(0, 0, -0.235, w - 0.06, h - 0.06, 0.005, glassPane, win);
     const sill = mesh(new RoundedBoxGeometry(w + 0.29, 0.12, 0.42, 2, 0.018), stone, win); sill.position.set(0, -h / 2 - 0.064, -0.02);
     snowCap(-0.01, -h / 2 - 0.005, 0.06, w + 0.22, 0.26, 0.075, win);
-    if (random() > 0.35) {
-      const shutter = new THREE.Group(); shutter.position.set(w / 2 + 0.11, 0, 0.035); shutter.rotation.y = -0.24; win.add(shutter);
-      for (let i = 0; i < 3; i++) box(0.042 + i * 0.064, 0, 0, 0.059, h + 0.08, 0.041, timber, shutter);
-      for (const sy of [-0.3, 0.3]) box(0.1, h * sy, 0.023, 0.21, 0.042, 0.025, darkWood, shutter);
+    // Board shutters folded back against the wall, their top edges carrying a line of snow.
+    for (const sideX of pairedShutters ? [-1, 1] : random() > 0.35 ? [1] : []) {
+      const shutter = new THREE.Group(); shutter.position.set(sideX * (w / 2 + 0.11), 0, 0.035); shutter.rotation.y = -0.24 * sideX; win.add(shutter);
+      for (let i = 0; i < 3; i++) timberBox(sideX * (0.042 + i * 0.064), 0, 0, 0.059, h + 0.08, 0.041, timber, shutter, .003);
+      for (const sy of [-0.3, 0.3]) box(sideX * 0.1, h * sy, 0.023, 0.21, 0.042, 0.025, darkWood, shutter);
+      snowCap(sideX * 0.1, h / 2 + 0.04, 0, 0.2, 0.05, 0.03, shutter);
     }
     if (on > 0.22 && spillCount < 8) {
       // Register an analytic light pool on the ground snow in front of this window.
@@ -534,12 +539,16 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
     const doorX = variant % 2 ? -w * 0.24 : w * 0.22;
     const mainW = Math.min(w * 0.22, 0.83), mainY = Math.min(1.55, wall * 0.62);
     const openings: WallOpening[] = [{ x: -doorX, y: mainY, w: mainW + 0.07, h: 1.02 }, { x: doorX, y: 0.825, w: 0.77, h: 1.35 }];
-    if (wall > 3.2) openings.push({ x: -w * 0.24, y: wall * 0.8, w: 0.6, h: 0.73 }, { x: w * 0.22, y: wall * 0.8, w: 0.64, h: 0.75 });
-    box(0, -0.06, 0, w + 0.07, 0.38, d + 0.08, stone, group);
+    if (wall > 3.2) openings.push({ x: -w * 0.24, y: wall * 0.86, w: 0.6, h: 0.73 }, { x: w * 0.22, y: wall * 0.86, w: 0.64, h: 0.75 });
+    // A proud rubble-stone plinth the walls stand on, its ledge holding a line of snow.
+    box(0, 0.08, 0, w + 0.16, 0.62, d + 0.16, stone, group);
+    snowCap(0, 0.39, d / 2 + 0.05, w + 0.14, 0.09, 0.035, group);
     piercedWall(w, wall, openings, housePlaster, group, d / 2);
     box(0, wall / 2 + 0.12, -d / 2 + 0.14, w, wall, 0.28, housePlaster, group);
-    box(w / 2 - 0.14, wall / 2 + 0.12, 0, 0.28, wall, d, housePlaster, group);
-    const sideWall = new THREE.Group(); sideWall.position.x = -w / 2; sideWall.rotation.y = -Math.PI / 2; group.add(sideWall);
+    // The side toward the lane has a lit window; the other side is a plain wall.
+    const laneSide = x < 0 ? 1 : -1;
+    box(-laneSide * (w / 2 - 0.14), wall / 2 + 0.12, 0, 0.28, wall, d, housePlaster, group);
+    const sideWall = new THREE.Group(); sideWall.position.x = laneSide * w / 2; sideWall.rotation.y = laneSide * Math.PI / 2; group.add(sideWall);
     piercedWall(d, wall, [{ x: 0.2, y: wall * 0.55, w: 0.74, h: 0.95 }], housePlaster, sideWall, 0);
     triangularGable(w, wall + 0.1, pitch - 0.1, d / 2 - 0.06, housePlaster, group);
     triangularGable(w, wall + 0.1, pitch - 0.1, -d / 2 - 0.06, housePlaster, group);
@@ -549,8 +558,13 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
       for (const drip of roofSnow(w, d, wall + 0.1, pitch, s, group, variant * 3.1 + s)) eaveDrips.push(group.localToWorld(drip));
       timberBox(s * (w / 2 - 0.065), wall / 2 + 0.13, d / 2 + 0.006, 0.13, wall, 0.15, timber, group);
       timberBox(s * (w / 2 + 0.24), wall + 0.04, 0, 0.13, 0.16, d + 0.65, darkWood, group, .02);
-      timberBetween(v3(s * (w / 2 + 0.28), wall + 0.11, d / 2 + 0.35), v3(0, wall + pitch + 0.11, d / 2 + 0.35), 0.13, 0.11, darkWood, group, .018);
+      // A deep bargeboard shows the roof's thickness; knee braces carry the gable overhang.
+      timberBetween(v3(s * (w / 2 + 0.28), wall + 0.06, d / 2 + 0.35), v3(0, wall + pitch + 0.06, d / 2 + 0.35), 0.24, 0.12, darkWood, group, .018);
+      timberBetween(v3(s * (w / 2 - 0.12), wall - 0.42, d / 2 + 0.03), v3(s * (w / 2 - 0.12), wall + 0.08, d / 2 + 0.34), 0.08, 0.08, darkWood, group, .004);
+      timberBox(s * (w / 2 - 0.12), wall + 0.1, d / 2 + 0.2, 0.12, 0.12, 0.34, darkWood, group, 0);
+      for (let rz = -d / 2 + 0.25; rz < d / 2; rz += 0.56) timberBox(s * (w / 2 + 0.17), wall + 0.07, rz, 0.34, 0.09, 0.075, darkWood, group, 0);
     }
+    timberBox(0, wall + pitch + 0.02, d / 2 + 0.2, 0.14, 0.16, 0.36, darkWood, group, 0);
     timberBox(0, wall + 0.05, d / 2 + 0.015, w, 0.135, 0.15, timber, group, .018);
     timberBox(0, wall + pitch * 0.45, d / 2 + 0.065, 0.083, pitch * 0.92, 0.095, timber, group);
     // Half-timbering that respects the openings: a sill rail broken by the door, studs
@@ -584,7 +598,7 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
       }
       doorGlows.push(group.localToWorld(v3(lx, ly, lz)));
     }
-    addWindow(group, -doorX, mainY, d / 2, mainW, 0.92, warm ? 0.9 : 0.55);
+    addWindow(group, -doorX, mainY, d / 2, mainW, 0.92, warm ? 0.9 : 0.55, 0, true);
     {
       // A planter box under the window: fir sprigs poking through a cushion of snow.
       const by = mainY - .46 - .2, bz = d / 2 + .2;
@@ -598,17 +612,27 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
       snowCap(-doorX, by + .1, bz, mainW + .2, .2, .06, group);
     }
     if (wall > 3.2) {
-      addWindow(group, -w * 0.24, wall * 0.8, d / 2, 0.53, 0.63, 0.14);
-      addWindow(group, w * 0.22, wall * 0.8, d / 2, 0.57, 0.65, warm ? 0.7 : 0.14);
+      addWindow(group, -w * 0.24, wall * 0.86, d / 2, 0.53, 0.63, 0.14);
+      addWindow(group, w * 0.22, wall * 0.86, d / 2, 0.57, 0.65, warm ? 0.7 : 0.14);
     }
-    addWindow(group, -w / 2, wall * 0.55, 0.2, 0.67, 0.85, warm ? 0.46 : 0.78, true);
+    // The lane-side room is lit, so its window throws light out onto the open snow by the lane.
+    addWindow(group, laneSide * w / 2, wall * 0.55, -laneSide * 0.2, 0.67, 0.85, 0.85, laneSide * Math.PI / 2, true);
     windowGlows.push(group.localToWorld(v3(-doorX, mainY, d / 2 + .3)));
     const chimneyX = w * 0.26;
     box(chimneyX, wall + pitch * 0.79 + 0.33, -d * 0.21, 0.42, 0.94, 0.48, stone, group);
-    snowCap(chimneyX, wall + pitch * 0.79 + 0.8, -d * 0.21, 0.52, 0.58, 0.11, group);
-    chimneys.push(group.localToWorld(v3(chimneyX, wall + pitch * 0.79 + 0.95, -d * 0.21)));
-    box(doorX, 1.59, d / 2 + 0.26, 0.98, 0.11, 0.64, darkWood, group);
-    snowCap(doorX + 0.013, 1.645, d / 2 + 0.29, 1.08, 0.72, 0.13, group);
+    // A projecting cap stone with a clay pot, snow lying on the cap around it.
+    box(chimneyX, wall + pitch * 0.79 + 0.84, -d * 0.21, 0.56, 0.08, 0.62, stone, group);
+    const pot = mesh(new THREE.CylinderGeometry(0.075, 0.09, 0.26, 10), potClay, group); pot.position.set(chimneyX, wall + pitch * 0.79 + 1.0, -d * 0.21);
+    snowCap(chimneyX + 0.12, wall + pitch * 0.79 + 0.88, -d * 0.21, 0.26, 0.56, 0.07, group);
+    chimneys.push(group.localToWorld(v3(chimneyX, wall + pitch * 0.79 + 1.13, -d * 0.21)));
+    // A little gabled hood over the door on two knee braces, its slopes heaped with snow.
+    for (const sx of [-1, 1]) {
+      const slope = new THREE.Group(); slope.position.set(doorX + sx * 0.29, 1.78, d / 2 + 0.34); slope.rotation.z = -sx * 0.5; group.add(slope);
+      box(0, 0, 0, 0.66, 0.05, 0.72, darkWood, slope);
+      snowCap(sx * -0.02, 0.025, 0.01, 0.64, 0.74, 0.12, slope);
+      timberBetween(v3(doorX + sx * 0.5, 1.2, d / 2 + 0.02), v3(doorX + sx * 0.5, 1.6, d / 2 + 0.6), 0.07, 0.07, darkWood, group, 0);
+    }
+    timberBox(doorX, 1.62, d / 2 + 0.7, 1.12, 0.1, 0.07, darkWood, group, .004);
     if (variant === 1) {
       // A wooden sled leans against the wall beside the door, its slats dusted with snow.
       const sled = new THREE.Group(); sled.position.set(doorX + .72, .12, d / 2 + .3); sled.rotation.set(-1.05, .25, 0); group.add(sled);
@@ -624,16 +648,49 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
     if (variant === 2) {
       const deckY = wall * .62, deckZ = d / 2 + .38, span = w * .78;
       timberBox(0, deckY, deckZ, span, .1, .62, darkWood, group, .01);
+      // A low rail, kept below the upper windows' sills.
       for (const sx of [-1, 1]) {
         timberBetween(v3(sx * span * .42, deckY - .75, d / 2 + .02), v3(sx * span * .42, deckY - .05, deckZ + .2), .09, .09, darkWood, group, .006);
-        timberBox(sx * span * .5, deckY + .48, deckZ + .27, .08, .86, .08, timber, group);
+        timberBox(sx * span * .5, deckY + .24, deckZ + .27, .08, .4, .08, timber, group);
       }
-      const posts = 9;
-      for (let i = 1; i < posts; i++) timberBox(-span / 2 + span * i / posts, deckY + .36, deckZ + .27, .045, .62, .045, timber, group, .003);
-      timberBox(0, deckY + .9, deckZ + .27, span + .08, .08, .1, timber, group, .012);
-      snowCap(0, deckY + .94, deckZ + .27, span + .06, .14, .07, group);
+      const posts = 11;
+      for (let i = 1; i < posts; i++) timberBox(-span / 2 + span * i / posts, deckY + .2, deckZ + .27, .045, .32, .045, timber, group, .003);
+      timberBox(0, deckY + .4, deckZ + .27, span + .08, .07, .1, timber, group, .012);
+      snowCap(0, deckY + .435, deckZ + .27, span + .06, .14, .06, group);
       snowCap(0, deckY + .05, deckZ + .12, span - .05, .36, .09, group);
-      for (const sx of [-1, 1]) snowCap(sx * span * .5, deckY + .91, deckZ + .27, .1, .1, .05, group);
+      for (const sx of [-1, 1]) snowCap(sx * span * .5, deckY + .44, deckZ + .27, .1, .1, .05, group);
+    }
+    if (variant === 2) {
+      // A lower side wing set back behind the front, with its own gable and snow load.
+      const wing = new THREE.Group(); wing.position.set(w / 2 + 1.22, 0, -d / 2 + 1.9); group.add(wing);
+      const ww = 2.6, wd = 3.6, wwall = 2.3, wpitch = 1.25;
+      box(0, 0.08, 0, ww + 0.14, 0.62, wd + 0.14, stone, wing);
+      piercedWall(ww, wwall, [{ x: 0.15, y: 1.35, w: 0.66, h: 0.85 }], housePlaster, wing, wd / 2);
+      box(0, wwall / 2 + 0.12, -wd / 2 + 0.14, ww, wwall, 0.28, housePlaster, wing);
+      box(ww / 2 - 0.14, wwall / 2 + 0.12, 0, 0.28, wwall, wd, housePlaster, wing);
+      triangularGable(ww, wwall + 0.1, wpitch - 0.1, wd / 2 - 0.06, housePlaster, wing);
+      for (const s of [-1, 1]) {
+        roofHalf(ww, wd, wwall + 0.1, wpitch, s, slate, wing);
+        for (const drip of roofSnow(ww, wd, wwall + 0.1, wpitch, s, wing, 17 + s)) eaveDrips.push(wing.localToWorld(drip));
+        timberBox(s * (ww / 2 - 0.065), wwall / 2 + 0.13, wd / 2 + 0.006, 0.13, wwall, 0.15, timber, wing);
+        timberBetween(v3(s * (ww / 2 + 0.28), wwall + 0.06, wd / 2 + 0.35), v3(0, wwall + wpitch + 0.06, wd / 2 + 0.35), 0.22, 0.12, darkWood, wing, .014);
+      }
+      timberBox(0, wwall + 0.05, wd / 2 + 0.015, ww, 0.13, 0.15, timber, wing, .012);
+      addWindow(wing, 0.15, 1.35, wd / 2, 0.58, 0.78, 0.6, 0, true);
+    }
+    if (variant === 1) {
+      // A woodshed lean-to against the far side: posts, a mono-pitch roof under snow, stacked logs.
+      const shed = new THREE.Group(); shed.position.set(-w / 2 - 0.62, 0, 0.1); group.add(shed);
+      for (const pz of [-1.35, 1.35]) timberBox(-0.5, 0.95, pz, 0.1, 1.7, 0.1, darkWood, shed);
+      const roofTilt = new THREE.Group(); roofTilt.position.set(-0.08, 1.95, 0); roofTilt.rotation.z = 0.32; shed.add(roofTilt);
+      box(0, 0, 0, 1.4, 0.06, 3.1, darkWood, roofTilt);
+      snowCap(0, 0.03, 0, 1.36, 3.0, 0.2, roofTilt);
+      for (let row = 0; row < 7; row++) for (let col = 0; col < 14; col++) {
+        const r = 0.06 + random() * 0.02, zc = -1.2 + col * 0.18 + (row % 2) * 0.09, yc = 0.4 + row * 0.13;
+        if (zc > 1.25) continue;
+        beam(v3(-0.55, yc, zc), v3(-0.1 + (random() - .5) * .05, yc, zc), r, row % 3 ? timber : darkWood, shed, 8);
+      }
+      snowCap(-0.32, 1.32, 0, 0.5, 2.5, 0.08, shed);
     }
     if (variant === 2) {
       // A firewood stack against the lane-side wall, log ends toward the lane, capped with snow.
@@ -683,22 +740,22 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
 
   // ---------------------------------------------------------------- trees
   const treeGround = (x: number, z: number) => z < -43 ? Math.max(terrain(x, z), hillHeight(x, z) - .2) : terrain(x, z);
-  const needles = applySnowCover(createFoliageMaterial(needleSprayTexture(51, '#2c4235'), 'village-spruce'), { key: 'village-spruce', threshold: .7, amount: .78, scale: 3.2 });
-  const bark = applySnowCover(new THREE.MeshStandardMaterial({ color: '#3b322c', roughness: .95 }), { key: 'village-bark', threshold: .55 });
   {
-    const woods: THREE.BufferGeometry[] = [], foliage: THREE.BufferGeometry[] = [];
-    const firs: Array<[number, number, number]> = [[-9, -4, 6.8], [8.8, -4.9, 6.1], [-10.4, -13, 8.1], [9.6, -19, 7.2], [-8.6, -25, 6.8], [10.1, -30, 7.6], [-11, -38, 7], [8, -44, 7.8], [-8, -51, 7.5], [-13.5, -8.5, 7.4], [12.6, -12.5, 8.6], [-12.8, -27, 9]];
+    // Snow-laden firs: drooping branch tiers with needle mass, each carrying a soft load of snow.
+    const parts: THREE.BufferGeometry[] = [];
+    const firs: Array<[number, number, number]> = [[-9, -4, 6.8], [8.8, -4.9, 6.1], [-10.4, -13, 8.1], [9.6, -19, 7.2], [-8.6, -25, 6.8], [10.1, -30, 7.6], [-11, -38, 7], [8, -44, 7.8], [-8, -51, 7.5], [-13.5, -8.5, 7.4], [12.6, -12.5, 8.6], [-12.8, -27, 9],
+      // A mid-ground stand closing the lane's end and filling the gaps between the houses.
+      [-6.4, -46.5, 8.2], [5.6, -48.5, 7.4], [-2.6, -58, 8.8], [3.4, -57, 9.4], [11.2, -36.5, 8.2], [-12.2, -33, 8.6], [-15.5, -18.5, 9.2], [14.6, -22.5, 8.8], [7.6, -40.5, 7.2], [-9.6, -44.5, 8.4], [1.8, -63, 9.8], [-5.2, -61, 9.2]];
     firs.forEach(([x, z, h], index) => {
-      const tree = coniferGeometry({ height: h, seed: 40 + index * 7, spread: .25, clearTrunk: .1, lean: .03 });
-      const matrix = new THREE.Matrix4().compose(v3(x, treeGround(x, z) - .1, z), new THREE.Quaternion().setFromAxisAngle(v3(0, 1, 0), random() * Math.PI * 2), v3(1, 1, 1));
-      tree.wood.applyMatrix4(matrix); tree.foliage.applyMatrix4(matrix);
-      woods.push(tree.wood); foliage.push(tree.foliage);
+      const near = z > -32;
+      const tree = snowFirGeometry({ seed: 40 + index * 7, height: h, radius: h * .3, tiers: Math.round(h * (near ? 1.6 : 1.25)), sectors: near ? 34 : 24, rings: near ? 3 : 2 });
+      tree.applyMatrix4(new THREE.Matrix4().compose(v3(x, treeGround(x, z) - .1, z), new THREE.Quaternion().setFromAxisAngle(v3(0, 1, 0), random() * Math.PI * 2), v3(1, 1, 1)));
+      parts.push(tree);
       if (z > -35) snowDrift(x, z, 1.4 + h * 0.12, 1.1, 0.17);
     });
-    const woodGeometry = mergeGeometries(woods), foliageGeometry = mergeGeometries(foliage);
-    woods.forEach((g) => g.dispose()); foliage.forEach((g) => g.dispose());
-    const trunks = new THREE.Mesh(woodGeometry, bark); trunks.castShadow = trunks.receiveShadow = true; scene.add(trunks);
-    const crowns = new THREE.Mesh(foliageGeometry, needles); crowns.castShadow = crowns.receiveShadow = true; scene.add(crowns);
+    const crowns = new THREE.Mesh(mergeGeometries(parts), firMaterial);
+    parts.forEach((g) => g.dispose());
+    crowns.castShadow = crowns.receiveShadow = true; crowns.name = 'Snow-laden firs'; scene.add(crowns);
   }
   const bareTree = (x: number, z: number, height: number, seed: number) => {
     const group = new THREE.Group(); group.position.set(x, treeGround(x, z), z); staticRoot.add(group);
@@ -931,11 +988,11 @@ normal = bwSurfaceBump(-vViewPosition, normal, trackHeight * clamp(1.6 - length(
           { position: doorGlows[0], color: new THREE.Color(1, .62, .3).multiplyScalar(.012) },
         ],
         smoke: [
-          { base: chimneys[0], radius: .3, height: 8, density: 1.1 },
-          { base: chimneys[1], radius: .32, height: 8.5, density: 1.0 },
+          { base: chimneys[0], radius: .34, height: 8, density: 1.6 },
+          { base: chimneys[1], radius: .36, height: 8.5, density: 1.45 },
         ],
         wind: new THREE.Vector2(.42, -.12),
-        smokeLight: new THREE.Color(.09, .06, .036),
+        smokeLight: new THREE.Color(.2, .12, .06),
       });
       volumeUniforms = volume.uniforms;
       return volume;

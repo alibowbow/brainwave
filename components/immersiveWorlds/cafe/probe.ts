@@ -72,7 +72,7 @@ export function bakeCafeProbes(renderer: T.WebGLRenderer, layout: {
   try {
     // Room probe: a warm, mostly dark box around the window seat.
     const roomScene = new T.Scene();
-    const box = new T.Mesh(new T.BoxGeometry(14, 4.2, 18), basic(rgb(0.016, 0.011, 0.008), T.BackSide));
+    const box = new T.Mesh(new T.BoxGeometry(14, 4.2, 18), basic(rgb(0.022, 0.015, 0.01), T.BackSide));
     box.position.set(1.5, 2.1, -1.5);
     roomScene.add(box);
     const floor = new T.Mesh(new T.PlaneGeometry(14, 18), basic(rgb(0.02, 0.012, 0.007), T.DoubleSide));
@@ -86,7 +86,10 @@ export function bakeCafeProbes(renderer: T.WebGLRenderer, layout: {
     for (const [x, y, s] of [[-4.2, 1.3, 0.5], [-3.1, 2.1, 0.28], [-1.9, 1.1, 0.6], [-0.8, 1.9, 0.3], [0.2, 1.25, 0.45], [-2.6, 2.7, 0.25]]) {
       panel(roomScene, rgb(1.6, 1.1, 0.6), s, s * 0.7, x, y, g.z - 0.04, new T.Vector3(x, y, 5));
     }
-    blob(roomScene, rgb(9, 6.2, 3.4), 0.14, layout.lamp.x, layout.lamp.y, layout.lamp.z);
+    // The lamp sits half a metre from the probe centre, so a bright stand-in would fill a
+    // huge solid angle and every varnished surface would mirror it. Only the dim glow of
+    // the shade cloth goes in; the key spot light supplies the real highlight.
+    blob(roomScene, rgb(1.1, 0.72, 0.4), 0.1, layout.lamp.x, layout.lamp.y, layout.lamp.z);
     for (const p of layout.pendants) {
       const disc = new T.Mesh(new T.CircleGeometry(0.22, 20), basic(rgb(14, 10, 6)));
       disc.position.copy(p);

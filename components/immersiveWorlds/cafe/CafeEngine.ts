@@ -13,8 +13,8 @@ export type CafePostPreference = 'auto' | 'off';
 
 /** Warm interior, cool exterior: split-tone grade over the fitted ACES curve. */
 export const CAFE_POST: Partial<PostSettings> = {
-  exposure: 1.18,
-  bloomStrength: .1,
+  exposure: 1.44,
+  bloomStrength: .07,
   bloomThreshold: 0,
   aoStrength: .9,
   aoRadius: .32,
@@ -22,11 +22,11 @@ export const CAFE_POST: Partial<PostSettings> = {
   contrast: 1.06,
   shadowTint: [.95, .98, 1.06],
   highlightTint: [1.08, 1.0, .88],
-  vignette: .5,
+  vignette: .38,
   grain: .03,
 };
 
-const KEY_INTENSITY = 5.2, LAMP_GLOW = .9, BOUNCE = .22, SHADE_EMISSIVE = 1.15;
+const KEY_INTENSITY = 5.2, LAMP_GLOW = 1.35, BOUNCE = .22, SHADE_EMISSIVE = 1.15;
 const BULB = new T.Color('#ffd2a0').multiplyScalar(30);
 const LAMP_TINT = new T.Color('#ffc58a');
 
@@ -145,7 +145,7 @@ export class CafeEngine {
     this.bokeh.setSize(Math.max(1,Math.round(pw/2)),Math.max(1,Math.round(ph/2)));
     this.glass.getRenderTarget().setSize(Math.round(pw*.65),Math.round(ph*.65));
     this.glassUniforms.resolution.value.set(pw,ph);
-    const b=this.bokehMaterial.uniforms;b.uSourceSize.value.set(pw,ph);b.uMaxRadius.value=Math.max(4,ph*.021);
+    const b=this.bokehMaterial.uniforms;b.uSourceSize.value.set(pw,ph);b.uMaxRadius.value=Math.max(4,ph*.015);
     this.camera.aspect=this.width/this.height;this.renderer.shadowMap.needsUpdate=true;
     // Portrait keeps the near cup and table lamp together; wider views reveal the room to the right.
     const portrait=1-T.MathUtils.smoothstep(this.camera.aspect,.48,1.35);
@@ -190,6 +190,7 @@ export class CafeEngine {
     this.camera.lookAt(this.shot.aim);this.camera.rotateY(this.look.yaw);this.camera.rotateX(this.look.pitch);this.camera.updateMatrixWorld();
     const b=this.bokehMaterial.uniforms;
     b.uInverseProjection.value.copy(this.camera.projectionMatrixInverse);b.uCameraWorld.value.copy(this.camera.matrixWorld);b.uTime.value=this.time;
+    b.uViewProjection.value.multiplyMatrices(this.camera.projectionMatrix,this.camera.matrixWorldInverse);
     withCafeTargetState(this.renderer,()=>{
       try{
         this.glass.visible=false;this.renderer.setRenderTarget(this.target);this.renderer.render(w.scene,this.camera);

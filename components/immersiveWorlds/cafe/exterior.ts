@@ -132,9 +132,9 @@ export function buildCafeExterior(surfaces: ExteriorSurfaces): {
 void main(){
   float y = vDir.y;
   // Blue hour: the sky still glows after sunset, brightest just above the rooftops.
-  vec3 top = vec3(0.012, 0.03, 0.09), mid = vec3(0.035, 0.068, 0.16), low = vec3(0.075, 0.085, 0.13);
+  vec3 top = vec3(0.012, 0.03, 0.09), mid = vec3(0.04, 0.075, 0.165), low = vec3(0.095, 0.11, 0.155);
   vec3 c = mix(mid, top, smoothstep(0.3, 0.95, y));
-  c = mix(low, c, smoothstep(-0.02, 0.22, y));
+  c = mix(low, c, smoothstep(0.0, 0.26, y));
   // Thin, slow cloud deck lit from below by the city.
   float band = sin(vDir.x * 9.0 + y * 31.0) * sin(vDir.x * 23.0 - y * 13.0);
   c += vec3(0.006, 0.007, 0.01) * smoothstep(0.2, 0.9, band) * smoothstep(0.05, 0.3, y) * (1.0 - smoothstep(0.4, 0.8, y));
@@ -221,8 +221,11 @@ void main(){
     // Independent UV offsets avoid repeating exactly the same ripple silhouette.
     const uv = geometry.getAttribute('uv');
     const position = geometry.getAttribute('position');
-    // The near end of each reflected strip converges toward the window seat.
-    for (let i = 0; i < position.count; i++) position.setX(i, position.getX(i) + (1 - uv.getY(i)) * (-.5 - x) * .45);
+    // A light's reflection runs from below it straight toward the viewer, so the near
+    // end of each strip is swung onto the line to the window seat (x ≈ .6, z ≈ 1.45):
+    // on screen it then falls vertically beneath its lamp.
+    const lean = (.6 - x) * length / (1.45 - (z - length / 2));
+    for (let i = 0; i < position.count; i++) position.setX(i, position.getX(i) + (1 - uv.getY(i)) * lean);
     if (random() > .5) for (let i = 0; i < uv.count; i++) uv.setX(i, 1 - uv.getX(i));
     const mesh = new THREE.Mesh(geometry, reflected[tint]);
     mesh.position.set(x, -.018 + strength * .001, z);
@@ -293,7 +296,10 @@ void main(){
     box(x - .1, 2.11, z + .71, w * .89, .13, .037, awnings[style % 3]);
     for (let item = 0; item < 3; item++) box(x - w * .31 + item * .41, .63 + (item % 2) * .11, z + .145, .18 + random() * .10, .34 + random() * .20, .05, curtains[(item + style) % 3]);
     if (shopLit) {
-      reflection(x - .15, -11.95, 1.8 + random() * .6, 8.6 + random() * 1.1, style === 4 ? 2 : 0, .8);
+      // The bokeh pass mirrors lit shop fronts in the wet street itself (screen-space
+      // planar reflection), so they need no stand-in strip. The draws this strip used
+      // are still taken from the seeded sequence to keep later façades unchanged.
+      for (let i = 0; i < 4; i++) random();
       halo(x - w * .10, 1.2, z + .25, w * .75);
     }
   }
@@ -371,7 +377,10 @@ void main(){
   return {
     group, materials, textures, lamps,
     setEnvironment(texture) {
-      for (const mat of outsideLit) { mat.envMap = texture; mat.envMapIntensity = texture ? 1 : .6; mat.needsUpdate = true; }
+      // The probe cannot place reflections, so on the grazing wet paving it would smear
+      // the shop fronts into one bright band. Keep it to a dim sky sheen there and let
+      // the streaks and the lamps' own highlights carry the reflections.
+      for (const mat of outsideLit) { mat.envMap = texture; mat.envMapIntensity = texture ? (mat === surfaces.pavement ? .25 : 1) : .6; mat.needsUpdate = true; }
     },
   };
 }

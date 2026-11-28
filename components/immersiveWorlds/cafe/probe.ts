@@ -72,7 +72,7 @@ export function bakeCafeProbes(renderer: T.WebGLRenderer, layout: {
   try {
     // Room probe: a warm, mostly dark box around the window seat.
     const roomScene = new T.Scene();
-    const box = new T.Mesh(new T.BoxGeometry(14, 4.2, 18), basic(rgb(0.016, 0.011, 0.008), T.BackSide));
+    const box = new T.Mesh(new T.BoxGeometry(14, 4.2, 18), basic(rgb(0.022, 0.015, 0.01), T.BackSide));
     box.position.set(1.5, 2.1, -1.5);
     roomScene.add(box);
     const floor = new T.Mesh(new T.PlaneGeometry(14, 18), basic(rgb(0.02, 0.012, 0.007), T.DoubleSide));
@@ -81,12 +81,15 @@ export function bakeCafeProbes(renderer: T.WebGLRenderer, layout: {
     roomScene.add(floor);
     const g = layout.glass;
     // The window: deep blue upper sky, lighter band at the street, warm specks of shop light.
-    panel(roomScene, rgb(0.03, 0.05, 0.095), g.w, g.h * 0.55, g.x, g.y + g.h * 0.22, g.z - 0.05, new T.Vector3(g.x, g.y + g.h * 0.22, 5));
-    panel(roomScene, rgb(0.05, 0.065, 0.09), g.w, g.h * 0.45, g.x, g.y - g.h * 0.27, g.z - 0.06, new T.Vector3(g.x, g.y - g.h * 0.27, 5));
+    panel(roomScene, rgb(0.035, 0.055, 0.1), g.w, g.h * 0.55, g.x, g.y + g.h * 0.22, g.z - 0.05, new T.Vector3(g.x, g.y + g.h * 0.22, 5));
+    panel(roomScene, rgb(0.03, 0.038, 0.055), g.w, g.h * 0.45, g.x, g.y - g.h * 0.27, g.z - 0.06, new T.Vector3(g.x, g.y - g.h * 0.27, 5));
     for (const [x, y, s] of [[-4.2, 1.3, 0.5], [-3.1, 2.1, 0.28], [-1.9, 1.1, 0.6], [-0.8, 1.9, 0.3], [0.2, 1.25, 0.45], [-2.6, 2.7, 0.25]]) {
       panel(roomScene, rgb(1.6, 1.1, 0.6), s, s * 0.7, x, y, g.z - 0.04, new T.Vector3(x, y, 5));
     }
-    blob(roomScene, rgb(9, 6.2, 3.4), 0.14, layout.lamp.x, layout.lamp.y, layout.lamp.z);
+    // The lamp sits half a metre from the probe centre, so a bright stand-in would fill a
+    // huge solid angle and every varnished surface would mirror it. Only the dim glow of
+    // the shade cloth goes in; the key spot light supplies the real highlight.
+    blob(roomScene, rgb(1.1, 0.72, 0.4), 0.1, layout.lamp.x, layout.lamp.y, layout.lamp.z);
     for (const p of layout.pendants) {
       const disc = new T.Mesh(new T.CircleGeometry(0.22, 20), basic(rgb(14, 10, 6)));
       disc.position.copy(p);
@@ -102,7 +105,7 @@ export function bakeCafeProbes(renderer: T.WebGLRenderer, layout: {
 
     // Street probe: sky, façades and the café frontage behind the viewer.
     const streetScene = new T.Scene();
-    streetScene.add(skyGradient(60, rgb(0.014, 0.03, 0.08), rgb(0.06, 0.08, 0.125), rgb(0.008, 0.01, 0.013)));
+    streetScene.add(skyGradient(60, rgb(0.03, 0.065, 0.16), rgb(0.12, 0.15, 0.23), rgb(0.008, 0.01, 0.013)));
     panel(streetScene, rgb(0.012, 0.016, 0.022), 40, 10, -5, 5, -18, new T.Vector3(-5, 5, 0));
     for (let i = 0; i < 26; i++) {
       const x = -22 + (i * 7.3) % 30, y = 3.2 + ((i * 3.7) % 6.5);

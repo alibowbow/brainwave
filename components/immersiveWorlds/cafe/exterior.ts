@@ -85,20 +85,20 @@ export function buildCafeExterior(surfaces: ExteriorSurfaces): {
   const frame = material('#252f35', .55);
   const trim = material('#4f5a5c', .75);
   const roof = material('#1c272e', .84);
-  const coolGlass = material('#1d2f3a', .12, '#5d86a3', .55);
+  const coolGlass = material('#1d2f3a', .12, '#5d86a3', .22);
   const darkGlass = material('#121e26', .1);
   // Lit flats: warm tungsten behind curtains, deliberately varied in strength.
   const warmGlass = [
-    material('#3c342a', .3, '#ffc78a', 2.2),
-    material('#4a3d2d', .3, '#ffd29c', 4.0),
-    material('#3a3226', .3, '#f2b77a', 1.3),
-    material('#4f402e', .3, '#ffcb8a', 5.5),
+    material('#3c342a', .3, '#ffc78a', .9),
+    material('#4a3d2d', .3, '#ffd29c', 1.6),
+    material('#3a3226', .3, '#f2b77a', .55),
+    material('#4f402e', .3, '#ffcb8a', 2.2),
   ];
   // Shop fronts: the brightest, softest warm blocks at street level.
-  const shopGlass = [material('#4a3b2a', .25, '#ffcf92', 6.5), material('#3d3326', .25, '#ffd9a6', 4.5)];
-  const curtains = [material('#978e7d', .94, '#ffc890', .35), material('#776f60', .96, '#ffbf80', .22), material('#617076', .98)];
+  const shopGlass = [material('#4a3b2a', .25, '#ffcf92', 2.8), material('#3d3326', .25, '#ffd9a6', 2.0)];
+  const curtains = [material('#978e7d', .94, '#ffc890', .15), material('#776f60', .96, '#ffbf80', .09), material('#617076', .98)];
   const awnings = [material('#2f3a36'), material('#3b373a'), material('#3a342d')];
-  const bulb = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .78, .5).multiplyScalar(60) });
+  const bulb = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .78, .5).multiplyScalar(28) });
   materials.push(bulb);
 
   // One draw per material for opaque architecture. Source geometries are released
@@ -131,12 +131,13 @@ export function buildCafeExterior(surfaces: ExteriorSurfaces): {
     fragmentShader: `varying vec3 vDir;
 void main(){
   float y = vDir.y;
-  vec3 top = vec3(0.010, 0.022, 0.065), mid = vec3(0.045, 0.065, 0.11), low = vec3(0.085, 0.08, 0.085);
-  vec3 c = mix(mid, top, smoothstep(0.08, 0.55, y));
-  c = mix(low, c, smoothstep(-0.02, 0.12, y));
+  // Blue hour: the sky still glows after sunset, brightest just above the rooftops.
+  vec3 top = vec3(0.012, 0.03, 0.09), mid = vec3(0.04, 0.075, 0.165), low = vec3(0.095, 0.11, 0.155);
+  vec3 c = mix(mid, top, smoothstep(0.3, 0.95, y));
+  c = mix(low, c, smoothstep(0.0, 0.26, y));
   // Thin, slow cloud deck lit from below by the city.
   float band = sin(vDir.x * 9.0 + y * 31.0) * sin(vDir.x * 23.0 - y * 13.0);
-  c += vec3(0.012, 0.012, 0.016) * smoothstep(0.2, 0.9, band) * smoothstep(0.05, 0.3, y) * (1.0 - smoothstep(0.4, 0.8, y));
+  c += vec3(0.006, 0.007, 0.01) * smoothstep(0.2, 0.9, band) * smoothstep(0.05, 0.3, y) * (1.0 - smoothstep(0.4, 0.8, y));
   gl_FragColor = vec4(c, 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -175,7 +176,7 @@ void main(){
     ctx.fillRect(0, 0, 128, 128);
   });
   const glowMaterial = new THREE.MeshBasicMaterial({
-    color: new THREE.Color('#ffd6a0').multiplyScalar(1.6), map: haloTexture, transparent: true, opacity: .5,
+    color: new THREE.Color('#ffd6a0').multiplyScalar(.7), map: haloTexture, transparent: true, opacity: .5,
     depthWrite: false, blending: THREE.AdditiveBlending,
   });
   materials.push(glowMaterial);
@@ -207,7 +208,7 @@ void main(){
     }
     ctx.putImageData(image, 0, 0);
   });
-  const reflected = [['#ffcf96', 16], ['#9fb8c8', 5], ['#ffc58a', 12]].map(([color, gain]) => {
+  const reflected = [['#ffcf96', 6.5], ['#9fb8c8', 2], ['#ffc58a', 5]].map(([color, gain]) => {
     const mat = new THREE.MeshBasicMaterial({
       map: reflectionTexture, color: new THREE.Color(color as string).multiplyScalar(gain as number), transparent: true, opacity: .8,
       depthWrite: false, blending: THREE.AdditiveBlending,
@@ -220,8 +221,11 @@ void main(){
     // Independent UV offsets avoid repeating exactly the same ripple silhouette.
     const uv = geometry.getAttribute('uv');
     const position = geometry.getAttribute('position');
-    // The near end of each reflected strip converges toward the window seat.
-    for (let i = 0; i < position.count; i++) position.setX(i, position.getX(i) + (1 - uv.getY(i)) * (-.5 - x) * .45);
+    // A light's reflection runs from below it straight toward the viewer, so the near
+    // end of each strip is swung onto the line to the window seat (x ≈ .6, z ≈ 1.45):
+    // on screen it then falls vertically beneath its lamp.
+    const lean = (.6 - x) * length / (1.45 - (z - length / 2));
+    for (let i = 0; i < position.count; i++) position.setX(i, position.getX(i) + (1 - uv.getY(i)) * lean);
     if (random() > .5) for (let i = 0; i < uv.count; i++) uv.setX(i, 1 - uv.getX(i));
     const mesh = new THREE.Mesh(geometry, reflected[tint]);
     mesh.position.set(x, -.018 + strength * .001, z);
@@ -292,13 +296,16 @@ void main(){
     box(x - .1, 2.11, z + .71, w * .89, .13, .037, awnings[style % 3]);
     for (let item = 0; item < 3; item++) box(x - w * .31 + item * .41, .63 + (item % 2) * .11, z + .145, .18 + random() * .10, .34 + random() * .20, .05, curtains[(item + style) % 3]);
     if (shopLit) {
-      reflection(x - .15, -11.95, 1.8 + random() * .6, 8.6 + random() * 1.1, style === 4 ? 2 : 0, .8);
+      // The bokeh pass mirrors lit shop fronts in the wet street itself (screen-space
+      // planar reflection), so they need no stand-in strip. The draws this strip used
+      // are still taken from the seeded sequence to keep later façades unchanged.
+      for (let i = 0; i < 4; i++) random();
       halo(x - w * .10, 1.2, z + .25, w * .75);
     }
   }
 
   // Strings of small warm bulbs sag under two awnings: a row of soft bokeh discs.
-  const fairy = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .74, .45).multiplyScalar(12) });
+  const fairy = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .74, .45).multiplyScalar(6) });
   materials.push(fairy);
   for (const [x, z, w] of [[-7.6, -18.4 + .74, 3.9], [-3.2, -16.95 + .74, 3.9], [5.45, -20.1 + .74, 4.0]]) {
     const count = 11;
@@ -309,14 +316,14 @@ void main(){
     }
   }
   // A few cooler lights (stairwells, a television) keep the façades from reading all amber.
-  const coolLight = material('#1f2a33', .2, '#9fc0e0', 2.2);
+  const coolLight = material('#1f2a33', .2, '#9fc0e0', .9);
   for (const [x, y, z] of [[-14.9, 5.4, -19.1], [-10.9, 6.7, -17.5], [2.0, 4.9, -17.9], [6.5, 7.6, -20.0]]) box(x, y, z + .11, .5, .75, .012, coolLight);
 
   // Parked cars along the far kerb: low dark bodies with their tail lights left on,
   // and a crossing signal: small red and green accents among the amber bokeh.
   const body = material('#161b20', .22);
-  const tail = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .08, .04).multiplyScalar(5) });
-  const signalGreen = new THREE.MeshBasicMaterial({ color: new THREE.Color(.2, 1, .55).multiplyScalar(7) });
+  const tail = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, .08, .04).multiplyScalar(2.4) });
+  const signalGreen = new THREE.MeshBasicMaterial({ color: new THREE.Color(.2, 1, .55).multiplyScalar(3) });
   materials.push(tail, signalGreen);
   for (const [x, z] of [[-9.6, -13.6], [-1.9, -13.7]]) {
     add(new THREE.BoxGeometry(4.1, .62, 1.75), body, x, .52, z);
@@ -348,11 +355,11 @@ void main(){
     cylinder(x + .46, height - .095, z, .085, .155, .075, roof);
     const bulbPosition = new THREE.Vector3(x + .46, height - .19, z);
     if (real) {
-      const light = new THREE.PointLight('#ffc98c', index === 0 ? 26 : 20, 9, 2);
+      const light = new THREE.PointLight('#ffc98c', index === 0 ? 14 : 11, 9, 2);
       light.position.copy(bulbPosition);
       group.add(light);
     }
-    lamps.push({ position: bulbPosition, color: new THREE.Color('#ffc890'), strength: index === 5 ? .05 : .08 });
+    lamps.push({ position: bulbPosition, color: new THREE.Color('#ffc890'), strength: index === 5 ? .02 : .032 });
     reflection(x + .46, z + 2.3, .75, 4.8 + (z < -12 ? 3 : 0), index % 2 ? 2 : 0, 1);
   }
 
@@ -370,7 +377,10 @@ void main(){
   return {
     group, materials, textures, lamps,
     setEnvironment(texture) {
-      for (const mat of outsideLit) { mat.envMap = texture; mat.envMapIntensity = texture ? 1 : .6; mat.needsUpdate = true; }
+      // The probe cannot place reflections, so on the grazing wet paving it would smear
+      // the shop fronts into one bright band. Keep it to a dim sky sheen there and let
+      // the streaks and the lamps' own highlights carry the reflections.
+      for (const mat of outsideLit) { mat.envMap = texture; mat.envMapIntensity = texture ? (mat === surfaces.pavement ? .25 : 1) : .6; mat.needsUpdate = true; }
     },
   };
 }

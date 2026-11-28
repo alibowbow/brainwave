@@ -1,12 +1,12 @@
 {
-  "verificationId": "b4ea15d7-1ec3-408d-86af-8f0e9049c0e2",
-  "startedAt": "2026-11-28T00:51:52.157Z",
-  "sourceCommit": "f34449a772f1e49d0a6f5c274539c2392dc48505",
-  "sourceTree": "7f0ad0a558e8f32b49dccf9a1685c51e48a82dfd",
+  "verificationId": "f9bb22c4-24f0-4d99-a8e2-46659e96399a",
+  "startedAt": "2026-11-28T06:51:24.304Z",
+  "sourceCommit": "f9f2c43b4c49f1ac4d2b62145518bf7a5ec0fe8a",
+  "sourceTree": "70a7f1c89af80f94a47ba89745c6a73bf59655fe",
   "uncommitted": false,
   "targetPreference": "auto",
-  "bundle": "cafe-pilot-BMuUaVKp.mjs",
-  "bundleSha256": "2009992689a7184f3384570511a5a935af95f4a4c2b3a421025c35f32dd48e2c",
+  "bundle": "cafe-pilot-DGwiC4cN.mjs",
+  "bundleSha256": "8db99bdd1096b36481d253f8bb8461c29d64842710c3ffb50dd9de17e7fd803d",
   "environmentSha256": "43bb5410f1ede07802bf3371ee2a9c3054abeaba1fb87eefb7bc992b1cac5d92",
   "status": "passed",
   "checks": [
@@ -45,8 +45,8 @@
       "name": "desktop",
       "width": 1280,
       "height": 850,
-      "bytes": 1346004,
-      "sha256": "51a878eb0e6de52541a0864108fb10f7e627443bd60e8b3065ad22cb7b6cf339",
+      "bytes": 1437093,
+      "sha256": "3942b29545df988f06a042f7190e566bad636ee9b20bd92e60d21e49f9721e3d",
       "targets": [
         {
           "label": "refraction",
@@ -126,8 +126,8 @@
       "name": "fold-portrait",
       "width": 412,
       "height": 915,
-      "bytes": 498192,
-      "sha256": "b111313bd32787bbc6862be72d01d41fffa426befaafd1ed44ef806082273ea7",
+      "bytes": 498376,
+      "sha256": "07f06780390dfd4299b643878fb200a8ac2698564f9883555e987bbb90b1b9ab",
       "targets": [
         {
           "label": "refraction",
@@ -207,8 +207,8 @@
       "name": "fold-inner-portrait",
       "width": 673,
       "height": 841,
-      "bytes": 723380,
-      "sha256": "bfeb9b945f56104113289552d2ed65e37417c6378980b09652eaa66ae67b50f8",
+      "bytes": 753274,
+      "sha256": "9129e5eaf46ccf196b9f187448a0831b3e1329d54a1e6554ec789206d78f4de4",
       "targets": [
         {
           "label": "refraction",
@@ -288,8 +288,8 @@
       "name": "fold-landscape",
       "width": 915,
       "height": 412,
-      "bytes": 498015,
-      "sha256": "1275ed361fbe330ca1b2b13c8529dd81494a8e1ec9a680d2e726accdc46e8111",
+      "bytes": 530438,
+      "sha256": "648a48caac4fa283775f859d0d7df355c9535067e003ff4e1ea958d720804cb6",
       "targets": [
         {
           "label": "refraction",
@@ -486,16 +486,16 @@
   },
   "tapPoints": {
     "cup": {
-      "x": 0.4712467256271562,
-      "y": 0.7768147600579798
+      "x": 0.35629031751074997,
+      "y": 0.8370673757574103
     },
     "lamp": {
-      "x": 0.21999577059234848,
-      "y": 0.2997916263376281
+      "x": 0.2867403970526021,
+      "y": 0.5818511565751572
     },
     "window": {
-      "x": 0.5798466115133031,
-      "y": 0.30638014070651676
+      "x": 0.48697914983533847,
+      "y": 0.5893333094832054
     }
   },
   "remountAudit": {
@@ -607,5 +607,5 @@
     }
   },
   "note": "Chromium 153, SwiftShader software WebGL2, DPR 1; Fold-like viewport emulation, not physical Fold. Hidden signal injected; native tab background behavior not independently exercised.",
-  "finishedAt": "2026-11-28T01:21:33.550Z"
+  "finishedAt": "2026-11-28T07:09:35.042Z"
 }

@@ -44,7 +44,7 @@ export function buildCafeShelves(m: ShelfMaterials): {
   materials.push(leafMaterial);
   // Warm LED strip under each shelf: an HDR emitter that blooms softly.
   const strip = new THREE.MeshStandardMaterial({
-    color: '#ba9670', emissive: '#ffc27e', emissiveIntensity: 7, roughness: .75,
+    color: '#ba9670', emissive: '#ffc27e', emissiveIntensity: 2, roughness: .75,
   });
   materials.push(strip);
 

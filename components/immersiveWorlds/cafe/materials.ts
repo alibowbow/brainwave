@@ -132,7 +132,7 @@ float cfStem = abs(cfP.x + 0.02 * sin(cfP.y * 9.0)) - 0.025 * (1.0 - smoothstep(
 float cfFoam = 1.0 - smoothstep(-0.04, 0.07, min(cfHeart + 0.05 * cfSwirl, max(cfStem, cfP.y - 0.75)));
 float cfRim = smoothstep(0.78, 1.0, cfR);
 vec3 cfCrema = mix(vec3(0.34, 0.18, 0.075), vec3(0.2, 0.1, 0.04), cfRim) * (0.9 + 0.2 * cfSwirl);
-vec3 cfColor = mix(cfCrema, vec3(0.6, 0.48, 0.34) * (0.92 + 0.1 * cfSwirl), cfFoam * (1.0 - cfRim) * 0.9);
+vec3 cfColor = mix(cfCrema, vec3(0.8, 0.68, 0.52) * (0.92 + 0.1 * cfSwirl), cfFoam * (1.0 - cfRim) * 0.92);
 cfColor *= 0.94 + 0.1 * bwNoise(vec3(cfP * 70.0, 1.0)) * bwResolve(length(fwidth(cfP)) * 70.0);
 diffuseColor.rgb = cfColor;`,
     roughness: 'roughnessFactor = clamp(roughnessFactor + 0.4 * cfFoam, 0.05, 1.0);',
@@ -146,7 +146,7 @@ diffuseColor.rgb = cfColor;`,
  * length. Relief stays microscopic: the varnish coat is what you see.
  */
 function createSlabOak(color: THREE.ColorRepresentation, key: string) {
-  const material = new THREE.MeshPhysicalMaterial({ color, roughness: 0.48, clearcoat: 0.85, clearcoatRoughness: 0.09 });
+  const material = new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, clearcoat: 0.55, clearcoatRoughness: 0.16 });
   return patchSurface(material, {
     key: `slab-oak|${key}`,
     color: `
@@ -207,6 +207,9 @@ export function makeCafeMaterials(): CafeMaterials {
   chrome.name = 'Cafe espresso chrome';
   const coffee = createCoffee('cafe-coffee');
   coffee.name = 'Cafe fresh coffee';
+  // Seen from the middle ground the cup surface is at a grazing angle; a full-strength
+  // probe would mirror the cold window band over the crema and hide the heart.
+  coffee.envMapIntensity = 0.35;
   const leather = new THREE.MeshStandardMaterial({ color: '#5e3a24', roughness: 0.7 });
   leather.name = 'Cafe cognac leather';
   const pavement = createWetStreet('cafe-street');

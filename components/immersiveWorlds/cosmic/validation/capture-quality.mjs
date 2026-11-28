@@ -48,7 +48,7 @@ try {
       if ((message.type() === 'error' || message.type() === 'warning') && !/favicon|status of 404|GPU stall|ReadPixels|KHR_parallel_shader_compile/i.test(message.text())) report.errors.push(`${name}: ${message.type()}: ${message.text()}`);
     });
     const started = Date.now();
-    await page.goto(`${base}${query}`);
+    await page.goto(`${base}${query}&hdr=force`);
     await page.waitForSelector('.cosmic-world[data-state="ready"]');
     await page.waitForFunction(({ width, height, frames }) => {
       const canvas = document.querySelector('.cosmic-world-canvas');

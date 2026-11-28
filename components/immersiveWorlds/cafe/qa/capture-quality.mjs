@@ -40,7 +40,7 @@ try {
       if (message.type() === 'warning' && /shader|program|GL_INVALID|error/i.test(message.text()) && !/ReadPixels/.test(message.text())) report.errors.push(`${name} warning: ${message.text()}`);
     });
     const started = Date.now();
-    await page.goto(`http://127.0.0.1:${port}/components/immersiveWorlds/cafe/qa/index.html?paused&nolabel${query}`);
+    await page.goto(`http://127.0.0.1:${port}/components/immersiveWorlds/cafe/qa/index.html?paused&nolabel${query}&hdr=force`);
     await page.waitForSelector('.cafe-world[data-state="ready"], .cafe-world[data-state="failed"]');
     if (await page.locator('.cafe-world[data-state="failed"]').count()) { report.errors.push(`${name}: scene failed`); await page.close(); continue; }
     await page.waitForFunction(({ width, height }) => { const c = document.querySelector('canvas'); return c && c.width === width && c.height === height; }, { width, height });

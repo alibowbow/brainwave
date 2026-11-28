@@ -54,9 +54,24 @@ The current shared summer-storm preset still selects `thunder` at 0.8; this work
 
 Everything remains procedural code: world-space timber/bark/ground/wet-surface shader patches (`engine/surfaces.ts`, `shared/render/wetSurface.ts`), GPU rain streaks, drips, splashes and eave runoff (`shared/render/rainStreaks.ts`), an HDR overcast/storm sky and the mist volume (`engine/atmosphere.ts`). Lightning and full-screen flashes are still absent; thunder stays audio-only. `ShelterEngine.setSize` normalises the renderer's scissor and viewport so the render-target audits restore exactly at any device pixel ratio (before this, worlds with directional shadows failed to start when `devicePixelRatio ≠ 1`). The QA harness accepts `qaScale=0.25` to run the behaviour suite at reduced resolution under software WebGL; production never sets it. `qa/capture-quality.mjs` writes comparison PNGs (port 4313 by default); `qa/evidence/hdr-upgrade/` holds the before/after JPGs. Software-rendered captures grade appearance, not device speed; phone performance is unmeasured.
 
+### Window, tent and storm follow-up (2026-11)
+
+- **Garden window glass.** Focus sits on the pane. Every garden material writes its view distance into the refraction target's alpha, and that target is now mipmapped (three regenerates the chain after each refraction render). The glass blurs the garden by depth with twelve prefiltered taps, so hydrangeas read as soft colour blobs. Beads come in four sizes plus slow stop-go sliding drops whose lanes clear the beads. Each drop shows a small, nearly sharp, inverted garden, with a dark rim and a bright lower crescent. Room-side condensation thickens toward the sill and corners. A faint warm reflection of the lamp behind the viewer sits on the pane. Tap-to-clear still wipes beads and mist, which then return; the wiped patch reads clearer and deeper, ringed by the water pushed aside.
+- **Refraction pass.** The pass leaves out everything on the room side of the pane (frame, sill, bowl, walls). That stops the dark frame bleeding into the blur and drop lenses, and the timber is drawn once per frame. The exception is a pass that still has to draw a static shadow map: it keeps those casters.
+- **Sill.** The sill is a single flat-sawn board built with `shared/render/woodSurface.ts`. Its pith line is tilted inside the board's own object frame, so the growth rings cross the face in cathedral arches. In the earlier version the pith ran parallel to the face, and the rings could only form even bands across the whole sill. Those bands were the horizontal "smeared streaks", not screen-space AO. The sill also has:
+  - heartwood streaks and a worn nose
+  - a satin coat
+  - a damp ring where the bowl first stood
+  - drips and a few water beads
+  - a warm lamp pool, plus the cool window sheen from the room probe
+
+  The bowl uses the shared celadon glaze, and the pane extends down behind the bottom rail so no strip of garden shows unglazed. The grade is cool and neutral, so the lamp is the only warm accent.
+- **Tent.** The lantern's shadow is now softer, a dim warm bounce fills the far wall, and the interior probe is captured from a neutral-coloured bag. Together these remove the green band the teal bag used to leave on the canvas.
+- **Storm.** A lower layer of heaped cloud is lit from the hidden sun, with dark cores and bellies. The shelterbelt crowns are now clusters of ragged lobes instead of smooth blobs, and they cost far fewer triangles: 7 welded lobes of 1,280 triangles per tree instead of 4 of 20,480.
+
 ## QA separation
 
-Everything under `qa/` is a development harness, test script, or evidence; it is not a production asset. The harness builds separately with its own Vite config and imports the same entry sources. Do not add the harness or evidence to app imports/PWA caches. The garden window uses a full-resolution HDR refraction target and two scene passes within the same WebGL context. Reported renderer.info counters are the final pass, not the sum of both passes; physical-device performance remains unmeasured.
+Everything under `qa/` is a development harness, test script, or evidence; it is not a production asset. The harness builds separately with its own Vite config and imports the same entry sources. Do not add the harness or evidence to app imports/PWA caches. The garden window uses a full-resolution, mipmapped HDR refraction target and two scene passes within the same WebGL context (the refraction pass draws only the garden side of the pane). Reported renderer.info counters are the final pass, not the sum of both passes; physical-device performance remains unmeasured.
 
 No public runtime assets are required: all current geometry and material maps are locally generated and deterministic. `public/immersive-worlds/rainShelters/` is reserved for future group-owned assets.
 

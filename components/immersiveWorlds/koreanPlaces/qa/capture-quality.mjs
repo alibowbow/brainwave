@@ -45,7 +45,7 @@ try {
         if (/Shader Error|Program Info Log|ERROR: \d/.test(message.text())) report.errors.push(`${scene}/${name}: ${message.text()}`);
       });
       const started = Date.now();
-      await page.goto(`${base}?scene=${scene}&${query}`);
+      await page.goto(`${base}?scene=${scene}&${query}&hdr=force`);
       await page.waitForSelector('.korean-world[data-state="ready"],.korean-world[data-state="failed"]');
       const state = await page.evaluate(() => document.querySelector('.korean-world')?.getAttribute('data-state'));
       if (state !== 'ready') { report.errors.push(`${scene}/${name}: world state ${state}`); await page.close(); continue; }

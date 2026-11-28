@@ -1,7 +1,8 @@
 // Visual quality captures for the water-edge worlds: builds the isolated dev
 // harness, renders each world and writes lossless PNGs for side-by-side review.
 //   WATER_EDGE_QA_OUTPUT=/tmp/we/after WATER_EDGE_PORT=4311 node components/immersiveWorlds/waterEdge/qa/capture-quality.mjs
-// WATER_EDGE_QUERY=post=off captures the direct (non-HDR) renderer path.
+// WATER_EDGE_QUERY=post=off captures the direct (non-HDR) renderer path;
+// WATER_EDGE_QUERY=t=3 starts the scene clock at 3 s for deterministic motion stills.
 // WATER_EDGE_ACTIVE=<frames> runs the animation for that many frames and
 // pauses before capture, to check time-driven shading in motion.
 // WATER_EDGE_WORLDS / WATER_EDGE_VIEWPORTS narrow the run; WATER_EDGE_SKIP_BUILD
@@ -44,7 +45,7 @@ try {
       page.on('console', message => {
         if (message.type() === 'error' && !/favicon|status of 404/.test(message.text())) report.errors.push(`${world}/${name}: ${message.text()}`);
       });
-      await page.goto(`${base}/?world=${world}&active=0${query}`);
+      await page.goto(`${base}/?world=${world}&active=0${query}&hdr=force`);
       try {
         await page.waitForFunction(() => window.__waterEdgeQA?.inspect().roots.some(root => root.state !== 'loading'), null, { polling: 500 });
       } catch (error) {

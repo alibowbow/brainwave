@@ -58,9 +58,48 @@ uniform float uTime;
 uniform vec4 uLamps[${MAX_HALO_LAMPS}];
 uniform vec3 uLampColors[${MAX_HALO_LAMPS}];
 uniform float uHalo;
+uniform mat4 uViewProjection;
+uniform float uWet;
 varying vec2 vUv;
 const int TAPS = 28;
 bool cafeOutside(vec3 p, float depth) { return depth >= 0.99999 || p.z < uGlassZ - 0.015; }
+float cafeHash(vec2 p) { p = fract(p * vec2(127.1, 311.7)); p += dot(p, p + 19.19); return fract(p.x * p.y); }
+float cafeValue(vec2 p) {
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(cafeHash(i), cafeHash(i + vec2(1, 0)), f.x), mix(cafeHash(i + vec2(0, 1)), cafeHash(i + vec2(1, 1)), f.x), f.y);
+}
+// Wet street: the paving is the plane y = 0, so it mirrors the street through
+// that plane. The mirrored eye ray is walked to the facade it meets with a few
+// fixed-point steps on the refraction depth, then the image there is read from
+// a soft mip and stretched vertically, as rain-roughened water stretches every
+// shop light into a streak. Returns radiance before Fresnel and wetness.
+vec3 cafeStreetMirror(vec3 eye, vec3 ray, out float valid, out vec3 street) {
+  street = eye + ray * (-eye.y / ray.y);
+  vec3 rd = vec3(ray.x, -ray.y, ray.z);
+  float tr = 14.0;
+  vec2 ruv = vUv;
+  float dq = 1.0;
+  vec3 q = street;
+  for (int k = 0; k < 3; k++) {
+    vec4 clip = uViewProjection * vec4(street + rd * tr, 1.0);
+    ruv = clip.xy / clip.w * 0.5 + 0.5;
+    dq = texture2D(tDepth, clamp(ruv, vec2(0.0), vec2(1.0))).x;
+    q = cafeWorldAt(ruv, dq);
+    tr = dq >= 0.99999 ? 60.0 : clamp((q.z - street.z) / min(rd.z, -1e-3), 0.3, 60.0);
+  }
+  // Only what lies outside can be mirrored; the frame edge fades the image out.
+  valid = (cafeOutside(q, dq) ? 1.0 : 0.0) * smoothstep(0.0, 0.03, ruv.x) * smoothstep(1.0, 0.97, ruv.x) * smoothstep(1.0, 0.92, ruv.y) * step(0.0, ruv.y);
+  float ripple = (cafeValue(street.xz * vec2(3.0, 0.7) + uTime * vec2(0.0, 0.9)) - 0.5) * 0.004;
+  vec3 mirrored = vec3(0.0);
+  for (int k = 0; k < 5; k++) {
+    vec2 o = vec2(ripple, (float(k) - 2.0) * 7.0 / uSourceSize.y);
+    mirrored += textureLod(tColor, clamp(ruv + o, vec2(0.001), vec2(0.999)), 2.0).rgb;
+  }
+  mirrored *= 0.2;
+  // Air between the paving and what it mirrors.
+  float travel = tr + max(length(street - eye) - (uGlassZ - eye.z) / min(ray.z, -1e-3), 0.0);
+  return mix(mirrored, uHaze, (1.0 - exp(-uHazeDensity * travel)) * (dq >= 0.99999 ? 0.0 : 1.0));
+}
 float cafeCoc(float dist) { return clamp(1.0 - uFocus / max(dist, 1e-3), 0.0, 1.0); }
 void main() {
   vec3 eye = uCameraWorld[3].xyz;
@@ -78,6 +117,7 @@ void main() {
   float lod = clamp(log2(radius * 1.25 / sqrt(float(TAPS))), 0.0, 4.0);
   vec3 sum = vec3(0.0);
   float weight = 0.0;
+  float streetWeight = 0.0;
   for (int i = 0; i < TAPS; i++) {
     float t = (float(i) + 0.5) / float(TAPS);
     float a = spin + float(i) * 2.3999632;
@@ -99,8 +139,19 @@ void main() {
     w *= 1.0 + uHighlightBoost * smoothstep(0.35, 2.0, bwLuma(c));
     sum += c * w;
     weight += w;
+    streetWeight += w * step(p.y, 0.16) * step(dist, 55.0);
   }
   vec3 color = weight > 1e-4 ? sum / weight : uHaze;
+  // The share of this disc that is paving receives the mirrored street.
+  float street = weight > 1e-4 ? streetWeight / weight : 0.0;
+  if (street > 0.002 && ray.y < -0.004 && uWet > 0.0) {
+    float valid; vec3 s;
+    vec3 mirrored = cafeStreetMirror(eye, ray, valid, s);
+    // Water Fresnel (Schlick, n = 1.33) at the grazing street angle; puddles mirror more.
+    float fresnel = 0.02 + 0.98 * pow(1.0 - clamp(-ray.y, 0.0, 1.0), 5.0);
+    float puddle = smoothstep(0.3, 0.75, cafeValue(s.xz * 0.45) * 0.7 + cafeValue(s.xz * 1.9 + 7.0) * 0.3);
+    color += mirrored * fresnel * mix(0.4, 1.0, puddle) * uWet * valid * street;
+  }
   // Closed-form single scattering from each lamp along the ray beyond the glass:
   // integral of 1 / (h^2 + (t - b)^2) dt = (atan((t1 - b) / h) - atan((t0 - b) / h)) / h.
   float t0 = glassT, t1 = out0 ? far0 : glassT + 25.0;
@@ -143,15 +194,17 @@ export function createExteriorBokeh(options: { glassZ: number; lamps: BokehLamp[
       uCameraWorld: { value: new T.Matrix4() },
       uSourceSize: { value: new T.Vector2(1, 1) },
       uGlassZ: { value: options.glassZ },
-      uFocus: { value: 2.6 },
+      uFocus: { value: 3.4 },
       uMaxRadius: { value: 20 },
-      uHaze: { value: new T.Color(0.055, 0.094, 0.185) },
-      uHazeDensity: { value: 0.075 },
+      uHaze: { value: new T.Color(0.026, 0.04, 0.075) },
+      uHazeDensity: { value: 0.035 },
       uHighlightBoost: { value: 0.35 },
       uTime: { value: 0 },
       uLamps: { value: lamps },
       uLampColors: { value: colors },
       uHalo: { value: 1 },
+      uViewProjection: { value: new T.Matrix4() },
+      uWet: { value: 1 },
     },
   });
 }
@@ -308,7 +361,7 @@ void main() {
   float mottle = cgValue(p * 9.0) * 0.6 + cgValue(p * 31.0) * 0.4;
   vec2 wipeDelta = (vUv - wipe) * vec2(glassSize.x / glassSize.y, 1.0);
   float cleared = exp(-dot(wipeDelta, wipeDelta) / 0.0045) * exp(-wipeAge * 0.075);
-  float fog = clamp((0.1 + edge) * (0.65 + 0.7 * mottle), 0.0, 0.85) * (1.0 - cleared);
+  float fog = clamp((0.05 + edge) * (0.65 + 0.7 * mottle), 0.0, 0.85) * (1.0 - cleared);
   fog *= 1.0 - trail * 0.4;
   vec3 frosted = (cgBokeh(screen + vec2(0.018, 0.0)) + cgBokeh(screen - vec2(0.018, 0.0)) + cgBokeh(screen + vec2(0.0, 0.02)) + cgBokeh(screen - vec2(0.0, 0.02))) * 0.25;
   float lampDistance = length(lampPosition - vWorld);
@@ -338,8 +391,8 @@ export function cafeGlassShader(glassSize: T.Vector2) {
       wipeAge: { value: 99 },
       lampPosition: { value: new T.Vector3() },
       lampGlow: { value: new T.Color(0, 0, 0) },
-      roomGlow: { value: new T.Color(0.005, 0.008, 0.013) },
-      reflectionStrength: { value: .75 },
+      roomGlow: { value: new T.Color(0.002, 0.003, 0.005) },
+      reflectionStrength: { value: .4 },
     },
     vertexShader: GLASS_VERTEX,
     fragmentShader: GLASS_FRAGMENT,
@@ -429,10 +482,10 @@ export function createCafeDepthVolume(options: {
       tColor: { value: options.color },
       uGlass: { value: new T.Vector4(g.x - g.w / 2, g.x + g.w / 2, g.y - g.h / 2, g.y + g.h / 2) },
       uGlassZ: { value: g.z },
-      uFocus: { value: 2.3 },
+      uFocus: { value: 3.6 },
       uMaxRadius: { value: 7 },
       uAir: { value: new T.Color(0.006, 0.0045, 0.003) },
-      uAirDensity: { value: 0.035 },
+      uAirDensity: { value: 0.01 },
       uLights: { value: lights },
       uLightColors: { value: colors },
     },
@@ -443,7 +496,7 @@ export function createCafeDepthVolume(options: {
     update(_time, camera) {
       // Scale the blur with the drawing buffer so phones and desktops match.
       const resolution = material.uniforms.uResolution?.value as T.Vector2 | undefined;
-      if (resolution) material.uniforms.uMaxRadius.value = Math.max(3, resolution.y * 0.024);
+      if (resolution) material.uniforms.uMaxRadius.value = Math.max(2, resolution.y * 0.006);
       void camera;
     },
   };

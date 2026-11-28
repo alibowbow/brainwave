@@ -13,16 +13,23 @@ export type CafeInteraction = 'cup' | 'lamp' | 'window';
 export const CAFE_GLASS = { x: -2.15, y: 2.14, z: -1.55, w: 5.7, h: 3.5 } as const;
 const TABLE_TOP = .775;
 
-/** Camera and hero-prop placement; `portrait` blends 0 (wide) to 1 (tall phone). */
+/**
+ * Camera and hero-prop placement; `portrait` blends 0 (wide) to 1 (tall phone).
+ * A middle-ground view about three metres from the glass: the lit table in the
+ * lower third, the rainy window with a mullion and its post, and the café
+ * opening to the right with pendants, the counter and quiet patrons.
+ */
 export function cafeShot(portrait: number) {
   const l = T.MathUtils.lerp;
   return {
-    camera: new T.Vector3(l(.52, .3, portrait), l(1.3, 1.28, portrait), l(.42, .2, portrait)),
-    aim: new T.Vector3(l(.1, .05, portrait), l(.94, .9, portrait), -1.6),
-    fov: 42 + 8 * portrait,
-    cup: new T.Vector3(l(.25, .12, portrait), TABLE_TOP, l(-.72, -.74, portrait)),
-    lamp: new T.Vector3(l(-.22, -.12, portrait), TABLE_TOP, l(-1.12, -1.16, portrait)),
-    lampScale: l(1.15, 1.05, portrait),
+    camera: new T.Vector3(l(.62, .66, portrait), l(1.36, 1.42, portrait), l(1.45, 1.5, portrait)),
+    aim: new T.Vector3(l(-.03, .72, portrait), l(1.52, 1.5, portrait), -1.6),
+    fov: l(52, 60, portrait),
+    // The cup sits well inside the shade's light cone so the crema and heart are lit.
+    cup: new T.Vector3(l(-.12, .46, portrait), TABLE_TOP, l(-.36, -.34, portrait)),
+    lamp: new T.Vector3(l(-.55, .25, portrait), TABLE_TOP, l(-.92, -.98, portrait)),
+    lampScale: l(1.2, 1.1, portrait),
+    book: new T.Vector3(l(.3, .52, portrait), TABLE_TOP, l(-.42, -.66, portrait)),
   };
 }
 
@@ -48,7 +55,7 @@ export function buildCafe() {
   const lathe = (profile: number[][], material: T.Material, segments: number, x: number, y: number, z: number, parent?: T.Object3D) =>
     mesh(new T.LatheGeometry(profile.map(([r, h]) => new T.Vector2(r, h)), segments), material, x, y, z, parent);
   const cylinder = (x: number, y: number, z: number, r1: number, r2: number, h: number, material: T.Material, parent?: T.Object3D, segments = 48) => mesh(new T.CylinderGeometry(r1, r2, h, segments), material, x, y, z, parent);
-  const ball = (x: number, y: number, z: number, r: number, material: T.Material, parent?: T.Object3D) => mesh(new T.SphereGeometry(r, 32, 20), material, x, y, z, parent);
+  const ball = (x: number, y: number, z: number, r: number, material: T.Material, parent?: T.Object3D) => mesh(new T.SphereGeometry(r, 24, 16), material, x, y, z, parent);
   const tube = (points: T.Vector3[], r: number, material: T.Material, parent: T.Object3D = scene, segments = 32) =>
     mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points), segments, r, 10, false), material, 0, 0, 0, parent);
   const hdr = (color: string, intensity: number) => new T.Color(color).multiplyScalar(intensity);
@@ -87,7 +94,7 @@ export function buildCafe() {
   // Linen drapes gathered at the posts: real folds near the camera.
   const drape = (x: number, width: number, gathers: number, seed: number) => {
     const height = 3.42;
-    const geometry = new T.PlaneGeometry(width, height, 96, 64);
+    const geometry = new T.PlaneGeometry(width, height, 64, 40);
     const p = geometry.getAttribute('position');
     for (let i = 0; i < p.count; i++) {
       const u = p.getX(i) / width + .5, v = p.getY(i) / height + .5;
@@ -108,8 +115,8 @@ export function buildCafe() {
   for (const x of [g.x - g.w / 2 - .22, g.x + g.w / 2 + .22]) ball(x, g.y + g.h / 2 - .02, g.z + .2, .024, m.brass);
 
   // ---------------------------------------------------------------- window table
-  const table = new T.Group(); scene.add(table); table.position.set(-.35, TABLE_TOP - .042, -.8);
-  const shape = new T.Shape(); const w = 3.0, d = 1.0, r = .07;
+  const table = new T.Group(); scene.add(table); table.position.set(-.5, TABLE_TOP - .042, -.675);
+  const shape = new T.Shape(); const w = 2.4, d = 1.25, r = .07;
   shape.moveTo(-w / 2 + r, -d / 2); shape.lineTo(w / 2 - r, -d / 2); shape.quadraticCurveTo(w / 2, -d / 2, w / 2, -d / 2 + r); shape.lineTo(w / 2, d / 2 - r); shape.quadraticCurveTo(w / 2, d / 2, w / 2 - r, d / 2); shape.lineTo(-w / 2 + r, d / 2); shape.quadraticCurveTo(-w / 2, d / 2, -w / 2, d / 2 - r); shape.lineTo(-w / 2, -d / 2 + r); shape.quadraticCurveTo(-w / 2, -d / 2, -w / 2 + r, -d / 2);
   const top = mesh(new T.ExtrudeGeometry(shape, { depth: .03, bevelEnabled: true, bevelSize: .012, bevelThickness: .012, bevelSegments: 5, steps: 1, curveSegments: 18 }), m.oak, 0, 0, 0, table);
   top.rotation.x = -Math.PI / 2;
@@ -153,10 +160,36 @@ export function buildCafe() {
   const shaft = tube([new T.Vector3(0, .006, .021), new T.Vector3(0, .009, .045), new T.Vector3(0, .015, .075), new T.Vector3(0, .017, .098)], .0028, silver, spoon, 20);
   shaft.scale.x = 1.6; shaft.castShadow = false;
   for (const o of [cupBody, handle, saucer]) { o.userData.interaction = 'cup'; interactables.push(o); }
+  // Two sugar cubes and a torn paper sugar stick beside the saucer.
+  const sugar = physical({ color: '#f1ece2', roughness: .85, sheen: .5, sheenColor: new T.Color('#ffffff') });
+  for (const [x, z, a] of [[-.135, .055, .3], [-.118, .085, -.5]]) { const c = mesh(new RoundedBoxGeometry(.017, .016, .017, 2, .003), sugar, x, .008, z, cup); c.rotation.y = a; }
+  const stick = mesh(new RoundedBoxGeometry(.11, .006, .022, 2, .0025), physical({ color: '#b98d5a', roughness: .9 }), -.16, .003, -.03, cup);
+  stick.rotation.y = 1.1;
 
   // An open notebook with a pencil: a focus table, not a still life.
-  const paper = physical({ color: '#e4dccb', roughness: .92, sheen: .3, sheenColor: new T.Color('#ffffff') });
-  const book = new T.Group(); book.position.set(.66, TABLE_TOP, -.55); book.rotation.y = -.32; scene.add(book);
+  // Pages written in ink on faint rules: words are noise-gated strokes with a
+  // wandering baseline, each page and line ending at its own place.
+  const paper = physical({ color: '#e7dfcd', roughness: .92, sheen: .3, sheenColor: new T.Color('#ffffff') });
+  patchSurface(paper, {
+    key: 'cafe-notebook-ink',
+    objectSpace: true,
+    color: `
+vec2 nbP = vSurface.xy;
+float nbPage = floor(vSurfaceWorld.x * 7.0 + vSurfaceWorld.z * 7.0);
+float nbRow = floor((nbP.y + 0.1) / 0.0105);
+float nbF = fract((nbP.y + 0.1) / 0.0105);
+float nbArea = step(-0.066, nbP.x) * step(nbP.x, 0.068) * step(-0.092, nbP.y) * step(nbP.y, 0.088);
+float nbRule = (1.0 - smoothstep(0.0, 0.07, abs(nbF - 0.06))) * nbArea;
+float nbEnd = 0.068 - 0.08 * bwHash1(vec3(nbRow, nbPage, 4.0)) * step(0.55, bwHash1(vec3(nbRow, nbPage, 8.0)));
+float nbRows = mix(18.0, 9.0, step(0.5, bwHash1(vec3(nbPage, 1.0, 2.0))));
+float nbWord = step(0.3, bwValue(vec3(nbP.x * 75.0, nbRow * 3.1 + nbPage, 2.0)));
+float nbBase = 0.42 + 0.16 * sin(nbP.x * 2100.0 + nbRow * 7.0) + 0.08 * sin(nbP.x * 640.0 + nbRow * 3.0 + nbPage);
+float nbInk = (1.0 - smoothstep(0.1, 0.2, abs(nbF - nbBase))) * nbWord * step(nbP.x, nbEnd) * step(nbRow, nbRows) * nbArea;
+float nbSharp = bwResolve(length(fwidth(nbP)) / 0.0016);
+vec3 nbColor = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.72, 0.8, 0.95), nbRule * 0.45);
+diffuseColor.rgb = mix(nbColor, vec3(0.1, 0.12, 0.22), nbInk * mix(0.3, 0.92, nbSharp));`,
+  });
+  const book = new T.Group(); scene.add(book);
   slab(0, .006, 0, .34, .012, .24, mat('#2f3b3a', .7), .004, book);
   for (const side of [-1, 1]) {
     const leaf = new T.PlaneGeometry(.162, .225, 24, 4); const lp = leaf.getAttribute('position');
@@ -208,10 +241,10 @@ totalEmissiveRadiance *= shInside * (0.55 + 0.75 * (1.0 - shY)) * (0.85 + 0.3 * 
   const warm = '#ffc58a';
   // Key light: the shade's open hem defines the soft pool on the table (shadowed).
   const key = new T.SpotLight(warm, 5.2, 0, 1.12, .75, 2);
-  key.castShadow = true; key.shadow.radius = 7; key.shadow.bias = -.0006; key.shadow.normalBias = .012; key.shadow.camera.near = .05; key.shadow.camera.far = 6;
+  key.castShadow = true; key.shadow.radius = 3.5; key.shadow.bias = -.0006; key.shadow.normalBias = .012; key.shadow.camera.near = .05; key.shadow.camera.far = 6;
   scene.add(key, key.target);
   // Light leaking upward and through the shade cloth onto the window and drapes.
-  const lampLight = new T.PointLight('#ffb978', .9, 3.2, 2); scene.add(lampLight);
+  const lampLight = new T.PointLight('#ffb978', .9, 4, 2); scene.add(lampLight);
   // Fake bounce from the lit table top: warm, soft, low.
   // Bounce from the lit table top in front of the cup, lifting its shadowed face.
   const bounce = new T.PointLight('#ffa062', .35, 1.6, 2); scene.add(bounce);
@@ -252,11 +285,67 @@ void main(){
   // ---------------------------------------------------------------- service counter and shelves
   slab(3.9, .53, -7.45, 5.2, 1.06, .9, m.darkWoodV, .012);
   slab(3.9, 1.085, -7.42, 5.4, .05, 1.02, m.oak, .012);
+  // Two-group espresso machine in oxblood enamel: the shape that says "café" even
+  // when defocused. Chrome drip tray and cup rail, group heads with walnut-handled
+  // portafilters, a steam wand, a round pressure gauge and a small amber pilot light.
+  const enamel = physical({ color: '#6e2219', roughness: .32, clearcoat: 1, clearcoatRoughness: .08 });
   const machine = new T.Group(); machine.position.set(2.85, 1.11, -7.55); scene.add(machine);
-  slab(0, .25, 0, .78, .5, .5, m.chrome, .04, machine);
-  slab(0, .51, -.02, .8, .04, .5, mat('#2a2522', .5), .015, machine);
-  for (const x of [-.18, .18]) { cylinder(x, .17, .28, .03, .03, .07, m.brass, machine); tube([new T.Vector3(x, .17, .3), new T.Vector3(x, .15, .42), new T.Vector3(x, .14, .5)], .012, m.darkWood, machine, 8); }
-  for (const [x, z] of [[-.25, .02], [-.1, 0], [.08, .03], [.24, -.01]]) cylinder(x, .58, z, .035, .028, .08, m.ceramic, machine, 32);
+  slab(0, .035, .02, .86, .07, .56, m.chrome, .02, machine);
+  slab(0, .29, -.02, .8, .44, .48, enamel, .05, machine);
+  slab(0, .2, .225, .8, .08, .04, m.chrome, .015, machine);
+  slab(0, .525, -.02, .82, .03, .5, m.chrome, .012, machine);
+  for (const z of [-.25, .21]) { const rail = cylinder(0, .575, z, .007, .007, .8, m.chrome, machine, 10); rail.rotation.z = Math.PI / 2; rail.castShadow = false; }
+  for (const x of [-.2, .2]) {
+    cylinder(x, .15, .27, .042, .036, .07, m.chrome, machine, 32);
+    cylinder(x, .105, .29, .038, .033, .035, m.chrome, machine, 32);
+    tube([new T.Vector3(x, .105, .31), new T.Vector3(x, .1, .4), new T.Vector3(x, .095, .5)], .013, m.darkWood, machine, 8);
+  }
+  for (const [x, z] of [[-.26, .02], [-.12, -.04], [.04, .03], [.2, -.05], [.3, .06]]) lathe([[0, 0], [.028, 0], [.034, .05], [.036, .066], [0, .066]], m.ceramic, 24, x, .54, z, machine).castShadow = false;
+  tube([new T.Vector3(.4, .36, .12), new T.Vector3(.45, .33, .2), new T.Vector3(.46, .2, .24), new T.Vector3(.45, .1, .24)], .006, m.chrome, machine, 16).castShadow = false;
+  const gauge = cylinder(0, .4, .225, .055, .055, .012, physical({ color: '#efe6d2', roughness: .3, clearcoat: 1, clearcoatRoughness: .05 }), machine, 32);
+  gauge.rotation.x = Math.PI / 2; gauge.castShadow = false;
+  const bezel = mesh(new T.TorusGeometry(.056, .006, 8, 32), m.brass, 0, .4, .232, machine); bezel.castShadow = false;
+  const pilotLight = new T.MeshBasicMaterial({ color: hdr('#ffae5c', 14) }); extraMaterials.push(pilotLight);
+  ball(.3, .4, .225, .009, pilotLight, machine).castShadow = false;
+  // Grinder beside the machine: a lathed body under a smoked hopper.
+  lathe([[0, 0], [.09, 0], [.095, .02], [.07, .05], [.065, .26], [.075, .3], [0, .3]], m.chrome, 48, 3.55, 1.11, -7.6);
+  lathe([[.03, 0], [.05, .01], [.1, .16], [.1, .18], [0, .18]], physical({ color: '#3b2a1f', roughness: .15, transmission: 0, opacity: .9, transparent: true }), 48, 3.55, 1.41, -7.6);
+  // Chalk menu board above the shelves, lit by a small brass picture light. The
+  // chalk is unlettered: rows of soft strokes that read as a menu when defocused.
+  const slate = new T.MeshStandardMaterial({ color: '#1d2420', roughness: .95, emissive: '#fff1dc', emissiveIntensity: .0 });
+  patchSurface(slate, {
+    key: 'cafe-chalk-menu',
+    objectSpace: true,
+    color: `
+vec2 chP = vSurface.xy;
+float chRow = floor((chP.y + 0.33) / 0.062);
+float chF = fract((chP.y + 0.33) / 0.062);
+float chCol = step(0.0, chP.x);
+float chArea = step(-0.5, chP.x) * step(chP.x, 0.5) * step(-0.3, chP.y) * step(chP.y, 0.22);
+float chEnd = mix(-0.08, 0.42, chCol) - 0.18 * bwHash1(vec3(chRow, chCol, 3.0));
+float chStart = mix(-0.46, 0.04, chCol);
+float chWord = step(0.28, bwValue(vec3(chP.x * 22.0, chRow * 2.7 + chCol * 5.0, 1.0)));
+float chBase = 0.45 + 0.1 * sin(chP.x * 260.0 + chRow * 5.0);
+float chalk = (1.0 - smoothstep(0.08, 0.2, abs(chF - chBase))) * chWord * step(chStart, chP.x) * step(chP.x, chEnd) * chArea;
+float chTitle = (1.0 - smoothstep(0.0, 0.025, abs(chP.y - 0.27))) * step(abs(chP.x), 0.22) * step(0.25, bwValue(vec3(chP.x * 14.0, 9.0, 1.0)));
+float chDust = 0.04 * smoothstep(0.3, 0.9, bwFbm3(vec3(chP * 6.0, 2.0)));
+diffuseColor.rgb = mix(diffuseColor.rgb + chDust, vec3(0.86, 0.84, 0.78), clamp(chalk + chTitle, 0.0, 1.0) * 0.85);`,
+    // Washed by the picture light above it: brightest at the top edge.
+    emissive: 'totalEmissiveRadiance += diffuseColor.rgb * (0.12 + 0.55 * smoothstep(-0.45, 0.33, chP.y)) * vec3(1.0, 0.9, 0.76);',
+  });
+  extraMaterials.push(slate);
+  const board = new T.Group(); board.position.set(3.25, 3.28, -8.86); scene.add(board);
+  slab(0, 0, 0, 1.16, .76, .04, m.darkWood, .01, board);
+  mesh(new T.PlaneGeometry(1.06, .66), slate, 0, 0, .022, board).castShadow = false;
+  const pictureLight = new T.MeshBasicMaterial({ color: hdr('#ffd9a8', 9) }); extraMaterials.push(pictureLight);
+  cylinder(0, .44, .12, .018, .018, .5, m.brass, board, 16).rotation.z = Math.PI / 2;
+  const glowBar = mesh(new T.BoxGeometry(.46, .006, .02), pictureLight, 0, .425, .12, board); glowBar.castShadow = false;
+  // A ceiling spot washes the back wall: the board, the shelved cups and the brick
+  // read as a lit service wall behind the counter instead of a dark void.
+  const wallWash = new T.SpotLight('#ffcf98', 22, 0, .78, .85, 2);
+  wallWash.position.set(3.3, 3.98, -7.7); wallWash.target.position.set(3.3, 2.5, -8.95);
+  scene.add(wallWash, wallWash.target);
+
   const shelves = buildCafeShelves(m); shelves.group.position.z = -.1; scene.add(shelves.group); extraMaterials.push(...shelves.materials); extraTextures.push(...shelves.textures);
 
   // ---------------------------------------------------------------- pendants over the far tables
@@ -265,23 +354,25 @@ void main(){
   const pendantBulb = new T.MeshBasicMaterial({ color: hdr('#ffd5a4', 36) }); extraMaterials.push(pendantBulb);
   const pendantLights: T.SpotLight[] = [];
   const pendantPositions: T.Vector3[] = [];
-  const pendant = (x: number, z: number, y: number, shadow: boolean) => {
+  const pendant = (x: number, z: number, y: number, shadow: boolean, intensity: number) => {
     tube([new T.Vector3(x, 4.07, z), new T.Vector3(x, y + .2, z)], .004, m.darkWood, scene, 4).castShadow = false;
     cylinder(x, 4.05, z, .05, .05, .03, m.brass, scene, 24);
     const profile = [[.255, 0], [.24, .02], [.15, .1], [.08, .19], [.05, .23], [.02, .24]];
     lathe(profile, pendantShell, 64, x, y - .02, z).castShadow = true;
     lathe(profile.map(([r, h]) => [r * .97, h - .006]), pendantInner, 64, x, y - .02, z).castShadow = false;
     const b = ball(x, y + .04, z, .04, pendantBulb); b.castShadow = false;
-    const l = new T.SpotLight('#ffc98e', 30, 0, .78, .85, 2);
+    const l = new T.SpotLight('#ffc98e', intensity, 0, .78, .85, 2);
     l.position.set(x, y + .02, z); l.target.position.set(x, 0, z);
     if (shadow) { l.castShadow = true; l.shadow.radius = 6; l.shadow.bias = -.0008; l.shadow.normalBias = .02; l.shadow.camera.near = .1; l.shadow.camera.far = 6; }
     scene.add(l, l.target);
     pendantLights.push(l);
     pendantPositions.push(new T.Vector3(x, y + .04, z));
   };
-  pendant(1.6, -4.0, 2.08, true);
-  pendant(2.35, -6.35, 2.12, true);
-  pendant(4.4, -6.0, 2.4, false);
+  // Pools sized for the far tables; the counter lamp hangs higher and dimmer so the
+  // machine's enamel and chrome catch it without burning out.
+  pendant(1.6, -4.0, 2.08, true, 17);
+  pendant(3.0, -5.55, 2.12, true, 15);
+  pendant(2.95, -7.15, 2.45, false, 6);
 
   // ---------------------------------------------------------------- quiet patrons
   const patronMaterials = {
@@ -341,10 +432,10 @@ void main(){
   chair(1.03, -4.05, -Math.PI / 2 - .1);
   lathe([[0, 0], [.03, 0], [.04, .07], [.036, .08], [0, .08]], m.ceramic, 32, 1.53, .746, -3.95);
   slab(1.77, .75, -4.07, .2, .012, .26, paper, .003);
-  patronTable(2.35, -6.35);
-  person(2.9, -6.6, Math.PI / 2 + .55, 1, 2.3);
-  chair(1.85, -6.2, -Math.PI / 2 + .25);
-  lathe([[0, 0], [.03, 0], [.04, .07], [.036, .08], [0, .08]], m.ceramic, 32, 2.26, .746, -6.33);
+  patronTable(3.0, -5.55);
+  person(3.55, -5.8, Math.PI / 2 + .55, 1, 2.3);
+  chair(2.5, -5.4, -Math.PI / 2 + .25);
+  lathe([[0, 0], [.03, 0], [.04, .07], [.036, .08], [0, .08]], m.ceramic, 32, 2.91, .746, -5.53);
 
   // Velvet banquette along the bay's side wall (seen mostly in the glass).
   const seatGeometry = metricUv(new RoundedBoxGeometry(1.0, .2, 4.0, 4, .05));
@@ -354,7 +445,7 @@ void main(){
   slab(-3.9, .23, 1.6, 1.1, .46, 4.05, m.darkWoodV, .01);
 
   // Potted plants frame the room, built from curved individual leaves.
-  for (const [x, z, s] of [[3.25, -7.2, .9], [3.6, -5.0, 1.1], [6.6, -7.9, 1.3], [-1.05, -1.22, .55]]) {
+  for (const [x, z, s] of [[3.25, -7.2, .9], [4.6, -3.6, 1.1], [6.6, -7.9, 1.3], [-1.05, -1.22, .55]]) {
     const plant = createCafePlant({ ...m, darkWood: m.soil }, s); plant.position.set(x, x < 0 ? TABLE_TOP : 0, z); scene.add(plant);
   }
 
@@ -363,7 +454,7 @@ void main(){
   const rainTime = (m.pavement.userData.rainTime as { value: number });
 
   // Faint cool light from the blue-hour window: a rim on the cup and the drapes.
-  const windowLight = new T.DirectionalLight('#7f9fc4', .12); windowLight.position.set(-3, 3.5, -6); scene.add(windowLight, windowLight.target);
+  const windowLight = new T.DirectionalLight('#7f9fc4', .05); windowLight.position.set(-3, 3.5, -6); scene.add(windowLight, windowLight.target);
   windowLight.target.position.set(0, .8, 0);
 
   // A wall sconce behind the seat (out of frame): a low, warm motivated fill so the
@@ -380,6 +471,7 @@ void main(){
     cupContact.position.set(shot.cup.x, TABLE_TOP + .001, shot.cup.z);
     lamp.position.copy(shot.lamp); lamp.scale.setScalar(shot.lampScale);
     lampContact.position.set(shot.lamp.x, TABLE_TOP + .001, shot.lamp.z);
+    book.position.copy(shot.book); book.rotation.y = -.3 - .25 * portrait;
     const bulbY = shot.lamp.y + .392 * shot.lampScale;
     key.position.set(shot.lamp.x, bulbY, shot.lamp.z);
     key.target.position.set(shot.cup.x * .55 + shot.lamp.x * .45, TABLE_TOP, shot.cup.z * .6 + shot.lamp.z * .4);

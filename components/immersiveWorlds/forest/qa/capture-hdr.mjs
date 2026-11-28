@@ -52,7 +52,7 @@ try {
     const began = Date.now();
     // Always mount through the real active=false path first: a page that is
     // already animating starves Playwright's in-page polling on SwiftShader.
-    await page.goto(`${base}?capture=1&paused=1${extra}`);
+    await page.goto(`${base}?capture=1&paused=1${extra}&hdr=force`);
     // The canvas fades in over 800 ms; a busy software rasterizer can stall that
     // CSS transition, so captures show the canvas at full opacity immediately.
     await page.addStyleTag({ content: '.forest-world-canvas { transition: none !important; }' });

@@ -24,12 +24,12 @@ export function buildDeepNightWorld(): WorldRecipe {
   // A waxing gibbous moon over the far ranges: it backlights the layers and washes out most stars.
   const moonDir = direction(27, 19);
   const sky = createNightSky({
-    noise, zenith: '#0a1430', horizon: '#3a4a68', brightness: 0.07,
-    glow: { color: '#5a6c8c', direction: moonDir, intensity: 0.1, width: 3, height: 0.16 },
+    noise, zenith: '#0a1430', horizon: '#3a4a68', brightness: 0.055,
+    glow: { color: '#5a6c8c', direction: moonDir, intensity: 0.075, width: 3, height: 0.16 },
     airglow: 0.015,
     moon: { direction: moonDir, intensity: 42, radius: 0.0135, halo: 2.2, color: '#fff3df', sunDirection: direction(27 + 150, -12) },
     galaxy: { pole: new THREE.Vector3().crossVectors(direction(-70, 8), direction(10, 80)).normalize(), centre: direction(-70, 8), intensity: 0.025 },
-    stars: { count: 3200, seed: 713, intensity: 0.95, galacticFraction: 0.3 },
+    stars: { count: 3800, seed: 713, intensity: 2.1, galacticFraction: 0.3, twinkle: 0.8 },
   });
   scene.add(sky.group);
 

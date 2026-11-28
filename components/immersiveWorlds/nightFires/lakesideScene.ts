@@ -112,7 +112,7 @@ export function buildLakesideWorld(): WorldRecipe {
     glow: { color: '#c48a8e', direction: afterglow, intensity: 0.32, width: 1.8, height: 0.16 },
     airglow: 0,
     moon: { direction: moonDir, intensity: 40, radius: 0.012, halo: 0.8, color: '#fff2dc', sunDirection: direction(-46, -14) },
-    stars: { count: 1400, seed: 2048, intensity: 0.55, galacticFraction: 0 },
+    stars: { count: 1400, seed: 2048, intensity: 0.55, galacticFraction: 0, twinkle: 0.6 },
   });
   scene.add(sky.group);
 

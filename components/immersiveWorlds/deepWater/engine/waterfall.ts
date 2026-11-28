@@ -7,12 +7,42 @@ import { fbm3, ridged3 } from '../../shared/render/noise';
 import { GLSL_NOISE } from '../../shared/render/glsl';
 import { VOLUME_PRELUDE, type VolumeEffect } from '../../shared/render/hdrPipeline';
 import { FULLSCREEN_VERTEX } from '../../shared/render/targets';
+import { bakeWaterfallTextures } from './waterfallTextures';
+import { createBoil, createFalls, createMist, createSpray, type FallShape, type FlowUniforms } from './waterfallFlow';
+import { WATERFALL_POOL_FRAGMENT, waterfallPoolUniforms } from './waterfallPool';
+import { wetByFalls } from './waterfallRock';
 
 const SUN_TOWARD = new THREE.Vector3(-18, 34, 13).normalize();
-const FALL_FOOT = new THREE.Vector3(0.9, 0.4, -23.4);
+// The notch the river pours through: its rim height and its face (lip z) across
+// x, fitted to the cliff mesh so each curtain column leaves the rock it sits on.
+const notchLip = (x: number) => 20.66 + .25 * Math.max(0, .72 - x) - .3 * THREE.MathUtils.clamp(x - .72, 0, .8) - .6 * Math.max(0, x - 1.52);
+const notchFace = (x: number) => -26.75 + .95 * THREE.MathUtils.smoothstep(x, .85, 1.7);
+const FALL_FOOT = new THREE.Vector3(0.72, 0.4, -22.2);
+const SIDE_FOOT = new THREE.Vector3(-7.0, 0.6, -22.2);
+// The valley breeze that carries spray and mist toward the outlet (m/s).
+const WIND = new THREE.Vector3(0.14, 0, 0.18);
+// Main curtain, its veil and strands, the two jets that peel off its edges,
+// and the small seep on the left wall. Back to front: one merged mesh draws them in this order.
+const FALL_SHEETS: FallShape[] = [
+  { x: .72, top: 20.66, base: .16, width: 2.7, spread: .32, z: -26.85, throw: 1.95, seed: .37, density: .9, kind: 0, lip: notchLip, face: x => notchFace(x) - .1 },
+  { x: -7.0, top: 7.16, base: .3, width: .34, spread: .5, z: -23.32, throw: .8, seed: 6.6, density: .7, kind: 0 },
+  { x: .72, top: 20.66, base: .16, width: 2.48, spread: .45, z: -26.75, throw: 2.1, seed: 1.7, density: 1, kind: 1, lip: notchLip, face: notchFace },
+  { x: -7.0, top: 7.16, base: .3, width: .36, spread: .5, z: -23.25, throw: .9, seed: 7.9, density: .9, kind: 1 },
+  { x: -.95, top: 20.55, base: .16, width: .44, spread: .8, z: -26.75, throw: 1.9, seed: 4.1, density: .85, kind: 3, drift: -.55 },
+  { x: 2.12, top: 20.06, base: .16, width: .42, spread: .8, z: -25.7, throw: 2.2, seed: 5.3, density: .9, kind: 3, drift: .65 },
+  { x: .66, top: 20.6, base: .16, width: 1.9, spread: .42, z: -26.69, throw: 2.3, seed: 2.9, density: .85, kind: 2, lip: notchLip, face: x => notchFace(x) + .06 },
+];
+const MAIN_FALL = FALL_SHEETS[2];
 
-// Sunlit spray at the foot of the fall, a faint valley haze, and shafts of
-// sun broken by the canopy above the gorge rim.
+/** Slow, aperiodic swell of the fall's flow; spray, mist and ripples follow it. */
+export function fallSurge(time: number) {
+  return THREE.MathUtils.clamp(.5 + .32 * Math.sin(time * .53 + .4) * Math.sin(time * .21 + 1.3) + .18 * Math.sin(time * 1.37), 0, 1);
+}
+
+// Sunlit spray plume at the foot of the fall, a faint valley haze, and shafts
+// of sun broken by the canopy above the gorge rim. The plume is marched on its
+// own, finely, inside a sphere around the foot; it billows upward and leans
+// with the same breeze and surge as the mist billboards and spray particles.
 const VOLUME_FRAGMENT = /* glsl */ `
 ${VOLUME_PRELUDE}
 ${GLSL_NOISE}
@@ -20,12 +50,25 @@ uniform vec3 uToSun;
 uniform vec3 uSun;
 uniform vec3 uSky;
 uniform vec3 uFoot;
+uniform vec3 uWind;
 uniform float uSpray;
+uniform float uSurge;
 uniform float uHaze;
 float canopy(vec3 p) {
   float travel = (24.0 - p.y) / max(uToSun.y, 0.2);
   vec2 s = p.xz + uToSun.xz * travel;
   return smoothstep(-0.15, 0.45, bwNoise(vec3(s * 0.12, 3.0)) * 0.75 + bwNoise(vec3(s * 0.4, 9.0)) * 0.25);
+}
+float plume(vec3 p) {
+  vec3 o = p - uFoot;
+  float h = max(o.y, 0.0);
+  vec2 lateral = (o.xz - uWind.xz * h * 1.4 - vec2(0.0, 0.6)) / vec2(2.0 + h * 0.42, 1.5 + h * 0.3);
+  float shape = exp(-dot(lateral, lateral)) * exp(-h * 0.3) * smoothstep(-0.7, 0.2, o.y);
+  if (shape < 0.004) return 0.0;
+  vec3 drift = vec3(uWind.x, 0.9, uWind.z + 0.2) * uTime;
+  vec3 q = p - drift;
+  float billow = bwValue(q * 0.5) * 0.62 + bwValue(q * 1.25 + 7.0) * 0.38;
+  return uSpray * shape * smoothstep(0.25, 0.8, billow + shape * 0.45) * (0.7 + 0.45 * uSurge);
 }
 void main() {
   vec3 ro, rd; float surface;
@@ -33,23 +76,48 @@ void main() {
   float maxT = min(surface, 70.0);
   if (rd.y < -1e-4) maxT = min(maxT, (0.03 - ro.y) / rd.y);
   float phase = bwPhase(dot(-uToSun, -rd), 0.55) * 12.5663706;
+  float jitter = bwIgn(gl_FragCoord.xy);
+  // Plume bounds.
+  vec3 centre = uFoot + vec3(uWind.x * 4.0, 3.4, 1.0 + uWind.z * 4.0);
+  const float RADIUS = 7.5;
+  vec3 oc = ro - centre;
+  float b = dot(oc, rd), disc = b * b - dot(oc, oc) + RADIUS * RADIUS;
+  float m0 = 0.0, m1 = 0.0;
+  if (disc > 0.0) { float r = sqrt(disc); m0 = max(-b - r, 0.0); m1 = min(-b + r, maxT); }
+  float split = m1 > m0 ? 0.5 * (m0 + m1) : 1e9;
   const int STEPS = 32;
   float dt = maxT / float(STEPS);
-  float jitter = bwIgn(gl_FragCoord.xy);
-  vec3 scatter = vec3(0.0);
-  float transmittance = 1.0;
+  vec3 before = vec3(0.0), after = vec3(0.0);
+  float tBefore = 1.0, tAfter = 1.0;
   for (int i = 0; i < STEPS; i++) {
-    vec3 p = ro + rd * ((float(i) + jitter) * dt);
-    vec3 q = (p - uFoot) * vec3(0.16, 0.42, 0.24);
-    float spray = uSpray * exp(-dot(q, q)) * (0.5 + 0.5 * bwValue(p * vec3(0.6, 0.35, 0.6) + vec3(0.0, -uTime * 0.6, uTime * 0.1)));
+    float t = (float(i) + jitter) * dt;
+    vec3 p = ro + rd * t;
     float haze = uHaze * exp(-max(p.y, 0.0) * 0.12) * (0.6 + 0.4 * bwValue(p * 0.08 + uTime * 0.01));
-    float density = spray + haze;
-    vec3 radiance = (uSun * phase * canopy(p) + uSky) * density;
-    float stepT = exp(-density * dt);
-    scatter += transmittance * radiance * (1.0 - stepT) / max(density, 1e-4);
-    transmittance *= stepT;
+    vec3 radiance = (uSun * phase * canopy(p) + uSky) * haze;
+    float stepT = exp(-haze * dt);
+    vec3 add = radiance * (1.0 - stepT) / max(haze, 1e-4);
+    if (t < split) { before += tBefore * add; tBefore *= stepT; }
+    else { after += tAfter * add; tAfter *= stepT; }
   }
-  gl_FragColor = vec4(scatter, transmittance);
+  vec3 mist = vec3(0.0);
+  float tMist = 1.0;
+  if (m1 > m0) {
+    const int MIST = 16;
+    float mdt = (m1 - m0) / float(MIST);
+    float sun = canopy(centre) * (0.45 + 0.55 * phase);
+    for (int i = 0; i < MIST; i++) {
+      vec3 p = ro + rd * (m0 + (float(i) + jitter) * mdt);
+      float density = plume(p);
+      if (density <= 0.0) continue;
+      // Spray is lit through itself: denser and lower parts are a little greyer.
+      float self = exp(-density * 1.6) * (0.7 + 0.3 * smoothstep(0.0, 6.0, p.y - uFoot.y));
+      vec3 radiance = (uSun * sun * (0.55 + 0.45 * self) + uSky * 1.5) * density;
+      float stepT = exp(-density * mdt);
+      mist += tMist * radiance * (1.0 - stepT) / max(density, 1e-4);
+      tMist *= stepT;
+    }
+  }
+  gl_FragColor = vec4(before + tBefore * (mist + tMist * after), tBefore * tMist * tAfter);
 }
 `;
 
@@ -65,6 +133,19 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   const timeUniform = { value: 0 };
   const rnd = seeded(83111);
   const occluders: THREE.Object3D[] = [];
+  const textures = bakeWaterfallTextures(renderer);
+  const fog = scene.fog as THREE.FogExp2;
+  const flow: FlowUniforms = {
+    time: timeUniform, surge: { value: fallSurge(0) },
+    toSun: { value: SUN_TOWARD.clone() },
+    // Radiance of sunlit and sky-lit white water, matched to the key light.
+    sunColor: { value: new THREE.Color(1.0, .94, .84).multiplyScalar(2.6) },
+    skyColor: { value: new THREE.Color(.42, .55, .62) },
+    fogColor: { value: fog.color.clone() }, fogDensity: { value: fog.density },
+    foot: { value: FALL_FOOT.clone() }, sideFoot: { value: SIDE_FOOT.clone() }, wind: { value: WIND.clone() },
+    viewport: { value: new THREE.Vector2(1280, 800) },
+  };
+  const wetZones = { fall: { x: MAIN_FALL.x, top: MAIN_FALL.top, halfWidth: 1.35 }, foot: FALL_FOOT, seep: { x: SIDE_FOOT.x, top: 7.16, z: -18.2 } };
   const sky = new THREE.Mesh(new THREE.SphereGeometry(98, 28, 16), new THREE.ShaderMaterial({
     uniforms: { uTime: timeUniform }, side: THREE.BackSide, depthWrite: false,
     vertexShader: `varying vec3 vSky;void main(){vSky=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
@@ -110,6 +191,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   wallMaterial.vertexColors = true;
   wallMaterial.side = THREE.DoubleSide;
   wallMaterial.shadowSide = THREE.FrontSide;
+  wetByFalls(wallMaterial, timeUniform, wetZones, 'cliff');
   const cliffPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-15, 0, 13), new THREE.Vector3(-14, 0, -4),
     new THREE.Vector3(-10.8, 0, -15.5), new THREE.Vector3(-6.3, 0, -25.2),
@@ -160,6 +242,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   bankMaterial.vertexColors = true;
   bankMaterial.side = THREE.DoubleSide;
   bankMaterial.shadowSide = THREE.FrontSide;
+  wetByFalls(bankMaterial, timeUniform, wetZones, 'bank');
   addBank(-1);
   addBank(1);
   // The cropped foreground shelf establishes the seated, human-scale viewpoint.
@@ -173,6 +256,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   occluders.push(boulder([-2.9, -.4, 4.9], [3.25, 1.05, 2.4], 177, ledgeMat, 20));
   occluders.push(boulder([3.1, -.35, 5.8], [2.95, 1.05, 2.3], 232, ledgeMat, 20));
   const dampStone = createRockMaterial('#5a665c', { key: 'waterfall-damp', moss: { color: '#4f6a28', amount: .8 }, scale: 1.2, bump: 1.3, cavity: .6, strata: .3, waterY: .025, wetBand: .9, wetness: .3, drips: .2, dryRoughness: .75, wetRoughness: .16, algaeAmount: .5 });
+  wetByFalls(dampStone, timeUniform, wetZones, 'damp');
 
   const rockPositions: [number, number, number, number, number, number][] = [
     [-8, 0.1, -1, 2.2, 1.2, 2], [-6.8, -0.2, -9, 1.9, 0.9, 1.7],
@@ -189,108 +273,20 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
   const pool = createPool(renderer, scene, {
     width: 37, depth: 46, y: 0.025, color: '#2a8a7f', position: [0, 0.025, -8], distortion: 0.88,
     clear: { deepColor: '#06302c', glow: { x: FALL_FOOT.x, z: FALL_FOOT.z, radius: 4.2, color: new THREE.Color(.75, .95, .9).multiplyScalar(1.4) }, lightDirection: SUN_TOWARD, glint: 5 },
+    surface: { fragmentShader: WATERFALL_POOL_FRAGMENT, uniforms: waterfallPoolUniforms(textures, flow) },
   });
   const bottom = new THREE.Mesh(new THREE.PlaneGeometry(33, 44, 1, 1), new THREE.MeshStandardMaterial({ color: '#174b45', roughness: 1 }));
   bottom.rotation.x = -Math.PI / 2;
   bottom.position.set(0, -1.8, -8);
   scene.add(bottom);
 
-  // Broad translucent flow carries a few denser cords. Separate curved veils keep the
-  // water in front of the damp rock without turning the fall into an opaque white panel.
-  const waterfallMaterial = new THREE.ShaderMaterial({
-    uniforms: { uTime: timeUniform, uSeed: { value: 0 }, uDensity: { value: 1 } },
-    vertexShader: `
-      varying vec2 vUv; varying vec3 vWorld;
-      uniform float uTime,uSeed;
-      void main(){
-        vUv=uv; vec3 p=position;
-        p.x += sin(p.y*1.3-uTime*1.8+p.x*4.0+uSeed)*0.023;
-        p.z += sin(p.y*2.0-uTime*2.7+p.x*3.0+uSeed)*0.04;
-        vWorld=(modelMatrix*vec4(p,1.)).xyz;
-        gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);
-      }`,
-    fragmentShader: `
-      varying vec2 vUv; varying vec3 vWorld; uniform float uTime,uSeed,uDensity;
-      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-      float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+1.),f.x),f.y);}
-      void main(){
-        float descent = vUv.y*5.2+uTime*1.8;
-        float warp = n(vec2(vUv.x*3.1+uSeed,vUv.y*6.+uTime*.8))-.5;
-        float flow = n(vec2(vUv.x*5.3+warp*.75+uSeed,descent));
-        float cords = n(vec2(vUv.x*19.+warp*1.4+uSeed,vUv.y*4.5+uTime*2.2));
-        float fine = n(vec2(vUv.x*51.+warp,vUv.y*26.+uTime*5.1));
-        float edge = smoothstep(0.,.09,vUv.x)*smoothstep(0.,.14,1.-vUv.x);
-        float body = smoothstep(.18,.79,flow);
-        float ridge = smoothstep(.50,.86,cords)*(.35+body*.65);
-        float base = smoothstep(0.,.035,vUv.y);
-        float alpha = edge * base * (.08+body*.5+ridge*.38+fine*.06)*uDensity;
-        vec3 white = mix(vec3(.5,.78,.76),vec3(2.1,2.25,2.1),body*.47+ridge*.39+fine*.14);
-        float distanceFade = clamp(length(cameraPosition-vWorld)*.006,0.,.3);
-        white=mix(white,vec3(1.1,1.3,1.25),distanceFade);
-        gl_FragColor=vec4(white,alpha);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`,
-    transparent: true, depthWrite: false, side: THREE.DoubleSide,
-  });
-  makeFall(.72, 20.45, 2.48, -25.65, 0, 1.03, 0);
-  makeFall(.39, 20.40, 1.04, -25.56, 2.8, .58, .22);
-  makeFall(1.30, 20.40, .63, -25.53, 4.3, .78, .38);
-  makeFall(-.95, 20.2, .46, -25.73, 1.7, .73, .10);
-  makeFall(2.12, 20.4, .43, -25.6, 3.4, .88, .18);
-  // A smaller side seep follows a separate ledge on the left wall.
-  makeFall(-7.0, 7.0, 0.25, -20.0, 5.5, .68, 0);
-
-  const foamMat = new THREE.ShaderMaterial({
-    uniforms: { uTime: timeUniform },
-    vertexShader: `varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader: `
-      varying vec2 vUv; uniform float uTime;
-      float hash(vec2 p){return fract(sin(dot(p,vec2(41.33,77.71)))*43758.5);}
-      float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+1.),f.x),f.y);}
-      void main(){vec2 p=vUv*2.-1.;float r=length(p);float a=atan(p.y,p.x);
-        float cloud=n(p*17.+vec2(uTime*.07,-uTime*.13))*.55+n(p*35.+uTime*.05)*.45;
-        float reach = 1.-smoothstep(.12,.97,r+sin(a*11.+r*8.)*.045);
-        float alpha=reach*smoothstep(.31,.77,cloud)*.40;
-        gl_FragColor=vec4(vec3(1.6,1.85,1.75),alpha);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`,
-    transparent: true, depthWrite: false, side: THREE.DoubleSide,
-  });
-  const foam = new THREE.Mesh(new THREE.PlaneGeometry(9, 6.6), foamMat);
-  foam.rotation.x = -Math.PI / 2;
-  foam.position.set(0.9, 0.059, -23.6);
-  scene.add(foam);
-
-  const sprayCount = 380;
-  const sprayGeo = new THREE.BufferGeometry();
-  const spraySeed = new Float32Array(sprayCount * 3), spraySize = new Float32Array(sprayCount);
-  for (let i = 0; i < sprayCount; i++) {
-    spraySeed[i * 3] = rnd(); spraySeed[i * 3 + 1] = rnd(); spraySeed[i * 3 + 2] = rnd();
-    spraySize[i] = 0.6 + rnd() * 1.4;
-  }
-  sprayGeo.setAttribute('position', new THREE.BufferAttribute(spraySeed, 3));
-  sprayGeo.setAttribute('aSize', new THREE.BufferAttribute(spraySize, 1));
-  const sprayMaterial = new THREE.ShaderMaterial({
-    uniforms: { uTime: timeUniform, uScale: { value: 640 } },
-    vertexShader: `uniform float uTime; uniform float uScale; attribute float aSize; varying float vLife;
-      void main(){
-        float life=fract(position.y+uTime*.16);float angle=position.x*6.2831853;
-        float radius=(.6+position.z*2.4)*sqrt(life);
-        vec3 p=vec3(.85+cos(angle)*radius,.12+sin(life*3.14159)*(.45+position.z*1.15),-23.35+sin(angle)*radius*.65+life*.3);
-        vec4 mv=modelViewMatrix*vec4(p,1.);vLife=sin(life*3.14159);
-        gl_Position=projectionMatrix*mv;gl_PointSize=clamp(aSize*uScale*.13/-mv.z,1.,12.);
-      }`,
-    fragmentShader: `varying float vLife;void main(){float r=length(gl_PointCoord-.5)*2.;float a=pow(max(0.,1.-r),2.)*vLife*.25;gl_FragColor=vec4(.82,.96,.9,a);
-      #include <tonemapping_fragment>
-      #include <colorspace_fragment>
-    }`,
-    transparent: true, depthWrite: false,
-  });
-  const spray = new THREE.Points(sprayGeo, sprayMaterial);
-  spray.frustumCulled = false;
-  scene.add(spray);
+  // Layered curtains, plunge boil, spray and mist: all animated on the GPU from the scene clock.
+  scene.add(createFalls(FALL_SHEETS, textures, flow));
+  scene.add(createBoil(textures, flow, new THREE.Vector2(2.7, 1.5), .04));
+  const spray = createSpray({ plunge: 1400, edge: 360, side: 120, floating: 240 }, MAIN_FALL, flow, rnd);
+  scene.add(spray.mesh);
+  const billows = createMist({ plunge: 52, side: 5 }, textures, flow, rnd, .025);
+  scene.add(billows.mesh);
 
   // Fallback spray cards for renderers without the HDR volume pass.
   const mistCards: THREE.Mesh[] = [];
@@ -309,7 +305,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
       transparent: true, depthWrite: false, side: THREE.DoubleSide,
     });
     const mist = new THREE.Mesh(new THREE.PlaneGeometry(7.6 + i * 1.2, 2.1 + i * .12), mat);
-    mist.position.set(0.8 - i * 0.32, .68 + i * .08, -22.9 + i * .65);
+    mist.position.set(FALL_FOOT.x + .1 - i * 0.32, .68 + i * .08, FALL_FOOT.z + .5 + i * .65);
     mist.rotation.y = i * 0.13;
     scene.add(mist); mistCards.push(mist);
   }
@@ -345,37 +341,6 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
     geo.setIndex(idx); geo.computeVertexNormals();
     const mesh = new THREE.Mesh(geo, bankMaterial); mesh.castShadow = mesh.receiveShadow = true;
     scene.add(mesh); occluders.push(mesh);
-  }
-
-  function makeFall(x: number, height: number, width: number, z: number, seed: number, density: number, forward: number) {
-    const positions: number[] = [], uvs: number[] = [], indices: number[] = [];
-    const rows = Math.max(32, Math.round(height * 7)), columns = 34;
-    for (let y = 0; y <= rows; y++) {
-      const v = y / rows;
-      const spread = width * (.86 + (1 - v) * .6 + Math.sin(v * 8.4 + seed) * .065 + Math.sin(v * 29 + seed) * .025);
-      const center = x + Math.sin((1 - v) * 4.1 + seed) * .18 * (1 - v);
-      for (let c = 0; c <= columns; c++) {
-        const u = c / columns;
-        positions.push(center + (u - .5) * spread + Math.sin(v * 43 + u * 19 + seed) * .025,
-          .16 + v * height, z + Math.sqrt(1 - v) * ((height > 10 ? 2.20 : 1.55) + forward)
-            + Math.sin(u * 11 + v * 3.5 + seed) * .13 * Math.sin(v * Math.PI));
-        uvs.push(u, v);
-        if (y < rows && c < columns) {
-          const a = y * (columns + 1) + c, b = a + columns + 1;
-          indices.push(a, a + 1, b, a + 1, b + 1, b);
-        }
-      }
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-    geo.setIndex(indices); geo.computeVertexNormals();
-    const material = seed === 0 ? waterfallMaterial : waterfallMaterial.clone();
-    material.uniforms.uTime = timeUniform;
-    material.uniforms.uSeed.value = seed;
-    material.uniforms.uDensity.value = density;
-    const mesh = new THREE.Mesh(geo, material); mesh.renderOrder = 2;
-    scene.add(mesh);
   }
 
   function makeFoliage() {
@@ -519,12 +484,12 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
         vertexShader: FULLSCREEN_VERTEX, fragmentShader: VOLUME_FRAGMENT, depthTest: false, depthWrite: false, toneMapped: false,
         uniforms: {
           uToSun: { value: SUN_TOWARD.clone() }, uSun: { value: new THREE.Vector3(2.2, 2.0, 1.6) }, uSky: { value: new THREE.Vector3(.16, .24, .26) },
-          uFoot: { value: FALL_FOOT.clone() }, uSpray: { value: .2 }, uHaze: { value: .005 },
+          uFoot: { value: FALL_FOOT.clone() }, uWind: flow.wind, uSurge: flow.surge, uSpray: { value: .4 }, uHaze: { value: .005 },
         },
       }) };
     },
     setPostActive(active) { mistCards.forEach(card => { card.visible = !active; }); },
-    update(time) { timeUniform.value = time; pool.update(time); },
+    update(time) { timeUniform.value = time; flow.surge.value = fallSurge(time); pool.update(time); },
     interact(ray, time) {
       if (time - lastTap < .55) return null;
       const hit = ray.intersectObject(pool.mesh, false)[0];
@@ -541,9 +506,12 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
       target.set(portrait ? .70 : .75, portrait ? 5.3 : 5.45, -21);
       camera.fov = portrait ? 62 : aspect > 2 ? 52 : 56;
       camera.aspect = aspect; camera.updateProjectionMatrix(); camera.lookAt(target);
-      sprayMaterial.uniforms.uScale.value = Math.min(renderer.domElement.height || 720, 1600);
+      const canvas = renderer.domElement;
+      const height = canvas.height || 800;
+      flow.viewport.value.set(canvas.width || Math.round(height * aspect), height);
+      spray.setPixelScale(typeof renderer.getPixelRatio === 'function' ? renderer.getPixelRatio() : 1);
     },
-    dispose() { pool.dispose(); },
+    dispose() { pool.dispose(); textures.dispose(); },
   };
 }
 

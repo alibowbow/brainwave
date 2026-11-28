@@ -47,12 +47,29 @@ describe('cafe shot', () => {
     for (const portrait of [0, .5, 1]) {
       const shot = cafeShot(portrait);
       expect(shot.lamp.z).toBeLessThan(shot.cup.z);
-      for (const prop of [shot.cup, shot.lamp]) {
+      for (const prop of [shot.cup, shot.lamp, shot.book]) {
         expect(prop.z).toBeGreaterThan(CAFE_GLASS.z + .2);
         expect(prop.z).toBeLessThan(shot.camera.z);
       }
-      expect(shot.fov).toBeGreaterThanOrEqual(42);
-      expect(shot.fov).toBeLessThanOrEqual(50);
+      expect(shot.fov).toBeGreaterThanOrEqual(48);
+      expect(shot.fov).toBeLessThanOrEqual(62);
+    }
+  });
+
+  it('frames the seat from the middle ground, about three metres from the glass', () => {
+    for (const portrait of [0, .5, 1]) {
+      const shot = cafeShot(portrait);
+      const toGlass = shot.camera.z - CAFE_GLASS.z;
+      expect(toGlass).toBeGreaterThanOrEqual(2.8);
+      expect(toGlass).toBeLessThanOrEqual(3.5);
+    }
+  });
+
+  it('keeps the cup inside the lit cone below the lamp shade so the latte reads', () => {
+    for (const portrait of [0, .5, 1]) {
+      const shot = cafeShot(portrait);
+      const reach = Math.hypot(shot.cup.x - shot.lamp.x, shot.cup.z - shot.lamp.z);
+      expect(reach).toBeLessThan(.74);
     }
   });
 });

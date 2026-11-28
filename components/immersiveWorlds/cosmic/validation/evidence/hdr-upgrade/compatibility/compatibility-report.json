@@ -1,0 +1,511 @@
+{
+  "source": {
+    "algorithm": "sha256",
+    "digest": "0a4d99dff247ed2f46359fc02b93176ec7ae8e7afdaee312b1db99b0af60f9ce",
+    "checkoutHead": "f0085459c41aaa736096979214f44d960b410197",
+    "files": {
+      "components/immersiveWorlds/cosmic/CosmicEngine.ts": "b115ca744041f3a4ab477dbede70eb2c102f308f49a38e943182027d8e602d1e",
+      "components/immersiveWorlds/cosmic/CosmicWorld.tsx": "b7cacdbc7eabc4320f180c2aeabccd0c1cfe133864757c02850cef87bdc01dba",
+      "components/immersiveWorlds/cosmic/botany.ts": "a41a9253dcda6118af7663af784a293a45fd969db990868e4823b5858d565234",
+      "components/immersiveWorlds/cosmic/cosmic.css": "350b770df34c0459d8c2d420ecdf5e3ad453c6ca9610a60eadd0fb2351fa89fb",
+      "components/immersiveWorlds/cosmic/cosmicHost.ts": "0a42b95fb6cf3377312d01949197e9beb917922e18d3ce91149b1c72f0b3a85a",
+      "components/immersiveWorlds/cosmic/garden.ts": "56be31fa52ae0f9f173e3f1387ff78fd57ea9dc71b0dc3e90fe788913632a1ae",
+      "components/immersiveWorlds/cosmic/qualityPolicy.ts": "be264eeb9d02edea72dc04673fdfe57855b967684497a82c37248293c28cf333",
+      "components/immersiveWorlds/cosmic/reflectionTarget.ts": "9a94ab68dea079248a943acb1729d6350c187807eab1ab108ee15c35a99cdb56",
+      "components/immersiveWorlds/cosmic/sky.ts": "7dcfcdbe6faa992e0121e99c24ad6bf21ef01a935ca0e5b05132a4e3a21ef0ba",
+      "components/immersiveWorlds/cosmic/spaceDust.ts": "25ef6b4ecdad3a6b1fc6ce5619fef7546d11db0c6f5d9c15d92fed1b2658d878",
+      "components/immersiveWorlds/cosmic/validation/build-harness.mjs": "39680e024116466ee4b1aecda692beb9c1104418fc52ad0318334eb56c41af3f",
+      "components/immersiveWorlds/cosmic/validation/capture-quality.mjs": "e983f740259ca0df11fe72c22158e1bfcfc7acef1b3e252686bd9488c41a71d5",
+      "components/immersiveWorlds/cosmic/validation/capture.mjs": "df1ea57f5695740faee4e5665314f97de7a0f0723e0dedd100631c8010754dd8",
+      "components/immersiveWorlds/cosmic/validation/compatibility.ts": "5e1ba2d9896e7479ffc1dea694dfc2938bb87310a9b259389c468b6b01015528",
+      "components/immersiveWorlds/cosmic/validation/cosmic.test.ts": "684c6797ae7721e583d750c14165b5f7824647c0e57ea0e81c15036284eff6c4",
+      "components/immersiveWorlds/cosmic/validation/hdr-upgrade.test.ts": "fc08a9398ecf34f6a6d1cfbf46725319943d6d2b178da8268e1564963cfe222f",
+      "components/immersiveWorlds/cosmic/validation/index.html": "40c77c1357f05bfeebca605946fd984c5cc40d13e0596cabd02da24326e1829e",
+      "components/immersiveWorlds/cosmic/validation/main.tsx": "29fe4da10ea3f48cebe57991b27f3e9ac74d1b7e9c64c7d08d1ddba6e04ee7cc",
+      "components/immersiveWorlds/cosmic/validation/quality-policy.test.ts": "881e187b07b2f688ede4931a247da96624f9270e80bd6cdcb2adaff5d178634f",
+      "components/immersiveWorlds/cosmic/validation/reflection-target.test.ts": "f53cbd50db2426df01a76406e7eded212000e47ff014f0a92d968d81931ae027",
+      "components/immersiveWorlds/cosmic/validation/run-local.mjs": "54e91c7484dc87de5dffcdf7ebb9f8e0eba1729eac09512a06c01ad670182142",
+      "components/immersiveWorlds/cosmic/validation/sky-coordinates.test.ts": "08f51c52df17d0b4961d0b0ecc15e9e040b042ca46e47dfc8b451e47ed1026ce",
+      "components/immersiveWorlds/cosmic/validation/source-fingerprint.mjs": "0b4a67efa86751aab3fafd5d3775dacc30fba12df1c48cf83c23a5176690533c",
+      "components/immersiveWorlds/cosmic/validation/validation.css": "6ec98e6bdebc042cc4cdcd87daefa817f7b3c8c6d064498cafb308691780b531",
+      "components/immersiveWorlds/cosmic/validation/verify-correction.mjs": "0de2e62f70b5f1c126275f00f4091a848f7eee16176a29732dd48e4c892157a9",
+      "components/immersiveWorlds/cosmic/validation/verify-cosmic.mjs": "580bb25934f6ea61a804f3e141e4cd2a81cbd72280adbe4f45e02de8849ff053",
+      "components/liveScene/liveSceneHost.ts": "2fc5b3e6dd0ea1cf164b8a9b2a493f9c0351f5834980cbec02d5e7e0f4f950db",
+      "components/liveScene/look.ts": "0bba47318c8b52e03919ccb43ac99a7289dd11b9d0d98db43288bd0453e3292a",
+      "components/liveScene/useLookDrag.ts": "cabc7a6c07a96713e440058e3db2b9984252c6bb53a1b9b821a8c79c91ee7a36",
+      "components/useSceneMotion.ts": "746192d073ea8ce7567266c6fd6988eafd8b7a5edb01596e1ab3c7c78f707c77",
+      "node_modules/three/examples/jsm/objects/Reflector.js": "57836df976f02a474b2dcfbb6609bca8bde0ccc6e77159ad8e418fa11c065d3b",
+      "package-lock.json": "91a7df5bfd528eb4d40d662c4d57ad4938cc9b39f68a0b827f59483b4f5f5b07",
+      "package.json": "a9a13733abdad919b5e9207fc5b20d14e0c94814235b36072b9d01d8f1337a67",
+      "public/immersive-worlds/cosmic/preview/assets/PretendardVariable-CJuje-Rk.woff2": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
+      "public/immersive-worlds/cosmic/preview/assets/cosmic-compatibility-Cohr30Z8.mjs": "81a94e7ca8610cffbf112e57c69b58995e8fcd80871ffe8e70a0b98037327bf5",
+      "public/immersive-worlds/cosmic/preview/assets/cosmic-harness-Co9CAj80.mjs": "517bed7bab4db780f04be12fe36eae6ac2fa27be199a2f0370774e952213efdf",
+      "public/immersive-worlds/cosmic/preview/assets/cosmic-harness-DUe0OSBb.mjs": "ac6c4c31ed46a45d2b7c4bbe2d56ddd670f7e49f87fa5657ced7b6eee68d6fbb",
+      "public/immersive-worlds/cosmic/preview/assets/index-DsyaSv16.css": "97b12db52b5bcbb0f2d3099a052542f2359e23d63241617b295a5cd02c389f2e",
+      "public/immersive-worlds/cosmic/preview/index.html": "6d2ad2768f4fdc0e5c057d18be5972abcd55599c7323c823f0fef4d41683e728"
+    }
+  },
+  "checks": [
+    "auto: actual GPU restores previous cube target, face3 and mip1, with complete framebuffer",
+    "auto/desktop: RGBA16F reflection complete, world shadow error0, full-quality actual 3D",
+    "auto/portrait: RGBA16F reflection complete, world shadow error0, full-quality actual 3D",
+    "auto/landscape: RGBA16F reflection complete, world shadow error0, full-quality actual 3D",
+    "byte: actual GPU restores previous cube target, face3 and mip1, with complete framebuffer",
+    "byte/desktop: RGBA8 reflection complete, world shadow error0, full-quality actual 3D",
+    "byte/portrait: RGBA8 reflection complete, world shadow error0, full-quality actual 3D"
+  ],
+  "captures": [
+    {
+      "file": "components/immersiveWorlds/cosmic/validation/evidence/hdr-upgrade/compatibility/cosmic-auto-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "05a1ea6bd753c1dc0943354e7cb60133422c202bbefa45e534d2442c0211e288",
+      "diagnostics": {
+        "reflection": {
+          "mode": "auto",
+          "support": {
+            "float": true,
+            "halfFloat": true
+          },
+          "reason": "supported-half-float",
+          "format": "RGBA16F",
+          "type": 1016,
+          "width": 1024,
+          "height": 1024,
+          "framebufferComplete": true,
+          "framebufferStatus": 36053,
+          "componentType": 5126,
+          "attempts": [
+            {
+              "format": "RGBA16F",
+              "status": 36053,
+              "complete": true,
+              "componentType": 5126
+            }
+          ]
+        },
+        "shadow": {
+          "planetWorldCenter": [
+            19,
+            24,
+            -78
+          ],
+          "uniformWorldCenter": [
+            19,
+            24,
+            -78
+          ],
+          "centerError": 0
+        },
+        "quality": {
+          "quality": 1,
+          "slowFor": 0,
+          "fastFor": 0,
+          "reflectionSize": 1024
+        },
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 6
+        }
+      },
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":6}",
+        "frame": "2",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "400",
+        "triangles": "1544802",
+        "ringShadowError": "0",
+        "reflectionFormat": "RGBA16F",
+        "reflectionComplete": "true",
+        "reflectionSize": "1024",
+        "quality": "1"
+      }
+    },
+    {
+      "file": "components/immersiveWorlds/cosmic/validation/evidence/hdr-upgrade/compatibility/cosmic-auto-portrait.png",
+      "width": 344,
+      "height": 882,
+      "sha256": "a31d6376dbf9d529513c396c5fbde7b7f9f364a29e22476b0b4cb76d648fc5e0",
+      "diagnostics": {
+        "reflection": {
+          "mode": "auto",
+          "support": {
+            "float": true,
+            "halfFloat": true
+          },
+          "reason": "supported-half-float",
+          "format": "RGBA16F",
+          "type": 1016,
+          "width": 1024,
+          "height": 1024,
+          "framebufferComplete": true,
+          "framebufferStatus": 36053,
+          "componentType": 5126,
+          "attempts": [
+            {
+              "format": "RGBA16F",
+              "status": 36053,
+              "complete": true,
+              "componentType": 5126
+            }
+          ]
+        },
+        "shadow": {
+          "planetWorldCenter": [
+            4.728723435760022,
+            24,
+            -80.14136993256413
+          ],
+          "uniformWorldCenter": [
+            4.728723435760022,
+            24,
+            -80.14136993256413
+          ],
+          "centerError": 0
+        },
+        "quality": {
+          "quality": 1,
+          "slowFor": 0,
+          "fastFor": 0,
+          "reflectionSize": 1024
+        },
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 5
+        }
+      },
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":5}",
+        "frame": "3",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "368",
+        "triangles": "1440748",
+        "ringShadowError": "0",
+        "reflectionFormat": "RGBA16F",
+        "reflectionComplete": "true",
+        "reflectionSize": "1024",
+        "quality": "1"
+      }
+    },
+    {
+      "file": "components/immersiveWorlds/cosmic/validation/evidence/hdr-upgrade/compatibility/cosmic-auto-landscape.png",
+      "width": 882,
+      "height": 344,
+      "sha256": "079ed9ced638eb58cab175f70367d7c9f5db825c48eba1947987aa65d1dc7805",
+      "diagnostics": {
+        "reflection": {
+          "mode": "auto",
+          "support": {
+            "float": true,
+            "halfFloat": true
+          },
+          "reason": "supported-half-float",
+          "format": "RGBA16F",
+          "type": 1016,
+          "width": 1024,
+          "height": 1024,
+          "framebufferComplete": true,
+          "framebufferStatus": 36053,
+          "componentType": 5126,
+          "attempts": [
+            {
+              "format": "RGBA16F",
+              "status": 36053,
+              "complete": true,
+              "componentType": 5126
+            }
+          ]
+        },
+        "shadow": {
+          "planetWorldCenter": [
+            19,
+            24,
+            -78
+          ],
+          "uniformWorldCenter": [
+            19,
+            24,
+            -78
+          ],
+          "centerError": 0
+        },
+        "quality": {
+          "quality": 1,
+          "slowFor": 0,
+          "fastFor": 0,
+          "reflectionSize": 1024
+        },
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 5
+        }
+      },
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":5}",
+        "frame": "4",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "403",
+        "triangles": "1554280",
+        "ringShadowError": "0",
+        "reflectionFormat": "RGBA16F",
+        "reflectionComplete": "true",
+        "reflectionSize": "1024",
+        "quality": "1"
+      }
+    },
+    {
+      "file": "components/immersiveWorlds/cosmic/validation/evidence/hdr-upgrade/compatibility/cosmic-byte-desktop.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "69a5f2b7ac441c6b5de4cf5e594ae34cc2c6e0f2c621791fa8e32f3acdec2d8e",
+      "diagnostics": {
+        "reflection": {
+          "mode": "byte",
+          "support": {
+            "float": true,
+            "halfFloat": true
+          },
+          "reason": "forced-byte-validation",
+          "format": "RGBA8",
+          "type": 1009,
+          "width": 1024,
+          "height": 1024,
+          "framebufferComplete": true,
+          "framebufferStatus": 36053,
+          "componentType": 35863,
+          "attempts": [
+            {
+              "format": "RGBA8",
+              "status": 36053,
+              "complete": true,
+              "componentType": 35863
+            }
+          ]
+        },
+        "shadow": {
+          "planetWorldCenter": [
+            19,
+            24,
+            -78
+          ],
+          "uniformWorldCenter": [
+            19,
+            24,
+            -78
+          ],
+          "centerError": 0
+        },
+        "quality": {
+          "quality": 1,
+          "slowFor": 0,
+          "fastFor": 0,
+          "reflectionSize": 1024
+        },
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 6
+        }
+      },
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":6}",
+        "frame": "2",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "400",
+        "triangles": "1544802",
+        "ringShadowError": "0",
+        "reflectionFormat": "RGBA8",
+        "reflectionComplete": "true",
+        "reflectionSize": "1024",
+        "quality": "1"
+      }
+    },
+    {
+      "file": "components/immersiveWorlds/cosmic/validation/evidence/hdr-upgrade/compatibility/cosmic-byte-portrait.png",
+      "width": 344,
+      "height": 882,
+      "sha256": "3ea326c24aea7b31cfb47d6917437b1a5ed2469697a5e5c2bbe3e7b5aec93ab0",
+      "diagnostics": {
+        "reflection": {
+          "mode": "byte",
+          "support": {
+            "float": true,
+            "halfFloat": true
+          },
+          "reason": "forced-byte-validation",
+          "format": "RGBA8",
+          "type": 1009,
+          "width": 1024,
+          "height": 1024,
+          "framebufferComplete": true,
+          "framebufferStatus": 36053,
+          "componentType": 35863,
+          "attempts": [
+            {
+              "format": "RGBA8",
+              "status": 36053,
+              "complete": true,
+              "componentType": 35863
+            }
+          ]
+        },
+        "shadow": {
+          "planetWorldCenter": [
+            4.728723435760022,
+            24,
+            -80.14136993256413
+          ],
+          "uniformWorldCenter": [
+            4.728723435760022,
+            24,
+            -80.14136993256413
+          ],
+          "centerError": 0
+        },
+        "quality": {
+          "quality": 1,
+          "slowFor": 0,
+          "fastFor": 0,
+          "reflectionSize": 1024
+        },
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 5
+        }
+      },
+      "stats": {
+        "engine": "three.js r186",
+        "renderer": "three-webgl2",
+        "dpr": "1.000",
+        "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":5}",
+        "frame": "3",
+        "time": "0.0000",
+        "yaw": "0.00000",
+        "pitch": "0.00000",
+        "pulses": "0",
+        "drawCalls": "368",
+        "triangles": "1440748",
+        "ringShadowError": "0",
+        "reflectionFormat": "RGBA8",
+        "reflectionComplete": "true",
+        "reflectionSize": "1024",
+        "quality": "1"
+      }
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Actual GPU API calls use ANGLE SwiftShader; native mobile GPU performance and half-float-only hardware are not verified.",
+    "Byte is explicitly requested before allocation on real supporting hardware, not an extension-masking monkeypatch. Absent-extension and failed-half cases are unit-tested renderer doubles.",
+    "Captures use the current source harness through Vite, DPR1, full quality and time0; they are genuine rendered 3D stills of the HDR upgrade."
+  ],
+  "autoFramebufferProbe": {
+    "beforeStatus": 36053,
+    "afterStatus": 36053,
+    "stateRestored": true,
+    "bindingRestored": true,
+    "inspected": {
+      "status": 36053,
+      "complete": true,
+      "componentType": 35863
+    },
+    "reflection": {
+      "mode": "byte",
+      "support": {
+        "float": true,
+        "halfFloat": true
+      },
+      "reason": "forced-byte-validation",
+      "format": "RGBA8",
+      "type": 1009,
+      "width": 16,
+      "height": 16,
+      "framebufferComplete": true,
+      "framebufferStatus": 36053,
+      "componentType": 35863,
+      "attempts": [
+        {
+          "format": "RGBA8",
+          "status": 36053,
+          "complete": true,
+          "componentType": 35863
+        }
+      ]
+    },
+    "error": 0
+  },
+  "byteFramebufferProbe": {
+    "beforeStatus": 36053,
+    "afterStatus": 36053,
+    "stateRestored": true,
+    "bindingRestored": true,
+    "inspected": {
+      "status": 36053,
+      "complete": true,
+      "componentType": 35863
+    },
+    "reflection": {
+      "mode": "byte",
+      "support": {
+        "float": true,
+        "halfFloat": true
+      },
+      "reason": "forced-byte-validation",
+      "format": "RGBA8",
+      "type": 1009,
+      "width": 16,
+      "height": 16,
+      "framebufferComplete": true,
+      "framebufferStatus": 36053,
+      "componentType": 35863,
+      "attempts": [
+        {
+          "format": "RGBA8",
+          "status": 36053,
+          "complete": true,
+          "componentType": 35863
+        }
+      ]
+    },
+    "error": 0
+  },
+  "status": "passed"
+}

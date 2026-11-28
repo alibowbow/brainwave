@@ -124,7 +124,15 @@ for animated frames, `COSMIC_QA_PORT`, default 4318). `verify-correction.mjs`
 now renders the current source harness and records **fresh** compatibility
 captures and hashes under `validation/evidence/hdr-upgrade/compatibility`;
 the 2026-10-04 correction folder and its hashes are historical and are not
-rewritten. The published preview under `public/immersive-worlds/cosmic/preview`
+rewritten. With the pipeline active, the fresh run passed automatic RGBA16F
+(desktop, portrait, landscape) and forced RGBA8 (desktop, portrait)
+reflections plus the GPU state-restoration probe, with zero ring-shadow centre
+error. `run-local.mjs` takes `COSMIC_PORT`, and `verify-cosmic.mjs` takes
+`SCENE_TIMEOUT_MS` for heavily loaded software-GL machines. On the heavily
+loaded upgrade machine the behaviour suite was stopped after its first four
+checks (renders and advances, pause freezes, resume keeps the canvas, holder
+move keeps the renderer), because each animated SwiftShader frame took tens of
+seconds; the remaining lifecycle checks were not re-run for this upgrade. The published preview under `public/immersive-worlds/cosmic/preview`
 was not rebuilt by this upgrade and still shows the previous renderer.
 
 ## Original rendering (historical, superseded by the HDR upgrade)

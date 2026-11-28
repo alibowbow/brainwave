@@ -43,7 +43,7 @@ diffuseColor.rgb *= mix(lfBase, vec3(0.15, 0.21, 0.055), lfVeins * 0.7) * (1.0 -
 
 export function createForestMaterials(): ForestMaterials {
   // Wet near leaves: a waxy cuticle under a thin film of water (clearcoat).
-  const leaf = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.55, metalness: 0, specularIntensity: 0.5, clearcoat: 0.2, clearcoatRoughness: 0.22, side: THREE.DoubleSide });
+  const leaf = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.55, metalness: 0, specularIntensity: 0.5, clearcoat: 0.2, clearcoatRoughness: 0.3, side: THREE.DoubleSide });
   patchSurface(leaf, {
     key: 'forest-near-leaf-blade',
     color: LEAF_BLADE,
@@ -60,7 +60,7 @@ export function createForestMaterials(): ForestMaterials {
 /** Near-only material detail: the same procedural blade, a little wetter, and analytic dew. */
 export function createForegroundMaterials<T extends ForestMaterials>(materials: T): T {
   const leaf = materials.leaf.clone();
-  leaf.clearcoat = .26; leaf.clearcoatRoughness = .18;
+  leaf.clearcoat = .26; leaf.clearcoatRoughness = .28;
   // clone() does not preserve shader callbacks. Retain the engine's thin-leaf
   // lighting and group motion; dew must never gain a separate vertex wind.
   leaf.onBeforeCompile = materials.leaf.onBeforeCompile;
@@ -80,9 +80,12 @@ export function createForegroundMaterials<T extends ForestMaterials>(materials: 
       float dewSpecular = max(max(totalSpecular.r, totalSpecular.g), totalSpecular.b);
       diffuseColor.a = .075 + .38 * dewFresnel + clamp(dewSpecular * .65, 0., .48);
       outgoingLight = diffuseColor.rgb * .055 + totalSpecular / max(diffuseColor.a, .075);
+      // A sun glint on a 1 cm cap is a sparkle, not a lamp: cap its HDR radiance
+      // so bloom keeps it a point of light instead of a glare.
+      outgoingLight = min(outgoingLight, vec3(14.0));
       #include <opaque_fragment>`);
   };
-  dew.customProgramCacheKey = () => 'forest-foreground-dew-fresnel-v1';
+  dew.customProgramCacheKey = () => 'forest-foreground-dew-fresnel-v2';
   return { ...materials, leaf, dew } as T;
 }
 

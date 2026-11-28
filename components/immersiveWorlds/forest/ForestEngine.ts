@@ -285,7 +285,7 @@ export class ForestEngine implements LiveSceneEngine {
     // Large, physically near leaves frame the sitting place without blocking
     // the pool. Wet foreground leaves and droplets move together at the stem.
     const materials = createForestMaterials();
-    applyForestSurface(materials.leaf, light, { key: 'forest-wet-leaf', translucency: 0.9 });
+    applyForestSurface(materials.leaf, light, { key: 'forest-wet-leaf', translucency: 0.9, maxRadiance: 6 });
     applyForestSurface(materials.twig, light, { key: 'forest-near-stem', translucency: 0.3 });
     const foregroundMaterials = createForegroundMaterials(materials);
     // Dew: tiny, very smooth caps; the HDR sun makes their highlight sparkle.

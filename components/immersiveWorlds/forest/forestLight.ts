@@ -219,6 +219,8 @@ export interface ForestSurfaceOptions {
   alphaMipBoost?: number;
   /** Extra GLSL run after the forest varyings are set (world position in vForestWorld). */
   fragmentColor?: string;
+  /** Upper bound on outgoing radiance: a sun glint on a wet leaf stays a highlight, not a glare. */
+  maxRadiance?: number;
 }
 
 const lightsChunk = () => {
@@ -320,6 +322,10 @@ nonPerturbedNormal = normal;`);
   totalEmissiveRadiance += uForestSunRadiance * forestTissue * (forestForward * 1.5 + 0.12 * forestFacing + 0.06)
     * forestCanopyLight(vForestWorld) * ${o.translucency.toFixed(3)}${o.crown ? ' * vForestOcclusion' : ''};
 }`);
+    }
+    if (o.maxRadiance) {
+      shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', `outgoingLight = min(outgoingLight, vec3(${o.maxRadiance.toFixed(2)}));
+#include <opaque_fragment>`);
     }
     if (o.underwater) {
       shader.fragmentShader = shader.fragmentShader.replace('#include <lights_fragment_end>', `#include <lights_fragment_end>

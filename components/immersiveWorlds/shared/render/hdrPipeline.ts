@@ -99,7 +99,12 @@ void main() {
   vec3 n = normalize(cross(dx, dy));
   float pixels = min(uRadius * uProjection[1][1] * 0.5 * uResolution.y / -p.z, 90.0);
   if (pixels < 1.0) { gl_FragColor = vec4(1.0); return; }
-  float angle = bwIgn(gl_FragCoord.xy) * 6.2831853;
+  // 4x4 ordered rotations: the 4x4 blur below sees each of the 16 exactly once,
+  // so the sampling pattern cancels instead of leaving row or diagonal stripes.
+  vec2 cell = mod(floor(gl_FragCoord.xy), 4.0);
+  vec2 fine = mod(cell, 2.0), coarse = floor(cell * 0.5);
+  float bayer = 4.0 * mod(fine.x * 2.0 + fine.y * 3.0, 4.0) + mod(coarse.x * 2.0 + coarse.y * 3.0, 4.0);
+  float angle = (bayer + 0.5) * (6.2831853 / 16.0);
   float r2 = uRadius * uRadius;
   float sum = 0.0;
   for (int i = 0; i < SAMPLES; i++) {
@@ -123,10 +128,20 @@ uniform vec2 uTexel;
 varying vec2 vUv;
 void main() {
   float zc = bwViewPosition(vUv).z;
+  // Compare neighbours with the centre plane, not the centre depth: surfaces seen
+  // at a grazing angle change depth quickly between rows and would otherwise keep
+  // only their horizontal neighbours, leaving horizontal stripes.
+  float zr = bwViewPosition(vUv + vec2(uTexel.x, 0.0)).z, zl = bwViewPosition(vUv - vec2(uTexel.x, 0.0)).z;
+  float zu = bwViewPosition(vUv + vec2(0.0, uTexel.y)).z, zd = bwViewPosition(vUv - vec2(0.0, uTexel.y)).z;
+  float gx = abs(zr - zc) < abs(zc - zl) ? zr - zc : zc - zl;
+  float gy = abs(zu - zc) < abs(zc - zd) ? zu - zc : zc - zd;
+  float tolerance = 0.03 * abs(zc) + 1e-3;
   float sum = 0.0, weight = 0.0;
   for (int x = -2; x < 2; x++) for (int y = -2; y < 2; y++) {
-    vec2 uv = vUv + (vec2(float(x), float(y)) + 0.5) * uTexel;
-    float w = exp(-abs(bwViewPosition(uv).z - zc) / (0.04 * abs(zc) + 1e-3));
+    vec2 offset = vec2(float(x), float(y));
+    vec2 uv = vUv + offset * uTexel;
+    float expected = zc + gx * offset.x + gy * offset.y;
+    float w = exp(-abs(bwViewPosition(uv).z - expected) / tolerance);
     sum += texture2D(tAo, uv).r * w; weight += w;
   }
   float ao = sum / max(weight, 1e-4);

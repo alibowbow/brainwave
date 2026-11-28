@@ -3,7 +3,9 @@
 //   NIGHT_QA_OUTPUT=/tmp/night/after node components/immersiveWorlds/nightFires/qa/capture-quality.mjs
 // NIGHT_QA_ACTIVE=<frames> runs the animation and captures after that many
 // frames (the fire must move); NIGHT_QA_QUERY=post=off captures the direct
-// renderer; NIGHT_QA_WORLDS / NIGHT_QA_VIEWPORTS narrow the run; NIGHT_QA_PORT
+// renderer, NIGHT_QA_QUERY=t=<seconds> starts the clock later (compare moments
+// seconds apart without rendering every frame on SwiftShader);
+// NIGHT_QA_WORLDS / NIGHT_QA_VIEWPORTS narrow the run; NIGHT_QA_PORT
 // overrides the preview port (default 4312). Any page or shader error fails the
 // run. SwiftShader output grades appearance only, never device speed.
 import { build, preview } from 'vite';

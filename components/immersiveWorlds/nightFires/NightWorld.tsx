@@ -6,7 +6,7 @@ import type { NightWorldId, NightWorldProps, NightInteractionKind } from './worl
 import './night-world.css';
 
 const labels = {
-  mountain: { title: '모닥불 밤', description: '산속 공터에서 작은 모닥불과 겹겹의 능선, 별을 바라봅니다.' },
+  mountain: { title: '모닥불 밤', description: '바다가 보이는 언덕의 모닥불 곁에서 보랏빛 노을과 첫 별, 잔잔히 밀려오는 물결을 바라봅니다.' },
   deep: { title: '깊은 밤', description: '언덕 위 나무 벤치에서 고요한 산과 멀리 켜진 집의 불빛을 바라봅니다.' },
   lakeside: { title: '모닥불 캠핑', description: '보랏빛 호숫가, 텐트와 작은 모닥불 곁에 앉아 쉽니다.' },
 };

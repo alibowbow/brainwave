@@ -4,7 +4,7 @@ Exclusive worker roots: `components/immersiveWorlds/nightFires/` and `public/imm
 
 | Canonical ID | Default component entry | Independent spatial setting |
 | --- | --- | --- |
-| `amb:campfire_night` | `MountainCampfireWorld.tsx` | Open mountain clearing, rooted pines, near rock/needle detail, small fire and broad stars; no camping equipment or water. |
+| `amb:campfire_night` | `MountainCampfireWorld.tsx` (world id `mountain`) | Composed after the card poster: a teepee fire in a ring of rounded stones on a low bank above a sea inlet at nightfall; a weathered deck with a canvas chair, stacked firewood, a crate, a hurricane lantern and an enamel mug among lavender; pines on the left, spruce on the right, hazy hills, pink-lit cloud, the first stars and moving water lapping a pebble shore. |
 | `amb:deep_night` | `DeepNightWorld.tsx` | Seated worn bench on a stone overlook, grass, lantern, mountain basin and sparse house lights; no fire or lake. |
 | `nature:campfire` | `LakesideCampWorld.tsx` | Violet lake, tensioned canvas tent, chair, table/enamel cup, lantern and low campfire. |
 

@@ -69,6 +69,38 @@ Everything remains procedural code: world-space timber/bark/ground/wet-surface s
 - **Tent.** The lantern's shadow is now softer, a dim warm bounce fills the far wall, and the interior probe is captured from a neutral-coloured bag. Together these remove the green band the teal bag used to leave on the canvas.
 - **Storm.** A lower layer of heaped cloud is lit from the hidden sun, with dark cores and bellies. The shelterbelt crowns are now clusters of ragged lobes instead of smooth blobs, and they cost far fewer triangles: 7 welded lobes of 1,280 triangles per tree instead of 4 of 20,480.
 
+### Porch, storm and tent rework (2026-11, second pass)
+
+- **Rain.** The rain layers now use the new opt-in options of `shared/render/rainStreaks.ts` (existing defaults unchanged):
+  - `variation`: drop sizes spread steeply, so most streaks are faint, slower drizzle and a few are bright, fast drops.
+  - `occlusion`: a streak hides most of what is behind it. A drop shows the sky it refracts, so rain reads against dark foliage and ground and nearly vanishes against bright sky.
+  - `gusts`: far rain gathers into broad bands of heavier and lighter rain that drift with the wind.
+- **Eave runoff.** Runoff uses the new `chain` mode of `createRunoff`. Each stream is a short glassy rope that pinches off into an irregular chain of separate drops. Each drop is smeared only over its own shutter time and gets fainter as it speeds up. Drops thinner than a pixel keep their coverage. On the porch the flow differs from channel to channel: a few pour, most only drip. The storm gutter overflows at a few seams.
+- **Monsoon porch.** The garden is rebuilt as layered planting:
+  - Maples from the shared tree builder. Their crowns are leaf-cluster cards with a water film, in four depth layers that close the view with woodland.
+  - Clipped azalea mounds and a box hedge, each with a dark solid core.
+  - Mondo grass edging the drip trench, the stones and the path, on a darker moss lawn with hummocks and puddles.
+  - A granite stone lantern beside the path, and a densely packed pebble trench.
+  - Drips fall from the two wet rafter ends into the basin, and each drop starts a ring as it lands. The spout's trickle also spatters small rings around itself.
+- **Summer storm.**
+  - **Sky.** A heavy storm deck replaces the wispy overcast (`heavy` sky option, storm only). It has a low, lumpy shelf whose tiered underside is lit from a far clearing, ragged scud, distant towers and slanting rain shafts in the clearing, and dark rolls overhead.
+  - **Trees.** The lollipop shelterbelt is replaced by woodland at several depths: a big field oak, a hedgerow with copses and a gate gap, and taller trees and poplars beyond. All use leaf-cluster cards.
+  - **Field.** Gust fronts roll slowly across the field. The grass and seed heads bend and show paler, glossier blades as each front passes, so the waves read from far away. A farm track with puddled wheel ruts and an old post-and-wire fence lead the eye to the gate. Distant rain veils drift across the field.
+  - **Wind chime.** The hanging ring on its rope is replaced by a brass wind chime that turns slowly. Tapping around it, or on the awning, still raises or lowers the awning.
+  - **No lightning or flashes.**
+- **Rain tent.**
+  - **Fly.** The polka-dot beads are replaced. Beads of uneven sizes gather in clusters and cast soft shadows wider than themselves, with a small focused core just downhill. A few drops slide slowly on meandering paths and leave dark trails, and soaked patches darken the lower walls and seams.
+  - **Wood.** The wood outside is darker and deeper. Cedar foliage hangs in spray cards. Vine-maple saplings and salal mounds form an understory, and a muddy footpath with rain-filled hollows winds away from the door.
+- **Shared and family modules.** Shared changes are additive only: the `rainStreaks` options above and `createRunoff(...).setViewHeight`. New family module `engine/wetFoliage.ts` holds the wet leaf-card material, clipped-shrub cards, hanging spray cards and grass tufts. `engine/atmosphere.ts` gains the `heavy` sky.
+- **QA.** The harness accepts `t=<seconds>` to start the scene clock at any moment. `capture-quality.mjs` accepts `RAIN_QA_TIMEOUT` for a busy machine. It also reports `sceneTriangles`: every visible triangle of the scene, counted before frustum culling, which is the steady-state cost of the main pass. The renderer counter for the first frame also includes the one-off shadow-map passes, because shadow maps are rendered once (they are static).
+- **Budget.** The steady-state main pass is about 0.66M triangles for the porch, 0.75M for the storm and 0.39M for the tent. That keeps all three under the 0.9M phone budget.
+- **Added shader cost.**
+  - Leaf cards use a clearcoat film and alpha-to-coverage.
+  - The storm sky evaluates about 35 noise octaves per sky pixel, fewer than the roughly 48 of the sky it replaces.
+  - Gust-band rain layers evaluate two noise octaves per vertex.
+  - Grass waves cost one noise call per vertex and one per terrain fragment.
+  - No full-screen passes were added.
+
 ## QA separation
 
 Everything under `qa/` is a development harness, test script, or evidence; it is not a production asset. The harness builds separately with its own Vite config and imports the same entry sources. Do not add the harness or evidence to app imports/PWA caches. The garden window uses a full-resolution, mipmapped HDR refraction target and two scene passes within the same WebGL context (the refraction pass draws only the garden side of the pane). Reported renderer.info counters are the final pass, not the sum of both passes; physical-device performance remains unmeasured.

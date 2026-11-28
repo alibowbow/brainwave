@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldBuilder } from './types';
 import { GLSL_NOISE } from '../../shared/render/glsl';
 import { fbm3, noise3 } from '../../shared/render/noise';
@@ -7,8 +7,13 @@ import { applyWetSurface } from '../../shared/render/wetSurface';
 import { createRainLayer, createRainSplashes, createRunoff, type RunoffStream } from '../../shared/render/rainStreaks';
 import { assignProbe, captureProbe, captureSkyProbe, createMist, createSky } from './atmosphere';
 import { applyFoliage, applyTimber, TimberSet } from './surfaces';
-import { fernFronds, leafletGeometry } from './geometry';
+import { fernFronds, leafletGeometry, limbGeometry } from './geometry';
 import { createLantern } from './props';
+import { buildTree, concatGeometries } from '../../shared/render/treeGeometry';
+import { applyBarkSurface } from '../../shared/render/barkSurface';
+import { applyFoliageShading, type FoliageWind } from '../../shared/render/foliageShading';
+import { broadleafClusterTexture } from '../../shared/render/foliageTextures';
+import { shrubGeometry, wetLeafMaterial } from './wetFoliage';
 
 /* Independent procedural artwork. No downloaded source, image, model or sound.
  * JEV S090: separate sky, distant water/rain atmosphere and near moving details.
@@ -23,6 +28,69 @@ const seedRandom = (seed: number) => () => {
 };
 
 const DECK_EDGE_Z = -1.88;
+/** A farm track crosses the field from the near left and curves away to a gate in the hedge. */
+const trackX = (z: number) => { const d = -z; return -4.5 + d * 0.08 + 3.5 * Math.sin(d * 0.035 + 0.3); };
+
+/*
+ * Gust fronts rolling across the field from the left: broad soft bands, about
+ * 14 m apart, travelling at about 2 m/s. Grass bends and flattens as one passes
+ * and shows its paler, glossier blade sides, so the waves read from far away.
+ */
+const GLSL_FIELD_WAVE = /* glsl */ `
+float trackX(float z) { float d = -z; return -4.5 + d * 0.08 + 3.5 * sin(d * 0.035 + 0.3); }
+float stormWave(vec2 p, float t) {
+  float warp = bwNoise(vec3(p * 0.025, t * 0.015)) * 4.0;
+  float front = p.x * 0.45 + p.y * 0.14 - t * 0.9 + warp;
+  float w = 0.5 + 0.5 * sin(front);
+  w *= w * w;
+  return w * smoothstep(-0.35, 0.45, bwNoise(vec3(p * 0.04 + vec2(-t * 0.07, 0.0), 3.0)));
+}
+`;
+
+/**
+ * Distant rain veils: tall soft sheets of falling rain hanging from the deck,
+ * gathered into bands that drift downwind across the field. Lighter than the
+ * dark woods behind them and greyer than the bright clearing, as real veils are.
+ */
+function createRainVeils(time: { value: number }, color: THREE.Color, sheets: { z: number; width: number; height: number; opacity: number; seed: number }[]) {
+  const group = new THREE.Group();
+  const geometry = new THREE.PlaneGeometry(1, 1);
+  geometry.translate(0, 0.5, 0);
+  const materials = sheets.map(sheet => {
+    const material = new THREE.ShaderMaterial({
+      uniforms: { uTime: time, uColor: { value: color }, uOpacity: { value: sheet.opacity }, uSeed: { value: sheet.seed } },
+      vertexShader: 'varying vec2 vUv;\nvarying vec3 vWorld;\nvoid main() { vUv = uv; vec4 w = modelMatrix * vec4(position, 1.0); vWorld = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+      fragmentShader: /* glsl */ `
+${GLSL_NOISE}
+uniform float uTime, uOpacity, uSeed;
+uniform vec3 uColor;
+varying vec2 vUv;
+varying vec3 vWorld;
+void main() {
+  float x = vWorld.x - uTime * 1.7;
+  float band = bwNoise(vec3(x * 0.022, uSeed, uTime * 0.012)) * 0.7 + bwNoise(vec3(x * 0.07, uSeed + 3.0, uTime * 0.025)) * 0.3;
+  band = smoothstep(-0.05, 0.5, band);
+  // Fine streaks falling inside the veil, slanted by the wind.
+  float streak = bwNoise(vec3((vWorld.x - vWorld.y * 0.12) * 1.3, vWorld.y * 0.06 + uTime * 0.8, uSeed)) * 0.5 + 0.5;
+  float top = 1.0 - smoothstep(0.5 + 0.25 * bwNoise(vec3(x * 0.05, uSeed, 1.0)), 1.0, vUv.y);
+  float sides = smoothstep(0.0, 0.18, vUv.x) * (1.0 - smoothstep(0.82, 1.0, vUv.x));
+  float a = band * (0.65 + 0.35 * streak) * top * smoothstep(0.0, 0.05, vUv.y) * sides * uOpacity;
+  if (a < 0.002) discard;
+  gl_FragColor = vec4(uColor * a, a);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`,
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(0, -2, sheet.z); mesh.scale.set(sheet.width, sheet.height, 1);
+    mesh.renderOrder = 4; mesh.frustumCulled = false;
+    group.add(mesh);
+    return material;
+  });
+  return { group, dispose() { geometry.dispose(); materials.forEach(m => m.dispose()); } };
+}
 
 export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   const random = seedRandom(564932);
@@ -32,10 +100,11 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
 
   // ---- Storm sky and light -------------------------------------------------------
   const glowDirection = new THREE.Vector3(0.55, 0.22, -0.8).normalize();
+  // A heavy, low storm deck: dark rolls lit on their flanks from a far clearing.
   const sky = createSky({
-    time, storm: true, zenith: new THREE.Color(0.3, 0.34, 0.4), horizon: new THREE.Color(1.0, 1.05, 1.1),
-    cloudDark: new THREE.Color(0.15, 0.18, 0.21), cloudLight: new THREE.Color(1.35, 1.4, 1.45),
-    glowDirection, glow: new THREE.Color(2.4, 2.0, 1.45), ground: new THREE.Color(0.06, 0.07, 0.05), coverage: 0.78, softness: 0.22, scale: 0.55, drift: 0.022, radius: 380, horizonFade: 0.045, glowPower: 14,
+    time, storm: true, heavy: true, zenith: new THREE.Color(0.22, 0.25, 0.3), horizon: new THREE.Color(1.05, 1.1, 1.15),
+    cloudDark: new THREE.Color(0.11, 0.13, 0.16), cloudLight: new THREE.Color(0.95, 1.0, 1.06),
+    glowDirection, glow: new THREE.Color(2.1, 1.8, 1.35), ground: new THREE.Color(0.06, 0.07, 0.05), coverage: 0.78, softness: 0.22, scale: 0.42, drift: 0.02, radius: 380, horizonFade: 0.045, glowPower: 10,
   });
   scene.add(sky.mesh);
   const key = new THREE.DirectionalLight('#e6e2d4', 1.0);
@@ -82,7 +151,23 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   float sward = bwNoise(vec3(vWetWorld.xz * 3.0, 1.0)) * 0.5 + 0.5;
   float blades = mix(0.5, bwNoise(vec3(vWetWorld.x * 40.0, vWetWorld.z * 9.0, 3.0)) * 0.5 + 0.5, 1.0 - smoothstep(0.01, 0.04, fieldFoot));
   diffuseColor.rgb *= 0.72 + 0.35 * sward + 0.2 * blades;
-}`);
+  fieldWave = stormWave(vWetWorld.xz, uWetTime);
+  diffuseColor.rgb *= 1.0 + 0.8 * fieldWave;
+  // The farm track: bare mud between grass verges, a grassy crown, and two wheel ruts
+  // holding long puddles that mirror the bright clearing.
+  float trackD = abs(vWetWorld.x - trackX(vWetWorld.z) + 0.15 * bwNoise(vec3(vWetWorld.xz * 0.6, 2.0)));
+  float bare = 1.0 - smoothstep(0.95, 1.45, trackD);
+  float crown = 1.0 - smoothstep(0.2, 0.42, trackD);
+  float rutLine = abs(trackD - 0.74) + 0.05 * bwNoise(vec3(vWetWorld.xz * 2.5, 4.0));
+  float rut = 1.0 - smoothstep(0.1, 0.2, rutLine);
+  float pools = smoothstep(0.42, 0.6, bwNoise(vec3(vWetWorld.x * 1.1, 0.0, vWetWorld.z * 0.22)) * 0.5 + 0.5 + 0.12);
+  fieldRut = rut * pools * smoothstep(-2.6, -3.6, vWetWorld.z);
+  vec3 mud = vec3(0.19, 0.145, 0.1) * (0.75 + 0.4 * (bwNoise(vec3(vWetWorld.xz * 3.0, 6.0)) * 0.5 + 0.5));
+  diffuseColor.rgb = mix(diffuseColor.rgb, mud, bare * (1.0 - crown * 0.75) * (1.0 - fieldWave * 0.5));
+  fieldWave *= 1.0 - bare * (1.0 - crown);
+}`).replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor *= 1.0 - 0.3 * fieldWave;')
+      .replace('roughnessFactor = mix(roughnessFactor, 0.025, wetPuddle);', 'wetPuddle = max(wetPuddle, fieldRut);\ndiffuseColor.rgb *= mix(1.0, 0.5, fieldRut);\nroughnessFactor = mix(roughnessFactor, 0.025, wetPuddle);')
+      .replace(/void\s+main\s*\(\s*\)\s*\{/, () => `float fieldWave = 0.0;\nfloat fieldRut = 0.0;\n${GLSL_FIELD_WAVE}\nvoid main() {`);
   })(fieldMaterial.onBeforeCompile);
   const terrain = new THREE.Mesh(terrainGeo, fieldMaterial); terrain.receiveShadow = true; terrain.name = 'storm-field';
   scene.add(terrain);
@@ -134,7 +219,7 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
     return bladeGeo;
   };
   // Full tussocks near the shelter, lighter ones where a blade is a few pixels.
-  const nearBlades = tussockGeometry(14, 5), farBlades = tussockGeometry(7, 3);
+  const nearBlades = tussockGeometry(12, 4), farBlades = tussockGeometry(6, 2);
   const grassMat = applyWetSurface(applyFoliage(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.5, side: THREE.DoubleSide }), {
     key: 'storm-grass', translucency: new THREE.Color(0.35, 0.5, 0.18), strength: 0.6,
   }), { key: 'storm-grass', time, wetness: 0.6, darkening: 0.85, wetRoughness: 0.25 });
@@ -142,14 +227,22 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   grassMat.onBeforeCompile = ((previous) => (shader: THREE.WebGLProgramParametersWithUniforms, renderer: THREE.WebGLRenderer) => {
     previous(shader, renderer);
     shader.uniforms.uGrassTime = grassTime;
-    shader.vertexShader = 'uniform float uGrassTime;\n' + shader.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
+    shader.vertexShader = shader.vertexShader.replace(/void\s+main\s*\(\s*\)\s*\{/, () => `uniform float uGrassTime;\nvarying float vFieldWave;\n${shader.vertexShader.includes('bwPcg3(') ? '' : GLSL_NOISE}\n${GLSL_FIELD_WAVE}\nvoid main() {`)
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
       float bx = instanceMatrix[3].x; float bz = instanceMatrix[3].z;
-      // Gust fronts roll across the field from the left.
-      float gust = 0.6 + 0.4 * sin(uGrassTime * 0.23 - bx * 0.05 + bz * 0.02);
-      transformed.x += sin(uGrassTime * 0.65 + bx * 0.15 + bz * 0.11) * pow(max(position.y, 0.), 2.) * 0.22 * gust;
-      transformed.z += sin(uGrassTime * 0.49 + bz * 0.16) * pow(max(position.y, 0.), 2.) * 0.1 * gust;`);
+      float wave = stormWave(vec2(bx, bz), uGrassTime);
+      vFieldWave = wave;
+      // Bend downwind (world +x) whatever the tussock's own rotation.
+      vec3 downwind = normalize(transpose(mat3(instanceMatrix)) * vec3(1.0, 0.0, 0.3));
+      float tip = pow(max(position.y, 0.), 2.);
+      float flutter = sin(uGrassTime * 0.7 + bx * 0.15 + bz * 0.11) * 0.08 + sin(uGrassTime * 1.3 + bz * 0.4) * 0.03;
+      transformed += downwind * tip * (0.06 + flutter + wave * 0.5);
+      transformed.y -= tip * wave * 0.22;`);
+    shader.fragmentShader = shader.fragmentShader.replace(/void\s+main\s*\(\s*\)\s*\{/, () => 'varying float vFieldWave;\nvoid main() {')
+      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= 1.0 + 0.75 * vFieldWave;')
+      .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor *= 1.0 - 0.35 * vFieldWave;');
   })(grassMat.onBeforeCompile);
-  const NEAR = 1700, FAR = 4400;
+  const NEAR = 1250, FAR = 2800;
   const grass = new THREE.InstancedMesh(nearBlades, grassMat, NEAR), farGrass = new THREE.InstancedMesh(farBlades, grassMat, FAR);
   const dummy = new THREE.Object3D();
   const grassColor = new THREE.Color();
@@ -162,6 +255,9 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
       const radius = Math.pow(grassRandom(), 0.65) * patch.radius;
       x = patch.x + Math.cos(angle) * radius; z = Math.min(-13, patch.z + Math.sin(angle) * radius * 0.73);
     }
+    // Keep the track's ruts clear; the verges grow tall right up to them.
+    const off = x - trackX(z);
+    if (Math.abs(off) < 1.15) x = trackX(z) + Math.sign(off || 1) * (1.15 + grassRandom() * 0.5);
     const scale = 0.6 + grassRandom() * 1.05;
     dummy.position.set(x, height(x, z) + 0.02, z);
     dummy.rotation.set((grassRandom() - 0.5) * 0.12, grassRandom() * Math.PI * 2, (grassRandom() - 0.5) * 0.12);
@@ -177,83 +273,92 @@ export const buildStorm: WorldBuilder = ({ scene, camera }) => {
   const flowerGeo = new THREE.SphereGeometry(0.018, 6, 4); flowerGeo.scale(1, 0.55, 1);
   const flowers = new THREE.InstancedMesh(flowerGeo, applyWetSurface(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 }), { key: 'storm-flower', time, wetness: 0.5, darkening: 0.9, wetRoughness: 0.2 }), 380);
   for (let i = 0; i < 380; i++) {
-    const x = (grassRandom() - 0.5) * 12, z = -2.4 - Math.pow(grassRandom(), 1.2) * 16;
+    let x = (grassRandom() - 0.5) * 12; const z = -2.4 - Math.pow(grassRandom(), 1.2) * 16;
+    if (Math.abs(x - trackX(z)) < 1.2) x += 2.6;
     dummy.position.set(x, height(x, z) + 0.28 + grassRandom() * 0.25, z); dummy.rotation.set(0, 0, 0); dummy.scale.setScalar(0.8 + grassRandom() * 0.7); dummy.updateMatrix();
     flowers.setMatrixAt(i, dummy.matrix);
     flowers.setColorAt(i, grassColor.setHSL(grassRandom() < 0.6 ? 0.13 : 0.75, 0.35 + grassRandom() * 0.3, 0.62 + grassRandom() * 0.15, THREE.SRGBColorSpace));
   }
   scene.add(flowers);
 
-  // Shelterbelt: each tree is a loose cluster of leafy lobes with ragged, see-through
-  // edges, dissolving into the rain (one smooth blob per tree read as a row of bushes).
-  const treeRandom = seedRandom(90123);
-  // Welded, so the lobes shade smoothly at this lower tessellation.
-  const crownSource = new THREE.IcosahedronGeometry(1, 3);
-  crownSource.deleteAttribute('normal'); crownSource.deleteAttribute('uv');
-  const crownGeo = mergeVertices(crownSource);
-  crownSource.dispose();
-  const cp = crownGeo.attributes.position;
-  const crownColors: number[] = [];
-  const point = new THREE.Vector3();
-  for (let i = 0; i < cp.count; i++) {
-    point.fromBufferAttribute(cp, i).normalize();
-    const f = 1 + fbm3(point.x * 2.2, point.y * 2.2, point.z * 2.2, 4) * 0.32 + Math.max(0, noise3(point.x * 5, point.y * 5, point.z * 5)) * 0.12;
-    cp.setXYZ(i, point.x * f, point.y * f * (point.y < -0.3 ? 0.7 : 1), point.z * f);
-    const shade = 0.55 + 0.35 * Math.max(0, point.y) + 0.15 * (f - 1);
-    crownColors.push(shade, shade, shade);
+  // Seed heads standing above the sward: pale stalks that ride the gust waves first.
+  const headGeometry = (() => {
+    const positions: number[] = [], shades: number[] = [], indices: number[] = [];
+    const ring = (y: number, r: number) => { for (let k = 0; k < 4; k++) { const a = k / 4 * Math.PI * 2; positions.push(Math.cos(a) * r, y, Math.sin(a) * r); shades.push(y > 0.7 ? 1 : 0.55, y > 0.7 ? 1 : 0.55, y > 0.7 ? 1 : 0.55); } };
+    ring(0, 0.004); ring(0.72, 0.003); ring(0.78, 0.014); ring(0.92, 0.012); ring(1.0, 0.002);
+    for (let r = 0; r < 4; r++) for (let k = 0; k < 4; k++) {
+      const a = r * 4 + k, b = r * 4 + (k + 1) % 4;
+      indices.push(a, b, a + 4, b, b + 4, a + 4);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(shades, 3));
+    g.setIndex(indices); g.computeVertexNormals(); return g;
+  })();
+  const HEADS = 1600;
+  const heads = new THREE.InstancedMesh(headGeometry, grassMat, HEADS);
+  for (let i = 0; i < HEADS; i++) {
+    const d = Math.pow(grassRandom(), 1.3);
+    let x = (grassRandom() - 0.5) * (5 + d * 22); const z = -2.4 - d * 17;
+    if (Math.abs(x - trackX(z)) < 1.25) x = trackX(z) + (x < trackX(z) ? -1.3 : 1.3) - (grassRandom() - 0.5) * 0.3;
+    const h = 0.62 + grassRandom() * 0.42;
+    dummy.position.set(x, height(x, z), z); dummy.rotation.set((grassRandom() - 0.5) * 0.25, grassRandom() * 6.28, (grassRandom() - 0.5) * 0.25);
+    dummy.scale.set(h, h, h); dummy.updateMatrix(); heads.setMatrixAt(i, dummy.matrix);
+    heads.setColorAt(i, grassColor.setHSL(0.11 + grassRandom() * 0.06, 0.25 + grassRandom() * 0.15, 0.42 + grassRandom() * 0.12, THREE.SRGBColorSpace));
   }
-  crownGeo.setAttribute('color', new THREE.Float32BufferAttribute(crownColors, 3));
-  crownGeo.computeVertexNormals();
-  const crownMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.75 });
-  crownMaterial.onBeforeCompile = shader => {
-    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vCrownWorld;')
-      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvCrownWorld = (modelMatrix * instanceMatrix * vec4(transformed, 1.0)).xyz;');
-    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', `#include <common>\nvarying vec3 vCrownWorld;\n${GLSL_NOISE}`)
-      .replace('#include <color_fragment>', `#include <color_fragment>
-float crownLeaves = bwNoise(vCrownWorld * 1.6) * 0.5 + 0.5;
-diffuseColor.rgb *= 0.65 + 0.55 * crownLeaves;`)
-      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-{
-  // Toward its silhouette a lobe breaks into leaf clumps with sky between them.
-  float facing = abs(dot(normal, normalize(vViewPosition)));
-  float clumps = bwNoise(vCrownWorld * 1.7) * 0.5 + 0.5 + 0.3 * bwNoise(vCrownWorld * 4.3);
-  if (clumps > 0.34 + facing * 1.25) discard;
-  float foot = length(fwidth(vCrownWorld));
-  float h = bwNoise(vCrownWorld * 2.4) + 0.5 * bwNoise(vCrownWorld * 5.1);
-  vec3 pos = -vViewPosition; vec3 dpdx = dFdx(pos), dpdy = dFdy(pos);
-  vec2 dh = vec2(dFdx(h), dFdy(h)) * 0.25 * (1.0 - smoothstep(0.1, 0.5, foot));
-  vec3 r1 = cross(dpdy, normal), r2 = cross(normal, dpdx); float det = dot(dpdx, r1);
-  normal = normalize(abs(det) * normal - sign(det) * (dh.x * r1 + dh.y * r2));
-}`);
-  };
-  crownMaterial.customProgramCacheKey = () => 'storm-crowns-v3';
-  const trees = 96, lobes = 7;
-  const crowns = new THREE.InstancedMesh(crownGeo, crownMaterial, trees * lobes);
-  const trunkGeometry = new THREE.CylinderGeometry(0.08, 0.17, 1, 7);
-  const trunks = new THREE.InstancedMesh(trunkGeometry, new THREE.MeshStandardMaterial({ color: 0x3a3a30, roughness: 0.9 }), trees);
-  for (let t = 0; t < trees; t++) {
-    const distant = t >= 60, index = distant ? t - 60 : t;
-    const x = distant ? -110 + index * 6.4 + treeRandom() * 4 : -95 + index * 3.2 + treeRandom() * 2;
-    const z = distant ? -95 - treeRandom() * 16 : -62 + Math.sin(index * 0.33) * 7 + (treeRandom() - 0.5) * 7;
-    const h = (distant ? 3.2 : 2.6) + treeRandom() * (distant ? 3.4 : 3.2), ground = height(x, z);
-    dummy.position.set(x, ground + h * 0.35, z); dummy.rotation.set(0, treeRandom() * 0.4, (treeRandom() - 0.5) * 0.07);
-    dummy.scale.set(1, h * 0.7, 1); dummy.updateMatrix(); trunks.setMatrixAt(t, dummy.matrix);
-    const breadth = 0.82 + treeRandom() * 0.55, lean = (treeRandom() - 0.5) * 0.36;
-    for (let c = 0; c < lobes; c++) {
-      // A central mass, then lobes around it at uneven heights: some high and narrow,
-      // some low and spreading, so every crown has its own ragged outline.
-      const angle = c * 2.4 + treeRandom() * 1.2, reach = c === 0 ? 0 : 0.2 + treeRandom() * 0.24;
-      const size = c === 0 ? 0.7 : 0.32 + treeRandom() * 0.26;
-      const rise = c === 0 ? 0.78 : 0.48 + treeRandom() * 0.58;
-      dummy.position.set(x + h * (lean * rise + Math.cos(angle) * reach * breadth), ground + h * rise, z + Math.sin(angle) * h * reach * 0.6);
-      dummy.rotation.set(treeRandom() * 0.7, treeRandom() * Math.PI * 2, (treeRandom() - 0.5) * 0.7);
-      dummy.scale.set(h * 0.39 * breadth * size, h * (0.36 + treeRandom() * 0.16) * size, h * (0.34 + treeRandom() * 0.11) * size);
-      dummy.updateMatrix(); crowns.setMatrixAt(t * lobes + c, dummy.matrix);
-      grassColor.setHSL(0.24 + treeRandom() * 0.04, distant ? 0.18 : 0.28, (distant ? 0.2 : 0.17) + treeRandom() * 0.06, THREE.SRGBColorSpace);
-      crowns.setColorAt(t * lobes + c, grassColor);
+  heads.frustumCulled = false; heads.receiveShadow = true; heads.name = 'storm-seed-heads'; scene.add(heads);
+
+  // Field-edge woodland at several depths: a big field oak in the middle distance,
+  // a hedgerow with copses along the far side of the field and taller trees and
+  // poplars beyond. Crowns are leaf-cluster cards that sway together in the gusts.
+  const treeRandom = seedRandom(90123);
+  const tr = (a: number, b: number) => a + treeRandom() * (b - a);
+  const beltWind: FoliageWind = { time, mode: 'attribute', sway: 0.22, flutter: 0.02, direction: [1, 0.25], speed: 0.55 };
+  const beltAtlas = broadleafClusterTexture({ seed: 19, palette: { base: '#33502a', light: '#52713a', dark: '#1a2d16', stem: '#33302a' }, round: 0.35, leafScale: 0.9, density: 1.5 });
+  const beltLeaves = wetLeafMaterial({ key: 'storm-belt', map: beltAtlas, wind: beltWind, roughness: 0.5, film: 0.35, translucency: { tint: '#b9d68c', back: 0.25, forward: 0.3 } });
+  const beltBark = applyFoliageShading(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.88 }), {
+    key: 'storm-bark', scale: 2, stretch: 4, depth: 0.0, plate: '#4c4842', fissure: '#16130f', wetness: 0.8,
+  }), { key: 'storm-bark', wind: beltWind });
+  disposables.push(beltAtlas);
+  type Spot = { x: number; z: number; h: number; r: number; form: 'broadleaf' | 'column'; card: number; cards: number };
+  const spots: Spot[] = [
+    // The lone field oak and a younger one, the nearest depth cues.
+    { x: -15, z: -34, h: 11, r: 0.45, form: 'broadleaf', card: 1.7, cards: 14 },
+    { x: 19, z: -42, h: 8, r: 0.3, form: 'broadleaf', card: 1.7, cards: 13 },
+  ];
+  // Hedgerow along a curving field boundary, trees gathered in copses with gaps between.
+  const hedgeLine = (x: number) => -52 + Math.sin(x * 0.045) * 6 + x * 0.06;
+  for (const [cx, n] of [[-46, 4], [-30, 3], [-9, 5], [7, 2], [27, 4], [44, 3]] as [number, number][]) {
+    for (let i = 0; i < n; i++) {
+      const x = cx + tr(-6, 6), column = treeRandom() < 0.2;
+      spots.push({ x, z: hedgeLine(x) + tr(-2.5, 2.5), h: column ? tr(9, 13) : tr(6, 10.5), r: tr(0.22, 0.36), form: column ? 'column' : 'broadleaf', card: 2.1, cards: 12 });
     }
   }
-  crowns.name = 'layered-shelterbelt-crowns'; crowns.castShadow = true; scene.add(crowns, trunks);
+  // Far woodland edge and poplar rows, fading into the rain.
+  for (let i = 0; i < 34; i++) {
+    const x = -120 + i * 7.2 + tr(-2.5, 2.5), column = i % 5 === 2 || i % 7 === 0;
+    spots.push({ x, z: -92 - tr(0, 18) + Math.sin(i * 0.7) * 5, h: column ? tr(13, 18) : tr(8, 14), r: tr(0.3, 0.45), form: column ? 'column' : 'broadleaf', card: 3.0, cards: 10 });
+  }
+  const treeBuilds = spots.map((spot, i) => buildTree({
+    seed: 700 + i * 17, base: new THREE.Vector3(spot.x, height(spot.x, spot.z) - 0.1, spot.z), height: spot.h, radius: spot.r, form: spot.form,
+    lean: [tr(-0.5, 0.8), tr(-0.3, 0.3)], gnarl: 0.45, flare: 0.4, crownStart: spot.form === 'column' ? 0.18 : 0.3 + tr(0, 0.1),
+    limbs: i < 2 ? 7 : 5, levels: i < 2 ? 2 : 1, children: 3, spread: spot.form === 'column' ? 0.14 : 0.45, curl: spot.form === 'column' ? 0.5 : 0.1,
+    radial: i < 2 ? 10 : 6, ringsPerMetre: i < 2 ? 1 : 0.4, displace: 0, barkScale: 2, barkStretch: 4, flex: 0.5,
+    leaves: { cardsPerTwig: spot.cards, size: spot.card, reach: 0.85, crownNormals: 0.78, shade: [0.25, 1], fill: 0.8, skyward: 0.35 },
+  }));
+  // Clipped and wild hedge between the copses.
+  const hedgeParts: THREE.BufferGeometry[] = [];
+  for (let x = -62; x <= 62; x += tr(2.6, 3.6)) {
+    const z = hedgeLine(x) + tr(-0.8, 0.8), s = tr(1.2, 1.9);
+    if (Math.abs(x - trackX(z)) < 2.6) continue; // the gate
+    hedgeParts.push(shrubGeometry(900 + Math.round(x * 3), new THREE.Vector3(x, height(x, z) + s * 0.45, z), new THREE.Vector3(s * 1.5, s * 0.75, s), 70, 1.3));
+  }
+  const crowns = new THREE.Mesh(concatGeometries([...treeBuilds.map(t => t.leaves).filter((g): g is THREE.BufferGeometry => !!g), ...hedgeParts]), beltLeaves);
+  crowns.name = 'layered-shelterbelt-crowns'; crowns.castShadow = true; scene.add(crowns);
+  const trunks = new THREE.Mesh(concatGeometries(treeBuilds.map(t => t.bark)), beltBark);
+  trunks.name = 'storm-woodland-trunks'; scene.add(trunks);
+  treeBuilds.forEach(t => { t.bark.dispose(); t.leaves?.dispose(); });
+  hedgeParts.forEach(g => g.dispose());
 
   // ---- The pavilion: deck, posts, roof frame ------------------------------------------
   const deckWood = applyWetSurface(applyTimber(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.72 }), {
@@ -286,6 +391,32 @@ diffuseColor.rgb *= 0.65 + 0.55 * crownLeaves;`)
   const frameMesh = frame.build(frameWood, 'storm-frame');
   const stoolMesh = stool.build(frameWood, 'storm-stool');
   scene.add(deckMesh, frameMesh, stoolMesh);
+
+  // An old post-and-wire fence follows the track out to the gate: leaning, weathered
+  // posts and two sagging strands, the clearest measure of the field's depth.
+  const fence = new TimberSet(61);
+  const wireParts: THREE.BufferGeometry[] = [];
+  const postTops: THREE.Vector3[] = [];
+  for (let z = -4.2, k = 0; z > -51; z -= 2.5 + random() * 0.5, k++) {
+    if (k === 6 || k === 13) continue; // a missing post or two
+    const x = trackX(z) - 2.1 + (random() - 0.5) * 0.2, h = 1.15 + random() * 0.15, ground = height(x, z);
+    const lean = new THREE.Euler((random() - 0.5) * 0.08, random() * 0.6, (random() - 0.5) * 0.1);
+    fence.box(0.085 + random() * 0.03, h + 0.3, 0.09, { x, y: ground + (h - 0.3) / 2, z }, lean, { radius: 0.012, grain: 'y' });
+    postTops.push(new THREE.Vector3(x, ground, z).add(new THREE.Vector3(Math.sin(lean.z) * -h, 0, Math.sin(lean.x) * h)).setY(ground + h));
+  }
+  const fenceMesh = fence.build(frameWood, 'storm-fence');
+  fenceMesh.castShadow = true; fenceMesh.receiveShadow = true; scene.add(fenceMesh);
+  for (const strand of [0.42, 0.78]) {
+    for (let i = 0; i + 1 < postTops.length; i++) {
+      const a = postTops[i], b = postTops[i + 1];
+      const ya = a.y - (1.15 - strand), yb = b.y - (1.15 - strand);
+      const mid = new THREE.Vector3((a.x + b.x) / 2, (ya + yb) / 2 - 0.05, (a.z + b.z) / 2);
+      wireParts.push(limbGeometry([new THREE.Vector3(a.x, ya, a.z), mid, new THREE.Vector3(b.x, yb, b.z)], 0.004, 0.004, 3, 4));
+    }
+  }
+  const wires = new THREE.Mesh(mergeGeometries(wireParts)!, new THREE.MeshStandardMaterial({ color: '#3a3734', metalness: 0.6, roughness: 0.4 }));
+  wires.name = 'storm-fence-wire'; scene.add(wires);
+  wireParts.forEach(g => g.dispose());
 
   // Corrugated roof sheets with formed cross-sections, weathered and wet.
   const roofMat = new THREE.MeshStandardMaterial({ color: 0x737d78, metalness: 0.55, roughness: 0.5, side: THREE.DoubleSide });
@@ -334,10 +465,31 @@ totalEmissiveRadiance += vec3(1.5, 1.6, 1.65) * diffuseColor.rgb * (0.11 + 0.05 
   railSet.box(5.74, 0.055, 0.06, { x: 0, y: 0, z: 0 }, undefined, { radius: 0.01 });
   const lowerRail = railSet.build(frameWood, 'storm-awning-rail'); lowerRail.position.set(0, 2.6, -1.32); scene.add(lowerRail);
   const roll = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 5.72, 28), canvasMat); roll.rotation.z = Math.PI / 2; roll.position.set(0, 3.03, -1.32); scene.add(roll);
-  const ropeMat = new THREE.MeshStandardMaterial({ color: 0xa69778, roughness: 1 });
-  const rope = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 1.4, 8), ropeMat); rope.position.set(0.84, 2.34, -1.24); scene.add(rope);
-  const ropeLoop = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 8, 28), ropeMat); ropeLoop.scale.y = 1.75; ropeLoop.position.set(0.84, 1.58, -1.24); scene.add(ropeLoop);
-  const target = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.8, 0.4), new THREE.MeshBasicMaterial({ visible: false })); target.position.set(0.84, 2.15, -1.24); scene.add(target);
+  // A brass wind chime hangs from the beam: five tuned tubes around a wooden striker and sail.
+  const chime = new THREE.Group(); chime.position.set(0.58, 3.06, -1.16); scene.add(chime);
+  const cordMat = new THREE.MeshStandardMaterial({ color: 0x8c7c62, roughness: 1 });
+  const brass = new THREE.MeshStandardMaterial({ color: '#a9884e', metalness: 0.9, roughness: 0.28 });
+  const chimeWood = new THREE.MeshStandardMaterial({ color: '#5b3f26', roughness: 0.62 });
+  const cord = (length: number, x: number, y: number, z: number) => {
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.0016, 0.0016, length, 4), cordMat); mesh.position.set(x, y - length / 2, z); return mesh;
+  };
+  chime.add(cord(0.34, 0, 0, 0));
+  const chimeTop = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.074, 0.02, 24), chimeWood); chimeTop.position.y = -0.35; chime.add(chimeTop);
+  const chimeTubes: THREE.Group[] = [];
+  [0.36, 0.32, 0.285, 0.25, 0.22].forEach((length, i) => {
+    const a = i / 5 * Math.PI * 2 + 0.3;
+    const hanger = new THREE.Group(); hanger.position.set(Math.cos(a) * 0.052, -0.36, Math.sin(a) * 0.052);
+    hanger.add(cord(0.035, 0, 0, 0));
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.0075, 0.0075, length, 14, 1, true), brass);
+    tube.position.y = -0.035 - length / 2; tube.castShadow = true; hanger.add(tube);
+    chime.add(hanger); chimeTubes.push(hanger);
+  });
+  chime.add(cord(0.2, 0, -0.36, 0));
+  const striker = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.01, 20), chimeWood); striker.position.y = -0.53; chime.add(striker);
+  chime.add(cord(0.12, 0, -0.535, 0));
+  const sail = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.1, 0.005), chimeWood); sail.position.y = -0.705; chime.add(sail);
+  // Tapping around the chime or the awning raises or lowers the awning.
+  const target = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.9, 0.4), new THREE.MeshBasicMaterial({ visible: false })); target.position.set(0.7, 2.1, -1.2); scene.add(target);
   let opening = 0.82, requestedOpening = 0.82;
 
   // ---- Near props: wet terracotta pot with a fern, stool and lantern ----------------------
@@ -379,21 +531,32 @@ totalEmissiveRadiance += vec3(1.5, 1.6, 1.65) * diffuseColor.rgb * (0.11 + 0.05 
   potFern.castShadow = true; pot.add(potFern);
   const lantern = createLantern({ intensity: 2.4 });
   scene.add(lantern.group, lantern.light);
-  const interiorParts: THREE.Object3D[] = [deckMesh, frameMesh, stoolMesh, roof, gutter, awning, lowerRail, roll, pot, lantern.group];
+  const interiorParts: THREE.Object3D[] = [deckMesh, frameMesh, stoolMesh, roof, gutter, awning, lowerRail, roll, pot, lantern.group, chime];
 
   // ---- Rain, gutter overflow, drips and splashes -------------------------------------------
-  const rainSky = new THREE.Color(0.95, 1.02, 1.08);
+  // A drop shows the sky it refracts: under a dark deck the rain is greyer than the clearing.
+  const rainSky = new THREE.Color(0.72, 0.78, 0.84);
   const wind = new THREE.Vector2(0.09, 0.03);
+  // Thin, uneven threads that read against the dark field and woods and fade against the
+  // bright clearing; the distant layers are a fine haze gathered into drifting veils.
   const rainLayers = [
-    createRainLayer({ time, count: 2000, min: new THREE.Vector3(-5, -0.7, -6.5), max: new THREE.Vector3(5, 4.5, -2.05), speed: 8.2, width: 0.0019, shutter: 0.03, radiance: rainSky, opacity: 0.6, boost: 1.9, seed: 21, wind, nearFade: 1.2 }),
-    createRainLayer({ time, count: 7000, min: new THREE.Vector3(-14, -1, -22), max: new THREE.Vector3(14, 10, -6.5), speed: 8.5, width: 0.0016, shutter: 0.03, radiance: rainSky, opacity: 0.55, boost: 1.4, seed: 22, wind }),
-    createRainLayer({ time, count: 12000, min: new THREE.Vector3(-45, -2, -70), max: new THREE.Vector3(45, 22, -22), speed: 9, width: 0.0015, shutter: 0.03, radiance: rainSky, opacity: 0.5, boost: 1, seed: 23, wind }),
+    createRainLayer({ time, count: 1500, min: new THREE.Vector3(-5, -0.7, -6.5), max: new THREE.Vector3(5, 4.5, -2.05), speed: 8.2, width: 0.0019, shutter: 0.03, radiance: rainSky, opacity: 0.38, boost: 1.1, seed: 21, wind, nearFade: 1.2, variation: 1, occlusion: 0.9 }),
+    createRainLayer({ time, count: 7000, min: new THREE.Vector3(-14, -1, -22), max: new THREE.Vector3(14, 10, -6.5), speed: 8.5, width: 0.0016, shutter: 0.03, radiance: rainSky, opacity: 0.45, boost: 1.15, seed: 22, wind, variation: 1, occlusion: 0.9, gusts: 0.5, gustScale: 9, gustDrift: new THREE.Vector2(1.6, 0.3) }),
+    createRainLayer({ time, count: 14000, min: new THREE.Vector3(-45, -2, -70), max: new THREE.Vector3(45, 22, -22), speed: 9, width: 0.0015, shutter: 0.03, radiance: rainSky, opacity: 0.45, boost: 1, seed: 23, wind, variation: 1, occlusion: 0.85, gusts: 0.85, gustScale: 16, gustDrift: new THREE.Vector2(1.8, 0.3) }),
   ];
   rainLayers.forEach(layer => scene.add(layer.mesh));
-  const overflow: RunoffStream[] = [-2.4, -1.05, 0.35, 1.7, 2.9].map((x, i) => ({
-    top: new THREE.Vector3(x, 3.06, -1.98), bottom: new THREE.Vector3(x + 0.03, height(x, -2.1) + 0.02, -2.08), width: 0.018 + (i % 2) * 0.012, flow: 0.55 + 0.1 * i,
+  const veils = createRainVeils(time, new THREE.Color(0.62, 0.67, 0.72), [
+    { z: -30, width: 110, height: 30, opacity: 0.22, seed: 1 },
+    { z: -48, width: 150, height: 36, opacity: 0.28, seed: 2 },
+    { z: -75, width: 220, height: 45, opacity: 0.32, seed: 3 },
+    { z: -125, width: 330, height: 60, opacity: 0.36, seed: 4 },
+  ]);
+  scene.add(veils.group); disposables.push(veils);
+  // The gutter overflows unevenly at its low seams: one heavy pour, a few dripping chains.
+  const overflow: RunoffStream[] = [[-2.62, 0.25], [-1.1, 0.75], [0.42, 0.18], [1.95, 0.4], [2.9, 0.12]].map(([x, flow]) => ({
+    top: new THREE.Vector3(x, 3.04, -1.98), bottom: new THREE.Vector3(x + 0.03, height(x, -2.1) + 0.02, -2.06 - flow * 0.08), width: 0.014 + flow * 0.03, flow,
   }));
-  const runoff = createRunoff(overflow, { time, radiance: new THREE.Color(1.9, 2.0, 2.05), opacity: 0.8 });
+  const runoff = createRunoff(overflow, { time, radiance: new THREE.Color(1.1, 1.17, 1.22), opacity: 0.7, chain: true, shutter: 0.015, occlusion: 0.6 });
   scene.add(runoff.mesh);
   const gutterDrips = createRainLayer({ time, count: 38, gravity: true, dripPause: 1.4, min: new THREE.Vector3(-3.2, -0.5, -1.99), max: new THREE.Vector3(3.2, 3.03, -1.95), width: 0.003, shutter: 0.02, radiance: new THREE.Color(1.5, 1.6, 1.65), opacity: 0.85, boost: 1.4, seed: 24 });
   const awningDrips = createRainLayer({ time, count: 26, gravity: true, dripPause: 2.5, min: new THREE.Vector3(-2.8, 0.0, -1.36), max: new THREE.Vector3(2.8, 2.6, -1.3), width: 0.0028, shutter: 0.02, radiance: new THREE.Color(1.4, 1.5, 1.55), opacity: 0.8, boost: 1.2, seed: 25 });
@@ -410,7 +573,7 @@ totalEmissiveRadiance += vec3(1.5, 1.6, 1.65) * diffuseColor.rgb * (0.11 + 0.05 
 
   const raycaster = new THREE.Raycaster();
   const probes: THREE.WebGLRenderTarget[] = [];
-  const rainObjects = () => [...rainLayers.map(l => l.mesh), runoff.mesh, gutterDrips.mesh, awningDrips.mesh, splashes.mesh];
+  const rainObjects = () => [...rainLayers.map(l => l.mesh), runoff.mesh, gutterDrips.mesh, awningDrips.mesh, splashes.mesh, veils.group];
   function update(t: number, dt: number) {
     time.value = t; grassTime.value = t;
     opening += (requestedOpening - opening) * Math.min(1, dt * 2.0);
@@ -422,6 +585,9 @@ totalEmissiveRadiance += vec3(1.5, 1.6, 1.65) * diffuseColor.rgb * (0.11 + 0.05 
     const rail = 3.02 - drop - 0.03;
     awningDrips.material.uniforms.uSize.value.y = rail - awningDrips.material.uniforms.uMin.value.y;
     lantern.update(t);
+    // The chime turns and swings a little in the gusts; its tubes lag behind.
+    chime.rotation.set(Math.sin(t * 0.53) * 0.035 + Math.sin(t * 1.17 + 1) * 0.012, Math.sin(t * 0.21) * 0.4, Math.sin(t * 0.61 + 2) * 0.03);
+    chimeTubes.forEach((tube, i) => tube.rotation.set(Math.sin(t * 0.9 + i * 1.7) * 0.05, 0, Math.sin(t * 0.77 + i * 2.3) * 0.05));
   }
   function resize(aspect: number) {
     camera.position.set(aspect < 0.8 ? 0.12 : 0, 1.48, 2.45);
@@ -462,10 +628,10 @@ totalEmissiveRadiance += vec3(1.5, 1.6, 1.65) * diffuseColor.rgb * (0.11 + 0.05 
       fallbackFill.visible = !active && !scene.environment;
       if (!active) { scene.fog = new THREE.FogExp2('#869e9a', 0.0085); [...rainLayers, gutterDrips, awningDrips].forEach(layer => layer.setBoost(1)); }
     },
-    setViewHeight(pixels) { [...rainLayers, gutterDrips, awningDrips].forEach(layer => layer.setViewHeight(pixels)); },
+    setViewHeight(pixels) { [...rainLayers, gutterDrips, awningDrips].forEach(layer => layer.setViewHeight(pixels)); runoff.setViewHeight(pixels); },
     interact(x, y, explicit = false, immediate = false) {
       raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
-      if (!explicit && raycaster.intersectObjects([target, awning, lowerRail, rope, ropeLoop], false).length === 0) return null;
+      if (!explicit && raycaster.intersectObjects([target, awning, lowerRail, chime], true).length === 0) return null;
       requestedOpening = requestedOpening > 0.6 ? 0.26 : 0.9;
       if (immediate) opening = requestedOpening;
       return { action: 'awning', value: requestedOpening };

@@ -11,6 +11,9 @@ export function setShelterDirectRendering(direct: boolean) { preferDirect = dire
 // fraction of the resolution. Production never calls this (scale stays 1).
 let qaResolutionScale = 1;
 export function setShelterQaResolutionScale(scale: number) { qaResolutionScale = Math.min(1, Math.max(0.1, scale)); }
+// Owned QA only: start the scene clock at a given time so captures can show any moment.
+let qaStartTime = 0;
+export function setShelterQaStartTime(seconds: number) { qaStartTime = Math.max(0, seconds || 0); }
 
 export class ShelterEngine implements LiveSceneEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -23,7 +26,7 @@ export class ShelterEngine implements LiveSceneEngine {
   private disposed = false;
   private width = 1;
   private height = 1;
-  private elapsed = 0;
+  private elapsed = qaStartTime;
   private frame = 0;
   private previous = 0;
   private baseRotation = new THREE.Quaternion();

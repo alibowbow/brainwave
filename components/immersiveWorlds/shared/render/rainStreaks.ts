@@ -65,6 +65,23 @@ export interface RainLayerOptions {
   /** Multiplies radiance; compensates later attenuation by a volume pass. */
   boost?: number;
   seed?: number;
+  /**
+   * 0..1 spread between drops (default 0, all alike). Small drops are many,
+   * faint and slower; a few large ones are bright and fast.
+   */
+  variation?: number;
+  /**
+   * Fraction of the background a streak hides (default 0.3). A drop shows a
+   * refracted image of the sky, so near 1 rain all but vanishes against bright
+   * sky and reads against dark foliage and ground, as real rain does.
+   */
+  occlusion?: number;
+  /** 0..1: density gathers into broad gusty bands that drift across (default 0). */
+  gusts?: number;
+  /** Size of the gust bands, metres (default 12). */
+  gustScale?: number;
+  /** Drift of the gust bands, m/s on the ground plane (default (1.2, 0.3)). */
+  gustDrift?: THREE.Vector2;
 }
 
 export interface RainLayer {
@@ -79,8 +96,13 @@ export interface RainLayer {
 export function createRainLayer(options: RainLayerOptions): RainLayer {
   const o = {
     speed: 7.5, gravity: false, dripPause: 2.5, wind: new THREE.Vector2(0, 0), shutter: 0.035, width: 0.0016,
-    radiance: new THREE.Color(1.6, 1.75, 1.8), opacity: 0.55, sag: 0, nearFade: 0.4, farFade: 120, boost: 1, seed: 1, ...options,
+    radiance: new THREE.Color(1.6, 1.75, 1.8), opacity: 0.55, sag: 0, nearFade: 0.4, farFade: 120, boost: 1, seed: 1,
+    variation: 0, occlusion: 0.3, gusts: 0, gustScale: 12, gustDrift: new THREE.Vector2(1.2, 0.3), ...options,
   };
+  const defines: Record<string, string> = {};
+  if (o.gravity) defines.RAIN_GRAVITY = '';
+  if (o.variation > 0) defines.RAIN_VARIATION = '';
+  if (o.gusts > 0) defines.RAIN_GUSTS = '';
   const geometry = QUAD();
   const rnd = random(o.seed * 7919 + 17);
   const seeds = new Float32Array(o.count * 4);
@@ -89,9 +111,11 @@ export function createRainLayer(options: RainLayerOptions): RainLayer {
   geometry.instanceCount = o.count;
   const size = o.max.clone().sub(o.min);
   const material = new THREE.ShaderMaterial({
-    defines: o.gravity ? { RAIN_GRAVITY: '' } : {},
+    defines,
     uniforms: {
       uTime: o.time, uMin: { value: o.min.clone() }, uSize: { value: size },
+      uVariation: { value: o.variation }, uOcclusion: { value: o.occlusion },
+      uGusts: { value: o.gusts }, uGustScale: { value: o.gustScale }, uGustDrift: { value: o.gustDrift.clone() },
       uSpeed: { value: o.speed }, uPause: { value: o.dripPause }, uWind: { value: o.wind.clone() }, uShutter: { value: o.shutter },
       uWidth: { value: o.width }, uViewHeight: { value: 800 }, uSag: { value: o.sag },
       uNearFade: { value: o.nearFade }, uFarFade: { value: o.farFade },
@@ -104,8 +128,21 @@ uniform vec3 uMin, uSize;
 uniform vec2 uWind;
 varying vec2 vCorner;
 varying float vFade;
+#ifdef RAIN_GUSTS
+${GLSL_NOISE}
+uniform float uGusts, uGustScale;
+uniform vec2 uGustDrift;
+#endif
+#ifdef RAIN_VARIATION
+uniform float uVariation;
+#endif
 void main() {
   float fall, velocity, visible = 1.0;
+#ifdef RAIN_VARIATION
+  // Drop sizes follow a steep distribution: mostly drizzle-sized, a few big drops.
+  float dropSize = fract(sin(dot(aSeed.xz, vec2(91.7, 37.3)) + aSeed.w * 13.1) * 43758.5453);
+  dropSize = dropSize * dropSize * dropSize;
+#endif
 #ifdef RAIN_GRAVITY
   float drop = sqrt(2.0 * uSize.y / 9.81);
   float period = drop * (1.0 + uPause * (0.4 + 1.2 * aSeed.w));
@@ -116,6 +153,10 @@ void main() {
   velocity = 9.81 * t;
 #else
   velocity = uSpeed * (0.82 + 0.36 * aSeed.w);
+#ifdef RAIN_VARIATION
+  // Small drops reach a lower terminal velocity.
+  velocity *= mix(1.0, 0.62 + 0.5 * dropSize, uVariation);
+#endif
   fall = mod(aSeed.y * uSize.y + uTime * velocity, uSize.y);
 #endif
   float edge = aSeed.x * 2.0 - 1.0;
@@ -133,13 +174,22 @@ void main() {
   float width = max(uWidth, pixel * 1.4);
   float depth = -p.z;
   vFade = visible * (uWidth / width) * smoothstep(uNearFade, uNearFade * 1.8, depth) * (1.0 - smoothstep(uFarFade * 0.55, uFarFade, depth));
+#ifdef RAIN_VARIATION
+  vFade *= mix(1.0, 0.22 + 2.3 * dropSize, uVariation);
+#endif
+#ifdef RAIN_GUSTS
+  // Broad bands of heavier and lighter rain sweep across with the wind.
+  vec2 gq = (head.xz - uGustDrift * uTime) / uGustScale;
+  float gust = bwNoise(vec3(gq, uTime * 0.02)) * 0.65 + bwNoise(vec3(gq * 2.3 + 7.0, uTime * 0.035)) * 0.35;
+  vFade *= mix(1.0, 1.7 * smoothstep(-0.45, 0.55, gust), uGusts);
+#endif
   p += side * position.x * width * 0.5;
   vCorner = position.xy;
   gl_Position = projectionMatrix * vec4(p, 1.0);
 }`,
     fragmentShader: /* glsl */ `
 uniform vec3 uRadiance;
-uniform float uOpacity;
+uniform float uOpacity, uOcclusion;
 varying vec2 vCorner;
 varying float vFade;
 void main() {
@@ -148,7 +198,7 @@ void main() {
   float along = smoothstep(0.0, 0.06, vCorner.y) * pow(1.0 - vCorner.y, 0.6);
   float a = across * along * vFade * uOpacity;
   if (a < 0.002) discard;
-  gl_FragColor = vec4(uRadiance * a, a * 0.3);
+  gl_FragColor = vec4(uRadiance * a, min(a * uOcclusion, 1.0));
   ${TONE}
 }`,
     transparent: true, depthWrite: false, depthTest: true, side: THREE.DoubleSide,
@@ -270,8 +320,24 @@ export interface RunoffStream {
   flow?: number;
 }
 
+export interface RunoffOptions {
+  time: { value: number };
+  radiance?: THREE.Color;
+  opacity?: number;
+  /**
+   * Draw each stream as a short glassy rope that pinches off into a chain of
+   * separate falling drops, each blurred only by its own motion during the
+   * shutter (default false: the continuous noise column).
+   */
+  chain?: boolean;
+  /** Chain mode: exposure time of the drops' motion blur, seconds (default 0.012). */
+  shutter?: number;
+  /** Chain mode: fraction of the background the water hides (default 0.4). */
+  occlusion?: number;
+}
+
 /** Water pouring off an edge: a coherent column that breaks into drops as it accelerates. */
-export function createRunoff(streams: RunoffStream[], options: { time: { value: number }; radiance?: THREE.Color; opacity?: number }) {
+export function createRunoff(streams: RunoffStream[], options: RunoffOptions) {
   const positions: number[] = [], uvs: number[] = [], params: number[] = [], indices: number[] = [];
   const rnd = random(4447);
   streams.forEach((stream, index) => {
@@ -292,12 +358,18 @@ export function createRunoff(streams: RunoffStream[], options: { time: { value: 
   geometry.setAttribute('aStream', new THREE.Float32BufferAttribute(params, 4));
   geometry.setIndex(indices);
   const material = new THREE.ShaderMaterial({
-    uniforms: { uTime: options.time, uRadiance: { value: (options.radiance ?? new THREE.Color(1.8, 1.9, 1.95)).clone() }, uOpacity: { value: options.opacity ?? 0.85 } },
+    defines: options.chain ? { RUNOFF_CHAIN: '' } : {},
+    uniforms: {
+      uTime: options.time, uRadiance: { value: (options.radiance ?? new THREE.Color(1.8, 1.9, 1.95)).clone() }, uOpacity: { value: options.opacity ?? 0.85 },
+      uShutter: { value: options.shutter ?? 0.012 }, uOcclusion: { value: options.occlusion ?? 0.4 }, uViewHeight: { value: 800 },
+    },
     vertexShader: /* glsl */ `
 attribute vec4 aStream;
-uniform float uTime;
+uniform float uTime, uViewHeight;
 varying vec2 vUv;
 varying vec4 vStream;
+varying float vHalf;
+varying float vPixel;
 void main() {
   vUv = uv; vStream = aStream;
   // Billboard about the vertical: the column always shows its width.
@@ -305,6 +377,18 @@ void main() {
   vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), toCamera));
   // Accelerating water thins out; keep a pixel-ish minimum width.
   float width = aStream.y * mix(1.0, 0.55, uv.y) + 0.0025;
+#ifdef RUNOFF_CHAIN
+  // Room for drops that wander sideways as the chain breaks up.
+  width = aStream.y + uv.y * aStream.x * 0.05 + 0.004;
+#endif
+#ifdef RUNOFF_CHAIN
+  // Metres per pixel here: drops thinner than a pixel keep their coverage, not vanish.
+  vPixel = -(viewMatrix * vec4(position, 1.0)).z * 2.0 / (projectionMatrix[1][1] * uViewHeight);
+  width = max(width, vPixel * 4.0);
+#else
+  vPixel = 0.0;
+#endif
+  vHalf = width * 0.5;
   vec3 p = position + right * uv.x * width * 0.5;
   // Gusts swing the lower, freely falling part of the stream a little.
   float sway = uv.y * uv.y * aStream.x * 0.012;
@@ -315,10 +399,54 @@ void main() {
 ${GLSL_NOISE}
 uniform float uTime;
 uniform vec3 uRadiance;
-uniform float uOpacity;
+uniform float uOpacity, uShutter, uOcclusion;
 varying vec2 vUv;
 varying vec4 vStream;
+varying float vHalf;
+varying float vPixel;
 void main() {
+#ifdef RUNOFF_CHAIN
+  {
+    float s = vUv.y * vStream.x;               // metres fallen
+    float xm = vUv.x * vHalf;                  // metres across
+    float flow = vStream.z;
+    // Water leaves the lip at walking pace and accelerates.
+    float v0 = 0.5 + 0.6 * flow;
+    float tau = (sqrt(v0 * v0 + 19.62 * s) - v0) / 9.81;
+    float v = v0 + 9.81 * tau;
+    // A glassy rope near the lip, necking in travelling waves until it pinches off.
+    float ropeLength = 0.04 + 1.1 * flow * flow;
+    float r0 = vStream.y * 0.5 * sqrt(v0 / v);
+    float neck = 0.5 + 0.5 * sin((s - uTime * v) * 46.0 + vStream.w * 20.0);
+    float ropeR = r0 * mix(1.0, 0.55 + 0.45 * neck, smoothstep(0.0, ropeLength, s));
+    float ropeW = max(ropeR, vPixel * 0.7);
+    float rope = exp(-pow(xm / ropeW, 2.0) * 1.6) * (ropeR / ropeW) * (1.0 - smoothstep(ropeLength * 0.8, ropeLength * 1.25, s));
+    // Below, discrete drops: one leaves every period; each is seen where it passed
+    // during the exposure, so drops stretch into longer dashes as they speed up.
+    float period = mix(0.2, 0.022, sqrt(flow));
+    float phase = (uTime - tau) / period + vStream.w * 13.0;
+    float k = floor(phase);
+    vec3 h = bwHash3(vec3(k, vStream.w * 91.0, 5.0));
+    // Drops break off irregularly, never as an even dotted line.
+    float since = (fract(phase) - 0.55 * fract(h.x * 7.31 + h.y * 3.17)) * period;
+    float dropR = max(r0 * (0.6 + 0.7 * h.y), 0.0012);
+    float dash = (1.0 - smoothstep(uShutter + dropR * 2.0 / v, uShutter + dropR * 4.0 / v, since)) * smoothstep(-0.002, 0.0, since);
+    // Each drop drifts off the line a little as the chain breaks and gusts push it.
+    float drift = (h.x - 0.5) * s * 0.04 + sin(uTime * 0.8 + vStream.w * 30.0) * s * s * 0.006;
+    float dropW = max(dropR, vPixel * 0.7);
+    // A drop smeared over a longer streak spreads its light thinner.
+    float smear = pow(clamp(dropR * 2.5 / (v * uShutter + dropR * 2.5), 0.0, 1.0), 0.6);
+    float drop = exp(-pow((xm - drift) / dropW, 2.0) * 1.4) * (dropR / dropW) * smear * dash * step(0.12, h.z) * smoothstep(ropeLength * 0.6, ropeLength * 1.1, s);
+    // Refracting water: a bright core where it focuses the sky, darker rims.
+    float body = max(rope, drop * (0.45 + 0.75 * h.x));
+    float glint = 0.5 + 0.7 * exp(-pow(xm / max(max(ropeW, dropW), 2e-4), 2.0) * 5.0);
+    float a = body * uOpacity * smoothstep(0.0, 0.01, vUv.y) * (1.0 - smoothstep(0.96, 1.0, vUv.y));
+    if (a < 0.003) discard;
+    gl_FragColor = vec4(uRadiance * glint * a, min(a * uOcclusion, 1.0));
+    ${TONE}
+    return;
+  }
+#endif
   float s = vUv.y * vStream.x;                 // metres fallen
   float flight = sqrt(2.0 * s / 9.81);         // seconds since the water left the edge
   float x = vUv.x;
@@ -341,5 +469,10 @@ void main() {
   const mesh = new THREE.Mesh(geometry, material);
   mesh.frustumCulled = false;
   mesh.renderOrder = 5;
-  return { mesh, material, dispose() { geometry.dispose(); material.dispose(); } };
+  return {
+    mesh, material,
+    /** Drawing-buffer height in pixels (chain mode keeps sub-pixel drops visible). */
+    setViewHeight(pixels: number) { material.uniforms.uViewHeight.value = Math.max(1, pixels); },
+    dispose() { geometry.dispose(); material.dispose(); },
+  };
 }

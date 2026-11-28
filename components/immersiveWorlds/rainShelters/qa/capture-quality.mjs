@@ -6,7 +6,9 @@
 //   RAIN_QA_BUNDLE=<dir>     serves (and builds into) another output directory
 //   RAIN_QA_SKIP_BUILD=1     serves an existing bundle
 //   RAIN_QA_PORT=<port>      preview port (default 4313)
+//   RAIN_QA_TIMEOUT=<ms>     per-step timeout on a busy machine (default 240000)
 //   RAIN_QA_SHOW_ACTION=1    keep the accessible action chip in the image
+//   RAIN_QA_QUERY=t=12       starts the scene clock at 12 s (any moment, no waiting)
 // SwiftShader renders correctly but slowly; these images grade looks, not speed.
 import { build, preview } from 'vite';
 import { chromium } from 'playwright-core';
@@ -42,7 +44,12 @@ try {
   for (const world of worlds) {
     for (const [name, width, height] of viewports) {
       const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
-      page.setDefaultTimeout(240000);
+      // three announces each Scene to a devtools hook; keep them to count the main pass's geometry.
+      await page.addInitScript(() => {
+        const hook = new EventTarget(); window.__THREE_DEVTOOLS__ = hook; window.__qaScenes = [];
+        hook.addEventListener('observe', event => { if (event.detail?.isScene) window.__qaScenes.push(event.detail); });
+      });
+      page.setDefaultTimeout(Number(process.env.RAIN_QA_TIMEOUT || 240000));
       page.on('pageerror', error => report.errors.push(`${world}/${name}: ${error.message}`));
       page.on('console', message => {
         if (message.type() === 'error' && !/favicon|status of 404/.test(message.text())) report.errors.push(`${world}/${name}: ${message.text()}`);
@@ -70,8 +77,19 @@ try {
       const file = path.join(output, `${world}-${name}.png`);
       await page.screenshot({ path: file });
       const info = await page.locator('.rain-shelter-canvas').evaluate(canvas => ({ ...canvas.dataset }));
+      // Steady-state geometry: every visible triangle of the largest scene, before frustum culling.
+      // (The first frame's renderer counter also includes the one-off static shadow passes.)
+      info.sceneTriangles = await page.evaluate(() => Math.max(0, ...(window.__qaScenes || []).map(scene => {
+        let tris = 0;
+        scene.traverseVisible(object => {
+          if (!object.isMesh) return;
+          const g = object.geometry, per = (g.index ? g.index.count : g.attributes.position.count) / 3;
+          tris += per * (object.isInstancedMesh ? object.count : g.isInstancedBufferGeometry ? g.instanceCount : 1);
+        });
+        return Math.round(tris);
+      })));
       report.captures.push({ world, viewport: name, width, height, info, file });
-      console.log(file, info.post ?? '', `calls=${info.drawCalls} tris=${info.triangles}`);
+      console.log(file, info.post ?? '', `calls=${info.drawCalls} tris=${info.triangles} sceneTris=${info.sceneTriangles}`);
       await page.close();
     }
   }

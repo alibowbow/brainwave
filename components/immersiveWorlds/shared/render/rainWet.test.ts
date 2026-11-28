@@ -40,6 +40,26 @@ describe('GPU rain', () => {
     }
     [drips, splashes, runoff].forEach(item => item.dispose());
   });
+
+  it('keeps the default streaks and runoff unchanged and adds variation, gusts and chains only when asked', () => {
+    const time = { value: 0 };
+    const box = { min: new THREE.Vector3(-1, 0, -5), max: new THREE.Vector3(1, 4, -2), time };
+    const plain = createRainLayer({ count: 8, ...box });
+    expect(plain.material.defines).toEqual({});
+    expect(plain.material.uniforms.uOcclusion.value).toBeCloseTo(0.3);
+    const varied = createRainLayer({ count: 8, ...box, variation: 1, gusts: 0.5, occlusion: 0.9 });
+    expect(varied.material.defines).toHaveProperty('RAIN_VARIATION');
+    expect(varied.material.defines).toHaveProperty('RAIN_GUSTS');
+    expect(varied.material.uniforms.uOcclusion.value).toBeCloseTo(0.9);
+    const stream = [{ top: new THREE.Vector3(0, 2, 0), bottom: new THREE.Vector3(0, 0, 0), width: 0.02, flow: 0.5 }];
+    const column = createRunoff(stream, { time });
+    expect(column.material.defines).toEqual({});
+    const chain = createRunoff(stream, { time, chain: true, shutter: 0.015 });
+    expect(chain.material.defines).toHaveProperty('RUNOFF_CHAIN');
+    chain.setViewHeight(0);
+    expect(chain.material.uniforms.uViewHeight.value).toBe(1);
+    [plain, varied, column, chain].forEach(item => item.dispose());
+  });
 });
 
 describe('wet surfaces', () => {

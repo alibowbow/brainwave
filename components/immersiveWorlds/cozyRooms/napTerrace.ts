@@ -6,7 +6,7 @@ import { createWoodMaterial } from '../shared/render/woodSurface';
 import { createFabricMaterial } from '../shared/render/fabricSurface';
 import { createGlazeMaterial, patchSurface } from '../shared/render/interiorSurface';
 import { applyBarkSurface } from '../shared/render/barkSurface';
-import { applyFoliageShading, type FoliageWind } from '../shared/render/foliageShading';
+import { applyFoliageShading, beforeMain, type FoliageWind } from '../shared/render/foliageShading';
 import { concatGeometries } from '../shared/render/treeGeometry';
 import { GLSL_NOISE } from '../shared/render/glsl';
 import { fbm3, noise3, seeded } from '../shared/render/noise';
@@ -21,10 +21,10 @@ import {
  * terrace, early afternoon. Beyond the low coping a meadow of dry gold and green
  * grass with drifts of poppies and chamomile runs past old olives with twisted,
  * split trunks to a grove on the rising slope, a lane of cypresses, farmhouses
- * with terracotta roofs and hills fading into warm haze. The sun is the key
- * light; one canopy function dapples the leaves, the meadow, the terrace and
- * the sail's transmitted glow and lights the shafts in the air. The shade is
- * lit by the sky and the sunlit garden (a radiance probe of the scene itself).
+ * with terracotta roofs and hills fading into blue distance under a clear sky.
+ * The sun is a strong key light; one canopy function dapples the leaves, the
+ * meadow, the terrace and the sail's transmitted glow. The shade is lit by the
+ * sky and the sunlit garden (a radiance probe of the scene itself).
  * Original procedural work.
  */
 
@@ -35,21 +35,30 @@ varying vec3 vWorld;
 void main() {
   vec3 d = normalize(vWorld - cameraPosition);
   float h = max(d.y, -0.05);
-  // Deep afternoon zenith over a warm, hazy horizon; brighter toward the sun's azimuth.
+  // Clear Mediterranean afternoon: a deep, saturated zenith over a lighter horizon
+  // that stays blue (linear radiance, graded by the HDR pipeline), a little paler
+  // toward the sun's azimuth.
   float toward = dot(normalize(vec3(d.x, 0.0, d.z) + 1e-5), normalize(vec3(uSun.x, 0.0, uSun.z))) * 0.5 + 0.5;
-  vec3 zenith = vec3(0.06, 0.2, 0.66), horizon = mix(vec3(0.36, 0.52, 0.84), vec3(0.96, 0.88, 0.74), pow(toward, 5.0));
-  vec3 sky = mix(horizon, zenith, pow(clamp(h / 0.55, 0.0, 1.0), 0.55));
-  // A thin warm dust band right on the horizon.
-  sky = mix(sky, vec3(0.94, 0.87, 0.76), exp(-max(h, 0.0) * 30.0) * 0.4);
-  float mu = dot(d, uSun);
-  sky += vec3(1.0, 0.86, 0.62) * (pow(max(mu, 0.0), 6.0) * 0.45 + pow(max(mu, 0.0), 90.0) * 2.5);
-  // Small fair-weather cumulus low over the hills, lit on the sun side.
+  vec3 zenith = vec3(0.11, 0.31, 0.98), horizon = mix(vec3(0.3, 0.68, 2.1), vec3(0.52, 0.8, 1.95), pow(toward, 4.0));
+  vec3 sky = mix(horizon, zenith, pow(clamp(h / 0.5, 0.0, 1.0), 0.6));
+  // Only a thin, pale band right on the horizon line.
+  sky = mix(sky, vec3(0.58, 0.84, 1.9), exp(-max(h, 0.0) * 60.0) * 0.45);
+  // The sun's aureole brightens the sky on its side; the HDR disc itself is hidden
+  // by the sail from the chaise and shows only in the radiance probe's highlights.
+  float mu = max(dot(d, uSun), 0.0);
+  sky += vec3(1.0, 0.9, 0.72) * (pow(mu, 6.0) * 0.36 + pow(mu, 20.0) * 1.8 + pow(mu, 400.0) * 30.0);
+  // A few fair-weather cumulus low over the hills: bright sun side, blue-grey shade.
   vec2 cp = d.xz / max(h + 0.1, 0.04) * 0.55;
   float c = bwFbm5(vec3(cp * vec2(0.8, 1.5) + vec2(3.0, 1.0), 1.3));
-  float cloud = smoothstep(0.16, 0.48, c) * smoothstep(0.03, 0.12, h) * (1.0 - smoothstep(0.32, 0.6, h));
-  vec3 cloudColor = mix(vec3(0.62, 0.66, 0.76), vec3(1.35, 1.27, 1.12), smoothstep(-0.1, 0.45, c - 0.18 + toward * 0.25));
-  sky = mix(sky, cloudColor, cloud * 0.8);
-  gl_FragColor = vec4(sky * 1.15, 1.0);
+  float cloud = smoothstep(0.3, 0.4, c) * smoothstep(0.035, 0.1, h) * (1.0 - smoothstep(0.3, 0.55, h));
+  // Sunlit tops, cooler flat bases: lit from above-left, the base faces the shaded ground.
+  float cLit = smoothstep(0.3, 0.52, c) * (0.6 + 0.4 * toward);
+  vec3 cloudColor = mix(vec3(0.78, 0.9, 1.4), vec3(2.5, 2.4, 2.2), cLit);
+  sky = mix(sky, cloudColor, cloud * 0.9);
+  // Below the horizon (seen only by the radiance probe, behind the terrace): sunlit dry
+  // fields, so shade facing away from the garden takes warm ground bounce, not sky blue.
+  sky = mix(sky, vec3(0.4, 0.32, 0.2), smoothstep(0.0, -0.08, d.y));
+  gl_FragColor = vec4(sky, 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }
@@ -127,17 +136,20 @@ export function createNapTerraceWorld(): WorldBuild {
   ];
   const olives = oliveSpecs.map(buildOlive);
   const crowns: Crown[] = [...olives[0].crowns, ...olives.slice(1).map(o => mergeCrowns(o.crowns, 0.88))];
-  const canopy = oliveCanopy({ crowns: crowns.map(c => ({ centre: c.centre, radius: c.radius.clone().multiplyScalar(0.92) })), density: 1.6, gaps: -0.05, softness: 0.2, fleck: 4.5, clump: 1.5, time: timeUniform });
+  // Leaves a metre or two above the sail and flags cast crisp dapples: a narrow transition width.
+  const canopy = oliveCanopy({ crowns: crowns.map(c => ({ centre: c.centre, radius: c.radius.clone().multiplyScalar(0.92) })), density: 1.8, gaps: -0.04, softness: 0.1, fleck: 6.5, clump: 2.2, time: timeUniform });
   const treeWind: FoliageWind = { time: timeUniform, mode: 'attribute', sway: 0.12, flutter: 0.018, direction: [1, 0.35], speed: 0.75 };
-  const meadowBounce = new THREE.Color(1.0, 0.82, 0.56).multiplyScalar(0.2);
+  // Warm light bounced up from the sunlit meadow; the trunks, standing in it, take the most.
+  const meadowBounce = new THREE.Color(1.0, 0.8, 0.5).multiplyScalar(0.3);
   const oliveBark = groundBounce(applyFoliageShading(deepFurrows(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.9 }), {
     key: 'nap-olive-bark', scale: OLIVE_BARK.scale, stretch: OLIVE_BARK.stretch, depth: 0.035, plate: '#bdb7a4', fissure: '#3b352c',
     lichen: { color: '#cfd0b8', amount: 0.5 }, moss: { color: '#6b6f3a', amount: 0.12, below: -0.2, side: new THREE.Vector3(0.5, 0, 0.8) },
-  }), 0.36), { key: 'nap-olive-bark', canopy, wind: treeWind }), 'bark', meadowBounce);
+  }), 0.36), { key: 'nap-olive-bark', canopy, wind: treeWind }), 'bark', meadowBounce.clone().multiplyScalar(2.2));
   const oliveMap = oliveSprayAtlas(11);
-  const oliveLeaves = groundBounce(applyFoliageShading(new THREE.MeshStandardMaterial({ map: oliveMap, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.48, metalness: 0 }), {
+  // Waxy olive leaves: a tighter specular lobe glints in the sun; thin blades glow when backlit.
+  const oliveLeaves = groundBounce(applyFoliageShading(new THREE.MeshStandardMaterial({ map: oliveMap, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.4, metalness: 0 }), {
     key: 'nap-olive-leaves', canopy, wind: treeWind, sharedNormals: true, coverage: true,
-    translucency: { tint: '#e9f0a8', back: 0.42, forward: 1.1 },
+    translucency: { tint: '#e4f09a', back: 0.55, forward: 1.5 },
   }), 'leaves', meadowBounce.clone().multiplyScalar(0.7));
   const barkMesh = new THREE.Mesh(concatGeometries(olives.map(o => o.bark)), oliveBark);
   barkMesh.castShadow = true; barkMesh.receiveShadow = true; barkMesh.name = 'olive-bark'; scene.add(barkMesh);
@@ -209,12 +221,13 @@ float mDry = smoothstep(-0.18, 0.3, bwFbm3(vec3(mp.x * 0.07 + 4.0, 0.5, mp.z * 0
 float mLush = bwFbm3(vec3(mp.x * 0.16 + 9.0, 1.5, mp.z * 0.16));
 float mFine = bwNoise(mp * 7.0) * bwResolve(length(fwidth(mp)) * 7.0);
 float mClump = bwNoise(vec3(mp.x * 1.7, 2.0, mp.z * 1.7));
-vec3 green = vec3(0.075, 0.12, 0.03), gold = vec3(0.42, 0.3, 0.11), soil = vec3(0.2, 0.14, 0.08);
-vec3 mColor = mix(green, gold, clamp(mDry * 0.9 - mLush * 0.25, 0.0, 1.0));
+vec3 green = vec3(0.055, 0.13, 0.018), gold = vec3(0.5, 0.32, 0.085), soil = vec3(0.2, 0.13, 0.07);
+// Green and gold meet over a short distance: patches, not a blend.
+vec3 mColor = mix(green, gold, smoothstep(0.15, 0.75, mDry * 0.9 - mLush * 0.25));
 mColor *= 0.78 + 0.2 * mClump + 0.08 * mFine;
 mColor = mix(mColor, soil, smoothstep(0.35, 0.75, -mClump) * 0.35);
 // Thatch between the tufts: last year's grass lies dark and matted in the shade of the new.
-mColor *= 0.5 + 0.16 * smoothstep(-0.3, 0.5, mClump);
+mColor *= 0.52 + 0.18 * smoothstep(-0.3, 0.5, mClump);
 // Trodden path: pale dusty earth with pebbles, grass creeping in at its edges.
 float mPathD = abs(mp.x - (1.4 + sin(((-mp.z - 4.6) / 0.6) * 0.092) * 2.5));
 float mPathW = 0.48 + max(0.0, -mp.z) * 0.004 + 0.08 * bwNoise(mp * 1.3);
@@ -239,14 +252,17 @@ diffuseColor.rgb = mColor;`,
   const grassWind: FoliageWind = { time: timeUniform, mode: 'height', height: 1, sway: 0.05, flutter: 0.012, direction: [1, 0.35], speed: 0.8 };
   const grassMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ map: meadowMap, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.82, metalness: 0 }), {
     key: 'nap-meadow-tufts', canopy, wind: grassWind, sharedNormals: true, coverage: true,
-    translucency: { tint: '#e6eb9c', back: 0.4, forward: 0.75 },
+    translucency: { tint: '#ecee92', back: 0.45, forward: 1.0 },
   });
   const near: Record<MeadowVariant, TuftPlacement[]> = { green: [], dry: [], mixed: [], poppy: [], daisy: [], lavender: [] };
   const far: Record<MeadowVariant, TuftPlacement[]> = { green: [], dry: [], mixed: [], poppy: [], daisy: [], lavender: [] };
   const meadowRandom = seeded(811);
   const tint = (variant: MeadowVariant, dry: number) => {
     const k = 0.7 + meadowRandom() * 0.42;
-    if (variant === 'dry' || variant === 'mixed') return new THREE.Color(k * (1 + dry * 0.06), k, k * (0.92 + meadowRandom() * 0.1));
+    // Sun-ripened gold leans warm; the green stays green, so the two read apart in the light.
+    if (variant === 'dry') return new THREE.Color(k * (1.1 + dry * 0.06), k, k * (0.74 + meadowRandom() * 0.1));
+    if (variant === 'mixed') return new THREE.Color(k * (1.02 + dry * 0.06), k, k * (0.8 + meadowRandom() * 0.1));
+    if (variant === 'green') return new THREE.Color(k * 0.88, k * (1.08 - dry * 0.05), k * 0.72);
     return new THREE.Color(k, k * (1.02 - dry * 0.05), k * 0.95);
   };
   const place = (band: Record<MeadowVariant, TuftPlacement[]>, x: number, z: number, scale: number, stubble = false) => {
@@ -370,8 +386,11 @@ diffuseColor.rgb = rColor;`,
     pattern: 'fbBase *= 0.9 + 0.12 * step(0.82, fract(fbUv.x * 6.0)) - 0.05 * step(0.9, fract(fbUv.y * 6.0));' }, { side: THREE.DoubleSide });
   // The sail: linen lit from above. Its underside shows sunlight transmitted
   // through the weave, shaded by the olive crown over the terrace corner: the
-  // same canopy function as the ground dapple, averaged over a few taps so the
-  // leaf shadow is soft where the crown is a couple of metres above the cloth.
+  // same canopy function as the ground dapple, averaged over a few close taps.
+  // `sailGain` scales the glow: the eye sees it in full, but the radiance probe
+  // takes it at the light a real canvas passes (about a third of the sun), so
+  // the shade beneath stays shade.
+  const sailGain = { value: 1 };
   const sailMat = createFabricMaterial('#efe4c8', {
     key: 'nap-sail', weave: 'plain', threads: [2400, 1650], heather: 0.4, fuzz: 0.2, depth: 0.0005, roughness: 0.95,
     // Panel seams and the taped hem are two layers of cloth, so they pass less light; corner patches more so.
@@ -387,14 +406,23 @@ fbBase *= 1.0 - 0.3 * max(sBand, sTape) - 0.25 * sPatch;`,
   const sailPrevious = sailMat.onBeforeCompile;
   sailMat.onBeforeCompile = (shader, renderer) => {
     sailPrevious.call(sailMat, shader, renderer);
-    shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+    shader.uniforms.uNapSailGain = sailGain;
+    shader.fragmentShader = beforeMain(shader.fragmentShader, 'uniform float uNapSailGain;').replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
 {
   vec3 sp = vSurfaceWorld + vec3(0.0, 0.03, 0.0);
-  float leaf = (bwCanopy(sp) + bwCanopy(sp + vec3(0.09, 0.0, 0.02)) + bwCanopy(sp + vec3(-0.04, 0.0, 0.085)) + bwCanopy(sp + vec3(-0.05, 0.0, -0.07))) * 0.25;
+  // Leaf-scale serration: a fine warp of the lookup breaks the cluster outlines into leaves.
+  vec2 sw = vec2(bwNoise(sp * 23.0), bwNoise(sp * 23.0 + 7.3)) * 0.05 + vec2(bwNoise(sp * 8.0 + 3.1), bwNoise(sp * 8.0 + 5.7)) * 0.06;
+  vec3 sq = sp + vec3(sw.x, 0.0, sw.y);
+  // A few close taps: the leaves are a metre or two above the cloth, so their shadows stay crisp.
+  float leaf = (bwCanopy(sq) + bwCanopy(sq + vec3(0.035, 0.0, 0.01)) + bwCanopy(sq + vec3(-0.015, 0.0, 0.032)) + bwCanopy(sq + vec3(-0.02, 0.0, -0.026))) * 0.25;
   float sunUp = max(dot(normalize(vSurfaceNormal), uBwToSun), 0.55);
-  // Sunlight diffused through the weave, plus the skylight that always comes through.
-  vec3 through = vec3(1.0, 0.93, 0.78) * (0.36 + 1.3 * leaf * sunUp) * (0.92 + 0.08 * fbH);
-  totalEmissiveRadiance = diffuseColor.rgb * through;
+  // The weave scatters a little more light straight on: the cloth glows brightest where
+  // it lies between the eye and the sun, so the sun's side of the sail is felt.
+  float forward = pow(max(dot(normalize(vSurfaceWorld - cameraPosition), uBwToSun), 0.0), 4.0);
+  // Sunlight diffused through the weave glows warm and bright enough to bloom. Under the
+  // leaf shadows the cloth still glows: skylight plus sun scattered sideways in the weave.
+  vec3 through = vec3(1.0, 0.8, 0.5) * (leaf * sunUp * (3.2 + 4.0 * forward)) + vec3(0.95, 0.84, 0.66) * 0.72;
+  totalEmissiveRadiance = diffuseColor.rgb * through * (0.92 + 0.08 * fbH) * uNapSailGain;
 }`);
   };
   applyFoliageShading(sailMat, { key: 'nap-sail', canopy });
@@ -431,8 +459,9 @@ diffuseColor.rgb = fColor;`,
   const coping = applyFoliageShading(patchSurface(new THREE.MeshStandardMaterial({ color: '#c9bea2', roughness: 0.8 }), {
     key: 'nap-coping', color: 'float cpN = bwFbm3(vSurfaceWorld * 2.2); diffuseColor.rgb *= 0.88 + 0.16 * cpN + 0.05 * bwNoise(vSurfaceWorld * 30.0);', height: 'cpN * 0.002',
   }), { key: 'nap-coping', canopy });
-  // The sun: the one key light, its soft shadow map refreshed now and then.
-  const sun = new THREE.DirectionalLight(new THREE.Color(1.0, 0.93, 0.8), 4.8);
+  // The sun: the one key light, its soft shadow map refreshed now and then. Strong
+  // against the sky's fill (as in clear Mediterranean air), so sun and shade separate.
+  const sun = new THREE.DirectionalLight(new THREE.Color(1.0, 0.92, 0.78), 8.4);
   sun.position.copy(TO_SUN).multiplyScalar(24).add(new THREE.Vector3(-0.5, 0, -3)); sun.target.position.set(-0.5, 0, -3);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
@@ -541,7 +570,7 @@ diffuseColor.rgb = fColor;`,
   const pot = addMesh(new THREE.LatheGeometry([new THREE.Vector2(0.23, 0), new THREE.Vector2(0.24, 0.06), new THREE.Vector2(0.33, 0.47), new THREE.Vector2(0.35, 0.50), new THREE.Vector2(0.35, 0.55), new THREE.Vector2(0.31, 0.56), new THREE.Vector2(0.30, 0.51)], 40), potMat, 1.42, 0, -1.42);
   const soil = new THREE.Mesh(new THREE.CircleGeometry(0.305, 36), new THREE.MeshStandardMaterial({ color: '#3f3626', roughness: 1 })); soil.rotation.x = -Math.PI / 2; soil.position.set(1.42, 0.50, -1.42); scene.add(soil);
   const herbGroup = new THREE.Group(); herbGroup.position.set(1.42, 0, -1.42); scene.add(herbGroup);
-  const herbMaterial = patchSurface(new THREE.MeshStandardMaterial({ color: '#4e6542', roughness: 0.6, side: THREE.DoubleSide }), {
+  const herbMaterial = patchSurface(new THREE.MeshStandardMaterial({ color: '#68844f', roughness: 0.8, side: THREE.DoubleSide }), {
     key: 'nap-rosemary', color: 'diffuseColor.rgb = gl_FrontFacing ? diffuseColor.rgb : mix(diffuseColor.rgb, vec3(0.62, 0.66, 0.58), 0.55); diffuseColor.rgb *= 0.85 + 0.3 * bwNoise(vSurfaceWorld * 7.0);',
   });
   const herb = new THREE.InstancedMesh(leafGeometry(), herbMaterial, 1120);
@@ -594,19 +623,26 @@ diffuseColor.rgb = fColor;`,
   return {
     scene, camera, resize,
     post: {
-      exposure: 0.95, bloomStrength: 0.05, bloomThreshold: 0, aoStrength: 0.8, aoRadius: 0.5,
-      saturation: 1.1, contrast: 1.1, shadowTint: [0.93, 0.97, 1.05], highlightTint: [1.05, 1.0, 0.93], vignette: 0.32, grain: 0.02,
+      // Thresholded bloom: only the glowing sail, the aureole and glints spill light,
+      // instead of a veil lifting every shadow. Warm highlights, cool shade.
+      exposure: 0.94, bloomStrength: 0.18, bloomThreshold: 0.95, aoStrength: 0.75, aoRadius: 0.5,
+      saturation: 1.14, contrast: 1.09, shadowTint: [0.94, 0.98, 1.05], highlightTint: [1.05, 1.0, 0.92], vignette: 0.28, grain: 0.018,
     },
     createVolume() {
-      // Aerial perspective in warm haze, and faint shafts where the sun breaks through the near olive.
+      // Clear air near the terrace; blue aerial perspective only out at the far ridges,
+      // converging on the horizon sky, warmer and brighter toward the sun. The sky gets a
+      // short path so the haze does not grey it.
       return createGardenVolume({
-        canopy, sun: new THREE.Color(1.0, 0.84, 0.62).multiplyScalar(1.05), ambient: new THREE.Color(0.52, 0.6, 0.74).multiplyScalar(0.55),
-        haze: [0.0014, 0.018, -0.4, 480], skyDistance: 230, sail: [2.95, -3.65, 3.65, -3.15, 2.05], anisotropy: 0.55, steps: 22,
+        canopy, sun: new THREE.Color(1.0, 0.88, 0.7).multiplyScalar(0.22), ambient: new THREE.Color(0.3, 0.6, 1.55),
+        haze: [0.0034, 0.012, -0.4, 480], clear: { start: 30, end: 150, near: 0.04 }, skyDistance: 190,
+        sail: [2.95, -3.65, 3.65, -3.15, 2.05], anisotropy: 0.6, steps: 22,
       });
     },
     prepare(renderer) {
       // Sky, sail and sunlit garden as seen from the chaise light the shade.
-      probe = captureRoomProbe(renderer, scene, new THREE.Vector3(0.1, 1.2, 1.4), 0.62, { far: 500 });
+      sailGain.value = 0.3;
+      try { probe = captureRoomProbe(renderer, scene, new THREE.Vector3(0.1, 1.2, 1.4), 0.66, { far: 500 }); }
+      finally { sailGain.value = 1; }
     },
     dispose() { probe?.dispose(); probe = null; },
     update(time: number, _dt: number) {

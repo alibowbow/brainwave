@@ -60,11 +60,20 @@ export const GLSL_DEPTH = /* glsl */ `
 uniform sampler2D tDepth;
 uniform mat4 uProjection;
 uniform mat4 uInverseProjection;
+// Half-resolution passes put their pixel centres exactly on full-resolution
+// texel boundaries, where a nearest depth fetch may pick either row depending on
+// rounding. That shows up as fixed horizontal stripes on steep surfaces. Snap to
+// one texel centre with a small bias so the choice is always the same.
+vec2 bwDepthUv(vec2 uv) {
+  vec2 size = vec2(textureSize(tDepth, 0));
+  return (floor(uv * size - 0.25) + 0.5) / size;
+}
 vec3 bwViewPosition(vec2 uv) {
+  uv = bwDepthUv(uv);
   float depth = texture2D(tDepth, uv).x;
   vec4 clip = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
   vec4 view = uInverseProjection * clip;
   return view.xyz / view.w;
 }
-float bwRawDepth(vec2 uv) { return texture2D(tDepth, uv).x; }
+float bwRawDepth(vec2 uv) { return texture2D(tDepth, bwDepthUv(uv)).x; }
 `;

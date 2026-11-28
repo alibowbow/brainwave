@@ -41,7 +41,7 @@ try {
         // The harness has no favicon; that request is not a scene failure.
         if (message.type() === 'error' && !/favicon|status of 404/.test(message.text())) report.errors.push(`${scene}/${name}: ${message.text()}`);
       });
-      await page.goto(`${base}/?scene=${scene}${query}`);
+      await page.goto(`${base}/?scene=${scene}${query}&hdr=force`);
       await page.waitForSelector('.deepwater-world[data-state="ready"]');
       await page.waitForFunction(({ width, height, frames }) => {
         const canvas = document.querySelector('canvas');

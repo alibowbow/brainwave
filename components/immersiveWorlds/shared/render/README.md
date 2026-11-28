@@ -34,6 +34,15 @@ rock shader with caustics and a radiance probe for wet reflections. Every
 upgraded family follows the same pattern, and each family's QA harness accepts
 `post=off` to render the direct path for comparison.
 
+## Software rasterisers
+
+`HdrPipeline.create` also returns `null` on CPU rasterisers (SwiftShader,
+llvmpipe, Microsoft Basic Render; see `isSoftwareRenderer`). There the
+multi-pass chain takes seconds per frame and freezes the page, so worlds keep
+their direct path. This covers the browser e2e suites in CI. Add `?hdr=force`
+to a page URL to keep the pipeline anyway: every family's `capture-quality`
+script does, so visual QA on SwiftShader still grades the HDR look.
+
 ## Checking the look
 
 `node components/immersiveWorlds/deepWater/qa/capture-quality.mjs` builds the

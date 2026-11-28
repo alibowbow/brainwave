@@ -49,7 +49,7 @@ try {
         // Driver performance notes and three's PCF notice are not failures; shader/GL errors are.
         if (message.type() === 'warning' && /WebGLProgram|Shader Error|INVALID_|GL_INVALID|not compiled|program not valid/i.test(message.text())) report.errors.push(`${world}/${name}: ${message.text()}`);
       });
-      await page.goto(`${base}?world=${world}${query}`);
+      await page.goto(`${base}?world=${world}${query}&hdr=force`);
       const state = await page.waitForSelector('.rain-shelter[data-state="ready"], .rain-shelter[data-state="failed"]');
       if (await state.getAttribute('data-state') === 'failed') { report.errors.push(`${world}/${name}: scene failed`); await page.close(); continue; }
       await page.waitForFunction(({ width, height }) => {

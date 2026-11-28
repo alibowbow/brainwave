@@ -44,7 +44,7 @@ try {
         if (message.type() === 'warning' && /shader|program|GL_INVALID|error/i.test(message.text()) && !/ReadPixels/.test(message.text())) report.errors.push(`${world}/${name} warning: ${message.text()}`);
       });
       const started = Date.now();
-      await page.goto(`http://127.0.0.1:${port}/?world=${encodeURIComponent(world)}${query}`);
+      await page.goto(`http://127.0.0.1:${port}/?world=${encodeURIComponent(world)}${query}&hdr=force`);
       await page.waitForSelector('.cozy-world[data-state="ready"], .cozy-world[data-state="failed"]');
       if (await page.locator('.cozy-world[data-state="failed"]').count()) { report.errors.push(`${world}/${name}: world failed`); await page.close(); continue; }
       await page.waitForFunction(({ width, height }) => { const c = document.querySelector('canvas'); return c && c.width === width && c.height === height; }, { width, height });

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type * as THREE from 'three';
 import { bloomChain, msaaSamples } from './targets';
 import { fbm3, noise3, ridged3, seeded } from './noise';
-import { HdrPipeline, supportsHdrTargets } from './hdrPipeline';
+import { HdrPipeline, isSoftwareRenderer, supportsHdrTargets } from './hdrPipeline';
 
 describe('shared render targets', () => {
   it('builds a bloom pyramid from half resolution down to an 8 px floor', () => {
@@ -42,5 +42,23 @@ describe('HDR pipeline capability', () => {
     const renderer = { getContext: () => ({ getExtension: () => null, checkFramebufferStatus: () => 0 }) } as unknown as THREE.WebGLRenderer;
     expect(supportsHdrTargets(renderer)).toBe(false);
     expect(HdrPipeline.create(renderer)).toBeNull();
+  });
+
+  const withRenderer = (name: string) => ({
+    getContext: () => ({
+      RENDERER: 0x1f01,
+      getExtension: (ext: string) => ext === 'WEBGL_debug_renderer_info' ? { UNMASKED_RENDERER_WEBGL: 0x9246 } : {},
+      getParameter: (pname: number) => pname === 0x9246 ? name : 'WebKit WebGL',
+      checkFramebufferStatus: () => 0,
+    }),
+  }) as unknown as THREE.WebGLRenderer;
+
+  it('recognises CPU rasterisers and declines there so pages stay responsive', () => {
+    const swiftShader = withRenderer('ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)');
+    expect(isSoftwareRenderer(swiftShader)).toBe(true);
+    expect(isSoftwareRenderer(withRenderer('llvmpipe (LLVM 15.0.7, 256 bits)'))).toBe(true);
+    expect(isSoftwareRenderer(withRenderer('ANGLE (Qualcomm, Adreno (TM) 740, OpenGL ES 3.2)'))).toBe(false);
+    expect(isSoftwareRenderer({ getContext: () => ({}) } as unknown as THREE.WebGLRenderer)).toBe(false);
+    expect(HdrPipeline.create(swiftShader)).toBeNull();
   });
 });

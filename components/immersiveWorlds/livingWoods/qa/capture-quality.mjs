@@ -51,7 +51,7 @@ try {
         if (message.type() === 'warning' && /shader|program|GL_INVALID|error/i.test(message.text()) && !/GPU stall due to ReadPixels/.test(message.text())) report.errors.push(`${world}/${name}: ${message.text()}`);
       });
       const started = Date.now();
-      await page.goto(`http://127.0.0.1:${port}/?world=${world}${query}`);
+      await page.goto(`http://127.0.0.1:${port}/?world=${world}${query}&hdr=force`);
       await page.waitForFunction(() => document.querySelector('[data-status]')?.getAttribute('data-status') === 'ready');
       await page.waitForFunction(({ width, height, frames }) => {
         const canvas = document.querySelector('canvas[data-engine-id]');

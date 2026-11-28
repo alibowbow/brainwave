@@ -44,7 +44,7 @@ try {
       page.on('console', message => {
         if (message.type() === 'error' && !/favicon|status of 404/.test(message.text())) report.errors.push(`${world}/${name}: ${message.text()}`);
       });
-      await page.goto(`${base}/?world=${world}&active=0${query}`);
+      await page.goto(`${base}/?world=${world}&active=0${query}&hdr=force`);
       try {
         await page.waitForFunction(() => window.__waterEdgeQA?.inspect().roots.some(root => root.state !== 'loading'), null, { polling: 500 });
       } catch (error) {

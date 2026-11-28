@@ -321,6 +321,29 @@ export function supportsHdrTargets(renderer: THREE.WebGLRenderer): boolean {
   return !!(gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float'));
 }
 
+const SOFTWARE_RASTERISER = /swiftshader|llvmpipe|softpipe|software|basic render/i;
+
+/**
+ * True for CPU rasterisers (SwiftShader, llvmpipe, Microsoft Basic Render).
+ * They take seconds per frame through the multi-pass chain, which freezes the
+ * page, so engines keep their direct path there. Unknown renderers count as GPUs.
+ */
+export function isSoftwareRenderer(renderer: THREE.WebGLRenderer): boolean {
+  try {
+    const gl = renderer.getContext() as WebGL2RenderingContext;
+    if (typeof gl?.getParameter !== 'function') return false;
+    const debug = gl.getExtension('WEBGL_debug_renderer_info');
+    const name = gl.getParameter(debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER);
+    return SOFTWARE_RASTERISER.test(String(name ?? ''));
+  } catch { return false; }
+}
+
+/** `?hdr=force` keeps the pipeline on software rasterisers, for visual QA captures. */
+function softwareHdrForced(): boolean {
+  try { return new URLSearchParams(globalThis.location?.search ?? '').get('hdr') === 'force'; }
+  catch { return false; }
+}
+
 export class HdrPipeline {
   settings: PostSettings;
   report: PipelineReport;
@@ -362,6 +385,7 @@ export class HdrPipeline {
    * The volume factory runs only once the pipeline is known to work. */
   static create(renderer: THREE.WebGLRenderer, options: { settings?: Partial<PostSettings>; volume?: (() => VolumeEffect) | null } = {}): HdrPipeline | null {
     if (!supportsHdrTargets(renderer)) return null;
+    if (isSoftwareRenderer(renderer) && !softwareHdrForced()) return null;
     const pipeline = new HdrPipeline(renderer, options.settings, null);
     if (!pipeline.probe()) { pipeline.dispose(); return null; }
     if (options.volume) { pipeline.volume = options.volume(); pipeline.report.volume = true; }

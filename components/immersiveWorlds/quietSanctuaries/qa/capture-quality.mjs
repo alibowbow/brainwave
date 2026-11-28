@@ -47,7 +47,7 @@ try {
         if ((message.type() === 'error' || message.type() === 'warning') && !/favicon|status of 404|GPU stall|ReadPixels/i.test(message.text())) report.errors.push(`${world}/${name}: ${message.type()}: ${message.text()}`);
       });
       const started = Date.now();
-      await page.goto(`${base}?world=${world}${query}`);
+      await page.goto(`${base}?world=${world}${query}&hdr=force`);
       await page.addStyleTag({ content: '[data-qa-controls] { visibility: hidden !important; }' });
       await page.waitForSelector('.sanctuary-world[data-state="ready"] canvas.sanctuary-canvas');
       await page.waitForFunction(({ width, height }) => {

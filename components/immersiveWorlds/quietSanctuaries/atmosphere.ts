@@ -61,7 +61,8 @@ void main() {
     float wisps = smoothstep(0.38, 0.74, n);
     float sigma = uHaze.x * (0.35 + 1.5 * wisps) * (1.0 + uHaze.y * exp(-max(p.y, 0.0) / 1.2));
     vec3 toCore = uCorePos - p;
-    vec3 light = uAmbient + uCoreColor * (0.6 + 0.4 * uBreath) / (dot(toCore, toCore) + 1.5);
+    // A broad falloff: the whole cocoon's air glows, brightest around the core.
+    vec3 light = uAmbient + uCoreColor * (0.6 + 0.4 * uBreath) / (dot(toCore, toCore) * 0.3 + 1.5);
     float stepT = exp(-sigma * dt);
     scatter += transmittance * light * (1.0 - stepT);
     transmittance *= stepT;

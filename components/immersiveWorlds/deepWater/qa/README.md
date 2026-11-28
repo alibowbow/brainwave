@@ -1,5 +1,20 @@
 # Isolated deep-water QA
 
+## Visual captures
+
+`capture-quality.mjs` builds this harness and writes lossless PNGs at 1280×800 and 390×844 (DPR 1) in headless Chromium on SwiftShader, adding `hdr=force` so the HDR pipeline runs there. These grade appearance only, not device speed.
+
+- `DEEP_WATER_PORT` sets the preview port (default 4198) when sessions share a machine.
+- `DEEP_WATER_TIMES=0,2,4` renders the first static frame at each scene time (the harness reads `t=<seconds>` and starts the engine clock there), one `<scene>-<viewport>-t<time>.png` each, for exact motion comparisons. `DEEP_WATER_ACTIVE=<frames>` instead runs the real animation loop.
+- `DEEP_WATER_SCENES`, `DEEP_WATER_VIEWPORTS`, `DEEP_WATER_QUERY` (for example `post=off`), `DEEP_WATER_QA_OUTPUT`, `DEEP_WATER_QA_DIST` and `DEEP_WATER_TIMEOUT` (ms) narrow or redirect a run.
+
+```sh
+DEEP_WATER_PORT=4322 DEEP_WATER_SCENES=waterfall DEEP_WATER_TIMES=0,2,4 SCENE_BROWSER_PATH=/opt/pw-browsers/chromium \
+  DEEP_WATER_QA_OUTPUT=/tmp/waterfall node components/immersiveWorlds/deepWater/qa/capture-quality.mjs
+```
+
+The waterfall before/after comparisons and a three-frame motion strip are in `evidence/hdr-upgrade/`.
+
 ## Bounded correction verification
 
 The original `verify.mjs`/77-effective-check evidence remains as the historical PR56 baseline. For the follow-up, run:

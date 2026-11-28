@@ -51,6 +51,13 @@ if (params.get('post') === 'off') {
   const configure = host.configure.bind(host);
   host.configure = engine => { configure(engine); preferDirectRendering(engine.renderer); };
 }
+// Exact motion comparisons: `t=<seconds>` starts the scene clock there, so the
+// first static frame shows that moment. Only this QA harness reads the value.
+const startTime = Number(params.get('t'));
+if (params.has('t') && Number.isFinite(startTime) && startTime >= 0) {
+  const configure = host.configure.bind(host);
+  host.configure = engine => { configure(engine); (engine as unknown as { time: number }).time = startTime; };
+}
 const waitGPUIdle = async () => {
   if (!host.engine) throw new Error('Cannot verify GPU completion without a live scene engine');
   return host.engine.awaitGPUIdle(120000);

@@ -2,15 +2,20 @@ import * as THREE from 'three';
 import type { LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import type { LivingWorld, LivingWoodsInteraction, WorldContent } from './types';
 import { worldMetadata } from './types';
-import { createMorningPorch } from './scenes/morningPorch';
-import { createRainyForest } from './scenes/rainyForest';
-import { createAncientForest } from './scenes/ancientForest';
-import { createBamboo } from './scenes/bamboo';
 import { configureReflectorTarget } from './reflectorCompatibility';
 import type { Reflector } from 'three/examples/jsm/objects/Reflector.js';
 import { SubmissionGate } from './submissionGate';
+import { HdrPipeline } from '../shared/render/hdrPipeline';
 
-const builders = { morning: createMorningPorch, rainy: createRainyForest, ancient: createAncientForest, bamboo: createBamboo };
+type Builder = (scene: THREE.Scene, camera: THREE.PerspectiveCamera) => WorldContent;
+// Each world loads only its own scene code.
+const builders: Record<LivingWorld, () => Promise<Builder>> = {
+  morning: () => import('./scenes/morningPorch').then(module => module.createMorningPorch),
+  rainy: () => import('./scenes/rainyForest').then(module => module.createRainyForest),
+  ancient: () => import('./scenes/ancientForest').then(module => module.createAncientForest),
+  bamboo: () => import('./scenes/bamboo').then(module => module.createBamboo),
+};
+type QAWindow = Window & { __livingWoodsQAForceByte?: boolean; __livingWoodsQADirect?: boolean };
 let engineSerial = 0;
 
 export class WoodsEngine implements LiveSceneEngine {
@@ -18,6 +23,8 @@ export class WoodsEngine implements LiveSceneEngine {
   private scene = new THREE.Scene();
   private camera = new THREE.PerspectiveCamera(52, 1, 0.08, 180);
   private content: WorldContent | null = null;
+  /** HDR image pipeline; null keeps the direct renderer (no float targets, or QA comparison). */
+  private post: HdrPipeline | null = null;
   private raycaster = new THREE.Raycaster();
   private baseRotation = new THREE.Quaternion();
   private look = new THREE.Vector2();
@@ -50,15 +57,27 @@ export class WoodsEngine implements LiveSceneEngine {
     canvas.addEventListener('webglcontextlost', this.contextLost);
   }
   async init() {
-    this.content = builders[this.world](this.scene, this.camera);
+    const build = await builders[this.world]();
+    // The host may have released this engine while its scene code loaded.
+    if (this.disposed) return;
+    this.content = build(this.scene, this.camera);
     // Reflector's constructor has not allocated its GPU target yet. Select and
     // validate its actual color-renderable format before the first scene draw.
-    const forceByte = (window as Window & { __livingWoodsQAForceByte?: boolean }).__livingWoodsQAForceByte === true;
+    const qa = window as QAWindow;
+    const forceByte = qa.__livingWoodsQAForceByte === true;
     this.scene.traverse(object => {
       if ((object as Reflector).isReflector) {
         this.canvas.dataset.reflectorCompatibility = JSON.stringify(configureReflectorTarget(object as Reflector, this.renderer, { forceByte }));
       }
     });
+    this.content.prepare?.(this.renderer);
+    // HDR is the quality path; without float targets the direct path remains.
+    if (qa.__livingWoodsQADirect !== true) {
+      const content = this.content;
+      this.post = HdrPipeline.create(this.renderer, { settings: content.post, volume: content.createVolume ? () => content.createVolume!() : null });
+    }
+    this.content.setPostActive?.(!!this.post);
+    this.canvas.dataset.post = this.post ? JSON.stringify(this.post.report) : 'direct';
     this.content.resize?.(this.aspect);
     this.baseRotation.copy(this.camera.quaternion);
     this.renderer.shadowMap.needsUpdate = true;
@@ -80,6 +99,10 @@ export class WoodsEngine implements LiveSceneEngine {
     this.aspect = size.width / size.height;
     this.renderer.setPixelRatio(size.dpr);
     this.renderer.setSize(size.width, size.height, false);
+    if (this.post) {
+      this.post.setSize(size.width, size.height, size.dpr);
+      this.canvas.dataset.post = JSON.stringify(this.post.report);
+    }
     this.camera.aspect = this.aspect;
     if (this.content) {
       this.camera.quaternion.copy(this.baseRotation);
@@ -110,7 +133,8 @@ export class WoodsEngine implements LiveSceneEngine {
     this.camera.quaternion.copy(this.baseRotation).multiply(this.lookRotation);
     // Static shadow map is sufficient for tiny foliage motion. Refresh during touch response.
     if (performance.now() - this.lastInteraction < 1000 && this.frame % 8 === 0) this.renderer.shadowMap.needsUpdate = true;
-    this.renderer.render(this.scene, this.camera);
+    if (this.post) this.post.render(this.scene, this.camera, this.time);
+    else this.renderer.render(this.scene, this.camera);
     this.frame++;
     this.canvas.dataset.frames = String(this.frame);
     this.canvas.dataset.time = this.time.toFixed(4);
@@ -196,6 +220,7 @@ export class WoodsEngine implements LiveSceneEngine {
     this.gate.dispose();
     this.updateSubmissionEvidence();
     this.canvas.removeEventListener('webglcontextlost', this.contextLost);
+    this.post?.dispose(); this.post = null;
     this.content?.dispose?.();
     const geometries = new Set<THREE.BufferGeometry>(), materials = new Set<THREE.Material>(), textures = new Set<THREE.Texture>();
     this.scene.traverse(object => {

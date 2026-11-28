@@ -24,6 +24,12 @@ Mount inside a positioned parent with a nonzero height. Entry fills that parent.
 - Slow bounded look is limited to ±0.14 rad yaw / ±0.08 rad pitch and eases back. Interactions require running motion, are separated by at least 650 ms, and emit strength `0.24`.
 - `world`, `sceneId`, `kind`, `strength` are defined in `types.ts`. Kinds: `tea-ripple`, `leaf-drip`, `leaf-rustle`, `bamboo-leaf`. These are visual events, not new audio types. No AudioContext, playback, samples, network services or permissions are created here.
 
+## Rendering
+
+- Each world's scene module is loaded on demand from `engine.ts` (`import()` per world), so a session downloads only its own scene code; the shared foliage, tree and bark modules live in `../shared/render/`.
+- When float colour targets are available, the engine renders through the shared HDR pipeline (`../shared/render/hdrPipeline.ts`): multisampled half-float scene, SSAO, a half-resolution world volume pass (mist and canopy god rays, ≤40 steps), bloom, ACES tone curve and a per-world grade. The pipeline is created in `init()` after the world is built, follows every applied resize and is disposed with the engine. Without float targets the previous direct renderer path is used unchanged (`canvas.dataset.post` reports `direct`).
+- Lighting is one key light (sun, or the overcast opening for rain) whose visibility through the canopy is shared by every surface and the volume pass, plus a small PMREM radiance probe baked from each world's procedural sky. Foliage wind and leaf translucency are vertex/fragment shader work; the shadow map stays static between interactions as before.
+
 ## Existing audio recommendations
 
 These are integration suggestions only; this branch does not change current mixes or claim audio QA.

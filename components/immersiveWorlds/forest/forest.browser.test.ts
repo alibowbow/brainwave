@@ -301,7 +301,7 @@ it.runIf(Boolean(process.env.CI || process.env.FOREST_QA_BROWSER))('renders and 
         servedResponses.push(response.body().then((bytes) => { servedModulesSha256[`${phase}:${url.pathname}${url.search}`] = createHash('sha256').update(bytes).digest('hex'); }).catch((error) => { report.errors.push(`Hash served response ${url.pathname}: ${String(error)}`); }));
       }
     });
-    await nextPage.goto(`${harnessURL}?paused=1`, { waitUntil: 'domcontentloaded' });
+    await nextPage.goto(`${harnessURL}?paused=1&waitScale=${WAIT}`, { waitUntil: 'domcontentloaded' });
     await nextPage.waitForFunction(() => ['ready', 'failed'].includes(document.querySelector<HTMLElement>('.forest-world')?.dataset.state ?? ''), undefined, { timeout: 90000 * WAIT });
     const state = await nextPage.locator('.forest-world').getAttribute('data-state');
     check(`${phase}: engine ready instead of fallback`, state === 'ready', { state });

@@ -1,0 +1,184 @@
+{
+  "tool": "components/immersiveWorlds/forest/qa/capture-hdr.mjs (isolated harness, vite build + preview on port 4320)",
+  "browser": "Headless Chromium 1243 (/opt/pw-browsers/chromium), --use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist",
+  "viewports": {
+    "desktop": [
+      1280,
+      800
+    ],
+    "portrait": [
+      390,
+      844
+    ]
+  },
+  "deviceScaleFactor": 1,
+  "limitations": [
+    "Software rendering on a shared, heavily loaded 4-core machine: elapsedMs includes preview start, world generation, shader compilation and SwiftShader rasterization. It says nothing about device frame rate.",
+    "Triangle and draw-call counts are for the captured frame; the first frame also renders the static shadow map once.",
+    "The animated capture runs the real active prop for 12 submitted frames; the engine clamps ambient steps to 0.05 s, so simulation time is 0.5 s."
+  ],
+  "before": {
+    "commit": "0a5cf521ac9c10d7b823a399abb14607c5d1e46b",
+    "path": "previous direct renderer",
+    "query": "",
+    "activeFrames": 0,
+    "captures": [
+      {
+        "viewport": "desktop",
+        "width": 1280,
+        "height": 800,
+        "file": "before/forest-desktop.png",
+        "sha256": "4018d4187e38ff70a11902fbed340c2d47467e400f9728e2233300d872f786d1",
+        "elapsedMs": 49555,
+        "frames": "1",
+        "time": "0.0000",
+        "post": "direct",
+        "targetMode": "native-half-float",
+        "drawCalls": "233",
+        "triangles": "3663155"
+      },
+      {
+        "viewport": "portrait",
+        "width": 390,
+        "height": 844,
+        "file": "before/forest-portrait.png",
+        "sha256": "bbcaf0c53e964852c9af5dc7e62cc02ebb99185909cdfa43dfd38139a26f40f6",
+        "elapsedMs": 29395,
+        "frames": "1",
+        "time": "0.0000",
+        "post": "direct",
+        "targetMode": "native-half-float",
+        "drawCalls": "210",
+        "triangles": "3610367"
+      }
+    ],
+    "errors": []
+  },
+  "after": {
+    "path": "HDR pipeline",
+    "query": "",
+    "activeFrames": 0,
+    "captures": [
+      {
+        "viewport": "desktop",
+        "width": 1280,
+        "height": 800,
+        "file": "final3/hdr/forest-desktop.png",
+        "sha256": "f5301a92d46051f2a444169e9225f886ea9336d677373718ca4effbe7e64c8f2",
+        "elapsedMs": 174157,
+        "frames": "1",
+        "time": "0.0000",
+        "canopyClusters": "27438",
+        "postReason": "native-half-float",
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 6
+        },
+        "targetMode": "native-half-float",
+        "drawCalls": "119",
+        "triangles": "1852581"
+      },
+      {
+        "viewport": "portrait",
+        "width": 390,
+        "height": 844,
+        "file": "final3/hdr/forest-portrait.png",
+        "sha256": "00795b9d7479779147e2e398b2cfe7efa1a734bfd06caa3ec17290252d06cf2f",
+        "elapsedMs": 116632,
+        "frames": "1",
+        "time": "0.0000",
+        "canopyClusters": "27438",
+        "postReason": "native-half-float",
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 5
+        },
+        "targetMode": "native-half-float",
+        "drawCalls": "95",
+        "triangles": "1820871"
+      }
+    ],
+    "errors": []
+  },
+  "afterDirectComparison": {
+    "path": "same scene, harness ?post=off (preferDirect)",
+    "query": "post=off",
+    "activeFrames": 0,
+    "captures": [
+      {
+        "viewport": "desktop",
+        "width": 1280,
+        "height": 800,
+        "file": "final3/direct/forest-desktop.png",
+        "sha256": "fcbc608a0b1c7ac24f28060337c14c6cb242af22cac8eb31790b9603325b35b7",
+        "elapsedMs": 179817,
+        "frames": "1",
+        "time": "0.0000",
+        "canopyClusters": "27438",
+        "postReason": "preferred-direct",
+        "post": "direct",
+        "targetMode": "native-half-float",
+        "drawCalls": "121",
+        "triangles": "1852603"
+      },
+      {
+        "viewport": "portrait",
+        "width": 390,
+        "height": 844,
+        "file": "final3/direct/forest-portrait.png",
+        "sha256": "09d06ff0b2fd8ad21e149b96e1ca2f59b39e8b1a632bc38df3576b3057ec5cfd",
+        "elapsedMs": 120201,
+        "frames": "1",
+        "time": "0.0000",
+        "canopyClusters": "27438",
+        "postReason": "preferred-direct",
+        "post": "direct",
+        "targetMode": "native-half-float",
+        "drawCalls": "99",
+        "triangles": "1820895"
+      }
+    ],
+    "errors": []
+  },
+  "afterAnimated": {
+    "path": "HDR pipeline, animated",
+    "query": "",
+    "activeFrames": 8,
+    "captures": [
+      {
+        "viewport": "portrait",
+        "width": 390,
+        "height": 844,
+        "file": "final3/active/forest-portrait.png",
+        "sha256": "de49a0744da0ef91bf889dd040345d5b0ae4d1196b1cf8d73f2e4281ac6e697b",
+        "elapsedMs": 944308,
+        "frames": "12",
+        "time": "0.5000",
+        "canopyClusters": "27438",
+        "postReason": "native-half-float",
+        "post": {
+          "type": "half-float",
+          "msaa": 4,
+          "ao": true,
+          "volume": true,
+          "bloomLevels": 5
+        },
+        "targetMode": "native-half-float",
+        "drawCalls": "68",
+        "triangles": "1569925"
+      }
+    ],
+    "errors": [],
+    "changedPixelsVsStaticPortrait": {
+      "metric": "ImageMagick compare -metric AE -fuzz 2%",
+      "value": 67132,
+      "of": 329160
+    }
+  }
+}

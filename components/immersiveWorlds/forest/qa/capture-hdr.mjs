@@ -50,17 +50,24 @@ try {
       if (message.type() === 'warning' && /shader|program|webgl/i.test(message.text()) && !/KHR_parallel_shader_compile|GPU stall|PCFSoftShadowMap/.test(message.text())) report.errors.push(`${name}: ${message.text()}`);
     });
     const began = Date.now();
-    await page.goto(`${base}?capture=1${activeFrames ? '' : '&paused=1'}${extra}`);
+    // Always mount through the real active=false path first: a page that is
+    // already animating starves Playwright's in-page polling on SwiftShader.
+    await page.goto(`${base}?capture=1&paused=1${extra}`);
     // The canvas fades in over 800 ms; a busy software rasterizer can stall that
     // CSS transition, so captures show the canvas at full opacity immediately.
     await page.addStyleTag({ content: '.forest-world-canvas { transition: none !important; }' });
     await page.waitForSelector('.forest-world[data-state="ready"], .forest-world[data-state="failed"]', { state: 'attached' });
     if (await page.locator('.forest-world').getAttribute('data-state') === 'failed') throw new Error(`${name}: forest fallback rendered`);
-    await page.waitForFunction(({ width, height, frames }) => {
+    await page.waitForFunction(({ width, height }) => {
       const canvas = document.querySelector('.forest-world-canvas');
-      return canvas && canvas.width === width && canvas.height === height && Number(canvas.dataset.frames) > frames;
-    }, { width, height, frames: activeFrames }, { polling: 250 });
-    if (activeFrames) await page.evaluate(() => document.querySelector('[data-testid="active-toggle"]').click());
+      return canvas && canvas.width === width && canvas.height === height && Number(canvas.dataset.frames) > 0;
+    }, { width, height }, { polling: 250 });
+    if (activeFrames) {
+      // Run the actual animation through the harness's active toggle, then pause it the same way.
+      await page.evaluate(() => document.querySelector('[data-testid="active-toggle"]').click());
+      await page.waitForFunction((frames) => Number(document.querySelector('.forest-world-canvas')?.dataset.frames) > frames, activeFrames, { polling: 1000, timeout: 3600000 });
+      await page.evaluate(() => document.querySelector('[data-testid="active-toggle"]').click());
+    }
     await page.waitForFunction(drained, undefined, { polling: 100 });
     const state = await page.evaluate(() => ({ ...document.querySelector('.forest-world-canvas').dataset }));
     const file = path.join(output, `forest-${name}.png`);

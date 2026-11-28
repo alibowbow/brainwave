@@ -58,7 +58,7 @@ const delay = (milliseconds: number) => new Promise<void>((resolve) => window.se
 // Frame-dependent waits are software-rasterizer allowances only. The HDR forest
 // (multi-pass image) takes several times longer per SwiftShader frame than the
 // earlier direct renderer; the waits scale, runtime pacing and quality do not.
-const SOFTWARE_FRAME_WAIT = 4;
+const SOFTWARE_FRAME_WAIT = Math.max(1, Number(new URLSearchParams(window.location.search).get('waitScale')) || 4);
 async function waitFor(condition: () => boolean, message: string, timeout = 15000) {
   const began = performance.now();
   while (!condition()) {

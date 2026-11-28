@@ -13,9 +13,9 @@ uniform vec3 uMoonDir;
 vec3 nightSky(vec3 d, float moonDisk) {
   float h = d.y;
   float cm = dot(d, uMoonDir);
-  vec3 col = mix(vec3(0.016, 0.026, 0.05), vec3(0.003, 0.006, 0.016), pow(clamp(h, 0.0, 1.0), 0.45));
-  col += vec3(0.02, 0.03, 0.045) * pow(1.0 - clamp(h, 0.0, 1.0), 7.0);
-  col += vec3(0.05, 0.07, 0.11) * pow(max(cm, 0.0), 24.0) + vec3(0.3, 0.36, 0.48) * pow(max(cm, 0.0), 700.0);
+  vec3 col = mix(vec3(0.026, 0.04, 0.075), vec3(0.005, 0.01, 0.026), pow(clamp(h, 0.0, 1.0), 0.45));
+  col += vec3(0.028, 0.04, 0.06) * pow(1.0 - clamp(h, 0.0, 1.0), 6.0);
+  col += vec3(0.07, 0.09, 0.14) * pow(max(cm, 0.0), 14.0) + vec3(0.05, 0.06, 0.08) * pow(max(cm, 0.0), 4.0) + vec3(0.3, 0.36, 0.48) * pow(max(cm, 0.0), 700.0);
   if (moonDisk > 0.0 && cm > 0.99975) {
     vec3 t1 = normalize(cross(uMoonDir, vec3(0.0, 1.0, 0.0)));
     vec3 t2 = cross(t1, uMoonDir);
@@ -97,7 +97,8 @@ diffuseColor.rgb *= okColor;`)
 
 /** Forest floor: leaf litter, moss mounds, dark damp soil toward the stream. */
 export function forestFloor(riverGlsl: string) {
-  const material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .95 });
+  // Litter shadows itself at the leaf scale, so backlit grazing sheen stays faint (low specular).
+  const material = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: .95, specularIntensity: .2 });
   material.onBeforeCompile = shader => {
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vFfWorld;').replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvFfWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
     shader.fragmentShader = shader.fragmentShader
@@ -107,14 +108,14 @@ float ffHeight(vec3 p) { return bwValue(p * 7.0) * 0.6 + bwValue(p * 23.0) * 0.4
 vec3 fp = vFfWorld;
 float litter = bwValue(fp * 7.0);
 float patches = bwFbm3(fp * 0.3);
-vec3 leaves = mix(vec3(0.055, 0.045, 0.035), vec3(0.13, 0.1, 0.065), litter) * (0.75 + 0.5 * bwValue(fp * 23.0)) * (0.8 + 0.4 * bwValue(fp * 1.3));
-vec3 moss = mix(vec3(0.05, 0.08, 0.03), vec3(0.1, 0.14, 0.05), bwValue(fp * 5.0));
+vec3 leaves = mix(vec3(0.035, 0.028, 0.022), vec3(0.085, 0.066, 0.045), litter) * (0.75 + 0.5 * bwValue(fp * 23.0)) * (0.8 + 0.4 * bwValue(fp * 1.3));
+vec3 moss = mix(vec3(0.03, 0.05, 0.02), vec3(0.065, 0.09, 0.035), bwValue(fp * 5.0));
 vec3 ff = mix(leaves, moss, smoothstep(-0.05, 0.35, patches));
 float bank = 1.0 - smoothstep(0.7, 2.2, abs(fp.x - riverX(fp.z)));
 ff = mix(ff, vec3(0.07, 0.07, 0.06), bank * 0.6);
 diffuseColor.rgb *= ff;`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
-roughnessFactor = mix(0.92, 0.45, bank);`)
+roughnessFactor = mix(1.0, 0.45, bank);`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
 {
   const float e = 0.01;

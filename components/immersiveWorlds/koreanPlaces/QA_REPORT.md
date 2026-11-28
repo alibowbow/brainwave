@@ -49,7 +49,7 @@ Actual tab hiding was **not observed** when another headless tab was brought for
 
 Actual rendered PNGs, including portrait compositions, were inspected during successive revisions. Temple corrections include an opaque roof underside, more distinct bronze/timber/tile surfaces, irregular foliage, layered mist, and a portrait tea setting. Scops corrections include a dark nonemissive lamp reservoir, restrained warm illumination, softer forest ridges, a continuous stream, branch/leaf structure, and a small foliage opening around the owl's existing perch. Rural corrections include darker blue-green rice, a mottled curving path, irregular cedar crowns, coherent clouds, and a portrait pole placement that keeps the warm farmhouse readable.
 
-Each scene has independently authored spatial geometry and materials. Only rural uses the approved toon art direction. Its original reference image is not rendered as a backdrop. The exact reference asset hash and independent JEV visual review are in `PROVENANCE.md` and `REFERENCE_REVIEW.md`.
+Each scene has independently authored spatial geometry and materials. Rural was later rebuilt as a physically lit moonlit night (flooded paddies, concrete farm road, farmhouse, layered wooded hill; see `qa/evidence/hdr-upgrade/`); it no longer uses toon shading. Its original reference image is not rendered as a backdrop. The exact reference asset hash and independent JEV visual review are in `PROVENANCE.md` and `REFERENCE_REVIEW.md`.
 
 ## Scope and limits
 

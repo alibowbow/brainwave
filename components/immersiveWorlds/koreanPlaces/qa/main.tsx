@@ -16,7 +16,8 @@ const params = new URLSearchParams(location.search);
 const requested = params.get('scene');
 const scene: WorldId = requested === 'scops' || requested === 'rural' ? requested : 'temple';
 // `post=off` captures the direct fallback renderer (no float targets) for comparison.
-configureRenderingQA({ direct: params.get('post') === 'off' });
+// `t=<seconds>` starts the scene clock at that moment, so captures can grade motion.
+configureRenderingQA({ direct: params.get('post') === 'off', startTime: Number(params.get('t')) || 0 });
 const environmentQA = installEnvironmentQA(scene, params.get('environment') === 'forced-byte' ? 'forced-byte' : 'normal');
 const World = { temple: TempleWorld, scops: ScopsNightWorld, rural: RuralSummerNightWorld }[scene];
 const events: WorldInteraction[] = [];

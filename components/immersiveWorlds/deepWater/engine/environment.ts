@@ -59,16 +59,69 @@ export function addRock(scene: THREE.Object3D, position: [number, number, number
   return mesh;
 }
 
+/** Optional physically styled water for HDR worlds: dark body, Schlick
+ * reflection, fine moving micro-normals and a lit scattering pool where a
+ * light shaft enters the water. Omitted, the original pool shading remains. */
+export interface ClearWaterOptions {
+  deepColor: string;
+  /** Where a shaft of light meets the water (world x, z), radius in metres. */
+  glow?: { x: number; z: number; radius: number; color: THREE.Color };
+  /** Direction toward the key light, for glints. */
+  lightDirection: THREE.Vector3;
+  glint: number;
+}
+
+const clearWaterFragment = `uniform vec3 color;uniform vec3 deepColor;uniform sampler2D tDiffuse;uniform float time;uniform float rippleClock;uniform vec4 rings[4];uniform float rippleStrength;
+  uniform vec3 glowColor;uniform vec3 glowCentre;uniform vec3 lightDirection;uniform float glint;varying vec4 reflectionCoord;varying vec3 poolWorld;
+  vec2 waveSlope(vec2 p,float t){
+    vec2 s=vec2(cos(p.x*2.1+p.y*.72+t*.42)*.020+cos(p.x*5.3-p.y*3.1-t*.3)*.007,sin(p.y*2.8+p.x*.56-t*.27)*.018);
+    s+=vec2(cos(p.x*11.3+p.y*7.1+t*.9),sin(p.y*12.7-p.x*5.9-t*.8))*.0045;
+    s+=vec2(sin(p.x*23.1-p.y*17.3+t*1.3),cos(p.y*27.9+p.x*13.1+t*1.1))*.0022;
+    return s;
+  }
+  void main(){
+    vec2 p=poolWorld.xz;
+    vec2 slope=waveSlope(p,time);
+    float ringLight=0.;
+    for(int i=0;i<4;i++){float age=rippleClock-rings[i].z;vec2 delta=p-rings[i].xy;float d=length(delta);float front=d-age*1.3;float env=exp(-front*front*2.8)*exp(-age*.72)*rings[i].w*step(0.,age);slope+=delta/max(d,.01)*cos(front*15.)*env*.075;ringLight+=sin(front*15.)*env*.02;}
+    slope*=rippleStrength;
+    vec3 normal=normalize(vec3(-slope.x,1.,-slope.y));
+    vec3 viewDir=normalize(cameraPosition-poolWorld);
+    float cosV=max(dot(normal,viewDir),0.);
+    float fresnel=.02+.98*pow(1.-cosV,5.);
+    vec2 uv=reflectionCoord.xy/reflectionCoord.w+slope*.05;
+    vec3 reflected=texture2D(tDiffuse,clamp(uv,vec2(.002),vec2(.998))).rgb;
+    float distance=length(p-glowCentre.xy);
+    float pool=exp(-distance*distance/(glowCentre.z*glowCentre.z));
+    float caustic=.55+.45*sin(p.x*5.1+sin(p.y*4.3+time*.35)*1.7)*sin(p.y*5.7+sin(p.x*3.9-time*.31)*1.5);
+    vec3 body=deepColor*(.75+.25*sin(p.y*.14))+glowColor*pool*(.55+.45*caustic)+glowColor*.16*exp(-distance*.2);
+    vec3 light=mix(body,reflected,fresnel)+ringLight*(color+glowColor*pool);
+    vec3 h=normalize(lightDirection+viewDir);
+    light+=glowColor*glint*pow(max(dot(normal,h),0.),420.)*(.25+pool*4.);
+    gl_FragColor=vec4(light,1.);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }`;
+
 export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, options: {
   width: number; depth: number; y: number; color?: string; position?: [number, number, number]; distortion?: number;
+  clear?: ClearWaterOptions;
 }) {
   const rippleStates = Array.from({ length: 4 }, () => new THREE.Vector4(0, 0, -100, 0));
+  const clear = options.clear;
   const shader = {
     name: 'DeepWaterPool',
-    uniforms: { color: { value: new THREE.Color(options.color ?? '#164d4a') }, tDiffuse: { value: null }, textureMatrix: { value: new THREE.Matrix4() }, time: { value: 0 }, rippleClock: { value: 0 }, rings: { value: rippleStates }, rippleStrength: { value: options.distortion ?? .6 } },
+    uniforms: {
+      color: { value: new THREE.Color(options.color ?? '#164d4a') }, tDiffuse: { value: null }, textureMatrix: { value: new THREE.Matrix4() }, time: { value: 0 }, rippleClock: { value: 0 }, rings: { value: rippleStates }, rippleStrength: { value: options.distortion ?? .6 },
+      deepColor: { value: new THREE.Color(clear?.deepColor ?? '#000000') },
+      glowColor: { value: clear?.glow?.color.clone() ?? new THREE.Color(0, 0, 0) },
+      glowCentre: { value: new THREE.Vector3(clear?.glow?.x ?? 0, clear?.glow?.z ?? 0, clear?.glow?.radius ?? 1) },
+      lightDirection: { value: (clear?.lightDirection ?? new THREE.Vector3(0, 1, 0)).clone().normalize() },
+      glint: { value: clear?.glint ?? 0 },
+    },
     vertexShader: `uniform mat4 textureMatrix;varying vec4 reflectionCoord;varying vec3 poolWorld;
       void main(){poolWorld=(modelMatrix*vec4(position,1.)).xyz;reflectionCoord=textureMatrix*vec4(position,1.);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader: `uniform vec3 color;uniform sampler2D tDiffuse;uniform float time;uniform float rippleClock;uniform vec4 rings[4];uniform float rippleStrength;varying vec4 reflectionCoord;varying vec3 poolWorld;
+    fragmentShader: clear ? clearWaterFragment : `uniform vec3 color;uniform sampler2D tDiffuse;uniform float time;uniform float rippleClock;uniform vec4 rings[4];uniform float rippleStrength;varying vec4 reflectionCoord;varying vec3 poolWorld;
       void main(){
         vec2 p=poolWorld.xz;
         vec2 slope=vec2(cos(p.x*2.1+p.y*.72+time*.42)*.025+cos(p.x*5.3-p.y*3.1-time*.3)*.009,sin(p.y*2.8+p.x*.56-time*.27)*.022);
@@ -106,8 +159,10 @@ export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, o
   mesh.position.set(...(options.position ?? [0, options.y, 0]));
   mesh.position.y = options.y;
   const material = mesh.material as THREE.ShaderMaterial;
-  material.transparent = true;
-  material.depthWrite = false;
+  // Clear water is an opaque surface: it writes depth so screen-space passes
+  // (occlusion, light shafts) stop at the water instead of the submerged bed.
+  material.transparent = !clear;
+  material.depthWrite = !!clear;
   scene.add(mesh);
   let index = 0;
   let disposed = false;

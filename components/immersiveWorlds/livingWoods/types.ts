@@ -1,4 +1,5 @@
 import type * as THREE from 'three';
+import type { PostSettings, VolumeEffect } from '../shared/render/hdrPipeline';
 
 export type LivingWorld = 'morning' | 'rainy' | 'ancient' | 'bamboo';
 export interface WorldContent {
@@ -7,6 +8,14 @@ export interface WorldContent {
   interactionTargets: THREE.Object3D[];
   interact?(hit: THREE.Intersection, time: number): void;
   dispose?(): void;
+  /** GPU-dependent setup (radiance probe) that needs the live renderer. */
+  prepare?(renderer: THREE.WebGLRenderer): void;
+  /** Image settings for the shared HDR pipeline. */
+  post?: Partial<PostSettings>;
+  /** Participating medium (god rays, mist); owned by the pipeline once created. */
+  createVolume?(): VolumeEffect;
+  /** Told whether the HDR pipeline runs, so a world can show simpler fallbacks. */
+  setPostActive?(active: boolean): void;
 }
 export interface LivingWoodsInteraction {
   world: LivingWorld;

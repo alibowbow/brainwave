@@ -1,0 +1,35 @@
+{
+  "query": "?clean&still",
+  "activeFrames": 0,
+  "captures": [
+    {
+      "viewport": "desktop",
+      "width": 1280,
+      "height": 800,
+      "file": "cosmic-desktop.png",
+      "seconds": 165.365,
+      "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":6}",
+      "frame": "2",
+      "time": "0.0000",
+      "calls": "356",
+      "triangles": "1353764",
+      "quality": "1",
+      "reflection": "RGBA16F"
+    },
+    {
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "file": "cosmic-portrait.png",
+      "seconds": 115.411,
+      "post": "{\"type\":\"half-float\",\"msaa\":4,\"ao\":true,\"volume\":true,\"bloomLevels\":5}",
+      "frame": "2",
+      "time": "0.0000",
+      "calls": "346",
+      "triangles": "1324666",
+      "quality": "1",
+      "reflection": "RGBA16F"
+    }
+  ],
+  "errors": []
+}

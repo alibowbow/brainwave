@@ -10,6 +10,8 @@ import { sourceFingerprint } from './source-fingerprint.mjs';
 const base = (process.env.SCENE_BASE_URL || 'http://127.0.0.1:5193').replace(/\/$/, '');
 const url = `${base}${process.env.SCENE_HARNESS_PATH || '/components/immersiveWorlds/cosmic/validation/index.html'}`;
 const output = process.env.SCENE_SCREENSHOT_DIR || 'components/immersiveWorlds/cosmic/validation/screenshots';
+// SCENE_TIMEOUT_MS stretches waits on heavily loaded software-GL machines.
+const waitMs = Number(process.env.SCENE_TIMEOUT_MS || 30_000);
 const errors = [];
 const report = { url, source:await sourceFingerprint(), renderer: 'Chromium with requested SwiftShader launch flags', checks: [], limitations: [] };
 if (output) await mkdir(output, { recursive: true });
@@ -24,7 +26,7 @@ const metric = async (name) => {
   assert.ok(Number.isFinite(value), `${name} is finite`);
   return value;
 };
-const ready = () => page.waitForSelector('.cosmic-world[data-state="ready"]', { timeout: 120_000 });
+const ready = () => page.waitForSelector('.cosmic-world[data-state="ready"]', { timeout: Math.max(120_000, waitMs) });
 const motion = (state) => page.waitForSelector(`.cosmic-world[data-motion="${state}"]`);
 const settledSize=()=>page.waitForFunction(()=>{const c=document.querySelector('.cosmic-world-canvas');if(!c)return false;const r=c.getBoundingClientRect();return c.width>0&&c.height>0&&Math.abs(c.width/c.height-r.width/r.height)<.015&&c.width<=Math.ceil(r.width*2)&&c.height<=Math.ceil(r.height*2);});
 
@@ -62,7 +64,7 @@ try {
   });
   const context = await browser.newContext({ viewport: { width: 800, height: 500 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
   page = await context.newPage();
-  page.setDefaultTimeout(30_000);
+  page.setDefaultTimeout(waitMs);
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => {
     if (message.type() === 'error' && /three|webgl|shader|program|framebuffer/i.test(message.text())) errors.push(message.text());
@@ -211,7 +213,7 @@ try {
     await canvas.evaluate((element) => { window.__cosmicCanvasForValidation = element; });
     await press('Unmount');
     assert.equal(await canvas.count(), 0, 'unmount removes the renderer canvas');
-    await page.waitForFunction(() => window.__cosmicCanvasForValidation?.getAttribute('data-disposed') === 'true', undefined, { timeout: 30_000 });
+    await page.waitForFunction(() => window.__cosmicCanvasForValidation?.getAttribute('data-disposed') === 'true', undefined, { timeout: waitMs });
     const disposedFrame = await page.evaluate(() => window.__cosmicCanvasForValidation?.getAttribute('data-frame'));
     await page.waitForTimeout(300);
     assert.equal(await page.evaluate(() => window.__cosmicCanvasForValidation?.getAttribute('data-frame')), disposedFrame, 'the removed renderer stops drawing');
@@ -234,7 +236,7 @@ try {
     const hidpiPage = await hidpiContext.newPage();
     hidpiPage.on('pageerror', (error) => errors.push(error.message));
     await hidpiPage.goto(`${url}?clean`);
-    await hidpiPage.waitForSelector('.cosmic-world[data-state="ready"][data-motion="paused"]', { timeout: 120_000 });
+    await hidpiPage.waitForSelector('.cosmic-world[data-state="ready"][data-motion="paused"]', { timeout: Math.max(120_000, waitMs) });
     const buffer = await hidpiPage.locator('.cosmic-world-canvas').evaluate((element) => {
       const rect = element.getBoundingClientRect();
       return { width: element.width, height: element.height, cssWidth: rect.width, cssHeight: rect.height, calls: Number(element.dataset.drawCalls), dpr: devicePixelRatio };

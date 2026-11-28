@@ -2,6 +2,12 @@ import * as THREE from 'three';
 import { LiveSceneHost, type LiveSceneHolder, type LiveSceneEngine } from '../../liveScene/liveSceneHost';
 import type { WaterEdgeInteraction, WaterEdgeKind, WorldFactory, WorldScene } from './contracts';
 import { GpuSubmission } from './gpuSubmission';
+import { HdrPipeline, supportsHdrTargets } from '../shared/render/hdrPipeline';
+import { halfFloatColorAllowed } from './renderTargets';
+
+let qaDirect = false;
+/** Isolated QA harness only: `direct` keeps the previous renderer path for before/after comparisons. */
+export function configureWaterEdgePost(options: { direct: boolean }) { qaDirect = options.direct; }
 
 export const diagnostics = { created: 0, disposed: 0, live: 0 };
 
@@ -32,6 +38,8 @@ export function disposeScene(scene: THREE.Scene) {
 export class WaterEdgeEngine implements LiveSceneEngine {
   private renderer: THREE.WebGLRenderer;
   private world: WorldScene | null = null;
+  /** HDR image pipeline; null keeps the direct renderer (no float targets, or QA comparison). */
+  private post: HdrPipeline | null = null;
   private raf = 0;
   private running = false;
   private lastTime = 0;
@@ -74,7 +82,9 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     if (!this.gpu.ready()) return;
     this.applySize();
     this.world = this.factory(this.renderer);
+    this.createPost(this.world);
     this.world.resize(this.width, this.height);
+    this.world.setDrawingSize?.(...this.drawingSize());
     this.baseRotation.copy(this.world.camera.quaternion);
     this.world.update(0, 0);
     this.renderer.shadowMap.needsUpdate = true;
@@ -83,6 +93,21 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     // Fence it together before any later host/RAF/static request can submit.
     this.initializing = true;
     try { this.renderFrame(0); } finally { this.initializing = false; }
+  }
+  /** Created with the world, never in the constructor: mocked renderers stay on the direct path. */
+  private createPost(world: WorldScene) {
+    // The byte-target QA mode stands in for devices without float colour
+    // buffers, so it also keeps the direct path.
+    if (!qaDirect && supportsHdrTargets(this.renderer) && halfFloatColorAllowed(this.renderer)) {
+      this.post = HdrPipeline.create(this.renderer, { settings: world.post, volume: world.createVolume ? () => world.createVolume!() : null });
+      this.post?.setSize(this.width, this.height, this.pixelRatio || 1);
+    }
+    world.setPostActive?.(!!this.post);
+    this.canvas.dataset.post = this.post ? JSON.stringify(this.post.report) : 'direct';
+  }
+  private drawingSize(): [number, number] {
+    const ratio = this.pixelRatio || 1;
+    return [Math.max(1, Math.floor(this.width * ratio)), Math.max(1, Math.floor(this.height * ratio))];
   }
   setSize(width: number, height: number, dpr: number) {
     width = Math.max(1, width); height = Math.max(1, height);
@@ -104,7 +129,9 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     if (!dimensionsChanged && !ratioChanged) return;
     if (ratioChanged) this.renderer.setPixelRatio(this.pixelRatio || 1);
     this.renderer.setSize(this.width, this.height, false);
+    if (this.post) { this.post.setSize(this.width, this.height, this.pixelRatio || 1); this.canvas.dataset.post = JSON.stringify(this.post.report); }
     if (this.world && dimensionsChanged) { this.world.resize(this.width, this.height); this.baseRotation.copy(this.world.camera.quaternion); }
+    this.world?.setDrawingSize?.(...this.drawingSize());
     this.appliedWidth = this.width; this.appliedHeight = this.height; this.appliedPixelRatio = this.pixelRatio;
   }
   private observeSubmission() {
@@ -158,7 +185,8 @@ export class WaterEdgeEngine implements LiveSceneEngine {
       this.world.update(this.time, step);
       this.offsetRotation.setFromEuler(new THREE.Euler(this.look.y, this.look.x, 0, 'YXZ'));
       this.world.camera.quaternion.copy(this.baseRotation).multiply(this.offsetRotation);
-      this.renderer.render(this.world.scene, this.world.camera);
+      if (this.post) this.post.render(this.world.scene, this.world.camera, this.time);
+      else this.renderer.render(this.world.scene, this.world.camera);
       this.frameDirty = false;
       this.canvas.dataset.frames = String(++this.frames);
       this.canvas.dataset.time = this.time.toFixed(4);
@@ -198,6 +226,7 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     this.disposed = true; this.stop();
     this.gpu.dispose(); this.observeSubmission();
     this.canvas.removeEventListener('webglcontextlost', this.onLost);
+    this.post?.dispose(); this.post = null;
     if (this.world) { this.world.dispose?.(); disposeScene(this.world.scene); this.world = null; }
     this.renderer.renderLists.dispose(); this.renderer.dispose(); this.renderer.forceContextLoss();
     diagnostics.disposed++; diagnostics.live--;

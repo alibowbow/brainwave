@@ -15,7 +15,13 @@ Optional environment variables:
 - `SCENE_SOURCE_REVISION`: exact Git revision label supplied by the caller. Regardless of that label, the report lists exact source-file and bundled-file SHA-256 hashes.
 - `LIVING_WOODS_WORLDS=morning,rainy,ancient,bamboo`: choose scenes for diagnosis.
 - `LIVING_WOODS_SCREENSHOTS_ONLY=1` (or `QA_CAPTURE_ONLY=1`, `--capture-only`): capture cold inactive viewport frames and stable paused pixels only, without motion/interaction/lifecycle checks. The report labels this reduced scope.
+- `LIVING_WOODS_PORT`: serve the isolated preview on a fixed port (default: any free port).
+- `LIVING_WOODS_QA_TIMEOUT` (ms): opt-in longer per-wait, readback and GPU-drain limits for heavily loaded machines running software WebGL; the default limits are unchanged.
 - `LIVING_WOODS_BROWSER_TEST=1`: opt into the same runner through Vitest. Default `npm test` skips this wrapper because current CI installs the browser only afterward.
+
+## Look captures (HDR upgrade)
+
+`node components/immersiveWorlds/livingWoods/qa/capture-quality.mjs` builds this harness, serves it on port 4316 (`LIVING_WOODS_PORT` overrides) and writes canvas PNGs for 1280×800 and 390×844 to `LIVING_WOODS_QA_OUTPUT`. `LIVING_WOODS_QUERY=post=off` captures the direct renderer (no HDR pipeline) for comparison; `LIVING_WOODS_ACTIVE=<frames>` runs the animation (wind, rain, drips, water) and captures after that many frames. `LIVING_WOODS_WORLDS` and `LIVING_WOODS_VIEWPORTS` narrow the run. Page errors, shader errors and render faults fail the run. Side-by-side before/after JPGs live in `evidence/hdr-upgrade/`. SwiftShader output grades appearance only, not device speed or heat.
 
 For interactive inspection, run the existing Vite dev server and open `/components/immersiveWorlds/livingWoods/qa/index.html?world=morning&controls=1`. World keys are `morning`, `rainy`, `ancient`, and `bamboo`. `active=0` and `static=1` exercise first-frame states. `window.__livingWoodsQA` offers state toggles, captured interaction events, and projected target coordinates.
 

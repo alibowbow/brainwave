@@ -1,5 +1,22 @@
 # Actual render-target compatibility verification
 
+## HDR upgrade of warm heart and snow village
+
+`nature:womb` (포근한 심장, `warmHeart.ts`) and `amb:snowy_night` (눈 내리는 밤, `snowVillage.ts`) now opt in to the shared HDR pipeline (`../shared/render/hdrPipeline.ts`) through the optional `post`, `createVolume`, `prepare` and `setPostActive` members of `SanctuaryWorld`. A builder without `post` (including the QA-only meditation byte builder) keeps the previous direct renderer unchanged. The engine falls back to the direct path when float colour targets are unavailable.
+
+Visual captures for this work use `capture-quality.mjs` (own port 4317, ANGLE SwiftShader, `/opt/pw-browsers/chromium` by default):
+
+```sh
+SANCTUARY_CAPTURE_OUTPUT=/tmp/claude-0/quietSanctuaries-captures/after node components/immersiveWorlds/quietSanctuaries/qa/capture-quality.mjs
+SANCTUARY_CAPTURE_QUERY=post=off …   # the direct renderer, for comparisons
+SANCTUARY_CAPTURE_ACTIVE=90 …        # animated frames: snow falls, the warm space breathes
+SANCTUARY_CAPTURE_TAP=.5,.6 …        # tap before an animated capture
+```
+
+`?post=off` in the harness URL calls `preferDirectSanctuaryRendering(true)`. Any page, console or shader error fails the capture run. Before/after evidence is committed under `evidence/hdr-upgrade/` (`<world>-compare-desktop.jpg` and `<world>-compare-portrait.jpg`: the previous renderer beside the HDR upgrade, both initially inactive first frames; `<world>-active-portrait.jpg`: that first frame beside a frame after 30 animated frames and a real tap); the older `evidence/` and `compat-evidence/` files are historical and unchanged. SwiftShader images grade appearance only; no device frame rate was measured.
+
+## Render-target compatibility verifier
+
 The current compatibility check is `verify-target-compatibility.mjs`. It uses the built scene and native WebGL APIs throughout. Its normal meditation case uses the production entry. The explicit QA-only `?world=meditation&targets=byte` case selects unsigned-byte targets through the builder configuration; it does not mask extensions, patch GL methods, or claim to emulate hardware that lacks float support. Production entry props remain unchanged.
 
 From the repository root:
@@ -14,7 +31,7 @@ Use an existing compatible Chromium path on other machines, or omit `SCENE_BROWS
 The output is separate: `qa/compat-evidence/target-compatibility.json` plus 12 PNGs. `SANCTUARY_QA_OUTPUT` overrides that directory; `SANCTUARY_QA_MODE=visual` captures only the eight full-size images and explicitly omits lifecycle verification. The full run captures:
 
 - Meditation normal and explicit byte targets, each at native desktop 1280×800 and portrait 390×844. Normal images must exactly match the approved historical meditation PNG hashes.
-- Warm heart and snow village at both native viewports, with exact PNG hash equality against the approved historical evidence in commit `c5a100794084e6230e9fdc8a4c036a02a5813176`.
+- Warm heart and snow village at both native viewports, recorded as fresh captures (`freshCaptures` in the JSON: PNG SHA-256, the HDR pipeline report and the superseded baseline hash for reference). These two worlds were intentionally rebuilt for the shared HDR pipeline (see “HDR upgrade” below), so their pixels and sources are no longer required to equal the historical evidence in commit `c5a100794084e6230e9fdc8a4c036a02a5813176`. Every meditation check, the old verifier and every historical evidence file are still pinned to that baseline.
 - Meditation normal and byte motion plus genuine post-interaction frames at native 640×480.
 
 Each meditation first frame must retain a real reflection and non-null CubeUV environment. The report records actual allocation dimensions, texture storage, framebuffer status, GL errors and renderer-state restoration from every checked target, including PMREM output and scratch targets. Normal selection is based on capability policy and real framebuffer completeness, not the extension advertisement alone. Forced-byte must use byte storage for reflection and both environment targets. The byte QA builder also binds a real complete 64×64 cube target at face 4, mip 1 (32×32 attachment), then probes a separate byte target while viewport, scissor, XR, auto-clear, tone mapping and clear state are non-default. It requires the exact native framebuffer and renderer state to return, with the cube fixture still complete, and disposes both fixtures before building the scene. The browser additionally checks its existing WebGL2 context for loss/errors and measures nonuniform pixels in the desktop basin. Pixel measurements establish usable rendered content; visual approval requires inspecting the PNGs. Missing-extension, half-only, advertised-but-incomplete and byte-failure policy cases are separate deterministic unit tests, not simulated device claims in this browser verifier.

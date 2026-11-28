@@ -10,8 +10,13 @@ import path from 'node:path';
 const sceneDirectory = fileURLToPath(new URL('./', import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL('../../../', import.meta.url));
 const outputDirectory = path.join(sceneDirectory, 'qa/ci-output');
-const harnessURL = 'http://127.0.0.1:4178/components/immersiveWorlds/forest/harness.html';
+// FOREST_HARNESS_PORT lets a shared machine move the owned dev server off 4178.
+const harnessURL = `http://127.0.0.1:${process.env.FOREST_HARNESS_PORT || 4178}/components/immersiveWorlds/forest/harness.html`;
 const delay = (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
+// Software-rasterizer allowance: the HDR forest's multi-pass frames take several
+// times longer in SwiftShader than the earlier direct renderer. Waits scale;
+// assertions, resolution, quality and frame pacing are unchanged.
+const WAIT = Number(process.env.FOREST_QA_WAIT_SCALE || 4);
 
 type Diagnostic = Record<string, string | number>;
 type CaptureMethod = 'cdp-surface-png' | 'direct-webgl-png';
@@ -72,7 +77,7 @@ async function screenshot(page: Page, filename: string, report: BrowserReport, m
   if (taintedPages.has(page)) throw new Error(`Refusing ${filename}: this page has unresolved capture work.`);
   // There is one capture method per attempt. A timeout does not cancel work in
   // Chromium, so neither another capture nor a resume may follow on this page.
-  const budgetMs = method === 'direct-webgl-png' ? 90000 : 30000;
+  const budgetMs = (method === 'direct-webgl-png' ? 90000 : 30000) * WAIT;
   const began = Date.now(), deadline = began + budgetMs;
   const remaining = () => {
     const value = deadline - Date.now();
@@ -285,7 +290,7 @@ it.runIf(Boolean(process.env.CI || process.env.FOREST_QA_BROWSER))('renders and 
     // A real second tab remains available for native visibility observation.
     const context = await browser.newContext({ viewport, deviceScaleFactor: 1, serviceWorkers: 'block' });
     const nextPage = await context.newPage();
-    nextPage.setDefaultTimeout(45000);
+    nextPage.setDefaultTimeout(45000 * WAIT);
     nextPage.on('pageerror', (error) => report.errors.push(`${phase}: ${error.message}`));
     nextPage.on('console', (message) => {
       if (message.type() === 'error' && /three|webgl|shader|program/i.test(message.text())) report.errors.push(`${phase}: ${message.text()}`);
@@ -296,8 +301,8 @@ it.runIf(Boolean(process.env.CI || process.env.FOREST_QA_BROWSER))('renders and 
         servedResponses.push(response.body().then((bytes) => { servedModulesSha256[`${phase}:${url.pathname}${url.search}`] = createHash('sha256').update(bytes).digest('hex'); }).catch((error) => { report.errors.push(`Hash served response ${url.pathname}: ${String(error)}`); }));
       }
     });
-    await nextPage.goto(`${harnessURL}?paused=1`, { waitUntil: 'domcontentloaded' });
-    await nextPage.waitForFunction(() => ['ready', 'failed'].includes(document.querySelector<HTMLElement>('.forest-world')?.dataset.state ?? ''), undefined, { timeout: 90000 });
+    await nextPage.goto(`${harnessURL}?paused=1&waitScale=${WAIT}`, { waitUntil: 'domcontentloaded' });
+    await nextPage.waitForFunction(() => ['ready', 'failed'].includes(document.querySelector<HTMLElement>('.forest-world')?.dataset.state ?? ''), undefined, { timeout: 90000 * WAIT });
     const state = await nextPage.locator('.forest-world').getAttribute('data-state');
     check(`${phase}: engine ready instead of fallback`, state === 'ready', { state });
     await waitForRunning(nextPage, false);
@@ -419,7 +424,7 @@ it.runIf(Boolean(process.env.CI || process.env.FOREST_QA_BROWSER))('renders and 
     await page.getByTestId('qa-run').dispatchEvent('click');
     // These generous waits accommodate software rendering only. The scene's
     // resolution, materials, geometry, simulation step and RAF remain unchanged.
-    await page.waitForFunction(() => ['passed', 'failed'].includes(document.querySelector<HTMLElement>('[data-testid="qa-status"]')?.dataset.state ?? ''), undefined, { timeout: 300000 });
+    await page.waitForFunction(() => ['passed', 'failed'].includes(document.querySelector<HTMLElement>('[data-testid="qa-status"]')?.dataset.state ?? ''), undefined, { timeout: 300000 * WAIT });
     report.lifecycleReport = JSON.parse(await page.getByTestId('qa-report').innerText());
     const lifecycleState = await page.getByTestId('qa-status').getAttribute('data-state');
     check('Clean no-capture real-component lifecycle and interactions pass', lifecycleState === 'passed', report.lifecycleReport);
@@ -561,4 +566,4 @@ it.runIf(Boolean(process.env.CI || process.env.FOREST_QA_BROWSER))('renders and 
     console.log(`FOREST_BROWSER_REPORT ${JSON.stringify(report)}`);
   }
   if (caught) throw caught;
-}, 900000);
+}, 900000 * WAIT);

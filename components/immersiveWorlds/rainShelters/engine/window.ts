@@ -1,51 +1,29 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldBuilder } from './types';
 import { createRainRefractionTarget, withRainRenderTargetState } from './renderTargets';
 import { gardenFoliageMaterial, gardenLeafGeometry, gardenSepalGeometry } from './gardenFoliage';
+import { GLSL_COLOR, GLSL_NOISE } from '../../shared/render/glsl';
+import { fbm3 } from '../../shared/render/noise';
+import { createRockMaterial } from '../../shared/render/rockSurface';
+import { applyWetSurface } from '../../shared/render/wetSurface';
+import { createRainLayer, createRainSplashes } from '../../shared/render/rainStreaks';
+import { assignProbe, captureProbe, captureSkyProbe, createSky } from './atmosphere';
+import { applyFoliage, applyGround, applyTimber, TimberSet } from './surfaces';
+import { boulderGeometry, limbGeometry } from './geometry';
 
-/* Original procedural geometry and shaders. No third-party art assets. */
+/* Original procedural geometry and shaders. No third-party art assets.
+ * Seated at a closed wooden window: the wet glass, with beaded, sliding and
+ * misted water, refracts a hydrangea garden rendered from the same scene and
+ * camera. Daylight from the window and a warm lamp behind light the timber. */
 const random = (seed: number) => () => {
   seed = (seed * 1664525 + 1013904223) >>> 0;
   return seed / 4294967296;
 };
 
-function grainTexture(base: string, kind: 'wood' | 'earth' | 'stone', seed: number) {
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = 512;
-  const ctx = canvas.getContext('2d')!;
-  const rnd = random(seed);
-  ctx.fillStyle = base;
-  ctx.fillRect(0, 0, 512, 512);
-  for (let i = 0; i < (kind === 'wood' ? 1600 : 20000); i++) {
-    const x = rnd() * 512, y = rnd() * 512;
-    ctx.fillStyle = `rgba(${rnd() < 0.5 ? '255,238,205' : '24,31,20'},${rnd() * 0.16})`;
-    if (kind === 'wood') {
-      ctx.beginPath();
-      ctx.ellipse(x, y, 0.12 + rnd() * 0.55, 18 + rnd() * 240, 0.015 * Math.sin(x), 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      ctx.fillRect(x, y, 1 + rnd() * 4, 1 + rnd() * 5);
-    }
-  }
-  if (kind === 'wood') {
-    for (let i = 0; i < 3; i++) {
-      const x = 60 + rnd() * 370, y = rnd() * 512;
-      for (let r = 3; r < 25; r += 2) {
-        ctx.strokeStyle = `rgba(41,26,14,${0.09 - r * 0.002})`;
-        ctx.beginPath(); ctx.ellipse(x, y, r * 0.32, r, -0.06, 0, Math.PI * 2); ctx.stroke();
-      }
-    }
-  }
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 4;
-  return tex;
-}
-
 function leafGeometry() {
   const positions: number[] = [], uv: number[] = [], indices: number[] = [];
-  const segments = 14;
+  const segments = 8;
   for (let i = 0; i <= segments; i++) {
     const t = i / segments;
     const width = Math.pow(Math.sin(t * Math.PI), 0.75) * 0.45 * (i % 2 ? 0.87 : 1);
@@ -71,7 +49,6 @@ function petalGeometry() {
   const rows = 7, columns = 7;
   for (let row = 0; row <= rows; row++) {
     const t = row / rows;
-    // Broad rounded sepals, slightly pinched where the four lobes meet.
     const width = Math.pow(Math.max(0, Math.sin(Math.PI * t)), 0.52) * (0.44 + t * 0.20);
     for (let col = 0; col <= columns; col++) {
       const q = col / columns * 2 - 1;
@@ -89,99 +66,259 @@ function petalGeometry() {
   return g;
 }
 
+const GLASS_W = 5.72, GLASS_H = 2.69;
+
+const GLASS_FRAGMENT = /* glsl */ `
+${GLSL_NOISE}
+${GLSL_COLOR}
+uniform sampler2D uScene; uniform vec2 uResolution; uniform float uTime; uniform vec2 uTouch; uniform float uTouchStrength; uniform vec3 uRoom;
+varying vec2 vUv;
+const vec2 GLASS = vec2(${GLASS_W.toFixed(3)}, ${GLASS_H.toFixed(3)});
+// One layer of beaded drops; cell and radii in metres. xy: lens normal, z: coverage.
+vec3 beads(vec2 m, float cell, float seed, float rMin, float rMax, float density) {
+  vec2 id = floor(m / cell);
+  vec3 h = bwHash3(vec3(id, seed));
+  vec2 c = (id + 0.2 + 0.6 * h.xy) * cell;
+  float r = mix(rMin, rMax, h.z * h.z);
+  vec2 q = (m - c) / r;
+  q.y *= 0.9 + 0.2 * h.x;                       // gravity flattens the bottom a little
+  float d = length(q);
+  float present = step(1.0 - density, fract(h.z * 7.31 + h.x));
+  float mask = (1.0 - smoothstep(0.82, 1.0, d)) * present;
+  return vec3(q * mask, mask);
+}
+void main() {
+  vec2 screenUv = gl_FragCoord.xy / uResolution;
+  vec2 m = vUv * GLASS;                         // metres on the pane
+  vec2 px = 1.0 / uResolution;
+  // Touch trace: a wiped path that slowly mists over again.
+  vec2 traceDelta = (vUv - uTouch) * vec2(GLASS.x / GLASS.y, 1.0);
+  float wiped = exp(-dot(traceDelta, traceDelta) * 48.0) * uTouchStrength;
+
+  // Running drops: each lane releases a drop that creeps, pauses and slides.
+  vec2 slide = vec2(0.0); float slideMask = 0.0, trail = 0.0;
+  for (int i = 0; i < 2; i++) {
+    float lane = 0.16 + float(i) * 0.09;
+    float id = floor(m.x / lane);
+    vec3 h = bwHash3(vec3(id, float(i) + 40.0, 3.0));
+    float x = (id + 0.25 + 0.5 * h.x) * lane + 0.004 * sin(m.y * 23.0 + h.y * 9.0);
+    float speed = 0.05 + 0.08 * h.y;
+    float phase = uTime * speed + h.z * 9.0;
+    // Stop-go creep: progress advances in fits as the drop gathers water.
+    float progress = floor(phase) + smoothstep(0.35, 1.0, fract(phase));
+    float headY = GLASS.y + 0.2 - mod(progress * 0.55, GLASS.y + 0.6);
+    float r = 0.009 + 0.006 * h.x;
+    vec2 q = (m - vec2(x, headY)) / vec2(r, r * 1.25);
+    float d = length(q);
+    float mask = (1.0 - smoothstep(0.8, 1.0, d)) * step(0.3, h.y);
+    slide += q * mask; slideMask = max(slideMask, mask);
+    float behind = m.y - headY;
+    float trailMask = (1.0 - smoothstep(0.0015, 0.004, abs(m.x - x))) * smoothstep(0.0, 0.02, behind) * (1.0 - smoothstep(0.3, 0.9, behind)) * step(0.3, h.y);
+    trail = max(trail, trailMask);
+  }
+  // Seen from across the room, so the beads are the larger ones a pane collects.
+  vec3 small = beads(m, 0.03, 1.0, 0.0028, 0.0055, 0.55);
+  vec3 medium = beads(m + 0.011, 0.07, 2.0, 0.005, 0.0105, 0.45);
+  vec3 large = beads(m + 0.031, 0.16, 3.0, 0.009, 0.016, 0.35);
+  // Trails and wiped glass hold no beads.
+  float clear = max(trail * 0.9, wiped);
+  vec3 dropAll = vec3(0.0);
+  float coverage = 0.0;
+  for (int k = 0; k < 3; k++) {
+    vec3 b = k == 0 ? small : k == 1 ? medium : large;
+    if (b.z > coverage) { dropAll = b; coverage = b.z; }
+  }
+  if (slideMask > coverage) { dropAll = vec3(slide, slideMask); coverage = slideMask; }
+  coverage *= 1.0 - clear * (1.0 - slideMask);
+  vec2 n = dropAll.xy;
+  float nn = clamp(dot(n, n), 0.0, 1.0);
+
+  // A thin film everywhere bends the view slightly; condensation mists the lower pane.
+  vec2 film = vec2(bwNoise(vec3(m * 3.0, uTime * 0.02)), bwNoise(vec3(m * 3.0 + 7.0, uTime * 0.02))) * 0.0015;
+  float mist = (0.05 + 0.55 * (1.0 - smoothstep(0.0, 0.9, m.y)) + 0.3 * bwFbm3(vec3(m * 1.3, 2.0)) + 0.25 * (1.0 - smoothstep(0.0, 0.35, min(m.x, GLASS.x - m.x)))) * (1.0 - clear) * (1.0 - coverage);
+  mist = clamp(mist, 0.0, 1.0) * 0.8;
+  // Each drop is a tiny lens: a minified, inverted view of the garden behind it.
+  vec2 lens = -n * (0.03 + 0.025 * nn);
+  vec2 uv = screenUv + film + lens * coverage;
+  vec3 colour;
+  if (mist > 0.04) {
+    // Misted glass scatters: average a small disc of the view.
+    colour = vec3(0.0);
+    float radius = mist * 7.0;
+    for (int i = 0; i < 8; i++) {
+      float a = float(i) * 2.39996 + bwIgn(gl_FragCoord.xy) * 6.28;
+      float rr = sqrt((float(i) + 0.5) / 8.0) * radius;
+      colour += texture2D(uScene, clamp(uv + vec2(cos(a), sin(a)) * rr * px, vec2(0.002), vec2(0.998))).rgb;
+    }
+    colour /= 8.0;
+    colour = mix(colour, colour * 0.9 + uRoom * 0.4, mist * 0.3);
+  } else {
+    colour = texture2D(uScene, clamp(uv, vec2(0.002), vec2(0.998))).rgb;
+  }
+  // Drop shading: dark rim from total internal reflection, a sky glint top-left.
+  float rim = smoothstep(0.45, 0.95, sqrt(nn)) * coverage;
+  colour *= 1.0 - 0.55 * rim;
+  vec2 glintAt = n - vec2(-0.32, 0.42);
+  float glint = exp(-dot(glintAt, glintAt) * 26.0) * coverage;
+  float focus = smoothstep(0.0, -0.7, n.y) * (1.0 - smoothstep(0.6, 0.95, sqrt(nn))) * coverage;
+  colour += vec3(1.9, 2.0, 2.05) * glint * 0.7 + colour * focus * 0.45;
+  // Wet trails stay clearer and catch a faint highlight along their edge.
+  colour += vec3(0.25) * trail * 0.15;
+  // Faint reflection of the warm room on the glass.
+  colour += uRoom * 0.04;
+  gl_FragColor = vec4(colour, 1.0);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`;
+
 export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const rnd = random(83059);
+  const time = { value: 0 };
   scene.background = new THREE.Color('#a6bab6');
-  scene.fog = new THREE.FogExp2('#b4c5bf', 0.021);
+  scene.fog = new THREE.FogExp2('#7f908d', 0.028);
   const garden = new THREE.Group(); scene.add(garden);
-  const textures: THREE.Texture[] = [];
-  const texture = (base: string, kind: 'wood' | 'earth' | 'stone', seed: number) => {
-    const t = grainTexture(base, kind, seed); textures.push(t); return t;
-  };
-  const woodTex = texture('#82745e', 'wood', 13);
-  const wood = new THREE.MeshStandardMaterial({ map: woodTex, color: '#c7c4b3', roughness: 0.68, bumpMap: woodTex, bumpScale: 0.018 });
-  const sillTex = woodTex.clone(); sillTex.center.set(0.5, 0.5); sillTex.rotation = Math.PI / 2; sillTex.repeat.set(1, 3); textures.push(sillTex);
-  const sillWood = new THREE.MeshStandardMaterial({ map: sillTex, color: '#c7c4b3', roughness: 0.65, bumpMap: sillTex, bumpScale: 0.008 });
-  const darkWood = new THREE.MeshStandardMaterial({ map: woodTex, color: '#67543c', roughness: 0.74, bumpMap: woodTex, bumpScale: 0.012 });
-  const earthTex = texture('#434c33', 'earth', 32);
-  earthTex.repeat.set(8, 8);
-  const earth = new THREE.MeshStandardMaterial({ map: earthTex, roughness: 0.98, bumpMap: earthTex, bumpScale: 0.07 });
-  const stoneTex = texture('#78817a', 'stone', 55);
-  const stone = new THREE.MeshStandardMaterial({ map: stoneTex, color: '#b5b6a7', roughness: 0.72, bumpMap: stoneTex, bumpScale: 0.042 });
-  const bronze = new THREE.MeshStandardMaterial({ color: '#655b41', roughness: 0.42, metalness: 0.62 });
-  const leafMat = gardenFoliageMaterial('leaf');
-  const petalMat = gardenFoliageMaterial('sepal');
-  const glassOccluders: THREE.Object3D[] = [];
-  const box = (w: number, h: number, d: number, x: number, y: number, z: number, mat: THREE.Material, parent: THREE.Object3D = scene) => {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-    mesh.position.set(x, y, z); mesh.castShadow = mesh.receiveShadow = true; parent.add(mesh); if (parent === scene) glassOccluders.push(mesh); return mesh;
-  };
-  const rod = (a: THREE.Vector3, b: THREE.Vector3, radius: number, mat: THREE.Material, parent: THREE.Object3D = garden) => {
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.72, radius, a.distanceTo(b), 7), mat);
-    mesh.position.copy(a).add(b).multiplyScalar(0.5);
-    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()); parent.add(mesh); return mesh;
-  };
-  const hemi = new THREE.HemisphereLight('#d8edf0', '#748052', 1.5); scene.add(hemi);
-  const daylight = new THREE.DirectionalLight('#e7f4f4', 1.8); daylight.position.set(-3, 7, 2);
+  const disposables: { dispose(): void }[] = [];
+
+  // ---- Sky and light ------------------------------------------------------------------
+  const glowDirection = new THREE.Vector3(-0.3, 0.6, -0.75).normalize();
+  const sky = createSky({
+    time, zenith: new THREE.Color(1.75, 1.92, 2.02), horizon: new THREE.Color(1.15, 1.28, 1.32),
+    cloudDark: new THREE.Color(0.95, 1.05, 1.1), cloudLight: new THREE.Color(1.8, 1.95, 2.02),
+    glowDirection, glow: new THREE.Color(0.35, 0.34, 0.3), ground: new THREE.Color(0.1, 0.12, 0.09), coverage: 0.85, scale: 0.8, drift: 0.012,
+  });
+  scene.add(sky.mesh);
+  const daylight = new THREE.DirectionalLight('#e7f1f1', 1.25); daylight.position.set(-5, 12, -3);
+  daylight.name = 'window-garden-daylight';
   daylight.castShadow = true; daylight.shadow.mapSize.set(1024, 1024);
   daylight.shadow.camera.left = -8; daylight.shadow.camera.right = 8; daylight.shadow.camera.top = 7; daylight.shadow.camera.bottom = -4;
   daylight.shadow.bias = -0.002; daylight.shadow.normalBias = 0.035;
-  daylight.shadow.radius = 3; scene.add(daylight);
-  const roomLight = new THREE.PointLight('#ffdaa4', 2.7, 7, 2); roomLight.position.set(1.7, 2.5, 2.7); scene.add(roomLight);
+  daylight.shadow.radius = 4; scene.add(daylight);
+  // The world is static apart from foliage sway: render the key shadow once, and
+  // again only while something that casts it moves (saves a pass every frame).
+  daylight.shadow.autoUpdate = false; daylight.shadow.needsUpdate = true;
+  // Daylight through the pane falls on the sill; the frame casts its shadow.
+  const windowLight = new THREE.SpotLight('#d8e6ea', 4.5, 6, 0.85, 0.9, 2);
+  windowLight.position.set(-0.4, 3.1, -1.1); windowLight.target.position.set(0.2, 0.7, 0.7);
+  windowLight.castShadow = true; windowLight.shadow.mapSize.set(512, 512); windowLight.shadow.bias = -0.002; windowLight.shadow.radius = 5;
+  windowLight.shadow.autoUpdate = false; windowLight.shadow.needsUpdate = true;
+  scene.add(windowLight, windowLight.target);
+  const roomLight = new THREE.PointLight('#ffc98e', 1.8, 8, 2); roomLight.position.set(1.7, 2.5, 2.7); scene.add(roomLight);
+  const fallbackFill = new THREE.HemisphereLight('#d8edf0', '#748052', 1.3);
+  fallbackFill.visible = false; scene.add(fallbackFill);
 
-  // A real, closed timber sash. The single off-centre stile leaves a broad portrait view.
-  box(6.9, 0.18, 0.66, 0, 0.57, 0.12, darkWood);
-  const sill = box(6.8, 0.11, 1.15, 0, 0.67, 0.44, sillWood);
-  sill.geometry.translate(0, 0, 0);
-  box(0.26, 3.9, 0.3, -3.02, 2.0, 0.02, wood);
-  box(0.26, 3.9, 0.3, 3.02, 2.0, 0.02, wood);
-  box(6.3, 0.28, 0.35, 0, 3.67, 0.02, wood);
-  box(0.13, 2.82, 0.17, -0.63, 2.16, 0.08, wood);
-  box(5.8, 0.075, 0.15, 0, 2.93, 0.08, wood);
-  // Inset retaining strips, grain edges, mortise pegs and the restrained aged latch.
-  for (const x of [-2.85, 2.85]) box(0.035, 2.94, 0.06, x, 2.14, 0.17, darkWood);
-  for (const y of [0.80, 3.5]) box(5.7, 0.035, 0.06, 0, y, 0.17, darkWood);
+  // ---- Materials ----------------------------------------------------------------------
+  const sash = applyTimber(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.55 }), {
+    key: 'window-sash', early: '#a07a52', late: '#5d3f24', rings: 36, weathering: 0.08, roughness: [0.38, 0.6],
+  });
+  const sillWood = applyTimber(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.5 }), {
+    key: 'window-sill', early: '#a8845c', late: '#664527', rings: 30, weathering: 0.05, roughness: [0.32, 0.55],
+  });
+  const plaster = new THREE.MeshStandardMaterial({ color: '#cbbfa9', roughness: 0.95 });
+  plaster.onBeforeCompile = shader => {
+    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vPlaster;')
+      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvPlaster = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', `#include <common>\nvarying vec3 vPlaster;\n${GLSL_NOISE}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+diffuseColor.rgb *= 0.9 + 0.1 * bwFbm3(vPlaster * 2.5) + 0.04 * bwNoise(vPlaster * 30.0);`);
+  };
+  plaster.customProgramCacheKey = () => 'window-plaster-v1';
+  const bronze = new THREE.MeshStandardMaterial({ color: '#6e5c3c', roughness: 0.38, metalness: 0.85 });
+  const earth = applyWetSurface(applyGround(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92 }), {
+    key: 'window-garden', soil: '#433a2a', litter: ['#5a3d22', '#6f5532'], litterAmount: 0.2, moss: '#4a6630', mossAmount: 0.62,
+  }), { key: 'window-garden', time, wetness: 0.9, darkening: 0.6, wetRoughness: 0.45, puddles: 0.3, puddleSize: 0.9, rippleDensity: 9 });
+  const stone = applyWetSurface(createRockMaterial('#86877c', { key: 'window-stones', scale: 2.2, bump: 0.9, strata: 0.1, cavity: 0.5, wetness: 0.8, drips: 0.1, dryRoughness: 0.7, wetRoughness: 0.14, moss: { color: '#55702e', amount: 0.4 } }), {
+    key: 'window-stones', time, wetness: 0.3, darkening: 0.9, wetRoughness: 0.12, puddles: 0.25, puddleSize: 0.25, rippleDensity: 12,
+  });
+  const leafMat = applyWetSurface(gardenFoliageMaterial('leaf'), { key: 'window-hydrangea-leaf', time, wetness: 0.65, darkening: 0.88, wetRoughness: 0.18 });
+  const petalMat = applyWetSurface(gardenFoliageMaterial('sepal'), { key: 'window-hydrangea-sepal', time, wetness: 0.5, darkening: 0.9, wetRoughness: 0.3 });
+  const foliage = (key: string, color: THREE.ColorRepresentation) => applyWetSurface(applyFoliage(new THREE.MeshStandardMaterial({ color, roughness: 0.45, side: THREE.DoubleSide }), {
+    key, translucency: new THREE.Color(0.5, 0.75, 0.3), strength: 0.7,
+  }), { key, time, wetness: 0.6, darkening: 0.85, wetRoughness: 0.22 });
+
+  // ---- The window: sash, sill, wall --------------------------------------------------------
+  const frame = new TimberSet(7), sill = new TimberSet(13);
+  sill.box(6.9, 0.18, 0.66, { x: 0, y: 0.57, z: 0.12 }, undefined, { radius: 0.02 });
+  sill.box(6.8, 0.11, 1.15, { x: 0, y: 0.67, z: 0.44 }, undefined, { radius: 0.03 });
+  frame.box(0.26, 3.9, 0.3, { x: -3.02, y: 2.0, z: 0.02 }, undefined, { radius: 0.025 });
+  frame.box(0.26, 3.9, 0.3, { x: 3.02, y: 2.0, z: 0.02 }, undefined, { radius: 0.025 });
+  frame.box(6.3, 0.28, 0.35, { x: 0, y: 3.67, z: 0.02 }, undefined, { radius: 0.025 });
+  frame.box(0.13, 2.82, 0.17, { x: -0.63, y: 2.16, z: 0.08 }, undefined, { radius: 0.018 });
+  frame.box(5.8, 0.075, 0.15, { x: 0, y: 2.93, z: 0.08 }, undefined, { radius: 0.012 });
+  // Inset retaining strips and the sash rails.
+  for (const x of [-2.85, 2.85]) frame.box(0.035, 2.94, 0.06, { x, y: 2.14, z: 0.17 }, undefined, { radius: 0.008 });
+  for (const y of [0.8, 3.5]) frame.box(5.7, 0.035, 0.06, { x: 0, y, z: 0.17 }, undefined, { radius: 0.008 });
+  const sashMesh = frame.build(sash, 'window-sash');
+  const sillMesh = sill.build(sillWood, 'window-sill');
+  scene.add(sashMesh, sillMesh);
+  const glassOccluders: THREE.Object3D[] = [sashMesh, sillMesh];
+  const box = (w: number, h: number, d: number, x: number, y: number, z: number, mat: THREE.Material) => {
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    mesh.position.set(x, y, z); mesh.castShadow = mesh.receiveShadow = true; scene.add(mesh); glassOccluders.push(mesh); return mesh;
+  };
+  // Pegs and the aged bronze latch.
   for (const x of [-3.03, 3.03, -0.63]) for (const y of [0.88, 3.35]) {
-    const peg = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.006, 10), darkWood);
+    const peg = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.006, 14), sash);
     peg.rotation.x = Math.PI / 2; peg.position.set(x, y, 0.183); scene.add(peg);
   }
   box(0.06, 0.19, 0.02, -0.625, 1.63, 0.18, bronze);
   box(0.13, 0.025, 0.037, -0.57, 1.64, 0.205, bronze);
-  const plaster = new THREE.MeshStandardMaterial({ color: '#c9bfac', roughness: 0.96 });
-  box(2.5, 5, 0.2, -4.40, 2.0, 0.05, plaster); box(2.5, 5, 0.2, 4.40, 2.0, 0.05, plaster);
+  box(2.5, 5, 0.2, -4.4, 2.0, 0.05, plaster); box(2.5, 5, 0.2, 4.4, 2.0, 0.05, plaster);
   box(9, 1.3, 0.2, 0, -0.11, 0.07, plaster);
+  // The room behind the viewer: unseen, but it shapes the probe and the warm bounce.
+  const room = new THREE.Group(); scene.add(room);
+  const roomMat = new THREE.MeshStandardMaterial({ color: '#6d5a46', roughness: 0.9, side: THREE.BackSide });
+  // Five inner faces of a box: the side toward the window stays open.
+  const roomGeometry = new THREE.BoxGeometry(11, 5.6, 6);
+  const front = roomGeometry.groups[5];
+  roomGeometry.setIndex(Array.from(roomGeometry.index!.array).slice(0, front.start));
+  roomGeometry.clearGroups();
+  const roomBox = new THREE.Mesh(roomGeometry, roomMat); roomBox.position.set(0, 1.8, 3.15); room.add(roomBox);
 
-  // A quiet object of the garden, close enough to read ceramic thickness and a wet rim.
+  // A celadon bowl on the sill, with water and fallen sepals.
   const bowlProfile = [new THREE.Vector2(0.035, 0), new THREE.Vector2(0.16, 0.016), new THREE.Vector2(0.24, 0.085), new THREE.Vector2(0.254, 0.13), new THREE.Vector2(0.24, 0.137), new THREE.Vector2(0.222, 0.09), new THREE.Vector2(0.148, 0.036), new THREE.Vector2(0.04, 0.025)];
-  const ceramic = new THREE.MeshStandardMaterial({ color: '#92a8a0', roughness: 0.29, metalness: 0.05 });
-  const bowl = new THREE.Mesh(new THREE.LatheGeometry(bowlProfile, 40), ceramic);
+  const ceramic = new THREE.MeshPhysicalMaterial({ color: '#8fa69c', roughness: 0.32, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08 });
+  const bowl = new THREE.Mesh(new THREE.LatheGeometry(bowlProfile, 72), ceramic);
   bowl.position.set(0.38, 0.733, 0.44); bowl.receiveShadow = bowl.castShadow = true; scene.add(bowl);
-  const bowlWater = new THREE.Mesh(new THREE.CircleGeometry(0.197, 40), new THREE.MeshPhysicalMaterial({ color: '#627f79', roughness: 0.08, metalness: 0.25, clearcoat: 1, transparent: true, opacity: 0.85 }));
+  const bowlWater = new THREE.Mesh(new THREE.CircleGeometry(0.197, 48), new THREE.MeshStandardMaterial({ color: '#2c3d38', roughness: 0.04, metalness: 0 }));
   bowlWater.rotation.x = -Math.PI / 2; bowlWater.position.set(0.38, 0.82, 0.44); scene.add(bowlWater);
   for (let i = 0; i < 3; i++) {
-    const p = new THREE.Mesh(petalGeometry(), new THREE.MeshStandardMaterial({ color: i === 1 ? '#a4a1d2' : '#8da6d0', side: THREE.DoubleSide, roughness: 0.72 }));
+    const p = new THREE.Mesh(petalGeometry(), new THREE.MeshStandardMaterial({ color: i === 1 ? '#a4a1d2' : '#8da6d0', side: THREE.DoubleSide, roughness: 0.55 }));
     p.rotation.set(-Math.PI / 2, 0, rnd() * 6.28); p.scale.setScalar(0.075);
     p.position.set(0.31 + rnd() * 0.13, 0.822, 0.38 + rnd() * 0.13); scene.add(p);
   }
 
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(25, 26, 48, 48), earth);
-  const gp = ground.geometry.attributes.position;
-  for (let i = 0; i < gp.count; i++) {
-    const x = gp.getX(i), y = gp.getY(i); gp.setZ(i, Math.sin(x * 1.2) * Math.cos(y * 0.55) * 0.10 + Math.sin(x * 2.8 + y) * 0.025);
-  }
-  ground.geometry.computeVertexNormals(); ground.rotation.x = -Math.PI / 2; ground.position.set(0, -0.1, -10); ground.receiveShadow = true; garden.add(ground);
+  // ---- Garden ----------------------------------------------------------------------------
+  const groundY = (x: number, z: number) => -0.1 + Math.sin(x * 1.2) * Math.cos(z * 0.55) * 0.1 + Math.sin(x * 2.8 + z) * 0.025 + 0.04 * fbm3(x * 0.4, 1, z * 0.4, 3);
+  const groundGeometry = new THREE.PlaneGeometry(25, 26, 120, 120); groundGeometry.rotateX(-Math.PI / 2);
+  const gp = groundGeometry.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < gp.count; i++) { const x = gp.getX(i), z = gp.getZ(i) - 10; gp.setXYZ(i, x, groundY(x, z), z); }
+  groundGeometry.computeVertexNormals();
+  const ground = new THREE.Mesh(groundGeometry, earth); ground.receiveShadow = true; garden.add(ground);
   // Irregular wet stepping stones recede between asymmetrical flower beds.
+  const stoneParts: THREE.BufferGeometry[] = [];
+  const pathX = (z: number) => -0.18 + Math.sin((-z - 1.3) / 0.91 * 0.63) * 1.12;
   for (let i = 0; i < 10; i++) {
     const z = -1.3 - i * 0.91, x = -0.18 + Math.sin(i * 0.63) * 1.12;
-    const g = new THREE.CylinderGeometry(0.46 + rnd() * 0.13, 0.50 + rnd() * 0.12, 0.09 + rnd() * 0.04, 7);
-    const rock = new THREE.Mesh(g, stone); rock.position.set(x, -0.012, z); rock.rotation.y = rnd() * 5; rock.scale.z = 0.65 + rnd() * 0.21;
-    rock.castShadow = rock.receiveShadow = true; garden.add(rock);
+    const g = boulderGeometry(300 + i, 4, -0.1);
+    g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, groundY(x, z) + 0.04, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, rnd() * 5, 0)), new THREE.Vector3(0.48 + rnd() * 0.12, 0.07, (0.48 + rnd() * 0.1) * (0.65 + rnd() * 0.21))));
+    stoneParts.push(g);
   }
-  const stemMat = new THREE.MeshStandardMaterial({ color: '#536746', roughness: 0.94 });
+  for (let i = 0; i < 110; i++) {
+    const z = -1.35 - rnd() * 9, x = pathX(z) + (rnd() - 0.5) * 1.65;
+    const size = 0.025 + rnd() * 0.055;
+    const g = boulderGeometry(500 + (i % 6), 2, -0.2);
+    g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, groundY(x, z) + size * 0.3, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd(), rnd() * 6, rnd())), new THREE.Vector3(size * 1.3, size * 0.55, size)));
+    stoneParts.push(g);
+  }
+  const stones = new THREE.Mesh(mergeGeometries(stoneParts)!, stone); stones.castShadow = stones.receiveShadow = true; garden.add(stones);
+  stoneParts.forEach(g => g.dispose());
+
+  const stemMat = new THREE.MeshStandardMaterial({ color: '#536746', roughness: 0.7 });
   const leafG = leafGeometry();
   const foliageRandom = random(38291); // Keep the established distant garden/rain placement deterministic.
   const leavesData: { pos: THREE.Vector3; q: THREE.Quaternion; scale: THREE.Vector3; color: THREE.Color }[] = [];
   const petalsData: { pos: THREE.Vector3; q: THREE.Quaternion; scale: THREE.Vector3; color: THREE.Color }[] = [];
+  const stems: THREE.BufferGeometry[] = [];
   const eye = new THREE.Vector3(0, 1.6, 3.2);
   const bases = [
     [-1.36, -2.6, 1.87, 0.535], [-3.6, -4.0, 1.40, 0.61], [-1.8, -5.4, 1.13, 0.56],
@@ -192,7 +329,7 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       const angle = stem * 2.39996 + bushIndex, rad = 0.26 + rnd() * 0.6;
       const top = new THREE.Vector3(bx + Math.cos(angle) * rad, height * (0.63 + rnd() * 0.38), bz + Math.sin(angle) * rad * 0.72);
       const root = new THREE.Vector3(bx + (rnd() - 0.5) * 0.28, -0.05, bz + (rnd() - 0.5) * 0.3);
-      rod(root, top, 0.017 + rnd() * 0.009, stemMat);
+      stems.push(limbGeometry([root, root.clone().lerp(top, 0.5).add(new THREE.Vector3(0, 0.05, 0)), top], 0.017 + rnd() * 0.009, 0.012, 6, 8));
       for (let j = 0; j < 11; j++) {
         const t = 0.17 + j * 0.068, pos = root.clone().lerp(top, t);
         const outward = new THREE.Vector3(Math.cos(angle + j * 2.4) * 0.65, 0.20 + rnd() * 0.38, Math.sin(angle + j * 2.4) * 0.5);
@@ -225,6 +362,8 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       }
     }
   });
+  const stemMesh = new THREE.Mesh(mergeGeometries(stems)!, stemMat); stemMesh.castShadow = true; garden.add(stemMesh);
+  stems.forEach(g => g.dispose());
   const leaves = new THREE.Group(), petals = new THREE.Group();
   leaves.name = 'hydrangea-curved-leaves'; petals.name = 'hydrangea-irregular-sepals';
   const dummy = new THREE.Object3D();
@@ -242,21 +381,29 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
     mesh.castShadow = mesh.receiveShadow = true; group.add(mesh);
   }
   garden.add(leaves, petals);
-  // The far boundary is a textured Japanese garden wall and irregular bamboo, not a city grid.
-  const wallTex = texture('#a8b2a1', 'stone', 18); wallTex.repeat.set(5, 1);
-  const gardenWall = new THREE.MeshStandardMaterial({ map: wallTex, color: '#c4c8b7', roughness: 0.97, bumpMap: wallTex, bumpScale: 0.016 });
-  box(24, 1.5, 0.23, 0, 0.58, -11.5, gardenWall, garden);
-  const cap = box(24.3, 0.12, 0.64, 0, 1.37, -11.5, new THREE.MeshStandardMaterial({ color: '#59675e', roughness: 0.88 }), garden); cap.rotation.z = 0.002;
-  const bambooMat = new THREE.MeshStandardMaterial({ color: '#7f9266', roughness: 0.76 });
+  // The far boundary: a dry-stone garden wall with a tiled coping, and irregular bamboo.
+  const wallParts: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < 84; i++) {
+    const row = i % 3, x = -12 + Math.floor(i / 3) * 0.88 + (row % 2) * 0.42 + (rnd() - 0.5) * 0.1;
+    const g = boulderGeometry(700 + (i % 11), 3);
+    g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, -0.05 + 0.24 + row * 0.42, -11.5), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, (rnd() - 0.5) * 0.3, 0)), new THREE.Vector3(0.46 + rnd() * 0.1, 0.22 + rnd() * 0.04, 0.24)));
+    wallParts.push(g);
+  }
+  const wall = new THREE.Mesh(mergeGeometries(wallParts)!, stone); wall.receiveShadow = true; garden.add(wall);
+  wallParts.forEach(g => g.dispose());
+  const coping = new THREE.Mesh(new THREE.BoxGeometry(24.3, 0.14, 0.62), applyWetSurface(new THREE.MeshStandardMaterial({ color: '#3f4845', roughness: 0.6 }), { key: 'window-coping', time, wetness: 1, darkening: 0.7, wetRoughness: 0.12, streaks: 0.6 }));
+  coping.position.set(0, 1.37, -11.5); coping.castShadow = true; garden.add(coping);
+  const bambooMat = applyWetSurface(new THREE.MeshStandardMaterial({ color: '#7d9163', roughness: 0.4 }), { key: 'window-bamboo', time, wetness: 0.7, darkening: 0.85, wetRoughness: 0.15, streaks: 0.5 });
+  const bambooParts: THREE.BufferGeometry[] = [];
   const bambooLeaves: THREE.Matrix4[] = [];
   for (let i = 0; i < 29; i++) {
     const x = -11 + i * 0.79 + rnd() * 0.25, h = 3.8 + rnd() * 3.8, z = -12.8 - rnd() * 3.4;
     const start = new THREE.Vector3(x, 0, z), tip = new THREE.Vector3(x + (rnd() - 0.5) * 1.1, h, z + rnd() * 0.8);
-    rod(start, tip, 0.045 + rnd() * 0.018, bambooMat);
+    bambooParts.push(limbGeometry([start, start.clone().lerp(tip, 0.5), tip], 0.05 + rnd() * 0.018, 0.035, 8, 12));
     for (let n = 0; n < 7; n++) {
       const centre = start.clone().lerp(tip, 0.42 + n * 0.077);
       const side = n % 2 ? 1 : -1, end = centre.clone().add(new THREE.Vector3(side * (0.9 + rnd()), 0.1 + rnd() * 0.4, rnd() - 0.5));
-      rod(centre, end, 0.009, stemMat);
+      bambooParts.push(limbGeometry([centre, end], 0.009, 0.004, 4, 2));
       for (let f = 0; f < 9; f++) {
         dummy.position.copy(centre).lerp(end, (f + 1) / 10);
         dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(side * (f % 2 ? 0.2 : 0.9), -0.12 - rnd() * 0.7, 0.4).normalize());
@@ -264,123 +411,95 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       }
     }
   }
-  const bambooLeafMesh = new THREE.InstancedMesh(leafG, new THREE.MeshStandardMaterial({ color: '#4f7355', roughness: 0.95, side: THREE.DoubleSide }), bambooLeaves.length);
+  const bambooMesh = new THREE.Mesh(mergeGeometries(bambooParts)!, bambooMat); garden.add(bambooMesh);
+  bambooParts.forEach(g => g.dispose());
+  const bambooLeafMesh = new THREE.InstancedMesh(leafG, foliage('window-bamboo-leaf', '#4f7355'), bambooLeaves.length);
   bambooLeaves.forEach((m, i) => bambooLeafMesh.setMatrixAt(i, m)); garden.add(bambooLeafMesh);
 
   // Broad-leaf trees overlap behind the wall; branch-led clumps avoid a repeated sphere hedge.
   const canopyMatrices: THREE.Matrix4[] = [], canopyColors: THREE.Color[] = [];
-  const barkMat = new THREE.MeshStandardMaterial({ map: woodTex, color: '#58624c', roughness: 0.97, bumpMap: woodTex, bumpScale: 0.025 });
+  const barkParts: THREE.BufferGeometry[] = [];
   for (const [tx, tz, height] of [[-9, -13, 6.7], [-3.5, -13.8, 7.4], [3.4, -14.3, 7.2], [9.2, -12, 7.0]]) {
     const base = new THREE.Vector3(tx, 0, tz), trunkTop = new THREE.Vector3(tx + 0.45, height * 0.65, tz - 0.25);
-    rod(base, trunkTop, 0.17, barkMat);
+    barkParts.push(limbGeometry([base, base.clone().lerp(trunkTop, 0.5).add(new THREE.Vector3(0.1, 0, 0)), trunkTop], 0.19, 0.12, 10, 10));
     for (let branch = 0; branch < 9; branch++) {
       const angle = branch * 2.4, spread = 1.1 + rnd() * 1.5;
       const fork = base.clone().lerp(trunkTop, 0.5 + rnd() * 0.43);
       const tip = new THREE.Vector3(tx + Math.cos(angle) * spread, height * (0.57 + rnd() * 0.43), tz + Math.sin(angle) * spread * 0.7);
-      rod(fork, tip, 0.047, barkMat);
-      for (let l = 0; l < 76; l++) {
-        const leafCentre = fork.clone().lerp(tip, 0.42 + rnd() * 0.71);
-        leafCentre.x += (rnd() - 0.5) * 1.75; leafCentre.y += (rnd() - 0.5) * 0.95; leafCentre.z += (rnd() - 0.5) * 1.45;
-        dummy.position.copy(leafCentre);
-        dummy.rotation.set(rnd() * 1.7 - 0.85, rnd() * 2.2 - 1.1, rnd() * 6.28);
-        const size = 0.45 + rnd() * 0.40;
-        dummy.scale.set(size * 0.7, size, size); dummy.updateMatrix(); canopyMatrices.push(dummy.matrix.clone());
-        canopyColors.push(new THREE.Color().setHSL(0.25 + rnd() * 0.05, 0.26 + rnd() * 0.2, 0.15 + rnd() * 0.12));
+      barkParts.push(limbGeometry([fork, fork.clone().lerp(tip, 0.5).add(new THREE.Vector3(0, 0.2, 0)), tip], 0.05, 0.015, 5, 6));
+      // Leaves gather in clumps around the twig ends rather than one even cloud.
+      for (let c = 0; c < 3; c++) {
+        const clump = fork.clone().lerp(tip, 0.5 + c * 0.25).add(new THREE.Vector3((rnd() - 0.5) * 0.8, (rnd() - 0.2) * 0.5, (rnd() - 0.5) * 0.6));
+        for (let l = 0; l < 44; l++) {
+          const n = new THREE.Vector3(rnd() - 0.5, rnd() - 0.35, rnd() - 0.5).normalize();
+          dummy.position.copy(clump).addScaledVector(n, 0.75 * Math.cbrt(rnd()));
+          dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), n.clone().add(new THREE.Vector3(0, 0.7, 0)).normalize());
+          dummy.rotateY(rnd() * 6.28);
+          const size = 0.26 + rnd() * 0.18;
+          dummy.scale.set(size * 0.7, size, size); dummy.updateMatrix(); canopyMatrices.push(dummy.matrix.clone());
+          canopyColors.push(new THREE.Color().setHSL(0.25 + rnd() * 0.05, 0.3 + rnd() * 0.2, 0.1 + rnd() * 0.08));
+        }
       }
     }
   }
-  const canopy = new THREE.InstancedMesh(leafG, new THREE.MeshStandardMaterial({ color: '#e5ebd5', roughness: 0.88, side: THREE.DoubleSide }), canopyMatrices.length);
+  const barkMesh = new THREE.Mesh(mergeGeometries(barkParts)!, applyWetSurface(new THREE.MeshStandardMaterial({ color: '#4d4a3c', roughness: 0.85 }), { key: 'window-bark', time, wetness: 0.85, darkening: 0.6, wetRoughness: 0.3, streaks: 0.6 }));
+  barkParts.forEach(g => g.dispose()); garden.add(barkMesh);
+  const canopy = new THREE.InstancedMesh(leafG, foliage('window-canopy', '#e5ebd5'), canopyMatrices.length);
   canopyMatrices.forEach((m, i) => { canopy.setMatrixAt(i, m); canopy.setColorAt(i, canopyColors[i]); });
   canopy.receiveShadow = true; garden.add(canopy);
 
-  // Small ground plants, wet pebbles and ferns establish scale between path and flower beds.
+  // Small ground plants establish scale between path and flower beds.
   const fernMatrices: THREE.Matrix4[] = [];
   for (let clump = 0; clump < 26; clump++) {
-    const z = -1.6 - rnd() * 8, pathX = -0.18 + Math.sin((-z - 1.3) / 0.91 * 0.63) * 1.12;
-    const x = pathX + (clump % 2 ? 1 : -1) * (0.71 + rnd() * 1.0);
+    const z = -1.6 - rnd() * 8, x = pathX(z) + (clump % 2 ? 1 : -1) * (0.71 + rnd() * 1.0);
     for (let frond = 0; frond < 6; frond++) {
       const angle = frond * 1.047 + clump, direction = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
       for (let pair = 1; pair <= 7; pair++) for (const side of [-1, 1]) {
         const t = pair / 8, span = 0.17 * Math.sin(t * Math.PI);
-        dummy.position.set(x + direction.x * t * 0.46, 0.02 + Math.sin(t * Math.PI * 0.7) * 0.35, z + direction.z * t * 0.46);
+        dummy.position.set(x + direction.x * t * 0.46, groundY(x, z) + 0.1 + Math.sin(t * Math.PI * 0.7) * 0.35, z + direction.z * t * 0.46);
         const out = new THREE.Vector3(direction.z * side, 0.10, -direction.x * side);
         dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), out.normalize());
         dummy.scale.set(span * 0.62, span, span); dummy.updateMatrix(); fernMatrices.push(dummy.matrix.clone());
       }
     }
   }
-  const ferns = new THREE.InstancedMesh(leafG, new THREE.MeshStandardMaterial({ color: '#657b43', side: THREE.DoubleSide, roughness: 0.83 }), fernMatrices.length);
+  const ferns = new THREE.InstancedMesh(leafG, foliage('window-fern', '#657b43'), fernMatrices.length);
   fernMatrices.forEach((m, i) => ferns.setMatrixAt(i, m)); ferns.receiveShadow = true; garden.add(ferns);
-  const pebbleGeo = new THREE.IcosahedronGeometry(1, 1), pebbleMatrices: THREE.Matrix4[] = [];
-  for (let i = 0; i < 110; i++) {
-    const z = -1.35 - rnd() * 9, pathX = -0.18 + Math.sin((-z - 1.3) / 0.91 * 0.63) * 1.12;
-    dummy.position.set(pathX + (rnd() - 0.5) * 1.65, -0.015, z);
-    dummy.rotation.set(rnd(), rnd() * 6, rnd());
-    const size = 0.025 + rnd() * 0.055; dummy.scale.set(size * 1.3, size * 0.55, size); dummy.updateMatrix(); pebbleMatrices.push(dummy.matrix.clone());
+
+  // Rain fills the garden at several depths, with splashes on the stones and path.
+  const rainSky = new THREE.Color(1.25, 1.35, 1.4);
+  const rainLayers = [
+    createRainLayer({ time, count: 1600, min: new THREE.Vector3(-4, -0.2, -3.2), max: new THREE.Vector3(4, 3.8, -0.35), speed: 7, width: 0.0018, shutter: 0.03, radiance: rainSky, opacity: 0.55, seed: 31, wind: new THREE.Vector2(0.04, 0) }),
+    createRainLayer({ time, count: 5000, min: new THREE.Vector3(-10, -0.2, -10), max: new THREE.Vector3(10, 7, -3.2), speed: 7.4, width: 0.0016, shutter: 0.03, radiance: rainSky, opacity: 0.5, seed: 32, wind: new THREE.Vector2(0.04, 0) }),
+    createRainLayer({ time, count: 7000, min: new THREE.Vector3(-18, -0.2, -24), max: new THREE.Vector3(18, 12, -10), speed: 7.8, width: 0.0015, shutter: 0.03, radiance: rainSky, opacity: 0.45, seed: 33, wind: new THREE.Vector2(0.04, 0) }),
+  ];
+  rainLayers.forEach(layer => garden.add(layer.mesh));
+  const splashPoints: number[] = [];
+  for (let i = 0; i < 360; i++) {
+    const z = -1.0 - Math.pow(rnd(), 1.3) * 9, x = (rnd() - 0.5) * 7;
+    splashPoints.push(x, groundY(x, z) + 0.03, z);
   }
-  const pebbles = new THREE.InstancedMesh(pebbleGeo, stone, pebbleMatrices.length);
-  pebbleMatrices.forEach((m, i) => pebbles.setMatrixAt(i, m)); pebbles.receiveShadow = true; garden.add(pebbles);
+  const splashes = createRainSplashes({ points: splashPoints, time, size: 0.045, rate: 1.5, jitter: 0.12, radiance: new THREE.Color(1.1, 1.2, 1.25), opacity: 0.45 });
+  garden.add(splashes.mesh);
+  disposables.push(...rainLayers, splashes);
 
-  // Low-contrast rain is placed in depth behind the glass.
-  const rainCount = 1000, rainP = new Float32Array(rainCount * 6), rainSeed = new Float32Array(rainCount * 3);
-  for (let i = 0; i < rainCount; i++) { rainSeed[i * 3] = rnd() * 19 - 9.5; rainSeed[i * 3 + 1] = rnd() * 7; rainSeed[i * 3 + 2] = -0.8 - rnd() * 13; }
-  const rainGeo = new THREE.BufferGeometry(); rainGeo.setAttribute('position', new THREE.BufferAttribute(rainP, 3));
-  const rain = new THREE.LineSegments(rainGeo, new THREE.LineBasicMaterial({ color: '#d8e8e3', transparent: true, opacity: 0.28, depthWrite: false })); garden.add(rain);
-
-  // Screen-space refraction comes from this same 3D scene and camera, not a backdrop image.
+  // ---- Glass: refraction comes from this same 3D scene and camera, not a backdrop image.
   const refraction = createRainRefractionTarget(renderer);
   const glassUniforms = {
-    uScene: { value: null as THREE.Texture | null }, uResolution: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 },
-    uTouch: { value: new THREE.Vector2(-2, -2) }, uTouchStrength: { value: 0 },
+    uScene: { value: null as THREE.Texture | null }, uResolution: { value: new THREE.Vector2(1, 1) }, uTime: time,
+    uTouch: { value: new THREE.Vector2(-2, -2) }, uTouchStrength: { value: 0 }, uRoom: { value: new THREE.Color(0.12, 0.085, 0.055) },
   };
   const glassMat = new THREE.ShaderMaterial({
     uniforms: glassUniforms, transparent: false, depthWrite: true, toneMapped: true,
     vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-    fragmentShader: `
-      uniform sampler2D uScene; uniform vec2 uResolution; uniform float uTime; uniform vec2 uTouch; uniform float uTouchStrength; varying vec2 vUv;
-      float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-      vec3 drops(vec2 uv, vec2 density, float layer){
-        vec2 p=uv*density; vec2 cell=floor(p); float seed=h(cell+layer);
-        vec2 q=fract(p)-vec2(0.18+seed*0.60,0.24+h(cell+2.2)*0.5);
-        float r=0.040+0.090*pow(h(cell+1.7),1.7); q.y*=0.80+seed*0.22;
-        float d=length(q)/r; float mask=(1.0-smoothstep(0.76,1.0,d))*step(0.34,seed);
-        // A shallow cap bends the real scene most at the rim; no opaque green bead fill.
-        float curvature=sqrt(max(0.06,1.0-min(d*d,0.94)));
-        return vec3(q*mask/(r*curvature),mask);
-      }
-      void main(){
-        vec2 screenUv=gl_FragCoord.xy/uResolution;
-        vec3 a=drops(vUv,vec2(38.0,22.0),0.0), b=drops(vUv,vec2(19.0,11.0),8.1);
-        vec2 refractNormal=a.xy*0.0014+b.xy*0.0025;
-        float stream=0.0; vec2 streamN=vec2(0.0);
-        for(int i=0;i<7;i++){
-          float fi=float(i); float seed=fract(sin(fi*72.13+9.8)*199.73);
-          float head=1.1-fract(uTime*(0.027+seed*0.016)+seed)*1.3;
-          float x=0.06+fi*0.147+sin(vUv.y*17.0+fi)*0.003;
-          float dx=vUv.x-x; float tail=smoothstep(head-0.018,head+0.025,vUv.y)*(1.0-smoothstep(head+0.23,head+0.58,vUv.y));
-          float s=exp(-pow(dx/0.0015,2.0))*tail;
-          stream=max(stream,s); streamN.x+=sign(dx)*s*0.006;
-          vec2 qp=(vUv-vec2(x,head))*vec2(1.0,0.66); float dd=length(qp)/0.009;
-          float bead=1.0-smoothstep(0.72,1.0,dd); refractNormal+=qp*bead*0.72;
-        }
-        vec2 traceDelta=(vUv-uTouch)*vec2(1.5,1.0);
-        float clear=exp(-dot(traceDelta,traceDelta)*135.0)*uTouchStrength;
-        refractNormal=(refractNormal+streamN)*(1.0-clear*0.88);
-        vec3 bg=texture2D(uScene,clamp(screenUv+refractNormal,vec2(0.002),vec2(0.998))).rgb;
-        float fineHighlight=pow(max(0.0,(a.x+a.y*0.8)*0.52),5.0)*a.z;
-        float largeHighlight=pow(max(0.0,(b.x+b.y*0.8)*0.52),5.0)*b.z;
-        float edgeLight=min(0.075,fineHighlight*0.030+largeHighlight*0.048)+stream*0.027;
-        float mist=(0.012+pow(1.0-vUv.y,3.0)*0.018)*(1.0-clear);
-        bg=mix(bg,vec3(0.64,0.73,0.70),mist)+edgeLight*(1.0-clear);
-        gl_FragColor=vec4(bg,1.0);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`,
+    fragmentShader: GLASS_FRAGMENT,
   });
-  const glass = new THREE.Mesh(new THREE.PlaneGeometry(5.72, 2.69), glassMat);
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(GLASS_W, GLASS_H), glassMat);
   glass.position.set(0, 2.15, -0.012); scene.add(glass);
   const raycaster = new THREE.Raycaster(), viewport = new THREE.Vector2();
   let traceAge = 100, currentTime = 0;
+  const probes: THREE.WebGLRenderTarget[] = [];
+  const rainObjects = () => [...rainLayers.map(l => l.mesh), splashes.mesh];
   const resize = (aspect: number) => {
     camera.fov = aspect < 0.85 ? 51 : 49;
     camera.position.set(aspect < 0.85 ? -0.08 : 0.12, aspect < 0.85 ? 1.42 : 1.47, aspect < 0.85 ? 3.15 : 3.05);
@@ -389,20 +508,36 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   };
   return {
     resize,
-    update(time, dt) {
-      currentTime = time; traceAge += dt;
-      glassUniforms.uTime.value = time; glassUniforms.uTouchStrength.value = Math.max(0, 1 - traceAge / 8);
-      garden.rotation.y = Math.sin(time * 0.19) * 0.00045;
-      bambooLeafMesh.rotation.z = Math.sin(time * 0.28) * 0.0025;
-      canopy.rotation.z = Math.sin(time * 0.16) * 0.0009;
-      leaves.rotation.z = Math.sin(time * 0.37) * 0.0017; petals.rotation.z = Math.sin(time * 0.37) * 0.0017;
-      for (let i = 0; i < rainCount; i++) {
-        const j = i * 6, s = i * 3;
-        const y = ((rainSeed[s + 1] - time * 4.7) % 7 + 7) % 7;
-        rainP[j] = rainSeed[s] + y * 0.042; rainP[j + 1] = y; rainP[j + 2] = rainSeed[s + 2];
-        rainP[j + 3] = rainP[j] + 0.009; rainP[j + 4] = y + 0.14; rainP[j + 5] = rainP[j + 2];
-      }
-      rainGeo.attributes.position.needsUpdate = true;
+    post: {
+      exposure: 1.0, bloomStrength: 0.06, bloomThreshold: 0, aoStrength: 0.8, aoRadius: 0.3,
+      saturation: 1.02, contrast: 1.08, shadowTint: [0.96, 0.97, 1.03], highlightTint: [1.03, 1.0, 0.96], vignette: 0.45, grain: 0.028,
+    },
+    prepare(live, hdr) {
+      if (!hdr) return;
+      const skyProbe = captureSkyProbe(live, sky.material);
+      probes.push(skyProbe);
+      scene.environment = skyProbe.texture;
+      const glassVisible = glass.visible;
+      glass.visible = false;
+      try {
+        const gardenProbe = captureProbe(live, scene, new THREE.Vector3(0, 1.3, -4), rainObjects(), 128, 120);
+        probes.push(gardenProbe);
+        scene.environment = gardenProbe.texture;
+        const roomProbe = captureProbe(live, scene, new THREE.Vector3(0.1, 1.4, 2.2), rainObjects(), 128, 120);
+        probes.push(roomProbe);
+        for (const part of [sashMesh, sillMesh, bowl, bowlWater, room, ...glassOccluders]) assignProbe(part, roomProbe.texture, 1);
+      } finally { glass.visible = glassVisible; }
+    },
+    setPostActive(active) { fallbackFill.visible = !active && !scene.environment; },
+    setViewHeight(pixels) { rainLayers.forEach(layer => layer.setViewHeight(pixels)); },
+    update(t, dt) {
+      currentTime = t; traceAge += dt;
+      time.value = t;
+      glassUniforms.uTouchStrength.value = Math.max(0, 1 - traceAge / 8);
+      garden.rotation.y = Math.sin(t * 0.19) * 0.00045;
+      bambooLeafMesh.rotation.z = Math.sin(t * 0.28) * 0.0025;
+      canopy.rotation.z = Math.sin(t * 0.16) * 0.0009;
+      leaves.rotation.z = Math.sin(t * 0.37) * 0.0017; petals.rotation.z = Math.sin(t * 0.37) * 0.0017;
       renderer.getDrawingBufferSize(viewport);
       const target = refraction.ensure(Math.max(1, viewport.x), Math.max(1, viewport.y));
       glassUniforms.uScene.value = target.texture; glassUniforms.uResolution.value.copy(viewport);
@@ -425,6 +560,11 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       traceAge = 0;
       return { action: 'glass-trace', value: 0.65 + Math.sin(currentTime) * 0.1 };
     },
-    dispose() { refraction.dispose(); textures.forEach(t => t.dispose()); },
+    dispose() {
+      refraction.dispose();
+      disposables.forEach(d => d.dispose());
+      probes.forEach(p => p.dispose());
+      scene.environment = null;
+    },
   };
 };

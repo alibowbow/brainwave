@@ -1,11 +1,17 @@
 import * as THREE from 'three';
 import { LookSpring } from '../../../liveScene/look';
 import type { LiveSceneEngine } from '../../../liveScene/liveSceneHost';
+import { HdrPipeline } from '../../shared/render/hdrPipeline';
 import type { DeepWaterInteraction, WorldContent, WorldKind } from './types';
+
+// The owned QA harness can request the previous direct path for comparisons.
+const directPreference = new WeakSet<THREE.WebGLRenderer>();
+export function preferDirectRendering(renderer: THREE.WebGLRenderer) { directPreference.add(renderer); }
 
 export class DeepWaterEngine implements LiveSceneEngine {
   private renderer: THREE.WebGLRenderer;
   private content: WorldContent | null = null;
+  private post: HdrPipeline | null = null;
   private disposed = false;
   private raf = 0;
   private running = false;
@@ -43,6 +49,15 @@ export class DeepWaterEngine implements LiveSceneEngine {
         : (await import('./sea')).createDeepSea;
       if (this.disposed) return;
       this.content = create(this.renderer);
+      this.content.prepare?.(this.renderer);
+      // HDR is the quality path; without float targets the direct path remains.
+      if (!directPreference.has(this.renderer)) {
+        const content = this.content;
+        this.post = HdrPipeline.create(this.renderer, { settings: content.post, volume: content.createVolume ? () => content.createVolume!() : null });
+        this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+      }
+      this.content.setPostActive?.(!!this.post);
+      this.canvas.dataset.post = this.post ? JSON.stringify(this.post.report) : 'direct';
     } catch (error) {
       // The shared host has a delayed-release grace period. An import rejection
       // from a disposed generation must not fail a newer host engine.
@@ -60,6 +75,8 @@ export class DeepWaterEngine implements LiveSceneEngine {
     this.width = Math.max(1, width); this.height = Math.max(1, height);
     this.renderer.setPixelRatio(Math.min(2, Math.max(1, dpr)));
     this.renderer.setSize(this.width, this.height, false);
+    this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+    if (this.post) this.canvas.dataset.post = JSON.stringify(this.post.report);
     if (!this.content) return;
     this.content.camera.aspect = this.width / this.height;
     this.content.resize?.(this.width / this.height);
@@ -89,7 +106,8 @@ export class DeepWaterEngine implements LiveSceneEngine {
     camera.lookAt(target);
     this.lookRotation.setFromEuler(new THREE.Euler(this.look.pitch, this.look.yaw, 0, 'YXZ'));
     camera.quaternion.multiply(this.lookRotation);
-    this.renderer.render(scene, camera);
+    if (this.post) this.post.render(scene, camera, this.time);
+    else this.renderer.render(scene, camera);
     const gl = this.renderer.getContext() as WebGL2RenderingContext;
     const fence = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
     if (!fence) return this.failGPU('Could not create a GPU completion fence.');
@@ -210,6 +228,7 @@ export class DeepWaterEngine implements LiveSceneEngine {
     this.canvas.dataset.gpuPending = '0';
     this.canvas.dataset.gpuState = this.gpuFailure ? 'failed' : 'disposed';
     this.canvas.removeEventListener('webglcontextlost', this.contextLost);
+    this.post?.dispose(); this.post = null;
     this.content?.dispose?.();
     const geometries = new Set<THREE.BufferGeometry>();
     const materials = new Set<THREE.Material>();

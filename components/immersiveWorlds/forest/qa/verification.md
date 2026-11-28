@@ -161,3 +161,81 @@ router/catalog owned elsewhere. Audio is a proposal only: existing `birds`,
 `stream`, `forest` and optional quiet `bamboo` layers. The callback supplies world
 position and gentle strength; there is no independent player or audio context.
 See `../integration.md` for exact engine limitations and layer asset IDs.
+
+## HDR upgrade (2026-11-27)
+
+Scope: `amb:morning_forest` only, all edits under `components/immersiveWorlds/forest/`.
+No shared render module, other family, app, registry or public preview file changed.
+The public preview bundle in `public/immersive-worlds/forest/qa/` was **not**
+rebuilt (outside this upgrade's write scope); it still serves the previous scene
+until the integration owner re-runs `build-qa.mjs`.
+
+### What changed
+
+- Rendering: the shared HDR pipeline, created only on the forest policy's
+  `native-half-float` path with every framebuffer check complete plus a
+  `hdr-pipeline-preflight` half-float/depth target. Forced-byte, native-byte and
+  `?post=off` keep the direct renderer. See `../integration.md`.
+- Light: one low warm sun (20° elevation) ahead of the seat, behind the canopy;
+  a procedural canopy cookie shared by all surfaces, the 32-step half-resolution
+  volume pass (shafts, ground mist, aerial perspective) and the canopy's own
+  holes. Ambient is a PMREM of a canopy-occluded probe plus two small bounce lights.
+- Trees: lofted, ridged trunks with buttress lobes, root flare and surface roots,
+  curved limbs and forks, world-space furrowed bark with lichen, rain streaks, wet
+  foot and moss on the side away from the sun. Crown lobes of ~27k instanced,
+  alpha-cut sprig clusters with crown-scale normals, translucency toward the sun
+  and three-level wind (shared trunk bend, branch sway, leaf flutter).
+- Undergrowth: instanced fern fronds (two LODs), grass/sedge tufts, fallen leaves,
+  twigs, saplings, a sub-canopy of young trees and three mossy fallen trunks.
+- Pool: crisp planar reflection with analytic wavelets, depth-dependent
+  transparency to a silty bed with refracted-sun caustics, sun glitter, floating
+  leaves; wet, eroded, mossy stones from `rockGeometry`/`rockSurface`.
+- Near plants keep their geometry, dew and touch response; their blades are now
+  shaded procedurally (midrib, laterals, areole net) with a wet clearcoat.
+- Grade: warm highlights, cool shadows, light bloom above an HDR threshold.
+
+### Evidence
+
+Fresh captures for this upgrade are in `qa/evidence/hdr-upgrade/` (BEFORE = the
+previous direct renderer at `0a5cf521`, AFTER = this upgrade on the HDR path),
+recorded with `qa/capture-hdr.mjs` in headless Chromium/SwiftShader at 1280×800
+and 390×844, DPR 1. The historical JPEGs, CI JSON reports and their image
+hashes above remain tied to the earlier runs and were not modified. No
+verification script compares against approved historical image hashes (the
+browser test compares two frames of the same run), so this upgrade records
+fresh captures instead of re-baselining anything.
+
+| Evidence | Content |
+| --- | --- |
+| [forest-compare-desktop.jpg](evidence/hdr-upgrade/forest-compare-desktop.jpg) | BEFORE / AFTER, 1280×800 |
+| [forest-compare-portrait.jpg](evidence/hdr-upgrade/forest-compare-portrait.jpg) | BEFORE / AFTER, 390×844 |
+| [forest-motion-portrait.jpg](evidence/hdr-upgrade/forest-motion-portrait.jpg) | paused mount, after 12 animated frames, amplified difference (canopy, pool, mist and stone caustics move) |
+| [capture-report.json](evidence/hdr-upgrade/capture-report.json) | hashes, draw calls, triangles, pipeline report and page errors (none) for every capture, plus the `?post=off` direct-path captures |
+
+First-frame counts at 1280×800 (main pass, planar reflection and the one-time
+shadow pass): BEFORE 233 draw calls / 3.66 M triangles; AFTER 119 / 1.85 M with
+27,438 canopy clusters. The AFTER pipeline report is
+`{"type":"half-float","msaa":4,"ao":true,"volume":true,"bloomLevels":6}`.
+The `?post=off` captures of the same build render through the direct path
+(`data-post-reason="preferred-direct"`) without page or shader errors. The
+forced-byte path (`?byte=1`) was not captured for this upgrade; it shares the
+direct-path code and the unchanged byte target tests.
+
+### Gates for this upgrade
+
+| Gate | Result |
+| --- | --- |
+| `npx tsc --noEmit -p .` | PASS |
+| `npx vitest run components/immersiveWorlds/forest components/immersiveWorlds/shared --exclude '**/*.browser.test.ts'` | PASS, 7 files / 56 tests |
+| `npm test` (heavily loaded shared machine) | 78/82 files; 791 passed, 7 failed, 5 skipped of 803. Every failure was a 5 s test or 10 s hook timeout (deepWater cave and sea, immersiveAudio synthesis, and the unchanged forest byte-environment `beforeAll`, whose 5 tests were skipped) |
+| `npm test -- --testTimeout=60000 --hookTimeout=60000` | PASS, 82 files / 803 tests |
+| `npm run build` | PASS |
+| `npm run check:bundle` | PASS, initial JS 408.9 KiB / 410 (unchanged), CSS 101.0 KiB / 135; the forest world chunk stays lazy |
+
+Software-rasterizer allowances: the HDR forest's multi-pass frames take several
+times longer in SwiftShader than the old direct renderer (about 60–75 s per
+390×844 frame on this loaded machine). `forest.browser.test.ts` therefore scales
+its waits by `FOREST_QA_WAIT_SCALE` (default 4) and passes the same scale to the
+harness's frame-dependent lifecycle waits (`?waitScale=`). Assertions,
+resolution, quality and frame pacing are unchanged. `FOREST_HARNESS_PORT` moves
+the owned dev server off 4178 on a shared machine.

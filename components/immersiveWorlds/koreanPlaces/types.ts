@@ -1,4 +1,5 @@
 import type * as THREE from 'three';
+import type { PostSettings, VolumeEffect } from '../shared/render/hdrPipeline';
 
 export type WorldId = 'temple' | 'scops' | 'rural';
 export interface WorldInteraction {
@@ -19,4 +20,11 @@ export interface SceneContent {
   audioEvent?(type: 'scops-call'): void;
   /** Extra textures/geometries not attached to scene, if any. Engine disposes scene tree. */
   dispose?(): void;
+  /** Grade for the shared HDR pipeline; ignored on the direct fallback path. */
+  post?: Partial<PostSettings>;
+  /** Half-resolution participating medium (mist, god rays). The pipeline owns and disposes it. */
+  createVolume?(): VolumeEffect;
+  /** Told once after initialization whether the HDR pipeline is active, so cheap
+   * stand-ins (mist cards, glow sprites) only appear on the direct path. */
+  setPostActive?(active: boolean): void;
 }

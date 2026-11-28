@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { LiveSceneEngine, LiveSceneHolder } from '../../liveScene/liveSceneHost';
 import { LiveSceneHost } from '../../liveScene/liveSceneHost';
+import { HdrPipeline } from '../shared/render/hdrPipeline';
 import { buildMountainWorld } from './mountainScene';
 import { buildDeepNightWorld } from './deepScene';
 import { buildLakesideWorld } from './lakesideScene';
@@ -10,10 +11,14 @@ import type { NightWorldId, NightInteraction, NightInteractionKind, WorldRecipe 
 const diagnostics = { engineCreated: 0, engineDisposed: 0, liveEngines: 0, frames: 0 };
 export const getNightDiagnostics = () => ({ ...diagnostics });
 const builders = { mountain: buildMountainWorld, deep: buildDeepNightWorld, lakeside: buildLakesideWorld };
+// The isolated QA harness can request the previous direct path for comparisons.
+let directPreferred = false;
+export function preferDirectNightRendering(value: boolean) { directPreferred = value; }
 
 export class NightEngine implements LiveSceneEngine {
   private renderer: THREE.WebGLRenderer;
   private recipe: WorldRecipe | null = null;
+  private post: HdrPipeline | null = null;
   private camera = new THREE.PerspectiveCamera(52, 1, 0.05, 600);
   private basePosition = new THREE.Vector3();
   private baseTarget = new THREE.Vector3();
@@ -39,7 +44,10 @@ export class NightEngine implements LiveSceneEngine {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // PCF with a per-light radius gives soft Vogel-disk shadows. The scenes are
+    // static, so shadow maps re-render only when the composition changes.
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.shadowMap.autoUpdate = false;
     this.renderer.setClearColor('#111729');
     diagnostics.engineCreated++;
     diagnostics.liveEngines++;
@@ -49,8 +57,18 @@ export class NightEngine implements LiveSceneEngine {
   }
 
   async init() {
-    this.recipe = builders[this.world]();
-    if (typeof this.recipe.scene.userData.exposure === 'number') this.renderer.toneMappingExposure = this.recipe.scene.userData.exposure;
+    const recipe = builders[this.world]();
+    this.recipe = recipe;
+    if (typeof recipe.scene.userData.exposure === 'number') this.renderer.toneMappingExposure = recipe.scene.userData.exposure;
+    // GPU-dependent setup (radiance probes) needs the live renderer.
+    recipe.prepare?.(this.renderer);
+    // HDR is the quality path; without float targets the direct path remains.
+    if (!directPreferred) {
+      this.post = HdrPipeline.create(this.renderer, { settings: recipe.post, volume: recipe.createVolume ? () => recipe.createVolume!() : null });
+      this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
+    }
+    recipe.setPostActive?.(!!this.post);
+    this.canvas.dataset.post = this.post ? JSON.stringify(this.post.report) : 'direct';
     this.composeView();
   }
 
@@ -60,6 +78,7 @@ export class NightEngine implements LiveSceneEngine {
     // Up to 2 physical pixels per CSS pixel, preserving antialiasing and sharp foregrounds.
     this.renderer.setPixelRatio(Math.min(2, Math.max(1, devicePixelRatio)));
     this.renderer.setSize(this.width, this.height, false);
+    this.post?.setSize(this.width, this.height, this.renderer.getPixelRatio());
     this.camera.aspect = this.width / this.height;
     this.composeView();
   }
@@ -73,6 +92,8 @@ export class NightEngine implements LiveSceneEngine {
     this.baseTarget.fromArray(view.target);
     this.camera.position.copy(this.basePosition);
     this.applyView();
+    // Layout may move props (portrait compositions): refresh the shadow maps once.
+    this.renderer.shadowMap.needsUpdate = true;
   }
 
   private applyView() {
@@ -90,7 +111,10 @@ export class NightEngine implements LiveSceneEngine {
     if (delta) this.look.lerp(this.desiredLook, 1 - Math.exp(-delta * 5));
     this.applyView();
     this.recipe.update(this.elapsed, delta);
-    this.renderer.render(this.recipe.scene, this.camera);
+    if (this.post) this.post.render(this.recipe.scene, this.camera, this.elapsed);
+    else this.renderer.render(this.recipe.scene, this.camera);
+    this.canvas.dataset.calls = String(this.renderer.info.render.calls);
+    this.canvas.dataset.triangles = String(this.renderer.info.render.triangles);
     this.frameCount++;
     diagnostics.frames++;
     this.canvas.dataset.renderCount = String(this.frameCount);
@@ -157,14 +181,17 @@ export class NightEngine implements LiveSceneEngine {
       if (drawable.geometry) geometries.add(drawable.geometry);
       if (drawable.material) for (const material of Array.isArray(drawable.material) ? drawable.material : [drawable.material]) materials.add(material);
       if (object instanceof THREE.Light && 'shadow' in object) (object as THREE.DirectionalLight).shadow?.dispose();
+      if (object instanceof THREE.InstancedMesh) object.dispose();
     });
     for (const material of materials) {
       for (const value of Object.values(material)) if (value instanceof THREE.Texture) textures.add(value);
-      if (material instanceof THREE.ShaderMaterial) for (const uniform of Object.values(material.uniforms)) if (uniform.value instanceof THREE.Texture) textures.add(uniform.value);
+      if (material instanceof THREE.ShaderMaterial) for (const uniform of Object.values(material.uniforms)) if (uniform?.value instanceof THREE.Texture) textures.add(uniform.value);
       material.dispose();
     }
     for (const texture of textures) texture.dispose();
     for (const geometry of geometries) geometry.dispose();
+    this.post?.dispose();
+    this.post = null;
     this.recipe?.dispose?.();
     this.recipe?.scene.clear();
     this.recipe = null;

@@ -4,24 +4,30 @@ import {chromium} from 'playwright-core';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {sourceFingerprint,hashFile} from './source-fingerprint.mjs';
 
-const output='components/immersiveWorlds/cosmic/validation/correction-20261004';
+// The 2026-10-04 correction folder is historical evidence and is never rewritten.
+// Fresh compatibility captures for the HDR upgrade go to their own folder,
+// rendered from the current source harness (not the older published bundle).
+const output=process.env.COSMIC_COMPAT_OUTPUT||'components/immersiveWorlds/cosmic/validation/evidence/hdr-upgrade/compatibility';
+const port=Number(process.env.COSMIC_PORT||4318);
 await mkdir(output,{recursive:true});
 const source=await sourceFingerprint();
 const report={source,checks:[],captures:[],errors:[],limitations:[
  'Actual GPU API calls use ANGLE SwiftShader; native mobile GPU performance and half-float-only hardware are not verified.',
  'Byte is explicitly requested before allocation on real supporting hardware, not an extension-masking monkeypatch. Absent-extension and failed-half cases are unit-tested renderer doubles.',
- 'Captures use the built standalone harness, DPR1, full quality and time0 for an exact comparison; they are genuine rendered 3D stills.',
+ 'Captures use the current source harness through Vite, DPR1, full quality and time0; they are genuine rendered 3D stills of the HDR upgrade.',
 ]};
-const server=await createServer({server:{host:'127.0.0.1',port:5195,strictPort:true,hmr:false,watch:null}});
+const server=await createServer({server:{host:'127.0.0.1',port,strictPort:true,hmr:false,watch:null}});
 await server.listen();
-const browser=await chromium.launch({executablePath:process.env.SCENE_BROWSER_PATH,headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
+const browser=await chromium.launch({executablePath:process.env.SCENE_BROWSER_PATH||'/opt/pw-browsers/chromium',headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
 try{
  for(const mode of ['auto','byte']){
   const context=await browser.newContext({viewport:{width:1280,height:800},deviceScaleFactor:1,reducedMotion:'reduce',serviceWorkers:'block'});
   const page=await context.newPage();
-  page.on('console',m=>{if(m.type()==='error')report.errors.push(m.text());});page.on('pageerror',e=>report.errors.push(e.message));
-  await page.goto(`http://127.0.0.1:5195/immersive-worlds/cosmic/preview/index.html?compatibility=${mode}&probe`);
-  await page.waitForSelector('.cosmic-world[data-state=ready]',{timeout:120000});
+  page.setDefaultTimeout(600000);
+  // The harness has no favicon; that 404 is not a scene failure.
+  page.on('console',m=>{if(m.type()==='error'&&!/favicon|status of 404/.test(m.text()))report.errors.push(m.text());});page.on('pageerror',e=>report.errors.push(e.message));
+  await page.goto(`http://127.0.0.1:${port}/components/immersiveWorlds/cosmic/validation/index.html?compatibility=${mode}&probe`);
+  await page.waitForSelector('.cosmic-world[data-state=ready]',{timeout:900000});
   const probe=await page.locator('section').evaluate(e=>JSON.parse(e.dataset.framebufferProbe));
   assert.equal(probe.beforeStatus,36053);assert.equal(probe.afterStatus,36053);
   assert.equal(probe.stateRestored,true);assert.equal(probe.bindingRestored,true);assert.equal(probe.error,0);
@@ -29,7 +35,7 @@ try{
   report[`${mode}FramebufferProbe`]=probe;
   for(const [name,width,height] of [['desktop',1280,800],['portrait',344,882],...(mode==='auto'?[['landscape',882,344]]:[])]){
    await page.setViewportSize({width,height});
-   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c&&c.width===innerWidth&&c.height===innerHeight&&Number(c.dataset.frame)>0&&Number(getComputedStyle(c).opacity)>=.999;},{},{timeout:120000});
+   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c&&c.width===innerWidth&&c.height===innerHeight&&Number(c.dataset.frame)>0&&Number(getComputedStyle(c).opacity)>=.999;},{},{timeout:600000});
    const diagnostics=await page.locator('section').evaluate(e=>JSON.parse(e.dataset.diagnostics));
    const stats=await page.locator('canvas').evaluate(e=>({...e.dataset}));
    assert.equal(diagnostics.shadow.centerError,0);

@@ -1,0 +1,40 @@
+{
+  "query": "?clean&still",
+  "activeFrames": 0,
+  "captures": [
+    {
+      "viewport": "desktop",
+      "width": 1280,
+      "height": 800,
+      "file": "cosmic-desktop.png",
+      "seconds": 32.876,
+      "post": null,
+      "frame": "2",
+      "time": "0.0000",
+      "calls": "201",
+      "triangles": "1340572",
+      "quality": "1",
+      "reflection": "RGBA16F"
+    },
+    {
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "file": "cosmic-portrait.png",
+      "seconds": 23.588,
+      "post": null,
+      "frame": "2",
+      "time": "0.0000",
+      "calls": "193",
+      "triangles": "1278996",
+      "quality": "1",
+      "reflection": "RGBA16F"
+    }
+  ],
+  "errors": [
+    "desktop: warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+    "desktop: warning: THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.",
+    "portrait: warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+    "portrait: warning: THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+  ]
+}

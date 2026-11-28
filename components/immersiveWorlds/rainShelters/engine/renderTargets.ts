@@ -187,10 +187,13 @@ export function createRainRefractionTarget(renderer: THREE.WebGLRenderer) {
 }
 
 /**
- * Rain has no environment/PMREM or transmission targets. The only implicit
- * targets are GardenWindow/MonsoonPorch directional PCF shadows. Precreate the
- * exact r186 RGBA8 + DEPTH_COMPONENT24 target so the real 1024² FBO is checked
- * before shadow rendering. r186 normalizes PCFSoftShadowMap to PCFShadowMap.
+ * Directional PCF shadows are the implicit targets every rain world uses.
+ * Precreate the exact r186 RGBA8 + DEPTH_COMPONENT24 target so the real 1024²
+ * FBO is checked before shadow rendering. r186 normalizes PCFSoftShadowMap to
+ * PCFShadowMap. Static point/spot shadows (lantern, window light) are allocated
+ * by three itself. Radiance probes (PMREM) and the HDR image pipeline are created
+ * only after `supportsHdrTargets` confirms renderable float colour buffers;
+ * without them the worlds keep the direct path.
  */
 export function prepareRainShadowTargets(renderer: THREE.WebGLRenderer, scene: THREE.Scene) {
   if (THREE.REVISION !== '186') throw new Error('Rain shadow allocation must be reverified after upgrading Three r186.');

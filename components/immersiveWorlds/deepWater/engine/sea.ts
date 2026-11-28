@@ -1,58 +1,115 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { addRock, rockMaterial } from './environment';
 import type { WorldContent } from './types';
+import { createRockMaterial } from '../../shared/render/rockSurface';
+import { boulderGeometry } from '../../shared/render/rockGeometry';
+import { fbm3, ridged3 } from '../../shared/render/noise';
+import { GLSL_NOISE } from '../../shared/render/glsl';
+import { VOLUME_PRELUDE, type VolumeEffect } from '../../shared/render/hdrPipeline';
+import { FULLSCREEN_VERTEX } from '../../shared/render/targets';
 
 /** Original procedural underwater space. No external image, model or copied gallery source. */
+const SURFACE_Y = 15;
+const SUN_DIRECTION = new THREE.Vector3(-.22, -1, .28).normalize();
+
+const VOLUME_FRAGMENT = /* glsl */ `
+${VOLUME_PRELUDE}
+${GLSL_NOISE}
+uniform vec3 uSunDirection;
+uniform vec3 uLight;
+uniform float uSurfaceY;
+uniform float uDensity;
+// Light reaching depth p, broken into shafts by the moving surface above.
+float shafts(vec3 p) {
+  float travel = (uSurfaceY - p.y) / max(-uSunDirection.y, 0.2);
+  vec2 s = p.xz - uSunDirection.xz * travel;
+  float n = bwNoise(vec3(s * 0.32, uTime * 0.05)) * 0.7 + bwNoise(vec3(s * 0.85 + 7.0, uTime * 0.08)) * 0.3;
+  return smoothstep(0.05, 0.6, n + 0.12);
+}
+void main() {
+  vec3 ro, rd; float surface;
+  bwSceneRay(vUv, ro, rd, surface);
+  float maxT = min(surface, 60.0);
+  float phase = bwPhase(dot(uSunDirection, -rd), 0.6) * 12.5663706;
+  const int STEPS = 32;
+  float dt = maxT / float(STEPS);
+  float jitter = bwIgn(gl_FragCoord.xy);
+  vec3 scatter = vec3(0.0);
+  float transmittance = 1.0;
+  for (int i = 0; i < STEPS; i++) {
+    vec3 p = ro + rd * ((float(i) + jitter) * dt);
+    float below = max(uSurfaceY - p.y, 0.0);
+    float light = exp(-below * 0.075) * (0.22 + 1.5 * shafts(p));
+    float stepT = exp(-uDensity * dt);
+    scatter += transmittance * uLight * light * phase * (1.0 - stepT);
+    transmittance *= stepT;
+  }
+  gl_FragColor = vec4(scatter, transmittance);
+}
+`;
+
 export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
   const scene = new THREE.Scene();
-  const waterColor = new THREE.Color('#083f58');
+  const waterColor = new THREE.Color('#063349');
   scene.background = waterColor;
-  scene.fog = new THREE.FogExp2(waterColor, 0.024);
+  scene.fog = new THREE.FogExp2(waterColor, 0.016);
   const camera = new THREE.PerspectiveCamera(49, 1, 0.08, 140);
   camera.position.set(0, 1.55, 7.1);
   const target = new THREE.Vector3(0.05, 1.65, -13);
   camera.lookAt(target);
   const timers: { value: number }[] = [];
+  const clock = { value: 0 }; timers.push(clock);
   let pulse = 0, pulseTarget = 0;
   const rnd = seeded(62893);
 
-  scene.add(new THREE.HemisphereLight('#a8e9e2', '#0b2941', 1.75));
-  const daylight = new THREE.DirectionalLight('#b1ebe7', 3.5);
-  daylight.position.set(2, 14, 5);
-  scene.add(daylight);
-  const leftFill = new THREE.PointLight('#78cbcf', 22, 19, 1.4);
+  // Daylight filters down from the surface; everything else is dim, cold scatter.
+  scene.add(new THREE.HemisphereLight('#5fb8c8', '#020b14', 0.5));
+  const daylight = new THREE.DirectionalLight('#a6efe8', 3.4);
+  daylight.position.copy(SUN_DIRECTION).multiplyScalar(-30).add(new THREE.Vector3(-2, 0, -6));
+  daylight.target.position.set(-2, 0, -6);
+  daylight.castShadow = true; daylight.shadow.mapSize.set(2048, 2048);
+  Object.assign(daylight.shadow.camera, { left: -16, right: 16, top: 18, bottom: -18, near: 1, far: 70 });
+  daylight.shadow.bias = -.0004; daylight.shadow.normalBias = .04;
+  daylight.shadow.autoUpdate = false; daylight.shadow.needsUpdate = true;
+  scene.add(daylight, daylight.target);
+  const leftFill = new THREE.PointLight('#5fb6bf', 12, 16, 2);
   leftFill.position.set(-1.8, 3.7, 3.4);
   scene.add(leftFill);
-  const cold = new THREE.PointLight('#427aac', 45, 35, 1.2);
-  cold.position.set(5, 7, -8);
+  const cold = new THREE.PointLight('#3a6fa8', 70, 40, 2);
+  cold.position.set(5, 7, -14);
   scene.add(cold);
 
-  // An enclosing water volume rather than a visible swimming-pool surface.
+  // Enclosing water volume: dark depths below, a bright rippling surface above.
   const backgroundMat = new THREE.ShaderMaterial({
     side: THREE.BackSide, depthWrite: false,
-    uniforms: { uTime: { value: 0 } },
+    uniforms: { uTime: clock, uSun: { value: SUN_DIRECTION.clone().negate() } },
     vertexShader: `varying vec3 vDirection; void main(){ vDirection=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
-    fragmentShader: `precision highp float; varying vec3 vDirection; uniform float uTime;
-      void main(){ vec3 d=normalize(vDirection); float up=smoothstep(-.45,.9,d.y);
-      vec3 c=mix(vec3(.003,.015,.045),vec3(.016,.09,.16),up);
-      float sun=pow(max(0.,dot(d,normalize(vec3(.23,.85,-.45)))),8.);
-      c+=vec3(.020,.065,.070)*sun; gl_FragColor=vec4(c,1.);
+    fragmentShader: `precision highp float; varying vec3 vDirection; uniform float uTime; uniform vec3 uSun;
+      ${GLSL_NOISE}
+      void main(){ vec3 d=normalize(vDirection); float up=smoothstep(-.5,.95,d.y);
+      vec3 c=mix(vec3(.002,.012,.035),vec3(.02,.11,.19),up);
+      // Snell's window: the sky compressed into a bright, rippling disc overhead.
+      float window=smoothstep(.55,.85,d.y);
+      vec2 q=d.xz/max(d.y,.2);
+      float ripple=.6+.4*bwNoise(vec3(q*3.,uTime*.12))+.25*bwNoise(vec3(q*9.+3.,uTime*.2));
+      c+=vec3(.25,.75,.8)*window*ripple*2.2;
+      float sun=pow(max(0.,dot(d,uSun)),18.);
+      c+=vec3(1.4,1.9,1.8)*sun*ripple;
+      gl_FragColor=vec4(c,1.);
       #include <tonemapping_fragment>
       #include <colorspace_fragment>
       }`,
   });
-  const background = new THREE.Mesh(new THREE.SphereGeometry(110, 36, 24), backgroundMat);
+  const background = new THREE.Mesh(new THREE.SphereGeometry(110, 48, 32), backgroundMat);
   background.renderOrder = -10; scene.add(background);
 
-  // Continuous fractured wall: geometry runs far below the observation ledge.
-  const stone = rockMaterial('#526765', 0.82);
-  stone.onBeforeCompile = chainCaustics(stone.onBeforeCompile, timers);
-  stone.customProgramCacheKey = () => 'deepwater-sea-caustic-rock-v1';
-  const darkStone = rockMaterial('#374d51', 0.72);
-  darkStone.onBeforeCompile = chainCaustics(darkStone.onBeforeCompile, timers);
-  darkStone.customProgramCacheKey = () => 'deepwater-sea-caustic-rock-v1';
+  // Caustics thrown by the surface land on everything that faces up.
+  const caustics = { centre: new THREE.Vector3(-4, 60, -8), radius: 90, color: new THREE.Color(.55, 1.0, .95).multiplyScalar(1.1), time: clock };
+  const stone = createRockMaterial('#5c706b', { key: 'sea-stone', caustics, scale: 1.1, bump: 1.3, stain: '#4c5a40', stainAmount: .35, cavity: .65, strata: .45, wetness: 1, drips: 0, dryRoughness: .7, wetRoughness: .55 });
+  const darkStone = createRockMaterial('#3c5155', { key: 'sea-dark-stone', caustics, scale: .9, bump: 1.1, cavity: .55, strata: .35, wetness: 1, drips: 0, dryRoughness: .7, wetRoughness: .6 });
+  const sand = createRockMaterial('#9a9277', { key: 'sea-sand', caustics, scale: 2.2, bump: .45, cavity: .2, strata: 0, stainAmount: .1, wetness: 1, drips: 0, dryRoughness: .9, wetRoughness: .85 });
   const wall = new THREE.Mesh(wallGeometry(), stone);
+  wall.receiveShadow = true;
   scene.add(wall);
   const shelves: Array<[number, number, number, number, number, number, number]> = [
     [-4.7, -2.7, 3.4, 3.2, 1.55, 3.3, 42], [-3.8, -2.3, -3.0, 3.0, 1.45, 3.4, 311],
@@ -60,14 +117,39 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
     [-6, 1.8, -18, 3.2, 4.0, 5.2, 7], [-8, -1.8, -31, 5.2, 7.3, 8.1, 37],
   ];
   for (const [x,y,z,sx,sy,sz,seed] of shelves) {
-    addRock(scene, [x,y,z], [sx,sy,sz], seed, z < -18 ? darkStone : stone);
+    const rock = new THREE.Mesh(boulderGeometry(seed, z > -10 ? 20 : 12), z < -18 ? darkStone : stone);
+    rock.position.set(x, y, z); rock.scale.set(sx, sy, sz); rock.rotation.set(.05 * Math.sin(seed), seed * .71, .07 * Math.cos(seed));
+    rock.castShadow = true; rock.receiveShadow = true; scene.add(rock);
   }
-  // Fine loose stones break the near ledge silhouette, without repeated smooth pebbles.
+  // Fine loose stones break the near ledge silhouette.
   for (let i=0;i<28;i++) {
     const x=-6.4+rnd()*4.3, z=2.5-rnd()*7;
-    addRock(scene, [x,-1.45+rnd()*.16,z], [.12+rnd()*.45,.09+rnd()*.23,.17+rnd()*.37], i*31+12, stone);
+    const pebble = new THREE.Mesh(boulderGeometry(i*31+12, 6), stone);
+    pebble.position.set(x,-1.45+rnd()*.16,z); pebble.scale.set(.12+rnd()*.45,.09+rnd()*.23,.17+rnd()*.37); pebble.rotation.y = rnd() * 6;
+    pebble.castShadow = true; pebble.receiveShadow = true; scene.add(pebble);
   }
-
+  // A rippled sand floor far below gives the open water a ground and scale.
+  const floorGeometry = new THREE.PlaneGeometry(110, 110, 180, 180);
+  floorGeometry.rotateX(-Math.PI / 2);
+  const fp = floorGeometry.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < fp.count; i++) {
+    const x = fp.getX(i), z = fp.getZ(i);
+    const ripple = Math.sin(x * 1.7 + fbm3(x * .1, 0, z * .1, 2) * 4) * .08;
+    // The slope falls away into the deep, so the floor never meets a hard horizon.
+    const worldZ = z - 20, worldX = x + 6;
+    const fall = Math.max(0, -(worldZ + 6)) * .42 + Math.max(0, worldX - 10) * .25;
+    fp.setY(i, -10.5 - fall + fbm3(x * .05, 1, z * .05, 4) * 2.2 + fbm3(x * .3, 2, z * .3, 2) * .35 + ripple);
+  }
+  floorGeometry.computeVertexNormals();
+  const floor = new THREE.Mesh(floorGeometry, sand);
+  floor.position.set(6, 0, -20); floor.receiveShadow = true; floor.name = 'deep-sea-sand-floor';
+  scene.add(floor);
+  // A few half-buried outcrops on the slope, lit from above like the wall.
+  for (const [x, y, z, sx, sy, sz, seed] of [[3.5, -11.6, -9, 2.6, 1.6, 2.2, 501], [9, -14.5, -19, 4.2, 2.6, 3.4, 502], [-.5, -15.5, -24, 3.4, 3.1, 3.0, 503]]) {
+    const rock = new THREE.Mesh(boulderGeometry(seed, 12), stone);
+    rock.position.set(x, y, z); rock.scale.set(sx, sy, sz); rock.rotation.y = seed;
+    rock.castShadow = true; rock.receiveShadow = true; scene.add(rock);
+  }
   const coralGroups: THREE.Group[] = [];
   const fanColors = ['#8a5949','#a7795c','#716647'];
   const coralSites: [number,number,number,number][] = [[-1.7,-1.55,-2.7,.95],[-3.95,-.35,-1.5,.57],[-3.95,2.35,-4,.65],[-3.8,-2,-6,.8]];
@@ -105,8 +187,9 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
     scene.add(patch);
   }
 
-  // Distant shafts contain no sharp cone edges, luminous surface, or strobe.
+  // Fallback shafts for renderers without the HDR volume pass.
   const shaftTime = { value:0 }; timers.push(shaftTime);
+  const fallbackShafts: THREE.Mesh[] = [];
   for(let i=0;i<4;i++){
     const mat = new THREE.ShaderMaterial({
       transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
@@ -119,7 +202,7 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
     });
     const shaft=new THREE.Mesh(new THREE.PlaneGeometry(9+i*1.1,33),mat);
     shaft.position.set(-1+i*4.0,6,-22-i*3.4);shaft.rotation.z=-.15-i*.035;shaft.renderOrder=0;
-    scene.add(shaft);
+    scene.add(shaft); fallbackShafts.push(shaft);
   }
 
   const mainJelly=makeJellyfish(1.03, '#a4cfcf', 2, timers);
@@ -153,7 +236,7 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
     fishes.push({mesh,origin:mesh.position.clone(),phase:rnd()*6.3,speed:.022+rnd()*.028});
   }
 
-  const particleCount=540;
+  const particleCount=1400;
   const particlePositions=new Float32Array(particleCount*3);
   const particleSeeds=new Float32Array(particleCount);
   for(let i=0;i<particleCount;i++){
@@ -166,16 +249,47 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
   const particlesMat=new THREE.ShaderMaterial({
     transparent:true,depthWrite:false,uniforms:{uTime:particleTime},
     vertexShader:`attribute float seed; uniform float uTime; varying float vFade; varying float vSeed;
-      void main(){vec3 p=position;p.x+=sin(uTime*.035+seed*18.+p.y*.2)*.22;p.y+=sin(uTime*.021+seed*11.)*.30;
-      vec4 mv=modelViewMatrix*vec4(p,1.);vFade=exp(-length(mv.xyz)*.041)*(.14+seed*.27);vSeed=seed;
-      gl_PointSize=clamp((8.+seed*11.)/-mv.z,1.,2.5);gl_Position=projectionMatrix*mv;}`,
-    fragmentShader:`precision highp float;varying float vFade;varying float vSeed;void main(){float d=length(gl_PointCoord-.5);float a=(1.-smoothstep(.05,.5,d))*vFade;gl_FragColor=vec4(mix(vec3(.43,.67,.70),vec3(.73,.82,.79),vSeed),a);}`,
+      ${GLSL_NOISE}
+      void main(){vec3 p=position;p.x+=sin(uTime*.035+seed*18.+p.y*.2)*.22;p.y+=sin(uTime*.021+seed*11.)*.30-mod(uTime*.01*(.5+seed),2.);
+      // Marine snow glints where a surface shaft passes through it.
+      vec2 s=p.xz-vec2(-.22,.28)*(${SURFACE_Y.toFixed(1)}-p.y);
+      float shaft=smoothstep(.05,.6,bwNoise(vec3(s*.32,uTime*.05))*.7+bwNoise(vec3(s*.85+7.,uTime*.08))*.3+.12);
+      vec4 mv=modelViewMatrix*vec4(p,1.);vFade=exp(-length(mv.xyz)*.045)*(.12+seed*.25)*(.35+1.6*shaft);vSeed=seed;
+      gl_PointSize=clamp((9.+seed*12.)/-mv.z,1.,2.8);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`precision highp float;varying float vFade;varying float vSeed;void main(){float d=length(gl_PointCoord-.5);float a=(1.-smoothstep(.05,.5,d))*vFade;gl_FragColor=vec4(mix(vec3(.5,.8,.82),vec3(.85,.95,.92),vSeed)*1.6,a);}`,
   });
   scene.add(new THREE.Points(particlesGeo,particlesMat));
+
+  // Faint bioluminescent plankton drift in the dark water below the light.
+  const glintCount=420,glintPositions=new Float32Array(glintCount*3),glintSeeds=new Float32Array(glintCount);
+  for(let i=0;i<glintCount;i++){glintPositions.set([-1+rnd()*24,-14+rnd()*12,-6-rnd()*40],i*3);glintSeeds[i]=rnd();}
+  const glintGeo=new THREE.BufferGeometry();
+  glintGeo.setAttribute('position',new THREE.BufferAttribute(glintPositions,3));
+  glintGeo.setAttribute('seed',new THREE.BufferAttribute(glintSeeds,1));
+  scene.add(new THREE.Points(glintGeo,new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uTime:clock},
+    vertexShader:`attribute float seed;uniform float uTime;varying float vGlow;
+      void main(){vec3 p=position+vec3(sin(uTime*.05+seed*30.)*.4,sin(uTime*.03+seed*20.)*.5,0.);
+      vec4 mv=modelViewMatrix*vec4(p,1.);
+      vGlow=pow(.5+.5*sin(uTime*(.15+seed*.25)+seed*60.),3.)*(.4+seed*.6);
+      gl_PointSize=clamp(30./-mv.z,1.,2.4);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying float vGlow;void main(){float d=length(gl_PointCoord-.5)*2.;gl_FragColor=vec4(vec3(.2,.85,1.)*2.2*vGlow*(1.-smoothstep(0.,1.,d)),1.);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`,
+  })));
 
   const interactTargets: THREE.Object3D[]=[mainJelly.bell];
   return {
     scene,camera,target,
+    post: { exposure: 1.2, bloomStrength: .11, aoStrength: .9, aoRadius: .7, saturation: 1.05, contrast: 1.1, shadowTint: [.88, .98, 1.1], highlightTint: [1.0, 1.04, 1.02], vignette: .5, grain: .03 },
+    createVolume(): VolumeEffect {
+      return { material: new THREE.ShaderMaterial({
+        vertexShader: FULLSCREEN_VERTEX, fragmentShader: VOLUME_FRAGMENT, depthTest: false, depthWrite: false, toneMapped: false,
+        uniforms: { uSunDirection: { value: SUN_DIRECTION.clone() }, uLight: { value: new THREE.Vector3(.12, .42, .48) }, uSurfaceY: { value: SURFACE_Y }, uDensity: { value: .03 } },
+      }) };
+    },
+    setPostActive(active) { fallbackShafts.forEach(shaft => { shaft.visible = !active; }); },
     update(time,dt){
       for(const timer of timers) timer.value=time;
       pulseTarget=Math.max(0,pulseTarget-dt*.13);
@@ -185,7 +299,7 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
       mainJelly.group.rotation.z=-.12+Math.sin(time*.067)*.025;
       mainJelly.bell.scale.set(breathe,1-((breathe-1)*.45),breathe);
       mainJelly.material.opacity=.37+pulse*.09;
-      mainJelly.material.emissiveIntensity=.12+pulse*.20;
+      mainJelly.material.emissiveIntensity=.35+pulse*.9;
       for(const item of farJellies){
         item.group.position.y=item.home.y+Math.sin(time*.07+item.phase)*.28;
         item.group.rotation.z=Math.sin(time*.043+item.phase)*.08;
@@ -213,34 +327,20 @@ export function createDeepSea(_renderer: THREE.WebGLRenderer): WorldContent {
 function seeded(seed:number){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
 
 function wallGeometry(){
-  const rows=82,cols=104,positions:number[]=[],uvs:number[]=[],indices:number[]=[];
+  const rows=150,cols=190,positions:number[]=[],uvs:number[]=[],indices:number[]=[];
   for(let iy=0;iy<=rows;iy++)for(let iz=0;iz<=cols;iz++){
     const y=-16+iy/rows*34,z=7-iz/cols*66;
     const fissure=Math.pow(Math.abs(Math.sin(y*.52+z*.08)),8)*.72;
     const buttress=Math.exp(-Math.pow((z+5.5)/4.5,2))*1.42;
     const strata=.37*Math.sin(y*.77+z*.12)+.16*Math.sin(y*2.3+z*.19);
-    const x=-4.75+buttress+strata+Math.sin(z*.28-y*.045)*.56+Math.sin(y*2.9+z*1.7)*.10-fissure;
+    const eroded=fbm3(y*.16,z*.16,3.1,4)*1.1+(ridged3(y*.42,z*.42,8.3,3)-.3)*.55+fbm3(y*1.3,z*1.3,1.7,2)*.12;
+    const x=-4.75+buttress+strata*.7+Math.sin(z*.28-y*.045)*.4-fissure*.8+eroded;
     positions.push(x,y,z);uvs.push(iz/cols,iy/rows);
   }
   for(let iy=0;iy<rows;iy++)for(let iz=0;iz<cols;iz++){
     const a=iy*(cols+1)+iz,b=a+cols+1;indices.push(a,a+1,b,b,a+1,b+1);
   }
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));g.setIndex(indices);g.computeVertexNormals();return g;
-}
-
-function chainCaustics(original:THREE.MeshStandardMaterial['onBeforeCompile'],timers:{value:number}[]){
-  return function(this:THREE.MeshStandardMaterial,shader:Parameters<THREE.MeshStandardMaterial['onBeforeCompile']>[0],renderer:THREE.WebGLRenderer){
-    original.call(this,shader,renderer);
-    const time={value:0};timers.push(time);shader.uniforms.uSeaCausticTime=time;
-    shader.vertexShader='varying vec3 vSeaWorld;\n'+shader.vertexShader;
-    shader.vertexShader=shader.vertexShader.replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nvSeaWorld=(modelMatrix*vec4(transformed,1.)).xyz;');
-    shader.fragmentShader='varying vec3 vSeaWorld; uniform float uSeaCausticTime;\n'+shader.fragmentShader;
-    shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>',`#include <dithering_fragment>
-      float seaWave=sin(vSeaWorld.x*2.3+vSeaWorld.z*1.8+sin(vSeaWorld.y*1.8+uSeaCausticTime*.15))+sin(vSeaWorld.z*2.8-vSeaWorld.y*1.7-uSeaCausticTime*.12);
-      float seaLine=pow(max(0.,1.-abs(seaWave)*.72),10.);
-      float seaFade=exp(-max(0.,-vSeaWorld.z)*.023)*.07;
-      gl_FragColor.rgb+=vec3(.45,.78,.75)*seaLine*seaFade;`);
-  };
 }
 
 function makeSeaFan(color:string,seed:number){
@@ -303,10 +403,10 @@ function rosetteGeometry(seed:number){
 
 function makeJellyfish(scale:number,color:string,seed:number,timers:{value:number}[]){
   const group=new THREE.Group();group.scale.setScalar(scale);
-  const material=new THREE.MeshPhysicalMaterial({color,emissive:'#658f99',emissiveIntensity:.16,roughness:.3,metalness:0,transparent:true,opacity:.29,side:THREE.DoubleSide,depthWrite:false,clearcoat:.35,clearcoatRoughness:.2});
+  const material=new THREE.MeshPhysicalMaterial({color,emissive:'#6fb6c8',emissiveIntensity:.16,roughness:.3,metalness:0,transparent:true,opacity:.29,side:THREE.DoubleSide,depthWrite:false,clearcoat:.35,clearcoatRoughness:.2});
   const bell=new THREE.Mesh(bellGeometry(seed),material);bell.renderOrder=3;group.add(bell);
-  const innerMat=new THREE.MeshStandardMaterial({color:'#b7a2b5',emissive:'#879cac',emissiveIntensity:.14,transparent:true,opacity:.33,roughness:.7,depthWrite:false});
-  const fineMat=new THREE.MeshStandardMaterial({color:'#bddbd4',emissive:'#679caa',emissiveIntensity:.10,transparent:true,opacity:.23,roughness:.8,depthWrite:false});
+  const innerMat=new THREE.MeshStandardMaterial({color:'#b7a2b5',emissive:'#c38fd6',emissiveIntensity:.9,transparent:true,opacity:.33,roughness:.7,depthWrite:false});
+  const fineMat=new THREE.MeshStandardMaterial({color:'#bddbd4',emissive:'#7fd6e6',emissiveIntensity:.7,transparent:true,opacity:.23,roughness:.8,depthWrite:false});
   const time={value:0};timers.push(time);
   fineMat.onBeforeCompile=(shader)=>{
     shader.uniforms.uJellyTime=time;

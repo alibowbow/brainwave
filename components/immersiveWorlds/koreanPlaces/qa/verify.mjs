@@ -20,6 +20,9 @@ const sceneOption = option('scene', 'all');
 const scenes = sceneOption === 'all' ? ['scops', 'temple'] : [sceneOption];
 if (scenes.some(scene => !['temple', 'scops', 'rural'].includes(scene))) throw new Error('Unknown scene option.');
 const screenshotsOnly = args.includes('--screenshots-only');
+// Opt-in for overloaded software renderers: scales the page/evaluate/screenshot
+// bounds only. The disposal and host-grace gates below are never scaled.
+const timeoutScale = Math.max(1, Number(option('timeout-scale', '1')) || 1);
 if (screenshotsOnly && cleanupDiagnosticMode) throw new Error('Cleanup diagnostic cannot be combined with screenshots-only.');
 let base = option('url', null);
 const executablePath = option('browser', process.env.CHROMIUM_PATH || '/tmp/cosmic-browser-bin/chromium');
@@ -27,18 +30,27 @@ const hash = value => createHash('sha256').update(value).digest('hex');
 const relative = file => path.relative(repo, file).split(path.sep).join('/');
 const results = { generatedAt: new Date().toISOString(), mode: screenshotsOnly ? 'screenshots-only' : 'full', renderer: 'Chromium headless; ANGLE SwiftShader software WebGL', hardwareClaim: 'Viewport tests only. No physical Fold, device FPS, battery, or thermal claims.', visibilityScope: 'The mandatory hidden-state test uses a labelled synthetic visibilitychange; actual tab visibility is separately reported if observable.', browserExecutable: executablePath, repositoryHead: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).trim(), source: {}, bundle: {}, screenshots: [], worlds: {}, errors: [] };
 results.environmentMode = environmentMode;
+results.timeoutScale = timeoutScale;
 results.cleanupDiagnosticMode = cleanupDiagnosticMode;
 if (cleanupDiagnosticMode) results.mode = 'cleanup-diagnostic';
 
 const ruralBaseline = '174aa43bffa4ead7723dfc7c4c6f9a86e35f8600';
 const ruralPreservationPaths = ['scenes/rural.ts', 'RuralSummerNightWorld.tsx', ...['desktop', 'portrait', 'fold', 'chrome'].map(view => `qa/evidence/final/rural-${view}.png`)].map(file => `components/immersiveWorlds/koreanPlaces/${file}`);
 results.ruralPreservation = { baseline: ruralBaseline, method: 'Exact git-baseline/current file bytes; this record is not a new rural render or a performance claim.', files: await Promise.all(ruralPreservationPaths.map(async file => {
-  const baselineSha256 = hash(execFileSync('git', ['show', `${ruralBaseline}:${file}`], { cwd: repo, maxBuffer: 8 * 1024 * 1024 }));
+  // Informational only: the baseline may be absent from a shallow or rewritten history.
+  let baselineSha256 = null, baselineError;
+  try { baselineSha256 = hash(execFileSync('git', ['show', `${ruralBaseline}:${file}`], { cwd: repo, maxBuffer: 8 * 1024 * 1024, stdio: ['ignore', 'pipe', 'pipe'] })); }
+  catch (error) { baselineError = String(error.stderr ?? error.message).trim(); }
   const currentSha256 = hash(await fs.readFile(path.join(repo, file)));
-  return { path: file, baselineSha256, currentSha256, unchanged: baselineSha256 === currentSha256 };
+  return { path: file, baselineSha256, currentSha256, unchanged: baselineSha256 === currentSha256, baselineError };
 })) };
 results.ruralPreservation.pass = results.ruralPreservation.files.every(file => file.unchanged);
-if (!results.ruralPreservation.pass) throw new Error('Approved rural source or PNG bytes have changed.');
+// The confirmed design update (docs/immersive-worlds/confirmed-design-updates.md)
+// approves a toon-shaded 3D upgrade of this world, so its source now changes on
+// purpose. Byte comparison with the earlier baseline is reported, not enforced;
+// composition is checked against the reference image in qa/evidence/hdr-upgrade.
+results.ruralPreservation.enforced = false;
+results.ruralPreservation.note = 'Rural source intentionally upgraded (toon/HDR); see qa/evidence/hdr-upgrade for the reference comparison.';
 
 async function filesUnder(directory) {
   let entries;
@@ -123,11 +135,11 @@ await context.addInitScript(() => {
 });
 const page = await context.newPage();
 const cdp = await context.newCDPSession(page);
-page.setDefaultTimeout(30000);
+page.setDefaultTimeout(30000 * timeoutScale);
 page.on('pageerror', error => { results.errors.push({ type: 'pageerror', text: error.message }); process.stdout.write(`PAGE ERROR ${error.message}\n`); });
 page.on('console', message => { if (message.type() === 'error') { results.errors.push({ type: 'console', text: message.text() }); process.stdout.write(`CONSOLE ERROR ${message.text()}\n`); } });
 page.on('requestfailed', request => results.errors.push({ type: 'requestfailed', url: request.url(), text: request.failure()?.errorText }));
-function bounded(promise, label, timeout = 30000) {
+function bounded(promise, label, timeout = 30000 * timeoutScale) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`${label} exceeded ${timeout}ms; possible software GPU backpressure`)), timeout);
     promise.then(value => { clearTimeout(timer); resolve(value); }, error => { clearTimeout(timer); reject(error); });
@@ -176,7 +188,7 @@ async function canvasImage(options = {}) {
   const captured = await bounded(cdp.send('Page.captureScreenshot', {
     format: 'png', fromSurface: true, captureBeyondViewport: false,
     clip: { x: 0, y: 0, width: bounds.width, height: bounds.height, scale: 1 },
-  }), 'Chromium composited screenshot', 60000);
+  }), 'Chromium composited screenshot', 60000 * timeoutScale);
   const bytes = Buffer.from(captured.data, 'base64');
   if (options.path) await fs.writeFile(options.path, bytes);
   return bytes;
@@ -221,7 +233,7 @@ async function stable(label) {
   return result;
 }
 async function navigate(scene, extra = '') {
-  await page.goto(`${base}/components/immersiveWorlds/koreanPlaces/qa/index.html?scene=${scene}&environment=${environmentMode}&capture=1${extra}`, { waitUntil: 'networkidle', timeout: 45000 });
+  await page.goto(`${base}/components/immersiveWorlds/koreanPlaces/qa/index.html?scene=${scene}&environment=${environmentMode}&capture=1${extra}`, { waitUntil: 'networkidle', timeout: 45000 * timeoutScale });
   process.stdout.write(`Loaded ${scene}; waiting for scene ready\n`);
   await ready();
   process.stdout.write(`Ready ${scene}\n`);

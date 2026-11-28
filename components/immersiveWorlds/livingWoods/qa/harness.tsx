@@ -29,6 +29,8 @@ declare global {
 
 const interactions: unknown[] = [];
 const params = new URLSearchParams(location.search);
+// QA comparison only: `post=off` keeps the previous direct renderer instead of the HDR pipeline.
+(window as Window & { __livingWoodsQADirect?: boolean }).__livingWoodsQADirect = params.get('post') === 'off';
 const requested = params.get('world') as WorldName;
 const world = requested in worlds ? requested : 'morning';
 
@@ -59,7 +61,7 @@ function Harness() {
         if (!engine || !canvas) throw new Error('Scene engine is not mounted');
         const start = performance.now();
         while (Number(canvas.dataset.pendingSubmissions || 0) > 0 || canvas.dataset.pendingStaticFrame === 'true') {
-          if (performance.now() - start > 55_000) throw new Error('Supplemental readback could not drain pending renderer work');
+          if (performance.now() - start > ((window as Window & { __livingWoodsQADrainMs?: number }).__livingWoodsQADrainMs ?? 55_000)) throw new Error('Supplemental readback could not drain pending renderer work');
           await new Promise(resolve => setTimeout(resolve, 16));
         }
         return engine.captureFrame();

@@ -27,7 +27,8 @@ async function browserPath() {
   const candidates = [process.env.SCENE_BROWSER_PATH, chromium.executablePath(), '/tmp/cosmic-browser-bin/chromium'];
   for (const candidate of candidates) {
     if (!candidate) continue;
-    try { await access(candidate); if ((await stat(candidate)).size > 100_000) return candidate; } catch { /* Try the next already-installed route. */ }
+    // An explicitly chosen executable may be a launcher script; the size check only skips stub candidates.
+    try { await access(candidate); if (candidate === process.env.SCENE_BROWSER_PATH || (await stat(candidate)).size > 100_000) return candidate; } catch { /* Try the next already-installed route. */ }
   }
   throw new Error('No installed Chromium executable. Run the repository CI browser-install step, then set SCENE_BROWSER_PATH if needed. This runner never downloads browsers.');
 }
@@ -68,7 +69,7 @@ export async function runLivingWoodsQA() {
   };
   const executablePath = await browserPath();
   report.environment.browserExecutable = executablePath;
-  const server = await preview({ ...options, preview: { host: '127.0.0.1', port: 0, strictPort: false } });
+  const server = await preview({ ...options, preview: { host: '127.0.0.1', port: Number(process.env.LIVING_WOODS_PORT || 0), strictPort: !!process.env.LIVING_WOODS_PORT } });
   const address = server.httpServer.address();
   assert.ok(address && typeof address !== 'string');
   const base = `http://127.0.0.1:${address.port}`;
@@ -79,9 +80,12 @@ export async function runLivingWoodsQA() {
     // Chromium's serverless single-process build cannot destroy/recreate an
     // implicit context per scene; keep one context alive for the whole run.
     const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, serviceWorkers: 'block' });
+    // Opt-in for slow software rendering on a loaded machine; the default limits are unchanged.
+    const qaTimeout = Number(process.env.LIVING_WOODS_QA_TIMEOUT || 60_000);
+    if (process.env.LIVING_WOODS_QA_TIMEOUT) await context.addInitScript((ms) => { window.__livingWoodsQADrainMs = ms; }, qaTimeout - 5_000);
     for (const world of worlds) {
       const page = await context.newPage();
-      page.setDefaultTimeout(60_000);
+      page.setDefaultTimeout(qaTimeout);
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
       page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -100,7 +104,7 @@ export async function runLivingWoodsQA() {
         let timeout;
         const data = await Promise.race([
           api('captureCanvas'),
-          new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error(`${world}: canvas readback exceeded 60 seconds`)), 60_000); }),
+          new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error(`${world}: canvas readback exceeded ${qaTimeout / 1000} seconds`)), qaTimeout); }),
         ]).finally(() => clearTimeout(timeout));
         assert.ok(data.startsWith('data:image/png;base64,'), 'canvas readback returns actual PNG bytes');
         return Buffer.from(data.slice('data:image/png;base64,'.length), 'base64');
@@ -316,7 +320,11 @@ export async function runLivingWoodsQA() {
         assert.notEqual(cold.engine, engineId, 'mount after disposal gets a new engine');
         assert.equal(cold.time, 0, 'cold inactive mount draws without advancing simulation');
         assert.ok(cold.frames > 0 && cold.width > 0 && cold.height > 0, 'cold inactive first frame is nonzero');
-        const baselineResources = entry.metrics.find((item) => item.viewport === 'desktop');
+        // HDR render targets (bloom levels) scale with canvas size, so compare
+        // the recreated engine with the first engine at the same size.
+        const recorded = [...entry.metrics, entry.checks.motionCounters?.before, entry.checks.motionCounters?.after].filter(Boolean);
+        const baselineResources = recorded.find((item) => item.width === cold.width && item.height === cold.height)
+          ?? entry.metrics.find((item) => item.viewport === 'desktop');
         assert.equal(cold.geometries, baselineResources.geometries, 'new engine has the same geometry count after disposal');
         assert.equal(cold.textures, baselineResources.textures, 'new engine has the same texture count after disposal');
         entry.checks.delayedDisposal = { passed: true, gracePeriodWaitMs: 5500, detachedFramesStable: true, explicitDisposeFlag: disposed };

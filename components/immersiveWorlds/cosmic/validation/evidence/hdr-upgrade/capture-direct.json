@@ -1,0 +1,35 @@
+{
+  "query": "?clean&still&post=off",
+  "activeFrames": 0,
+  "captures": [
+    {
+      "viewport": "desktop",
+      "width": 1280,
+      "height": 800,
+      "file": "cosmic-desktop.png",
+      "seconds": 142.496,
+      "post": "direct",
+      "frame": "2",
+      "time": "0.0000",
+      "calls": "169",
+      "triangles": "646500",
+      "quality": "1",
+      "reflection": "RGBA16F"
+    },
+    {
+      "viewport": "portrait",
+      "width": 390,
+      "height": 844,
+      "file": "cosmic-portrait.png",
+      "seconds": 143.155,
+      "post": "direct",
+      "frame": "2",
+      "time": "0.0000",
+      "calls": "166",
+      "triangles": "640548",
+      "quality": "1",
+      "reflection": "RGBA16F"
+    }
+  ],
+  "errors": []
+}

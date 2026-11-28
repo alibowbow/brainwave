@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   root: fileURLToPath(new URL('../../../', import.meta.url)),
   plugins: [react()],
-  server: { host: '127.0.0.1', port: 4178, strictPort: true },
+  server: { host: '127.0.0.1', port: Number(process.env.FOREST_HARNESS_PORT || 4178), strictPort: true },
   build: {
     outDir: fileURLToPath(new URL('./.harness-build', import.meta.url)),
     emptyOutDir: true,

@@ -10,6 +10,7 @@ import { applyFoliage, crownGeometry, leafAtlas, type Crown } from '../render/fo
 import { barkMaterial, growTree, limbGeometry } from '../render/trees';
 import { boulderGeometry, pebbleGeometry } from '../render/stones';
 import { radianceProbe, reflectiveSurface } from '../render/surfaces';
+import { PondLife, RING_SLOTS, TAP_SLOTS, WATER_FRAGMENT, WATER_VERTEX, bakeGustTexture, bakePondMap, bakeRippleTexture, createDrift, trainField } from './nightPondWater';
 
 /*
  * Original procedural scene: a summer pond at night, seen from a seat at the
@@ -95,79 +96,6 @@ void main() {
   c = mix(c, cloudColor, cloud * 0.72);
   if (d.y < 0.0) c = vec3(0.004, 0.006, 0.008);
   gl_FragColor = vec4(c, 1.0);
-  #include <tonemapping_fragment>
-  #include <colorspace_fragment>
-}
-`;
-
-const WATER_VERTEX = /* glsl */ `
-uniform mat4 textureMatrix;
-varying vec4 vReflect;
-varying vec3 vWaterWorld;
-void main() {
-  vec4 world = modelMatrix * vec4(position, 1.0);
-  vWaterWorld = world.xyz;
-  vReflect = textureMatrix * vec4(position, 1.0);
-  gl_Position = projectionMatrix * viewMatrix * world;
-}
-`;
-
-const WATER_FRAGMENT = /* glsl */ `
-${GLSL_NOISE}
-uniform vec3 color;
-uniform sampler2D tDiffuse;
-uniform float uTime;
-uniform vec4 uRipples[4];
-uniform vec3 uMoon;
-uniform vec3 uMoonRadiance;
-uniform vec3 uDeep;
-varying vec4 vReflect;
-varying vec3 vWaterWorld;
-vec2 waveSlope(vec2 p, float t) {
-  vec2 s = vec2(0.0);
-  s += vec2(0.62, 0.78) * cos(dot(p, vec2(0.62, 0.78)) * 1.9 + t * 0.31) * 0.0065;
-  s += vec2(-0.83, 0.55) * cos(dot(p, vec2(-0.83, 0.55)) * 3.1 - t * 0.37) * 0.0045;
-  s += vec2(0.21, -0.98) * cos(dot(p, vec2(0.21, -0.98)) * 5.3 + t * 0.43) * 0.003;
-  s += vec2(0.95, 0.31) * cos(dot(p, vec2(0.95, 0.31)) * 8.9 - t * 0.52) * 0.0022;
-  return s;
-}
-void main() {
-  vec2 p = vWaterWorld.xz;
-  float t = uTime;
-  vec2 slope = waveSlope(p, t);
-  // Breath of wind: drifting cat's-paws of finer ripples.
-  float paw = smoothstep(0.1, 0.7, bwNoise(vec3(p * 0.16 + vec2(t * 0.02, t * 0.011), t * 0.015)));
-  vec3 q = vec3(p * 6.5, t * 0.32);
-  float e = 0.06;
-  float n0 = bwNoise(q);
-  slope += vec2(bwNoise(q + vec3(e, 0.0, 0.0)) - n0, bwNoise(q + vec3(0.0, e, 0.0)) - n0) / e * (0.0014 + paw * 0.0045);
-  for (int i = 0; i < 4; i++) {
-    float age = t - uRipples[i].z;
-    vec2 delta = p - uRipples[i].xy;
-    float d = length(delta);
-    float front = d - age * 0.42;
-    float amp = exp(-front * front * 18.0) * exp(-age * 0.45) * step(0.0, age) * uRipples[i].w;
-    slope += delta / max(d, 1e-3) * cos(front * 26.0) * amp * 0.05;
-  }
-  vec3 n = normalize(vec3(-slope.x, 1.0, -slope.y));
-  vec3 toEye = cameraPosition - vWaterWorld;
-  float dist = length(toEye);
-  vec3 v = toEye / dist;
-  float cosV = max(dot(n, v), 0.0);
-  float fresnel = 0.02 + 0.98 * pow(clamp(1.0 - cosV, 0.0, 1.0), 5.0);
-  vec2 uv = vReflect.xy / vReflect.w + slope * 0.9 / (1.0 + dist * 0.04);
-  vec3 reflected = texture2D(tDiffuse, clamp(uv, vec2(0.001), vec2(0.999))).rgb;
-  // Glitter of the moon on sub-pixel ripples: a lobe that widens with distance
-  // so the far path becomes continuous instead of aliasing into noise.
-  vec3 fine = normalize(n + vec3(bwNoise(vec3(p * 23.0, t * 0.6)), 0.0, bwNoise(vec3(p * 23.0 + 9.1, t * 0.6))) * (0.05 + paw * 0.05));
-  vec3 r = reflect(-v, fine);
-  float lobe = mix(2600.0, 260.0, smoothstep(3.0, 30.0, dist));
-  float glitter = pow(max(dot(r, uMoon), 0.0), lobe) * lobe * 0.0016;
-  vec3 body = uDeep;
-  vec3 col = mix(body, reflected, fresnel) + uMoonRadiance * glitter * fresnel;
-  float alpha = mix(0.62, 1.0, smoothstep(1.0, 10.0, dist));
-  alpha = max(alpha, fresnel);
-  gl_FragColor = vec4(col, alpha);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }
@@ -342,20 +270,31 @@ material.specularColor *= mix(1.0, 0.5, grassy);`)
   ground.name = 'night-pond-banks-and-bed'; ground.receiveShadow = true;
   scene.add(ground);
 
-  // --- Water: planar mirror, ripples, moon glitter. ---------------------------
-  const impulses = Array.from({ length: 4 }, () => new THREE.Vector4(0, 0, -100, 0));
+  // --- Water: planar mirror, wind ripples, rings, moon glitter (nightPondWater). -
+  const mistMoon = new THREE.Vector3(MOON_LIGHT.r, MOON_LIGHT.g, MOON_LIGHT.b).multiplyScalar(.05), mistAmbient = new THREE.Vector3(.005, .008, .012), mist = .05;
   const surface = reflectiveSurface(renderer, new THREE.PlaneGeometry(80, 92), {
     name: 'NightPondWater',
     uniforms: {
       color: { value: new THREE.Color(0x7f7f7f) }, tDiffuse: { value: null }, textureMatrix: { value: new THREE.Matrix4() },
-      uTime: { value: 0 }, uRipples: { value: impulses }, uMoon: { value: MOON.clone() },
+      uTime: { value: 0 }, uMoon: { value: MOON.clone() },
+      uRings: { value: Array.from({ length: RING_SLOTS }, () => new THREE.Vector4(0, 0, -100, 0)) },
+      uRingShape: { value: Array.from({ length: RING_SLOTS }, () => new THREE.Vector4(1, 0, 0, 0)) },
       uMoonRadiance: { value: new THREE.Vector3(1, 1, 1) }, uDeep: { value: new THREE.Color(.0022, .0042, .0046) },
+      uRipple: { value: null }, uGust: { value: null }, uPondMap: { value: null }, uRippleDecode: { value: 1 },
+      uMistMoon: { value: mistMoon }, uMistAmbient: { value: mistAmbient }, uMist: { value: mist },
     },
     vertexShader: WATER_VERTEX, fragmentShader: WATER_FRAGMENT,
   }, { label: 'night-pond-reflection', scale: .5 });
   const water = surface.mesh;
+  // Reflector clones its uniforms: everything below writes into the material's own copies.
   const waterUniforms = surface.material.uniforms;
   waterUniforms.uMoonRadiance.value.set(MOON_LIGHT.r, MOON_LIGHT.g, MOON_LIGHT.b).multiplyScalar(16);
+  {
+    const ripple = bakeRippleTexture(4127);
+    ripple.texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+    waterUniforms.uRipple.value = ripple.texture; waterUniforms.uRippleDecode.value = ripple.decode;
+    waterUniforms.uGust.value = bakeGustTexture(6271);
+  }
   surface.material.transparent = true;
   surface.material.depthWrite = true;
   water.name = 'night-pond-water';
@@ -461,7 +400,7 @@ roughnessFactor = 0.5 + 0.1 * vein + 0.1 * blotch;`)
     g.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     g.setIndex(idx); g.computeVertexNormals(); return g;
   }
-  const lilies: { mesh: THREE.Mesh; phase: number }[] = [];
+  const lilies: { mesh: THREE.Mesh; phase: number; radius: number; offset: number }[] = [];
   const padLocations = [[-.28, 2.93, .32], [.63, 2.70, .34], [1.64, 1.33, .51], [-2.02, 1.08, .45], [-.22, .67, .33], [2.27, -.08, .37], [-2.9, -.4, .37], [1.26, -.73, .26], [-3.15, -2, .32], [2.71, -2.1, .31], [-1.73, -3.2, .23]];
   for (let i = 0; i < 34; i++) if (i >= padLocations.length) {
     // Pads gather in loose colonies near the banks instead of an even scatter.
@@ -470,10 +409,21 @@ roughnessFactor = 0.5 + 0.1 * vein + 0.1 * blotch;`)
   }
   padLocations.forEach((p, i) => {
     const mesh = new THREE.Mesh(lilyGeometry(p[2], i), lilyMaterial);
+    // Yaw first, then tilts about world axes, so a pad leans with the local slope.
+    mesh.rotation.order = 'XZY';
     mesh.position.set(p[0], .006, p[1]); mesh.rotation.y = between(-3, 3);
     mesh.receiveShadow = true; mesh.name = `night-pond-lily-${i}`;
-    scene.add(mesh); lilies.push({ mesh, phase: random() * 6 });
+    scene.add(mesh); lilies.push({ mesh, phase: random() * 6, radius: p[2], offset: i });
   });
+
+  // --- Pond map, pond life and drifting specks. ---------------------------------
+  const pondMap = bakePondMap({ shoreDistance, rocks, pads: lilies });
+  waterUniforms.uPondMap.value = pondMap.texture;
+  const life = new PondLife(waterUniforms.uRings.value, waterUniforms.uRingShape.value, camera,
+    (x, z) => pondMap.shore(x, z) < -.35 && pondMap.clearance(x, z) > .12);
+  const padCalm = lilies.map(({ mesh }) => Math.sqrt(pondMap.open(mesh.position.x, mesh.position.z)));
+  const drift = createDrift(pondMap, life, camera, 9043);
+  scene.add(drift.mesh);
 
   section(37);
   // --- Plants: reeds, sedges, grass and cattails share one swaying material. --
@@ -671,6 +621,7 @@ roughnessFactor = 0.5 + 0.1 * vein + 0.1 * blotch;`)
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
   const occluders: THREE.Object3D[] = [water, ...rocks, ...lilies.map(l => l.mesh), flowers];
   let rippleSlot = 0, lastTap = -100;
+  const field = { h: 0, sx: 0, sz: 0 };
   return {
     scene, camera,
     post: {
@@ -681,8 +632,9 @@ roughnessFactor = 0.5 + 0.1 * vein + 0.1 * blotch;`)
       const material = new THREE.ShaderMaterial({
         vertexShader: FULLSCREEN_VERTEX, fragmentShader: VOLUME_FRAGMENT, depthTest: false, depthWrite: false, toneMapped: false,
         uniforms: {
-          uMoon: { value: MOON.clone() }, uMoonColor: { value: new THREE.Vector3(MOON_LIGHT.r, MOON_LIGHT.g, MOON_LIGHT.b).multiplyScalar(.05) },
-          uAmbient: { value: new THREE.Vector3(.005, .008, .012) }, uMist: { value: .05 }, uHaze: { value: .0012 },
+          // Same medium as the water's reflected-path mist, so the two agree.
+          uMoon: { value: MOON.clone() }, uMoonColor: { value: mistMoon.clone() },
+          uAmbient: { value: mistAmbient.clone() }, uMist: { value: mist }, uHaze: { value: .0012 },
         },
       });
       return { material };
@@ -702,10 +654,17 @@ roughnessFactor = 0.5 + 0.1 * vein + 0.1 * blotch;`)
     },
     update(t) {
       time.value = t; waterUniforms.uTime.value = t;
-      lilies.forEach(({ mesh, phase }) => {
-        mesh.position.y = .006 + Math.sin(t * .31 + phase) * .004;
-        mesh.rotation.x = Math.sin(t * .25 + phase) * .008; mesh.rotation.z = Math.cos(t * .23 + phase) * .007;
+      life.update(t);
+      // Pads ride the passing wave trains and rings, low-passed over their own size.
+      lilies.forEach(({ mesh, phase, radius }, i) => {
+        const x = mesh.position.x, z = mesh.position.z, calm = padCalm[i];
+        trainField(x, z, t, radius, field);
+        const ring = life.heightAt(x, z, t), ringX = life.heightAt(x + radius * .6, z, t) - life.heightAt(x - radius * .6, z, t), ringZ = life.heightAt(x, z + radius * .6, t) - life.heightAt(x, z - radius * .6, t);
+        mesh.position.y = .006 + (field.h * calm + ring * .7) + Math.sin(t * .31 + phase) * .0012;
+        mesh.rotation.x = -(field.sz * calm + ringZ / (radius * 1.2) * .7);
+        mesh.rotation.z = field.sx * calm + ringX / (radius * 1.2) * .7;
       });
+      drift.update(t);
       fish.forEach(({ mesh, base, phase }) => {
         mesh.position.x = base.x + Math.sin(t * .055 + phase) * .29; mesh.position.z = base.z + Math.cos(t * .055 + phase) * .16;
         mesh.rotation.y = Math.atan2(Math.cos(t * .055 + phase) * .29, -Math.sin(t * .055 + phase) * .16);
@@ -719,7 +678,7 @@ roughnessFactor = 0.5 + 0.1 * vein + 0.1 * blotch;`)
       if (!hit || hit.object !== water || hit.distance > 24) return null;
       const p = hit.point;
       if (p.x < leftEdge(p.z) + .2 || p.x > rightEdge(p.z) - .2) return null;
-      lastTap = t; impulses[rippleSlot].set(p.x, p.z, t, .75); rippleSlot = (rippleSlot + 1) % 4;
+      lastTap = t; life.tap(rippleSlot, p.x, p.z, t, .75); rippleSlot = (rippleSlot + 1) % TAP_SLOTS;
       return { world: 'night-pond', kind: 'ripple', strength: .32, position: { x: p.x, z: p.z } };
     },
     dispose() { surface.dispose(); environment.dispose(); atlas.dispose(); foliage.customDepthMaterial?.dispose(); },

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import NightPondWorld from '../NightPondWorld';
 import SummerValleyWorld from '../SummerValleyWorld';
 import PebbleShoreWorld from '../PebbleShoreWorld';
-import { configureWaterEdgePost, diagnostics } from '../runtime';
+import { configureWaterEdgeClock, configureWaterEdgePost, diagnostics } from '../runtime';
 import { configureWaterEdgeRenderTargets } from '../renderTargets';
 import { drainGpu, graphicsInfo, inspectTelemetry, markTelemetry } from './followupTelemetry';
 import type { WaterEdgeInteraction, WaterEdgeKind } from '../contracts';
@@ -15,6 +15,7 @@ const worlds = { 'night-pond': NightPondWorld, 'summer-valley': SummerValleyWorl
 const query = new URLSearchParams(location.search);
 configureWaterEdgeRenderTargets({ forceByte: query.get('targets') === 'byte' });
 configureWaterEdgePost({ direct: query.get('post') === 'off' });
+configureWaterEdgeClock({ start: Number(query.get('t')) || 0 });
 const initialKind = query.get('world') as WaterEdgeKind;
 const events: WaterEdgeInteraction[] = [];
 const canvasIds = new WeakMap<HTMLCanvasElement, number>();

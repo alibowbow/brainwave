@@ -1,7 +1,8 @@
 // Visual quality captures for the water-edge worlds: builds the isolated dev
 // harness, renders each world and writes lossless PNGs for side-by-side review.
 //   WATER_EDGE_QA_OUTPUT=/tmp/we/after WATER_EDGE_PORT=4311 node components/immersiveWorlds/waterEdge/qa/capture-quality.mjs
-// WATER_EDGE_QUERY=post=off captures the direct (non-HDR) renderer path.
+// WATER_EDGE_QUERY=post=off captures the direct (non-HDR) renderer path;
+// WATER_EDGE_QUERY=t=3 starts the scene clock at 3 s for deterministic motion stills.
 // WATER_EDGE_ACTIVE=<frames> runs the animation for that many frames and
 // pauses before capture, to check time-driven shading in motion.
 // WATER_EDGE_WORLDS / WATER_EDGE_VIEWPORTS narrow the run; WATER_EDGE_SKIP_BUILD

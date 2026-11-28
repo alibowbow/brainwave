@@ -57,10 +57,11 @@ function randomFrom(seed: number): Random {
 }
 
 function jade(random: Random, young = false): THREE.Color {
+  // Natural, slightly olive greens; the light makes them glow, not the albedo.
   return new THREE.Color().setHSL(
-    0.345 + random() * 0.065,
-    0.53 + random() * 0.18,
-    (young ? 0.19 : 0.10) + random() * 0.085,
+    0.27 + random() * 0.07,
+    0.30 + random() * 0.16,
+    (young ? 0.20 : 0.12) + random() * 0.07,
   );
 }
 
@@ -114,8 +115,10 @@ class BotanicalGeometry {
 
 function addLeaf(batch: BotanicalGeometry, leaf: Leaf): void {
   const family = leaf.family ?? 0;
-  const segments = family === 1 || family === 2 ? 10 : family === 3 ? 12 : 18;
-  const across = family === 2 ? 2 : family === 1 ? 4 : 6;
+  // Fern leaflets are small on screen: fewer rows keep the garden well under
+  // a million triangles without changing their silhouette.
+  const segments = family === 1 ? 6 : family === 2 ? 10 : family === 3 ? 12 : 14;
+  const across = family === 2 ? 2 : family === 1 ? 2 : 6;
   const axis = leaf.direction.clone().normalize();
   const right = new THREE.Vector3().crossVectors(axis, leaf.surfaceNormal ?? UP);
   if (right.lengthSq() < 0.0001) right.set(1, 0, 0);
@@ -417,6 +420,16 @@ function buildPlant(kind: PlantKind, seed: number): [BotanicalGeometry, Botanica
 interface BotanyUniforms {
   uBotanyTime: { value: number };
   uBotanyPulse: { value: THREE.Vector4 };
+  /** World direction toward the key star and its diffuse radiance scale. */
+  uBotanyKeyDir: { value: THREE.Vector3 };
+  uBotanyKeyColor: { value: THREE.Vector3 };
+}
+
+/** One leaf/stem/pollen material set; a garden shares it across every plant. */
+export interface BotanyMaterialSet {
+  uniforms: BotanyUniforms;
+  materials: readonly [THREE.MeshStandardMaterial, THREE.MeshStandardMaterial, THREE.MeshStandardMaterial];
+  dispose(): void;
 }
 
 const vertexDeclarations = /* glsl */ `
@@ -445,6 +458,9 @@ const vertexDeformation = /* glsl */ `
 `;
 
 const fragmentDeclarations = /* glsl */ `
+  uniform float uBotanyTime;
+  uniform vec3 uBotanyKeyDir;
+  uniform vec3 uBotanyKeyColor;
   varying vec2 vBotanyUv;
   varying vec4 vBotanyData;
   varying float vBotanyTouch;
@@ -464,9 +480,9 @@ function createMaterial(uniforms: BotanyUniforms, kind: 'leaf' | 'stem' | 'polle
   const material = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     vertexColors: true,
-    roughness: kind === 'leaf' ? 0.66 : 0.78,
+    roughness: kind === 'leaf' ? 0.58 : kind === 'pollen' ? 0.5 : 0.78,
     metalness: 0,
-    specularIntensity: kind === 'leaf' ? 0.30 : 0.45,
+    specularIntensity: kind === 'leaf' ? 0.45 : 0.4,
     side: kind === 'leaf' ? THREE.DoubleSide : THREE.FrontSide,
   });
   material.name = `Cosmic garden ${kind}`;
@@ -495,31 +511,81 @@ function createMaterial(uniforms: BotanyUniforms, kind: 'leaf' | 'stem' | 'polle
         float leafVeins = max(leafMidrib * 0.38, leafBranchVein * 0.17);
         if (leafFamily > 1.5 && leafFamily < 2.5) leafVeins = leafMidrib * 0.27;
         if (leafFamily > 2.5) leafVeins = leafMidrib * 0.08 + leafBranchVein * 0.035;
-        vec3 leafVeinColor = leafFamily > 2.5 ? vec3(0.62, 0.55, 0.73) : vec3(0.19, 0.33, 0.08);
-        diffuseColor.rgb *= 0.90 + leafMottle * 0.16 + leafGrain * 0.045;
-        diffuseColor.rgb = mix(diffuseColor.rgb, leafVeinColor, leafVeins);
-        diffuseColor.rgb *= 1.0 - 0.09 * pow(leafX, 4.0);
+        vec3 leafVeinColor = leafFamily > 2.5 ? vec3(0.62, 0.55, 0.73) : vec3(0.30, 0.42, 0.10);
+        diffuseColor.rgb *= 0.86 + leafMottle * 0.20 + leafGrain * 0.05;
+        diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 0.6 + leafVeinColor * 0.25, leafVeins);
+        // Older, sun-bleached tips and a slightly darker rim, like real laminae.
+        diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.25, 1.12, 0.72), smoothstep(0.72, 1.0, leafY) * 0.35);
+        diffuseColor.rgb *= 1.0 - 0.12 * pow(leafX, 4.0);
       `).replace('#include <roughnessmap_fragment>', /* glsl */ `
         #include <roughnessmap_fragment>
         roughnessFactor *= 0.93 + leafGrain * 0.12 - leafVeins * 0.12;
       `).replace('#include <opaque_fragment>', /* glsl */ `
-        // Thin-leaf backlight: a quiet warm key and a cool environmental edge.
-        vec3 leafWarmDirection = normalize((viewMatrix * vec4(-0.4, 0.65, -0.6, 0.0)).xyz);
-        vec3 leafCoolDirection = normalize((viewMatrix * vec4(0.6, 0.25, 0.7, 0.0)).xyz);
-        float leafBacklight = pow(max(0.0, dot(-normal, leafWarmDirection)), 1.7);
-        float leafCoolLight = pow(max(0.0, dot(-normal, leafCoolDirection)), 2.0);
-        float leafThinness = (1.0 - leafVeins) * (0.55 + leafX * 0.45);
-        outgoingLight += diffuseColor.rgb * leafThinness * (vec3(0.82, 0.66, 0.28) * leafBacklight * 0.14 + vec3(0.20, 0.47, 0.54) * leafCoolLight * 0.06);
-        outgoingLight += diffuseColor.rgb * vec3(0.55, 0.90, 0.68) * vBotanyTouch * 0.24;
+        // Translucent lamina: starlight passing through glows yellow-green,
+        // strongest when the viewer looks toward the star through the leaf.
+        vec3 leafKey = normalize((viewMatrix * vec4(uBotanyKeyDir, 0.0)).xyz);
+        vec3 leafView = normalize(vViewPosition);
+        float leafBehind = clamp(dot(-normal, leafKey), 0.0, 1.0);
+        float leafThrough = pow(clamp(dot(-leafView, leafKey), 0.0, 1.0), 3.0);
+        float leafThinness = (1.0 - leafVeins * 0.8) * (0.55 + leafX * 0.45) * (leafFamily > 2.5 ? 1.3 : 1.0);
+        vec3 leafTransmit = diffuseColor.rgb * vec3(1.35, 1.45, 0.62) + vec3(0.010, 0.018, 0.0);
+        outgoingLight += leafTransmit * uBotanyKeyColor * leafThinness * leafBehind * (0.16 + 0.75 * leafThrough);
+        // Restrained bioluminescence: a few fern fronds' young tips, faint veins
+        // in the broad leaves and the inner petals, each breathing on its own.
+        float leafSeed = fract(vBotanyData.x * 0.1591549 * 7.0);
+        float leafBreath = 0.75 + 0.25 * sin(uBotanyTime * 0.21 + vBotanyData.x * 3.1);
+        // Distant islands must not sparkle: the glow fades out beyond a few metres.
+        float leafNear = 1.0 - smoothstep(6.0, 14.0, length(vViewPosition));
+        float leafTips = (leafFamily > 0.5 && leafFamily < 1.5) ? smoothstep(0.65, 1.0, leafY) * step(0.8, leafSeed) * leafNear : 0.0;
+        float leafVeinGlow = leafFamily < 0.5 ? leafVeins * step(0.5, leafSeed) * 0.5 : 0.0;
+        float leafHeart = leafFamily > 2.5 ? (1.0 - smoothstep(0.0, 0.45, leafY)) * 0.8 : 0.0;
+        vec3 leafGlowColor = leafFamily > 2.5 ? vec3(0.60, 0.42, 0.95) : vec3(0.16, 0.85, 0.62);
+        outgoingLight += leafGlowColor * (leafTips * 0.10 + leafVeinGlow * 0.08 + leafHeart * 0.22) * leafBreath;
+        outgoingLight += vec3(0.30, 0.95, 0.72) * vBotanyTouch * 0.55;
+        #include <opaque_fragment>
+      `);
+    } else if (kind === 'pollen') {
+      shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', /* glsl */ `
+        // Luminous anthers: a warm HDR core the bloom softens, slowly breathing.
+        // Only nearby anthers glow; far away they would sparkle like glitter.
+        float pollenNear = 1.0 - smoothstep(4.0, 11.0, length(vViewPosition));
+        float pollenBreath = 0.7 + 0.3 * sin(uBotanyTime * 0.17 + vBotanyData.x * 2.3);
+        outgoingLight += vec3(1.0, 0.72, 0.34) * (0.03 + 0.42 * pollenNear) * pollenBreath + vec3(0.30, 0.95, 0.72) * vBotanyTouch * 1.5;
+        #include <opaque_fragment>
+      `);
+    } else {
+      shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', /* glsl */ `
+        outgoingLight += vec3(0.30, 0.95, 0.72) * vBotanyTouch * 0.25;
         #include <opaque_fragment>
       `);
     }
   };
-  material.customProgramCacheKey = () => `cosmic-botany-v2-${kind}`;
+  material.customProgramCacheKey = () => `cosmic-botany-v3-${kind}`;
   return material;
 }
 
-function createModel(placements: PlantPlacement[], label: string): BotanicalModel {
+/** Leaf, stem and pollen materials with one set of uniforms, shared by many plants. */
+export function createBotanyMaterials(): BotanyMaterialSet {
+  const uniforms: BotanyUniforms = {
+    uBotanyTime: { value: 0 },
+    uBotanyPulse: { value: new THREE.Vector4(0, 0, 0, -1) },
+    uBotanyKeyDir: { value: new THREE.Vector3(-0.74, 0.42, -0.52).normalize() },
+    uBotanyKeyColor: { value: new THREE.Vector3(1.0, 0.93, 0.84).multiplyScalar(3.4 / Math.PI) },
+  };
+  const materials = [createMaterial(uniforms, 'leaf'), createMaterial(uniforms, 'stem'), createMaterial(uniforms, 'pollen')] as const;
+  let disposed = false;
+  return {
+    uniforms,
+    materials,
+    dispose() {
+      if (disposed) return;
+      disposed = true;
+      materials.forEach((material) => material.dispose());
+    },
+  };
+}
+
+function createModel(placements: PlantPlacement[], label: string, shared?: BotanyMaterialSet): BotanicalModel {
   const group = new THREE.Group();
   group.name = label;
   group.userData.botanical = true;
@@ -534,18 +600,18 @@ function createModel(placements: PlantPlacement[], label: string): BotanicalMode
     );
     pieces.forEach((piece, index) => batches[index].append(piece, matrix));
   }
-  const uniforms: BotanyUniforms = {
-    uBotanyTime: { value: 0 },
-    uBotanyPulse: { value: new THREE.Vector4(0, 0, 0, -1) },
-  };
-  const materials: THREE.Material[] = [];
+  // A plant either owns its materials or borrows a garden-wide set.
+  const owned = shared ? null : createBotanyMaterials();
+  const set = shared ?? owned!;
+  const uniforms = set.uniforms;
   const geometries: THREE.BufferGeometry[] = [];
   const interactables: THREE.Object3D[] = [];
   const kinds = ['leaf', 'stem', 'pollen'] as const;
+  const used = new Set<THREE.Material>();
   batches.forEach((batch, index) => {
     if (!batch.indices.length) return;
     const geometry = batch.geometry();
-    const material = createMaterial(uniforms, kinds[index]);
+    const material = set.materials[index];
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = `${label} ${kinds[index]}`;
     mesh.userData.botanical = true;
@@ -556,10 +622,12 @@ function createModel(placements: PlantPlacement[], label: string): BotanicalMode
     mesh.receiveShadow = true;
     mesh.castShadow = false;
     group.add(mesh);
-    materials.push(material);
+    used.add(material);
     geometries.push(geometry);
     if (index === 0) interactables.push(mesh);
   });
+  // An owned set disposes only what this plant actually used, exactly once.
+  if (owned) owned.materials.forEach((material) => { if (!used.has(material)) material.dispose(); });
   let disposed = false;
   return {
     group,
@@ -577,7 +645,7 @@ function createModel(placements: PlantPlacement[], label: string): BotanicalMode
       if (disposed) return;
       disposed = true;
       geometries.forEach((geometry) => geometry.dispose());
-      materials.forEach((material) => material.dispose());
+      if (owned) used.forEach((material) => material.dispose());
       group.clear();
       interactables.length = 0;
     },
@@ -585,15 +653,15 @@ function createModel(placements: PlantPlacement[], label: string): BotanicalMode
 }
 
 /** A local, meter-scale plant. Move/rotate/scale its group freely after creation. */
-export function createPlant(kind: PlantKind, seed = 1): BotanicalModel {
+export function createPlant(kind: PlantKind, seed = 1, shared?: BotanyMaterialSet): BotanicalModel {
   const names: Record<PlantKind, string> = {
     fern: 'Jade fern', broadleaf: 'Verdant leaves', grass: 'Silvergrass', blossom: 'Moon blossoms',
   };
-  return createModel([{ kind, seed }], names[kind]);
+  return createModel([{ kind, seed }], names[kind], shared);
 }
 
 /** A natural mixed planting, centered at the origin and approximately 3 m wide. */
-export function createBotany(seed = 1): BotanicalModel {
+export function createBotany(seed = 1, shared?: BotanyMaterialSet): BotanicalModel {
   return createModel([
     { kind: 'broadleaf', seed: seed + 3, x: -0.37, z: 0.28, rotation: 0.8 },
     { kind: 'fern', seed: seed + 11, x: 0.46, z: 0.24, scale: 0.9, rotation: 1.2 },
@@ -601,5 +669,5 @@ export function createBotany(seed = 1): BotanicalModel {
     { kind: 'grass', seed: seed + 37, x: -0.77, z: -0.16, scale: 0.85 },
     { kind: 'grass', seed: seed + 43, x: 0.73, z: -0.14, scale: 0.73, rotation: 1.8 },
     { kind: 'fern', seed: seed + 59, x: -0.22, z: -0.51, scale: 0.67, rotation: 2.5 },
-  ], 'Moon garden planting');
+  ], 'Moon garden planting', shared);
 }

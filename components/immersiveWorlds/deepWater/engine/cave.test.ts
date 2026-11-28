@@ -61,6 +61,21 @@ describe('cavern world spatial contracts',()=>{
     expect(Array.from(points.geometry.attributes.position.array)).toEqual(first);
   });
 
+  it('lets drops fall from stalactite tips and ring the pool as a pure function of time',()=>{
+    const w=world();
+    const drips=w.scene.getObjectByName('cave-drips')!;
+    expect(drips.children.length).toBeGreaterThan(2);
+    const mirror=w.scene.getObjectByName('deepwater-reflective-pool') as Reflector;
+    const rings=(mirror.material as THREE.ShaderMaterial).uniforms.rings.value as THREE.Vector4[];
+    w.update(37.3,0);
+    const first=rings.map(r=>r.toArray()),drops=drips.children.map(c=>c.position.toArray());
+    w.update(12,0);w.update(37.3,0);
+    expect(rings.map(r=>r.toArray())).toEqual(first);
+    expect(drips.children.map(c=>c.position.toArray())).toEqual(drops);
+    // Every drip ring has already landed and sits on the water inside the pool.
+    for(const ring of rings.slice(0,drips.children.length-1)){expect(ring.z).toBeLessThanOrEqual(37.3);expect(Math.abs(ring.x)).toBeLessThan(15.5);}
+  });
+
   it('disposes the owned reflection target once across repeated cleanup',()=>{
     const w=world();
     const mirror=w.scene.getObjectByName('deepwater-reflective-pool') as Reflector;

@@ -116,8 +116,13 @@ export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, o
   clear?: ClearWaterOptions;
   /** Requires `clear`. */
   surface?: PoolSurface;
+  /** Ripple slots in `rings` (default 4). Only a custom `surface` may use more than 4. */
+  rings?: number;
+  /** Leading slots kept for `setRing`; `ripple` cycles through the rest. */
+  reservedRings?: number;
 }) {
-  const rippleStates = Array.from({ length: 4 }, () => new THREE.Vector4(0, 0, -100, 0));
+  const ringCount = options.rings ?? 4, reserved = options.reservedRings ?? 0;
+  const rippleStates = Array.from({ length: ringCount }, () => new THREE.Vector4(0, 0, -100, 0));
   const clear = options.clear;
   const shader = {
     name: 'DeepWaterPool',
@@ -183,7 +188,9 @@ export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, o
   return {
     mesh,
     update(time: number) { material.uniforms.time.value = time; material.uniforms.rippleClock.value = time; },
-    ripple(x: number, z: number, time: number) { (material.uniforms.rings.value as THREE.Vector4[])[index++ % 4].set(x, z, time, 1); },
+    ripple(x: number, z: number, time: number) { (material.uniforms.rings.value as THREE.Vector4[])[reserved + index++ % (ringCount - reserved)].set(x, z, time, 1); },
+    /** Drive one reserved slot directly, e.g. from a deterministic schedule. */
+    setRing(slot: number, x: number, z: number, time: number, strength: number) { (material.uniforms.rings.value as THREE.Vector4[])[slot].set(x, z, time, strength); },
     dispose() { if (disposed) return; disposed = true; mesh.getRenderTarget().dispose(); },
   };
 }

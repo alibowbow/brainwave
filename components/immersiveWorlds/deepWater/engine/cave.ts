@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createPool } from './environment';
+import { applyFlowstone, cavePoolSurface, createDrips, createMotes, createRoots, flutedDripstone, lastLanding, type DripSource } from './caveDetail';
 import type { WorldContent } from './types';
 import { createRockMaterial } from '../../shared/render/rockSurface';
 import { boulderGeometry } from '../../shared/render/rockGeometry';
@@ -21,6 +22,8 @@ const APERTURE_THETA = 1.285;
 const APERTURE_Z = -18.2;
 const SHAFT_FOOT = new THREE.Vector3(-2, 0.03, -12.3);
 const SUN = new THREE.Color(1.0, 0.82, 0.58);
+/** Pool ripple slots driven by the drip schedule; the rest answer touches. */
+const DRIP_SLOTS = 5;
 const smooth = (a: number, b: number, x: number) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
 /** Opening in (theta, z) space; also used to keep displacement away from it. */
@@ -49,40 +52,31 @@ function wallPoint(theta: number, z: number) {
   return new THREE.Vector3(x + dx * d, y + dy * d, z);
 }
 
-/** A dripstone formation: lumpy accretion rings around a gently wandering axis. */
-function dripstone(anchor: THREE.Vector3, height: number, radius: number, seed: number, up: boolean) {
-  const rings = Math.max(10, Math.round(14 + height * 5)), sides = 16;
-  const positions: number[] = [], indices: number[] = [];
-  const random = seeded(seed * 104729 + 7);
-  const bendX = (random() - .5) * .12 * height, bendZ = (random() - .5) * .12 * height;
-  const sign = up ? 1 : -1;
-  for (let j = 0; j <= rings; j++) {
-    const t = j / rings - .06; // start inside the rock so the root never floats
-    const tc = Math.max(0, t);
-    const axisX = bendX * tc * tc, axisZ = bendZ * tc * tc;
-    const profile = up ? (Math.pow(1 - tc, .55) * .8 + .2) * (1 + .65 * Math.exp(-tc * 6)) : Math.pow(1 - tc, 1.35) * (1 + .7 * Math.exp(-tc * 7));
-    const tip = up ? radius * .25 : .012;
-    for (let i = 0; i <= sides; i++) {
-      const a = i / sides * Math.PI * 2;
-      const cx = Math.cos(a), cz = Math.sin(a);
-      const y = sign * t * height;
-      const lump = 1 + (up ? .3 : .16) * noise3(cx * 1.3 + seed, y * (up ? .9 : 2.1), cz * 1.3) + .07 * noise3(cx * 4 + seed, y * 7, cz * 4)
-        + .08 * Math.sin(tc * 46 + seed) * (1 - tc)
-        // Flowstone draperies: vertical flutes that wander with height.
-        + (up ? .1 * Math.pow(Math.abs(Math.sin(a * 4 + noise3(seed, y * .6, 3) * 2)), 3) : 0);
-      const r = Math.max(tip * (1 - tc) + .004, radius * profile * lump);
-      positions.push(anchor.x + axisX + cx * r, anchor.y + y, anchor.z + axisZ + cz * r);
-      if (j < rings && i < sides) {
-        const n = j * (sides + 1) + i;
-        if (up) indices.push(n, n + 1, n + sides + 1, n + 1, n + sides + 2, n + sides + 1);
-        else indices.push(n, n + sides + 1, n + 1, n + 1, n + sides + 1, n + sides + 2);
-      }
+/** A drapery: a wavy sheet of flowstone hanging from a roof line, edge banded and scalloped. */
+function drapery(theta: number, z0: number, length: number, drop: number, seed: number) {
+  const along = 72, down = 10, positions: number[] = [], indices: number[] = [];
+  const random = seeded(seed * 7121 + 3);
+  const folds = 4.5 + random() * 3, phase = random() * 6.28;
+  for (let i = 0; i <= along; i++) {
+    const s = i / along, z = z0 - s * length;
+    const top = wallPoint(theta + Math.sin(s * 2.2 + seed) * .04, z);
+    // Folds deepen toward the hem; the hem rises and falls between them.
+    const fold = Math.sin(s * Math.PI * 2 * folds + phase);
+    const hem = drop * (.55 + .45 * Math.sin(s * Math.PI) ** .6) * (.82 + .18 * Math.abs(fold)) * (1 + .08 * noise3(s * 9, seed, 2));
+    const outward = new THREE.Vector3(Math.sign(-top.x) || 1, 0, 0);
+    for (let j = 0; j <= down; j++) {
+      const t = j / down;
+      const wave = fold * (.12 + .22 * t) + .03 * Math.sin(s * 63 + t * 4);
+      positions.push(top.x + outward.x * (wave + t * .1), top.y + .35 - t * (hem + .35), z + Math.cos(s * Math.PI * 2 * folds + phase) * .05 * t);
     }
+  }
+  for (let i = 0; i < along; i++) for (let j = 0; j < down; j++) {
+    const a = i * (down + 1) + j, b = a + down + 1;
+    indices.push(a, a + 1, b, b, a + 1, b + 1);
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setIndex(indices);
-  geometry.computeVertexNormals();
+  geometry.setIndex(indices); geometry.computeVertexNormals();
   return geometry;
 }
 
@@ -187,11 +181,11 @@ uniform vec3 uCentre;
 varying vec3 vWorld;
 void main() {
   vec2 d = (vWorld.xz - uCentre.xz) / 3.2;
-  float canopy = smoothstep(-0.05, 0.25, bwFbm3(vec3(d * 2.2, 4.1))) * smoothstep(0.1, 0.9, length(d));
+  float canopy = smoothstep(-0.2, 0.2, bwFbm3(vec3(d * 2.2, 4.1))) * smoothstep(0.05, 0.7, length(d));
   float twig = pow(1.0 - abs(bwNoise(vec3(d * 1.9, 9.7))), 26.0);
-  vec3 sky = vec3(5.2, 5.6, 6.1);
+  vec3 sky = vec3(3.6, 3.9, 4.3);
   // Backlit leaves glow green-gold but stay well below the sky.
-  vec3 leaf = vec3(0.9, 1.35, 0.42) * (0.55 + 0.45 * bwNoise(vec3(d * 9.0, 2.0)));
+  vec3 leaf = vec3(0.42, 0.66, 0.16) * (0.45 + 0.55 * bwNoise(vec3(d * 9.0, 2.0)));
   vec3 color = mix(sky, leaf, clamp(canopy * 0.92 + twig * 0.8, 0.0, 1.0));
   gl_FragColor = vec4(color, 1.0);
   #include <tonemapping_fragment>
@@ -243,7 +237,7 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   // Sunlit water throws moving caustics onto the stone around the shaft's foot.
   const caustics = { centre: new THREE.Vector3(SHAFT_FOOT.x, WATER_Y, SHAFT_FOOT.z), radius: 5.2, color: new THREE.Color(.75, 1.0, .86).multiplyScalar(.9), time: timeUniform };
   const limestone = createRockMaterial('#8e8c84', { key: 'cave-wall', caustics, scale: 1, bump: 1.25, stain: '#7a5432', stainAmount: .42, cavity: .62, strata: .7, waterY: WATER_Y, wetBand: 1.1, drips: .32, dryRoughness: .82, wetRoughness: .2 }, { side: THREE.DoubleSide });
-  const calcite = createRockMaterial('#cfc3a8', { key: 'cave-calcite', caustics, scale: 1.6, bump: .7, stain: '#b48a5a', stainAmount: .25, cavity: .3, strata: .2, waterY: WATER_Y, wetness: .35, drips: .5, dryRoughness: .5, wetRoughness: .14, algaeAmount: 0 });
+  const calcite = applyFlowstone(createRockMaterial('#cfc3a8', { key: 'cave-calcite', caustics, scale: 1.6, bump: .7, stain: '#b48a5a', stainAmount: .25, cavity: .3, strata: .2, waterY: WATER_Y, wetness: .45, drips: .7, dryRoughness: .5, wetRoughness: .08, algaeAmount: 0 }, { side: THREE.DoubleSide }), 'calcite');
   const wetStone = createRockMaterial('#8a897d', { key: 'cave-wet-stone', caustics, scale: 1.3, bump: 1.4, stain: '#3e3a30', stainAmount: .3, cavity: .7, strata: .3, waterY: WATER_Y, wetBand: .9, wetness: .25, drips: .2, dryRoughness: .78, wetRoughness: .16, algae: '#33402a', algaeAmount: .45 });
   const mossyStone = createRockMaterial('#7d7c70', { key: 'cave-mossy', caustics, moss: { color: '#6b8a2e', amount: .95 }, scale: 1.3, bump: 1.2, cavity: .6, strata: .3, waterY: WATER_Y, wetBand: .5, wetness: .2, drips: .1, dryRoughness: .8, wetRoughness: .18, algae: '#33402a', algaeAmount: .5 });
   const bedStone = createRockMaterial('#4d544d', { key: 'cave-bed', scale: .9, bump: .8, cavity: .5, strata: .1, wetness: 1, dryRoughness: .5, wetRoughness: .3, algae: '#2c3a2a', algaeAmount: .6, waterY: WATER_Y });
@@ -294,6 +288,10 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   const apertureRim = new THREE.Mesh(rimGeometry, limestone);
   apertureRim.name = 'cave-daylight-stone-rim'; apertureRim.receiveShadow = true;
   scene.add(apertureRim);
+  // Roots hang through the opening from its inner lip.
+  const lip: THREE.Vector3[] = [];
+  for (let i = 0; i < rimSegments; i++) lip.push(new THREE.Vector3(rimPositions[i * 3], rimPositions[i * 3 + 1], rimPositions[i * 3 + 2]));
+  scene.add(createRoots(lip, timeUniform));
 
   // Submerged bed: deep centre, shallow broken shelves, scattered cobbles.
   const bedGeometry = new THREE.PlaneGeometry(34, 82, 96, 180);
@@ -308,42 +306,57 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   bedGeometry.computeVertexNormals();
   const bed = new THREE.Mesh(bedGeometry, bedStone); bed.receiveShadow = true; scene.add(bed);
 
+  // The shaft carries on, refracted, to a bright patch on the pool bed.
+  const inWater = shaftAxis.clone().normalize();
+  const bent = new THREE.Vector3(inWater.x / 1.333, 0, inWater.z / 1.333);
+  bent.y = -Math.sqrt(Math.max(0, 1 - bent.x * bent.x - bent.z * bent.z));
+  const bedSpot = new THREE.Vector3(SHAFT_FOOT.x + bent.x * 2 / -bent.y, SHAFT_FOOT.z + bent.z * 2 / -bent.y, 2.6);
   const pool = createPool(renderer, scene, {
-    width: 31, depth: 70, y: WATER_Y, color: '#2f6f66', position: [0, WATER_Y, -16], distortion: .5,
+    width: 31, depth: 70, y: WATER_Y, color: '#2f6f66', position: [0, WATER_Y, -16], distortion: .5, rings: 8, reservedRings: DRIP_SLOTS,
     clear: { deepColor: '#01141a', glow: { x: SHAFT_FOOT.x, z: SHAFT_FOOT.z, radius: 3.6, color: new THREE.Color(.3, .9, .78).multiplyScalar(2.6) }, lightDirection: towardSun, glint: 6 },
+    surface: cavePoolSurface(timeUniform, bedSpot),
   });
 
   // --- Dripstones: clustered stalactites, a few stalagmites and buttresses. ------
   const random = seeded(4242);
   const hanging: THREE.BufferGeometry[] = [], standing: THREE.BufferGeometry[] = [];
+  const tips: THREE.Vector3[] = [];
   const clusters: Array<[number, number, number, number]> = [
     [.64, -2, 4.3, .8], [.79, -4, 3.8, .65], [.99, -6, 2.9, .48], [2.30, -5, 5.2, .90], [2.14, -9, 4.8, .66], [2.40, -12, 4.0, .69],
     [.72, -17, 5.0, .70], [.85, -20, 3.5, .54], [1.59, -18, 2.9, .43], [1.85, -28, 4.1, .57], [.61, -31, 2.6, .48], [2.22, -32, 4.3, .65],
     [.50, 4, 4.2, .85], [2.55, 3, 3.6, .64], [1.05, -24, 3.2, .5], [1.9, -40, 3.4, .5], [1.2, -44, 2.6, .4],
   ];
   clusters.forEach(([angle, z, height, radius], index) => {
-    hanging.push(dripstone(wallPoint(angle, z), height, radius * .62, index + 9, false));
+    const main = flutedDripstone(wallPoint(angle, z), height, radius * .62, index + 9, false);
+    hanging.push(main.geometry); tips.push(main.tip);
     const satellites = 3 + Math.floor(random() * 5);
     for (let k = 0; k < satellites; k++) {
       const a = angle + (random() - .5) * .22, zz = z + (random() - .5) * 3.4;
       if (apertureDistance(a, zz) < 2.2) continue;
       const scale = .18 + random() * .55;
-      hanging.push(dripstone(wallPoint(a, zz), height * scale, radius * .42 * Math.sqrt(scale), index * 31 + k, false));
+      const satellite = flutedDripstone(wallPoint(a, zz), height * scale, radius * .42 * Math.sqrt(scale), index * 31 + k, false);
+      hanging.push(satellite.geometry); tips.push(satellite.tip);
     }
   });
   // Fine "soda straw" fringes along the roof.
   for (let k = 0; k < 70; k++) {
     const a = .45 + random() * 2.25, z = 12 - random() * 52;
     if (apertureDistance(a, z) < 2.5 || (z > 5 && Math.abs(a - Math.PI / 2) < .35)) continue;
-    hanging.push(dripstone(wallPoint(a, z), .25 + random() * .9, .035 + random() * .05, 500 + k, false));
+    const straw = flutedDripstone(wallPoint(a, z), .25 + random() * .9, .035 + random() * .05, 500 + k, false);
+    hanging.push(straw.geometry); tips.push(straw.tip);
   }
   const buttresses: Array<[number, number, number, number, number]> = [
     [-10.7, -1, -3, 9, 1.8], [-10.2, -1, -13, 7, 1.3], [-8.9, -1, -25, 6, 1.15],
     [11.0, -1, -6, 7, 1.8], [10.2, -1, -19, 8, 1.35], [8.5, -1, -32, 5, 1.1],
   ];
-  buttresses.forEach(([x, y, z, h, r], index) => standing.push(dripstone(new THREE.Vector3(x, y, z), h, r, 31 + index, true)));
+  buttresses.forEach(([x, y, z, h, r], index) => standing.push(flutedDripstone(new THREE.Vector3(x, y, z), h, r, 31 + index, true).geometry));
   [[-7.2, -21, 2.6, .7]].forEach(([x, z, h, r], index) =>
-    standing.push(dripstone(new THREE.Vector3(x, -1.3, z), h + 1.3, r, 77 + index, true)));
+    standing.push(flutedDripstone(new THREE.Vector3(x, -1.3, z), h + 1.3, r, 77 + index, true).geometry));
+  // Flowstone draperies: thin folded curtains hanging along roof lines, scalloped at the hem.
+  const curtains: Array<[number, number, number, number, number]> = [
+    [.78, -6.5, 4.2, 1.9, 1], [2.33, -8.5, 3.6, 1.6, 2], [.66, -22, 3.2, 1.4, 3], [2.45, -24, 3.8, 1.7, 4], [1.0, -1.5, 2.6, 1.2, 5],
+  ];
+  for (const [theta, z0, length, drop, seed] of curtains) hanging.push(drapery(theta, z0, length, drop, seed));
   const dripMesh = new THREE.Mesh(mergeGeometries(hanging), calcite);
   dripMesh.name = 'cave-dripstones'; dripMesh.castShadow = true; dripMesh.receiveShadow = true;
   const standMesh = new THREE.Mesh(mergeGeometries(standing), calcite);
@@ -352,25 +365,27 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   scene.add(dripMesh, standMesh);
 
   // --- Boulders: the seated ledge in the foreground and fallen blocks beyond. ----
+  const rocks: THREE.Mesh[] = [];
   const boulder = (position: [number, number, number], scale: [number, number, number], seed: number, material: THREE.Material, detail: number) => {
     const mesh = new THREE.Mesh(boulderGeometry(seed, detail), material);
     mesh.position.set(...position); mesh.scale.set(...scale);
     mesh.rotation.set(.04 * Math.sin(seed), seed * .71, .05 * Math.cos(seed));
     mesh.castShadow = true; mesh.receiveShadow = true;
     scene.add(mesh);
+    rocks.push(mesh);
     return mesh;
   };
   boulder([-4.0, -.37, 7.2], [5.1, .88, 3.5], 42, wetStone, 22);
   boulder([3.8, -.48, 10.2], [5.0, 1.0, 3.6], 27, limestone, 22);
   boulder([-7.3, -.15, 2.3], [2.1, .95, 2.6], 83, wetStone, 14);
   boulder([8.3, -.4, -1.5], [2.0, 1.0, 3.1], 57, wetStone, 14);
-  boulder([-5.7, -.67, -9], [2.2, 1.4, 3.2], 12, wetStone, 12);
-  boulder([6.6, -1.64, -17], [2.5, 1.4, 2.9], 91, wetStone, 12);
-  boulder([8.6, -.59, -31.4], [3.8, .79, 3.9], 124, wetStone, 10);
+  boulder([-5.7, -.85, -9], [2.2, 2.0, 3.0], 12, wetStone, 14);
+  boulder([6.6, -1.5, -17], [2.3, 2.3, 2.7], 91, wetStone, 14);
+  boulder([8.6, -1.1, -31.4], [3.2, 1.9, 3.4], 124, wetStone, 12);
   boulder([-1.15, -.12, 5.8], [1.85, .56, 2.35], 163, wetStone, 14);
   boulder([-1.6, -.22, 4.3], [1.5, .44, 1.4], 187, wetStone, 12);
   // A low island catches the foot of the shaft: the brightest, warmest stone in view.
-  boulder([-3.6, -.5, -13.2], [1.8, .64, 1.5], 211, mossyStone, 16);
+  boulder([-3.6, -.42, -13.2], [1.8, .8, 1.5], 211, mossyStone, 18);
   for (let i = 0; i < 23; i++) {
     const s = Math.sin(i * 19.79) * .5 + .5;
     const side = i % 2 === 0 ? -1 : 1;
@@ -450,47 +465,36 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
   beam.name = 'cave-fallback-beam';
   scene.add(beam);
 
-  // Suspended moisture glints only inside the lit volume; motion is in the shader.
-  const dustCount = 700, dustPositions = new Float32Array(dustCount * 3), dustSeeds = new Float32Array(dustCount);
-  const dustRandom = seeded(77);
-  const side = new THREE.Vector3().crossVectors(shaftAxis, new THREE.Vector3(0, 0, 1)).normalize();
-  const side2 = new THREE.Vector3().crossVectors(shaftAxis, side).normalize();
-  for (let i = 0; i < dustCount; i++) {
-    const t = .08 + dustRandom() * .92;
-    const radius = THREE.MathUtils.lerp(1.2, 3.3, t) * Math.sqrt(dustRandom());
-    const a = dustRandom() * Math.PI * 2;
-    const p = aperture.clone().addScaledVector(shaftAxis, t).addScaledVector(side, Math.cos(a) * radius).addScaledVector(side2, Math.sin(a) * radius);
-    dustPositions.set(p.toArray(), i * 3); dustSeeds[i] = dustRandom();
-  }
-  const dustGeometry = new THREE.BufferGeometry();
-  dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-  dustGeometry.setAttribute('seed', new THREE.BufferAttribute(dustSeeds, 1));
-  const dustMaterial = new THREE.ShaderMaterial({
-    uniforms: { uPixelRatio: { value: Math.min(renderer.getPixelRatio(), 2) }, uTime: timeUniform, uApex: { value: aperture.clone() }, uAxis: { value: shaftAxis.clone() } },
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    vertexShader: `uniform float uPixelRatio;uniform float uTime;uniform vec3 uApex;uniform vec3 uAxis;attribute float seed;varying float vLight;
-      void main(){
-        vec3 p=position+vec3(sin(uTime*.07+seed*40.)*.22,sin(uTime*.045+seed*17.)*.3,cos(uTime*.06+seed*23.)*.22);
-        float len=length(uAxis);vec3 ap=p-uApex;float s=clamp(dot(ap,uAxis)/(len*len),0.,1.);
-        float d=length(ap-uAxis*s);float r=mix(1.2,3.3,s);
-        vLight=(1.-smoothstep(r*.5,r,d))*(.35+.65*fract(seed*7.13))*(.6+.4*sin(uTime*.4+seed*60.));
-        vec4 mv=modelViewMatrix*vec4(p,1.);gl_PointSize=clamp(26./-mv.z,1.,3.)*uPixelRatio;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader: `varying float vLight;void main(){float d=length(gl_PointCoord-.5)*2.;gl_FragColor=vec4(vec3(1.6,1.45,1.15)*vLight*(1.-smoothstep(.1,1.,d)),1.);
-      #include <tonemapping_fragment>
-      #include <colorspace_fragment>
-    }`,
-  });
-  scene.add(new THREE.Points(dustGeometry, dustMaterial));
+  // Dust and moisture drift in the shaft; motion is in the shader.
+  scene.add(createMotes(aperture, SHAFT_FOOT, 1.2, 3.3, Math.min(renderer.getPixelRatio(), 2), timeUniform));
 
-  const dropMaterial = new THREE.MeshPhysicalMaterial({ color: '#cfe8e0', roughness: .05, metalness: 0, transparent: true, opacity: .7, emissive: '#3a4a44' });
-  const drops: THREE.Mesh[] = [];
-  for (let i = 0; i < 4; i++) {
-    const drop = new THREE.Mesh(new THREE.SphereGeometry(.017, 6, 8), dropMaterial);
-    drop.scale.set(.8, 2.5, .8); drop.position.set(-3.3 + i * 1.42, 8, -10.5 - i * .68); scene.add(drop); drops.push(drop);
+  // Drops gather on stalactite tips over the water, fall and ring the pool.
+  const camView = new THREE.PerspectiveCamera(53, 1.6, .08, 115);
+  camView.position.set(.75, 2.2, 10.5); camView.lookAt(-.2, 4.2, -15); camView.updateMatrixWorld(true);
+  const tipScreen = new THREE.Vector3();
+  // Sources must fall onto open water near enough that their rings can be seen
+  // disturbing the reflections, not onto a rock or the far grazing surface.
+  const fallRay = new THREE.Raycaster();
+  rocks.forEach(rock => rock.updateMatrixWorld(true));
+  const candidates = tips.filter(tip => {
+    tipScreen.copy(tip).project(camView);
+    const landing = new THREE.Vector3(tip.x, WATER_Y, tip.z).project(camView);
+    if (tip.y < 4 || Math.abs(tip.x) > 8 || tip.z > 1 || tip.z < -15 || Math.abs(tipScreen.x) > .85 || tipScreen.y > .95 || Math.abs(landing.x) > .8 || landing.y < -.85) return false;
+    fallRay.set(tip, new THREE.Vector3(0, -1, 0));
+    const hit = fallRay.intersectObjects(rocks, false)[0];
+    return !hit || hit.point.y < WATER_Y - .05;
+  }).sort((a, b) => Math.abs(a.z + 6) + Math.abs(a.x) * .3 - (Math.abs(b.z + 6) + Math.abs(b.x) * .3));
+  const dripSources: DripSource[] = [];
+  for (const tip of candidates) {
+    if (dripSources.length >= DRIP_SLOTS) break;
+    if (dripSources.some(source => Math.hypot(source.tip.x - tip.x, source.tip.z - tip.z) < 2.2)) continue;
+    const i = dripSources.length;
+    dripSources.push({ tip, period: 6.5 + i * 1.9 + (i % 2) * .7, offset: i * 2.35 });
   }
+  const drips = createDrips(dripSources, WATER_Y);
+  scene.add(drips.group);
 
   const solidOccluders = scene.children.filter(object => object instanceof THREE.Mesh && object !== pool.mesh && !(object.material instanceof THREE.ShaderMaterial) && !(Array.isArray(object.material) ? object.material.some(m => m.transparent) : object.material.transparent));
-  let lastDropCycle = -1;
   let environment: THREE.WebGLRenderTarget | null = null;
   return {
     scene, camera, target,
@@ -529,9 +533,9 @@ export function createCave(renderer: THREE.WebGLRenderer): WorldContent {
     setPostActive(active) { beam.visible = !active; },
     update(time, dt) {
       timeUniform.value = time; pool.update(time);
-      drops.forEach((drop, i) => { const phase = ((time * .095 + i * .237) % 1); drop.visible = phase > .87; drop.position.y = 7.5 - (Math.max(0, phase - .87) / .13) ** 2 * 7.45; });
-      const cycle = Math.floor(time * .095);
-      if (cycle !== lastDropCycle && dt > 0) { lastDropCycle = cycle; pool.ripple(-1.9, -11.2, time); }
+      drips.update(time);
+      // Drip rings are a pure function of time, so a paused frame still shows them.
+      dripSources.forEach((source, i) => pool.setRing(i, source.tip.x, source.tip.z, lastLanding(source, WATER_Y, time), .55));
     },
     interact(ray, time) {
       const hits = ray.intersectObjects([...solidOccluders, pool.mesh], false);

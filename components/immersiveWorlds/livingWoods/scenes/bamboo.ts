@@ -297,14 +297,16 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
             const side = new THREE.Vector3().crossVectors(d, up).normalize();
             const other = new THREE.Vector3().crossVectors(side, d).normalize();
             const s = branchWriter.count;
-            for (let k = 0; k <= 2; k++) {
-              const t = k / 2, p = from.clone().lerp(end, t), rr = r * (1 - t * 0.6);
-              for (let j = 0; j <= 4; j++) {
-                const a = (j / 4) * Math.PI * 2;
+            // Distant twigs are a single, three-sided segment: they are only a few pixels wide.
+            const segments = culm.near ? 2 : 1, sides = culm.near ? 4 : 3;
+            for (let k = 0; k <= segments; k++) {
+              const t = k / segments, p = from.clone().lerp(end, t), rr = r * (1 - t * 0.6);
+              for (let j = 0; j <= sides; j++) {
+                const a = (j / sides) * Math.PI * 2;
                 const nn = side.clone().multiplyScalar(Math.cos(a)).addScaledVector(other, Math.sin(a));
-                branchWriter.vertex(p.clone().addScaledVector(nn, rr), nn, j / 4, t, new THREE.Color(1, 1, 1), [w0, wBase + t * len * 0.35, 0], [phase, phase + b], [0, 0]);
+                branchWriter.vertex(p.clone().addScaledVector(nn, rr), nn, j / sides, t, new THREE.Color(1, 1, 1), [w0, wBase + t * len * 0.35, 0], [phase, phase + b], [0, 0]);
               }
-              if (k > 0) for (let j = 0; j < 4; j++) { const a0 = s + (k - 1) * 5 + j, a1 = s + k * 5 + j; branchWriter.indices.push(a0, a1, a0 + 1, a0 + 1, a1, a1 + 1); }
+              if (k > 0) for (let j = 0; j < sides; j++) { const a0 = s + (k - 1) * (sides + 1) + j, a1 = s + k * (sides + 1) + j; branchWriter.indices.push(a0, a1, a0 + 1, a0 + 1, a1, a1 + 1); }
             }
             twigEnds.push({ p: end, d, w: wBase + len * 0.35 });
             return end;
@@ -353,7 +355,8 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   culmMeshFar.castShadow = true; culmMeshFar.receiveShadow = true; culmMeshFar.layers.set(1); root.add(culmMeshFar);
   const twigMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ color: '#6d7a3c', roughness: 0.55 }), { key: 'bamboo-twigs', canopy, wind });
   const twigMesh = new THREE.Mesh(branchWriter.geometry(false), twigMaterial);
-  twigMesh.castShadow = true; twigMesh.receiveShadow = true; twigMesh.layers.set(1); root.add(twigMesh);
+  // Thin twigs neither reflect nor cast (as before): their shadows are sub-pixel.
+  twigMesh.castShadow = false; twigMesh.receiveShadow = true; twigMesh.layers.set(1); root.add(twigMesh);
   const sprayAtlas = bambooSprayTexture({ seed: 12, palette: { base: '#5c7f2c', light: '#9bbb4a', dark: '#36531c', stem: '#6d7438' } });
   const leafMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ map: sprayAtlas, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.45 }), {
     key: 'bamboo-leaves', canopy, wind, sharedNormals: true, coverage: true, translucency: { tint: '#f2ff8a', back: 0.85, forward: 2.0 },
@@ -373,7 +376,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     if (bankRockPatch(z, side) > 0.6 && r() < 0.5) return null;
     return { x, y: 0, z, yaw: 0, scale: new THREE.Vector3(), color: new THREE.Color() };
   });
-  const sedgeRecords = scatter(6500, 33, r => {
+  const sedgeRecords = scatter(5200, 33, r => {
     const t = tussocks[Math.floor(r() * tussocks.length)];
     const a = r() * Math.PI * 2, d = Math.sqrt(r()) * 0.3;
     const x = t.x + Math.cos(a) * d, z = t.z + Math.sin(a) * d;

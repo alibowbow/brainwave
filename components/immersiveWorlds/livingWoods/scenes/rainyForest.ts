@@ -263,9 +263,10 @@ diffuseColor.a = 0.94 * (1.0 - smoothstep(0.72, 0.98, length(vPuddleUv * 2.0 - 1
   // ---- Broad-leaved understorey: rooted clumps of round and ribbed leaves --------------------------
   const roundAtlas = roundLeafTexture({ seed: 44, palette: { base: '#2c6620', light: '#5f9a36', dark: '#143510', stem: '#3d5a2c' } });
   const ribbedAtlas = ribbedLeafTexture({ seed: 45, palette: { base: '#285a2a', light: '#548a3e', dark: '#133014', stem: '#3d5a2c' } });
-  const clumpLeafMaterial = (key: string, map: THREE.Texture) => applyDewGlints(applyFoliageShading(new THREE.MeshPhysicalMaterial({
+  // Broad blades carry real bead meshes (below); a cell-based glint would show its grid on a flat leaf.
+  const clumpLeafMaterial = (key: string, map: THREE.Texture) => applyFoliageShading(new THREE.MeshPhysicalMaterial({
     map, alphaTest: 0.5, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.5, clearcoat: 0.6, clearcoatRoughness: 0.12, envMapIntensity: 0.6,
-  }), { key, canopy, coverage: true, translucency: { tint: '#c8f08a', back: 0.42, forward: 0.7 } }), { key: `${key}-beads`, toSun: TO_SKY, cells: 26, cover: 0.22, strength: 3.5 });
+  }), { key, canopy, coverage: true, translucency: { tint: '#c8f08a', back: 0.42, forward: 0.7 } });
   const clumpMaterials = { round: clumpLeafMaterial('rainy-round-leaf', roundAtlas), ribbed: clumpLeafMaterial('rainy-ribbed-leaf', ribbedAtlas) };
   const stalkMaterial = applyFoliageShading(new THREE.MeshPhysicalMaterial({ color: '#466a34', roughness: 0.35, clearcoat: 0.6, clearcoatRoughness: 0.15 }), { key: 'rainy-stalk', canopy });
   type ClumpSpec = [number, number, 'round' | 'ribbed', number, number];
@@ -340,8 +341,8 @@ diffuseColor.a = 0.94 * (1.0 - smoothstep(0.72, 0.98, length(vPuddleUv * 2.0 - 1
   const rainSky = new THREE.Color(1.05, 1.15, 1.2);
   const rainLayers: RainLayer[] = [
     // Few, fine streaks close by (a long exposure there reads as hatching), denser curtains further out.
-    createRainLayer({ time, count: 800, min: new THREE.Vector3(-3.4, -0.2, -1.5), max: new THREE.Vector3(3.4, 4.6, 4.2), speed: 7.2, width: 0.0014, shutter: 0.022, radiance: rainSky, opacity: 0.45, boost: 1.3, seed: 41, wind: new THREE.Vector2(0.05, -0.03), nearFade: 1.1 }),
-    createRainLayer({ time, count: 4800, min: new THREE.Vector3(-9, -0.2, -13), max: new THREE.Vector3(9, 9, -1.5), speed: 7.6, width: 0.0014, shutter: 0.028, radiance: rainSky, opacity: 0.48, boost: 1.3, seed: 42, wind: new THREE.Vector2(0.05, -0.03) }),
+    createRainLayer({ time, count: 1000, min: new THREE.Vector3(-3.4, -0.2, -1.5), max: new THREE.Vector3(3.4, 4.6, 4.2), speed: 7.2, width: 0.0014, shutter: 0.022, radiance: rainSky, opacity: 0.55, boost: 1.3, seed: 41, wind: new THREE.Vector2(0.05, -0.03), nearFade: 1.1 }),
+    createRainLayer({ time, count: 5600, min: new THREE.Vector3(-9, -0.2, -13), max: new THREE.Vector3(9, 9, -1.5), speed: 7.6, width: 0.0014, shutter: 0.028, radiance: rainSky, opacity: 0.58, boost: 1.3, seed: 42, wind: new THREE.Vector2(0.05, -0.03) }),
     createRainLayer({ time, count: 8000, min: new THREE.Vector3(-20, -0.2, -38), max: new THREE.Vector3(20, 15, -13), speed: 8, width: 0.0015, shutter: 0.028, radiance: rainSky, opacity: 0.45, boost: 1.1, seed: 43, wind: new THREE.Vector2(0.05, -0.03) }),
   ];
   const viewSize = new THREE.Vector2();

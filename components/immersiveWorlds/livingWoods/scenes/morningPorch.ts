@@ -176,7 +176,8 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     const limb = buildTree({
       seed: 4471, base: new THREE.Vector3(0, 0, 0), height: 6.4, radius: 0.13, form: 'sapling',
       limbs: 11, levels: 1, children: 3, crownStart: 0.2, spread: 0.32, curl: -0.3, gnarl: 0.55, radial: 9, ringsPerMetre: 3, flex: 1.0,
-      leaves: { cardsPerTwig: 16, size: 0.72, reach: 0.85, atlasColumns: 4, crownNormals: 0.45, shade: [0.2, 0.95], skyward: 0, fill: 0.3 },
+      // Sparse, so sky and shade show between the sprays instead of one glowing mass.
+      leaves: { cardsPerTwig: 9, size: 0.6, reach: 0.7, atlasColumns: 4, crownNormals: 0.4, shade: [0.2, 0.95], skyward: 0, fill: 0.08 },
     });
     const direction = new THREE.Vector3(0.42, -0.2, 0.88).normalize();
     const matrix = new THREE.Matrix4().compose(new THREE.Vector3(-5.35, 5.2, -5.9), new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction), new THREE.Vector3(1, 1, 1));

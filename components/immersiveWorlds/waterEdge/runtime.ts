@@ -8,6 +8,9 @@ import { halfFloatColorAllowed } from './renderTargets';
 let qaDirect = false;
 /** Isolated QA harness only: `direct` keeps the previous renderer path for before/after comparisons. */
 export function configureWaterEdgePost(options: { direct: boolean }) { qaDirect = options.direct; }
+let qaStartTime = 0;
+/** Isolated QA harness only: start the scene clock at `start` seconds, so motion can be captured as deterministic stills. */
+export function configureWaterEdgeClock(options: { start: number }) { qaStartTime = Math.max(0, options.start) || 0; }
 
 export const diagnostics = { created: 0, disposed: 0, live: 0 };
 
@@ -86,7 +89,8 @@ export class WaterEdgeEngine implements LiveSceneEngine {
     this.world.resize(this.width, this.height);
     this.world.setDrawingSize?.(...this.drawingSize());
     this.baseRotation.copy(this.world.camera.quaternion);
-    this.world.update(0, 0);
+    this.time = qaStartTime;
+    this.world.update(this.time, 0);
     this.renderer.shadowMap.needsUpdate = true;
     this.frameDirty = true;
     // Factory cube/PMREM work and the first real view are one synchronous batch.

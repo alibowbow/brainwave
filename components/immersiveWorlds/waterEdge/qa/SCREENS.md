@@ -27,3 +27,7 @@ Remaining visual limits: forest leaf/branch shapes and cliff strata remain visib
 ## HDR upgrade (2026-11-27)
 
 The images above describe the earlier renderer. Before/after comparisons of the code-only HDR rebuild are in [evidence/hdr-upgrade](evidence/hdr-upgrade/) (`<world>-compare-desktop.jpg` at 1280×800, `<world>-compare-portrait.jpg` at 390×844, DPR 1). BEFORE is the previous commit's first frame; AFTER is the shared HDR pipeline path. Both were captured with `qa/capture-quality.mjs` in headless Chromium on SwiftShader, so they grade appearance only, not device speed. The same script was run with `WATER_EDGE_ACTIVE=<frames>` for animated frames, `WATER_EDGE_QUERY=post=off` for the direct fallback and `targets=byte` for the byte-target fallback, all without page or shader errors; those captures are not committed.
+
+## Night pond water (2026-11-28)
+
+`evidence/hdr-upgrade/night-pond-compare-*.jpg` now show the living water (AFTER, scene time 6 s) against the same pre-HDR BEFORE frame. `evidence/hdr-upgrade/night-pond-motion.jpg` shows the desktop view at 0, 3 and 6 s of scene time, captured with `WATER_EDGE_QUERY=t=<seconds>` (the harness starts the clock at that time; every moving part of the water is a pure function of scene time, so these stills equal the animated frames at those times). Reflections waver, the moon's glitter moves, a cat's-paw drifts across, specks drift and rings from pond life come and go. SwiftShader output grades appearance only; no device speed is claimed.

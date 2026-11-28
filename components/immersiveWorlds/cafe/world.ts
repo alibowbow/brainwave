@@ -17,12 +17,13 @@ const TABLE_TOP = .775;
 export function cafeShot(portrait: number) {
   const l = T.MathUtils.lerp;
   return {
-    camera: new T.Vector3(l(.52, .3, portrait), l(1.3, 1.28, portrait), l(.42, .2, portrait)),
-    aim: new T.Vector3(l(.1, .05, portrait), l(.94, .9, portrait), -1.6),
-    fov: 42 + 8 * portrait,
-    cup: new T.Vector3(l(.25, .12, portrait), TABLE_TOP, l(-.72, -.74, portrait)),
-    lamp: new T.Vector3(l(-.22, -.12, portrait), TABLE_TOP, l(-1.12, -1.16, portrait)),
+    camera: new T.Vector3(l(.55, .5, portrait), l(1.25, 1.24, portrait), l(1.1, 1.05, portrait)),
+    aim: new T.Vector3(l(-.02, .5, portrait), l(1.34, 1.3, portrait), -1.6),
+    fov: l(48, 56, portrait),
+    cup: new T.Vector3(l(-.08, .34, portrait), TABLE_TOP, l(-.32, -.3, portrait)),
+    lamp: new T.Vector3(l(-.55, .05, portrait), TABLE_TOP, l(-.92, -.95, portrait)),
     lampScale: l(1.15, 1.05, portrait),
+    book: new T.Vector3(l(.4, .74, portrait), TABLE_TOP, l(-.3, -.36, portrait)),
   };
 }
 
@@ -108,8 +109,8 @@ export function buildCafe() {
   for (const x of [g.x - g.w / 2 - .22, g.x + g.w / 2 + .22]) ball(x, g.y + g.h / 2 - .02, g.z + .2, .024, m.brass);
 
   // ---------------------------------------------------------------- window table
-  const table = new T.Group(); scene.add(table); table.position.set(-.35, TABLE_TOP - .042, -.8);
-  const shape = new T.Shape(); const w = 3.0, d = 1.0, r = .07;
+  const table = new T.Group(); scene.add(table); table.position.set(-.5, TABLE_TOP - .042, -.675);
+  const shape = new T.Shape(); const w = 2.4, d = 1.25, r = .07;
   shape.moveTo(-w / 2 + r, -d / 2); shape.lineTo(w / 2 - r, -d / 2); shape.quadraticCurveTo(w / 2, -d / 2, w / 2, -d / 2 + r); shape.lineTo(w / 2, d / 2 - r); shape.quadraticCurveTo(w / 2, d / 2, w / 2 - r, d / 2); shape.lineTo(-w / 2 + r, d / 2); shape.quadraticCurveTo(-w / 2, d / 2, -w / 2, d / 2 - r); shape.lineTo(-w / 2, -d / 2 + r); shape.quadraticCurveTo(-w / 2, -d / 2, -w / 2 + r, -d / 2);
   const top = mesh(new T.ExtrudeGeometry(shape, { depth: .03, bevelEnabled: true, bevelSize: .012, bevelThickness: .012, bevelSegments: 5, steps: 1, curveSegments: 18 }), m.oak, 0, 0, 0, table);
   top.rotation.x = -Math.PI / 2;
@@ -153,10 +154,36 @@ export function buildCafe() {
   const shaft = tube([new T.Vector3(0, .006, .021), new T.Vector3(0, .009, .045), new T.Vector3(0, .015, .075), new T.Vector3(0, .017, .098)], .0028, silver, spoon, 20);
   shaft.scale.x = 1.6; shaft.castShadow = false;
   for (const o of [cupBody, handle, saucer]) { o.userData.interaction = 'cup'; interactables.push(o); }
+  // Two sugar cubes and a torn paper sugar stick beside the saucer.
+  const sugar = physical({ color: '#f1ece2', roughness: .85, sheen: .5, sheenColor: new T.Color('#ffffff') });
+  for (const [x, z, a] of [[-.135, .055, .3], [-.118, .085, -.5]]) { const c = mesh(new RoundedBoxGeometry(.017, .016, .017, 2, .003), sugar, x, .008, z, cup); c.rotation.y = a; }
+  const stick = mesh(new RoundedBoxGeometry(.11, .006, .022, 2, .0025), physical({ color: '#b98d5a', roughness: .9 }), -.16, .003, -.03, cup);
+  stick.rotation.y = 1.1;
 
   // An open notebook with a pencil: a focus table, not a still life.
-  const paper = physical({ color: '#e4dccb', roughness: .92, sheen: .3, sheenColor: new T.Color('#ffffff') });
-  const book = new T.Group(); book.position.set(.66, TABLE_TOP, -.55); book.rotation.y = -.32; scene.add(book);
+  // Pages written in ink on faint rules: words are noise-gated strokes with a
+  // wandering baseline, each page and line ending at its own place.
+  const paper = physical({ color: '#e7dfcd', roughness: .92, sheen: .3, sheenColor: new T.Color('#ffffff') });
+  patchSurface(paper, {
+    key: 'cafe-notebook-ink',
+    objectSpace: true,
+    color: `
+vec2 nbP = vSurface.xy;
+float nbPage = floor(vSurfaceWorld.x * 7.0 + vSurfaceWorld.z * 7.0);
+float nbRow = floor((nbP.y + 0.1) / 0.0105);
+float nbF = fract((nbP.y + 0.1) / 0.0105);
+float nbArea = step(-0.066, nbP.x) * step(nbP.x, 0.068) * step(-0.092, nbP.y) * step(nbP.y, 0.088);
+float nbRule = (1.0 - smoothstep(0.0, 0.07, abs(nbF - 0.06))) * nbArea;
+float nbEnd = 0.068 - 0.08 * bwHash1(vec3(nbRow, nbPage, 4.0)) * step(0.55, bwHash1(vec3(nbRow, nbPage, 8.0)));
+float nbRows = mix(18.0, 9.0, step(0.5, bwHash1(vec3(nbPage, 1.0, 2.0))));
+float nbWord = step(0.3, bwValue(vec3(nbP.x * 75.0, nbRow * 3.1 + nbPage, 2.0)));
+float nbBase = 0.42 + 0.16 * sin(nbP.x * 2100.0 + nbRow * 7.0) + 0.08 * sin(nbP.x * 640.0 + nbRow * 3.0 + nbPage);
+float nbInk = (1.0 - smoothstep(0.1, 0.2, abs(nbF - nbBase))) * nbWord * step(nbP.x, nbEnd) * step(nbRow, nbRows) * nbArea;
+float nbSharp = bwResolve(length(fwidth(nbP)) / 0.0016);
+vec3 nbColor = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.72, 0.8, 0.95), nbRule * 0.45);
+diffuseColor.rgb = mix(nbColor, vec3(0.1, 0.12, 0.22), nbInk * mix(0.3, 0.92, nbSharp));`,
+  });
+  const book = new T.Group(); scene.add(book);
   slab(0, .006, 0, .34, .012, .24, mat('#2f3b3a', .7), .004, book);
   for (const side of [-1, 1]) {
     const leaf = new T.PlaneGeometry(.162, .225, 24, 4); const lp = leaf.getAttribute('position');
@@ -257,6 +284,39 @@ void main(){
   slab(0, .51, -.02, .8, .04, .5, mat('#2a2522', .5), .015, machine);
   for (const x of [-.18, .18]) { cylinder(x, .17, .28, .03, .03, .07, m.brass, machine); tube([new T.Vector3(x, .17, .3), new T.Vector3(x, .15, .42), new T.Vector3(x, .14, .5)], .012, m.darkWood, machine, 8); }
   for (const [x, z] of [[-.25, .02], [-.1, 0], [.08, .03], [.24, -.01]]) cylinder(x, .58, z, .035, .028, .08, m.ceramic, machine, 32);
+  // Grinder beside the machine: a lathed body under a smoked hopper.
+  lathe([[0, 0], [.09, 0], [.095, .02], [.07, .05], [.065, .26], [.075, .3], [0, .3]], m.chrome, 48, 3.55, 1.11, -7.6);
+  lathe([[.03, 0], [.05, .01], [.1, .16], [.1, .18], [0, .18]], physical({ color: '#3b2a1f', roughness: .15, transmission: 0, opacity: .9, transparent: true }), 48, 3.55, 1.41, -7.6);
+  // Chalk menu board above the shelves, lit by a small brass picture light. The
+  // chalk is unlettered: rows of soft strokes that read as a menu when defocused.
+  const slate = new T.MeshStandardMaterial({ color: '#1d2420', roughness: .95, emissive: '#fff1dc', emissiveIntensity: .0 });
+  patchSurface(slate, {
+    key: 'cafe-chalk-menu',
+    objectSpace: true,
+    color: `
+vec2 chP = vSurface.xy;
+float chRow = floor((chP.y + 0.33) / 0.062);
+float chF = fract((chP.y + 0.33) / 0.062);
+float chCol = step(0.0, chP.x);
+float chArea = step(-0.5, chP.x) * step(chP.x, 0.5) * step(-0.3, chP.y) * step(chP.y, 0.22);
+float chEnd = mix(-0.08, 0.42, chCol) - 0.18 * bwHash1(vec3(chRow, chCol, 3.0));
+float chStart = mix(-0.46, 0.04, chCol);
+float chWord = step(0.28, bwValue(vec3(chP.x * 22.0, chRow * 2.7 + chCol * 5.0, 1.0)));
+float chBase = 0.45 + 0.1 * sin(chP.x * 260.0 + chRow * 5.0);
+float chalk = (1.0 - smoothstep(0.08, 0.2, abs(chF - chBase))) * chWord * step(chStart, chP.x) * step(chP.x, chEnd) * chArea;
+float chTitle = (1.0 - smoothstep(0.0, 0.025, abs(chP.y - 0.27))) * step(abs(chP.x), 0.22) * step(0.25, bwValue(vec3(chP.x * 14.0, 9.0, 1.0)));
+float chDust = 0.04 * smoothstep(0.3, 0.9, bwFbm3(vec3(chP * 6.0, 2.0)));
+diffuseColor.rgb = mix(diffuseColor.rgb + chDust, vec3(0.86, 0.84, 0.78), clamp(chalk + chTitle, 0.0, 1.0) * 0.85);`,
+    emissive: 'totalEmissiveRadiance += diffuseColor.rgb * 0.22;',
+  });
+  extraMaterials.push(slate);
+  const board = new T.Group(); board.position.set(3.25, 3.28, -8.86); scene.add(board);
+  slab(0, 0, 0, 1.16, .76, .04, m.darkWood, .01, board);
+  mesh(new T.PlaneGeometry(1.06, .66), slate, 0, 0, .022, board).castShadow = false;
+  const pictureLight = new T.MeshBasicMaterial({ color: hdr('#ffd9a8', 9) }); extraMaterials.push(pictureLight);
+  cylinder(0, .44, .12, .018, .018, .5, m.brass, board, 16).rotation.z = Math.PI / 2;
+  const glowBar = mesh(new T.BoxGeometry(.46, .006, .02), pictureLight, 0, .425, .12, board); glowBar.castShadow = false;
+
   const shelves = buildCafeShelves(m); shelves.group.position.z = -.1; scene.add(shelves.group); extraMaterials.push(...shelves.materials); extraTextures.push(...shelves.textures);
 
   // ---------------------------------------------------------------- pendants over the far tables
@@ -281,7 +341,7 @@ void main(){
   };
   pendant(1.6, -4.0, 2.08, true);
   pendant(2.35, -6.35, 2.12, true);
-  pendant(4.4, -6.0, 2.4, false);
+  pendant(2.95, -7.15, 2.35, false);
 
   // ---------------------------------------------------------------- quiet patrons
   const patronMaterials = {
@@ -380,6 +440,7 @@ void main(){
     cupContact.position.set(shot.cup.x, TABLE_TOP + .001, shot.cup.z);
     lamp.position.copy(shot.lamp); lamp.scale.setScalar(shot.lampScale);
     lampContact.position.set(shot.lamp.x, TABLE_TOP + .001, shot.lamp.z);
+    book.position.copy(shot.book); book.rotation.y = -.3 - .25 * portrait;
     const bulbY = shot.lamp.y + .392 * shot.lampScale;
     key.position.set(shot.lamp.x, bulbY, shot.lamp.z);
     key.target.position.set(shot.cup.x * .55 + shot.lamp.x * .45, TABLE_TOP, shot.cup.z * .6 + shot.lamp.z * .4);

@@ -181,10 +181,19 @@ export interface VolumeOptions {
   mist?: [number, number, number, number];
   anisotropy?: number;
   steps?: number;
+  /** Distances (metres) over which the medium fades in from the viewer, keeping the near field crisp. */
+  clear?: [number, number];
+  /**
+   * Mist banks at chosen distances: [distance, width, density, thickness] each (up to 3), added to
+   * the ground mist where a ray passes that far from the viewer (layers of mist between tree rows).
+   * Thickness is the e-folding height in metres above the haze base.
+   */
+  banks?: Array<[number, number, number, number]>;
 }
 
 export function createWoodsVolume(o: VolumeOptions): VolumeEffect {
   const steps = Math.min(40, o.steps ?? 28);
+  const banks = (o.banks ?? []).slice(0, 3);
   const fragmentShader = /* glsl */ `
 ${VOLUME_PRELUDE}
 ${GLSL_NOISE}
@@ -195,6 +204,7 @@ uniform vec3 uVolAmbient;
 uniform vec4 uVolHaze;
 uniform vec4 uVolMist;
 uniform float uVolG;
+${banks.length ? `uniform vec4 uVolBanks[${banks.length}];` : ''}
 void main() {
   vec3 ro, rd; float surface;
   bwSceneRay(vUv, ro, rd, surface);
@@ -218,7 +228,15 @@ void main() {
     float haze = uVolHaze.x * exp(-max(height, 0.0) * uVolHaze.y);
     float mist = uVolMist.x * exp(-max(height, 0.0) / max(uVolMist.y, 0.05))
       * smoothstep(0.2, 0.8, bwValue(p * uVolMist.z + vec3(uTime * uVolMist.w, 0.0, uTime * uVolMist.w * 0.6)));
+    ${banks.length ? `{
+      float bankNoise = smoothstep(0.25, 0.75, bwValue(p * 0.09 + vec3(uTime * 0.012, 0.0, 3.0)));
+      for (int b = 0; b < ${banks.length}; b++) {
+        vec4 bank = uVolBanks[b];
+        mist += bank.z * exp(-pow((length(p.xz - ro.xz) - bank.x) / bank.y, 2.0)) * exp(-max(height, 0.0) / bank.w) * (0.45 + 0.55 * bankNoise);
+      }
+    }` : ''}
     float density = (haze + mist) * (0.7 + 0.3 * bwValue(p * 0.21 + vec3(0.0, uTime * 0.015, uTime * 0.02)));
+    ${o.clear ? `density *= smoothstep(${o.clear[0].toFixed(3)}, ${o.clear[1].toFixed(3)}, t);` : ''}
     float sun = bwCanopy(p);
     vec3 radiance = uVolSun * phase * sun + uVolAmbient;
     float stepT = exp(-density * dt);
@@ -239,6 +257,7 @@ void main() {
       uVolHaze: { value: new THREE.Vector4(...o.haze) },
       uVolMist: { value: new THREE.Vector4(...mist) },
       uVolG: { value: o.anisotropy ?? 0.6 },
+      ...(banks.length ? { uVolBanks: { value: banks.map(b => new THREE.Vector4(...b)) } } : {}),
     },
   });
   return { material };
@@ -571,4 +590,45 @@ export function scatter(count: number, seed: number, sample: (random: Random) =>
     if (p) result.push(p);
   }
   return result;
+}
+
+// ---- Dew and rain beads --------------------------------------------------------------------------
+
+/**
+ * Water beads on blades and leaves (chain after applyFoliageShading with translucency): each
+ * small cell may hold a droplet whose tiny sphere mirrors the sun toward the viewer. The glint
+ * uses the direct sun after canopy and shadow-map visibility, so beads in shade stay dark, peaks
+ * with Fresnel when looking toward the sun, twinkles as wind moves the blades, and fades where
+ * cells would shrink below a pixel. One hash and a few ALU per fragment.
+ */
+export function applyDewGlints<T extends THREE.MeshStandardMaterial>(material: T, o: { key: string; toSun: THREE.Vector3; cells?: number; cover?: number; strength?: number }): T {
+  const previous = material.onBeforeCompile;
+  const toSun = o.toSun.clone().normalize();
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    const marker = '// Thin leaves pass sunlight through to the shaded side';
+    if (!shader.fragmentShader.includes(marker)) return;
+    shader.fragmentShader = beforeMain(shader.fragmentShader, `${withNoise(shader.fragmentShader)}
+vec3 bwDewSun = vec3(0.0);`)
+      .replace(marker, `bwDewSun = directLight.color;\n\t\t\t${marker}`)
+      .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
+{
+  vec3 dewCellP = vBwWorld * ${(o.cells ?? 70).toFixed(2)};
+  vec3 dewCell = floor(dewCellP);
+  vec3 dewHash = bwHash3(dewCell + 17.0);
+  vec3 dewLocal = fract(dewCellP) - (0.25 + 0.5 * dewHash);
+  float dewFoot = length(fwidth(dewCellP));
+  float dewBead = step(1.0 - ${(o.cover ?? 0.3).toFixed(3)}, dewHash.z) * (1.0 - smoothstep(0.18, 0.32, length(dewLocal) / max(1.0, dewFoot * 0.6)));
+  vec3 dewV = normalize(cameraPosition - vBwWorld);
+  vec3 dewL = vec3(${toSun.x.toFixed(4)}, ${toSun.y.toFixed(4)}, ${toSun.z.toFixed(4)});
+  float dewVH = saturate(dot(dewV, normalize(dewV + dewL)));
+  // A bead is a tiny sphere: some facet always faces the half vector; grazing (back-lit) views reflect most.
+  float dewFresnel = 0.04 + 0.96 * pow(1.0 - dewVH, 3.0);
+  float dewNear = 1.0 - smoothstep(0.35, 1.1, dewFoot);
+  reflectedLight.directSpecular += bwDewSun * dewBead * dewFresnel * dewNear * ${(o.strength ?? 6).toFixed(3)} * (0.4 + 0.6 * dewHash.x);
+}`);
+  };
+  const base = material.customProgramCacheKey.bind(material);
+  material.customProgramCacheKey = () => `${base()}|lw-dew-v1|${o.key}`;
+  return material;
 }

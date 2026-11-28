@@ -3,17 +3,18 @@ import type { WorldContent } from '../types';
 import { buildTree, concatGeometries, type TreeBuild } from '../../shared/render/treeGeometry';
 import { applyBarkSurface } from '../../shared/render/barkSurface';
 import { applyFoliageShading, crownCanopy } from '../../shared/render/foliageShading';
-import { broadleafClusterTexture } from '../../shared/render/foliageTextures';
 import { boulderGeometry } from '../../shared/render/rockGeometry';
 import { applyRockSurface } from '../../shared/render/rockSurface';
 import { seeded } from '../../shared/render/noise';
+import { fernFrondTexture } from '../../shared/render/foliageTextures';
 import {
-  applyForestFloor, bakeEnvironment, bladeGeometry as grassBlade, createSky, createSun, createWoodsVolume,
-  grassMaterial, instanced, scatter, terrainGeometry, type Placement, type SkyOptions,
+  applyDewGlints, applyForestFloor, bakeEnvironment, bladeGeometry as grassBlade, createSky, createSun, createWoodsVolume,
+  fernCrownGeometry, fernMaterial, grassMaterial, instanced, scatter, terrainGeometry, type Placement, type SkyOptions,
 } from './woodsKit';
+import { leafSprayAtlas, tintGeometry } from './leafAtlas';
 
-/** Low morning sun to the front-left: the garden is back-lit and long shadows run toward the porch. */
-const TO_SUN = new THREE.Vector3(-0.6, 0.34, -0.72).normalize();
+/** Early sun low over the left of the garden: leaves glow back-lit, long shadows rake toward the porch and the right. */
+const TO_SUN = new THREE.Vector3(-0.78, 0.22, -0.58).normalize();
 const srgb = (h: number, s: number, l: number) => new THREE.Color().setHSL(h, s, l, THREE.SRGBColorSpace);
 
 /** Original geometry and procedural materials; no borrowed assets or audio. */
@@ -32,24 +33,25 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
 
   // HDR morning sky: warm low sun glow, a clear blue zenith and thin drifting cloud.
   const sky: SkyOptions = {
-    zenith: new THREE.Color(0.09, 0.24, 0.7).multiplyScalar(1.15),
-    horizon: new THREE.Color(1.0, 0.8, 0.6).multiplyScalar(1.55),
-    horizonAway: new THREE.Color(0.42, 0.55, 0.78).multiplyScalar(0.95),
-    ground: new THREE.Color(0.16, 0.2, 0.1),
+    zenith: new THREE.Color(0.07, 0.2, 0.62).multiplyScalar(1.1),
+    horizon: new THREE.Color(1.0, 0.7, 0.42).multiplyScalar(1.6),
+    horizonAway: new THREE.Color(0.42, 0.56, 0.82).multiplyScalar(0.8),
+    ground: new THREE.Color(0.12, 0.15, 0.08),
     toSun: TO_SUN,
-    sun: new THREE.Color(1, 0.85, 0.6).multiplyScalar(90),
+    sun: new THREE.Color(1, 0.8, 0.52).multiplyScalar(90),
     sunCos: 0.99975,
-    glow: new THREE.Color(1.0, 0.62, 0.3).multiplyScalar(3.2),
-    clouds: { lit: new THREE.Color(1.8, 1.62, 1.45), shade: new THREE.Color(0.62, 0.7, 0.86), cover: 0.7, scale: 0.85, speed: 0.0025, amount: 0.55 },
+    glow: new THREE.Color(1.0, 0.58, 0.26).multiplyScalar(2.4),
+    clouds: { lit: new THREE.Color(1.9, 1.55, 1.25), shade: new THREE.Color(0.6, 0.66, 0.82), cover: 0.8, scale: 0.85, speed: 0.0025, amount: 0.38 },
     time,
   };
   root.add(createSky(sky, 165));
-  scene.background = new THREE.Color(0.9, 0.85, 0.75);
-  const fog = new THREE.FogExp2(0xffffff, 0.0068);
-  fog.color.setRGB(0.92, 0.84, 0.72);
+  scene.background = new THREE.Color(0.7, 0.72, 0.78);
+  // Thin, cool aerial perspective; the warm sun-side glow and the pooled mist come from the volume pass.
+  const fog = new THREE.FogExp2(0xffffff, 0.0036);
+  fog.color.setRGB(0.6, 0.66, 0.78);
   scene.fog = fog;
 
-  createSun(scene, { toSun: TO_SUN, color: '#ffe3bd', intensity: 6.2, target: new THREE.Vector3(0, 0, -3), box: [-17, 17, -12, 16], distance: 42, radius: 2.2, normalBias: 0.03 });
+  createSun(scene, { toSun: TO_SUN, color: '#ffd6a0', intensity: 7.4, target: new THREE.Vector3(0, 0, -10), box: [-30, 30, -9, 16], distance: 60, mapSize: 2048, radius: 2.4, normalBias: 0.03 });
   // A dim, warm bounce off the sunlit boards under the porch roof.
   const porchBounce = new THREE.PointLight('#ffcf9a', 0.9, 6, 2);
   porchBounce.position.set(-0.5, 1.2, 3.2);
@@ -131,63 +133,123 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   }
 
   // ---- Garden trees: lofted, branching, with dense leaf clusters ------------------------------------
+  // The field beyond the wall falls into a broad hollow before rising to the far tree line; mist pools in it.
   const groundY = (x: number, z: number) => -0.17 + Math.sin(x * .4 + z * .13) * .045 + Math.cos(x * .17 - z * .27) * .035
-    + Math.max(0, -z - 14) * 0.018 + Math.sin(x * 0.05 + 1.3) * Math.max(0, -z - 20) * 0.012;
+    + Math.max(0, -z - 14) * 0.018 + Math.sin(x * 0.05 + 1.3) * Math.max(0, -z - 20) * 0.012
+    - 1.45 * Math.exp(-(((z + 33) / 10) ** 2)) * (0.75 + 0.25 * Math.sin(x * 0.07 + 0.8));
   const treeSpecs: Array<[number, number, number, number, number]> = [
     // x, z, height, trunk radius, detail (2 hero, 1 mid)
-    [-5.7, -6.2, 9.6, 0.3, 2], [7.2, -9.6, 10.2, 0.32, 2], [-12.8, -19, 11.5, 0.36, 1],
-    [12.6, -23.5, 11.8, 0.36, 1], [-6.8, -29, 10.4, 0.32, 1], [3.4, -41, 12.5, 0.38, 1], [19, -31, 11, 0.34, 1],
+    [-5.7, -6.2, 10.4, 0.34, 2], [7.2, -9.6, 10.8, 0.35, 2], [-12.8, -19, 12, 0.38, 1],
+    [12.6, -23.5, 12.6, 0.38, 1], [-6.8, -29, 11.4, 0.34, 1], [3.4, -41, 13, 0.4, 1], [19, -31, 11.6, 0.36, 1],
   ];
-  const trees: TreeBuild[] = treeSpecs.map(([x, z, height, radius, detail], i) => buildTree({
-    seed: 300 + i * 17, base: new THREE.Vector3(x, groundY(x, z) - 0.05, z), height, radius, form: 'broadleaf',
-    lean: [(random() - 0.5) * 0.8, (random() - 0.5) * 0.6], gnarl: 0.45, flare: 0.55, buttresses: 4,
-    limbs: detail === 2 ? 8 : 7, levels: 2, children: 3, spread: 0.36, curl: 0.7,
-    radial: detail === 2 ? 22 : 12, ringsPerMetre: detail === 2 ? 5 : 2.4, displace: detail === 2 ? 0.012 : 0,
-    barkScale: 2.4, barkStretch: 3.2, flex: 0.8,
-    leaves: { cardsPerTwig: detail === 2 ? 30 : 20, size: detail === 2 ? 0.95 : 1.25, reach: 0.75, crownNormals: 0.72, shade: [0.3, 1.05], skyward: 0.35, fill: 0.25 },
-  }));
-  // A far tree line along the field edge, simpler but with the same construction.
-  const farRandom = seeded(5511);
-  for (let i = 0; i < 16; i++) {
-    const x = -48 + i * 6.3 + (farRandom() - 0.5) * 3, z = -52 - farRandom() * 10;
-    trees.push(buildTree({
-      seed: 900 + i, base: new THREE.Vector3(x, groundY(x, z) - 0.1, z), height: 9 + farRandom() * 5, radius: 0.3, form: 'broadleaf',
-      limbs: 6, levels: 1, children: 3, spread: 0.38, radial: 6, ringsPerMetre: 1, flex: 0.5,
-      leaves: { cardsPerTwig: 12, size: 1.9, reach: 0.8, crownNormals: 0.85, shade: [0.35, 1], fill: 0.2 },
-    }));
-  }
-  // Garden shrubs and the hedgerow: low, leafy, many-stemmed.
-  const shrubSpots: Array<[number, number, number]> = [
-    [-2.6, -3.4, 1.2], [-3.4, -4.6, 1.5], [-1.7, -4.9, 0.9], [3.5, -5.3, 1.3], [4.6, -6.4, 1.6], [2.6, -6.6, 1.0],
-    [-6.8, -9.2, 1.7], [-8.2, -10.6, 1.9], [8.8, -11.2, 1.8], [10.5, -11.6, 2.1], [-10.5, -11.4, 2.0],
-  ];
-  for (let i = 0; i < 18; i++) shrubSpots.push([-34 + i * 4.1 + (farRandom() - 0.5) * 1.5, -24 - Math.sin(i * 0.9) * 2.2 - farRandom() * 1.5, 1.8 + farRandom() * 1.4]);
-  shrubSpots.forEach(([x, z, h], i) => {
-    trees.push(buildTree({
-      seed: 1400 + i * 3, base: new THREE.Vector3(x, groundY(x, z) - 0.05, z), height: h, radius: 0.035 * h, form: 'sapling',
-      limbs: 7, levels: 1, children: 3, crownStart: 0.08, spread: 0.55, curl: 0.9, radial: 5, ringsPerMetre: 3, flex: 1.1,
-      leaves: { cardsPerTwig: 7, size: 0.5 + h * 0.18, reach: 0.8, crownNormals: 0.8, shade: [0.3, 1], skyward: 0.5, fill: 0.3 },
-    }));
+  // Each tree carries its own leaf tint (and every card a little jitter), so crowns never match.
+  const treeTints = [[1, 1, 0.94], [0.9, 1, 0.88], [0.8, 0.92, 0.86], [1.06, 1.02, 0.78], [0.74, 0.86, 0.84], [0.95, 0.98, 0.82], [0.82, 0.94, 0.9]];
+  const tintRandom = seeded(6021);
+  const trees: TreeBuild[] = treeSpecs.map(([x, z, height, radius, detail], i) => {
+    const tree = buildTree({
+      seed: 300 + i * 17, base: new THREE.Vector3(x, groundY(x, z) - 0.05, z), height, radius, form: 'broadleaf',
+      lean: [(random() - 0.5) * 0.8, (random() - 0.5) * 0.6], gnarl: 0.5, flare: 0.6, buttresses: 4,
+      limbs: detail === 2 ? 9 : 9, levels: 2, children: 3, crownStart: detail === 2 ? 0.3 : 0.2 + (i % 3) * 0.04, spread: detail === 2 ? 0.4 : 0.44 + (i % 2) * 0.06, curl: detail === 2 ? 0.55 : 0.35,
+      radial: detail === 2 ? 22 : 12, ringsPerMetre: detail === 2 ? 5 : 2.4, displace: detail === 2 ? 0.014 : 0,
+      barkScale: 2.4, barkStretch: 3.2, flex: 0.8,
+      leaves: { cardsPerTwig: detail === 2 ? 30 : 22, size: detail === 2 ? 0.95 : 1.2, reach: 0.8, atlasColumns: 4, crownNormals: detail === 2 ? 0.62 : 0.55, shade: detail === 2 ? [0.26, 1.08] : [0.18, 1.06], skyward: 0.3, fill: 0.45 },
+    });
+    tintGeometry(tree.leaves, new THREE.Color(...treeTints[i]), 0.2, tintRandom);
+    return tree;
   });
-  const leafAtlas = broadleafClusterTexture({ seed: 77, palette: { base: '#58782f', light: '#9ab84c', dark: '#34501f', stem: '#5a4a32' }, round: 0.35 });
+  // Two staggered rows of field-edge trees on the far rise, varied in height, spread and colour.
+  const farRandom = seeded(5511);
+  for (let i = 0; i < 18; i++) {
+    const row = i % 2;
+    const x = -50 + i * 5.8 + (farRandom() - 0.5) * 3, z = -50 - row * 6 - farRandom() * 5;
+    const tree = buildTree({
+      seed: 900 + i, base: new THREE.Vector3(x, groundY(x, z) - 0.1, z), height: 8 + farRandom() * 6, radius: 0.26 + farRandom() * 0.1, form: 'broadleaf',
+      crownStart: 0.28 + farRandom() * 0.16, limbs: 7, levels: 1, children: 4, spread: 0.3 + farRandom() * 0.16, curl: 0.6, radial: 6, ringsPerMetre: 1, flex: 0.5,
+      leaves: { cardsPerTwig: 14, size: 1.75, reach: 0.85, atlasColumns: 4, crownNormals: 0.75, shade: [0.3, 1], fill: 0.35 },
+    });
+    tintGeometry(tree.leaves, new THREE.Color().setRGB(0.9 + farRandom() * 0.2, 0.95 + farRandom() * 0.1, 0.8 + farRandom() * 0.2), 0.15, tintRandom);
+    trees.push(tree);
+  }
+  // A long leafy limb of the left tree reaches over the garden toward the porch and frames the top of
+  // the view; its leaves are seen from below, glowing against the low sun.
+  {
+    const limb = buildTree({
+      seed: 4471, base: new THREE.Vector3(0, 0, 0), height: 6.4, radius: 0.13, form: 'sapling',
+      limbs: 11, levels: 1, children: 3, crownStart: 0.2, spread: 0.32, curl: -0.3, gnarl: 0.55, radial: 9, ringsPerMetre: 3, flex: 1.0,
+      // Sparse, so sky and shade show between the sprays instead of one glowing mass.
+      leaves: { cardsPerTwig: 9, size: 0.6, reach: 0.7, atlasColumns: 4, crownNormals: 0.4, shade: [0.2, 0.95], skyward: 0, fill: 0.08 },
+    });
+    const direction = new THREE.Vector3(0.42, -0.2, 0.88).normalize();
+    const matrix = new THREE.Matrix4().compose(new THREE.Vector3(-5.35, 5.2, -5.9), new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction), new THREE.Vector3(1, 1, 1));
+    limb.bark.applyMatrix4(matrix);
+    limb.leaves?.applyMatrix4(matrix);
+    // Seen from below against the sun: darker, bluer leaves than the crowns so the glow stays at their edges.
+    tintGeometry(limb.leaves, new THREE.Color(0.66, 0.74, 0.7), 0.25, tintRandom);
+    trees.push(limb);
+  }
+  const leafAtlas = leafSprayAtlas({ seed: 77, palette: { base: '#557d2c', light: '#a6c457', dark: '#2c4a1b', stem: '#5a4a32' }, columns: 4, leaf: 0.17, aspect: 0.46, leaves: 11, twigs: 4, round: 0.4 });
   const canopy = crownCanopy({
     key: 'morning', toSun: TO_SUN, time, density: 1.4, gaps: 0.1,
     crowns: trees.slice(0, 7).map(t => ({ centre: t.crown.centre, radius: t.crown.radius.clone().multiplyScalar(0.86) })),
   });
   const wind = { time, mode: 'attribute' as const, sway: 0.35, flutter: 0.025, direction: [1, 0.3] as [number, number], speed: 0.9 };
   const barkMaterial = applyFoliageShading(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.88 }), {
-    key: 'morning-bark', scale: 2.4, stretch: 3.2, depth: 0.012, plate: '#7c7467', fissure: '#2a241d',
+    key: 'morning-bark', scale: 4.5, stretch: 3.6, depth: 0.012, plate: '#7c7467', fissure: '#2a241d',
     lichen: { color: '#a3a88a', amount: 0.45 }, moss: { color: '#4d5f27', amount: 0.35, below: 0.25, side: new THREE.Vector3(0.6, 0, 0.8) },
   }), { key: 'morning-bark', canopy, wind });
-  const leafMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ map: leafAtlas, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.52, metalness: 0 }), {
-    key: 'morning-leaves', canopy, wind, sharedNormals: true, coverage: true,
-    translucency: { tint: '#ffe98a', back: 0.75, forward: 1.6 },
+  const foliage = (key: string, map: THREE.Texture, roughness = 0.5) => applyFoliageShading(new THREE.MeshStandardMaterial({ map, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness, metalness: 0 }), {
+    key, canopy, wind, sharedNormals: true, coverage: true,
+    translucency: { tint: '#ffe58a', back: 0.8, forward: 1.8 },
+  });
+  const leafMaterial = foliage('morning-leaves', leafAtlas);
+
+  // Garden shrubs and the hedgerow: three kinds with their own leaves, habit and colour.
+  // 0 a dense rounded mound of small leaves, 1 arching stems of narrow leaves, 2 broad toothed leaves.
+  const shrubAtlases = [
+    leafSprayAtlas({ seed: 131, palette: { base: '#3f6a2a', light: '#7fa64a', dark: '#22401a', stem: '#4a3e2c' }, columns: 4, cell: 256, leaf: 0.12, aspect: 0.55, leaves: 15, twigs: 5, round: 0.6 }),
+    leafSprayAtlas({ seed: 137, palette: { base: '#6f9134', light: '#b5cd62', dark: '#40601f', stem: '#6a5433' }, columns: 4, cell: 256, leaf: 0.16, aspect: 0.28, leaves: 13, twigs: 4, round: 0.1 }),
+    leafSprayAtlas({ seed: 139, palette: { base: '#466e2e', light: '#86ad55', dark: '#264420', stem: '#4d4030' }, columns: 4, cell: 256, leaf: 0.24, aspect: 0.62, leaves: 6, twigs: 3, round: 0.55, toothed: true }),
+  ];
+  const shrubKinds = [
+    { limbs: 11, children: 4, spread: 0.62, curl: 0.35, cards: 8, size: (h: number) => 0.3 + h * 0.1, normals: 0.85, skyward: 0.45, fill: 0.7, squash: [1.25, 0.78] },
+    { limbs: 10, children: 3, spread: 0.75, curl: 1.3, cards: 8, size: (h: number) => 0.4 + h * 0.08, normals: 0.65, skyward: 0.2, fill: 0.3, squash: [1.05, 1] },
+    { limbs: 8, children: 3, spread: 0.55, curl: 0.7, cards: 6, size: (h: number) => 0.46 + h * 0.1, normals: 0.75, skyward: 0.35, fill: 0.45, squash: [1.1, 0.9] },
+  ];
+  const shrubSpots: Array<[number, number, number, number]> = [
+    [-2.6, -3.4, 1.1, 0], [-3.5, -4.7, 1.5, 1], [-1.6, -5.0, 0.85, 2], [3.5, -5.3, 1.2, 2], [4.7, -6.5, 1.7, 1], [2.5, -6.8, 0.9, 0],
+    [-6.8, -9.2, 1.6, 0], [-8.3, -10.6, 2.0, 1], [8.8, -11.2, 1.8, 0], [10.6, -11.7, 2.2, 2], [-10.6, -11.4, 1.9, 2],
+  ];
+  for (let i = 0; i < 18; i++) shrubSpots.push([-34 + i * 4.1 + (farRandom() - 0.5) * 1.5, -24 - Math.sin(i * 0.9) * 2.2 - farRandom() * 1.5, 1.8 + farRandom() * 1.4, i % 3]);
+  const shrubLeaves: THREE.BufferGeometry[][] = [[], [], []];
+  const shrubRandom = seeded(7177);
+  shrubSpots.forEach(([x, z, h, kind], i) => {
+    const k = shrubKinds[kind];
+    const far = i >= 11;
+    const shrub = buildTree({
+      seed: 1400 + i * 3, base: new THREE.Vector3(0, 0, 0), height: h, radius: 0.03 * h, form: 'sapling',
+      limbs: far ? k.limbs - 3 : k.limbs, levels: 1, children: k.children, crownStart: 0.04, spread: k.spread, curl: k.curl, radial: 5, ringsPerMetre: 3, flex: 1.1,
+      leaves: { cardsPerTwig: far ? Math.round(k.cards * 0.7) : k.cards, size: k.size(h) * (far ? 1.25 : 1), reach: 0.85, atlasColumns: 4, crownNormals: k.normals, shade: [0.28, 1.06], skyward: k.skyward, fill: k.fill },
+    });
+    const s = k.squash[0] * (0.9 + shrubRandom() * 0.25);
+    const matrix = new THREE.Matrix4().compose(new THREE.Vector3(x, groundY(x, z) - 0.05, z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), shrubRandom() * 6.28), new THREE.Vector3(s, k.squash[1] * (0.9 + shrubRandom() * 0.2), s * (0.85 + shrubRandom() * 0.3)));
+    shrub.bark.applyMatrix4(matrix);
+    shrub.leaves?.applyMatrix4(matrix);
+    const hue = kind === 1 ? [1.08, 1.06, 0.85] : kind === 0 ? [0.92, 1, 0.95] : [1, 1, 0.92];
+    tintGeometry(shrub.leaves, new THREE.Color(hue[0] * (0.9 + shrubRandom() * 0.2), hue[1] * (0.92 + shrubRandom() * 0.16), hue[2]), 0.22, shrubRandom);
+    if (shrub.leaves) shrubLeaves[kind].push(shrub.leaves);
+    trees.push({ ...shrub, leaves: null });
   });
   const bark = new THREE.Mesh(concatGeometries(trees.map(t => t.bark)), barkMaterial);
   bark.castShadow = true; bark.receiveShadow = true; root.add(bark);
   const leafGeometries = trees.map(t => t.leaves).filter((g): g is THREE.BufferGeometry => !!g);
   const leaves = new THREE.Mesh(concatGeometries(leafGeometries), leafMaterial);
   leaves.receiveShadow = true; root.add(leaves);
+  shrubLeaves.forEach((parts, kind) => {
+    // Shrubs are not in the analytic crown set, so their cut-out leaves cast real (static) shadow-map shadows.
+    const mesh = new THREE.Mesh(concatGeometries(parts), foliage(`morning-shrub-${kind}`, shrubAtlases[kind], 0.46));
+    mesh.castShadow = true; mesh.receiveShadow = true; root.add(mesh);
+    parts.forEach(g => g.dispose());
+  });
   trees.forEach(t => { t.bark.dispose(); t.leaves?.dispose(); });
 
   // ---- Lawn, beds and fields ---------------------------------------------------------------------
@@ -200,8 +262,9 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   ground.receiveShadow = true; root.add(ground);
 
   const grassWind = { time, mode: 'height' as const, height: 1, sway: 0.06, flutter: 0.012, direction: [1, 0.3] as [number, number], speed: 1 };
-  const lawn = grassMaterial({ key: 'morning-lawn', canopy, wind: grassWind, roughness: 0.42, translucency: 0.6 });
-  const nearGrass = scatter(36000, 811, r => {
+  // Dew: beads on the blades catch the low sun (only where it reaches) and twinkle as the grass stirs.
+  const lawn = applyDewGlints(grassMaterial({ key: 'morning-lawn', canopy, wind: grassWind, roughness: 0.36, translucency: 0.7 }), { key: 'morning-dew', toSun: TO_SUN, cells: 50, cover: 0.5, strength: 14 });
+  const nearGrass = scatter(33000, 811, r => {
     const z = -0.2 - Math.pow(r(), 1.35) * 12.4;
     const x = (r() - 0.5) * 30;
     if (Math.abs(x - pathX(z)) < 0.55 && z > -11.4) return null;
@@ -210,13 +273,15 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     const dry = r() < 0.12;
     return { x, y: groundY(x, z) - 0.01, z, yaw: r() * Math.PI * 2, tilt: (r() - 0.5) * 0.5, scale: new THREE.Vector3(0.014 + r() * 0.011, h, h), color: dry ? srgb(0.13 + r() * 0.03, 0.4, 0.42 + r() * 0.1) : srgb(0.2 + r() * 0.07, 0.48 + r() * 0.2, 0.26 + r() * 0.16) };
   });
-  root.add(instanced(grassBlade(3, 0.4), lawn, nearGrass, { cast: false, receive: true }));
-  const fieldGrass = scatter(12000, 812, r => {
+  // Three-segment blades only where their curve is visible; two segments further out (triangle budget).
+  root.add(instanced(grassBlade(3, 0.4), lawn, nearGrass.filter(p => p.z > -4.5), { cast: false, receive: true }));
+  root.add(instanced(grassBlade(2, 0.4), lawn, nearGrass.filter(p => p.z <= -4.5), { cast: false, receive: true }));
+  const fieldGrass = scatter(8000, 812, r => {
     const z = -13.2 - r() * 30, x = (r() - 0.5) * (40 + -z * 0.8);
     const h = 0.4 + r() * 0.5;
     return { x, y: groundY(x, z) - 0.02, z, yaw: r() * Math.PI * 2, tilt: (r() - 0.5) * 0.4, scale: new THREE.Vector3(0.025 + r() * 0.02, h, h), color: srgb(0.14 + r() * 0.1, 0.35 + r() * 0.2, 0.32 + r() * 0.16) };
   });
-  root.add(instanced(grassBlade(3, 0.5), lawn, fieldGrass, { cast: false, receive: true }));
+  root.add(instanced(grassBlade(2, 0.5), lawn, fieldGrass, { cast: false, receive: true }));
 
   // Cosmos and calendula: thin stems, translucent petals that glow against the low sun.
   const petalMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.6 }), {
@@ -250,8 +315,10 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   }), { key: 'morning-stone', canopy });
   const stoneParts: THREE.BufferGeometry[] = [];
   const stoneVariants = [0, 1, 2, 3].map(i => boulderGeometry(41 + i, 2));
+  // Wall stones are 15 m away: coarser shells, the rock shader carries their surface.
+  const wallVariants = [0, 1, 2, 3].map(i => boulderGeometry(51 + i, 1));
   const addStone = (x: number, y: number, z: number, sx: number, sy: number, sz: number, yaw: number, tint: THREE.Color) => {
-    const g = stoneVariants[stoneParts.length % 4].clone();
+    const g = (z < -10 ? wallVariants : stoneVariants)[stoneParts.length % 4].clone();
     g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(range(-0.08, 0.08), yaw, range(-0.08, 0.08))), new THREE.Vector3(sx, sy, sz)));
     const colors = new Float32Array(g.attributes.position.count * 3);
     for (let i = 0; i < colors.length; i += 3) colors.set([tint.r, tint.g, tint.b], i);
@@ -277,7 +344,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   }
   const stones = new THREE.Mesh(concatGeometries(stoneParts), stoneMaterial);
   stones.castShadow = true; stones.receiveShadow = true; root.add(stones);
-  stoneParts.forEach(g => g.dispose()); stoneVariants.forEach(g => g.dispose());
+  stoneParts.forEach(g => g.dispose()); stoneVariants.forEach(g => g.dispose()); wallVariants.forEach(g => g.dispose());
   // The weathered slatted gate in the wall's gap.
   const gateWood = applyFoliageShading(new THREE.MeshStandardMaterial({ map: woodMap, color: '#8a7f70', roughness: 0.92 }), { key: 'morning-gate', canopy });
   for (const x of [5.3, 7.4]) box(.15, 1.4, .15, gateWood, [x, .45, -12.1]);
@@ -318,6 +385,22 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   box(.25, 3.7, 6.5, plaster, [-4.3, 1.9, 3.7]);
   box(.11, .14, 6.5, darkWood, [-4.14, .42, 3.7]);
   box(.11, .12, 6.5, darkWood, [-4.14, 2.8, 3.7]);
+  // A terracotta pot of fern on the boards at the left: a sunlit near-field plant that sets the porch's scale.
+  {
+    const potProfile = [[0, 0], [0.15, 0], [0.17, 0.015], [0.2, 0.3], [0.235, 0.315], [0.245, 0.37], [0.232, 0.38], [0.212, 0.36], [0, 0.34]].map(([x, y]) => new THREE.Vector2(x, y));
+    const potMaterial = applyRockSurface(new THREE.MeshStandardMaterial({ color: '#c27a52', roughness: 0.88 }), {
+      key: 'morning-pot', scale: 9, bump: 0.35, stain: '#5e5a40', stainAmount: 0.35, strata: 0, cavity: 0.3, drips: 0, moss: { color: '#5f7436', amount: 0.12 },
+    });
+    const pot = mesh(new THREE.LatheGeometry(potProfile, 36), potMaterial, [-2.55, 0.13, 1.05]);
+    pot.castShadow = true; pot.receiveShadow = true;
+    const soil = mesh(new THREE.CircleGeometry(0.212, 24), new THREE.MeshStandardMaterial({ color: '#2e2418', roughness: 1 }), [-2.55, 0.48, 1.05]);
+    soil.rotation.x = -Math.PI / 2;
+    const fernAtlas = fernFrondTexture({ seed: 61, palette: { base: '#4f8a2a', light: '#9cc650', dark: '#2a5018', stem: '#5e7a34' } });
+    const potFern = new THREE.Mesh(fernCrownGeometry(73, 13), fernMaterial({ key: 'morning-pot-fern', map: fernAtlas, canopy: null, wind: { time, mode: 'height', height: 0.7, sway: 0.025, flutter: 0.008, direction: [1, 0.3], speed: 0.8 }, roughness: 0.5 }));
+    potFern.position.set(-2.55, 0.47, 1.05); potFern.scale.set(0.95, 0.8, 0.95); potFern.rotation.y = 0.6;
+    potFern.castShadow = true; potFern.receiveShadow = true;
+    root.add(potFern);
+  }
 
   // A tactile oiled table, linen and celadon tea set occupy the seated near field.
   const table = new THREE.Group(); root.add(table);
@@ -505,18 +588,20 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     interactionTargets: [cup, tea, handle],
     interact(_hit, now) { touchedAt = now; },
     post: {
-      exposure: 1.05, bloomStrength: 0.07, bloomThreshold: 0, aoStrength: 0.7, aoRadius: 0.35,
-      saturation: 1.06, contrast: 1.1, shadowTint: [0.9, 0.97, 1.06], highlightTint: [1.03, 1.0, 0.96], vignette: 0.32, grain: 0.02,
+      exposure: 1.08, bloomStrength: 0.08, bloomThreshold: 0, aoStrength: 0.8, aoRadius: 0.4,
+      saturation: 1.08, contrast: 1.14, shadowTint: [0.86, 0.95, 1.1], highlightTint: [1.06, 1.0, 0.92], vignette: 0.34, grain: 0.02,
     },
-    prepare(renderer) { environment = bakeEnvironment(renderer, scene, sky, { intensity: 0.55 }); },
+    prepare(renderer) { environment = bakeEnvironment(renderer, scene, sky, { intensity: 0.4 }); },
+    // Near garden stays crisp; mist lies in the hollow and in banks between the tree rows, lit gold toward the sun.
     createVolume: () => createWoodsVolume({
-      canopy, toSun: TO_SUN, sun: new THREE.Color(1.0, 0.82, 0.58).multiplyScalar(1.1), ambient: new THREE.Color(0.3, 0.34, 0.4).multiplyScalar(0.28),
-      haze: [0.0028, 0.06, -0.2, 140], mist: [0.028, 0.7, 0.12, 0.04], anisotropy: 0.62, steps: 28,
+      canopy, toSun: TO_SUN, sun: new THREE.Color(1.0, 0.76, 0.5).multiplyScalar(1.35), ambient: new THREE.Color(0.34, 0.4, 0.52).multiplyScalar(0.22),
+      haze: [0.0034, 0.12, -1.2, 140], mist: [0.06, 0.55, 0.1, 0.03], anisotropy: 0.66, steps: 28,
+      clear: [3, 12], banks: [[26, 7, 0.05, 1.9], [50, 10, 0.03, 2.4], [80, 16, 0.02, 3]],
     }),
     resize(aspect) {
       camera.position.set(0, aspect < .8 ? 1.64 : 1.68, aspect < .8 ? 5 : 4.8);
       camera.fov = aspect < .8 ? 58 : 53;
-      camera.lookAt(aspect < .8 ? .04 : 0, aspect < .8 ? .32 : 1.25, -8);
+      camera.lookAt(aspect < .8 ? .04 : 0, aspect < .8 ? .62 : 1.25, -8);
       camera.updateProjectionMatrix();
       table.position.x = aspect < .8 ? .12 : .26;
     },

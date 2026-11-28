@@ -63,8 +63,9 @@ an audio mixer. All references below explicitly identify their collection.
   remain legible at narrow portrait width. A low garden wall and uneven plant
   beds form the middle distance. Pale sky is bounded by the roof/foliage rather
   than consuming most of the view. One small bird belongs in the garden depth.
-- **Rainy forest:** broad overlapping overhead leaves communicate shelter;
-  serrated fern fronds and scattered wet stones provide a tactile foreground.
+- **Rainy forest:** rooted broad-leaved understorey plants (round and ribbed
+  leaves on their own stalks, never leaves floating in the air), a mossy fallen
+  log, serrated fern fronds and scattered wet stones provide a tactile foreground.
   Separate wet specular surfaces from rough bark and dark soil. Mist occupies
   ground pockets, not an opaque screen. Falling drops should not resemble snow.
 - **Ancient forest:** an off-center old trunk and buttress roots establish scale

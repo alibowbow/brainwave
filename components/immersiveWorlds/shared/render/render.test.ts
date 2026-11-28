@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type * as THREE from 'three';
-import { bloomChain, msaaSamples } from './targets';
+import { bloomChain, msaaSamples, renderScale } from './targets';
 import { fbm3, noise3, ridged3, seeded } from './noise';
 import { HdrPipeline, isSoftwareRenderer, supportsHdrTargets } from './hdrPipeline';
 
@@ -9,6 +9,14 @@ describe('shared render targets', () => {
     expect(bloomChain(1280, 800)).toEqual([[640, 400], [320, 200], [160, 100], [80, 50], [40, 25], [20, 12]]);
     expect(bloomChain(390, 844).at(-1)![0]).toBeGreaterThanOrEqual(8);
     expect(bloomChain(4, 4)).toHaveLength(1);
+  });
+
+  it('renders large dense screens below native resolution and leaves smaller ones alone', () => {
+    expect(renderScale(1280, 800)).toBe(1);
+    expect(renderScale(1080, 1920)).toBeCloseTo(1, 1);
+    const fold = renderScale(1812 * 2 / 2.6 * 2, 2176 * 2 / 2.6 * 2);
+    expect(fold).toBeLessThan(1);
+    expect(Math.round(2560 * renderScale(2560, 1600)) * Math.round(1600 * renderScale(2560, 1600))).toBeLessThanOrEqual(2_101_000);
   });
 
   it('uses fewer MSAA samples on dense screens and never exceeds the device limit', () => {

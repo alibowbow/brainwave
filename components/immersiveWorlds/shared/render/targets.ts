@@ -77,5 +77,16 @@ export function bloomChain(width: number, height: number, limit = 6): Array<[num
   return sizes;
 }
 
+/**
+ * Internal resolution scale for the HDR chain. Shading cost grows with pixels,
+ * but above roughly 1080p-equivalent the extra detail is barely visible on a
+ * phone while the GPU load, heat and contention with audio keep growing. Large
+ * dense screens (a Fold's inner display at 2x is about 3.9M pixels) render the
+ * scene below native resolution and the final pass upsamples it.
+ */
+export const RENDER_PIXEL_BUDGET = 2_100_000;
+export const renderScale = (width: number, height: number, budget = RENDER_PIXEL_BUDGET) =>
+  Math.min(1, Math.sqrt(budget / Math.max(1, width * height)));
+
 /** Fewer MSAA samples on dense screens, where small pixels alias little. */
 export const msaaSamples = (pixelRatio: number, maxSamples: number) => Math.max(0, Math.min(maxSamples, pixelRatio > 1.3 ? 2 : 4));

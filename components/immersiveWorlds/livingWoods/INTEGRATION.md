@@ -9,7 +9,7 @@ All files below default-export a React component. Only `active: boolean` is requ
 | Canonical ID | Entry relative to this directory | Setting |
 |---|---|---|
 | `country_morning` | `MorningPorchWorld.tsx` | Seated rural porch, near glazed tea, garden/low wall/fields |
-| `amb:rainy_forest` | `RainyForestWorld.tsx` | Broad leaf shelter, wet fern understory, rain/puddles |
+| `amb:rainy_forest` | `RainyForestWorld.tsx` | Rooted broad-leaved understorey, ferns, mossy log, wet stones, layered rain, drips, puddles |
 | `amb:deep_forest` | `AncientForestWorld.tsx` | Old-growth trunk, buttress roots, moss and shaded depth |
 | `nature:bamboo_grove` | `BambooWorld.tsx` | Segmented bamboo grove beside shallow flowing stream |
 

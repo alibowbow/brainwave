@@ -9,6 +9,9 @@ import { createRockMaterial } from '../shared/render/rockSurface';
 import { createWoodMaterial } from '../shared/render/woodSurface';
 import { createFabricMaterial } from '../shared/render/fabricSurface';
 import { createGlazeMaterial, createPlasterMaterial, patchSurface } from '../shared/render/interiorSurface';
+import { CORNICE_SMALL, DADO_RAIL, PANEL_MOULD, PICTURE_FRAME, SKIRTING, frameMoulding, onWall, roundedBlock, straightMoulding } from './roomTrim';
+import { armThrow, createBookMaterial, createDialMaterial, createLeatherMaterial, fillShelves, logBasket, mantelClock, wingbackChair } from './readingRoom';
+import { createLeafMaterial, trailingPlant } from './houseplant';
 import { noise3, seeded } from '../shared/render/noise';
 
 /*
@@ -17,6 +20,10 @@ import { noise3, seeded } from '../shared/render/noise';
  * so the surround, mantel and andirons shape the light that reaches the room.
  * A shaded wall sconce is the only other source; the rest is the room's own
  * bounce (a radiance probe of the lit room) and a faint warm floor bounce.
+ * Furnished as a reading room: a built-in bookcase in the right alcove under a
+ * brass picture light, a leather wingback with a knitted throw, side table, tea
+ * and an oil landscape in the left alcove, a log basket, a mantel clock and a
+ * trailing plant; oak panelling to dado height with trowelled plaster above.
  * All geometry and surfaces are original procedural work.
  */
 
@@ -52,7 +59,7 @@ export function createHearthWorld(): WorldBuild {
   };
 
   // --- Materials --------------------------------------------------------------
-  const plaster = createPlasterMaterial('#c8b79c', { key: 'hearth-wall', floorY: 0, stains: 0.6 });
+  const plaster = createPlasterMaterial('#c4b292', { key: 'hearth-wall', floorY: 0, stains: 0.7, bump: 2.4, scale: 1.3 });
   const ceilingPlaster = createPlasterMaterial('#a99a84', { key: 'hearth-ceiling', stains: 0.3 });
   const floor = createWoodMaterial('#6b4a31', { key: 'hearth-floor', axis: 'z', rings: 20, figure: 0.7, pores: 0.45, wear: 0.35, varnish: 0.5, roughness: 0.46, planks: { width: 0.2, length: 2.3, bevel: 0.004, tone: 0.32 } });
   const beam = createWoodMaterial('#3a291c', { key: 'hearth-beam', axis: 'x', rings: 12, figure: 0.55, pores: 0.7, wear: 0.2, roughness: 0.78 });
@@ -93,7 +100,7 @@ diffuseColor.rgb = fbColor;`,
   const piping = createFabricMaterial('#252f23', { key: 'hearth-piping', weave: 'twill', threads: [400, 60], sheen: 0.8, roughness: 0.8 });
   const throwWool = createFabricMaterial('#b5a084', { key: 'hearth-throw', weave: 'knit', threads: [70, 95], heather: 0.7, fuzz: 0.8, depth: 0.0022, sheen: 0.7, sheenColor: '#efe2cc', roughness: 0.95 }, { side: THREE.DoubleSide });
   const rug = createFabricMaterial('#7b3326', {
-    key: 'hearth-rug', weave: 'plain', threads: [260, 260], heather: 0.9, threadContrast: 0.7, fuzz: 0.9, depth: 0.0012, roughness: 0.97,
+    key: 'hearth-rug', weave: 'velvet', threads: [140, 140], heather: 0.9, threadContrast: 0.7, fuzz: 1, depth: 0.0028, roughness: 0.98, sheen: 0.6, sheenColor: '#d08a6a',
     patternHeader: `
 vec3 rugPalette(float i) {
   return i < 0.5 ? vec3(0.36, 0.14, 0.09) : i < 1.5 ? vec3(0.13, 0.14, 0.19) : i < 2.5 ? vec3(0.5, 0.37, 0.19) : vec3(0.58, 0.52, 0.42);
@@ -145,9 +152,28 @@ vec3 rugPalette(float i) {
   add(place(new THREE.PlaneGeometry(8.4, 9.2), 0, 4.0, 0.3, Math.PI / 2), ceilingPlaster, false);
   // Hewn ceiling beams and a skirting board.
   for (const z of [-3.15, -1.0, 1.15, 3.3]) add(place(stoneBlock(8.3, 0.24, 0.21, 40 + z, 0.18, 0.02, 0, 0.07), 0, 3.88, z), beam);
-  for (const [w, x, z, ry] of [[8.3, 0, -3.985, 0], [9.0, -4.135, 0.3, Math.PI / 2], [9.0, 4.135, 0.3, Math.PI / 2]] as const) {
-    add(place(new THREE.BoxGeometry(w, 0.13, 0.025), x, 0.065, z, 0, ry), oak);
+  // Oak panelling to dado height on the side walls and the left alcove: boards with
+  // applied mouldings, a moulded skirting and a capped dado rail, all under the firelight.
+  const panelOak = createWoodMaterial('#5c3f28', { key: 'hearth-panel', axis: 'y', rings: 26, figure: 0.7, pores: 0.55, wear: 0.15, varnish: 0.45, roughness: 0.5 });
+  const trimOak = createWoodMaterial('#4e3421', { key: 'hearth-trim', axis: 'x', rings: 26, figure: 0.6, pores: 0.5, wear: 0.2, varnish: 0.5, roughness: 0.45 });
+  const PANEL_H = 1.15;
+  const panelRuns: Array<{ origin: THREE.Vector3; yaw: number; from: number; to: number }> = [
+    { origin: new THREE.Vector3(0, 0, -3.988), yaw: 0, from: -4.15, to: BREAST.x0 },
+    { origin: new THREE.Vector3(-4.138, 0, 0.3), yaw: Math.PI / 2, from: -4.6, to: 4.3 },
+    { origin: new THREE.Vector3(4.138, 0, 0.3), yaw: -Math.PI / 2, from: -4.3, to: 4.6 },
+  ];
+  const panelBoards: THREE.BufferGeometry[] = [], panelTrim: THREE.BufferGeometry[] = [];
+  for (const run of panelRuns) {
+    const length = run.to - run.from, mid = (run.from + run.to) / 2;
+    panelBoards.push(onWall(new THREE.PlaneGeometry(length, PANEL_H).translate(mid, PANEL_H / 2, 0), run.origin, run.yaw));
+    panelTrim.push(onWall(straightMoulding(SKIRTING, length).translate(mid, 0, 0), run.origin, run.yaw));
+    panelTrim.push(onWall(straightMoulding(DADO_RAIL, length, { caps: true }).translate(mid, PANEL_H - 0.035, 0), run.origin, run.yaw));
+    const count = Math.max(1, Math.round(length / 0.78)), pw = length / count;
+    for (let k = 0; k < count; k++) panelTrim.push(onWall(frameMoulding(PANEL_MOULD, run.from + k * pw + 0.08, 0.27, run.from + (k + 1) * pw - 0.08, PANEL_H - 0.12), run.origin, run.yaw));
   }
+  add(mergeGeometries(panelBoards, false)!, panelOak, false).name = 'hearth-panelling';
+  add(mergeGeometries(panelTrim.map(g => g.index ? g.toNonIndexed() : g), false)!, trimOak, true).name = 'hearth-panel-trim';
+  panelBoards.forEach(g => g.dispose()); panelTrim.forEach(g => g.dispose());
 
   // --- Chimney breast: coursed rubble around a stone arch --------------------------
   const stones: THREE.BufferGeometry[] = [];
@@ -311,61 +337,133 @@ vec3 rugPalette(float i) {
     pageGeometries.push(place(new THREE.BoxGeometry(w * 0.96, h * 0.9, d * 0.97), x + Math.sin(ry) * 0.004, y, z + 0.004, 0, ry, rz));
   };
   book(0.42, 2.8, -3.2, 0.3, 0.04, 0.22, 0.12); book(0.45, 2.84, -3.19, 0.27, 0.035, 0.2, -0.05);
-  // Bookcase to the right of the breast, under the sconce's sibling wall.
-  const caseX = 2.95, caseZ = -3.78;
-  add(place(stoneBlock(1.5, 0.04, 0.38, 77, 0.05, 0.008), caseX, 1.1, caseZ), oak);
-  for (const yy of [0.04, 0.56]) add(place(stoneBlock(1.46, 0.035, 0.36, 78 + yy, 0.05, 0.008), caseX, yy, caseZ), oak);
-  for (const side of [-1, 1]) add(place(stoneBlock(0.04, 1.12, 0.38, 79 + side, 0.05, 0.008), caseX + side * 0.73, 0.56, caseZ), oak);
-  add(place(new THREE.PlaneGeometry(1.44, 1.08), caseX, 0.56, -3.97), oak, false);
-  for (const shelf of [0.06, 0.58]) {
-    let x = caseX - 0.69;
-    while (x < caseX + 0.66) {
-      const w = 0.025 + random() * 0.035, h = 0.3 + random() * 0.14, d = 0.2 + random() * 0.08;
-      if (random() < 0.08 && x < caseX + 0.4) { // a leaning book now and then
-        book(x + 0.09, shelf + 0.03 + h * 0.4, caseZ + 0.02, w, h, d, 0, -0.35); x += 0.2; continue;
-      }
-      book(x + w / 2, shelf + h / 2 + 0.018, caseZ + 0.02 + (random() - 0.5) * 0.02, w, h, d, Math.PI / 2 * 0 + (random() - 0.5) * 0.02);
-      x += w + 0.002;
-    }
-  }
   add(mergeGeometries(bookGeometries.map(g => { g.deleteAttribute('uv'); return g.index ? g.toNonIndexed() : g; }), false)!, bookCloth);
   add(mergeGeometries(pageGeometries.map(g => { g.deleteAttribute('uv'); return g.index ? g.toNonIndexed() : g; }), false)!, paper);
   bookGeometries.forEach(g => g.dispose()); pageGeometries.forEach(g => g.dispose());
-  // A glazed jug on the bookcase.
-  add(place(new THREE.LatheGeometry([[0, 0], [0.08, 0.004], [0.1, 0.06], [0.1, 0.16], [0.07, 0.24], [0.06, 0.28], [0.07, 0.3], [0.055, 0.3], [0.05, 0.27], [0.09, 0.17], [0.09, 0.06], [0, 0.05]].map(([r, h]) => new THREE.Vector2(r, h)), 40), caseX + 0.35, 1.12, caseZ), vaseGlaze);
-
-  // --- Log store at the left of the breast --------------------------------------
-  // Split and round billets: rings centred on each pith, bark on the round outside.
-  const splitWood = createWoodMaterial('#9a7a55', { key: 'hearth-splitwood', axis: 'z', localFrame: true, pith: [0, 0], bark: '#3b2d22', rings: 70, figure: 0.8, pores: 0.3, wear: 0, roughness: 0.9, bump: 1.4 });
-  const billets: THREE.BufferGeometry[] = [];
-  let row = 0;
-  for (let ly = 0.11; ly < 1.05; ly += 0.15, row++) {
-    for (let lx = -3.75 + (row % 2) * 0.07; lx < -2.15; lx += 0.15 + random() * 0.02) {
-      const r = 0.06 + random() * 0.025, len = 0.38 + random() * 0.06;
-      const wedge = random() < 0.6 ? Math.PI * (0.5 + random() * 0.6) : Math.PI * 2;
-      const shape = new THREE.Shape();
-      const a0 = random() * Math.PI * 2;
-      if (wedge < Math.PI * 2) shape.moveTo(0, 0);
-      for (let i = 0; i <= 18; i++) {
-        const a = a0 + wedge * i / 18; const rr = r * (1 + noise3(Math.cos(a) * 2, Math.sin(a) * 2, lx) * 0.06);
-        if (i === 0 && wedge >= Math.PI * 2) shape.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); else shape.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
-      }
-      shape.closePath();
-      const g = new THREE.ExtrudeGeometry(shape, { depth: len, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004, bevelSegments: 1, curveSegments: 18 });
-      g.translate(0, 0, -len / 2); g.deleteAttribute('uv');
-      g.computeVertexNormals();
-      withLocalFrame(g);
-      // Each billet's own pith offset keeps neighbouring end grains distinct.
-      const local = g.getAttribute('surfaceLocal');
-      for (let i = 0; i < local.count; i++) local.setZ(i, local.getZ(i) + row * 7.1 + lx * 3.3);
-      billets.push(place(g, lx + 0.075, ly + 0.07, -3.72 + (random() - 0.5) * 0.04, 0, (random() - 0.5) * 0.08, random() * 0.3));
-    }
+  // --- Built-in bookcase filling the right alcove, flush with the breast ---------------
+  const BC = { x0: BREAST.x1 + 0.02, x1: 4.13, back: -3.98, front: BREAST.front - 0.02, top: 3.76 };
+  const caseParts: THREE.BufferGeometry[] = [];
+  const caseBlock = (w: number, h: number, d: number, x: number, y: number, z: number, bevel = 0.004) => caseParts.push(place(roundedBlock(w, h, d, bevel, 0.12), x, y, z).toNonIndexed());
+  const caseDepth = BC.front - BC.back, caseCz = (BC.front + BC.back) / 2, caseW = BC.x1 - BC.x0, caseCx = (BC.x0 + BC.x1) / 2;
+  for (const x of [BC.x0 + 0.02, BC.x1 - 0.02]) caseBlock(0.04, BC.top, caseDepth, x, BC.top / 2, caseCz);
+  caseBlock(caseW, 0.05, caseDepth, caseCx, BC.top - 0.025, caseCz);
+  caseBlock(caseW, 0.1, 0.03, caseCx, 0.05, BC.front - 0.03);
+  caseBlock(caseW + 0.04, 0.045, caseDepth + 0.03, caseCx, 0.8, caseCz + 0.015, 0.008);
+  const shelfYs = [1.25, 1.7, 2.15, 2.6, 3.05];
+  for (const y of shelfYs) caseBlock(caseW - 0.08, 0.03, caseDepth - 0.04, caseCx, y, caseCz - 0.01, 0.006);
+  // Face frame and a deep top rail with a small cornice.
+  for (const x of [BC.x0 + 0.035, BC.x1 - 0.035]) caseBlock(0.07, BC.top, 0.03, x, BC.top / 2, BC.front);
+  caseBlock(caseW, 0.16, 0.03, caseCx, BC.top - 0.08, BC.front);
+  caseParts.push(onWall(straightMoulding(CORNICE_SMALL, caseW + 0.06, { down: true, caps: true }).translate(caseCx, BC.top, 0), new THREE.Vector3(0, 0, BC.front + 0.015), 0).toNonIndexed());
+  // Panelled cupboard doors below the counter.
+  for (let k = 0; k < 2; k++) {
+    const dx0 = BC.x0 + 0.08 + k * (caseW - 0.16) / 2, dx1 = dx0 + (caseW - 0.16) / 2 - 0.01;
+    caseBlock(dx1 - dx0, 0.66, 0.022, (dx0 + dx1) / 2, 0.44, BC.front - 0.01);
+    caseParts.push(onWall(frameMoulding(PANEL_MOULD, dx0 + 0.07, 0.18, dx1 - 0.07, 0.7), new THREE.Vector3(0, 0, BC.front + 0.001), 0).toNonIndexed());
   }
-  add(mergeGeometries(billets, false)!, splitWood).name = 'hearth-logstore';
-  billets.forEach(g => g.dispose());
-  // Low iron rack holding the stack.
-  for (const x of [-3.82, -2.08]) for (const z of [-3.92, -3.52]) add(place(new THREE.CylinderGeometry(0.012, 0.012, 1.1, 8), x, 0.55, z), iron);
-  for (const z of [-3.92, -3.52]) add(place(new THREE.CylinderGeometry(0.012, 0.012, 1.74, 8), -2.95, 0.06, z, 0, 0, Math.PI / 2), iron);
+  add(mergeGeometries(caseParts.map(g => { for (const name of Object.keys(g.attributes)) if (name !== 'position' && name !== 'normal') g.deleteAttribute(name); return g; }), false)!, oak).name = 'hearth-bookcase';
+  caseParts.forEach(g => g.dispose());
+  add(place(new THREE.PlaneGeometry(caseW - 0.06, BC.top - 0.85), caseCx, 0.82 + (BC.top - 0.85) / 2, BC.back + 0.005), createWoodMaterial('#3a281a', { key: 'hearth-case-back', axis: 'y', rings: 30, figure: 0.5, pores: 0.4, roughness: 0.7, planks: { width: 0.12, length: 4, bevel: 0.002, tone: 0.25 } }), false);
+  for (const x of [caseCx - 0.06, caseCx + 0.06]) add(place(new THREE.SphereGeometry(0.016, 12, 8), x, 0.6, BC.front + 0.012), brass, false);
+  const shelfRuns = [0.8 + 0.0225, ...shelfYs.map(y => y + 0.015)].map((y, i, all) => ({ x0: BC.x0 + 0.05, x1: BC.x1 - 0.05, y, front: BC.front - 0.025, clear: (i < all.length - 1 ? all[i + 1] - 0.015 : BC.top - 0.16) - y, depth: caseDepth - 0.06 }));
+  const books = fillShelves(shelfRuns, random, (run, x) => (run === 1 && x > 3.45 && x < 3.82) || (run === 3 && x > 2.02 && x < 2.32) || (run === 5 && x > 2.9 && x < 3.2));
+  add(books, createBookMaterial('hearth-shelves')).name = 'hearth-books';
+  add(place(new THREE.LatheGeometry([[0, 0], [0.08, 0.004], [0.1, 0.06], [0.1, 0.16], [0.07, 0.24], [0.06, 0.28], [0.07, 0.3], [0.055, 0.3], [0.05, 0.27], [0.09, 0.17], [0.09, 0.06], [0, 0.05]].map(([r, h]) => new THREE.Vector2(r, h)), 40), 3.62, shelfRuns[1].y, BC.front - 0.2), vaseGlaze);
+  const shelfPlant = trailingPlant(7, 7, 0.6, 1.35);
+  const potGlaze = createGlazeMaterial('#a2614a', { key: 'hearth-pot', pool: '#6c3a28', speckle: 0.6, scale: 6 });
+  const leafMaterial = createLeafMaterial('hearth-pothos', '#4c6b32', { veins: 6, gloss: 0.6 });
+  const potProfile = [[0, 0], [0.055, 0], [0.065, 0.02], [0.075, 0.11], [0.08, 0.125], [0.072, 0.128], [0.066, 0.115], [0, 0.11]].map(([r, h]) => new THREE.Vector2(r, h));
+  add(place(new THREE.LatheGeometry(potProfile, 32), 2.17, shelfRuns[3].y, BC.front - 0.16), potGlaze);
+  add(shelfPlant.leaves.clone().translate(2.17, shelfRuns[3].y, BC.front - 0.16), leafMaterial);
+  add(shelfPlant.stems.clone().translate(2.17, shelfRuns[3].y, BC.front - 0.16), dried, false);
+  shelfPlant.leaves.dispose(); shelfPlant.stems.dispose();
+  // A small framed print propped on the top shelf.
+  add(place(roundedBlock(0.22, 0.28, 0.02, 0.006), 3.05, shelfRuns[5].y + 0.14, BC.front - 0.12, -0.12), beam);
+  add(place(new THREE.PlaneGeometry(0.16, 0.22), 3.05, shelfRuns[5].y + 0.142, BC.front - 0.108, -0.12), paper, false);
+  // A brass picture light over the shelves.
+  add(place(new THREE.CylinderGeometry(0.022, 0.022, 0.9, 16), caseCx, BC.top - 0.2, BC.front + 0.13, 0, 0, Math.PI / 2), brass, false);
+  add(place(new THREE.CylinderGeometry(0.008, 0.008, 0.14, 8), caseCx, BC.top - 0.16, BC.front + 0.06, Math.PI / 2 - 0.5), brass, false);
+  const shelfLight = new THREE.SpotLight('#ffc98c', 2.4, 0, 0.75, 0.9, 2);
+  shelfLight.position.set(caseCx, BC.top - 0.36, BC.front + 0.24); shelfLight.target.position.set(caseCx, 0.9, BC.front - 0.25);
+  scene.add(shelfLight, shelfLight.target);
+
+  // --- Left alcove: a leather wingback angled to the fire, throw, side table, basket -----
+  const chair = wingbackChair();
+  const leather = createLeatherMaterial('hearth-wingback', '#6a3519');
+  const chairGroup = new THREE.Group(); chairGroup.position.set(-2.72, 0, -2.4); chairGroup.rotation.y = 1.0; scene.add(chairGroup);
+  for (const [g, m] of [[chair.leather, leather], [chair.wood, turned]] as const) { const mesh = new THREE.Mesh(g, m); mesh.castShadow = mesh.receiveShadow = true; chairGroup.add(mesh); }
+  const draped = armThrow(); draped.scale(-1, 1, 1);
+  const drapedMesh = new THREE.Mesh(draped, throwWool); drapedMesh.castShadow = drapedMesh.receiveShadow = true; chairGroup.add(drapedMesh);
+  const seatCushion = new THREE.Mesh(cushion(0.4, 0.13, 0.12, 0.35, 32, 13), velvet); seatCushion.position.set(0.05, 0.68, -0.18); seatCushion.rotation.set(-0.35, 0.1, 0.05); seatCushion.castShadow = seatCushion.receiveShadow = true; chairGroup.add(seatCushion);
+  // Side table at the chair's left hand with a cup, saucer and an open book.
+  const sideTable = new THREE.Group(); sideTable.position.set(-2.62, 0, -1.55); scene.add(sideTable);
+  const stTop = new THREE.Mesh(new THREE.LatheGeometry([[0, 0.56], [0.26, 0.56], [0.275, 0.57], [0.28, 0.585], [0.27, 0.6], [0, 0.6]].map(([r, h]) => new THREE.Vector2(r, h)), 48), turned);
+  stTop.castShadow = stTop.receiveShadow = true; sideTable.add(stTop);
+  const stPost = new THREE.Mesh(new THREE.LatheGeometry([[0.05, 0.03], [0.06, 0.08], [0.035, 0.2], [0.045, 0.35], [0.03, 0.48], [0.045, 0.56]].map(([r, h]) => new THREE.Vector2(r, h)), 20), turned); stPost.castShadow = true; sideTable.add(stPost);
+  for (let i = 0; i < 3; i++) { const a = i * Math.PI * 2 / 3; const foot = new THREE.Mesh(roundedBlock(0.05, 0.035, 0.26, 0.01), turned); foot.position.set(Math.sin(a) * 0.12, 0.03, Math.cos(a) * 0.12); foot.rotation.y = a; foot.castShadow = true; sideTable.add(foot); }
+  const stSaucer = new THREE.Mesh(new THREE.LatheGeometry([[0, 0], [0.1, 0], [0.125, 0.01], [0.135, 0.018], [0.13, 0.021], [0.105, 0.013], [0, 0.01]].map(([r, h]) => new THREE.Vector2(r, h)), 40), cupGlaze);
+  stSaucer.position.set(0.08, 0.6, 0.06); sideTable.add(stSaucer);
+  const stCup = new THREE.Mesh(new THREE.LatheGeometry([[0.055, 0], [0.065, 0.004], [0.075, 0.02], [0.08, 0.09], [0.083, 0.11], [0.079, 0.112], [0.074, 0.105], [0.071, 0.025], [0, 0.021]].map(([r, h]) => new THREE.Vector2(r, h)), 40), cupGlaze);
+  stCup.position.set(0.08, 0.61, 0.06); stCup.castShadow = true; sideTable.add(stCup);
+  const stHandle = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.009, 8, 20, Math.PI * 1.3), cupGlaze); stHandle.position.set(0.165, 0.67, 0.06); stHandle.rotation.z = -Math.PI * 0.62; sideTable.add(stHandle);
+  const stTea = new THREE.Mesh(new THREE.CircleGeometry(0.074, 32), new THREE.MeshPhysicalMaterial({ color: '#2c160b', roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.12 })); stTea.rotation.x = -Math.PI / 2; stTea.position.set(0.08, 0.705, 0.06); sideTable.add(stTea);
+  const openBook = new THREE.Group(); openBook.position.set(-0.07, 0.605, -0.08); openBook.rotation.y = 0.6; sideTable.add(openBook);
+  const pageMaterial = new THREE.MeshStandardMaterial({ color: '#e0d6bf', roughness: 0.9, side: THREE.DoubleSide });
+  for (const side of [-1, 1]) {
+    const leaf = new THREE.PlaneGeometry(0.14, 0.2, 10, 1); leaf.rotateX(-Math.PI / 2);
+    const lp = leaf.attributes.position; for (let i = 0; i < lp.count; i++) { const x = lp.getX(i) + 0.07; lp.setXYZ(i, side * x, 0.012 + Math.sin(x / 0.14 * Math.PI * 0.9) * 0.018 - x * 0.04, lp.getZ(i)); }
+    leaf.computeVertexNormals();
+    const pagesMesh = new THREE.Mesh(leaf, pageMaterial); pagesMesh.castShadow = true; openBook.add(pagesMesh);
+  }
+  const bookBoard = new THREE.Mesh(roundedBlock(0.3, 0.01, 0.21, 0.003), new THREE.MeshStandardMaterial({ color: '#4a2a22', roughness: 0.7 })); bookBoard.position.y = 0.005; openBook.add(bookBoard);
+  // Basket of split logs on the hearth's left flag.
+  const basket = logBasket(random);
+  const basketWeave = createFabricMaterial('#7d6545', { key: 'hearth-basket', weave: 'twill', threads: [46, 30], heather: 0.8, threadContrast: 0.9, fuzz: 0.4, depth: 0.004, roughness: 0.85 });
+  add(basket.basket.translate(-2.02, 0.12, -2.72), basketWeave);
+  add(basket.logs.translate(-2.02, 0.12, -2.72), createWoodMaterial('#9a7a55', { key: 'hearth-splitwood', axis: 'z', localFrame: true, pith: [0, 0], bark: '#3b2d22', rings: 70, figure: 0.8, pores: 0.3, wear: 0, roughness: 0.9, bump: 1.4 }));
+
+  // An oil landscape in a gilt frame over the wingback, lit from below by the sconce.
+  const gilt = patchSurface(new THREE.MeshStandardMaterial({ color: '#b08a4a', metalness: 1, roughness: 0.38 }), {
+    key: 'hearth-gilt', color: 'float gtN = bwFbm3(vSurfaceWorld * 22.0); diffuseColor.rgb *= 0.7 + 0.35 * gtN; diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.12, 0.08, 0.04), smoothstep(0.35, 0.6, gtN) * 0.35);',
+    roughness: 'roughnessFactor = clamp(roughnessFactor + 0.25 * gtN, 0.2, 1.0);',
+  });
+  const paint = { x: -3.0, y: 3.0, w: 1.12, h: 0.82 };
+  const paintOrigin = new THREE.Vector3(0, 0, -3.985);
+  add(onWall(frameMoulding(PICTURE_FRAME, paint.x - paint.w / 2, paint.y - paint.h / 2, paint.x + paint.w / 2, paint.y + paint.h / 2), paintOrigin, 0), gilt).name = 'hearth-painting-frame';
+  const canvasMaterial = patchSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.55 }), {
+    key: 'hearth-oil',
+    color: `
+vec2 cv = vSurfaceUv;
+// Dusk over a valley: warm sky, blue hills, a dark wood and a river catching the light; impasto strokes.
+float stroke = bwNoise(vec3(cv.x * 60.0, cv.y * 18.0, 2.0)) * 0.5 + bwNoise(vec3(cv * 140.0, 5.0)) * 0.25;
+vec3 skyTop = vec3(0.18, 0.19, 0.22), skyLow = vec3(0.6, 0.45, 0.28);
+vec3 c = mix(skyLow, skyTop, smoothstep(0.45, 1.0, cv.y + stroke * 0.04));
+float hillFar = 0.5 + 0.05 * sin(cv.x * 7.0 + 1.0) + 0.03 * bwNoise(vec3(cv * 6.0, 1.0));
+float hillNear = 0.38 + 0.08 * sin(cv.x * 4.0 - 0.6) + 0.04 * bwNoise(vec3(cv * 9.0, 3.0));
+c = mix(c, vec3(0.3, 0.3, 0.31), smoothstep(hillFar + 0.008, hillFar - 0.008, cv.y));
+c = mix(c, vec3(0.14, 0.12, 0.08), smoothstep(hillNear + 0.01, hillNear - 0.01, cv.y));
+float river = smoothstep(0.015, 0.0, abs(cv.y - 0.18 - 0.06 * sin(cv.x * 5.0)) - 0.004) * step(cv.y, 0.32);
+c = mix(c, vec3(0.55, 0.45, 0.32), river * 0.6);
+c *= 0.72;
+c *= 0.9 + 0.2 * stroke;
+// Old varnish: a warm, slightly darkened film, crazing in the corners.
+c = mix(c, c * vec3(0.95, 0.8, 0.55), 0.35);
+diffuseColor.rgb = c;`,
+    height: 'stroke * 0.0004',
+  });
+  add(onWall(new THREE.PlaneGeometry(paint.w - 0.1, paint.h - 0.1).translate(paint.x, paint.y, 0.014), paintOrigin, 0), canvasMaterial, false);
+
+  // --- Mantel: a clock, and a trailing plant spilling over the edge ---------------------
+  const clock = mantelClock();
+  const clockPos = new THREE.Vector3(-0.5, 2.78, -3.1);
+  add(clock.wood.translate(clockPos.x, clockPos.y, clockPos.z), createWoodMaterial('#4a2c1a', { key: 'hearth-clock', axis: 'x', rings: 40, figure: 0.8, pores: 0.4, varnish: 0.8, roughness: 0.35 }));
+  add(clock.bezel.translate(clockPos.x, clockPos.y, clockPos.z), brass, false);
+  add(clock.dial.translate(clockPos.x, clockPos.y, clockPos.z), createDialMaterial('hearth-clock', new THREE.Vector3(clockPos.x, clockPos.y + 0.17, 0)), false);
+  const mantelPlant = trailingPlant(19, 9, 0.85, 1.6);
+  const mpPos = new THREE.Vector3(0.78, 2.78, -3.02);
+  add(place(new THREE.LatheGeometry(potProfile, 32), mpPos.x, mpPos.y, mpPos.z), potGlaze);
+  add(mantelPlant.leaves.translate(mpPos.x, mpPos.y, mpPos.z), leafMaterial);
+  add(mantelPlant.stems.translate(mpPos.x, mpPos.y, mpPos.z), dried, false);
 
   // Fire tools on a stand to the right of the hearth.
   const toolsX = 2.05, toolsZ = -2.95;
@@ -441,7 +539,7 @@ vec3 rugPalette(float i) {
   saucer.position.set(-0.1, 0.655, -0.12); table.add(saucer);
   const cup = new THREE.Mesh(new THREE.LatheGeometry(cupProfile, 48), cupGlaze); cup.position.set(-0.1, 0.668, -0.12); cup.castShadow = true; table.add(cup);
   const handle = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.011, 10, 24, Math.PI * 1.3), cupGlaze); handle.position.set(0.005, 0.74, -0.12); handle.rotation.z = -Math.PI * 0.62; table.add(handle);
-  const tea = new THREE.Mesh(new THREE.CircleGeometry(0.093, 40), new THREE.MeshPhysicalMaterial({ color: '#2c160b', roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.02 }));
+  const tea = new THREE.Mesh(new THREE.CircleGeometry(0.093, 40), new THREE.MeshPhysicalMaterial({ color: '#2c160b', roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.12 }));
   tea.rotation.x = -Math.PI / 2; tea.position.set(-0.1, 0.785, -0.12); table.add(tea);
   const tableBook = new THREE.Mesh(stoneBlock(0.3, 0.04, 0.4, 909, 0.02, 0.006), bookCloth);
   colorize(tableBook.geometry, new THREE.Color('#3d4f46'));
@@ -463,11 +561,14 @@ vec3 rugPalette(float i) {
   scene.add(readingLamp, readingLamp.target);
   // The two candles throw a soft glow over the stone above the mantel.
   const candleLight = new THREE.PointLight('#ffb46b', 0.32, 3.2, 2); candleLight.position.set(1.18, 3.1, -3.02); scene.add(candleLight);
+  // A small unshadowed light dancing in the firebox mouth: moving warm shading on the hearth, chair and shelves.
+  const dance = new THREE.PointLight('#ff8a3a', 1.1, 9, 2); dance.position.set(0, 0.5, -2.85); scene.add(dance);
 
   batchStatic(scene);
 
   let response = 0;
   let probe: THREE.WebGLRenderTarget | null = null;
+  let volumeUniforms: Record<string, THREE.IUniform> | null = null;
   const fireOpening = { centre: new THREE.Vector3(0, 1.0, BREAST.front + 0.02), right: new THREE.Vector3(OPENING.rx, 0, 0), up: new THREE.Vector3(0, 1.0, 0) };
   return {
     scene, camera,
@@ -476,11 +577,13 @@ vec3 rugPalette(float i) {
       saturation: 1.04, contrast: 1.1, shadowTint: [0.86, 0.94, 1.1], highlightTint: [1.07, 1.0, 0.9], vignette: 0.55, grain: 0.03,
     },
     createVolume() {
-      return createRoomVolume({
+      const effect = createRoomVolume({
         haze: 0.035, dust: 0.7, anisotropy: 0.3, maxDistance: 10,
         glow: { position: fire.flameCentre.clone().add(new THREE.Vector3(0, 0.15, 0)), color: new THREE.Color(1.0, 0.5, 0.18).multiplyScalar(0.9), opening: fireOpening },
         ambient: new THREE.Color(0.004, 0.0035, 0.003),
       });
+      volumeUniforms = effect.uniforms;
+      return effect;
     },
     prepare(renderer) {
       // The room lights itself: capture its radiance once for reflections and bounce.
@@ -512,6 +615,9 @@ vec3 rugPalette(float i) {
     update(time, dt) {
       response = Math.max(0, response - dt * 0.28);
       const flicker = fire.update(time, response);
+      dance.position.set(Math.sin(time * 2.3) * 0.18 + Math.sin(time * 5.1) * 0.06, 0.45 + Math.sin(time * 3.7) * 0.06, -2.85 + Math.sin(time * 1.7) * 0.05);
+      dance.intensity = 1.1 * flicker * (0.85 + 0.15 * Math.sin(time * 6.3));
+      if (volumeUniforms) (volumeUniforms.uGlowColor.value as THREE.Color).setRGB(0.9, 0.45, 0.16).multiplyScalar(0.75 + 0.25 * flicker);
       floorBounce.intensity = 1.2 * flicker;
       ceilingBounce.intensity = 0.6 * (0.6 + 0.4 * flicker);
       flameMaterial.uniforms.uTime.value = time;

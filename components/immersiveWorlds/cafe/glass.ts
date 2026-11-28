@@ -21,8 +21,8 @@ import { VOLUME_PRELUDE, type VolumeEffect } from '../shared/render/hdrPipeline'
  *     glows where the table lamp lights it; Fresnel-weighted planar
  *     reflection of the warm room.
  *  3. `createCafeDepthVolume`: the HDR pipeline's volume hook. A gentle far
- *     field depth of field for the back of the room (patrons become soft
- *     silhouettes) and faint warm air light around the practical lamps.
+ *     field depth of field for the back of the room (far tables and the
+ *     counter go soft) and faint warm air light around the practical lamps.
  *
  * Everything outputs linear radiance. On the pipeline path the scene is
  * drawn into a half-float target, so three skips tone mapping and sRGB

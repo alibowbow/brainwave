@@ -4,7 +4,7 @@
 //   CAFE_QUALITY_QUERY=post=off   captures the direct (no HDR pipeline) path
 //   CAFE_QUALITY_QUERY=targets=byte  captures the forced byte-target fallback
 //   CAFE_QUALITY_ACTIVE=<frames>  runs the real animation loop for that many frames first
-//   CAFE_QUALITY_ADVANCE=<seconds> then moves scene time on (rain, steam, patrons) and draws
+//   CAFE_QUALITY_ADVANCE=<seconds> then moves scene time on (rain, steam) and draws
 //                                 one frame; SwiftShader is too slow for long real runs
 //   CAFE_PORT=4319                dev server port (several agents share the machine)
 // SwiftShader renders correctly but slowly; these images grade looks, not speed.

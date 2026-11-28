@@ -17,7 +17,7 @@ const TABLE_TOP = .775;
  * Camera and hero-prop placement; `portrait` blends 0 (wide) to 1 (tall phone).
  * A middle-ground view about three metres from the glass: the lit table in the
  * lower third, the rainy window with a mullion and its post, and the café
- * opening to the right with pendants, the counter and quiet patrons.
+ * opening to the right with pendants, the counter and empty tables.
  */
 export function cafeShot(portrait: number) {
   const l = T.MathUtils.lerp;
@@ -374,14 +374,7 @@ diffuseColor.rgb = mix(diffuseColor.rgb + chDust, vec3(0.86, 0.84, 0.78), clamp(
   pendant(3.0, -5.55, 2.12, true, 15);
   pendant(2.95, -7.15, 2.45, false, 6);
 
-  // ---------------------------------------------------------------- quiet patrons
-  const patronMaterials = {
-    coatA: physical({ color: '#2c3438', roughness: .92, sheen: .6, sheenColor: new T.Color('#6d7a80') }),
-    coatB: physical({ color: '#5b4436', roughness: .95, sheen: .7, sheenColor: new T.Color('#a08670') }),
-    knit: physical({ color: '#8c8170', roughness: .97, sheen: .8, sheenColor: new T.Color('#d2c6b1') }),
-    skin: physical({ color: '#9a7a62', roughness: .6, sheen: .3, sheenColor: new T.Color('#e0a88a') }),
-    hair: physical({ color: '#1d1714', roughness: .55, sheen: .5, sheenColor: new T.Color('#5a4a3c') }),
-  };
+  // ---------------------------------------------------------------- empty tables
   const chair = (x: number, z: number, angle: number) => {
     const c = new T.Group(); c.position.set(x, 0, z); c.rotation.y = angle; scene.add(c);
     slab(0, .45, 0, .44, .06, .42, m.velvet, .02, c);
@@ -389,51 +382,19 @@ diffuseColor.rgb = mix(diffuseColor.rgb + chDust, vec3(0.86, 0.84, 0.78), clamp(
     for (const a of [-.19, .19]) for (const b of [-.17, .17]) lathe([[0, 0], [.016, 0], [.019, .4], [.013, .42], [0, .42]], m.darkWoodV, 12, a, 0, b, c);
     return c;
   };
-  const person = (x: number, z: number, angle: number, variant: number, phase: number) => {
-    const seat = chair(x, z, angle);
-    const p = new T.Group(); p.position.y = .48; seat.add(p);
-    const cloth = variant ? patronMaterials.coatB : patronMaterials.coatA;
-    // Seated torso: a lathed, slightly forward-leaning coat silhouette with shoulders.
-    const torso = new T.Group(); torso.rotation.x = -.12; p.add(torso);
-    const tg = new T.LatheGeometry([[0, 0], [.16, 0], [.175, .06], [.165, .2], [.17, .32], [.19, .4], [.18, .45], [.12, .5], [.06, .52], [0, .52]].map(([r, h]) => new T.Vector2(r, h)), 48);
-    tg.scale(1, 1, .62);
-    mesh(tg, cloth, 0, 0, 0, torso);
-    const collar = mesh(new T.TorusGeometry(.065, .028, 12, 32), variant ? patronMaterials.knit : cloth, 0, .51, 0, torso); collar.rotation.x = Math.PI / 2; collar.scale.set(1, .8, 1);
-    const neck = cylinder(0, .55, -.01, .04, .045, .08, patronMaterials.skin, torso, 24);
-    neck.castShadow = false;
-    const head = new T.Group(); head.position.set(0, .64, -.015); torso.add(head);
-    const skull = ball(0, 0, 0, .095, patronMaterials.skin, head); skull.scale.set(.84, 1.06, .96);
-    const hairCap = mesh(new T.SphereGeometry(.101, 32, 20, 0, Math.PI * 2, 0, Math.PI * (variant ? .7 : .55)), patronMaterials.hair, 0, .008, .012, head); hairCap.scale.set(.86, 1.05, .98); hairCap.rotation.x = -.35;
-    if (variant) { const bun = ball(0, .06, .07, .042, patronMaterials.hair, head); bun.scale.set(1, .9, .9); }
-    ball(0, -.02, -.085, .014, patronMaterials.skin, head);
-    // Arms rest forward on the table: a sleeve from shoulder to wrist, hand cupped.
-    for (const side of [-1, 1]) {
-      tube([new T.Vector3(side * .16, .42, 0), new T.Vector3(side * .2, .28, -.06), new T.Vector3(side * .16, .2, -.2), new T.Vector3(side * .08, .23, -.34)], .045, cloth, torso, 20);
-      const hand = ball(side * .06, .235, -.36, .032, patronMaterials.skin, torso); hand.scale.set(1, .6, 1.3);
-    }
-    const lean = .05 + .04 * variant;
-    animated.push(time => {
-      // Breathing, a slow drift of attention: never synchronised, never toward the viewer.
-      const breath = Math.sin(time * (1.05 + .1 * variant) + phase);
-      torso.scale.set(1 + breath * .006, 1 + breath * .01, 1 + breath * .008);
-      head.rotation.y = .22 * Math.sin(time * .045 + phase) + .06 * Math.sin(time * .13 + phase * 2);
-      head.rotation.x = lean + .05 * Math.sin(time * .07 + phase * 1.7);
-    });
-    return seat;
-  };
-  const patronTable = (x: number, z: number) => {
+  const sideTable = (x: number, z: number) => {
     lathe([[0, 0], [.2, 0], [.21, .02], [.06, .05], [.03, .1], [.028, .68], [.06, .71], [0, .71]], m.darkWoodV, 32, x, 0, z);
     const topG = new T.CylinderGeometry(.42, .42, .035, 64); const t2 = mesh(topG, m.oak, x, .728, z);
     t2.castShadow = true;
     const contact = mesh(new T.PlaneGeometry(1.8, 1.8), contactMaterial, x, .004, z); contact.rotation.x = -Math.PI / 2; contact.castShadow = false;
   };
-  patronTable(1.6, -4.0);
-  person(2.18, -3.95, Math.PI / 2 + .18, 0, 0);
+  sideTable(1.6, -4.0);
+  chair(2.18, -3.95, Math.PI / 2 + .18);
   chair(1.03, -4.05, -Math.PI / 2 - .1);
   lathe([[0, 0], [.03, 0], [.04, .07], [.036, .08], [0, .08]], m.ceramic, 32, 1.53, .746, -3.95);
   slab(1.77, .75, -4.07, .2, .012, .26, paper, .003);
-  patronTable(3.0, -5.55);
-  person(3.55, -5.8, Math.PI / 2 + .55, 1, 2.3);
+  sideTable(3.0, -5.55);
+  chair(3.55, -5.8, Math.PI / 2 + .55);
   chair(2.5, -5.4, -Math.PI / 2 + .25);
   lathe([[0, 0], [.03, 0], [.04, .07], [.036, .08], [0, .08]], m.ceramic, 32, 2.91, .746, -5.53);
 

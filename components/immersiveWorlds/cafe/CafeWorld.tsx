@@ -28,7 +28,7 @@ export default function CafeWorld({active,onInteraction}:CafeWorldProps){
     const cancel=()=>{press=null;};el.addEventListener('pointerdown',down);window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',cancel);
     return()=>{el.removeEventListener('pointerdown',down);window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cancel);};
   },[motion,onInteraction]);
-  return <div ref={root} className="cafe-world" data-state={status} data-motion={motion?'running':'paused'} role="img" aria-label="비 오는 저녁, 따뜻한 조명과 커피가 있는 카페 창가. 멀리 손님들이 조용히 앉아 있습니다.">
+  return <div ref={root} className="cafe-world" data-state={status} data-motion={motion?'running':'paused'} role="img" aria-label="비 오는 저녁, 따뜻한 조명과 커피가 있는 조용한 카페 창가. 안쪽에는 아무도 없는 테이블과 펜던트 조명이 보입니다.">
     <div ref={mount} className="cafe-world-mount" />
     {status!=='ready'&&<span className="cafe-world-status" role="status">{status==='failed'?'이 기기에서 카페 3D 화면을 표시할 수 없습니다.':'카페 창가를 준비하고 있어요'}</span>}
   </div>;

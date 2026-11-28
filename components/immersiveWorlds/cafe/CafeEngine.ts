@@ -241,7 +241,7 @@ export class CafeEngine {
       window:find('window',new T.Vector3((s.cup.x+s.lamp.x)/2+.25,1.25,g.z)),
     };
   }
-  /** Paused harness-only: move scene time forward (rain, steam, patrons) and draw one frame. */
+  /** Paused harness-only: move scene time forward (rain, steam) and draw one frame. */
   advanceForQA(seconds:number){
     if(this.raf||!this.ready)throw new Error('Advancing time requires a ready paused scene');
     const step=Math.max(0,Math.min(600,seconds));this.time+=step;this.wipeAge+=step;this.renderFrame(0);

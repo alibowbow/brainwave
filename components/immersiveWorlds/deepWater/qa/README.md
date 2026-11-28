@@ -13,7 +13,7 @@ DEEP_WATER_PORT=4322 DEEP_WATER_SCENES=waterfall DEEP_WATER_TIMES=0,2,4 SCENE_BR
   DEEP_WATER_QA_OUTPUT=/tmp/waterfall node components/immersiveWorlds/deepWater/qa/capture-quality.mjs
 ```
 
-The waterfall before/after comparisons and a three-frame motion strip are in `evidence/hdr-upgrade/`.
+The waterfall, deep-sea and cave before/after comparisons (and motion strips) are in `evidence/hdr-upgrade/`. Each capture also logs the whole frame's draw calls and triangles.
 
 ## Bounded correction verification
 

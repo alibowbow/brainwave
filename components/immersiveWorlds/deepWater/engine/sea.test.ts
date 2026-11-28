@@ -22,6 +22,29 @@ describe('deep sea geometry and bounded organism interaction', () => {
     });
   });
 
+  it('keeps the fish schools far out in the blue at every moment', () => {
+    const world = createDeepSea({} as THREE.WebGLRenderer);
+    const schools: THREE.Object3D[] = [];
+    world.scene.traverse(object => { if (object.name === 'deep-sea-fish-school') schools.push(object); });
+    expect(schools.length).toBeGreaterThan(0);
+    for (let time = 0; time <= 900; time += 7) {
+      world.update(time, .05);
+      for (const school of schools) {
+        expect(school.position.z).toBeLessThan(-14);
+        expect(school.position.distanceTo(world.camera.position)).toBeGreaterThan(18);
+      }
+    }
+  });
+
+  it('roots reef life on the wall and near blocks in front of the observer', () => {
+    const world = createDeepSea({} as THREE.WebGLRenderer);
+    for (const name of ['deep-sea-reef-wall', 'deep-sea-kelp', 'deep-sea-fans', 'deep-sea-sponges', 'deep-sea-anemones', 'deep-sea-stars']) {
+      expect(world.scene.getObjectByName(name), name).toBeTruthy();
+    }
+    const anemones = world.scene.getObjectByName('deep-sea-anemones') as THREE.InstancedMesh;
+    expect(anemones.count).toBeGreaterThan(8);
+  });
+
   it('never approaches the observer when animated or touched; portrait retains a usable view', () => {
     const world = createDeepSea({} as THREE.WebGLRenderer);
     const organism = world.scene.getObjectByName('deep-sea-touch-organism')!;

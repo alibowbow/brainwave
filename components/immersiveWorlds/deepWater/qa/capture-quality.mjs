@@ -66,8 +66,11 @@ try {
       await page.screenshot({ path: file });
       const post = await page.evaluate(() => document.querySelector('canvas')?.dataset.post ?? null);
       const sceneTime = await page.evaluate(() => document.querySelector('canvas')?.dataset.time ?? null);
-      report.captures.push({ scene, viewport: name, width, height, time: sceneTime, post, file });
-      console.log(file, `t=${sceneTime}`, post);
+      // Whole captured frame: scene, any reflection pass and HDR passes; a first frame also
+      // includes shadow maps that later frames reuse.
+      const stats = await page.evaluate(() => { const d = document.querySelector('canvas')?.dataset; return d ? { calls: Number(d.calls), triangles: Number(d.triangles) } : null; });
+      report.captures.push({ scene, viewport: name, width, height, time: sceneTime, post, stats, file });
+      console.log(file, `t=${sceneTime}`, post, stats ? `calls=${stats.calls} triangles=${stats.triangles}` : '');
       await page.close();
     }
   }

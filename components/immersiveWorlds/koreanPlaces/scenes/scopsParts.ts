@@ -177,7 +177,16 @@ diffuseColor.rgb *= ground;`)
   normal = normalize(abs(det) * normal - grad);
 }`);
   };
-  plumage.customProgramCacheKey = () => 'kp-owl-plumage-v1';
+  const plumageCompile = plumage.onBeforeCompile;
+  plumage.onBeforeCompile = (shader, renderer) => {
+    plumageCompile.call(plumage, shader, renderer);
+    shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+{
+  float owlRim = pow(1.0 - abs(dot(normal, normalize(vViewPosition))), 3.0) * smoothstep(-0.1, 0.7, normal.y);
+  totalEmissiveRadiance += vec3(0.05, 0.06, 0.085) * owlRim;
+}`);
+  };
+  plumage.customProgramCacheKey = () => 'kp-owl-plumage-v2';
   const disc = new THREE.MeshStandardMaterial({ color: '#8a8070', roughness: .95 });
   disc.onBeforeCompile = shader => {
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vDisc;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvDisc = position;');

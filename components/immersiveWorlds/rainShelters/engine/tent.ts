@@ -11,6 +11,10 @@ import { assignProbe, captureProbe, captureSkyProbe, createMist, createSky } fro
 import { applyBark, applyFoliage, applyGround, patch } from './surfaces';
 import { boulderGeometry, fernFronds, leafletGeometry, limbGeometry, trunkGeometry } from './geometry';
 import { createLantern } from './props';
+import { buildTree, concatGeometries } from '../../shared/render/treeGeometry';
+import { type FoliageWind } from '../../shared/render/foliageShading';
+import { broadleafClusterTexture, fernFrondTexture } from '../../shared/render/foliageTextures';
+import { shrubGeometry, sprayGeometry, wetLeafMaterial, type SprayCard } from './wetFoliage';
 
 /*
  * Original procedural shelter: lying in a sleeping bag inside a wet tunnel
@@ -25,6 +29,10 @@ const ARCHES = [0, 0.43, 0.88];
 const ROOF_Z0 = -1.72, ROOF_LENGTH = 6.1;
 const GROUND_Y = -0.115;
 const EYE = new THREE.Vector3(0.05, 0.82, 1.7);
+/** The footpath's centre line beyond the door (x as a function of z), CPU and GPU. */
+const trailX = (z: number) => 0.35 * Math.sin(-z * 0.3) - (z + 2) * 0.06;
+const TRAIL_GLSL = '0.35 * sin(-z * 0.3) - (z + 2.0) * 0.06';
+const nearTrail = (x: number, z: number, margin = 0.7) => z < -1.8 && Math.abs(x - trailX(z)) < margin;
 
 function canopyPoint(u: number, v: number) {
   const a = u * Math.PI;
@@ -44,42 +52,60 @@ function canopyPoint(u: number, v: number) {
 }
 
 const FABRIC_GLSL = /* glsl */ `
-float fabricDrops(vec2 q, float t, out float core, out float trail) {
-  // Static beads, two sizes.
-  float beads = 0.0; core = 0.0; trail = 0.0;
-  for (int i = 0; i < 2; i++) {
-    float size = i == 0 ? 0.075 : 0.17;
+// q = (metres downhill from the ridge, metres across the slope).
+// Beads sitting on the outside of the fly, seen through it against the bright sky:
+// each casts a soft shadow wider than itself, and as a lens focuses a small bright
+// core just downhill of its centre. Sizes are uneven and they gather in clusters.
+void fabricBeads(vec2 q, out float shade, out float core) {
+  shade = 0.0; core = 0.0;
+  float cluster = smoothstep(-0.45, 0.5, bwNoise(vec3(q * 1.6, 7.0)) + 0.4 * bwNoise(vec3(q * 4.1, 2.0)));
+  for (int i = 0; i < 3; i++) {
+    float size = i == 0 ? 0.034 : i == 1 ? 0.066 : 0.13;
+    float density = i == 0 ? 0.5 : i == 1 ? 0.38 : 0.22;
     vec2 cell = floor(q / size);
-    vec3 h = bwHash3(vec3(cell, float(i) + 3.0));
+    vec3 h = bwHash3(vec3(cell, float(i) * 7.0 + 3.0));
+    float present = step(1.0 - density * (0.15 + 1.5 * cluster * cluster), h.z);
     vec2 c = (cell + 0.25 + 0.5 * h.xy) * size;
-    float r = size * (0.07 + 0.12 * h.z * h.z);
-    float d = length((q - c) * vec2(1.0, 0.8)) / r;
-    float present = step(0.74, h.z);
-    // Seen through the canvas a bead is a soft blotch with a faint focused core.
-    beads = max(beads, (1.0 - smoothstep(0.2, 1.7, d)) * present);
-    core = max(core, exp(-d * d * 16.0) * present);
+    float r = size * (0.08 + 0.2 * fract(h.z * 13.7 + h.x * 3.1));
+    vec2 d = q - c;
+    // Gravity sags each bead downhill into a teardrop.
+    d.x -= r * 0.2;
+    d.x *= d.x > 0.0 ? 0.72 : 1.15;
+    d.y *= 1.0 + 0.25 * (h.y - 0.5);
+    float dist = length(d) / r;
+    float weight = 0.55 + 0.25 * float(i);
+    shade = max(shade, (1.0 - smoothstep(0.15, 2.6, dist)) * present * weight);
+    core = max(core, exp(-pow(length(d - vec2(r * 0.3, 0.0)) / r, 2.0) * 9.0) * present * (i == 0 ? 0.3 : 0.8));
   }
-  // Drops that slowly slide downhill, leaving a darker wet trail.
-  vec2 lane = vec2(q.y / 0.16, 0.0);
-  float laneId = floor(lane.x);
-  vec3 h = bwHash3(vec3(laneId, 17.0, 1.0));
-  float x = (laneId + 0.25 + 0.5 * h.x) * 0.16;
-  float head = fract(t * (0.012 + 0.02 * h.y) + h.z) * 3.2;
-  float dx = abs(q.y - x - 0.004 * sin(q.x * 37.0 + h.x * 9.0));
-  float along = q.x - head;
-  float slider = (1.0 - smoothstep(0.004, 0.008, length(vec2(dx, along * 0.7)))) * step(0.35, h.y);
-  trail = (1.0 - smoothstep(0.0015, 0.003, dx)) * smoothstep(-0.6, 0.0, along) * (1.0 - step(0.0, along)) * step(0.35, h.y);
-  beads = max(beads, slider);
-  return beads;
 }
+// A few drops slide slowly down the slope on meandering paths, leaving a dark wet trail.
+float fabricRuns(vec2 q, float t, out float trail) {
+  float laneW = 0.34;
+  float laneId = floor(q.y / laneW);
+  vec3 h = bwHash3(vec3(laneId, 17.0, 1.0));
+  float onLane = step(0.45, h.y);
+  float span = 3.2;
+  float head = fract(t * (0.008 + 0.016 * h.z) / span + h.x) * span;
+  float path = (laneId + 0.3 + 0.4 * h.x) * laneW + 0.035 * sin(q.x * 7.0 + h.z * 6.0) + 0.025 * bwNoise(vec3(q.x * 2.6, laneId, 4.0));
+  float dx = abs(q.y - path);
+  float along = q.x - head;
+  float drop = (1.0 - smoothstep(0.006, 0.013, length(vec2(dx, along * 0.5)))) * onLane;
+  float behind = 1.0 - step(0.0, along);
+  // The wet track is wider than the drop and dries out (fades) a little way behind it.
+  trail = (1.0 - smoothstep(0.006, 0.02, dx)) * behind * onLane * (0.2 + 0.8 * smoothstep(-0.6, 0.0, along));
+  return drop;
+}
+// Fresh impacts: a brief dark flick and ring where a raindrop lands, somewhere new each time.
 float fabricImpacts(vec2 q, float t) {
-  vec2 cell = floor(q / 0.085);
+  vec2 cell = floor(q / 0.12);
   vec3 h = bwHash3(vec3(cell, 29.0));
-  float age = fract(t * (0.7 + 0.8 * h.z) + h.x * 7.0);
-  vec2 c = (cell + 0.2 + 0.6 * h.xy) * 0.085;
+  float cycle = t * (0.5 + 0.8 * h.z) + h.x * 7.0;
+  float age = fract(cycle);
+  vec3 g = bwHash3(vec3(cell, floor(cycle) + 40.0));
+  vec2 c = (cell + 0.15 + 0.7 * g.xy) * 0.12;
   float d = length(q - c);
-  float ring = exp(-pow((d - age * 0.018) / 0.003, 2.0));
-  return ring * (1.0 - smoothstep(0.0, 0.3, age)) * step(0.3, h.z);
+  float ring = exp(-pow((d - age * 0.016) / 0.0035, 2.0));
+  return ring * (1.0 - smoothstep(0.0, 0.22, age)) * step(0.45, g.z);
 }
 `;
 
@@ -146,10 +172,15 @@ float fw = max(fwidth(threads.x), fwidth(threads.y));
 float weave = mix(0.5, 0.5 + 0.5 * sin(threads.x * 6.2832) * sin(threads.y * 6.2832), 1.0 - smoothstep(0.2, 0.55, fw));
 vec2 grid = abs(fract(dropQ * 16.0) - 0.5);
 float ripstop = (1.0 - smoothstep(0.0, 0.03, min(grid.x, grid.y))) * (1.0 - smoothstep(0.02, 0.06, fwidth(dropQ.x * 16.0)));
-float core, trail;
-float beads = fabricDrops(dropQ, uTime, core, trail);
+float beadShade, core, trail;
+fabricBeads(dropQ, beadShade, core);
+float runner = fabricRuns(dropQ, uTime, trail);
+float beads = max(beadShade, runner);
+core = max(core, runner * 0.8);
 float impacts = fabricImpacts(dropQ, uTime);
-float soak = smoothstep(0.55, 0.15, fabricOut.y) * 0.5 + trail * 0.6;
+// Soaked patches: the cloth darkens unevenly, most on the lower walls and along seams.
+float patches = smoothstep(0.05, 0.6, bwFbm3(vec3(dropQ * vec2(0.9, 0.7), 5.0)) * 0.5 + 0.5 + 0.35 * smoothstep(0.55, 0.0, fabricOut.y) - 0.25);
+float soak = clamp(patches * 0.75 + smoothstep(0.55, 0.15, fabricOut.y) * 0.25 + trail * 0.8 + sleeve * 0.3, 0.0, 1.0);
 vec3 outside = mix(uGroundOutside, uSkyOutside, pow(smoothstep(-0.7, 1.0, fabricOut.y), 1.8));
 // The wet canopy overhead shades the fly in soft, uneven patches.
 // Evaluated along the cloth (not projected from above, which smeared into bands on
@@ -157,9 +188,10 @@ vec3 outside = mix(uGroundOutside, uSkyOutside, pow(smoothstep(-0.7, 1.0, fabric
 float dapple = bwFbm3(vec3(dropQ * 1.1, 2.0)) + 0.5 * bwFbm3(vec3(dropQ * 0.3, 8.0));
 outside *= mix(1.0, 0.5 + 0.65 * smoothstep(-0.75, 0.75, dapple), smoothstep(0.1, 0.7, fabricOut.y));
 float transmit = uTransmit * (0.86 + 0.14 * weave) * (1.0 - 0.06 * ripstop) * (1.0 - 0.82 * sleeve) * (1.0 - 0.45 * hem) * (1.0 - 0.5 * ridge);
-transmit *= (1.0 - 0.22 * beads) * (1.0 - 0.22 * soak) * (1.0 - 0.25 * impacts);
-transmit += uTransmit * 0.3 * core * (1.0 - sleeve);
-diffuseColor.rgb *= (0.9 + 0.1 * weave) * (1.0 - 0.25 * sleeve) * (1.0 - 0.12 * soak);
+transmit *= (1.0 - 0.46 * beads) * (1.0 - 0.32 * soak) * (1.0 - 0.3 * impacts);
+transmit += uTransmit * 0.26 * core * (1.0 - sleeve);
+diffuseColor.rgb *= (0.9 + 0.1 * weave) * (1.0 - 0.25 * sleeve) * (1.0 - 0.14 * soak);
+diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.92, 0.9, 0.84), soak);
 // Fine tension wrinkles, stretched along the panel, catch the lantern light.
 fabricWrinkle = bwNoise(vec3(dropQ.x * 3.0, dropQ.y * 11.0, 4.0)) * 0.6 + bwNoise(vec3(dropQ.x * 9.0 + dropQ.y * 4.0, dropQ.y * 20.0, 9.0)) * 0.25;
 transmit *= 1.0 + 0.12 * fabricWrinkle;
@@ -175,7 +207,7 @@ totalEmissiveRadiance += outside * transmit * diffuseColor.rgb;
   normal = normalize(abs(det) * normal - sign(det) * (dh.x * r1 + dh.y * r2));
 }`);
   };
-  material.customProgramCacheKey = () => `tent-fabric-${kind}-v2`;
+  material.customProgramCacheKey = () => `tent-fabric-${kind}-v3`;
   return material;
 }
 
@@ -207,13 +239,15 @@ export const buildTent: WorldBuilder = ({ scene, camera }) => {
   // ---- Sky and light ----------------------------------------------------------
   const glowDirection = new THREE.Vector3(-0.35, 0.55, -0.75).normalize();
   const sky = createSky({
-    time, zenith: new THREE.Color(2.3, 2.5, 2.6), horizon: new THREE.Color(1.3, 1.45, 1.5),
-    cloudDark: new THREE.Color(1.05, 1.15, 1.2), cloudLight: new THREE.Color(2.1, 2.25, 2.3),
+    // Under the cedars the day is dim: the sky the wood sees is a darker overcast than the
+    // canvas, which carries its own transmitted daylight (outsideSky below).
+    time, zenith: new THREE.Color(1.6, 1.75, 1.82), horizon: new THREE.Color(0.9, 1.0, 1.05),
+    cloudDark: new THREE.Color(0.72, 0.8, 0.84), cloudLight: new THREE.Color(1.45, 1.55, 1.6),
     glowDirection, glow: new THREE.Color(0.7, 0.66, 0.58), ground: new THREE.Color(0.1, 0.12, 0.09), coverage: 0.85, scale: 0.8, drift: 0.012,
   });
   scene.add(sky.mesh);
   // Overcast daylight: a broad soft key from the bright part of the sky.
-  const key = new THREE.DirectionalLight('#e3ecec', 1.25);
+  const key = new THREE.DirectionalLight('#e3ecec', 0.95);
   key.name = 'tent-overcast-key';
   key.position.set(-5, 13, -11); key.target.position.set(0, 0, -6);
   key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
@@ -419,7 +453,24 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
   terrainGeometry.computeVertexNormals();
   const soil = applyWetSurface(applyGround(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92 }), {
     key: 'tent-forest', soil: '#3b3326', litter: ['#4a2e17', '#6e4d26'], litterAmount: 0.6, moss: '#405a28', mossAmount: 0.45,
-  }), { key: 'tent-forest', time, wetness: 0.85, darkening: 0.62, wetRoughness: 0.46, puddles: 0.32, puddleSize: 1.2, ripples: 1, rippleDensity: 8 });
+  }), { key: 'tent-forest', time, wetness: 0.85, darkening: 0.62, wetRoughness: 0.46, puddles: 0.32, puddleSize: 1.2, ripples: 0.5, rippleDensity: 5 });
+  // A muddy footpath leaves the door and winds off between the trunks, its hollows
+  // brimming with rain that mirrors the pale gaps in the canopy.
+  soil.onBeforeCompile = ((previous) => (shader: THREE.WebGLProgramParametersWithUniforms, renderer: THREE.WebGLRenderer) => {
+    previous(shader, renderer);
+    shader.fragmentShader = shader.fragmentShader
+      .replace(/void\s+main\s*\(\s*\)\s*\{/, () => `float trailPool = 0.0;\nfloat trailX(float z) { return ${TRAIL_GLSL}; }\nvoid main() {`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+{
+  vec3 tp = vWetWorld;
+  float off = abs(tp.x - trailX(tp.z) + 0.08 * bwNoise(vec3(tp.xz * 1.3, 3.0)));
+  float trail = (1.0 - smoothstep(0.32, 0.62, off)) * smoothstep(-1.7, -2.2, tp.z);
+  vec3 mud = vec3(0.13, 0.1, 0.075) * (0.8 + 0.35 * (bwNoise(vec3(tp.xz * 4.0, 1.0)) * 0.5 + 0.5));
+  diffuseColor.rgb = mix(diffuseColor.rgb, mud, trail * 0.9);
+  trailPool = trail * smoothstep(0.42, 0.7, bwNoise(vec3(tp.x * 1.6, 2.0, tp.z * 0.7)) * 0.5 + 0.5 + 0.1);
+}`)
+      .replace('roughnessFactor = mix(roughnessFactor, 0.025, wetPuddle);', 'wetPuddle = max(wetPuddle, trailPool);\ndiffuseColor.rgb *= mix(1.0, 0.6, trailPool);\nroughnessFactor = mix(roughnessFactor, 0.06, wetPuddle);');
+  })(soil.onBeforeCompile);
   const terrain = mesh(terrainGeometry, soil, outside); terrain.receiveShadow = true; terrain.name = 'tent-forest-floor';
 
   // Cedars: buttressed, bending trunks merged into one draw with world-space bark.
@@ -427,17 +478,11 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
     key: 'tent-cedar', plate: '#6e4c36', crevice: '#160f0b', lichen: '#7f8c78', lichenAmount: 0.12, moss: '#3e5a24', mossHeight: 1.3, scale: 7,
   }), { key: 'tent-bark', time, wetness: 0.75, darkening: 0.6, wetRoughness: 0.3, streaks: 0.6 });
   const woody: THREE.BufferGeometry[] = [];
-  const leafMatrices: THREE.Matrix4[] = [], leafColors: THREE.Color[] = [];
   const dummy = new THREE.Object3D();
-  const sprayLeaf = (position: THREE.Vector3, direction: THREE.Vector3, size: number) => {
-    dummy.position.copy(position);
-    dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
-    dummy.rotateY(random() * Math.PI * 2);
-    dummy.scale.set(size * 0.8, size, size);
-    dummy.updateMatrix(); leafMatrices.push(dummy.matrix.clone());
-    leafColors.push(new THREE.Color().setHSL(0.24 + random() * 0.07, 0.32 + random() * 0.18, 0.18 + random() * 0.1, THREE.SRGBColorSpace));
-  };
-  const treeSpots: [number, number][] = [[-3.1, -5.5], [3.7, -7.2], [-1.7, -10], [1.4, -12], [-0.45, -20], [-5.2, -8.4], [5.8, -11.5], [0.4, -15.6]];
+  // Cedar foliage hangs in flat feathery sprays: cut-out cards along each living branch.
+  const sprays: SprayCard[] = [];
+  const forestWind: FoliageWind = { time, mode: 'attribute', sway: 0.12, flutter: 0.012, direction: [0.7, 0.3], speed: 0.5 };
+  const treeSpots: [number, number][] = [[-3.1, -5.5], [3.7, -7.2], [-1.7, -10], [1.4, -12], [-0.45, -20], [-5.2, -8.4], [5.8, -11.5], [1.6, -15.6]];
   for (let i = 0; i < 46; i++) {
     let [x, z] = treeSpots[i] ?? [(random() - 0.5) * 40, -6 - random() * 30];
     if (i >= treeSpots.length && Math.abs(x) < 2.2 && z > -9) x += Math.sign(x || 1) * 3;
@@ -453,11 +498,11 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
       const mid = start.clone().lerp(end, 0.5).add(new THREE.Vector3(0, 0.18, 0));
       woody.push(limbGeometry([start, mid, end], r * 0.16, 0.012, 5, 6));
       if (b < 2) continue;
-      for (let l = 0; l < 34; l++) {
-        const f = 0.25 + random() * 0.8;
-        const p = start.clone().lerp(end, f).add(new THREE.Vector3((random() - 0.5) * 0.7, (random() - 0.65) * 0.5, (random() - 0.5) * 0.7));
-        const droop = new THREE.Vector3(Math.cos(a) * 0.6 + (random() - 0.5), -0.35 - random() * 0.6, Math.sin(a) * 0.6 + (random() - 0.5));
-        sprayLeaf(p, droop, 0.26 + random() * 0.3);
+      for (let l = 0; l < 7; l++) {
+        const f = 0.2 + (l + random()) / 7 * 0.8;
+        const p = start.clone().lerp(end, f).add(new THREE.Vector3(0, 0.12 * f, 0));
+        const out = new THREE.Vector3(Math.cos(a) * 0.7 + (random() - 0.5) * 0.9, 0.05 + random() * 0.25, Math.sin(a) * 0.7 + (random() - 0.5) * 0.9);
+        sprays.push({ base: p, along: out, length: 0.7 + random() * 0.6, width: 0.32 + random() * 0.14, droop: 0.25 + random() * 0.25, shade: 0.55 + 0.45 * f, sway: 0.5 + random() * 0.5, phase: i + b * 0.7 });
       }
     }
   }
@@ -473,7 +518,7 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
   const fernMatrices: THREE.Matrix4[] = [];
   for (let f = 0; f < 34; f++) {
     const x = (random() - 0.5) * 14, z = -2.6 - random() * 13;
-    if (Math.abs(x) < 0.7 && z > -5) continue;
+    if ((Math.abs(x) < 0.7 && z > -5) || nearTrail(x, z, 1.0)) continue;
     fernFronds(new THREE.Vector3(x, terrainHeight(x, z), z), 0.65 + random() * 0.6, 7 + Math.floor(random() * 4), random, fernStems, fernMatrices);
   }
   const stemMaterial = new THREE.MeshStandardMaterial({ color: '#3f5428', roughness: 0.7 });
@@ -483,10 +528,38 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
   const leafMaterial = applyWetSurface(applyFoliage(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.42, side: THREE.DoubleSide }), {
     key: 'tent-leaf', translucency: new THREE.Color(0.55, 0.85, 0.3), strength: 0.9,
   }), { key: 'tent-leaf', time, wetness: 0.6, darkening: 0.85, wetRoughness: 0.22 });
-  const leafGeometry = leafletGeometry(5, 0.3, 0.07);
-  const canopyLeaves = new THREE.InstancedMesh(leafGeometry, leafMaterial, leafMatrices.length);
-  leafMatrices.forEach((m, i) => { canopyLeaves.setMatrixAt(i, m); canopyLeaves.setColorAt(i, leafColors[i]); });
-  canopyLeaves.castShadow = true; canopyLeaves.receiveShadow = true; outside.add(canopyLeaves);
+  const sprayAtlas = fernFrondTexture({ seed: 23, palette: { base: '#2a4724', light: '#43683a', dark: '#152a16', stem: '#3a3020' } });
+  const sprayMaterial = wetLeafMaterial({ key: 'tent-cedar-spray', map: sprayAtlas, wind: forestWind, roughness: 0.5, film: 0.35, translucency: { tint: '#b4d08a', back: 0.2, forward: 0.3 } });
+  const canopyLeaves = mesh(sprayGeometry(sprays), sprayMaterial, outside);
+  canopyLeaves.castShadow = true; canopyLeaves.receiveShadow = true; canopyLeaves.name = 'tent-cedar-sprays';
+  // Understory: vine maples and dogwood saplings reaching for the light, and low salal mounds.
+  const understoryAtlas = broadleafClusterTexture({ seed: 61, palette: { base: '#3a6428', light: '#5c8c3a', dark: '#1e3a15', stem: '#3a3122' }, round: 0.5, leafScale: 1.0, density: 1.3 });
+  const salalAtlas = broadleafClusterTexture({ seed: 67, palette: { base: '#2c4c22', light: '#44692e', dark: '#162a12', stem: '#2c281c' }, round: 0.7, leafScale: 0.7, density: 1.8 });
+  disposables.push(sprayAtlas, understoryAtlas, salalAtlas);
+  const understoryMaterial = wetLeafMaterial({ key: 'tent-understory', map: understoryAtlas, wind: forestWind, roughness: 0.55, film: 0.14, translucency: { tint: '#cfe89a', back: 0.3, forward: 0.22 } });
+  const salalMaterial = wetLeafMaterial({ key: 'tent-salal', map: salalAtlas, wind: forestWind, roughness: 0.38, film: 0.5 });
+  const saplingSpots: [number, number, number][] = [[-2.4, -4.6, 3.2], [2.1, -5.4, 3.8], [-1.2, -8.5, 4.4], [3.4, -9.6, 4.0], [-3.9, -11.5, 5.0], [1.7, -12.8, 4.6], [-5.6, -7.2, 3.6], [5.4, -6.4, 3.4], [-0.9, -16.5, 5.2], [2.6, -18.5, 5.5]];
+  const saplings = saplingSpots.map(([x, z, h], i) => buildTree({
+    seed: 400 + i * 11, base: new THREE.Vector3(x, terrainHeight(x, z) - 0.05, z), height: h, radius: 0.045 + h * 0.008, form: 'broadleaf',
+    lean: [(random() - 0.5) * 0.8, (random() - 0.5) * 0.6], gnarl: 0.6, flare: 0.2, crownStart: 0.25, limbs: 5, levels: 1, children: 3,
+    spread: 0.5, curl: 0.05, radial: 6, ringsPerMetre: 1, displace: 0, barkScale: 4, barkStretch: 3, flex: 0.8,
+    leaves: { cardsPerTwig: 7, size: 0.75, reach: 0.75, crownNormals: 0.6, shade: [0.35, 1], fill: 0.25, skyward: 0.6 },
+  }));
+  const saplingBark = mesh(concatGeometries(saplings.map(t => t.bark)), barkMaterial, outside);
+  saplingBark.castShadow = true; saplingBark.receiveShadow = true;
+  const understory = mesh(concatGeometries(saplings.map(t => t.leaves).filter((g): g is THREE.BufferGeometry => !!g)), understoryMaterial, outside);
+  understory.castShadow = true; understory.receiveShadow = true; understory.name = 'tent-understory';
+  saplings.forEach(t => { t.bark.dispose(); t.leaves?.dispose(); });
+  const salalParts: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < 26; i++) {
+    const x = (random() - 0.5) * 16, z = -2.8 - random() * 14;
+    if ((Math.abs(x) < 1.1 && z > -6) || nearTrail(x, z, 1.0)) continue;
+    const s = 0.35 + random() * 0.5;
+    salalParts.push(shrubGeometry(i + 90, new THREE.Vector3(x, terrainHeight(x, z) + s * 0.3, z), new THREE.Vector3(s * 1.3, s * 0.7, s), Math.round(80 * s + 20), 0.38));
+  }
+  const salal = mesh(concatGeometries(salalParts), salalMaterial, outside);
+  salal.castShadow = true; salal.receiveShadow = true; salal.name = 'tent-salal';
+  salalParts.forEach(g => g.dispose());
   const fernLeaves = new THREE.InstancedMesh(leafletGeometry(4, 0.22, 0.05), leafMaterial, fernMatrices.length);
   const fernColor = new THREE.Color();
   fernMatrices.forEach((m, i) => { fernLeaves.setMatrixAt(i, m); fernLeaves.setColorAt(i, fernColor.setHSL(0.21 + random() * 0.06, 0.42 + random() * 0.2, 0.22 + random() * 0.1, THREE.SRGBColorSpace)); });
@@ -507,9 +580,11 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
     }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); g.setIndex(indices); g.computeVertexNormals(); return g;
   })();
+  // Sedge tufts crowd the path's edges and thin out across the floor.
   const tufts = new THREE.InstancedMesh(bladeGeometry, leafMaterial, 260);
   for (let i = 0; i < 260; i++) {
-    const x = (random() - 0.5) * (2 + i / 260 * 12), z = -1.95 - Math.pow(random(), 1.3) * 11;
+    let x = (random() - 0.5) * (2 + i / 260 * 12); const z = -1.95 - Math.pow(random(), 1.3) * 11;
+    if (nearTrail(x, z, 0.45)) x += x < trailX(z) ? -0.5 : 0.5;
     dummy.position.set(x, terrainHeight(x, z), z); dummy.rotation.set(0, random() * 6.28, 0); dummy.scale.setScalar(0.7 + random() * 0.9); dummy.updateMatrix();
     tufts.setMatrixAt(i, dummy.matrix); tufts.setColorAt(i, fernColor.setHSL(0.15 + random() * 0.08, 0.25 + random() * 0.15, 0.14 + random() * 0.1, THREE.SRGBColorSpace));
   }
@@ -520,7 +595,7 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
   const stones: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 34; i++) {
     const x = (random() - 0.5) * 16, z = -2.3 - random() * 16;
-    if (Math.abs(x) < 0.9 && z > -3.2) continue;
+    if ((Math.abs(x) < 0.9 && z > -3.2) || nearTrail(x, z)) continue;
     const s = 0.08 + Math.pow(random(), 2) * 0.55;
     const g = boulderGeometry(i * 3 + 7, s > 0.3 ? 5 : 3);
     g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, terrainHeight(x, z) + s * 0.18, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, random() * 6.28, 0)), new THREE.Vector3(s * (1.2 + random()), s * 0.55, s)));
@@ -544,9 +619,10 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
   // ---- Rain ----------------------------------------------------------------------
   const rainSky = new THREE.Color(1.15, 1.25, 1.3);
   const rainLayers = [
-    createRainLayer({ time, count: 1600, min: new THREE.Vector3(-3.2, GROUND_Y - 0.1, -5), max: new THREE.Vector3(3.2, 4.2, -2.3), speed: 7.2, width: 0.0019, shutter: 0.032, radiance: rainSky, opacity: 0.6, boost: 1.7, seed: 1, wind: new THREE.Vector2(0.06, 0.02), nearFade: 0.8 }),
-    createRainLayer({ time, count: 5200, min: new THREE.Vector3(-9, GROUND_Y - 0.1, -14), max: new THREE.Vector3(9, 8, -5), speed: 7.6, width: 0.0016, shutter: 0.03, radiance: rainSky, opacity: 0.55, boost: 1.3, seed: 2, wind: new THREE.Vector2(0.06, 0.02) }),
-    createRainLayer({ time, count: 9000, min: new THREE.Vector3(-24, GROUND_Y - 0.1, -42), max: new THREE.Vector3(24, 16, -14), speed: 8, width: 0.0015, shutter: 0.03, radiance: rainSky, opacity: 0.5, boost: 1, seed: 3, wind: new THREE.Vector2(0.06, 0.02) }),
+    // Rain reads against the dark trunks and understory; against bright mist it all but vanishes.
+    createRainLayer({ time, count: 1400, min: new THREE.Vector3(-3.2, GROUND_Y - 0.1, -5), max: new THREE.Vector3(3.2, 4.2, -2.3), speed: 7.2, width: 0.0019, shutter: 0.032, radiance: rainSky, opacity: 0.42, boost: 1.1, seed: 1, wind: new THREE.Vector2(0.06, 0.02), nearFade: 0.8, variation: 1, occlusion: 0.9 }),
+    createRainLayer({ time, count: 5600, min: new THREE.Vector3(-9, GROUND_Y - 0.1, -14), max: new THREE.Vector3(9, 8, -5), speed: 7.6, width: 0.0016, shutter: 0.03, radiance: rainSky, opacity: 0.5, boost: 1.1, seed: 2, wind: new THREE.Vector2(0.06, 0.02), variation: 1, occlusion: 0.9, gusts: 0.4, gustScale: 6, gustDrift: new THREE.Vector2(0.5, 0.1) }),
+    createRainLayer({ time, count: 9000, min: new THREE.Vector3(-24, GROUND_Y - 0.1, -42), max: new THREE.Vector3(24, 16, -14), speed: 8, width: 0.0015, shutter: 0.03, radiance: rainSky, opacity: 0.45, boost: 1, seed: 3, wind: new THREE.Vector2(0.06, 0.02), variation: 1, occlusion: 0.85, gusts: 0.6, gustScale: 9, gustDrift: new THREE.Vector2(0.6, 0.1) }),
   ];
   // Drips off the door hood: they fall from rest and accelerate.
   const drips = createRainLayer({ time, count: 42, gravity: true, dripPause: 2.2, min: new THREE.Vector3(-1.62, GROUND_Y, LIP_Z - 0.03), max: new THREE.Vector3(1.62, 1.88, LIP_Z + 0.02), sag: 0.82, width: 0.003, shutter: 0.02, radiance: new THREE.Color(1.6, 1.7, 1.75), opacity: 0.9, boost: 1.5, seed: 9 });
@@ -573,8 +649,8 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.55, 0.42, 0.3
       saturation: 1.0, contrast: 1.1, shadowTint: [0.99, 0.97, 0.97], highlightTint: [1.02, 1.0, 0.97], vignette: 0.5, grain: 0.03,
     },
     createVolume: () => createMist({
-      skyLight: new THREE.Color(0.66, 0.75, 0.74), glowLight: new THREE.Color(0.12, 0.12, 0.11), glowDirection,
-      density: 0.03, heightFalloff: 0.18, groundY: GROUND_Y,
+      skyLight: new THREE.Color(0.31, 0.37, 0.35), glowLight: new THREE.Color(0.07, 0.07, 0.06), glowDirection,
+      density: 0.036, heightFalloff: 0.18, groundY: GROUND_Y,
       shelter: { normal: new THREE.Vector3(0, 0, -1), offset: 2.0, softness: 1.6 },
       maxDistance: 80, curtains: 0.7, curtainScale: 8, wind: new THREE.Vector2(0.25, 0.05),
     }),

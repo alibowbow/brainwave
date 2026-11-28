@@ -36,6 +36,12 @@ export interface SkyOptions {
   glowPower?: number;
   /** Width of the thin-to-thick cloud transition; small values give crisper cloud forms. */
   softness?: number;
+  /**
+   * A heavy, low storm deck instead of the layered overcast: billowed rolls and
+   * lumps whose flanks are lit from the bright clearing, dark cores, ragged scud
+   * below, a far bright band crossed by rain shafts (needs `storm`).
+   */
+  heavy?: boolean;
 }
 
 const SKY_FRAGMENT = /* glsl */ `
@@ -49,6 +55,67 @@ float layer(vec2 p, float t) {
   vec3 warp = vec3(bwFbm3(q * 0.7 + 3.1), bwFbm3(q * 0.7 + 9.7), 0.0);
   return bwFbm5(q + warp * 0.9) * 0.5 + 0.5;
 }
+#ifdef SKY_HEAVY
+// Rounded lumps: |noise| fBm has soft crowns and sharp creases, like a cloud base from below.
+float hsBillow(vec3 p) {
+  float s = 0.0, a = 0.5;
+  for (int i = 0; i < 4; i++) { s += a * abs(bwNoise(p)); p = BW_ROT * p * 2.07; a *= 0.5; }
+  return s;
+}
+// How far the deck hangs down at q: long rolls lying across the wind, lumpy underneath.
+float hsDeck(vec2 q, float t) {
+  vec2 r = vec2(q.x * 0.42 + 0.35 * q.y, q.y * 1.1);
+  float rolls = bwFbm3(vec3(r * 0.32, t * 0.04 + 1.7)) * 0.5 + 0.5;
+  float lumps = hsBillow(vec3(q * 0.35 + vec2(t * 0.6, 0.0), t * 0.06));
+  return rolls * 0.8 + lumps * 1.0;
+}
+vec3 heavySky(vec3 d, float glow, float t) {
+  float up = d.y;
+  float h = max(up, 0.0);
+  float az = atan(d.x, -d.z);
+  float el = asin(clamp(up, -1.0, 1.0));
+  float sunAz = atan(uGlowDir.x, -uGlowDir.z);
+  float towardSun = pow(max(cos(az - sunAz), 0.0), 2.0);
+  // The leading edge of the storm deck: a lumpy shelf whose underside sits a few
+  // degrees above the horizon, lower where the storm is heaviest.
+  float edge = 0.165 + 0.05 * bwFbm3(vec3(az * 1.4 + t * 0.4, 1.0, 3.0)) + 0.018 * (hsBillow(vec3(az * 7.0 + t * 1.2, 2.0, t * 0.1)) - 0.25);
+  float inDeck = smoothstep(edge - 0.006, edge + 0.01, el);
+  // Seen from below at a low angle the deck is a stack of rounded tiers: billows
+  // squashed vertically, their undersides lit by the bright clearing beneath.
+  vec3 bq = vec3(az * 1.5 + t * 0.9, el * 6.5, t * 0.05);
+  float b0 = hsBillow(bq);
+  float bBelow = hsBillow(bq - vec3(0.0, 0.09, 0.0));
+  float underLit = clamp((b0 - bBelow) * 5.0, 0.0, 1.0) * exp(-max(el - edge, 0.0) * 7.0);
+  float tiers = 0.5 + 0.5 * sin((el - edge) * 160.0 + 2.0 * bwNoise(vec3(az * 2.5, el * 8.0, t * 0.2)));
+  float shelfBand = exp(-max(el - edge, 0.0) * 14.0);
+  vec3 deck = uCloudDark * (0.7 + 0.45 * b0);
+  deck += mix(uCloudLight * 0.45, uGlow * 0.5, 0.4 + 0.4 * towardSun) * (underLit * 0.75 + tiers * shelfBand * 0.15);
+  // Higher up, the deck overhead in plane projection: dark rolls, slowly turning.
+  vec2 q = d.xz / (h + 0.045) * uScale + vec2(t, t * 0.25);
+  float rolls = hsDeck(q, t);
+  float over = smoothstep(edge + 0.05, edge + 0.35, el);
+  deck = mix(deck, uCloudDark * (0.55 + 0.45 * rolls) + uCloudLight * 0.05 * (1.0 - smoothstep(0.4, 0.9, rolls)), over * 0.9);
+  // Ragged scud drifting fast under the shelf.
+  float scudMask = smoothstep(0.58, 0.8, bwFbm3(vec3(az * 6.0 - t * 2.4, el * 30.0, t * 0.3)) * 0.5 + 0.5)
+    * smoothstep(edge - 0.05, edge - 0.01, el) * (1.0 - smoothstep(edge + 0.02, edge + 0.07, el));
+  // Under the edge: a bright clearing far away, distant towers standing in it, and
+  // grey rain shafts slanting down from the shelf to the horizon.
+  float towerTop = 0.04 + 0.07 * smoothstep(0.1, 0.7, bwFbm3(vec3(az * 2.2, 5.0, 1.0)) * 0.5 + 0.5) + 0.012 * hsBillow(vec3(az * 14.0, 6.0, 0.0));
+  float tower = 1.0 - smoothstep(towerTop - 0.006, towerTop + 0.004, el);
+  float towerLit = clamp(0.35 + 1.4 * (towerTop - el) * 10.0 * towardSun, 0.0, 1.0);
+  vec3 clearing = mix(uHorizon * 1.1, uGlow * 1.25, 0.25 + 0.55 * towardSun) * (0.85 + 0.25 * smoothstep(0.0, edge, el));
+  vec3 towers = mix(uHorizon * 0.75, uCloudLight * 1.1 + uGlow * 0.3 * towardSun, towerLit);
+  clearing = mix(clearing, towers, tower * 0.85);
+  float shaft = smoothstep(0.2, 0.65, bwNoise(vec3(az * 7.0 + el * 9.0, 2.0, t * 0.3)) * 0.5 + 0.5)
+    * (0.6 + 0.4 * (bwNoise(vec3(az * 60.0 + el * 70.0, 5.0, t)) * 0.5 + 0.5));
+  clearing = mix(clearing, mix(uHorizon * 0.8, uCloudDark * 1.5, 0.5), shaft * 0.75 * smoothstep(0.0, edge, el + 0.02));
+  vec3 sky = mix(clearing, deck, inDeck);
+  sky = mix(sky, uCloudDark * 0.55 + uHorizon * 0.06, scudMask * 0.85);
+  // A thin luminous rim where the clearing meets the shelf.
+  sky += uGlow * 0.35 * towardSun * exp(-pow((el - edge) / 0.006, 2.0));
+  return sky;
+}
+#endif
 void main() {
   vec3 d = normalize(vDir);
   float up = d.y;
@@ -56,8 +123,11 @@ void main() {
   // CIE-overcast-like gradient: the zenith is about three times the horizon.
   vec3 sky = mix(uHorizon, uZenith, pow(h, 0.6));
   float glow = pow(max(dot(d, uGlowDir), 0.0), uGlowPower);
-  vec2 p = d.xz / (h + 0.13) * uScale;
   float t = uTime * uDrift;
+#ifdef SKY_HEAVY
+  sky = heavySky(d, glow, t);
+#else
+  vec2 p = d.xz / (h + 0.13) * uScale;
   float body = layer(p * 0.45 + vec2(t, t * 0.3), t * 0.1);
   float detail = bwFbm3(vec3(p * 2.1 + vec2(t * 1.6, 0.0), 7.0 + t * 0.2)) * 0.5 + 0.5;
   float thickness = smoothstep(1.0 - uCoverage, 1.0 - uCoverage + uSoftness, body * 0.82 + detail * 0.25);
@@ -112,6 +182,7 @@ void main() {
     sky = mix(sky, heapColor, heapBody * 0.92);
   }
 #endif
+#endif
   sky = mix(uGround, sky, smoothstep(-0.04, 0.0, up));
   gl_FragColor = vec4(sky, 1.0);
   #include <tonemapping_fragment>
@@ -120,7 +191,7 @@ void main() {
 
 export function createSky(options: SkyOptions) {
   const material = new THREE.ShaderMaterial({
-    defines: options.storm ? { SKY_STORM: '' } : {},
+    defines: { ...(options.storm ? { SKY_STORM: '' } : {}), ...(options.heavy ? { SKY_HEAVY: '' } : {}) },
     uniforms: {
       uTime: options.time, uZenith: { value: options.zenith }, uHorizon: { value: options.horizon },
       uCloudDark: { value: options.cloudDark }, uCloudLight: { value: options.cloudLight },

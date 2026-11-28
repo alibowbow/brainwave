@@ -5,7 +5,7 @@ import GardenWindowWorld from '../GardenWindowWorld';
 import MonsoonPorchWorld from '../MonsoonPorchWorld';
 import SummerStormWorld from '../SummerStormWorld';
 import type { ShelterInteraction, WorldKind } from '../engine/types';
-import { setShelterDirectRendering, setShelterQaResolutionScale } from '../engine/ShelterEngine';
+import { setShelterDirectRendering, setShelterQaResolutionScale, setShelterQaStartTime } from '../engine/ShelterEngine';
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './harness.css';
 
@@ -17,6 +17,8 @@ const world: WorldKind = selected && selected in worlds ? selected as WorldKind 
 if (query.get('post') === 'off') setShelterDirectRendering(true);
 // Behaviour runs under software WebGL can draw at reduced resolution (`qaScale=0.3`).
 if (query.get('qaScale')) setShelterQaResolutionScale(Number(query.get('qaScale')));
+// Captures at a chosen scene time (`t=12.5` seconds).
+if (query.get('t')) setShelterQaStartTime(Number(query.get('t')));
 
 function Harness() {
   const [active, setActive] = useState(query.get('paused') !== '1');

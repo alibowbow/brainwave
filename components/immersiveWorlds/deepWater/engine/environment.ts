@@ -103,9 +103,19 @@ const clearWaterFragment = `uniform vec3 color;uniform vec3 deepColor;uniform sa
     #include <colorspace_fragment>
   }`;
 
+/** A world-specific clear-water fragment shader with its extra uniforms. It
+ * receives every standard pool uniform and the `reflectionCoord`/`poolWorld`
+ * varyings; worlds without it keep the shared clear-water shading. */
+export interface PoolSurface {
+  fragmentShader: string;
+  uniforms: Record<string, THREE.IUniform>;
+}
+
 export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, options: {
   width: number; depth: number; y: number; color?: string; position?: [number, number, number]; distortion?: number;
   clear?: ClearWaterOptions;
+  /** Requires `clear`. */
+  surface?: PoolSurface;
 }) {
   const rippleStates = Array.from({ length: 4 }, () => new THREE.Vector4(0, 0, -100, 0));
   const clear = options.clear;
@@ -118,10 +128,11 @@ export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, o
       glowCentre: { value: new THREE.Vector3(clear?.glow?.x ?? 0, clear?.glow?.z ?? 0, clear?.glow?.radius ?? 1) },
       lightDirection: { value: (clear?.lightDirection ?? new THREE.Vector3(0, 1, 0)).clone().normalize() },
       glint: { value: clear?.glint ?? 0 },
+      ...(clear && options.surface ? options.surface.uniforms : {}),
     },
     vertexShader: `uniform mat4 textureMatrix;varying vec4 reflectionCoord;varying vec3 poolWorld;
       void main(){poolWorld=(modelMatrix*vec4(position,1.)).xyz;reflectionCoord=textureMatrix*vec4(position,1.);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader: clear ? clearWaterFragment : `uniform vec3 color;uniform sampler2D tDiffuse;uniform float time;uniform float rippleClock;uniform vec4 rings[4];uniform float rippleStrength;varying vec4 reflectionCoord;varying vec3 poolWorld;
+    fragmentShader: clear ? options.surface?.fragmentShader ?? clearWaterFragment : `uniform vec3 color;uniform sampler2D tDiffuse;uniform float time;uniform float rippleClock;uniform vec4 rings[4];uniform float rippleStrength;varying vec4 reflectionCoord;varying vec3 poolWorld;
       void main(){
         vec2 p=poolWorld.xz;
         vec2 slope=vec2(cos(p.x*2.1+p.y*.72+time*.42)*.025+cos(p.x*5.3-p.y*3.1-time*.3)*.009,sin(p.y*2.8+p.x*.56-time*.27)*.022);
@@ -159,6 +170,9 @@ export function createPool(_renderer: THREE.WebGLRenderer, scene: THREE.Scene, o
   mesh.position.set(...(options.position ?? [0, options.y, 0]));
   mesh.position.y = options.y;
   const material = mesh.material as THREE.ShaderMaterial;
+  // Reflector clones its uniforms; relink a surface's own so shared clocks and
+  // textures stay single objects (and are disposed once, with the scene).
+  if (clear && options.surface) Object.assign(material.uniforms, options.surface.uniforms);
   // Clear water is an opaque surface: it writes depth so screen-space passes
   // (occlusion, light shafts) stop at the water instead of the submerged bed.
   material.transparent = !clear;

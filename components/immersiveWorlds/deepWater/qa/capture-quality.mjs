@@ -5,7 +5,11 @@
 //   DEEP_WATER_QA_OUTPUT=/tmp/dw/after node components/immersiveWorlds/deepWater/qa/capture-quality.mjs
 // DEEP_WATER_ACTIVE=<frames> runs the animation instead and captures after that
 // many frames, to check time-driven shading (caustics, mist, dust) in motion.
-// SwiftShader renders correctly but slowly; these images grade looks, not speed.
+// DEEP_WATER_TIMES=0,2,4 instead renders the first static frame at each of those
+// scene times (seconds), one image per time, so motion can be compared exactly.
+// DEEP_WATER_PORT picks the preview port (default 4198) when several sessions
+// share a machine. SwiftShader renders correctly but slowly; these images grade
+// looks, not speed.
 import { build, preview } from 'vite';
 import { chromium } from 'playwright-core';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -16,6 +20,11 @@ const output = path.resolve(process.env.DEEP_WATER_QA_OUTPUT || 'artifacts/deep-
 const scenes = (process.env.DEEP_WATER_SCENES || 'cave,sea,waterfall').split(',').filter(Boolean);
 const activeFrames = Number(process.env.DEEP_WATER_ACTIVE || 0);
 const query = (process.env.DEEP_WATER_QUERY ? `&${process.env.DEEP_WATER_QUERY}` : '') + (activeFrames ? '&active=1' : '');
+const times = (process.env.DEEP_WATER_TIMES || '').split(',').filter(Boolean).map(Number);
+if (times.some(time => !Number.isFinite(time) || time < 0)) throw new Error('DEEP_WATER_TIMES must list non-negative seconds.');
+const port = Number(process.env.DEEP_WATER_PORT || 4198);
+if (!Number.isInteger(port) || port <= 0) throw new Error('DEEP_WATER_PORT must be a port number.');
+const timeout = Number(process.env.DEEP_WATER_TIMEOUT || 180000);
 const viewports = [
   ['desktop', 1280, 800],
   ['portrait', 390, 844],
@@ -23,8 +32,8 @@ const viewports = [
 
 await mkdir(output, { recursive: true });
 if (!process.env.DEEP_WATER_SKIP_BUILD) await build({ configFile: config, logLevel: 'warn' });
-const server = await preview({ configFile: config });
-const base = 'http://127.0.0.1:4198';
+const server = await preview({ configFile: config, preview: { host: '127.0.0.1', port, strictPort: true } });
+const base = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch({
   executablePath: process.env.SCENE_BROWSER_PATH || undefined,
   headless: true,
@@ -33,15 +42,15 @@ const browser = await chromium.launch({
 const report = { query: process.env.DEEP_WATER_QUERY || '', captures: [], errors: [] };
 try {
   for (const scene of scenes) {
-    for (const [name, width, height] of viewports) {
+    for (const [name, width, height] of viewports) for (const time of times.length ? times : [null]) {
       const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
-      page.setDefaultTimeout(180000);
+      page.setDefaultTimeout(timeout);
       page.on('pageerror', error => report.errors.push(`${scene}/${name}: ${error.message}`));
       page.on('console', message => {
         // The harness has no favicon; that request is not a scene failure.
         if (message.type() === 'error' && !/favicon|status of 404/.test(message.text())) report.errors.push(`${scene}/${name}: ${message.text()}`);
       });
-      await page.goto(`${base}/?scene=${scene}${query}&hdr=force`);
+      await page.goto(`${base}/?scene=${scene}${query}${time === null ? '' : `&t=${time}`}&hdr=force`);
       await page.waitForSelector('.deepwater-world[data-state="ready"]');
       await page.waitForFunction(({ width, height, frames }) => {
         const canvas = document.querySelector('canvas');
@@ -53,11 +62,12 @@ try {
         await page.waitForFunction(() => document.querySelector('canvas')?.dataset.running === 'false');
       }
       await page.evaluate(() => window.__deepWaterQA.waitGPUIdle());
-      const file = path.join(output, `${scene}-${name}.png`);
+      const file = path.join(output, `${scene}-${name}${time === null ? '' : `-t${time}`}.png`);
       await page.screenshot({ path: file });
       const post = await page.evaluate(() => document.querySelector('canvas')?.dataset.post ?? null);
-      report.captures.push({ scene, viewport: name, width, height, post, file });
-      console.log(file, post);
+      const sceneTime = await page.evaluate(() => document.querySelector('canvas')?.dataset.time ?? null);
+      report.captures.push({ scene, viewport: name, width, height, time: sceneTime, post, file });
+      console.log(file, `t=${sceneTime}`, post);
       await page.close();
     }
   }

@@ -534,7 +534,11 @@ void main() {
   return {
     scene, camera, resize,
     post: {
-      exposure: .98, bloomStrength: .2, bloomThreshold: 0, aoStrength: .7, aoRadius: .45,
+      // No screen-space AO here: light passes through these membranes, so occlusion is weak,
+      // and on the thin overhead petals seen at grazing angles the shared AO's depth-aware
+      // blur keeps only horizontal neighbours, leaving its per-pixel rotation noise as fine
+      // horizontal stripes. Skipping the pass also saves two half-resolution passes.
+      exposure: .98, bloomStrength: .2, bloomThreshold: 0, aoStrength: 0, aoRadius: .3,
       saturation: .97, contrast: 1.1, shadowTint: [1.05, .88, .95], highlightTint: [1.05, 1.0, .9], vignette: .5, grain: .02,
     },
     prepare(renderer) {

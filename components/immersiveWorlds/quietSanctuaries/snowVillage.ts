@@ -58,7 +58,7 @@ export const buildSnowVillage: SanctuaryBuilder = () => {
     glow: { color: '#6a7a92', direction: moonDir, intensity: 0.05, width: 1.6, height: 0.35 },
     airglow: 0.0,
     moon: { direction: moonDir, intensity: 22, radius: 0.014, halo: 2.0, color: '#f4f1ea' },
-    stars: { count: 2600, seed: 4411, intensity: 0.55, galacticFraction: 0.2 },
+    stars: { count: 2600, seed: 4411, intensity: 0.55, galacticFraction: 0.2, twinkle: 0.5 },
   });
   scene.add(sky.group);
   // One cold, motivated key. Shadows are static and rendered once.

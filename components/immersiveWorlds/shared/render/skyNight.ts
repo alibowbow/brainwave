@@ -25,7 +25,8 @@ export interface NightSkyOptions {
   airglow?: number;
   moon?: { direction: THREE.Vector3; color?: THREE.ColorRepresentation; intensity: number; radius?: number; halo?: number; sunDirection?: THREE.Vector3 };
   galaxy?: { pole: THREE.Vector3; centre: THREE.Vector3; intensity: number };
-  stars?: { count: number; seed: number; intensity: number; galacticFraction?: number };
+  /** `twinkle` adds visible scintillation (0 keeps the faint default; about 0.6 reads clearly on a phone). */
+  stars?: { count: number; seed: number; intensity: number; galacticFraction?: number; twinkle?: number };
   /** Bends star positions across a fire's hot column. */
   heat?: HeatShimmer;
 }
@@ -136,6 +137,7 @@ const starVertex = (heat: boolean) => /* glsl */ `
 uniform float uTime;
 uniform float uStarIntensity;
 uniform float uPixelRatio;
+uniform float uTwinkle;
 attribute vec4 star;
 varying vec3 vColor;
 ${heat ? GLSL_HEAT_SHIMMER : ''}
@@ -149,13 +151,24 @@ void main() {
   // Atmospheric extinction and stronger scintillation toward the horizon.
   float horizon = smoothstep(-0.01, 0.22, dir.y);
   float twinkle = 1.0 + (0.12 + 0.3 * (1.0 - horizon)) * sin(uTime * (1.1 + star.w * 2.3) + star.w * 61.0) * sin(uTime * (0.37 + star.w) + star.w * 17.0);
+  // Scintillation: three incommensurate rates per star, so no two stars and no
+  // two moments line up. Bright stars shimmer most; it is a soft flicker, never a flash.
+  float seed = star.w * 6.2831853;
+  float flicker = 0.5 * sin(uTime * (2.1 + star.z * 2.7) + seed * 9.0)
+                + 0.3 * sin(uTime * (3.9 + star.w * 3.3) + seed * 4.0)
+                + 0.2 * sin(uTime * (0.9 + star.y * 1.3) + seed * 13.0);
+  float weight = uTwinkle * (0.55 + 0.45 * (1.0 - horizon)) * smoothstep(0.15, 1.2, star.x);
+  twinkle = max(0.12, twinkle + weight * flicker);
   float brightness = star.x * uStarIntensity * horizon * twinkle;
   vColor = mix(vec3(0.62, 0.74, 1.0), vec3(1.0, 0.78, 0.55), star.y) * mix(1.0, 0.85, star.z);
   vColor *= brightness;
   float size = clamp(1.25 + sqrt(star.x) * 0.9, 1.25, 4.2);
-  gl_PointSize = size * uPixelRatio;
   // Keep total flux roughly independent of the sprite size.
   vColor *= 2.2 / (size * size);
+  // With scintillation on, bright stars also swell and shrink a little, which
+  // the eye reads as sparkle even when the star is only a few pixels wide.
+  float swell = 1.0 + uTwinkle * smoothstep(0.6, 3.0, star.x) * (0.55 + 0.45 * clamp(twinkle - 1.0, -1.0, 1.0));
+  gl_PointSize = size * max(swell, 0.6) * uPixelRatio;
   if (brightness <= 0.0) gl_PointSize = 0.0;
 }
 `;
@@ -211,7 +224,7 @@ export function createNightSky(options: NightSkyOptions) {
   dome.name = 'Sky dome';
   group.add(dome);
 
-  const starUniforms = { uTime: { value: 0 }, uStarIntensity: { value: options.stars?.intensity ?? 1 }, uPixelRatio: { value: 1 }, ...(options.heat?.uniforms ?? {}) };
+  const starUniforms = { uTime: { value: 0 }, uStarIntensity: { value: options.stars?.intensity ?? 1 }, uPixelRatio: { value: 1 }, uTwinkle: { value: options.stars?.twinkle ?? 0 }, ...(options.heat?.uniforms ?? {}) };
   let stars: THREE.Points | null = null;
   if (options.stars && options.stars.count > 0) {
     const random = mulberry(options.stars.seed);

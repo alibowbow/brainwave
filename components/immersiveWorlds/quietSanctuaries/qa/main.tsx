@@ -5,10 +5,11 @@ import MeditationCourtWorld from '../MeditationCourtWorld';
 import WarmHeartWorld from '../WarmHeartWorld';
 import SnowVillageWorld from '../SnowVillageWorld';
 import type { SanctuaryBuilder, SanctuaryInteraction, SanctuaryKind, SanctuaryProps } from '../worldTypes';
-import { preferDirectSanctuaryRendering, SanctuaryHost } from '../SanctuaryEngine';
+import { preferDirectSanctuaryRendering, SanctuaryHost, setSanctuaryQaStartTime } from '../SanctuaryEngine';
 import SanctuaryView from '../SanctuaryView';
 import { createMeditationCourtBuilder } from '../meditation';
 import { captureRendererState, checkMeditationTarget, restoreRendererState, type TargetDiagnostics } from '../meditationTargets';
+import { setMosiQaStartTime } from '../../mosi/MosiEngine';
 
 // This QA-only builder chooses real byte allocations without replacing any GL API.
 // The fixture also exercises restoration from a complete non-default cube face/mip.
@@ -67,6 +68,8 @@ const worlds = {
 const query = new URLSearchParams(location.search);
 // post=off renders warm heart and snow village through the previous direct path for comparisons.
 if (query.get('post') === 'off') preferDirectSanctuaryRendering(true);
+// t=<seconds> starts the scene clock later, so captures can compare moments without long animated runs.
+if (query.get('t')) { setSanctuaryQaStartTime(Number(query.get('t'))); setMosiQaStartTime(Number(query.get('t'))); }
 const requested = query.get('world');
 const kind: SanctuaryKind = requested && requested in worlds ? requested as SanctuaryKind : 'meditation';
 const targetMode = kind === 'meditation' && query.get('targets') === 'byte' ? 'force-byte' : 'auto';

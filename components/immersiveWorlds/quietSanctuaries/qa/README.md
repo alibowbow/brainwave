@@ -11,9 +11,10 @@ SANCTUARY_CAPTURE_OUTPUT=/tmp/claude-0/quietSanctuaries-captures/after node comp
 SANCTUARY_CAPTURE_QUERY=post=off …   # the direct renderer, for comparisons
 SANCTUARY_CAPTURE_ACTIVE=90 …        # animated frames: snow falls, the warm space breathes
 SANCTUARY_CAPTURE_TAP=.5,.6 …        # tap before an animated capture
+SANCTUARY_CAPTURE_QUERY=t=8 …        # start the scene clock at 8 s (compare moments without long animated runs)
 ```
 
-`?post=off` in the harness URL calls `preferDirectSanctuaryRendering(true)`. Any page, console or shader error fails the capture run. Before/after evidence is committed under `evidence/hdr-upgrade/` (`<world>-compare-desktop.jpg` and `<world>-compare-portrait.jpg`: the previous renderer beside the HDR upgrade, both initially inactive first frames; `<world>-active-portrait.jpg`: that first frame beside a frame after 30 animated frames and a real tap); the older `evidence/` and `compat-evidence/` files are historical and unchanged. SwiftShader images grade appearance only; no device frame rate was measured.
+`?post=off` in the harness URL calls `preferDirectSanctuaryRendering(true)`; `?t=<seconds>` starts the scene clock later (`setSanctuaryQaStartTime`, and `setMosiQaStartTime` for the meditation world). The harness has no public directory, so the capture script answers `/immersive-worlds/**` from the repository's `public/` (run `node scripts/prepare-mosi-assets.mjs` first for the meditation world's GLB and renders); without them the meditation world reports its honest failed state. Any page, console or shader error fails the capture run. Before/after evidence is committed under `evidence/hdr-upgrade/` (`<world>-compare-desktop.jpg` and `<world>-compare-portrait.jpg`: the original pre-HDR renderer beside the current scene, both initially inactive first frames; `meditation-compare-*.jpg`: the meditation world before its motion layer, first frame, beside the current one at `t=8`; `<world>-active-portrait.jpg`: the current first frame beside a frame after 30 animated frames and a real tap); the older `evidence/` and `compat-evidence/` files are historical and unchanged. SwiftShader images grade appearance only; no device frame rate was measured.
 
 ## Render-target compatibility verifier
 

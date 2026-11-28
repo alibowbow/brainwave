@@ -114,3 +114,64 @@ export function pebbleGeometry(seed: number, detail: number, flatness = .3) {
   relax(geometry, 2, .3);
   return normaliseToUnitBox(geometry);
 }
+
+export type BeachStoneShape = 'egg' | 'disc' | 'blade' | 'round' | 'angular';
+
+/**
+ * Beach shingle: water-worn pebbles in the classic Zingg shape families
+ * (disc, blade, egg/rod, sphere) plus a few half-rounded broken stones. The
+ * buried underside is trimmed, since the stones are always set into the bed.
+ */
+export function beachStoneGeometry(seed: number, detail: number, shape: BeachStoneShape, trimBelow = -.45) {
+  const geometry = shape === 'angular'
+    ? boulderGeometry(seed, detail, { facets: 6, rounding: .85, relief: .35, base: .15 })
+    : pebbleGeometry(seed, detail, shape === 'disc' ? .62 : shape === 'blade' ? .48 : shape === 'round' ? .08 : .25);
+  const position = geometry.attributes.position as THREE.BufferAttribute;
+  if (shape === 'blade' || shape === 'egg') {
+    // A tapered end: real shingle is rarely symmetric end to end.
+    const taper = shape === 'blade' ? .22 : .14;
+    for (let i = 0; i < position.count; i++) {
+      const end = position.getX(i) * .5 + .5;
+      position.setY(i, position.getY(i) * (1 - taper * end));
+      position.setZ(i, position.getZ(i) * (1 - taper * .6 * end));
+    }
+  }
+  return trimBuried(geometry, trimBelow);
+}
+
+/** Drops the triangles wholly below `below` (unit-box y): the part set into the bed. */
+export function trimBuried(geometry: THREE.BufferGeometry, below: number) {
+  const position = geometry.attributes.position as THREE.BufferAttribute;
+  const index = geometry.index!;
+  const kept: number[] = [];
+  for (let i = 0; i < index.count; i += 3) {
+    const a = index.getX(i), b = index.getX(i + 1), c = index.getX(i + 2);
+    if (Math.max(position.getY(a), position.getY(b), position.getY(c)) >= below) kept.push(a, b, c);
+  }
+  geometry.setIndex(kept);
+  geometry.computeVertexNormals();
+  geometry.computeBoundingBox(); geometry.computeBoundingSphere();
+  return geometry;
+}
+
+/**
+ * Stream granite: fracture planes kept crisp, a broad exfoliated crown and an
+ * old joint weathered into a V-groove across the stone, so the boulder reads
+ * as rock with structure rather than a rounded blob.
+ */
+export function streamBoulderGeometry(seed: number, detail: number) {
+  const geometry = boulderGeometry(seed, detail, { facets: 8, rounding: .3, relief: 1.3, base: .32 });
+  const random = seeded(seed * 31 + 7);
+  const position = geometry.attributes.position as THREE.BufferAttribute;
+  const joint = new THREE.Vector3(random() * 2 - 1, (random() - .5) * .5, random() * 2 - 1).normalize();
+  const offset = (random() - .5) * .6, width = .09 + random() * .06, depth = .08 + random() * .05;
+  const p = new THREE.Vector3();
+  for (let i = 0; i < position.count; i++) {
+    p.fromBufferAttribute(position, i);
+    const groove = Math.max(0, 1 - Math.abs(p.dot(joint) - offset) / width);
+    if (groove > 0 && p.y > -.65) p.multiplyScalar(1 - depth * groove * groove * (1 + .5 * noise3(p.x * 4 + seed, p.y * 4, p.z * 4)));
+    if (p.y > .5) p.y = .5 + (p.y - .5) * .6;
+    position.setXYZ(i, p.x, p.y, p.z);
+  }
+  return normaliseToUnitBox(geometry);
+}

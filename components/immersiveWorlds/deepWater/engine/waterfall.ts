@@ -484,7 +484,7 @@ export function createWaterfall(renderer: THREE.WebGLRenderer): WorldContent {
         vertexShader: FULLSCREEN_VERTEX, fragmentShader: VOLUME_FRAGMENT, depthTest: false, depthWrite: false, toneMapped: false,
         uniforms: {
           uToSun: { value: SUN_TOWARD.clone() }, uSun: { value: new THREE.Vector3(2.2, 2.0, 1.6) }, uSky: { value: new THREE.Vector3(.16, .24, .26) },
-          uFoot: { value: FALL_FOOT.clone() }, uWind: flow.wind, uSurge: flow.surge, uSpray: { value: .24 }, uHaze: { value: .005 },
+          uFoot: { value: FALL_FOOT.clone() }, uWind: flow.wind, uSurge: flow.surge, uSpray: { value: .4 }, uHaze: { value: .005 },
         },
       }) };
     },

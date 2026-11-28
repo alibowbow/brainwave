@@ -428,13 +428,13 @@ void main() {
   float r1 = rnd(aSeed.z * 31.1 + k * 1.9), r2 = rnd(aSeed.w * 17.3 + k * 0.7), r3 = rnd(aSeed.x * 53.7 + k * 2.3);
   float t = a * life;
   vec3 foot = mix(uFoot, uSideFoot, side);
-  vec3 c = foot + vec3((r1 - 0.5) * 5.6, 0.1 + r2 * 0.8, r3 * 2.2 + 0.2) * vec3(scale, 1.0, scale);
+  vec3 c = foot + vec3((r1 - 0.5) * 8.0, 0.1 + r2 * 0.5, r3 * 2.2 + 0.2) * vec3(scale, 1.0, scale);
   // Buoyant billows: a quick rise that slows, spreading and leaning downwind.
-  c.y += (1.2 + r3 * 1.3) * (1.0 - exp(-t * 0.45)) / 0.45 * mix(1.0, 0.5, side);
+  c.y += (0.55 + r3 * 0.85) * (1.0 - exp(-t * 0.45)) / 0.45 * mix(1.0, 0.5, side);
   c += uWind * t * mix(1.0, 0.6, side);
   c.x += ((r1 - 0.5) * 0.45 * t + sin(t * 0.9 + r2 * 6.28) * 0.3) * scale;
   c.z += 0.22 * t * scale;
-  float radius = mix(1.1, 3.4 + r2 * 2.0, sqrt(a)) * scale;
+  float radius = mix(1.0, 2.6 + r2 * 1.6, sqrt(a)) * scale;
   vAlpha = smoothstep(0.0, 0.14, a) * (1.0 - smoothstep(0.38, 1.0, a)) * (0.7 + 0.45 * uSurge) * mix(1.0, 0.5, side);
   vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
   vec3 up = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
@@ -502,7 +502,7 @@ export function createMist(counts: { plunge: number; side: number }, textures: W
     uniforms: {
       uTime: uniforms.time, uSurge: uniforms.surge, uFoot: uniforms.foot, uSideFoot: uniforms.sideFoot, uWind: uniforms.wind,
       tPuff: { value: textures.puff }, uToSun: uniforms.toSun, uSunColor: uniforms.sunColor, uSkyColor: uniforms.skyColor,
-      uWaterY: { value: waterY }, uOpacity: { value: .085 }, uFogColor: uniforms.fogColor, uFogDensity: uniforms.fogDensity,
+      uWaterY: { value: waterY }, uOpacity: { value: .035 }, uFogColor: uniforms.fogColor, uFogDensity: uniforms.fogDensity,
     },
     vertexShader: MIST_VERTEX, fragmentShader: MIST_FRAGMENT,
     transparent: true, depthWrite: false,

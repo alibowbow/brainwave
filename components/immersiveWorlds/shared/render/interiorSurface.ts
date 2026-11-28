@@ -20,7 +20,9 @@ vec3 bwSurfaceBump(vec3 viewPosition, vec3 n, float height, float faceDir) {
   vec3 r1 = cross(dpdy, n), r2 = cross(n, dpdx);
   float det = dot(dpdx, r1) * faceDir;
   vec3 grad = sign(det) * (dhdx * r1 + dhdy * r2);
-  return normalize(abs(det) * n - grad);
+  vec3 bumped = abs(det) * n - grad;
+  // Degenerate screen derivatives (a sliver seen edge-on, e.g. by a probe face) keep the normal instead of NaN.
+  return dot(bumped, bumped) > 1e-30 ? normalize(bumped) : n;
 }
 /** 0 where a pattern of the given screen-space frequency would alias, 1 where it resolves. */
 float bwResolve(float frequencyPerPixel) { return 1.0 - smoothstep(0.2, 0.6, frequencyPerPixel); }

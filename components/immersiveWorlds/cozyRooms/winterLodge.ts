@@ -10,6 +10,9 @@ import { createWoodMaterial } from '../shared/render/woodSurface';
 import { createFabricMaterial } from '../shared/render/fabricSurface';
 import { createGlazeMaterial, createPlasterMaterial, patchSurface } from '../shared/render/interiorSurface';
 import { GLSL_NOISE } from '../shared/render/glsl';
+import { createSnowfall } from '../shared/render/snowFall';
+import { roundedBlock } from './roomTrim';
+import { FROST_FRAGMENT, SPRUCE_FRAGMENT, SPRUCE_VERTEX, spruceGeometry } from './winterView';
 import { fbm3, noise3, seeded } from '../shared/render/noise';
 
 /*
@@ -18,7 +21,9 @@ import { fbm3, noise3, seeded } from '../shared/render/noise';
  * sun setting behind the lodge. The window's cold sky light (a soft shadowed
  * spot from outside the glass) meets the warm fire on the right and the floor
  * lamp on the left. The exterior is shaded in code against the twilight sky,
- * with aerial perspective; nothing is an image. Original procedural work.
+ * with aerial perspective; nothing is an image. Snow-laden spruces stand in
+ * three depth layers, snow falls at three depths and the panes carry fern frost
+ * and condensation. Original procedural work.
  */
 
 const WINDOW = { cx: -0.69, width: 7.04, y0: 0.77, y1: 3.87, z: -4.84 };
@@ -133,58 +138,6 @@ void main() {
 }
 `;
 
-const TREE_FRAGMENT = /* glsl */ `
-${EXTERIOR_COMMON}
-void main() {
-  vec3 n = normalize(vNormalW) * (gl_FrontFacing ? 1.0 : -1.0);
-  float clump = bwNoise(vWorld * 3.1) * 0.5 + bwNoise(vWorld * 9.0) * 0.25;
-  float snow = smoothstep(0.62, 0.92, n.y + clump * 0.7) * 0.92;
-  vec3 needles = vec3(0.018, 0.034, 0.035) * (0.75 + 0.5 * clump);
-  vec3 lit = uSkyLight * (0.25 + 0.75 * clamp(n.y * 0.5 + 0.5, 0.0, 1.0));
-  vec3 color = mix(needles, vec3(0.56, 0.62, 0.78), snow) * lit;
-  gl_FragColor = vec4(aerial(color, length(vWorld - cameraPosition), vWorld.y), 1.0);
-  #include <tonemapping_fragment>
-  #include <colorspace_fragment>
-}
-`;
-
-/** A snow-laden conifer of unit height: drooping, jagged tiers around a trunk. */
-function coniferGeometry(seed: number, detail = 1) {
-  const random = seeded(seed);
-  const parts: THREE.BufferGeometry[] = [];
-  const tiers = detail > 0.5 ? 11 : 7;
-  for (let k = 0; k < tiers; k++) {
-    const t = k / tiers;
-    // A narrow spire with uneven tiers, not a cone.
-    const radius = 0.3 * Math.pow(1 - t, 1.1) * (0.7 + random() * 0.55) + 0.025;
-    const base = 0.08 + t * 0.86 + (random() - 0.5) * 0.03, height = (detail > 0.5 ? 0.2 : 0.26) * (1 - t * 0.5);
-    const sides = detail > 0.5 ? 24 : 12, rings = detail > 0.5 ? 4 : 2;
-    const positions: number[] = [], index: number[] = [];
-    const phase = random() * 10;
-    for (let r = 0; r <= rings; r++) {
-      const s = r / rings;
-      for (let i = 0; i <= sides; i++) {
-        const a = i / sides * Math.PI * 2;
-        // Ragged branch ends: uneven reach, a few gaps, tips drooping under snow.
-        const reach = noise3(Math.cos(a) * 1.7 + seed, Math.sin(a) * 1.7, k * 1.3) * 0.45 + noise3(Math.cos(a) * 5 + seed, Math.sin(a) * 5, k * 2.1) * 0.25;
-        const jag = 1 + (0.18 * Math.sin(a * 9 + phase) + reach) * s;
-        const rr = radius * s * Math.max(0.35, jag);
-        const y = base + height * (1 - s) - s * s * radius * (0.35 + 0.3 * Math.max(0, reach)) - 0.03 * Math.sin(a * 9 + phase) * s;
-        positions.push(Math.cos(a) * rr, y, Math.sin(a) * rr);
-        if (r < rings && i < sides) { const n = r * (sides + 1) + i; index.push(n, n + 1, n + sides + 1, n + 1, n + sides + 2, n + sides + 1); }
-      }
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    g.setIndex(index); g.computeVertexNormals();
-    parts.push(g.toNonIndexed()); g.dispose();
-  }
-  const trunk = new THREE.CylinderGeometry(0.012, 0.03, 0.3, 6); trunk.translate(0, 0.12, 0); trunk.deleteAttribute('uv');
-  parts.push(trunk.toNonIndexed()); trunk.dispose();
-  const merged = mergeGeometries(parts, false)!;
-  parts.forEach(p => p.dispose());
-  return merged;
-}
 
 export function createWinterLodgeWorld(): WorldBuild {
   const scene = new THREE.Scene();
@@ -204,7 +157,7 @@ export function createWinterLodgeWorld(): WorldBuild {
   let lampOn = true, cupResponse = 0, logResponse = 0, timeNow = 0;
 
   // --- Materials --------------------------------------------------------------
-  const logWood = createWoodMaterial('#8a6440', { key: 'lodge-logs', axis: 'x', localFrame: true, pith: [0, 0], rings: 34, figure: 0.55, pores: 0.25, wear: 0.25, roughness: 0.7, bump: 1.6 });
+  const logWood = createWoodMaterial('#93694a', { key: 'lodge-logs', axis: 'x', localFrame: true, pith: [0, 0], rings: 40, figure: 0.75, pores: 0.35, wear: 0.4, roughness: 0.72, bump: 2.4 }, { vertexColors: true });
   const chinking = createPlasterMaterial('#b7ad9c', { key: 'lodge-chinking', scale: 3, bump: 1.5, stains: 0.6 });
   const floor = createWoodMaterial('#6f4e34', { key: 'lodge-floor', axis: 'z', rings: 18, figure: 0.7, pores: 0.4, wear: 0.4, varnish: 0.35, roughness: 0.5, planks: { width: 0.26, length: 2.8, bevel: 0.005, tone: 0.34 } });
   const ceiling = createWoodMaterial('#5d4330', { key: 'lodge-ceiling', axis: 'x', rings: 20, figure: 0.6, pores: 0.3, wear: 0.1, roughness: 0.75, planks: { width: 0.16, length: 3.1, bevel: 0.004, tone: 0.3 } });
@@ -232,7 +185,7 @@ export function createWinterLodgeWorld(): WorldBuild {
   });
   const tweed = createFabricMaterial('#6a3a2c', { key: 'lodge-tweed', weave: 'twill', threads: [260, 260], heather: 1, threadContrast: 0.9, fuzz: 0.6, depth: 0.0007, sheen: 0.6, sheenColor: '#c8a08a', roughness: 0.9 });
   const plaid = createFabricMaterial('#7c2f26', {
-    key: 'lodge-plaid', weave: 'plain', threads: [150, 150], heather: 0.8, threadContrast: 0.6, fuzz: 0.9, depth: 0.0016, sheen: 0.8, sheenColor: '#f0d0c0', roughness: 0.95,
+    key: 'lodge-plaid', weave: 'twill', threads: [95, 95], heather: 0.9, threadContrast: 0.7, fuzz: 1, depth: 0.0028, sheen: 0.9, sheenColor: '#f0c8b0', roughness: 0.96,
     pattern: `
 {
   // A muted tartan: overlapping warp and weft bands, half-tones where they cross.
@@ -251,7 +204,7 @@ export function createWinterLodgeWorld(): WorldBuild {
     pattern: 'fbBase *= 0.82 + 0.3 * smoothstep(0.3, 0.7, fract(length(fbUv - vec2(1.1, 0.8)) * 6.0));' }, { side: THREE.DoubleSide });
   const linenShade = createFabricMaterial('#d8c49c', { key: 'lodge-shade', weave: 'plain', threads: [300, 300], roughness: 0.9 }, { side: THREE.DoubleSide, emissive: '#ff9a45', emissiveIntensity: 1.1 });
   const ceramic = createGlazeMaterial('#d2c4ad', { key: 'lodge-cup', pool: '#8a6e50', speckle: 0.9, scale: 6 });
-  const coffee = new THREE.MeshPhysicalMaterial({ color: '#1e0f08', roughness: 0.04, clearcoat: 1, clearcoatRoughness: 0.02 });
+  const coffee = new THREE.MeshPhysicalMaterial({ color: '#1e0f08', roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.12 });
   const glass = new THREE.MeshPhysicalMaterial({ color: '#000000', roughness: 0.2, specularIntensity: 0.4, metalness: 0, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, envMapIntensity: 1.2 });
 
   // --- Room shell: log walls with chinking, plank ceiling and floor ------------
@@ -282,6 +235,23 @@ export function createWinterLodgeWorld(): WorldBuild {
     }
     return g;
   };
+  // Each log its own tone (some silvered, some honey), dark where logs meet the chinking,
+  // and a few strips of bark the drawknife missed.
+  const toneLog = (g: THREE.BufferGeometry, k: number) => {
+    const r = seeded(k * 131 + 7);
+    const base = new THREE.Color().setHSL(0.075 + (r() - 0.5) * 0.02, 0.35 + r() * 0.2, 0.42 + r() * 0.16);
+    const p = g.attributes.position, n = g.attributes.normal, colors = new Float32Array(p.count * 3);
+    for (let i = 0; i < p.count; i++) {
+      const contact = Math.pow(Math.abs(n.getY(i)), 3) * (n.getY(i) < 0 ? 0.55 : 0.35);
+      const along = p.getX(i) + p.getZ(i);
+      const bark = Math.max(0, noise3(along * 0.9 + k, k * 0.3, n.getY(i) * 2) - 0.42) * 2.2 * (1 - Math.abs(n.getY(i)));
+      const tone = (1 - contact) * (0.88 + 0.24 * noise3(along * 0.35, k, 1.3));
+      const c = base.clone().multiplyScalar(tone * 2.1).lerp(new THREE.Color(0.11, 0.075, 0.05), Math.min(0.85, bark));
+      colors.set([c.r, c.g, c.b], i * 3);
+    }
+    g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    return g;
+  };
   let seed = 1;
   for (let row = 0; row < 16; row++) {
     const y = 0.14 + row * logStep;
@@ -290,10 +260,10 @@ export function createWinterLodgeWorld(): WorldBuild {
     for (const [a, b] of spans) {
       const g = cabinLog(b - a, seed++);
       // Logs along x: rotate the cylinder axis onto x; the local frame was already swapped.
-      logGeometries.push(place(g, (a + b) / 2, y, -5.02, 0, 0, Math.PI / 2));
+      logGeometries.push(toneLog(place(g, (a + b) / 2, y, -5.02, 0, 0, Math.PI / 2), seed));
     }
     for (const side of [-1, 1]) {
-      logGeometries.push(place(cabinLog(10.4, seed++), side * 4.72, y + logStep / 2, 0, Math.PI / 2, 0, 0));
+      logGeometries.push(toneLog(place(cabinLog(10.4, seed++), side * 4.72, y + logStep / 2, 0, Math.PI / 2, 0, 0), seed));
     }
   }
   add(mergeGeometries(logGeometries, false)!, logWood).name = 'lodge-log-walls';
@@ -322,27 +292,18 @@ export function createWinterLodgeWorld(): WorldBuild {
   const pane = new THREE.Mesh(new THREE.PlaneGeometry(WINDOW.width, WINDOW.y1 - WINDOW.y0), glass);
   pane.position.set(WINDOW.cx, (WINDOW.y0 + WINDOW.y1) / 2, WINDOW.z); pane.renderOrder = 8; pane.castShadow = false; pane.receiveShadow = false; pane.userData.dynamic = true;
   scene.add(pane);
+  // Panes between the frame, mullions and transom, in the frost plane's own metres.
+  const paneRects = (() => {
+    const m0 = -2.83 - winLeft, m1 = 1.23 - winLeft, t = 2.95 - WINDOW.y0, W = WINDOW.width, H = WINDOW.y1 - WINDOW.y0;
+    const cols: Array<[number, number]> = [[0, m0 - 0.045], [m0 + 0.045, m1 - 0.045], [m1 + 0.045, W]];
+    const rows: Array<[number, number]> = [[0, t - 0.035], [t + 0.035, H]];
+    return rows.flatMap(([y0, y1]) => cols.map(([x0, x1]) => new THREE.Vector4(x0, y0, x1, y1)));
+  })();
   const frostMaterial = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false,
-    uniforms: { uSize: { value: new THREE.Vector2(WINDOW.width, WINDOW.y1 - WINDOW.y0) }, uMullions: { value: new THREE.Vector3(-2.83 - winLeft, 1.23 - winLeft, 2.95 - WINDOW.y0) } },
+    uniforms: { uSize: { value: new THREE.Vector2(WINDOW.width, WINDOW.y1 - WINDOW.y0) }, uPanes: { value: paneRects }, uWarm: { value: new THREE.Vector3(1.25, 0.95, 0.75) }, uTime: timeUniform },
     vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-    fragmentShader: `${GLSL_NOISE}
-      uniform vec2 uSize; uniform vec3 uMullions; varying vec2 vUv;
-      void main() {
-        vec2 p = vUv * uSize;
-        // Distance to the nearest frame edge or mullion: frost grows inward from the cold wood.
-        float d = min(min(p.x, uSize.x - p.x), min(p.y, uSize.y - p.y));
-        d = min(d, min(abs(p.x - uMullions.x), abs(p.x - uMullions.y)));
-        d = min(d, abs(p.y - uMullions.z) + 0.04);
-        d = min(d, p.y * 0.6);
-        float growth = bwFbm3(vec3(p * 2.2, 1.0)) * 0.12 + bwRidged(vec3(p * 9.0, 2.0)) * 0.05;
-        float frost = smoothstep(0.16, 0.0, d - growth);
-        float fern = pow(bwRidged(vec3(p * 22.0, 3.0)), 3.0);
-        float a = frost * (0.25 + 0.55 * fern);
-        gl_FragColor = vec4(vec3(0.58, 0.66, 0.8) * (0.9 + 0.5 * fern), a * 0.75);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`,
+    fragmentShader: FROST_FRAGMENT,
   });
   const frost = new THREE.Mesh(new THREE.PlaneGeometry(WINDOW.width, WINDOW.y1 - WINDOW.y0), frostMaterial);
   frost.position.set(WINDOW.cx, (WINDOW.y0 + WINDOW.y1) / 2, WINDOW.z + 0.012); frost.renderOrder = 9; scene.add(frost);
@@ -374,7 +335,7 @@ export function createWinterLodgeWorld(): WorldBuild {
     const fall = THREE.MathUtils.smoothstep(-z, 14, 70) * 6 + THREE.MathUtils.smoothstep(-z, 70, 120) * 2.5;
     return -0.3 + 0.3 * Math.sin(x * 0.1 + z * 0.16) + 0.4 * fbm3(x * 0.04, 0, z * 0.04, 3) * (1 + fall * 0.15) - fall;
   };
-  const field = new THREE.PlaneGeometry(240, 200, 180, 140); field.rotateX(-Math.PI / 2);
+  const field = new THREE.PlaneGeometry(240, 200, 140, 110); field.rotateX(-Math.PI / 2);
   const fp = field.attributes.position;
   for (let i = 0; i < fp.count; i++) {
     const x = fp.getX(i), z = fp.getZ(i) - 104;
@@ -399,64 +360,52 @@ export function createWinterLodgeWorld(): WorldBuild {
     g.computeVertexNormals();
     scene.add(new THREE.Mesh(g, mountainMaterial));
   });
-  // Conifer stands: three individual tree shapes, instanced at many scales.
-  const treeMaterial = exterior(TREE_FRAGMENT); treeMaterial.side = THREE.DoubleSide;
-  const treeShapes = [coniferGeometry(11), coniferGeometry(23), coniferGeometry(37), coniferGeometry(51, 0), coniferGeometry(67, 0)];
-  const treeMatrices: THREE.Matrix4[][] = [[], [], [], [], []];
+  // Snow-laden spruces in three depth layers: a few big trees on the shoulder, a dense
+  // forest down the valley and far silhouettes on the opposite slopes, each fading into the air.
+  const spruceMaterial = new THREE.ShaderMaterial({ vertexShader: SPRUCE_VERTEX, fragmentShader: SPRUCE_FRAGMENT, side: THREE.DoubleSide, uniforms: { ...exteriorUniforms, uGlow: { value: new THREE.Vector3(0.9, 0.45, 0.4) } } });
+  const layers: Array<{ count: number; detail: 0 | 1 | 2; z: [number, number]; spread: (z: number) => number; height: [number, number]; clear: number }> = [
+    { count: 20, detail: 0, z: [-14, -30], spread: () => 56, height: [8, 14], clear: 7 },
+    { count: 95, detail: 1, z: [-32, -70], spread: z => 30 - z * 1.1, height: [7, 12], clear: 0 },
+    { count: 320, detail: 2, z: [-70, -135], spread: z => 50 - z * 1.3, height: [6, 11], clear: 0 },
+  ];
   const groundY = terrainY;
-  // An open snowfield in front of the lodge, then stands of spruce in clumps.
-  // A few full spruces near the edge of the shoulder, then a dense valley forest of
-  // simpler trees with clearings, thinning toward the far slopes.
-  let near = 0, far = 0;
-  for (let attempt = 0; attempt < 6000 && (near < 34 || far < 700); attempt++) {
-    const nearTree = near < 34;
-    const z = nearTree ? -24 - random() * 22 : -40 - Math.pow(random(), 0.8) * 85;
-    const x = (random() - 0.5) * (nearTree ? 70 : 40 + -z * 1.5);
-    const clump = fbm3(x * 0.05 + 3, 0, z * 0.07, 3);
-    if (nearTree ? (Math.abs(x + 0.7) < 9 || clump < 0.05) : clump < -0.15) continue;
-    const h = nearTree ? 5 + random() * 6 : 5 + random() * 6;
-    matrix.compose(pos.set(x, groundY(x, z) - 0.3, z), quat.setFromEuler(euler.set((random() - 0.5) * 0.05, random() * 6.28, (random() - 0.5) * 0.05)), scl.set(h * (0.8 + random() * 0.35), h, h * (0.8 + random() * 0.35)));
-    if (nearTree) treeMatrices[near++ % 3].push(matrix.clone()); else treeMatrices[3 + (far++ % 2)].push(matrix.clone());
-  }
-  treeShapes.forEach((shape, i) => {
-    const mesh = new THREE.InstancedMesh(shape, treeMaterial, treeMatrices[i].length);
-    treeMatrices[i].forEach((m, j) => mesh.setMatrixAt(j, m));
-    mesh.frustumCulled = false; mesh.name = 'lodge-conifers';
-    scene.add(mesh);
+  const spruceMeshes: THREE.InstancedMesh[] = [];
+  layers.forEach((layer, li) => {
+    const shapes = [spruceGeometry(11 + li * 7, layer.detail), spruceGeometry(29 + li * 5, layer.detail)];
+    const matrices: THREE.Matrix4[][] = [[], []];
+    let placed = 0;
+    for (let attempt = 0; attempt < layer.count * 30 && placed < layer.count; attempt++) {
+      const z = layer.z[0] + (layer.z[1] - layer.z[0]) * Math.pow(random(), 0.85);
+      const x = (random() - 0.5) * layer.spread(z) - 0.7;
+      const clump = fbm3(x * 0.05 + 3, 0, z * 0.07, 3);
+      if (Math.abs(x + 0.7) < layer.clear || clump < (li === 0 ? 0.0 : -0.22)) continue;
+      const h = layer.height[0] + random() * (layer.height[1] - layer.height[0]);
+      const w = h * (0.85 + random() * 0.3);
+      matrix.compose(pos.set(x, groundY(x, z) - 0.25, z), quat.setFromEuler(euler.set((random() - 0.5) * 0.04, random() * 6.28, (random() - 0.5) * 0.04)), scl.set(w, h, w));
+      matrices[placed % 2].push(matrix.clone()); placed++;
+    }
+    shapes.forEach((shape, i) => {
+      const mesh = new THREE.InstancedMesh(shape, spruceMaterial, matrices[i].length);
+      matrices[i].forEach((m, j) => mesh.setMatrixAt(j, m));
+      mesh.frustumCulled = false; mesh.castShadow = false; mesh.receiveShadow = false; mesh.name = `lodge-spruce-${li}`;
+      scene.add(mesh); spruceMeshes.push(mesh);
+    });
   });
-  // Falling snow, outside the glass only; flakes near the window catch the lamplight.
-  const flakeCount = 900, flakeSeeds = new Float32Array(flakeCount * 4);
-  for (let i = 0; i < flakeCount; i++) flakeSeeds.set([random(), random(), random(), random()], i * 4);
-  const flakeGeometry = new THREE.BufferGeometry();
-  flakeGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(flakeCount * 3), 3));
-  flakeGeometry.setAttribute('seed', new THREE.BufferAttribute(flakeSeeds, 4));
-  const flakes = new THREE.Points(flakeGeometry, new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false,
-    uniforms: { uTime: timeUniform, uPixel: { value: 1 } },
-    vertexShader: `uniform float uTime; uniform float uPixel; attribute vec4 seed; varying float vWarm; varying float vAlpha;
-      void main() {
-        float z = -5.6 - pow(seed.z, 1.6) * 34.0;
-        float span = 10.0 + (-z) * 0.9;
-        float fall = 0.32 + seed.w * 0.25;
-        float y = 9.0 - mod(uTime * fall + seed.y * 9.0, 9.5);
-        vec3 p = vec3((seed.x - 0.5) * span - 0.7, y, z);
-        p.x += sin(uTime * (0.4 + seed.w * 0.5) + seed.y * 30.0) * 0.25 + sin(uTime * 0.13 + seed.x * 10.0) * 0.4;
-        p.z += cos(uTime * 0.31 + seed.x * 17.0) * 0.15;
-        vWarm = smoothstep(-9.0, -5.7, p.z) * smoothstep(-1.0, 1.5, p.y) * (1.0 - smoothstep(3.6, 4.6, p.y));
-        vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        vAlpha = smoothstep(9.0, 8.0, y) * smoothstep(-0.3, 0.5, y);
-        gl_PointSize = clamp(18.0 / -mv.z, 1.0, 3.2) * uPixel;
-        gl_Position = projectionMatrix * mv;
-      }`,
-    fragmentShader: `varying float vWarm; varying float vAlpha;
-      void main() { float d = length(gl_PointCoord - 0.5) * 2.0; float a = (1.0 - smoothstep(0.3, 1.0, d)) * vAlpha;
-        vec3 c = mix(vec3(0.6, 0.68, 0.86), vec3(0.95, 0.78, 0.58), vWarm * 0.7);
-        gl_FragColor = vec4(c, a * 0.85);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`,
-  }));
-  flakes.frustumCulled = false; flakes.renderOrder = 5; scene.add(flakes);
+  // Falling snow at three depths, outside the glass only; flakes near the window catch the lamplight.
+  const snowfall = createSnowfall({
+    seed: 7713,
+    keyDirection: new THREE.Vector3(-0.42, 0.2, -1).normalize(), keyColor: new THREE.Color(0.12, 0.15, 0.22), ambient: new THREE.Color(0.11, 0.13, 0.2),
+    wind: new THREE.Vector3(0.18, 0, 0.05),
+    lights: [{ position: new THREE.Vector3(-1.4, 1.9, -4.6), color: new THREE.Color(0.9, 0.55, 0.25) }, { position: new THREE.Vector3(1.5, 1.2, -4.6), color: new THREE.Color(0.6, 0.3, 0.1) }],
+    layers: [
+      { count: 650, min: new THREE.Vector3(-5.5, -0.6, -8.5), max: new THREE.Vector3(4.5, 5.2, -5.45), size: [0.022, 0.04], speed: [0.35, 0.6], sway: 0.22, softness: 0.5, focus: 3.5, opacity: 0.9, brightness: 1.6 },
+      { count: 1800, min: new THREE.Vector3(-16, -1.5, -26), max: new THREE.Vector3(14, 11, -8.5), size: [0.03, 0.05], speed: [0.45, 0.8], sway: 0.3, opacity: 0.85, brightness: 1.2 },
+      { count: 2400, min: new THREE.Vector3(-48, -6, -80), max: new THREE.Vector3(42, 24, -26), size: [0.03, 0.06], speed: [0.6, 1.0], sway: 0.5, opacity: 0.7, brightness: 0.8 },
+    ],
+  });
+  snowfall.group.children.forEach(child => { child.renderOrder = 5; });
+  scene.add(snowfall.group);
+  const flakes = snowfall.group;
 
   // --- Fireplace on the right, angled toward the chair -------------------------
   const hearth = new THREE.Group(); hearth.position.set(3.1, 0, -1.94); hearth.rotation.y = -0.37; hearth.userData.dynamic = true; scene.add(hearth);
@@ -590,6 +539,11 @@ export function createWinterLodgeWorld(): WorldBuild {
   const handle = add(place(new THREE.TorusGeometry(0.07, 0.017, 12, 28, Math.PI * 1.3), -0.19, 0.12, 0, 0, 0, Math.PI * 0.35), ceramic, cupGroup); handle.userData.cozyAction = 'cup';
   const coffeeSurface = add(place(new THREE.CircleGeometry(0.134, 48), 0, 0.19, 0, -Math.PI / 2), coffee, cupGroup); coffeeSurface.userData.cozyAction = 'cup';
   add(place(new THREE.CylinderGeometry(0.2, 0.2, 0.012, 48), 0.1, 0.841, 0.15), createFabricMaterial('#8c7a62', { key: 'lodge-coaster', weave: 'plain', threads: [600, 600], roughness: 0.95 }), table);
+  // A clothbound book with a ribbon marker beside the mug.
+  const tableBook = new THREE.Group(); tableBook.position.set(-0.2, 0.835, -0.12); tableBook.rotation.y = 0.5; table.add(tableBook);
+  add(place(roundedBlock(0.32, 0.045, 0.23, 0.006, 0.05), 0, 0.0225, 0), createFabricMaterial('#2e4a3c', { key: 'lodge-bookcloth', weave: 'plain', threads: [500, 500], heather: 0.5, roughness: 0.75 }), tableBook);
+  add(place(new THREE.BoxGeometry(0.305, 0.036, 0.222), 0.004, 0.0225, 0), new THREE.MeshStandardMaterial({ color: '#d8ccb0', roughness: 0.9 }), tableBook);
+  add(place(new THREE.PlaneGeometry(0.012, 0.12), 0.06, 0.0, 0.17, -1.2, 0, 0.1), new THREE.MeshStandardMaterial({ color: '#8a2a22', roughness: 0.6, side: THREE.DoubleSide }), tableBook, false);
   // Steam: soft curling ribbons drawn by a shader, very faint.
   const steamMaterial = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, side: THREE.DoubleSide,
@@ -623,7 +577,8 @@ export function createWinterLodgeWorld(): WorldBuild {
     const roll = new THREE.Mesh(cushion(0.36, 0.16, 2.14, 0.45, 40, side * 9), tweed); roll.position.set(side * 0.02, 0.22, 0); roll.castShadow = roll.receiveShadow = true;
     arm.add(body, roll); arm.position.set(side * 1.38, 0.66, 2.4); arm.rotation.x = -0.045; scene.add(arm); chairArms.push(arm);
   }
-  const blanketY = (x: number, d: number) => 0.97 + 0.035 * Math.sin(x * 5.7 + d * 0.9) + 0.016 * Math.sin(x * 13.8 - d * 2.4) + 0.06 * Math.exp(-Math.pow(x - 0.38, 2) * 3) + 0.05 * Math.exp(-Math.pow(x + 0.45, 2) * 3) * THREE.MathUtils.smoothstep(d, 0.5, 2.4) + noise3(x * 1.6, d * 1.6, 2) * 0.015 + noise3(x * 7, d * 3, 5) * 0.005;
+  // Soft loft plus a few long folds pulled diagonally across the lap and slack creases between them.
+  const blanketY = (x: number, d: number) => 0.97 + 0.045 * Math.exp(-Math.pow(x - 0.15 - 0.22 * d, 2) / 0.012) - 0.018 * Math.pow(Math.abs(Math.sin(x * 2.6 - d * 1.4 + 0.5)), 7) + 0.03 * Math.exp(-Math.pow(x + 0.75 - 0.12 * d, 2) / 0.02) * THREE.MathUtils.smoothstep(d, 0.6, 2.0) + 0.035 * Math.sin(x * 5.7 + d * 0.9) + 0.016 * Math.sin(x * 13.8 - d * 2.4) + 0.06 * Math.exp(-Math.pow(x - 0.38, 2) * 3) + 0.05 * Math.exp(-Math.pow(x + 0.45, 2) * 3) * THREE.MathUtils.smoothstep(d, 0.5, 2.4) + noise3(x * 1.6, d * 1.6, 2) * 0.015 + noise3(x * 7, d * 3, 5) * 0.005;
   const blanket = clothSheet(90, 110, (u, v, target) => {
     const x = (u - 0.5) * 2.5, d = v * 3.9;
     const lap = Math.min(d, 3.2);
@@ -632,6 +587,17 @@ export function createWinterLodgeWorld(): WorldBuild {
     target.set(x * (1 + e * 0.05), blanketY(x, lap) - Math.pow(e, 1.2) * 0.75, 3.15 - lap - e * 0.2 + folds);
   }, 0.016, [2.5, 3.9]);
   const blanketMesh = add(blanket, plaid); blanketMesh.name = 'lodge-blanket'; blanketMesh.castShadow = false;
+  // A chunky cream knit folded over the near part of the plaid, its folded edge rolled.
+  const knitWool = createFabricMaterial('#c9bca4', { key: 'lodge-knit', weave: 'knit', threads: [26, 34], heather: 0.6, threadContrast: 0.35, fuzz: 1, depth: 0.0055, sheen: 0.9, sheenColor: '#fff4e0', roughness: 0.97,
+    pattern: 'fbBase *= 0.86 + 0.2 * smoothstep(0.2, 0.0, abs(fract(fbUv.x * 4.2) - 0.5) - 0.18);' }, { side: THREE.DoubleSide });
+  const knit = clothSheet(70, 60, (u, v, target) => {
+    // Folded in two and dropped across the near-left of the lap; both long edges roll softly.
+    const x = -1.28 + u * 1.3 + v * 0.18, d = 0.3 + v * 1.05;
+    const roll = (Math.exp(-Math.pow(v / 0.06, 2)) + Math.exp(-Math.pow((1 - v) / 0.06, 2))) * 0.028;
+    const slack = Math.sin(u * 9 + v * 2) * 0.008 + noise3(x * 3, d * 3, 8) * 0.008 + 0.018 * Math.sin(v * Math.PI);
+    target.set(x, blanketY(x, d) + 0.03 + roll + slack, 3.15 - d);
+  }, 0.03, [1.3, 1.05]);
+  const knitMesh = add(knit, knitWool); knitMesh.name = 'lodge-knit'; knitMesh.castShadow = false;
   // Fringe along the falling edge.
   const fringe: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 60; i++) {
@@ -703,7 +669,7 @@ export function createWinterLodgeWorld(): WorldBuild {
       probe = captureRoomProbe(renderer, scene, new THREE.Vector3(0, 1.6, 0.5), 1.25, { hide: [flakes, frost, pane] });
     },
     update(time: number, dt: number) {
-      timeNow = time; timeUniform.value = time;
+      timeNow = time; timeUniform.value = time; snowfall.update(time);
       cupResponse = Math.max(0, cupResponse - dt * 0.55); logResponse = Math.max(0, logResponse - dt * 0.8);
       fire.update(time, logResponse);
       lanternLight.intensity = 0.18 * (1 + 0.05 * Math.sin(time * 1.7) + 0.03 * Math.sin(time * 2.9));

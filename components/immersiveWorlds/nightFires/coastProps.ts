@@ -196,7 +196,7 @@ export function createLogPile() {
       parts.push(placed(g, V(x + (random() - 0.5) * 0.04, y - (0.11 - r) * 0.8, (random() - 0.5) * 0.16), new THREE.Euler(Math.PI / 2 + (random() - 0.5) * 0.04, (random() - 0.5) * 0.05, (random() - 0.5) * 0.05)));
     }
   });
-  const material = createWoodMaterial('#6a5440', { key: 'coast-log-pile', axis: 'y', localFrame: true, pith: [0.01, -0.02], bark: '#4a3b2e', rings: 95, figure: 0.65, pores: 0.25, wear: 0.4, bump: 1.4, roughness: 0.8 });
+  const material = createWoodMaterial('#5e5246', { key: 'coast-log-pile', axis: 'y', localFrame: true, pith: [0.01, -0.02], bark: '#4a3b2e', rings: 95, figure: 0.75, pores: 0.25, wear: 0.4, bump: 1.4, roughness: 0.8 });
   const pile = new THREE.Mesh(mergeGeometries(parts), material);
   parts.forEach((g) => g.dispose());
   pile.name = 'Stacked firewood';

@@ -114,17 +114,17 @@ float ctHeat = 0.0, ctCrack = 0.0;
 }`);
   };
   const occluders: FlameOccluder[] = [];
-  const apex = new THREE.Vector3(0.02, 0.8, -0.02);
+  const apex = new THREE.Vector3(0.02, 0.5, -0.02);
   const feet = 7;
   const wedges: THREE.BufferGeometry[] = [];
   for (let i = 0; i < feet; i++) {
     const angle = i / feet * tau + 0.35 + (random() - 0.5) * 0.25;
-    const footRadius = 0.36 + random() * 0.06;
+    const footRadius = 0.34 + random() * 0.05;
     const foot = new THREE.Vector3(Math.cos(angle) * footRadius, 0.04 + random() * 0.02, Math.sin(angle) * footRadius);
     const top = apex.clone().add(new THREE.Vector3((random() - 0.5) * 0.1, (random() - 0.5) * 0.08, (random() - 0.5) * 0.1));
     const direction = top.clone().sub(foot).normalize();
     // Run a little past the crossing, as stacked wood does.
-    const end = top.clone().addScaledVector(direction, 0.12 + random() * 0.1);
+    const end = top.clone().addScaledVector(direction, 0.07 + random() * 0.07);
     const length = foot.distanceTo(end);
     const R = 0.085 + random() * 0.03, open = 1.6 + random() * 0.6;
     const shape = new THREE.Shape();
@@ -167,7 +167,7 @@ float ctHeat = 0.0, ctCrack = 0.0;
   }
   group.add(logs);
 
-  const flame = createFlame({ noise: options.noise, height: 1.4, radius: 0.3, occluders, seed: 41, intensity: 1.05 });
+  const flame = createFlame({ noise: options.noise, height: 1.55, radius: 0.32, occluders, seed: 41, intensity: 1.05 });
   flame.mesh.position.y = 0.04;
   group.add(flame.mesh);
   for (const v of [...flame.uniforms.uCapA.value, ...flame.uniforms.uCapB.value]) v.y -= 0.04;
@@ -176,7 +176,7 @@ float ctHeat = 0.0, ctCrack = 0.0;
 
   const lightIntensity = options.lightIntensity ?? 10;
   const light = new THREE.PointLight('#ff9a52', lightIntensity, 0, 2);
-  light.position.set(0, 0.72, 0);
+  light.position.set(0, 0.62, 0);
   light.castShadow = true;
   light.shadow.mapSize.set(options.shadowMapSize ?? 1024, options.shadowMapSize ?? 1024);
   light.shadow.radius = 6;

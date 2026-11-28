@@ -55,11 +55,12 @@ interface VisibilitySample {
 }
 
 const delay = (milliseconds: number) => new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
-// Frame-dependent waits are software-rasterizer allowances only. The HDR forest
-// (multi-pass image) takes several times longer per SwiftShader frame than the
-// earlier direct renderer; the waits scale, runtime pacing and quality do not.
+// Waits are software-rasterizer allowances only. On SwiftShader a single HDR
+// forest frame can hold the page for tens of seconds (several times the earlier
+// direct renderer), delaying even React state changes. Waits scale; runtime pacing,
+// quality and every assertion stay the same.
 const SOFTWARE_FRAME_WAIT = Math.max(1, Number(new URLSearchParams(window.location.search).get('waitScale')) || 4);
-async function waitFor(condition: () => boolean, message: string, timeout = 15000) {
+async function waitFor(condition: () => boolean, message: string, timeout = 15000 * SOFTWARE_FRAME_WAIT) {
   const began = performance.now();
   while (!condition()) {
     if (performance.now() - began > timeout) throw new Error(message);

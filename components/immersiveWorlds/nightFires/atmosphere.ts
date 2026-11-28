@@ -26,7 +26,11 @@ export interface NightAtmosphere {
   fogHeight: number;
   fogBase: number;
   maxDistance: number;
-  mist?: { y: number; thickness: number; density: number; start: number; tint?: THREE.Color };
+  mist?: { y: number; thickness: number; density: number; start: number; tint?: THREE.Color; drift?: THREE.Vector2; contrast?: number };
+  /** Forward-scattering anisotropy of the haze toward the moon (Henyey-Greenstein g, default 0.6). */
+  phase?: number;
+  /** A second, higher mist band seen only far away: fog lying between distant ridges. */
+  upperMist?: { y: number; thickness: number; density: number; start: number };
   /** Warm point glow in the air: world position, radiance and density. */
   glow?: { position: THREE.Vector3; color: THREE.Color; density: number };
   smoke?: { base: THREE.Vector3; radius: number; height: number; density: number; wind: THREE.Vector2; fireLight: THREE.Color };
@@ -50,6 +54,9 @@ uniform vec4 uSmoke;
 uniform vec2 uWind;
 uniform vec3 uSmokeLight;
 uniform float uFlicker;
+uniform float uPhaseG;
+uniform vec3 uMistDrift;
+uniform vec4 uMist2;
 float mistNoise(vec3 p) { return dot(texture(uNoise, p), vec4(0.55, 0.3, 0.15, 0.0)); }
 vec2 cylinder(vec2 ro, vec2 rd, vec2 c, float r) {
   vec2 oc = ro - c;
@@ -64,7 +71,7 @@ void main() {
   bwSceneRay(vUv, ro, rd, surface);
   float maxT = min(surface, uFog.w);
   float jitter = bwIgn(gl_FragCoord.xy);
-  float moonPhase = bwPhase(dot(rd, uMoonDir), 0.6) * 12.5663706;
+  float moonPhase = bwPhase(dot(rd, uMoonDir), uPhaseG) * 12.5663706;
   vec3 hazeLight = uMoon * moonPhase + uAmbient;
   vec3 mistLight = uMistTint * (uMoon * (0.4 + 0.6 * moonPhase) + uAmbient);
 
@@ -85,8 +92,16 @@ void main() {
       float layer = exp(-pow((p.y - uMist.x) / uMist.y, 2.0));
       float reach = smoothstep(uMist.w, uMist.w * 1.7, length(p.xz - ro.xz));
       if (layer * reach > 0.002) {
-        float n = mistNoise(vec3(p.x * 0.011 + uTime * 0.0016, p.y * 0.045, p.z * 0.011 - uTime * 0.0009));
-        mist = uMist.z * layer * reach * (0.15 + 1.4 * smoothstep(0.38, 0.72, n));
+        float n = mistNoise(vec3(p.x * 0.011 + uTime * uMistDrift.x, p.y * 0.045, p.z * 0.011 - uTime * uMistDrift.y));
+        mist = uMist.z * layer * reach * (0.15 + 1.4 * smoothstep(0.55 - 0.17 * uMistDrift.z, 0.55 + 0.17 * uMistDrift.z, n));
+      }
+    }
+    if (uMist2.z > 0.0) {
+      float layer2 = exp(-pow((p.y - uMist2.x) / uMist2.y, 2.0));
+      float reach2 = smoothstep(uMist2.w, uMist2.w * 1.4, length(p.xz - ro.xz));
+      if (layer2 * reach2 > 0.002) {
+        float n2 = mistNoise(vec3(p.x * 0.006 + uTime * uMistDrift.x * 0.6, p.y * 0.03 + 3.0, p.z * 0.006 - uTime * uMistDrift.y * 0.6));
+        mist += uMist2.z * layer2 * reach2 * (0.2 + 1.3 * smoothstep(0.42, 0.68, n2));
       }
     }
     float sigma = haze + mist;
@@ -170,6 +185,10 @@ export function createNightVolume(settings: NightAtmosphere): VolumeEffect & { u
     uWind: { value: settings.smoke?.wind.clone() ?? new THREE.Vector2() },
     uSmokeLight: { value: vec(settings.smoke?.fireLight ?? new THREE.Color(0, 0, 0)) },
     uFlicker: { value: 1 },
+    uPhaseG: { value: settings.phase ?? 0.6 },
+    // Noise-space drift per second (x, z) and the mist's contrast (1 = default banks).
+    uMist2: { value: settings.upperMist ? new THREE.Vector4(settings.upperMist.y, settings.upperMist.thickness, settings.upperMist.density, settings.upperMist.start) : new THREE.Vector4() },
+    uMistDrift: { value: new THREE.Vector3(settings.mist?.drift?.x ?? 0.0016, settings.mist?.drift?.y ?? 0.0009, 1 / (settings.mist?.contrast ?? 1)) },
   };
   const material = new THREE.ShaderMaterial({
     vertexShader: FULLSCREEN_VERTEX, fragmentShader: FRAGMENT, uniforms, depthTest: false, depthWrite: false, toneMapped: false,

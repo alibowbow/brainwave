@@ -1,18 +1,19 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { WorldRecipe } from './worldTypes';
-import { seeded, mesh, beam, lantern, stoneMaterial, woodMaterial, barkMaterial } from './scenery';
+import { seeded, mesh, lantern, stoneMaterial, woodMaterial, barkMaterial } from './scenery';
 import { createNoiseVolume } from '../shared/render/fireFlame';
 import { bakeNightEnvironment, createNightSky } from '../shared/render/skyNight';
 import { createNightVolume } from './atmosphere';
-import { boulderGeometry, createGroundMaterial, createTerrainMaterial, distantSpruceGeometry, ridgeGeometry } from './landscape';
+import { boulderGeometry, coniferGeometry, createFoliageMaterial, createGroundMaterial, createTerrainMaterial, needleSprayTexture, ridgeGeometry } from './landscape';
+import { addTreeSway, buildForest, forestMaterial, scatterForest } from './forest';
 
 const direction = (azimuthDegrees: number, elevationDegrees: number) => {
   const a = THREE.MathUtils.degToRad(azimuthDegrees), e = THREE.MathUtils.degToRad(elevationDegrees);
   return new THREE.Vector3(Math.sin(a) * Math.cos(e), Math.sin(e), -Math.cos(a) * Math.cos(e));
 };
 
-/** Original hilltop overlook: moonlit ridge layers over a misty valley, a worn bench and a stone terrace. */
+/** Original mountain lookout: moonlit ridge layers over a misty valley, a stone parapet and a lantern on a timber seat. */
 export function buildDeepNightWorld(): WorldRecipe {
   const scene = new THREE.Scene();
   scene.name = 'Hilltop overlook — deep night';
@@ -21,13 +22,14 @@ export function buildDeepNightWorld(): WorldRecipe {
   const random = seeded(19812);
   const noise = createNoiseVolume(48, 11);
 
-  // A waxing gibbous moon over the far ranges: it backlights the layers and washes out most stars.
+  // A waxing gibbous moon over the far ranges: it backlights the layers; a modest
+  // halo and a clear, dark sky keep the twinkling stars readable.
   const moonDir = direction(27, 19);
   const sky = createNightSky({
-    noise, zenith: '#0a1430', horizon: '#3a4a68', brightness: 0.055,
-    glow: { color: '#5a6c8c', direction: moonDir, intensity: 0.075, width: 3, height: 0.16 },
+    noise, zenith: '#071026', horizon: '#2a3956', brightness: 0.055,
+    glow: { color: '#56688a', direction: moonDir, intensity: 0.028, width: 5, height: 0.12 },
     airglow: 0.015,
-    moon: { direction: moonDir, intensity: 42, radius: 0.0135, halo: 2.2, color: '#fff3df', sunDirection: direction(27 + 150, -12) },
+    moon: { direction: moonDir, intensity: 46, radius: 0.0135, halo: 0.55, color: '#fff3df', sunDirection: direction(27 + 150, -12) },
     galaxy: { pole: new THREE.Vector3().crossVectors(direction(-70, 8), direction(10, 80)).normalize(), centre: direction(-70, 8), intensity: 0.025 },
     stars: { count: 3800, seed: 713, intensity: 2.1, galacticFraction: 0.3, twinkle: 0.8 },
   });
@@ -82,30 +84,31 @@ export function buildDeepNightWorld(): WorldRecipe {
   const houseLocations: Array<[number, number, number]> = [
     [-25, -36, .95], [-20, -42, .75], [-17, -40, 1.1], [13, -34, .9], [17, -43, 1.1], [25, -45, .7], [-5, -58, .75], [1, -62, 1.1], [36, -39, .8],
   ];
-  // Spruce on the valley flanks and the nearest layer, instanced and tiny with distance.
-  const spruce = distantSpruceGeometry();
-  const placements: THREE.Matrix4[] = [];
-  const forestRandom = seeded(5521);
-  for (let k = 0; k < 700; k++) {
-    const side = forestRandom() < 0.5 ? -1 : 1;
-    const x = side * (16 + Math.pow(forestRandom(), 0.7) * 48), z = -10 - forestRandom() * 66;
-    const y = terrainHeight(x, z);
-    if (houseLocations.some(([hx, hz]) => Math.hypot(hx - x, hz - z) < 5)) continue;
-    const h = 2.2 + Math.pow(forestRandom(), 1.5) * 6;
-    placements.push(new THREE.Matrix4().compose(new THREE.Vector3(x, y - 0.2, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, forestRandom() * 6.28, 0)), new THREE.Vector3(h * 0.3, h, h * 0.3)));
-  }
+  // Mixed conifer forest on the valley flanks and the nearest ridge: groves and
+  // clearings, several species and ages, so no crest reads as a comb.
   const np = nearestLayer[0].attributes.position as THREE.BufferAttribute, nn = nearestLayer[0].attributes.normal as THREE.BufferAttribute;
-  for (let attempt = 0; attempt < 20000 && placements.length < 1800; attempt++) {
-    const i = Math.floor(forestRandom() * np.count);
-    if (nn.getY(i) < 0.75 || np.getY(i) > -2) continue;
-    const h = 3 + forestRandom() * 3;
-    placements.push(new THREE.Matrix4().compose(new THREE.Vector3(np.getX(i), np.getY(i) - 0.3, np.getZ(i)), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, forestRandom() * 6.28, 0)), new THREE.Vector3(h * 0.3, h, h * 0.3)));
-  }
-  const forest = new THREE.InstancedMesh(spruce, new THREE.MeshStandardMaterial({ color: '#18211c', roughness: 0.95, side: THREE.DoubleSide }), placements.length);
-  placements.forEach((m, i) => forest.setMatrixAt(i, m));
-  forest.receiveShadow = true;
-  forest.name = 'Valley spruce';
-  scene.add(forest);
+  const nearHouse = (x: number, z: number) => houseLocations.some(([hx, hz]) => Math.hypot(hx - x, hz - z) < 4.5);
+  const forestShading = forestMaterial({ color: '#1b2520', tips: '#3d4b4c', key: 'deep-forest' });
+  const flankTrees = scatterForest({
+    seed: 5521, count: 820, grove: 16, openness: 0.42, height: [2.4, 8.5], mix: { pine: 0.05 },
+    sample: (r) => {
+      const side = r() < 0.5 ? -1 : 1;
+      const x = side * (13 + Math.pow(r(), 0.7) * 52), z = -8 - r() * 72;
+      return nearHouse(x, z) ? null : { x, y: terrainHeight(x, z), z };
+    },
+  });
+  const ridgeTrees = scatterForest({
+    seed: 811, count: 1050, grove: 22, openness: 0.5, height: [2.2, 6.8], mix: { pine: 0, snag: 0.05 },
+    sample: (r) => {
+      const i = Math.floor(r() * np.count);
+      if (nn.getY(i) < 0.7 || np.getY(i) > 2) return null;
+      return { x: np.getX(i) + (r() - 0.5) * 2.5, y: np.getY(i) - 0.25, z: np.getZ(i) + (r() - 0.5) * 2.5 };
+    },
+    // Thinner toward the crest, where wind and rock win.
+    density: (_x, y) => 1 - THREE.MathUtils.smoothstep(y, -5, 2) * 0.75,
+  });
+  scene.add(buildForest(flankTrees, forestShading, 'Valley conifers', 7));
+  scene.add(buildForest(ridgeTrees, forestShading, 'Ridge conifers', 7, 0.55));
 
   // Sparse, low-contrast buildings belong to the valley; a few windows glow warm (HDR, they bloom).
   const walls = stoneMaterial('#5d6266', { key: 'deep-house-walls', scale: 2.5, bump: 0.6, stainAmount: 0.15, cavity: 0.3, strata: 0.1, drips: 0.05 });
@@ -145,10 +148,52 @@ export function buildDeepNightWorld(): WorldRecipe {
   houses.name = 'Valley houses'; houseRoofs.name = 'Valley roofs';
   scene.add(houses, houseRoofs);
 
-  // The overlook: a rough stone plinth, laid paving and a broken parapet.
-  const masonry = stoneMaterial('#6d7270', { key: 'deep-masonry', scale: 3, bump: 1.7, stain: '#5c4a36', stainAmount: 0.2, cavity: 0.62, strata: 0.3, drips: 0.12, dryRoughness: 0.86, moss: { color: '#46552f', amount: 0.6 } });
-  const paving = stoneMaterial('#767c78', { key: 'deep-paving', scale: 3.2, bump: 0.9, stain: '#6b5a44', stainAmount: 0.18, cavity: 0.5, strata: 0.15, drips: 0.0, dryRoughness: 0.8, moss: { color: '#3f4c2d', amount: 0.18 } });
-  const plinthGeometry = new THREE.CylinderGeometry(7.7, 8.6, 2.4, 96, 10, false);
+  // Distant village lights on the lower slopes across the valley, seen through the mist.
+  const villageParts: THREE.BufferGeometry[] = [];
+  const villageRandom = seeded(4407);
+  const villageCentres: THREE.Vector3[] = [];
+  for (let attempt = 0; attempt < 6000 && villageCentres.length < 5; attempt++) {
+    const i = Math.floor(villageRandom() * np.count);
+    const p = new THREE.Vector3(np.getX(i), np.getY(i), np.getZ(i));
+    if (nn.getY(i) < 0.86 || p.y > -6 || p.y < -11.5 || Math.abs(p.x) > 80) continue;
+    if (villageCentres.some((c) => c.distanceTo(p) < 20)) continue;
+    villageCentres.push(p);
+  }
+  for (const [index, centre] of villageCentres.entries()) {
+    const count = [14, 9, 6, 4, 3][index] ?? 3;
+    for (let k = 0, placed = 0; k < 600 && placed < count; k++) {
+      const i = Math.floor(villageRandom() * np.count);
+      const dx = np.getX(i) - centre.x, dz = np.getZ(i) - centre.z;
+      if (Math.hypot(dx, dz) > 1.5 + count * 0.15 || nn.getY(i) < 0.75) continue;
+      const g = new THREE.OctahedronGeometry(0.05 + villageRandom() * 0.04, 0);
+      g.translate(np.getX(i), np.getY(i) + 0.3, np.getZ(i));
+      const tint = new THREE.Color(windowColors[(index + k) % windowColors.length]).multiplyScalar(villageRandom() < 0.3 ? 4 : 10 + villageRandom() * 8);
+      const colors = new Float32Array(g.attributes.position.count * 3);
+      for (let v = 0; v < colors.length; v += 3) { colors[v] = tint.r; colors[v + 1] = tint.g; colors[v + 2] = tint.b; }
+      g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      g.deleteAttribute('uv'); g.deleteAttribute('normal');
+      villageParts.push(g);
+      placed++;
+    }
+  }
+  if (villageParts.length) {
+    const village = new THREE.Mesh(mergeGeometries(villageParts), new THREE.MeshBasicMaterial({ vertexColors: true }));
+    villageParts.forEach((g) => g.dispose());
+    village.name = 'Village lights';
+    scene.add(village);
+  }
+
+  // The lookout: laid paving behind a low rubble parapet with flat coping
+  // stones, and a timber seat built against it where the lantern stands.
+  const R = 6, CX = 0, CZ = 5;
+  const A0 = Math.PI * 1.12, A1 = Math.PI * 1.88;
+  const onArc = (angle: number, radius: number) => new THREE.Vector3(CX + Math.cos(angle) * radius, 0, CZ + Math.sin(angle) * radius);
+  const yawAt = (angle: number) => -angle + Math.PI / 2;
+  const masonry = stoneMaterial('#7a7b74', { key: 'deep-masonry', scale: 3.4, bump: 1.9, stain: '#5c4a36', stainAmount: 0.28, cavity: 0.7, strata: 0.35, drips: 0.18, dryRoughness: 0.88, moss: { color: '#4a5a31', amount: 0.55 } });
+  const coping = stoneMaterial('#85857c', { key: 'deep-coping', scale: 2.6, bump: 1.4, stain: '#5f5040', stainAmount: 0.22, cavity: 0.55, strata: 0.15, drips: 0.1, dryRoughness: 0.84, moss: { color: '#55663a', amount: 0.75 } });
+  const mortar = stoneMaterial('#5e5b54', { key: 'deep-mortar', scale: 9, bump: 0.6, stain: '#4a4036', stainAmount: 0.3, cavity: 0.35, strata: 0.0, drips: 0.25, dryRoughness: 0.95 });
+  const paving = stoneMaterial('#7a7e78', { key: 'deep-paving', scale: 3.2, bump: 1.0, stain: '#6b5a44', stainAmount: 0.2, cavity: 0.5, strata: 0.15, drips: 0.0, dryRoughness: 0.8, moss: { color: '#3f4c2d', amount: 0.25 } });
+  const plinthGeometry = new THREE.CylinderGeometry(R + 0.48, R + 1.2, 2.4, 96, 10, false);
   const pp = plinthGeometry.attributes.position as THREE.BufferAttribute;
   for (let i = 0; i < pp.count; i++) {
     const x = pp.getX(i), y = pp.getY(i), z = pp.getZ(i);
@@ -159,7 +204,7 @@ export function buildDeepNightWorld(): WorldRecipe {
     pp.setX(i, x * bulge); pp.setZ(i, z * bulge);
   }
   plinthGeometry.computeVertexNormals();
-  const plinth = mesh(plinthGeometry, masonry, [0, -1.48, 3.0]);
+  const plinth = mesh(plinthGeometry, masonry, [CX, -1.48, CZ]);
   plinth.castShadow = false;
   scene.add(plinth);
   const slabParts: THREE.BufferGeometry[] = [];
@@ -169,17 +214,21 @@ export function buildDeepNightWorld(): WorldRecipe {
     shape.moveTo(-w / 2 + cut, -d / 2); shape.lineTo(w / 2 - cut * .7, -d / 2); shape.lineTo(w / 2, -d / 2 + cut);
     shape.lineTo(w / 2, d / 2 - cut * 1.3); shape.lineTo(w / 2 - cut, d / 2); shape.lineTo(-w / 2 + cut * 1.2, d / 2);
     shape.lineTo(-w / 2, d / 2 - cut); shape.lineTo(-w / 2, -d / 2 + cut); shape.closePath();
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth: .05, bevelEnabled: true, bevelThickness: .012, bevelSize: .012, bevelSegments: 3, steps: 1 });
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth: .05, bevelEnabled: true, bevelThickness: .012, bevelSize: .012, bevelSegments: 2, steps: 1 });
     geometry.rotateX(-Math.PI / 2);
     geometry.deleteAttribute('uv');
     return geometry;
   }
-  for (let z = -1.9; z < 8; z += .76) {
-    for (let x = -6.3; x < 6.5; x += .86) {
+  const missingSlabs: THREE.Vector3[] = [];
+  for (let z = -1.1; z < 4.6; z += .76) {
+    for (let x = -4.6; x < 4.7; x += .86) {
       const px = x + (Math.round(z / .76) % 2) * .31 + (random() - .5) * .013;
-      if (px * px + (z - 3) * (z - 3) > 50) continue;
+      if (Math.hypot(px - CX, z - CZ) > R - 0.32) continue;
+      // A few slabs have sunk or gone; grass grows in their place.
+      if (random() < 0.035) { missingSlabs.push(new THREE.Vector3(px, -.2, z)); continue; }
       const g = pavingStone(.8 + random() * .03, .7 + random() * .03);
-      g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(px, -.24 + random() * .012, z), new THREE.Quaternion().setFromEuler(new THREE.Euler((random() - .5) * .012, (random() - .5) * .03, (random() - .5) * .012)), new THREE.Vector3(1, 1, 1)));
+      const tilt = random() < 0.2 ? .035 : .012;
+      g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(px, -.24 + random() * .014, z), new THREE.Quaternion().setFromEuler(new THREE.Euler((random() - .5) * tilt, (random() - .5) * .03, (random() - .5) * tilt)), new THREE.Vector3(1, 1, 1)));
       slabParts.push(g);
     }
   }
@@ -189,80 +238,132 @@ export function buildDeepNightWorld(): WorldRecipe {
   slabs.name = 'Laid paving';
   scene.add(slabs);
   // Joints between the slabs: dark soil and moss slightly below the paving.
-  const joints = mesh(new THREE.CircleGeometry(7.65, 64), createGroundMaterial({ key: 'deep-joints', soil: '#232621', litter: '#3a3a2e', litterAmount: 0.3, grass: '#34432c', grassAmount: 0.7, grassBias: 0.2, pebbleAmount: 0.2, scale: 2 }), [0, -.205, 3], [-Math.PI / 2, 0, 0]);
+  const joints = mesh(new THREE.CircleGeometry(R - 0.05, 96), createGroundMaterial({ key: 'deep-joints', soil: '#262822', litter: '#3a3a2e', litterAmount: 0.3, grass: '#34432c', grassAmount: 0.7, grassBias: 0.2, pebbleAmount: 0.2, scale: 2 }), [CX, -.205, CZ], [-Math.PI / 2, 0, 0]);
   joints.castShadow = false;
   scene.add(joints);
-  // A low dry-stone wall in two courses, with a few fallen gaps.
-  const parapetParts: THREE.BufferGeometry[] = [];
-  const course = (angleFrom: number, angleTo: number, baseY: number, height: [number, number], length: [number, number], depth: [number, number], seed: number, gaps: number) => {
-    let angle = angleFrom;
-    let k = 0;
-    while (angle < angleTo) {
-      const l = length[0] + random() * (length[1] - length[0]);
-      const step = l / 5.8;
-      const mid = angle + step * .5;
-      angle += step * (1.02 + random() * .05);
-      k++;
-      if (random() < gaps) continue;
-      const h = height[0] + random() * (height[1] - height[0]);
-      const g = boulderGeometry(seed + k * 13, 10, 5, 0.07, true);
-      const x = Math.cos(mid) * 6.15, z = 3 + Math.sin(mid) * 5.35;
-      g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, baseY + h * .5, z),
-        new THREE.Quaternion().setFromEuler(new THREE.Euler((random() - .5) * .08, -mid + Math.PI / 2 + (random() - .5) * .12, (random() - .5) * .1)),
-        new THREE.Vector3(l * .5, h * .5, (depth[0] + random() * (depth[1] - depth[0])) * .5)));
-      parapetParts.push(g);
-    }
-  };
-  course(Math.PI * 1.06, Math.PI * 1.94, -.22, [.24, .32], [.5, .78], [.42, .55], 913, .02);
-  course(Math.PI * 1.08, Math.PI * 1.92, .07, [.14, .22], [.36, .6], [.32, .44], 1913, .16);
-  for (let i = 0; i < 25; i++) {
-    const side = i % 2 ? 1 : -1;
-    const g = boulderGeometry(530 + i, 5);
-    g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(side * (4.8 + random() * 2.8), -.12 + random() * .09, -2.8 + random() * 7), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, random() * 6, 0)), new THREE.Vector3(.14 + random() * .3, .08 + random() * .1, .15 + random() * .24)));
-    parapetParts.push(g);
-  }
-  const parapet = mesh(mergeGeometries(parapetParts), masonry);
-  parapetParts.forEach((g) => g.dispose());
-  parapet.name = 'Broken parapet';
-  scene.add(parapet);
 
-  // Worn timber armrests in first person: edged boards, iron supports and bolts.
-  const wood = woodMaterial('#6f5a47', 'deep-bench', { axis: 'z', ring: 34, weathered: 0.45, roughness: 0.86 });
-  const darkWood = woodMaterial('#3b342d', 'deep-bench-dark', { axis: 'z', ring: 30, weathered: 0.2 });
+  // Lime-mortar core of the parapet: the rubble face stones sit proud of it.
+  const WALL_BASE = -0.22, WALL_TOP = 0.29;
+  const coreShape = new THREE.Shape();
+  const arcSteps = 72;
+  for (let k = 0; k <= arcSteps; k++) { const p = onArc(THREE.MathUtils.lerp(A0, A1, k / arcSteps), R + 0.035); if (k) coreShape.lineTo(p.x, -p.z); else coreShape.moveTo(p.x, -p.z); }
+  for (let k = arcSteps; k >= 0; k--) { const p = onArc(THREE.MathUtils.lerp(A0, A1, k / arcSteps), R + 0.4); coreShape.lineTo(p.x, -p.z); }
+  const coreGeometry = new THREE.ExtrudeGeometry(coreShape, { depth: WALL_TOP - WALL_BASE, bevelEnabled: false, curveSegments: 1 });
+  coreGeometry.rotateX(-Math.PI / 2);
+  coreGeometry.translate(0, WALL_BASE, 0);
+  coreGeometry.deleteAttribute('uv');
+  const core = mesh(coreGeometry, mortar);
+  core.name = 'Parapet mortar core';
+  scene.add(core);
+
+  // Rubble face: three rough courses of split stone, sizes and set varying, tight joints.
+  const faceParts: THREE.BufferGeometry[] = [];
+  const courses: Array<[number, number]> = [[WALL_BASE, 0.19], [WALL_BASE + 0.19, 0.17], [WALL_BASE + 0.36, 0.15]];
+  courses.forEach(([base, height], c) => {
+    let angle = A0 + random() * 0.05;
+    let k = 0;
+    while (angle < A1) {
+      const length = 0.26 + random() * 0.36 + (c === 0 ? 0.1 : 0);
+      const step = length / R;
+      const mid = angle + step * 0.5;
+      angle += step + 0.012 / R;
+      k++;
+      const h = height * (0.86 + random() * 0.12);
+      const depth = 0.22 + random() * 0.1;
+      const proud = 0.005 + random() * 0.04;
+      const g = boulderGeometry(3100 + c * 211 + k * 7, 3, 9, 0.075, true);
+      const centre = onArc(mid, R - proud + depth / 2);
+      centre.y = base + height * 0.5 + (random() - 0.5) * 0.02;
+      g.applyMatrix4(new THREE.Matrix4().compose(centre,
+        new THREE.Quaternion().setFromEuler(new THREE.Euler((random() - .5) * .06, yawAt(mid) + (random() - .5) * .08, (random() - .5) * .07)),
+        new THREE.Vector3(length / 2 - 0.009, h / 2 - 0.008, depth / 2)));
+      faceParts.push(g);
+    }
+  });
+  const face = mesh(mergeGeometries(faceParts), masonry);
+  faceParts.forEach((g) => g.dispose());
+  face.name = 'Rubble parapet';
+  scene.add(face);
+  // Flat coping slabs, slightly overhanging, chipped on their edges.
+  const copingParts: THREE.BufferGeometry[] = [];
+  for (let angle = A0, k = 0; angle < A1; k++) {
+    const length = 0.55 + random() * 0.3;
+    const step = length / (R + 0.2);
+    const mid = angle + step * 0.5;
+    angle += step + 0.014 / (R + 0.2);
+    const thickness = 0.085 + random() * 0.02;
+    const g = boulderGeometry(4700 + k * 13, 5, 10, 0.03, true);
+    const centre = onArc(mid, R + 0.19);
+    centre.y = WALL_TOP + thickness / 2 + 0.004;
+    g.applyMatrix4(new THREE.Matrix4().compose(centre,
+      new THREE.Quaternion().setFromEuler(new THREE.Euler((random() - .5) * .03, yawAt(mid) + (random() - .5) * .04, (random() - .5) * .025)),
+      new THREE.Vector3(length / 2 - 0.006, thickness / 2, 0.27)));
+    copingParts.push(g);
+  }
+  const copingMesh = mesh(mergeGeometries(copingParts), coping);
+  copingParts.forEach((g) => g.dispose());
+  copingMesh.name = 'Parapet coping';
+  scene.add(copingMesh);
+
+  // A timber seat built against the parapet on stone piers; the lantern stands on it.
+  const seatFrom = 2 * Math.PI - Math.acos(-0.2 / (R - 0.24)), seatTo = 2 * Math.PI - Math.acos(2.35 / (R - 0.24));
+  const pierAngles = [seatFrom + 0.012, (seatFrom + seatTo) / 2, seatTo - 0.012];
+  const pierParts: THREE.BufferGeometry[] = [];
+  pierAngles.forEach((angle, i) => {
+    const g = boulderGeometry(5200 + i * 17, 4, 9, 0.06, true);
+    const centre = onArc(angle, R - 0.2);
+    centre.y = WALL_BASE + 0.15;
+    g.applyMatrix4(new THREE.Matrix4().compose(centre, new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yawAt(angle) + (random() - .5) * .1, 0)), new THREE.Vector3(0.15, 0.15, 0.19)));
+    pierParts.push(g);
+  });
+  const piers = mesh(mergeGeometries(pierParts), masonry);
+  pierParts.forEach((g) => g.dispose());
+  piers.name = 'Seat piers';
+  scene.add(piers);
+  const seatWood = woodMaterial('#7d654c', 'deep-seat', { axis: 'x', ring: 26, weathered: 0.55, roughness: 0.82 });
   const iron = new THREE.MeshStandardMaterial({ color: '#3d4448', roughness: 0.6, metalness: 0.85 });
-  const bench = new THREE.Group();
-  function board(w: number, d: number, h: number, x: number, y: number, z: number, mat = wood) {
+  const SEAT_TOP = WALL_BASE + 0.3 + 0.07;
+  function plank(a: THREE.Vector3, b: THREE.Vector3, width: number, thickness: number) {
+    const lengthAB = a.distanceTo(b);
     const shape = new THREE.Shape();
-    const r = Math.min(.055, w / 5, d / 5);
+    const r = 0.03, w = lengthAB, d = width;
     shape.moveTo(-w / 2 + r, -d / 2); shape.lineTo(w / 2 - r, -d / 2); shape.quadraticCurveTo(w / 2, -d / 2, w / 2, -d / 2 + r);
     shape.lineTo(w / 2, d / 2 - r); shape.quadraticCurveTo(w / 2, d / 2, w / 2 - r, d / 2); shape.lineTo(-w / 2 + r, d / 2);
     shape.quadraticCurveTo(-w / 2, d / 2, -w / 2, d / 2 - r); shape.lineTo(-w / 2, -d / 2 + r); shape.quadraticCurveTo(-w / 2, -d / 2, -w / 2 + r, -d / 2);
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: true, bevelThickness: .009, bevelSize: .009, bevelSegments: 3, steps: 1, curveSegments: 6 });
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: true, bevelThickness: .008, bevelSize: .008, bevelSegments: 2, steps: 1, curveSegments: 4 });
     geometry.rotateX(-Math.PI / 2);
-    const item = mesh(geometry, mat, [x, y, z]);
-    bench.add(item);
-    return item;
+    const item = mesh(geometry, seatWood, [(a.x + b.x) / 2, SEAT_TOP - thickness, (a.z + b.z) / 2], [0, -Math.atan2(b.z - a.z, b.x - a.x), 0]);
+    item.name = 'Seat plank';
+    scene.add(item);
+    // Hand-forged spikes hold it to the piers.
+    for (const end of [a, b]) {
+      const t = end.clone().lerp(a.clone().add(b).multiplyScalar(0.5), 0.07 / Math.max(lengthAB, 0.1));
+      scene.add(mesh(new THREE.CylinderGeometry(.013, .015, .008, 10), iron, [t.x, SEAT_TOP + .002, t.z]));
+    }
   }
-  for (const side of [-1, 1]) {
-    board(.23, 2.15, .095, side * .64, .79, 3.01);
-    bench.add(beam(new THREE.Vector3(side * .64, -.12, 2.25), new THREE.Vector3(side * .64, .77, 2.25), .045, iron));
-    bench.add(beam(new THREE.Vector3(side * .64, -.12, 3.9), new THREE.Vector3(side * .64, .77, 3.9), .045, iron));
-    board(.08, 1.68, .09, side * .64, .03, 3.05, darkWood);
-    for (const z of [2.09, 3.94]) bench.add(mesh(new THREE.CylinderGeometry(.019, .021, .01, 16), iron, [side * .64, .894, z]));
+  for (let i = 0; i < 2; i++) {
+    const a = onArc(pierAngles[i] - (i === 0 ? 0.01 : 0), R - 0.22), b = onArc(pierAngles[i + 1] + (i === 1 ? 0.01 : 0), R - 0.22);
+    plank(a, b, 0.36, 0.07);
   }
-  const seatWood = woodMaterial('#6f5a47', 'deep-bench-seat', { axis: 'x', ring: 34, weathered: 0.45, roughness: 0.86 });
-  for (let i = 0; i < 4; i++) board(1.74, .18, .065, 0, .16, 3.73 + i * .195, seatWood);
-  scene.add(bench);
 
-  // A short reclaimed stone shelf places the lantern within reach and the portrait composition.
-  const shelfGeometry = boulderGeometry(435, 16, 12, 0.13);
-  const shelf = mesh(shelfGeometry, masonry, [.93, .02, .35]);
-  shelf.scale.set(.62, .3, .45);
-  scene.add(shelf);
-  const lamp = lantern([.93, .32, .35], .72);
+  const lampAngle = 2 * Math.PI - Math.acos(0.62 / (R - 0.22));
+  const lampSpot = onArc(lampAngle, R - 0.22);
+  const lamp = lantern([lampSpot.x, SEAT_TOP, lampSpot.z], .72);
   scene.add(lamp.group);
-  const lanternBounce = new THREE.PointLight('#f4b067', 1.0, 3.8, 2);
-  lanternBounce.position.set(.93, .62, .35);
+  // The lantern throws soft shadows of its own frame; the map renders only on layout changes.
+  const lampLight = lamp.group.children.find((child): child is THREE.PointLight => child instanceof THREE.PointLight);
+  if (lampLight) {
+    lampLight.castShadow = true;
+    lampLight.shadow.mapSize.set(512, 512);
+    lampLight.shadow.radius = 5;
+    lampLight.shadow.bias = -0.003;
+    lampLight.shadow.normalBias = 0.02;
+    lampLight.shadow.camera.near = 0.05;
+    lampLight.shadow.camera.far = 6;
+  }
+  // Warm light returned by the seat and paving around the lamp.
+  const lanternBounce = new THREE.PointLight('#f4b067', 0.55, 4.2, 2);
+  lanternBounce.position.set(lampSpot.x - 0.05, SEAT_TOP + 0.12, lampSpot.z + 0.45);
   scene.add(lanternBounce);
 
   // Small alpine grass ribbons, rooted among the margins, respond only to a slow breeze.
@@ -283,16 +384,25 @@ export function buildDeepNightWorld(): WorldRecipe {
       if (j < 3) { const a = start + j * 2; bladeIndices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
     }
   }
-  for (let i = 0; i < 900; i++) {
-    const a = Math.PI * (1.02 + random() * .95);
-    const radius = 5.2 + random() * 1.6;
-    const x = Math.cos(a) * radius, z = 3 + Math.sin(a) * radius * .86;
+  // Tufts along the foot of the parapet, in sunk slabs and joints, and a few on the coping.
+  for (let i = 0; i < 520; i++) {
+    const a = THREE.MathUtils.lerp(A0, A1, random());
+    if (random() > 0.35 + 0.65 * Math.abs(Math.sin(a * 9.0 + 1.3))) continue;
+    const p = onArc(a, R - 0.01 - Math.pow(random(), 1.6) * 0.3);
     const tint = grassTints[i % grassTints.length];
-    for (let j = 0; j < 4; j++) grassBlade(x + random() * .11, -.16, z + random() * .11, .13 + random() * .29, random() * Math.PI * 2, tint);
+    for (let j = 0; j < 4; j++) grassBlade(p.x + (random() - .5) * .1, -.2, p.z + (random() - .5) * .1, .1 + random() * .3, random() * Math.PI * 2, tint);
   }
-  for (let i = 0; i < 70; i++) {
-    const x = 1.64 + random() * .44, z = -.25 + random() * 1.25;
-    for (let j = 0; j < 3; j++) grassBlade(x, -.2, z, .11 + random() * .2, random() * 6.28, grassTints[i % 4]);
+  for (const spot of missingSlabs) {
+    for (let j = 0; j < 30; j++) grassBlade(spot.x + (random() - .5) * .6, -.205, spot.z + (random() - .5) * .5, .06 + random() * .16, random() * 6.28, grassTints[j % 4]);
+  }
+  for (let i = 0; i < 90; i++) {
+    const x = (random() - .5) * 8, z = random() * 4.8;
+    if (Math.hypot(x - CX, z - CZ) > R - 0.4) continue;
+    for (let j = 0; j < 3; j++) grassBlade(x + (random() - .5) * .05, -.205, z + (random() - .5) * .05, .04 + random() * .1, random() * 6.28, grassTints[i % 4]);
+  }
+  for (let i = 0; i < 26; i++) {
+    const p = onArc(THREE.MathUtils.lerp(A0, A1, random()), R + 0.05 + random() * 0.3);
+    for (let j = 0; j < 5; j++) grassBlade(p.x + (random() - .5) * .06, WALL_TOP + 0.09, p.z + (random() - .5) * .06, .07 + random() * .16, random() * 6.28, grassTints[(i + j) % 4]);
   }
   const grassGeometry = new THREE.BufferGeometry();
   grassGeometry.setAttribute('position', new THREE.Float32BufferAttribute(bladePositions, 3));
@@ -313,6 +423,36 @@ export function buildDeepNightWorld(): WorldRecipe {
   const grasses = new THREE.Mesh(grassGeometry, grassMaterial);
   grasses.receiveShadow = true;
   scene.add(grasses);
+
+  // Two old spruces grow on rocky ledges below the lookout. Their crowns rise past
+  // the parapet and frame the valley; the needle cards sway slowly and the moon
+  // throws their shadow toward the terrace.
+  const swayTime = { value: 0 };
+  const LEDGE_Y = -1.6;
+  const framingNeedles = addTreeSway(createFoliageMaterial(needleSprayTexture(41, '#26352a'), 'deep-framing-spruce'), swayTime, LEDGE_Y, 9, 'deep-framing');
+  // The moon dominates the radiance probe: keep it from frosting the needle cards.
+  framingNeedles.envMapIntensity = 0.35;
+  framingNeedles.color.setScalar(0.6);
+  const framingBark = addTreeSway(barkMaterial('#4a3f36', 'deep-framing-bark', { furrows: 6, lichen: 0.35 }), swayTime, LEDGE_Y, 9, 'deep-framing-bark');
+  const framingWood: THREE.BufferGeometry[] = [], framingFoliage: THREE.BufferGeometry[] = [], ledgeParts: THREE.BufferGeometry[] = [];
+  for (const [x, z, height, seed] of [[-5.7, -2.3, 9, 61], [6.3, -3.7, 8, 83]] as Array<[number, number, number, number]>) {
+    const { wood, foliage } = coniferGeometry({ height, seed, spread: 0.22, clearTrunk: 0.1, lean: 0.07 });
+    const placement = new THREE.Matrix4().compose(new THREE.Vector3(x, LEDGE_Y, z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), seed * 1.37), new THREE.Vector3(1, 1, 1));
+    wood.applyMatrix4(placement); foliage.applyMatrix4(placement);
+    framingWood.push(wood); framingFoliage.push(foliage);
+    for (let k = 0; k < 4; k++) {
+      const g = boulderGeometry(7300 + seed + k, 4, 10, 0.12);
+      g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x + (random() - .5) * 2.2, LEDGE_Y - 0.2, z + (random() - .5) * 2.2), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, random() * 6, 0)), new THREE.Vector3(0.8 + random() * 0.6, 0.5 + random() * 0.4, 0.7 + random() * 0.5)));
+      ledgeParts.push(g);
+    }
+  }
+  const framingTrunks = mesh(mergeGeometries(framingWood), framingBark);
+  const framingCrowns = mesh(mergeGeometries(framingFoliage), framingNeedles);
+  const ledges = mesh(mergeGeometries(ledgeParts), masonry);
+  framingWood.concat(framingFoliage, ledgeParts).forEach((g) => g.dispose());
+  framingTrunks.name = 'Framing spruce trunks'; framingCrowns.name = 'Framing spruce crowns'; ledges.name = 'Rock ledges';
+  ledges.castShadow = false;
+  scene.add(framingTrunks, framingCrowns, ledges);
 
   // Irregular brush on the flank: branching stems merged into one draw.
   const brushParts: THREE.BufferGeometry[] = [];
@@ -342,6 +482,8 @@ export function buildDeepNightWorld(): WorldRecipe {
   brushParts.forEach((g) => g.dispose());
   scene.add(brush);
 
+  const bounceGain = 1.6;
+  lanternBounce.intensity = 0.7 * bounceGain;
   let bounceTarget = lanternBounce.intensity;
   let bounceChanged = false;
   let environment: THREE.WebGLRenderTarget | null = null;
@@ -349,22 +491,16 @@ export function buildDeepNightWorld(): WorldRecipe {
   return {
     scene,
     view: aspect => {
-      // Step the narrow view forward so the near armrest cannot hide the lamp.
-      // Restore all three objects on widening; the desktop/Fold layout is fixed.
+      // A narrow screen stands a step closer; the lantern on the seat stays in both framings.
       const portrait = aspect < .8;
-      const lampX = portrait ? .65 : .93;
-      shelf.position.x = lampX;
-      lamp.group.position.x = lampX;
-      lanternBounce.position.x = lampX;
-      if (volumeUniforms) volumeUniforms.uGlowPos.value.set(lampX, .6, .35);
       return portrait
-        ? { position: [.15, 1.39, 3.12], target: [.2, 2.4, -30], fov: 62 }
-        : { position: [0, 1.38, 3.62], target: [.3, 2.6, -32], fov: 53 };
+        ? { position: [.15, 1.39, 3.12], target: [.2, 1.68, -30], fov: 62 }
+        : { position: [0, 1.38, 3.62], target: [.3, 1.69, -32], fov: 53 };
     },
     targets: [{ object: lamp.target, kind: 'lantern-brightness' }],
     interact: () => {
       const level = lamp.toggle();
-      bounceTarget = level * 1.45;
+      bounceTarget = level * bounceGain;
       bounceChanged = true;
       return level;
     },
@@ -375,14 +511,17 @@ export function buildDeepNightWorld(): WorldRecipe {
     prepare(renderer) {
       environment = bakeNightEnvironment(renderer, sky.dome, '#0b0e12');
       scene.environment = environment.texture;
-      scene.environmentIntensity = 1.0;
+      scene.environmentIntensity = 1.8;
     },
     createVolume() {
       const volume = createNightVolume({
-        noise, moonDirection: moonDir, moon: new THREE.Color(0.075, 0.085, 0.11), ambient: new THREE.Color(0.012, 0.016, 0.026),
-        fogDensity: 0.0042, fogHeight: 22, fogBase: -10, maxDistance: 480,
-        mist: { y: -7.5, thickness: 4.5, density: 0.022, start: 18, tint: new THREE.Color(0.95, 1.0, 1.1) },
-        glow: { position: new THREE.Vector3(lamp.group.position.x, .6, .35), color: new THREE.Color(1.0, 0.62, 0.3), density: 0.0035 },
+        noise, moonDirection: moonDir, moon: new THREE.Color(0.055, 0.064, 0.086), ambient: new THREE.Color(0.012, 0.016, 0.026), phase: 0.4,
+        fogDensity: 0.003, fogHeight: 13, fogBase: -12, maxDistance: 480,
+        // Valley mist pools below the ridges and drifts slowly across the basin.
+        mist: { y: -7, thickness: 4, density: 0.03, start: 18, tint: new THREE.Color(0.95, 1.0, 1.1), drift: new THREE.Vector2(0.0035, 0.0012), contrast: 1.6 },
+        // Fog lying between the far ridges: their feet fade, their crests stand clear.
+        upperMist: { y: 2, thickness: 3.5, density: 0.006, start: 95 },
+        glow: { position: new THREE.Vector3(lampSpot.x, SEAT_TOP + 0.2, lampSpot.z), color: new THREE.Color(1.0, 0.62, 0.3), density: 0.0035 },
       });
       volumeUniforms = volume.uniforms;
       return volume;
@@ -390,12 +529,15 @@ export function buildDeepNightWorld(): WorldRecipe {
     setPostActive(active) { scene.fog = active ? null : fallbackFog; },
     update: (elapsed, dt) => {
       grassTime.value = elapsed;
+      swayTime.value = elapsed;
       sky.update(elapsed);
       lamp.update(elapsed, dt);
+      // Here the lantern is the only warm key: a stronger, wider pool than on a camp table.
+      if (lampLight) lampLight.intensity *= 2.4;
       if (dt === 0 && bounceChanged) lanternBounce.intensity = bounceTarget;
       bounceChanged = false;
       lanternBounce.intensity += (bounceTarget - lanternBounce.intensity) * (1 - Math.exp(-Math.max(0, dt) * 2.4));
-      if (volumeUniforms) volumeUniforms.uFlicker.value = lanternBounce.intensity / 1.45 + 0.2;
+      if (volumeUniforms) volumeUniforms.uFlicker.value = lanternBounce.intensity / bounceGain + 0.2;
     },
     dispose() { environment?.dispose(); environment = null; },
   };

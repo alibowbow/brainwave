@@ -6,8 +6,9 @@ import { withSharedGlsl } from '../shared/render/translucentSurface';
  *  - Wood: grain runs along each board's own long axis (a per-vertex `grain`
  *    attribute written before the static geometry is merged), with growth
  *    rings, sparse knots, weathered silver-grey tops and darker, damp feet.
- *  - Plaster: lime render with broad tonal patches, damp staining rising from
- *    the plinth, hairline cracks kept sparse, and a stucco bump.
+ *  - Plaster: lime render tinted per house, with broad tonal patches, rain
+ *    streaks, damp staining rising from the plinth, spalled patches showing
+ *    coursed rubble, hairline cracks kept sparse, and a stucco bump.
  * Both chain with other onBeforeCompile hooks (snow cover is added on top).
  */
 
@@ -25,6 +26,36 @@ float villageGround(vec3 p) {
   float banks = smoothstep(1.6, 4.5, d);
   return -0.17 + banks * (0.31 + sin(p.z * 0.6 + p.x) * 0.07) + sin(p.x * 0.83 + p.z * 0.39) * 0.024 + cos(p.z * 0.73) * 0.025;
 }
+`;
+
+/**
+ * Warm wall lanterns beside the doors: up to four analytic point lights (xyz, intensity) that
+ * only the village plaster, timber and ground snow evaluate, instead of adding scene lights
+ * that every material would loop over.
+ */
+export interface DoorLamps { positions: THREE.Vector4[]; color: THREE.Color }
+export function createDoorLamps(): DoorLamps {
+  return { positions: Array.from({ length: 4 }, () => new THREE.Vector4(0, -100, 0, 0)), color: new THREE.Color(1, .62, .3) };
+}
+/** GLSL declarations for `doorLampWash(worldPos, worldNormal)`. */
+export const GLSL_DOOR_LAMPS = /* glsl */ `
+uniform vec4 uDoorLamp[4];
+uniform vec3 uDoorLampColor;
+vec3 doorLampWash(vec3 p, vec3 n) {
+  vec3 wash = vec3(0.0);
+  for (int i = 0; i < 4; i++) {
+    vec3 l = uDoorLamp[i].xyz - p;
+    float d2 = dot(l, l);
+    wash += uDoorLamp[i].w * max(dot(n, l * inversesqrt(d2)), 0.0) / (d2 + .04);
+  }
+  return wash * uDoorLampColor;
+}
+`;
+export function doorLampUniforms(lamps: DoorLamps) {
+  return { uDoorLamp: { value: lamps.positions }, uDoorLampColor: { value: lamps.color } };
+}
+const DOOR_LAMP_LIGHT = /* glsl */ `
+reflectedLight.directDiffuse += doorLampWash(vVillageWorld, normalize(inverseTransformDirection(normal, viewMatrix))) * BRDF_Lambert(material.diffuseContribution);
 `;
 
 function worldVaryings(shader: THREE.WebGLProgramParametersWithUniforms, extraAttribute = '') {
@@ -45,6 +76,7 @@ export interface WoodOptions {
   /** Strength of the grain bump. */
   bump?: number;
   roughness?: number;
+  lamps?: DoorLamps;
 }
 
 /** Boards whose grain follows their own long axis. Geometry must carry a `grain` vec3 attribute. */
@@ -54,6 +86,12 @@ export function createWoodMaterial(color: THREE.ColorRepresentation, options: Wo
   material.userData.grain = true;
   material.onBeforeCompile = (shader) => {
     worldVaryings(shader, 'attribute vec3 grain;');
+    if (o.lamps) {
+      Object.assign(shader.uniforms, doorLampUniforms(o.lamps));
+      shader.fragmentShader = shader.fragmentShader
+        .replace('void main() {', `${GLSL_DOOR_LAMPS}\nvoid main() {`)
+        .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>\n${DOOR_LAMP_LIGHT}`);
+    }
     shader.fragmentShader = shader.fragmentShader
       .replace('void main() {', `${GLSL_VILLAGE_GROUND}
 float woodGrain(vec3 p, vec3 axis, out float knot) {
@@ -91,7 +129,7 @@ normal = bwSurfaceBump(-vViewPosition, normal, (woodG * .0016 - woodKnot * .002)
 `);
   };
   const base = material.customProgramCacheKey.bind(material);
-  material.customProgramCacheKey = () => `${base()}|village-wood-v1|${o.key}`;
+  material.customProgramCacheKey = () => `${base()}|village-wood-v2|${o.key}|${o.lamps ? 'lamps' : ''}`;
   return material;
 }
 
@@ -100,35 +138,84 @@ export interface PlasterOptions {
   /** Damp/grime colour rising from the plinth. */
   grime?: THREE.ColorRepresentation;
   bump?: number;
+  /**
+   * Per-house limewash: the nearest centre (xz) picks a tint and a weathering seed, so one
+   * merged material still gives every house its own colour, stains and bare patches. Up to 8.
+   */
+  houses?: Array<{ centre: THREE.Vector3; tint: THREE.ColorRepresentation }>;
+  lamps?: DoorLamps;
 }
 
-/** Lime render: tonal patches, rising damp, sparse hairline cracks, stucco relief. */
+/**
+ * Lime render: per-house tint, tonal patches, rain streaks running down the walls,
+ * rising damp, spalled patches showing coursed rubble beneath, sparse hairline cracks, stucco relief.
+ */
 export function createPlasterMaterial(color: THREE.ColorRepresentation, options: PlasterOptions) {
   const o = { grime: '#5d5648', bump: 1, ...options };
+  const houses = (o.houses ?? []).slice(0, 8);
+  const centres = Array.from({ length: 8 }, (_, i) => houses[i] ? new THREE.Vector3(houses[i].centre.x, i * 7.31, houses[i].centre.z) : new THREE.Vector3(0, i * 7.31, 1e4));
+  const tints = Array.from({ length: 8 }, (_, i) => { const c = new THREE.Color(houses[i]?.tint ?? '#ffffff'); return new THREE.Vector3(c.r, c.g, c.b); });
   const material = new THREE.MeshStandardMaterial({ color, roughness: .94, metalness: 0 });
   material.onBeforeCompile = (shader) => {
     worldVaryings(shader);
+    shader.uniforms.uHouseCentre = { value: centres };
+    shader.uniforms.uHouseTint = { value: tints };
+    if (o.lamps) {
+      Object.assign(shader.uniforms, doorLampUniforms(o.lamps));
+      shader.fragmentShader = shader.fragmentShader
+        .replace('void main() {', `${GLSL_DOOR_LAMPS}\nvoid main() {`)
+        .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>\n${DOOR_LAMP_LIGHT}`);
+    }
     shader.fragmentShader = shader.fragmentShader
-      .replace('void main() {', `${GLSL_VILLAGE_GROUND}\nvoid main() {`)
+      .replace('void main() {', `${GLSL_VILLAGE_GROUND}
+uniform vec3 uHouseCentre[8];
+uniform vec3 uHouseTint[8];
+void main() {`)
       .replace('#include <color_fragment>', `#include <color_fragment>
 vec3 pp = vVillageWorld;
+vec3 pTint = vec3(1.0);
+float pSeed = 0.0;
+{
+  float best = 1e9;
+  for (int i = 0; i < 8; i++) {
+    vec2 d = pp.xz - uHouseCentre[i].xz;
+    float dd = dot(d, d);
+    if (dd < best) { best = dd; pTint = uHouseTint[i]; pSeed = uHouseCentre[i].y; }
+  }
+}
+vec3 pq = pp + pSeed;
 float pFine = clamp(1.4 - length(fwidth(pp)) * 18.0, 0.0, 1.0);
-float pPatch = bwFbm3(pp * .55 + 4.0);
+float pPatch = bwFbm3(pq * .55 + 4.0);
 float pStucco = bwNoise(pp * 14.0) * pFine;
-float pCrack = pow(1.0 - abs(bwNoise(pp * vec3(1.3, 2.1, 1.3) + 9.0)), 30.0) * smoothstep(.1, .5, bwNoise(pp * .4 + 2.0)) * pFine;
+float pCrack = pow(1.0 - abs(bwNoise(pq * vec3(1.3, 2.1, 1.3) + 9.0)), 30.0) * smoothstep(.1, .5, bwNoise(pq * .4 + 2.0)) * pFine;
 float pHeight = pp.y - villageGround(pp);
 float pDamp = (1.0 - smoothstep(.15, .7 + .35 * bwNoise(pp * 1.3), pHeight));
-vec3 pColor = diffuseColor.rgb * (.86 + .2 * pPatch + .05 * pStucco);
-pColor = mix(pColor, ${glsl(o.grime)}, pDamp * .55);
+// Rain streaks run straight down the wall, strongest in a few broad stained bands.
+vec3 pn = normalize(vVillageNormal);
+float pAcross = dot(pp.xz, normalize(vec2(-pn.z, pn.x) + 1e-5));
+float pStreak = smoothstep(.15, .75, bwNoise(vec3(pAcross * 7.0, pp.y * .45, pSeed))) * smoothstep(-.2, .45, bwNoise(vec3(pAcross * 1.1, pp.y * .25, pSeed + 3.0)));
+pStreak *= (1.0 - abs(pn.y)) * mix(.4, 1.0, pFine);
+// Spalled limewash: coursed rubble shows through in a few patches, most often low on the wall.
+float pBare = smoothstep(.2, .26, bwFbm3(pq * vec3(.9, 1.4, .9) + 11.0) + .3 * (1.0 - smoothstep(.2, 1.4, pHeight)) - .16) * (1.0 - abs(pn.y));
+float pCourse = floor(pp.y * 6.5);
+vec2 pBlock = vec2(pAcross * 4.2 + pCourse * .5, pp.y * 6.5);
+float pStone = bwHash3(vec3(floor(pBlock), pSeed)).x;
+vec2 pJoint = abs(fract(pBlock) - .5);
+float pMortar = smoothstep(.36, .46, max(pJoint.x * .6, pJoint.y));
+vec3 pStoneColor = mix(vec3(.30, .27, .23), vec3(.46, .41, .34), pStone) * (1.0 - .45 * pMortar);
+vec3 pColor = diffuseColor.rgb * pTint * (.8 + .34 * pPatch + .07 * pStucco);
+pColor = mix(pColor, pColor * vec3(.66, .66, .62), pStreak * .65);
+pColor = mix(pColor, ${glsl(o.grime)} * mix(vec3(1.0), pTint, .5), pDamp * .6);
 pColor *= 1.0 - pCrack * .35;
+pColor = mix(pColor, pStoneColor, pBare);
 diffuseColor.rgb = pColor;
 `)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-normal = bwSurfaceBump(-vViewPosition, normal, pStucco * .0012 + pPatch * .004 - pCrack * .0008, ${f(o.bump)});
+normal = bwSurfaceBump(-vViewPosition, normal, pStucco * .0012 + pPatch * .004 - pCrack * .0008 - pBare * (.006 + pMortar * .004 * pFine), ${f(o.bump)});
 `);
   };
   const base = material.customProgramCacheKey.bind(material);
-  material.customProgramCacheKey = () => `${base()}|village-plaster-v1|${o.key}`;
+  material.customProgramCacheKey = () => `${base()}|village-plaster-v3|${o.key}|${o.lamps ? 'lamps' : ''}`;
   return material;
 }
 

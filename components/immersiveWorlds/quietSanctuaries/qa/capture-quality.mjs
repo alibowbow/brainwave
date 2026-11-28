@@ -1,18 +1,21 @@
-// Visual quality captures for the warm-heart and snow-village worlds: builds the
-// isolated QA harness, serves it, renders each world and writes lossless PNGs
-// for side-by-side review.
+// Visual quality captures for the quiet sanctuaries (warm heart, snow village and the
+// meditation world): builds the isolated QA harness, serves it, renders each world and
+// writes lossless PNGs for side-by-side review.
 //   SANCTUARY_CAPTURE_OUTPUT=/tmp/claude-0/quietSanctuaries-captures/after node components/immersiveWorlds/quietSanctuaries/qa/capture-quality.mjs
 // SANCTUARY_CAPTURE_ACTIVE=<frames> runs the animation and captures after that
 // many frames (snow must fall, the warm space must breathe);
-// SANCTUARY_CAPTURE_QUERY=post=off captures the direct renderer;
+// SANCTUARY_CAPTURE_QUERY=post=off captures the direct renderer, t=<seconds> starts the
+// scene clock later (compare moments without long animated runs on slow rasterisers);
 // SANCTUARY_CAPTURE_WORLDS / SANCTUARY_CAPTURE_VIEWPORTS narrow the run;
 // SANCTUARY_CAPTURE_PORT overrides the preview port (default 4317);
 // SANCTUARY_CAPTURE_TAP=x,y (CSS pixels as viewport fractions) taps the scene
 // before an active capture. Any page or shader error fails the run.
+// The harness has no public directory; files under /immersive-worlds/ are answered from
+// the repository's public/ (the meditation world's assets: run scripts/prepare-mosi-assets.mjs).
 // SwiftShader output grades appearance only, never device speed.
 import { build, preview } from 'vite';
 import { chromium } from 'playwright-core';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const config = 'components/immersiveWorlds/quietSanctuaries/qa/vite.config.ts';
@@ -41,6 +44,11 @@ try {
   for (const world of worlds) {
     for (const [name, width, height] of viewports) {
       const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+      await page.route('**/immersive-worlds/**', async (route) => {
+        const file = path.resolve('public', decodeURIComponent(new URL(route.request().url()).pathname).replace(/^\/+/, ''));
+        if (file.startsWith(path.resolve('public') + path.sep) && await access(file).then(() => true, () => false)) await route.fulfill({ path: file });
+        else await route.fulfill({ status: 404, body: '' });
+      });
       page.setDefaultTimeout(activeFrames ? 2400000 : 900000);
       page.on('pageerror', error => report.errors.push(`${world}/${name}: ${error.message}`));
       page.on('console', message => {

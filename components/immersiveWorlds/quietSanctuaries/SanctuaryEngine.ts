@@ -8,6 +8,9 @@ import type { SanctuaryBuilder, SanctuaryKind, SanctuaryWorld } from './worldTyp
 // The isolated QA harness can request the previous direct path for comparisons.
 let directPreferred = false;
 export function preferDirectSanctuaryRendering(value: boolean) { directPreferred = value; }
+// The QA harness can start the scene clock later (`t=<seconds>`) to compare moments on slow rasterisers.
+let qaStartTime = 0;
+export function setSanctuaryQaStartTime(seconds: number) { qaStartTime = Number.isFinite(seconds) && seconds > 0 ? seconds : 0; }
 
 let nextEngineId = 0;
 export class SanctuaryEngine implements LiveSceneEngine {
@@ -42,6 +45,7 @@ export class SanctuaryEngine implements LiveSceneEngine {
     canvas.addEventListener('webglcontextlost', this.lost);
   }
   async init() {
+    this.elapsed = qaStartTime;
     const world = this.build(this.renderer);
     this.world = world;
     // Worlds opt in to HDR with post settings; the others keep the direct path untouched.

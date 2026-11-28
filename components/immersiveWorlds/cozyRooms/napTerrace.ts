@@ -12,7 +12,7 @@ import { GLSL_NOISE } from '../shared/render/glsl';
 import { fbm3, noise3, seeded } from '../shared/render/noise';
 import { cypressSprayAtlas, meadowAtlas, MEADOW_VARIANTS, oliveSprayAtlas, type MeadowVariant } from './gardenPaint';
 import {
-  TO_SUN, blobGeometry, buildCypress, buildOlive, createGardenVolume, farmhouseGeometry, groundY, groveOlive, instanceTufts, meadowDry,
+  OLIVE_BARK, TO_SUN, blobGeometry, groundBounce, buildCypress, buildOlive, createGardenVolume, farmhouseGeometry, groundY, groveOlive, instanceTufts, meadowDry,
   meadowLush, mergeCrowns, oliveCanopy, pathX, ridgeGeometry, ridgeSurface, shadowDecals, tuftGeometry, type Crown, type OliveSpec, type TuftPlacement,
 } from './napGarden';
 
@@ -37,8 +37,10 @@ void main() {
   float h = max(d.y, -0.05);
   // Deep afternoon zenith over a warm, hazy horizon; brighter toward the sun's azimuth.
   float toward = dot(normalize(vec3(d.x, 0.0, d.z) + 1e-5), normalize(vec3(uSun.x, 0.0, uSun.z))) * 0.5 + 0.5;
-  vec3 zenith = vec3(0.07, 0.2, 0.58), horizon = mix(vec3(0.62, 0.68, 0.76), vec3(0.95, 0.86, 0.72), pow(toward, 3.0));
-  vec3 sky = mix(horizon, zenith, pow(smoothstep(-0.02, 0.85, h), 0.55));
+  vec3 zenith = vec3(0.06, 0.2, 0.66), horizon = mix(vec3(0.36, 0.52, 0.84), vec3(0.96, 0.88, 0.74), pow(toward, 5.0));
+  vec3 sky = mix(horizon, zenith, pow(clamp(h / 0.55, 0.0, 1.0), 0.55));
+  // A thin warm dust band right on the horizon.
+  sky = mix(sky, vec3(0.94, 0.87, 0.76), exp(-max(h, 0.0) * 30.0) * 0.4);
   float mu = dot(d, uSun);
   sky += vec3(1.0, 0.86, 0.62) * (pow(max(mu, 0.0), 6.0) * 0.45 + pow(max(mu, 0.0), 90.0) * 2.5);
   // Small fair-weather cumulus low over the hills, lit on the sun side.
@@ -90,6 +92,21 @@ function leafGeometry() {
 
 const srgb = (h: number, s: number, l: number) => new THREE.Color().setHSL(h, s, l, THREE.SRGBColorSpace);
 
+/**
+ * Old olive bark is split by broad, deep furrows rather than hairline cracks:
+ * widens barkSurface's fissure band (left as is if that line ever changes).
+ */
+function deepFurrows<T extends THREE.MeshStandardMaterial>(material: T, width: number): T {
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    shader.fragmentShader = shader.fragmentShader.replace('float fiss = 1.0 - smoothstep(0.0, 0.2, abs(n));', `float fiss = 1.0 - smoothstep(0.02, ${width.toFixed(3)}, abs(n));`);
+  };
+  const key = material.customProgramCacheKey.bind(material);
+  material.customProgramCacheKey = () => `${key()}|nap-furrows-${width}`;
+  return material;
+}
+
 export function createNapTerraceWorld(): WorldBuild {
   const rng = randomSeed(48203);
   const scene = new THREE.Scene();
@@ -101,7 +118,7 @@ export function createNapTerraceWorld(): WorldBuild {
   // ---- Garden: olives, cypresses and the canopy they cast --------------------------------------------
   const oliveSpecs: OliveSpec[] = [
     // The old tree at the terrace's left corner: its crown reaches over the sail.
-    { seed: 81, x: -5.6, z: -5.9, strands: 3, girth: 0.5, split: 1.45, crown: 5.4, lean: [0.55, 0.9], open: 0.7, reach: 1.25, twist: 1.3, detail: 'hero', leafSize: 0.44, cards: 15 },
+    { seed: 81, x: -5.2, z: -5.6, strands: 3, girth: 0.5, split: 1.45, crown: 4.8, lean: [0.55, 0.9], open: 0.7, reach: 1.25, twist: 1.3, crownLean: [2.4, 2.2], gnarl: 1.3, scaffold: { limbs: 2, length: 2.7 }, detail: 'hero', leafSize: 0.44, cards: 10 },
     { seed: 832, x: 5.4, z: -10.2, strands: 2, girth: 0.36, split: 1.15, crown: 4.3, lean: [-0.2, 0.15], reach: 1.0, detail: 'mid', leafSize: 0.56, cards: 12 },
     { seed: 279, x: -1.6, z: -16.0, strands: 3, girth: 0.4, split: 1.0, crown: 3.9, reach: 0.95, detail: 'mid', leafSize: 0.6, cards: 11 },
     { seed: 11, x: -10.2, z: -12.2, strands: 2, girth: 0.4, split: 1.25, crown: 4.6, reach: 1.05, detail: 'mid', leafSize: 0.58, cards: 12 },
@@ -110,17 +127,18 @@ export function createNapTerraceWorld(): WorldBuild {
   ];
   const olives = oliveSpecs.map(buildOlive);
   const crowns: Crown[] = [...olives[0].crowns, ...olives.slice(1).map(o => mergeCrowns(o.crowns, 0.88))];
-  const canopy = oliveCanopy({ crowns: crowns.map(c => ({ centre: c.centre, radius: c.radius.clone().multiplyScalar(0.92) })), density: 1.6, gaps: 0.12, softness: 0.22, fleck: 3.6, time: timeUniform });
+  const canopy = oliveCanopy({ crowns: crowns.map(c => ({ centre: c.centre, radius: c.radius.clone().multiplyScalar(0.92) })), density: 1.6, gaps: -0.05, softness: 0.2, fleck: 4.5, clump: 1.5, time: timeUniform });
   const treeWind: FoliageWind = { time: timeUniform, mode: 'attribute', sway: 0.12, flutter: 0.018, direction: [1, 0.35], speed: 0.75 };
-  const oliveBark = applyFoliageShading(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.9 }), {
-    key: 'nap-olive-bark', scale: 3.2, stretch: 2.2, depth: 0.022, plate: '#9a9584', fissure: '#3a342b',
-    lichen: { color: '#c3c4ab', amount: 0.55 }, moss: { color: '#6b6f3a', amount: 0.12, below: -0.2, side: new THREE.Vector3(0.5, 0, 0.8) },
-  }), { key: 'nap-olive-bark', canopy, wind: treeWind });
+  const meadowBounce = new THREE.Color(1.0, 0.82, 0.56).multiplyScalar(0.2);
+  const oliveBark = groundBounce(applyFoliageShading(deepFurrows(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.9 }), {
+    key: 'nap-olive-bark', scale: OLIVE_BARK.scale, stretch: OLIVE_BARK.stretch, depth: 0.035, plate: '#bdb7a4', fissure: '#3b352c',
+    lichen: { color: '#cfd0b8', amount: 0.5 }, moss: { color: '#6b6f3a', amount: 0.12, below: -0.2, side: new THREE.Vector3(0.5, 0, 0.8) },
+  }), 0.36), { key: 'nap-olive-bark', canopy, wind: treeWind }), 'bark', meadowBounce);
   const oliveMap = oliveSprayAtlas(11);
-  const oliveLeaves = applyFoliageShading(new THREE.MeshStandardMaterial({ map: oliveMap, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.48, metalness: 0 }), {
+  const oliveLeaves = groundBounce(applyFoliageShading(new THREE.MeshStandardMaterial({ map: oliveMap, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.48, metalness: 0 }), {
     key: 'nap-olive-leaves', canopy, wind: treeWind, sharedNormals: true, coverage: true,
     translucency: { tint: '#e9f0a8', back: 0.42, forward: 1.1 },
-  });
+  }), 'leaves', meadowBounce.clone().multiplyScalar(0.7));
   const barkMesh = new THREE.Mesh(concatGeometries(olives.map(o => o.bark)), oliveBark);
   barkMesh.castShadow = true; barkMesh.receiveShadow = true; barkMesh.name = 'olive-bark'; scene.add(barkMesh);
   const leafMesh = new THREE.Mesh(concatGeometries(olives.map(o => o.leaves)), oliveLeaves);
@@ -136,7 +154,8 @@ export function createNapTerraceWorld(): WorldBuild {
     for (let col = -9; col <= 9; col++) {
       const x = col * 6.4 + (row % 2) * 3.2 + (groveRandom() - 0.5) * 1.2, z = z0 + (groveRandom() - 0.5) * 1.2;
       if (Math.abs(x - 14.5 - (z + 30) * -0.12) < 3.2) continue; // the cypress lane
-      if (Math.abs(x - pathX(-26)) < 2.5 && row < 2) continue;
+      // The path climbs on through the grove as a cart lane, opening a view of the far hills.
+      if (Math.abs(x - pathX(z)) < 3.2 + row * 0.45) continue;
       if (groveRandom() < 0.08) continue;
       groveSpots.push({ x, z, s: 0.8 + groveRandom() * 0.45, yaw: groveRandom() * Math.PI * 2 });
     }
@@ -194,21 +213,20 @@ vec3 green = vec3(0.075, 0.12, 0.03), gold = vec3(0.42, 0.3, 0.11), soil = vec3(
 vec3 mColor = mix(green, gold, clamp(mDry * 0.9 - mLush * 0.25, 0.0, 1.0));
 mColor *= 0.78 + 0.2 * mClump + 0.08 * mFine;
 mColor = mix(mColor, soil, smoothstep(0.35, 0.75, -mClump) * 0.35);
-// Drifts of poppies and chamomile read as warm and pale specks in the grass.
-float mPoppy = smoothstep(0.22, 0.4, bwFbm3(vec3(mp.x * 0.11 + 21.0, 2.5, mp.z * 0.11)));
-float mSpeck = step(0.82, bwValue(mp * 6.0)) * bwResolve(length(fwidth(mp)) * 6.0);
-mColor = mix(mColor, vec3(0.55, 0.05, 0.02), mPoppy * mSpeck * 0.8);
-mColor = mix(mColor, vec3(0.42, 0.06, 0.03), mPoppy * 0.12 * (1.0 - bwResolve(length(fwidth(mp)) * 6.0)));
+// Thatch between the tufts: last year's grass lies dark and matted in the shade of the new.
+mColor *= 0.5 + 0.16 * smoothstep(-0.3, 0.5, mClump);
 // Trodden path: pale dusty earth with pebbles, grass creeping in at its edges.
 float mPathD = abs(mp.x - (1.4 + sin(((-mp.z - 4.6) / 0.6) * 0.092) * 2.5));
 float mPathW = 0.48 + max(0.0, -mp.z) * 0.004 + 0.08 * bwNoise(mp * 1.3);
-float mPath = (1.0 - smoothstep(mPathW * 0.7, mPathW * 1.25, mPathD)) * step(mp.z, -4.3) * (1.0 - smoothstep(30.0, 36.0, -mp.z));
+float mPath = (1.0 - smoothstep(mPathW * 0.7, mPathW * 1.25, mPathD)) * step(mp.z, -4.3) * (1.0 - smoothstep(64.0, 70.0, -mp.z));
 float mPebble = step(0.74, bwValue(mp * 22.0)) * bwResolve(length(fwidth(mp)) * 22.0);
 vec3 earth = vec3(0.4, 0.31, 0.2) * (0.85 + 0.15 * bwNoise(mp * 3.0)) * (1.0 + 0.25 * mPebble);
 mColor = mix(mColor, earth, mPath);
-// The grove floor: dry stubble and bare earth between the planted rows.
+// The grove floor: dry stubble and tilled earth between the planted rows.
 float mGrove = smoothstep(26.0, 31.0, -mp.z);
-mColor = mix(mColor, mix(vec3(0.34, 0.25, 0.12), vec3(0.24, 0.16, 0.09), smoothstep(0.0, 0.6, bwNoise(mp * 0.4))) * (0.85 + 0.2 * mFine), mGrove * 0.65);
+vec3 mStubble = mix(vec3(0.27, 0.2, 0.09), vec3(0.17, 0.12, 0.07), smoothstep(-0.1, 0.6, bwNoise(mp * 0.4)));
+mStubble = mix(mStubble, vec3(0.12, 0.13, 0.05), smoothstep(0.3, 0.7, bwNoise(mp * 0.13 + 4.0)) * 0.6);
+mColor = mix(mColor, mStubble * (0.85 + 0.2 * mFine), mGrove * 0.8);
 diffuseColor.rgb = mColor;`,
     height: 'mClump * 0.02 + mFine * 0.006',
     roughness: 'roughnessFactor = mix(roughnessFactor, 0.85, mPath);',
@@ -221,29 +239,30 @@ diffuseColor.rgb = mColor;`,
   const grassWind: FoliageWind = { time: timeUniform, mode: 'height', height: 1, sway: 0.05, flutter: 0.012, direction: [1, 0.35], speed: 0.8 };
   const grassMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ map: meadowMap, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness: 0.82, metalness: 0 }), {
     key: 'nap-meadow-tufts', canopy, wind: grassWind, sharedNormals: true, coverage: true,
-    translucency: { tint: '#f4e7a4', back: 0.45, forward: 1.1 },
+    translucency: { tint: '#e6eb9c', back: 0.4, forward: 0.75 },
   });
   const near: Record<MeadowVariant, TuftPlacement[]> = { green: [], dry: [], mixed: [], poppy: [], daisy: [], lavender: [] };
   const far: Record<MeadowVariant, TuftPlacement[]> = { green: [], dry: [], mixed: [], poppy: [], daisy: [], lavender: [] };
   const meadowRandom = seeded(811);
   const tint = (variant: MeadowVariant, dry: number) => {
-    const k = 0.82 + meadowRandom() * 0.3;
+    const k = 0.7 + meadowRandom() * 0.42;
     if (variant === 'dry' || variant === 'mixed') return new THREE.Color(k * (1 + dry * 0.06), k, k * (0.92 + meadowRandom() * 0.1));
     return new THREE.Color(k, k * (1.02 - dry * 0.05), k * 0.95);
   };
-  const place = (band: Record<MeadowVariant, TuftPlacement[]>, x: number, z: number, scale: number) => {
+  const place = (band: Record<MeadowVariant, TuftPlacement[]>, x: number, z: number, scale: number, stubble = false) => {
     const dry = meadowDry(x, z), lush = meadowLush(x, z);
     const pathD = Math.abs(x - pathX(z));
     // Thin and shorten toward the path; it is mown along its verges.
-    const verge = z > -34 ? THREE.MathUtils.smoothstep(pathD, 0.45, 2.2) : 1;
+    const verge = THREE.MathUtils.smoothstep(pathD, 0.45, 2.2);
     if (meadowRandom() > 0.15 + 0.85 * verge) return;
     const poppy = THREE.MathUtils.smoothstep(fbm3(x * 0.11 + 21, 2.5, z * 0.11, 3), 0.22, 0.4);
     const daisy = THREE.MathUtils.smoothstep(fbm3(x * 0.09 - 7, 3.5, z * 0.09, 3), 0.2, 0.42) * (1 - dry * 0.6);
     let variant: MeadowVariant;
     const roll = meadowRandom();
-    if (roll < poppy * 0.32) variant = 'poppy';
-    else if (roll < poppy * 0.32 + daisy * 0.3) variant = 'daisy';
-    else { const d = dry * 0.85 + (meadowRandom() - 0.5) * 0.45 - lush * 0.3; variant = d > 0.62 ? 'dry' : d > 0.3 ? 'mixed' : 'green'; }
+    if (stubble) variant = meadowRandom() < 0.7 - lush * 0.3 ? 'dry' : 'mixed';
+    else if (roll < poppy * 0.2) variant = 'poppy';
+    else if (roll < poppy * 0.2 + daisy * 0.24) variant = 'daisy';
+    else { const d = dry * 0.9 + (meadowRandom() - 0.5) * 0.3 - lush * 0.35; variant = d > 0.62 ? 'dry' : d > 0.3 ? 'mixed' : 'green'; }
     const height = (0.42 + meadowRandom() * 0.38 + dry * 0.18 + lush * 0.12) * (0.45 + 0.55 * verge) * scale;
     band[variant].push({ x, y: groundY(x, z) - 0.03, z, yaw: meadowRandom() * Math.PI * 2, width: height * (0.95 + meadowRandom() * 0.45), height, tint: tint(variant, dry) });
   };
@@ -255,6 +274,11 @@ diffuseColor.rgb = mColor;`,
   for (let i = 0; i < 2600; i++) {
     const z = -25.3 - Math.pow(meadowRandom(), 0.9) * 12, half = Math.min(52, 6 + -z * 0.95), x = (meadowRandom() - 0.5) * 2 * half;
     place(far, x, z, 1.55);
+  }
+  // Sparse dry stubble on the grove slope, thinning toward the crest.
+  for (let i = 0; i < 4200; i++) {
+    const z = -37.3 - Math.pow(meadowRandom(), 1.3) * 28, half = Math.min(66, 6 + -z * 0.95), x = (meadowRandom() - 0.5) * 2 * half;
+    place(far, x, z, 1.35, true);
   }
   // Lavender planted along the foot of the terrace, clear of the path.
   for (let i = 0; i < 30; i++) {
@@ -278,23 +302,24 @@ vec3 rp = vSurfaceWorld;
 vec2 rq = mat2(0.94, -0.34, 0.34, 0.94) * rp.xz * vec2(0.035, 0.06);
 vec2 rCell = floor(rq);
 float rId = bwHash1(vec3(rCell, 3.0));
-vec3 plot = rId < 0.35 ? vec3(0.5, 0.38, 0.18) : rId < 0.55 ? vec3(0.36, 0.22, 0.12) : rId < 0.8 ? vec3(0.42, 0.36, 0.2) : vec3(0.24, 0.26, 0.12);
+vec3 plot = rId < 0.35 ? vec3(0.3, 0.22, 0.1) : rId < 0.55 ? vec3(0.2, 0.12, 0.07) : rId < 0.8 ? vec3(0.24, 0.2, 0.1) : vec3(0.11, 0.13, 0.05);
 float rEdge = 1.0 - smoothstep(0.0, 0.06, min(min(fract(rq.x), 1.0 - fract(rq.x)), min(fract(rq.y), 1.0 - fract(rq.y))));
 vec3 rColor = mix(diffuseColor.rgb, plot, ${detail.toFixed(2)});
 rColor = mix(rColor, vec3(0.1, 0.13, 0.06), rEdge * 0.55 * ${detail.toFixed(2)});
-float rScrub = smoothstep(0.2, 0.6, bwFbm3(rp * 0.03 + 5.0));
-rColor = mix(rColor, vec3(0.11, 0.14, 0.06), rScrub * 0.55);
+float rScrub = smoothstep(0.1, 0.5, bwFbm3(rp * 0.03 + 5.0));
+rColor = mix(rColor, vec3(0.06, 0.08, 0.035), rScrub * 0.7);
 rColor *= 0.85 + 0.25 * bwNoise(rp * 0.08);
 diffuseColor.rgb = rColor;`,
   });
-  const ridge0 = new THREE.Mesh(ridgeGeometry(0, -175, 95, 520, 180), ridgeMaterial('nap-ridge-near', '#8c7a4c', 1)); ridge0.name = 'ridge-near'; scene.add(ridge0);
-  const ridge1 = new THREE.Mesh(ridgeGeometry(1, -330, 140, 900, 140), ridgeMaterial('nap-ridge-far', '#4f5a46', 0.25)); ridge1.name = 'ridge-far'; scene.add(ridge1);
+  const ridge0 = new THREE.Mesh(ridgeGeometry(0, -175, 95, 520, 180), ridgeMaterial('nap-ridge-near', '#6b6440', 1)); ridge0.name = 'ridge-near'; scene.add(ridge0);
+  const ridge1 = new THREE.Mesh(ridgeGeometry(1, -330, 140, 900, 140), ridgeMaterial('nap-ridge-far', '#3e4a3a', 0.3)); ridge1.name = 'ridge-far'; scene.add(ridge1);
   // Olive groves and cypress lines on the near ridge: low blobs and cones.
   const blobRandom = seeded(7310);
   const blobs: THREE.Matrix4[] = [], cones: THREE.Matrix4[] = [];
   const decalSpots: Array<{ x: number; y: number; z: number; radius: number; height: number; strength: number; normal?: THREE.Vector3 }> = [];
-  for (let i = 0; i < 900 && blobs.length < 300; i++) {
-    const x = (blobRandom() - 0.5) * 300, z = -175 + 95 * (0.18 + blobRandom() * 0.6);
+  for (let i = 0; i < 1400 && blobs.length < 420; i++) {
+    // Mostly on the upper slopes, which show above the grove's crest.
+    const x = (blobRandom() - 0.5) * 320, z = -175 + 95 * (0.04 + Math.pow(blobRandom(), 1.6) * 0.6);
     // Planted in patches: a field mask, then snapped to rows along the contour.
     if (fbm3(x * 0.012, 7.5, z * 0.02, 3) < 0.02) continue;
     const rowZ = Math.round(z / 7) * 7 + (blobRandom() - 0.5) * 0.8;
@@ -313,7 +338,7 @@ diffuseColor.rgb = rColor;`,
     key: 'nap-far-trees', color: 'diffuseColor.rgb *= 0.8 + 0.35 * bwNoise(vSurfaceWorld * 1.3);',
   });
   const blobMesh = new THREE.InstancedMesh(blobGeometry(3), farTreeMaterial, blobs.length);
-  blobs.forEach((m, i) => { blobMesh.setMatrixAt(i, m); blobMesh.setColorAt(i, srgb(0.2 + blobRandom() * 0.04, 0.16, 0.22 + blobRandom() * 0.06)); });
+  blobs.forEach((m, i) => { blobMesh.setMatrixAt(i, m); blobMesh.setColorAt(i, srgb(0.2 + blobRandom() * 0.05, 0.2, 0.13 + blobRandom() * 0.05)); });
   blobMesh.computeBoundingSphere(); blobMesh.name = 'far-groves'; scene.add(blobMesh);
   const coneGeometry = new THREE.ConeGeometry(0.5, 1, 7, 1, true); coneGeometry.translate(0, 0.5, 0);
   const coneColors = new Float32Array(coneGeometry.attributes.position.count * 3);
@@ -347,7 +372,18 @@ diffuseColor.rgb = rColor;`,
   // through the weave, shaded by the olive crown over the terrace corner: the
   // same canopy function as the ground dapple, averaged over a few taps so the
   // leaf shadow is soft where the crown is a couple of metres above the cloth.
-  const sailMat = createFabricMaterial('#efe4c8', { key: 'nap-sail', weave: 'plain', threads: [2400, 1650], heather: 0.4, fuzz: 0.2, depth: 0.0005, roughness: 0.95 }, { side: THREE.DoubleSide, emissive: '#ffffff', emissiveIntensity: 1 });
+  const sailMat = createFabricMaterial('#efe4c8', {
+    key: 'nap-sail', weave: 'plain', threads: [2400, 1650], heather: 0.4, fuzz: 0.2, depth: 0.0005, roughness: 0.95,
+    // Panel seams and the taped hem are two layers of cloth, so they pass less light; corner patches more so.
+    pattern: `
+vec2 sM = vec2(min(fbUv.x, 1.0 - fbUv.x) * 7.3, min(fbUv.y, 1.0 - fbUv.y) * 5.0);
+float sSeam = abs(fract(fbUv.x * 5.0 + 0.5) - 0.5) * 7.3 / 5.0;
+float sAa = fwidth(fbUv.x) * 7.3;
+float sBand = 1.0 - smoothstep(0.012 - sAa, 0.012 + sAa, sSeam);
+float sTape = 1.0 - smoothstep(0.045 - sAa, 0.045 + sAa, min(sM.x, sM.y));
+float sPatch = 1.0 - smoothstep(0.42 - sAa, 0.42 + sAa, sM.x + sM.y);
+fbBase *= 1.0 - 0.3 * max(sBand, sTape) - 0.25 * sPatch;`,
+  }, { side: THREE.DoubleSide, emissive: '#ffffff', emissiveIntensity: 1 });
   const sailPrevious = sailMat.onBeforeCompile;
   sailMat.onBeforeCompile = (shader, renderer) => {
     sailPrevious.call(sailMat, shader, renderer);
@@ -559,13 +595,13 @@ diffuseColor.rgb = fColor;`,
     scene, camera, resize,
     post: {
       exposure: 0.95, bloomStrength: 0.05, bloomThreshold: 0, aoStrength: 0.8, aoRadius: 0.5,
-      saturation: 1.05, contrast: 1.07, shadowTint: [0.93, 0.97, 1.05], highlightTint: [1.05, 1.0, 0.93], vignette: 0.32, grain: 0.02,
+      saturation: 1.1, contrast: 1.1, shadowTint: [0.93, 0.97, 1.05], highlightTint: [1.05, 1.0, 0.93], vignette: 0.32, grain: 0.02,
     },
     createVolume() {
       // Aerial perspective in warm haze, and faint shafts where the sun breaks through the near olive.
       return createGardenVolume({
         canopy, sun: new THREE.Color(1.0, 0.84, 0.62).multiplyScalar(1.05), ambient: new THREE.Color(0.52, 0.6, 0.74).multiplyScalar(0.55),
-        haze: [0.0034, 0.022, -0.4, 480], skyDistance: 420, sail: [2.95, -3.65, 3.65, -3.15, 2.05], anisotropy: 0.55, steps: 22,
+        haze: [0.0014, 0.018, -0.4, 480], skyDistance: 230, sail: [2.95, -3.65, 3.65, -3.15, 2.05], anisotropy: 0.55, steps: 22,
       });
     },
     prepare(renderer) {

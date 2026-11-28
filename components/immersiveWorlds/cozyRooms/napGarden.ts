@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { buildTree, concatGeometries, loftTube } from '../shared/render/treeGeometry';
-import type { CanopyLight } from '../shared/render/foliageShading';
+import { beforeMain, type CanopyLight } from '../shared/render/foliageShading';
 import { GLSL_NOISE } from '../shared/render/glsl';
 import { VOLUME_PRELUDE, type VolumeEffect } from '../shared/render/hdrPipeline';
 import { FULLSCREEN_VERTEX } from '../shared/render/targets';
@@ -20,10 +20,15 @@ export type Random = () => number;
 /** Early-afternoon sun, high and ahead-left: the garden is softly back-lit. */
 export const TO_SUN = new THREE.Vector3(-0.52, 0.74, -0.42).normalize();
 
-/** Meadow and grove slope height (metres); the terrace sits at y = 0. */
+/**
+ * Meadow and grove slope height (metres); the terrace sits at y = 0. The grove
+ * climbs to a low crest around z = -65 and the land falls away behind it, so
+ * the farmed ridges and the far range show above the last planted rows.
+ */
 export function groundY(x: number, z: number) {
+  const rise = Math.max(0, -z - 18);
   return -0.4 + Math.sin(x * 0.15 + z * 0.1) * 0.22 + Math.sin(z * 0.12) * 0.3
-    + Math.max(0, -z - 18) * (0.12 + Math.sin(x * 0.07) * 0.04) + Math.max(0, -z - 45) * 0.06;
+    + rise * (0.13 + Math.sin(x * 0.07) * 0.035) - Math.max(0, rise - 30) ** 2 * 0.0035;
 }
 
 /** Centre line of the trodden path that curves away through the meadow. */
@@ -41,12 +46,26 @@ export interface Crown { centre: THREE.Vector3; radius: THREE.Vector3 }
 
 /**
  * Sun visibility through olive crowns: each crown is an ellipsoid whose chord
- * along the sun ray attenuates the light, broken into metre-scale clumps with
- * sky between them and leaf-scale flecks that breathe slowly with the wind. The
- * noise is sampled at the chord's midpoint, so all points on one sun ray (sail,
- * floor, air) see the same leaves.
+ * along the sun ray attenuates the light. Its outline is ragged, and inside it
+ * the foliage breaks into branch-scale clumps with sky between them and
+ * leaf-scale flecks that breathe slowly with the wind. The noise is sampled at
+ * the chord's midpoint, so all points on one sun ray (sail, floor, air) see the
+ * same leaves.
  */
-export function oliveCanopy(o: { crowns: Crown[]; density: number; gaps: number; softness: number; fleck: number; time: { value: number } }): CanopyLight {
+export interface OliveCanopyOptions {
+  crowns: Crown[];
+  /** Extinction per metre of crown. */
+  density: number;
+  /** Hole threshold and its soft width: higher `gaps` closes the crown. */
+  gaps: number;
+  softness: number;
+  /** Leaf-fleck and branch-clump frequencies (per metre). */
+  fleck: number;
+  clump: number;
+  time: { value: number };
+}
+
+export function oliveCanopy(o: OliveCanopyOptions): CanopyLight {
   const count = Math.max(1, o.crowns.length);
   const data: THREE.Vector4[] = [];
   o.crowns.forEach((c, i) => {
@@ -59,14 +78,14 @@ export function oliveCanopy(o: { crowns: Crown[]; density: number; gaps: number;
     uniforms: {
       uBwToSun: { value: TO_SUN.clone() },
       uNapCrown: { value: data },
-      uNapLeaf: { value: new THREE.Vector3(o.gaps, o.softness, o.fleck) },
+      uNapLeaf: { value: new THREE.Vector4(o.gaps, o.softness, o.fleck, o.clump) },
       uBwCanopyTime: o.time,
     },
     glsl: /* glsl */ `
 #define NAP_CROWNS ${count}
 uniform vec3 uBwToSun;
 uniform vec4 uNapCrown[NAP_CROWNS * 2];
-uniform vec3 uNapLeaf;
+uniform vec4 uNapLeaf;
 uniform float uBwCanopyTime;
 float bwCanopy(vec3 p) {
   float visibility = 1.0;
@@ -85,12 +104,13 @@ float bwCanopy(vec3 p) {
     float t0 = max((-b - q) / a, 0.0);
     float chord = t1 - t0;
     vec3 mid = p + uBwToSun * (0.5 * (t0 + t1)) + c.w;
-    // Clumps of foliage with sky between them, then leaf-scale flecks that breathe with the wind.
-    float clumps = bwNoise(mid * 0.8);
+    // How far the ray passes from the crown's centre (0 core .. 1 rim), with a ragged outline.
+    float rim = sqrt(max(k + 1.0 - b * b / a, 0.0)) + 0.3 * bwNoise(mid * 0.55 + 3.0);
+    // Branch-scale clumps with sky between them, then leaf-scale flecks that breathe with the wind.
+    float clumps = bwNoise(mid * uNapLeaf.w);
     vec3 drift = vec3(sin(t * 0.29 + mid.y * 0.7), cos(t * 0.23 + mid.x * 0.6), sin(t * 0.26 + mid.z * 0.8)) * 0.07;
     float flecks = bwNoise(mid * uNapLeaf.z + drift);
-    float core = chord / (2.0 * min(r.x, min(r.y, r.z)));
-    float open = smoothstep(uNapLeaf.x, uNapLeaf.x + uNapLeaf.y, clumps * 0.55 + flecks * 0.45 - core * 0.3);
+    float open = smoothstep(uNapLeaf.x, uNapLeaf.x + uNapLeaf.y, clumps * 0.6 + flecks * 0.4 + smoothstep(0.6, 1.0, rim) * 0.7);
     float blocked = 1.0 - exp(-chord * rr.w);
     visibility *= 1.0 - blocked * (1.0 - open);
   }
@@ -98,6 +118,60 @@ float bwCanopy(vec3 p) {
 }
 `,
   };
+}
+
+/**
+ * CPU twin of `bwCanopy` from oliveCanopy (same noise, same constants), for
+ * tests and for placing things where the dapple falls.
+ */
+export function canopyVisibility(canopy: CanopyLight, p: THREE.Vector3) {
+  const crowns = canopy.uniforms.uNapCrown.value as THREE.Vector4[];
+  const leaf = canopy.uniforms.uNapLeaf.value as THREE.Vector4;
+  const t = (canopy.uniforms.uBwCanopyTime.value as number) ?? 0;
+  const toSun = canopy.uniforms.uBwToSun.value as THREE.Vector3;
+  let visibility = 1;
+  for (let i = 0; i < crowns.length; i += 2) {
+    const c = crowns[i], rr = crowns[i + 1];
+    const ox = (p.x - c.x) / rr.x, oy = (p.y - c.y) / rr.y, oz = (p.z - c.z) / rr.z;
+    const dx = toSun.x / rr.x, dy = toSun.y / rr.y, dz = toSun.z / rr.z;
+    const a = dx * dx + dy * dy + dz * dz, b = ox * dx + oy * dy + oz * dz, k = ox * ox + oy * oy + oz * oz - 1;
+    const disc = b * b - a * k;
+    if (disc <= 0) continue;
+    const q = Math.sqrt(disc), t1 = (-b + q) / a;
+    if (t1 <= 0) continue;
+    const t0 = Math.max((-b - q) / a, 0), chord = t1 - t0, h = 0.5 * (t0 + t1);
+    const mx = p.x + toSun.x * h + c.w, my = p.y + toSun.y * h + c.w, mz = p.z + toSun.z * h + c.w;
+    const rim = Math.sqrt(Math.max(k + 1 - b * b / a, 0)) + 0.3 * noise3(mx * 0.55 + 3, my * 0.55 + 3, mz * 0.55 + 3);
+    const clumps = noise3(mx * leaf.w, my * leaf.w, mz * leaf.w);
+    const flecks = noise3(mx * leaf.z + Math.sin(t * 0.29 + my * 0.7) * 0.07, my * leaf.z + Math.cos(t * 0.23 + mx * 0.6) * 0.07, mz * leaf.z + Math.sin(t * 0.26 + mz * 0.8) * 0.07);
+    const open = THREE.MathUtils.smoothstep(clumps * 0.6 + flecks * 0.4 + THREE.MathUtils.smoothstep(rim, 0.6, 1) * 0.7, leaf.x, leaf.x + leaf.y);
+    const blocked = 1 - Math.exp(-chord * rr.w);
+    visibility *= 1 - blocked * (1 - open);
+  }
+  return visibility;
+}
+
+/**
+ * Light bounced up from the sunlit meadow onto trunks and the undersides of
+ * crowns out in the garden. The terrace's radiance probe is taken in the
+ * sail's shade and cannot see it, so this adds a warm term on normals that
+ * face the ground (linear radiance of the lit meadow).
+ */
+export function groundBounce<T extends THREE.MeshStandardMaterial>(material: T, key: string, radiance: THREE.Color): T {
+  const previous = material.onBeforeCompile;
+  const uniform = { value: new THREE.Vector3(radiance.r, radiance.g, radiance.b) };
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    shader.uniforms.uNapBounce = uniform;
+    shader.fragmentShader = beforeMain(shader.fragmentShader, 'uniform vec3 uNapBounce;').replace('#include <lights_fragment_end>', `{
+  vec3 napBounceN = inverseTransformDirection(geometryNormal, viewMatrix);
+  irradiance += PI * uNapBounce * clamp(0.55 - 0.45 * napBounceN.y, 0.0, 1.0);
+}
+#include <lights_fragment_end>`);
+  };
+  const base = material.customProgramCacheKey.bind(material);
+  material.customProgramCacheKey = () => `${base()}|nap-bounce|${key}`;
+  return material;
 }
 
 // ---- Volume: aerial haze and leaf shafts ------------------------------------------------------------
@@ -201,6 +275,16 @@ export interface OliveSpec {
   open?: number;
   reach?: number;
   twist?: number;
+  /** Extra offset (metres) every strand's crown leans toward, e.g. over the terrace. */
+  crownLean?: [number, number];
+  /** How much the crown's leaders and limbs wander (treeGeometry gnarl). */
+  gnarl?: number;
+  /**
+   * Sinuous lofted scaffold limbs per strand, each carrying its own crown
+   * (`crown` is then each limb's crown height). Without it each strand
+   * continues straight into a single crown.
+   */
+  scaffold?: { limbs: number; length: number };
   detail: 'hero' | 'mid';
   leafSize: number;
   cards: number;
@@ -208,7 +292,36 @@ export interface OliveSpec {
 
 export interface OliveBuild { bark: THREE.BufferGeometry; leaves: THREE.BufferGeometry; crowns: Crown[]; triangles: number }
 
-const BARK = { scale: 3.2, stretch: 2.2 };
+/** Olive bark frequency and plate elongation, shared by the modelled relief and the bark shader. */
+export const OLIVE_BARK = { scale: 4.5, stretch: 5.5 };
+
+/**
+ * Burls, knots and twisted flutes on a lofted trunk (`radial` + 1 vertices per
+ * ring): low-frequency world-space noise pushes the surface along its normal,
+ * strongest near the foot, then normals are rebuilt with the ring seam welded.
+ */
+export function gnarlTube(geometry: THREE.BufferGeometry, radial: number, amount: number, seed: number, baseY: number, fade: number) {
+  const p = geometry.attributes.position as THREE.BufferAttribute, n = geometry.attributes.normal as THREE.BufferAttribute;
+  const b = geometry.attributes.aBark as THREE.BufferAttribute;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    const around = Math.atan2(b.getY(i), b.getX(i)), along = b.getZ(i);
+    // Flutes spiral with the strand's twist; burls are knotted lumps; both fade up the trunk.
+    const flute = Math.sin(around * 3 + along * 1.7 + seed) * 0.5 + noise3(Math.cos(around) * 1.4, along * 0.9, Math.sin(around) * 1.4 + seed) * 0.6;
+    const burl = Math.max(0, fbm3(x * 2.1 + seed, y * 2.1, z * 2.1, 3)) * 1.6;
+    const k = amount * (0.35 + 0.65 * Math.exp(-Math.max(0, y - baseY) / fade));
+    const d = (flute * 0.6 + burl) * k;
+    p.setXYZ(i, x + n.getX(i) * d, y + n.getY(i) * d * 0.4, z + n.getZ(i) * d);
+  }
+  geometry.computeVertexNormals();
+  const v = new THREE.Vector3();
+  for (let row = 0; row < p.count; row += radial + 1) {
+    const a = row, c = row + radial;
+    v.set(n.getX(a) + n.getX(c), n.getY(a) + n.getY(c), n.getZ(a) + n.getZ(c)).normalize();
+    n.setXYZ(a, v.x, v.y, v.z); n.setXYZ(c, v.x, v.y, v.z);
+  }
+  return geometry;
+}
 
 /**
  * An old olive: the trunk is a few lofted strands that twist around each other,
@@ -247,25 +360,64 @@ export function buildOlive(spec: OliveSpec): OliveBuild {
         base.z + Math.sin(angle) * rho + lean[1] * leanU + noise3(u * 3, k + 5, spec.seed + 2) * G * 0.12));
       radii.push(strandR * (1 + 0.7 * Math.exp(-Math.max(0, h) / 0.22)) * (1 - 0.22 * u));
     }
-    barkParts.push(loftTube(points, radii, {
-      radial: hero ? 16 : 9, ringsPerMetre: hero ? 9 : 5, displace: hero ? 0.022 : 0.012, barkScale: BARK.scale, barkStretch: BARK.stretch,
+    const radial = hero ? 18 : 9;
+    barkParts.push(gnarlTube(loftTube(points, radii, {
+      radial, ringsPerMetre: hero ? 12 : 5, displace: hero ? 0.016 : 0.008, barkScale: OLIVE_BARK.scale, barkStretch: OLIVE_BARK.stretch,
       barkOffset: k * 5.3 + spec.seed, wind: [0, 0, 0], phase: [treePhase, treePhase + k],
-    }));
-    // The strand's leader and crown: lean outward from the trunk axis.
-    const top = points[points.length - 1];
+    }), radial, strandR * (hero ? 0.26 : 0.16), spec.seed + k * 3.7, base.y, Hs * 0.45));
+    // The strand's leaders and crowns lean outward from the trunk axis.
+    const top = points[points.length - 1], topR = radii[radii.length - 1];
     const out = new THREE.Vector3(Math.cos(a0 + twist), 0, Math.sin(a0 + twist));
-    const reach = (spec.reach ?? 0.9) * range(0.75, 1.15) * (n === 1 ? 0.3 : 1);
-    const crownHeight = spec.crown * range(0.88, 1.08);
-    const tree = buildTree({
-      seed: spec.seed * 31 + k * 7, base: top.clone().setY(top.y - 0.05), height: crownHeight, radius: radii[radii.length - 1] * 0.92, form: 'broadleaf',
-      lean: [out.x * reach + lean[0] * 0.5, out.z * reach + lean[1] * 0.5], gnarl: 0.85, flare: 0, buttresses: 0,
-      crownStart: 0.18, limbs: hero ? 5 : 4, levels: 2, children: 3, spread: 0.5, curl: 0.25,
-      radial: hero ? 12 : 7, ringsPerMetre: hero ? 4.5 : 2.5, displace: hero ? 0.01 : 0, barkScale: BARK.scale, barkStretch: BARK.stretch, flex: 0.55,
-      leaves: { cardsPerTwig: spec.cards, size: spec.leafSize, reach: 0.8, atlasColumns: 4, crownNormals: 0.68, shade: [0.32, 1.06], skyward: 0.25, fill: 0.35 },
-    });
-    barkParts.push(tree.bark);
-    if (tree.leaves) leafParts.push(tree.leaves);
-    crowns.push({ centre: tree.crown.centre.clone(), radius: tree.crown.radius.clone() });
+    const crownLean = spec.crownLean ?? [0, 0];
+    const leaders: Array<{ base: THREE.Vector3; radius: number; out: THREE.Vector3; reach: number; lean: number; seed: number }> = [];
+    if (spec.scaffold) {
+      const { limbs, length } = spec.scaffold;
+      const limbRadial = hero ? 14 : 8;
+      for (let j = 0; j < limbs; j++) {
+        // Thick, sinuous scaffold limbs fork from the strand top, rising and
+        // reaching out toward the crown's lean, then carry the twig crowns.
+        const yaw = Math.atan2(out.z + crownLean[1] * 0.3, out.x + crownLean[0] * 0.3) + (j - (limbs - 1) / 2) * 1.05 + range(-0.25, 0.25);
+        const elevation = range(0.6, 1.0), L = length * range(0.8, 1.2);
+        const dir = new THREE.Vector3(Math.cos(yaw) * Math.cos(elevation), Math.sin(elevation), Math.sin(yaw) * Math.cos(elevation));
+        const side = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
+        const start = top.clone().add(new THREE.Vector3(0, -0.3, 0));
+        // A quadratic sweep out along `dir` that turns upward at its end, so it
+        // flows into the crown's leader instead of meeting it at an elbow.
+        const mid = start.clone().addScaledVector(dir, L * 0.62);
+        const end = mid.clone().addScaledVector(new THREE.Vector3(dir.x * 0.35, 1, dir.z * 0.35).normalize(), L * 0.45);
+        const pts: THREE.Vector3[] = [], rs: number[] = [];
+        for (let i = 0; i <= 9; i++) {
+          const s = i / 9, a = (1 - s) * (1 - s), b = 2 * s * (1 - s), c = s * s;
+          pts.push(new THREE.Vector3(start.x * a + mid.x * b + end.x * c, start.y * a + mid.y * b + end.y * c, start.z * a + mid.z * b + end.z * c)
+            // Knotty wander rather than a smooth S: two noise octaves, fading at both ends.
+            .addScaledVector(side, (noise3(s * 2.6, j + 0.5, k + spec.seed) * 0.7 + noise3(s * 6.1, j + 3.5, k) * 0.3) * L * 0.09 * Math.sin(s * Math.PI))
+            .add(new THREE.Vector3(0, noise3(s * 2.2, j + 7.5, k + spec.seed) * L * 0.06 * Math.sin(s * Math.PI), 0)));
+          rs.push(topR * (0.84 - 0.34 * s) * (1 + 0.08 * noise3(s * 5, j, k + 9)));
+        }
+        barkParts.push(gnarlTube(loftTube(pts, rs, {
+          radial: limbRadial, ringsPerMetre: hero ? 9 : 4, displace: hero ? 0.012 : 0.006, barkScale: OLIVE_BARK.scale, barkStretch: OLIVE_BARK.stretch,
+          barkOffset: k * 5.3 + j * 2.9 + spec.seed + 1, wind: [0, 0, 0], phase: [treePhase, treePhase + k + j],
+        }), limbRadial, rs[0] * 0.2, spec.seed + k * 3.7 + j * 1.3, start.y, L * 0.5));
+        // The crown's leader starts one segment back, inside the limb, so the join is hidden.
+        leaders.push({ base: pts[pts.length - 2], radius: rs[rs.length - 2] * 0.94, out: dir.clone().setY(0).normalize(), reach: 0.35, lean: 0.45, seed: k * 7 + j * 3 + 1 });
+      }
+    } else {
+      leaders.push({ base: top.clone().setY(top.y - 0.05), radius: topR * 0.874, out, reach: n === 1 ? 0.3 : 1, lean: 1, seed: k * 7 });
+    }
+    for (const leader of leaders) {
+      const reach = (spec.reach ?? 0.9) * range(0.75, 1.15) * leader.reach;
+      const tree = buildTree({
+        seed: spec.seed * 31 + leader.seed, base: leader.base, height: spec.crown * range(0.88, 1.08), radius: leader.radius, form: 'broadleaf',
+        lean: [leader.out.x * reach + (lean[0] * 0.5 + crownLean[0]) * leader.lean, leader.out.z * reach + (lean[1] * 0.5 + crownLean[1]) * leader.lean],
+        gnarl: spec.gnarl ?? 0.85, flare: 0, buttresses: 0,
+        crownStart: hero ? 0.12 : 0.18, limbs: hero ? 6 : 4, levels: 2, children: 3, spread: 0.5, curl: 0.25,
+        radial: hero ? 12 : 7, ringsPerMetre: hero ? 4.5 : 2.5, displace: hero ? 0.01 : 0, barkScale: OLIVE_BARK.scale, barkStretch: OLIVE_BARK.stretch, flex: 0.55,
+        leaves: { cardsPerTwig: spec.cards, size: spec.leafSize, reach: 0.8, atlasColumns: 4, crownNormals: 0.68, shade: [0.32, 1.06], skyward: 0.25, fill: 0.35 },
+      });
+      barkParts.push(tree.bark);
+      if (tree.leaves) leafParts.push(tree.leaves);
+      crowns.push({ centre: tree.crown.centre.clone(), radius: tree.crown.radius.clone() });
+    }
   }
   const bark = concatGeometries(barkParts), leaves = concatGeometries(leafParts);
   barkParts.forEach(g => g.dispose()); leafParts.forEach(g => g.dispose());
@@ -382,7 +534,7 @@ export function tuftGeometry(column: number, columns: number, quads: number, row
         const n = new THREE.Vector3(-dz * 0.25, 1, dx * 0.25).normalize();
         normals.push(n.x, n.y, n.z);
         uvs.push((column + u) / columns, v);
-        const ao = 0.42 + 0.58 * Math.pow(v, 0.6);
+        const ao = 0.3 + 0.7 * Math.pow(v, 0.7);
         colors.push(ao, ao, ao);
       }
     }
@@ -422,8 +574,8 @@ export function instanceTufts(geometry: THREE.BufferGeometry, material: THREE.Ma
 /** Height of the far ridges (metres) at x for ridge 0 (nearer, farmed) and 1 (far, blue). */
 export function ridgeHeight(x: number, ridge: number) {
   return ridge === 0
-    ? 13 + 7 * fbm3(x * 0.012, 0, 2.5, 4) + 4 * Math.sin(x * 0.021 + 0.6)
-    : 30 + 14 * fbm3(x * 0.006, 3, 7.5, 4) + 6 * Math.sin(x * 0.009 + 2.1);
+    ? 21 + 9 * fbm3(x * 0.012, 0, 2.5, 4) + 5 * Math.sin(x * 0.021 + 0.6)
+    : 52 + 18 * fbm3(x * 0.006, 3, 7.5, 4) + 8 * Math.sin(x * 0.009 + 2.1);
 }
 
 /** A ridge sheet: crest at z = crestZ rising from the valley floor in front of it. */

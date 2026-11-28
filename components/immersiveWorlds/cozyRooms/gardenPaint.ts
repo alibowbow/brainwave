@@ -23,8 +23,16 @@ const scaleRgb = (a: RGB, k: number): RGB => [a[0] * k, a[1] * k, a[2] * k];
 
 export class Painter {
   readonly data: Float32Array;
+  /** Inclusive pixel rectangle drawing is limited to (one atlas cell), so cells never bleed into each other. */
+  private clip = { x0: 0, x1: 0, y0: 0, y1: 0 };
   constructor(readonly width: number, readonly height: number) {
     this.data = new Float32Array(width * height * 4);
+    this.setClip(0, 0, width, height);
+  }
+
+  /** Limits drawing to [x, x + w) x [y, y + h). */
+  setClip(x: number, y: number, w: number, h: number) {
+    this.clip = { x0: Math.max(0, Math.floor(x)), x1: Math.min(this.width - 1, Math.ceil(x + w) - 1), y0: Math.max(0, Math.floor(y)), y1: Math.min(this.height - 1, Math.ceil(y + h) - 1) };
   }
 
   private blend(x: number, y: number, rgb: RGB, alpha: number) {
@@ -48,8 +56,9 @@ export class Painter {
     const total = lengths[lengths.length - 1] || 1;
     for (let i = 0; i <= 8; i++) maxW = Math.max(maxW, halfWidth(i / 8));
     const pad = maxW + 1.5;
-    const xa = Math.max(0, Math.floor(x0 - pad)), xb = Math.min(this.width - 1, Math.ceil(x1 + pad));
-    const ya = Math.max(0, Math.floor(y0 - pad)), yb = Math.min(this.height - 1, Math.ceil(y1 + pad));
+    const { clip } = this;
+    const xa = Math.max(clip.x0, Math.floor(x0 - pad)), xb = Math.min(clip.x1, Math.ceil(x1 + pad));
+    const ya = Math.max(clip.y0, Math.floor(y0 - pad)), yb = Math.min(clip.y1, Math.ceil(y1 + pad));
     if (xb < xa || yb < ya) return;
     // Nearest segment per pixel, visiting only each segment's own bounding box.
     const bw = xb - xa + 1, bh = yb - ya + 1;
@@ -97,8 +106,9 @@ export class Painter {
     const ax = sa, ay = ca;
     const tipX = x + ax * length, tipY = y + ay * length;
     const pad = width + 2;
-    const xa = Math.max(0, Math.floor(Math.min(x, tipX) - pad)), xb = Math.min(this.width - 1, Math.ceil(Math.max(x, tipX) + pad));
-    const ya = Math.max(0, Math.floor(Math.min(y, tipY) - pad)), yb = Math.min(this.height - 1, Math.ceil(Math.max(y, tipY) + pad));
+    const { clip } = this;
+    const xa = Math.max(clip.x0, Math.floor(Math.min(x, tipX) - pad)), xb = Math.min(clip.x1, Math.ceil(Math.max(x, tipX) + pad));
+    const ya = Math.max(clip.y0, Math.floor(Math.min(y, tipY) - pad)), yb = Math.min(clip.y1, Math.ceil(Math.max(y, tipY) + pad));
     for (let py = ya; py <= yb; py++) {
       for (let px = xa; px <= xb; px++) {
         const rx = px + 0.5 - x, ry = py + 0.5 - y;
@@ -120,8 +130,9 @@ export class Painter {
   disc(x: number, y: number, rx: number, ry: number, angle: number, color: (r: number) => RGB, opacity = 1) {
     const ca = Math.cos(angle), sa = Math.sin(angle);
     const pad = Math.max(rx, ry) + 1.5;
-    const xa = Math.max(0, Math.floor(x - pad)), xb = Math.min(this.width - 1, Math.ceil(x + pad));
-    const ya = Math.max(0, Math.floor(y - pad)), yb = Math.min(this.height - 1, Math.ceil(y + pad));
+    const { clip } = this;
+    const xa = Math.max(clip.x0, Math.floor(x - pad)), xb = Math.min(clip.x1, Math.ceil(x + pad));
+    const ya = Math.max(clip.y0, Math.floor(y - pad)), yb = Math.min(clip.y1, Math.ceil(y + pad));
     const m = Math.min(rx, ry);
     for (let py = ya; py <= yb; py++) {
       for (let px = xa; px <= xb; px++) {
@@ -189,6 +200,18 @@ const angleOn = (pts: Array<[number, number]>, t: number) => {
   return Math.atan2(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]);
 };
 
+/** Length a straight element from (x, y) along `angle` may have and still end `margin` inside the box. */
+function fitLength(x: number, y: number, angle: number, length: number, box: { x0: number; x1: number; y1: number }, margin: number) {
+  const dx = Math.sin(angle), dy = Math.cos(angle);
+  let limit = length;
+  if (dx > 1e-4) limit = Math.min(limit, (box.x1 - margin - x) / dx);
+  if (dx < -1e-4) limit = Math.min(limit, (box.x0 + margin - x) / dx);
+  if (dy > 1e-4) limit = Math.min(limit, (box.y1 - margin - y) / dy);
+  return Math.max(0, limit);
+}
+const insideBox = (pts: Array<[number, number]>, box: { x0: number; x1: number; y1: number }, margin: number) =>
+  pts.every(([x, y]) => x >= box.x0 + margin && x <= box.x1 - margin && y <= box.y1 - margin);
+
 // ---- Olive ------------------------------------------------------------------------------------------
 
 const OLIVE = {
@@ -207,6 +230,8 @@ export function oliveSprayAtlas(seed: number, columns = 4, cell = 256) {
   const random = seeded(seed);
   for (let column = 0; column < columns; column++) {
     const ox = column * cell;
+    const box = { x0: ox, x1: ox + cell, y1: cell };
+    p.setClip(ox + 1, 0, cell - 2, cell - 1);
     const leafColor = (under: boolean, tone: number) => (u: number, v: number): RGB => {
       const base = under ? mixRgb(OLIVE.underDark, OLIVE.underLight, tone) : mixRgb(OLIVE.topDark, OLIVE.topLight, tone);
       // Paler midrib, darker rolled margin, a dull base and a lighter shoulder.
@@ -226,23 +251,27 @@ export function oliveSprayAtlas(seed: number, columns = 4, cell = 256) {
         for (const side of [-1, 1]) {
           if (random() < 0.08) continue;
           const spread = (0.45 + random() * 0.55) * (1 - t * 0.35);
-          const len = leafLength * (0.78 + random() * 0.32) * (1 - t * 0.22);
+          const wanted = leafLength * (0.78 + random() * 0.32) * (1 - t * 0.22);
           // Leaves seen at an angle look narrower; a few nearly edge-on.
-          const width = len * (0.085 + random() * 0.05) * (random() < 0.2 ? 0.45 : 1);
+          const width = wanted * (0.085 + random() * 0.05) * (random() < 0.2 ? 0.45 : 1);
           const under = random() < 0.32;
           const tone = random();
-          leaves.push(() => p.leaf(nx, ny, along + side * spread, len, width, leafColor(under, tone), 0.75));
+          // Keep every leaf whole inside its cell: a cut leaf shows as a straight edge on the card.
+          const len = fitLength(nx, ny, along + side * spread, wanted, box, width + 3);
+          if (len > wanted * 0.55) leaves.push(() => p.leaf(nx, ny, along + side * spread, len, width, leafColor(under, tone), 0.75));
         }
       }
       // A terminal pair of young leaves at the tip.
       const [tx, ty] = pts[pts.length - 1];
       const tipAngle = angleOn(pts, 1);
-      leaves.push(() => p.leaf(tx, ty, tipAngle - 0.18, leafLength * 0.55, leafLength * 0.05, leafColor(false, 0.85), 0.75));
-      leaves.push(() => p.leaf(tx, ty, tipAngle + 0.2, leafLength * 0.5, leafLength * 0.05, leafColor(true, 0.7), 0.75));
+      const tipA = fitLength(tx, ty, tipAngle - 0.18, leafLength * 0.55, box, leafLength * 0.05 + 3);
+      const tipB = fitLength(tx, ty, tipAngle + 0.2, leafLength * 0.5, box, leafLength * 0.05 + 3);
+      if (tipA > leafLength * 0.25) leaves.push(() => p.leaf(tx, ty, tipAngle - 0.18, tipA, leafLength * 0.05, leafColor(false, 0.85), 0.75));
+      if (tipB > leafLength * 0.25) leaves.push(() => p.leaf(tx, ty, tipAngle + 0.2, tipB, leafLength * 0.05, leafColor(true, 0.7), 0.75));
       return { pts, leaves };
     };
     // Main twig rising from the bottom centre, two or three side shoots.
-    const main = shoot(ox + cell * (0.46 + random() * 0.08), cell * 0.02, (random() - 0.5) * 0.35, cell * 0.9, 7, cell * 0.3, cell * 0.012);
+    const main = shoot(ox + cell * (0.46 + random() * 0.08), cell * 0.02, (random() - 0.5) * 0.35, cell * 0.8, 7, cell * 0.3, cell * 0.012);
     const all = [...main.leaves];
     const sides = 2 + Math.floor(random() * 2);
     for (let s = 0; s < sides; s++) {
@@ -269,6 +298,7 @@ export function cypressSprayAtlas(seed: number, columns = 2, cell = 256) {
   const random = seeded(seed);
   for (let column = 0; column < columns; column++) {
     const ox = column * cell;
+    p.setClip(ox + 1, 0, cell - 2, cell - 1);
     const axis = curve(ox + cell * 0.5, cell * 0.02, (random() - 0.5) * 0.2, cell * 0.94, (random() - 0.5) * 0.3, 8);
     p.stroke(axis, t => cell * 0.014 * (1 - t * 0.7), () => CYPRESS.stem);
     const branchlets = 15;
@@ -325,11 +355,22 @@ export function meadowAtlas(seed: number, cellWidth = 192, cellHeight = 384) {
   const pick = <T>(list: T[]) => list[Math.floor(random() * list.length)];
   MEADOW_VARIANTS.forEach((variant, column) => {
     const ox = column * cellWidth, cx = ox + cellWidth * 0.5, W = cellWidth, H = cellHeight;
+    const box = { x0: ox, x1: ox + W, y1: H };
+    p.setClip(ox + 1, 0, W - 2, H - 1);
+    /** A curve from the ground that stays inside the cell: leaning ones are shortened and straightened until they fit. */
+    const rooted = (x: number, angle: number, height: number, bend: number, segments: number, margin: number) => {
+      let pts = curve(x, 0, angle, height, bend, segments);
+      for (let k = 0; k < 8 && !insideBox(pts, box, margin); k++) {
+        angle *= 0.75; bend *= 0.7; height *= 0.94;
+        pts = curve(x, 0, angle, height, bend, segments);
+      }
+      return pts;
+    };
     const blade = (dry: number, heightScale: number, lean = 1) => {
       const x = cx + (random() - 0.5) * W * 0.32;
       const height = H * (0.3 + random() * 0.62) * heightScale;
       const angle = (x - cx) / W * 1.1 * lean + (random() - 0.5) * 0.5;
-      const pts = curve(x, 0, angle, height, (random() - 0.5) * 0.9 + Math.sign(angle) * 0.5, 6);
+      const pts = rooted(x, angle, height, (random() - 0.5) * 0.9 + Math.sign(angle) * 0.5, 6, 3);
       const isDry = random() < dry;
       const base = isDry ? pick(GRASS.dry) : pick(GRASS.green);
       const tip = isDry ? GRASS.tipDry : mixRgb(base, GRASS.dry[1], 0.55);
@@ -340,7 +381,7 @@ export function meadowAtlas(seed: number, cellWidth = 192, cellHeight = 384) {
     const seedStalk = (kind: 'oat' | 'barley', heightScale: number) => {
       const x = cx + (random() - 0.5) * W * 0.4;
       const height = H * (0.62 + random() * 0.34) * heightScale;
-      const pts = curve(x, 0, (x - cx) / W * 0.9 + (random() - 0.5) * 0.25, height, (random() - 0.5) * 0.6, 6);
+      const pts = rooted(x, (x - cx) / W * 0.9 + (random() - 0.5) * 0.25, height, (random() - 0.5) * 0.6, 6, W * 0.12);
       const straw = pick(GRASS.dry);
       p.stroke(pts, t => W * 0.006 * (1 - t * 0.5) + 0.2, () => straw);
       const [tx, ty] = pts[pts.length - 1];
@@ -370,7 +411,7 @@ export function meadowAtlas(seed: number, cellWidth = 192, cellHeight = 384) {
     };
     const flowerStem = (height: number) => {
       const x = cx + (random() - 0.5) * W * 0.5;
-      const pts = curve(x, 0, (x - cx) / W * 0.7 + (random() - 0.5) * 0.3, height, (random() - 0.5) * 0.5, 6);
+      const pts = rooted(x, (x - cx) / W * 0.7 + (random() - 0.5) * 0.3, height, (random() - 0.5) * 0.5, 6, W * 0.14);
       p.stroke(pts, t => W * 0.006 * (1 - t * 0.4) + 0.25, () => GRASS.green[0]);
       return pts[pts.length - 1];
     };
@@ -412,14 +453,14 @@ export function meadowAtlas(seed: number, cellWidth = 192, cellHeight = 384) {
       // Lavender: a grey-green cushion of needle leaves and many purple spikes.
       for (let i = 0; i < 50; i++) {
         const x = cx + (random() - 0.5) * W * 0.5;
-        const pts = curve(x, 0, (x - cx) / W * 1.6 + (random() - 0.5) * 0.4, H * (0.16 + random() * 0.18), (random() - 0.5) * 0.6, 4);
+        const pts = rooted(x, (x - cx) / W * 1.6 + (random() - 0.5) * 0.4, H * (0.16 + random() * 0.18), (random() - 0.5) * 0.6, 4, 3);
         const c = pick(GRASS.lavenderLeaf);
         p.stroke(pts, t => W * 0.009 * (1 - t * 0.8) + 0.3, t => scaleRgb(c, 0.7 + 0.4 * t));
       }
       for (let i = 0; i < 22; i++) {
         const x = cx + (random() - 0.5) * W * 0.36;
         const height = H * (0.48 + random() * 0.38);
-        const pts = curve(x, 0, (x - cx) / W * 1.5 + (random() - 0.5) * 0.25, height, (random() - 0.5) * 0.3, 5);
+        const pts = rooted(x, (x - cx) / W * 1.5 + (random() - 0.5) * 0.25, height, (random() - 0.5) * 0.3, 5, W * 0.05);
         p.stroke(pts, () => W * 0.004 + 0.25, () => GRASS.lavenderLeaf[0]);
         const a = angleOn(pts, 1);
         const [tx, ty] = pts[pts.length - 1];

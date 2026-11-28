@@ -81,8 +81,8 @@ export function bakeCafeProbes(renderer: T.WebGLRenderer, layout: {
     roomScene.add(floor);
     const g = layout.glass;
     // The window: deep blue upper sky, lighter band at the street, warm specks of shop light.
-    panel(roomScene, rgb(0.03, 0.05, 0.095), g.w, g.h * 0.55, g.x, g.y + g.h * 0.22, g.z - 0.05, new T.Vector3(g.x, g.y + g.h * 0.22, 5));
-    panel(roomScene, rgb(0.05, 0.065, 0.09), g.w, g.h * 0.45, g.x, g.y - g.h * 0.27, g.z - 0.06, new T.Vector3(g.x, g.y - g.h * 0.27, 5));
+    panel(roomScene, rgb(0.035, 0.055, 0.1), g.w, g.h * 0.55, g.x, g.y + g.h * 0.22, g.z - 0.05, new T.Vector3(g.x, g.y + g.h * 0.22, 5));
+    panel(roomScene, rgb(0.03, 0.038, 0.055), g.w, g.h * 0.45, g.x, g.y - g.h * 0.27, g.z - 0.06, new T.Vector3(g.x, g.y - g.h * 0.27, 5));
     for (const [x, y, s] of [[-4.2, 1.3, 0.5], [-3.1, 2.1, 0.28], [-1.9, 1.1, 0.6], [-0.8, 1.9, 0.3], [0.2, 1.25, 0.45], [-2.6, 2.7, 0.25]]) {
       panel(roomScene, rgb(1.6, 1.1, 0.6), s, s * 0.7, x, y, g.z - 0.04, new T.Vector3(x, y, 5));
     }
@@ -102,7 +102,7 @@ export function bakeCafeProbes(renderer: T.WebGLRenderer, layout: {
 
     // Street probe: sky, façades and the café frontage behind the viewer.
     const streetScene = new T.Scene();
-    streetScene.add(skyGradient(60, rgb(0.014, 0.03, 0.08), rgb(0.06, 0.08, 0.125), rgb(0.008, 0.01, 0.013)));
+    streetScene.add(skyGradient(60, rgb(0.03, 0.065, 0.16), rgb(0.12, 0.15, 0.23), rgb(0.008, 0.01, 0.013)));
     panel(streetScene, rgb(0.012, 0.016, 0.022), 40, 10, -5, 5, -18, new T.Vector3(-5, 5, 0));
     for (let i = 0; i < 26; i++) {
       const x = -22 + (i * 7.3) % 30, y = 3.2 + ((i * 3.7) % 6.5);

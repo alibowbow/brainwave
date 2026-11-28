@@ -146,7 +146,7 @@ diffuseColor.rgb = cfColor;`,
  * length. Relief stays microscopic: the varnish coat is what you see.
  */
 function createSlabOak(color: THREE.ColorRepresentation, key: string) {
-  const material = new THREE.MeshPhysicalMaterial({ color, roughness: 0.48, clearcoat: 0.85, clearcoatRoughness: 0.09 });
+  const material = new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, clearcoat: 0.55, clearcoatRoughness: 0.16 });
   return patchSurface(material, {
     key: `slab-oak|${key}`,
     color: `

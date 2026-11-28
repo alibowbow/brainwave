@@ -143,10 +143,10 @@ export function createExteriorBokeh(options: { glassZ: number; lamps: BokehLamp[
       uCameraWorld: { value: new T.Matrix4() },
       uSourceSize: { value: new T.Vector2(1, 1) },
       uGlassZ: { value: options.glassZ },
-      uFocus: { value: 2.6 },
+      uFocus: { value: 3.4 },
       uMaxRadius: { value: 20 },
-      uHaze: { value: new T.Color(0.055, 0.094, 0.185) },
-      uHazeDensity: { value: 0.075 },
+      uHaze: { value: new T.Color(0.026, 0.04, 0.075) },
+      uHazeDensity: { value: 0.035 },
       uHighlightBoost: { value: 0.35 },
       uTime: { value: 0 },
       uLamps: { value: lamps },
@@ -308,7 +308,7 @@ void main() {
   float mottle = cgValue(p * 9.0) * 0.6 + cgValue(p * 31.0) * 0.4;
   vec2 wipeDelta = (vUv - wipe) * vec2(glassSize.x / glassSize.y, 1.0);
   float cleared = exp(-dot(wipeDelta, wipeDelta) / 0.0045) * exp(-wipeAge * 0.075);
-  float fog = clamp((0.1 + edge) * (0.65 + 0.7 * mottle), 0.0, 0.85) * (1.0 - cleared);
+  float fog = clamp((0.05 + edge) * (0.65 + 0.7 * mottle), 0.0, 0.85) * (1.0 - cleared);
   fog *= 1.0 - trail * 0.4;
   vec3 frosted = (cgBokeh(screen + vec2(0.018, 0.0)) + cgBokeh(screen - vec2(0.018, 0.0)) + cgBokeh(screen + vec2(0.0, 0.02)) + cgBokeh(screen - vec2(0.0, 0.02))) * 0.25;
   float lampDistance = length(lampPosition - vWorld);
@@ -338,8 +338,8 @@ export function cafeGlassShader(glassSize: T.Vector2) {
       wipeAge: { value: 99 },
       lampPosition: { value: new T.Vector3() },
       lampGlow: { value: new T.Color(0, 0, 0) },
-      roomGlow: { value: new T.Color(0.005, 0.008, 0.013) },
-      reflectionStrength: { value: .75 },
+      roomGlow: { value: new T.Color(0.002, 0.003, 0.005) },
+      reflectionStrength: { value: .4 },
     },
     vertexShader: GLASS_VERTEX,
     fragmentShader: GLASS_FRAGMENT,
@@ -443,7 +443,7 @@ export function createCafeDepthVolume(options: {
     update(_time, camera) {
       // Scale the blur with the drawing buffer so phones and desktops match.
       const resolution = material.uniforms.uResolution?.value as T.Vector2 | undefined;
-      if (resolution) material.uniforms.uMaxRadius.value = Math.max(3, resolution.y * 0.024);
+      if (resolution) material.uniforms.uMaxRadius.value = Math.max(3, resolution.y * 0.018);
       void camera;
     },
   };

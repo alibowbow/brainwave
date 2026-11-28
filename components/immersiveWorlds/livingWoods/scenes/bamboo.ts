@@ -239,7 +239,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   culms.push({ x: -2.65, z: 3.25, height: 15.2, radius: 0.11, near: true }, { x: 2.88, z: 1.25, height: 16.4, radius: 0.12, near: true }, { x: -2.15, z: -2.8, height: 14, radius: 0.09, near: true });
   for (const c of culms) {
     c.near = c.near || (Math.hypot(c.x, c.z - 2) < 9);
-    c.reflect = Math.abs(c.x - streamCenter(c.z)) < streamWidth(c.z) + 4.5;
+    c.reflect = Math.abs(c.x - streamCenter(c.z)) < streamWidth(c.z) + 3.2;
   }
   const up = new THREE.Vector3(0, 1, 0);
   const tmp = new THREE.Vector3(), n = new THREE.Vector3();
@@ -376,7 +376,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     if (bankRockPatch(z, side) > 0.6 && r() < 0.5) return null;
     return { x, y: 0, z, yaw: 0, scale: new THREE.Vector3(), color: new THREE.Color() };
   });
-  const sedgeRecords = scatter(5200, 33, r => {
+  const sedgeRecords = scatter(4400, 33, r => {
     const t = tussocks[Math.floor(r() * tussocks.length)];
     const a = r() * Math.PI * 2, d = Math.sqrt(r()) * 0.3;
     const x = t.x + Math.cos(a) * d, z = t.z + Math.sin(a) * d;

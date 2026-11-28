@@ -8,9 +8,9 @@ All files below default-export a React component. Only `active: boolean` is requ
 
 | Canonical ID | Entry relative to this directory | Setting |
 |---|---|---|
-| `country_morning` | `MorningPorchWorld.tsx` | Seated rural porch, near glazed tea, garden/low wall/fields |
+| `country_morning` | `MorningPorchWorld.tsx` | Seated rural porch, near glazed tea; low sun over a dewy garden, shrubs, low wall, mist in the hollow and tree rows beyond |
 | `amb:rainy_forest` | `RainyForestWorld.tsx` | Rooted broad-leaved understorey, ferns, mossy log, wet stones, layered rain, drips, puddles |
-| `amb:deep_forest` | `AncientForestWorld.tsx` | Old-growth trunk, buttress roots, moss and shaded depth |
+| `amb:deep_forest` | `AncientForestWorld.tsx` | Old-growth trunk, buttress roots, moss, fallen logs and branches, light shafts and shaded depth |
 | `nature:bamboo_grove` | `BambooWorld.tsx` | Segmented bamboo grove beside shallow flowing stream |
 
 Mount inside a positioned parent with a nonzero height. Entry fills that parent. The integration owner must wire the exact IDs in its own shared registry; this branch intentionally has no shared catalog/App/SessionBackdrop modifications. Code and materials for each world are independent; only renderer lifetime and interaction policy are shared inside this owned group.

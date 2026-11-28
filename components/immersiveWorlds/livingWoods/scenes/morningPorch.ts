@@ -6,9 +6,10 @@ import { applyFoliageShading, crownCanopy } from '../../shared/render/foliageSha
 import { boulderGeometry } from '../../shared/render/rockGeometry';
 import { applyRockSurface } from '../../shared/render/rockSurface';
 import { seeded } from '../../shared/render/noise';
+import { fernFrondTexture } from '../../shared/render/foliageTextures';
 import {
   applyDewGlints, applyForestFloor, bakeEnvironment, bladeGeometry as grassBlade, createSky, createSun, createWoodsVolume,
-  grassMaterial, instanced, scatter, terrainGeometry, type Placement, type SkyOptions,
+  fernCrownGeometry, fernMaterial, grassMaterial, instanced, scatter, terrainGeometry, type Placement, type SkyOptions,
 } from './woodsKit';
 import { leafSprayAtlas, tintGeometry } from './leafAtlas';
 
@@ -32,9 +33,9 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
 
   // HDR morning sky: warm low sun glow, a clear blue zenith and thin drifting cloud.
   const sky: SkyOptions = {
-    zenith: new THREE.Color(0.11, 0.27, 0.66).multiplyScalar(1.1),
+    zenith: new THREE.Color(0.07, 0.2, 0.62).multiplyScalar(1.1),
     horizon: new THREE.Color(1.0, 0.7, 0.42).multiplyScalar(1.6),
-    horizonAway: new THREE.Color(0.5, 0.62, 0.84).multiplyScalar(0.85),
+    horizonAway: new THREE.Color(0.42, 0.56, 0.82).multiplyScalar(0.8),
     ground: new THREE.Color(0.12, 0.15, 0.08),
     toSun: TO_SUN,
     sun: new THREE.Color(1, 0.8, 0.52).multiplyScalar(90),
@@ -169,6 +170,22 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     tintGeometry(tree.leaves, new THREE.Color().setRGB(0.9 + farRandom() * 0.2, 0.95 + farRandom() * 0.1, 0.8 + farRandom() * 0.2), 0.15, tintRandom);
     trees.push(tree);
   }
+  // A long leafy limb of the left tree reaches over the garden toward the porch and frames the top of
+  // the view; its leaves are seen from below, glowing against the low sun.
+  {
+    const limb = buildTree({
+      seed: 4471, base: new THREE.Vector3(0, 0, 0), height: 6.4, radius: 0.13, form: 'sapling',
+      limbs: 11, levels: 1, children: 3, crownStart: 0.2, spread: 0.32, curl: -0.3, gnarl: 0.55, radial: 9, ringsPerMetre: 3, flex: 1.0,
+      leaves: { cardsPerTwig: 16, size: 0.72, reach: 0.85, atlasColumns: 4, crownNormals: 0.45, shade: [0.2, 0.95], skyward: 0, fill: 0.3 },
+    });
+    const direction = new THREE.Vector3(0.42, -0.2, 0.88).normalize();
+    const matrix = new THREE.Matrix4().compose(new THREE.Vector3(-5.35, 5.2, -5.9), new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction), new THREE.Vector3(1, 1, 1));
+    limb.bark.applyMatrix4(matrix);
+    limb.leaves?.applyMatrix4(matrix);
+    // Seen from below against the sun: darker, bluer leaves than the crowns so the glow stays at their edges.
+    tintGeometry(limb.leaves, new THREE.Color(0.66, 0.74, 0.7), 0.25, tintRandom);
+    trees.push(limb);
+  }
   const leafAtlas = leafSprayAtlas({ seed: 77, palette: { base: '#557d2c', light: '#a6c457', dark: '#2c4a1b', stem: '#5a4a32' }, columns: 4, leaf: 0.17, aspect: 0.46, leaves: 11, twigs: 4, round: 0.4 });
   const canopy = crownCanopy({
     key: 'morning', toSun: TO_SUN, time, density: 1.4, gaps: 0.1,
@@ -176,7 +193,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   });
   const wind = { time, mode: 'attribute' as const, sway: 0.35, flutter: 0.025, direction: [1, 0.3] as [number, number], speed: 0.9 };
   const barkMaterial = applyFoliageShading(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.88 }), {
-    key: 'morning-bark', scale: 2.4, stretch: 3.2, depth: 0.016, plate: '#7c7467', fissure: '#2a241d',
+    key: 'morning-bark', scale: 4.5, stretch: 3.6, depth: 0.012, plate: '#7c7467', fissure: '#2a241d',
     lichen: { color: '#a3a88a', amount: 0.45 }, moss: { color: '#4d5f27', amount: 0.35, below: 0.25, side: new THREE.Vector3(0.6, 0, 0.8) },
   }), { key: 'morning-bark', canopy, wind });
   const foliage = (key: string, map: THREE.Texture, roughness = 0.5) => applyFoliageShading(new THREE.MeshStandardMaterial({ map, vertexColors: true, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true, roughness, metalness: 0 }), {
@@ -367,6 +384,22 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
   box(.25, 3.7, 6.5, plaster, [-4.3, 1.9, 3.7]);
   box(.11, .14, 6.5, darkWood, [-4.14, .42, 3.7]);
   box(.11, .12, 6.5, darkWood, [-4.14, 2.8, 3.7]);
+  // A terracotta pot of fern on the boards at the left: a sunlit near-field plant that sets the porch's scale.
+  {
+    const potProfile = [[0, 0], [0.15, 0], [0.17, 0.015], [0.2, 0.3], [0.235, 0.315], [0.245, 0.37], [0.232, 0.38], [0.212, 0.36], [0, 0.34]].map(([x, y]) => new THREE.Vector2(x, y));
+    const potMaterial = applyRockSurface(new THREE.MeshStandardMaterial({ color: '#c27a52', roughness: 0.88 }), {
+      key: 'morning-pot', scale: 9, bump: 0.35, stain: '#5e5a40', stainAmount: 0.35, strata: 0, cavity: 0.3, drips: 0, moss: { color: '#5f7436', amount: 0.12 },
+    });
+    const pot = mesh(new THREE.LatheGeometry(potProfile, 36), potMaterial, [-2.55, 0.13, 1.05]);
+    pot.castShadow = true; pot.receiveShadow = true;
+    const soil = mesh(new THREE.CircleGeometry(0.212, 24), new THREE.MeshStandardMaterial({ color: '#2e2418', roughness: 1 }), [-2.55, 0.48, 1.05]);
+    soil.rotation.x = -Math.PI / 2;
+    const fernAtlas = fernFrondTexture({ seed: 61, palette: { base: '#4f8a2a', light: '#9cc650', dark: '#2a5018', stem: '#5e7a34' } });
+    const potFern = new THREE.Mesh(fernCrownGeometry(73, 13), fernMaterial({ key: 'morning-pot-fern', map: fernAtlas, canopy: null, wind: { time, mode: 'height', height: 0.7, sway: 0.025, flutter: 0.008, direction: [1, 0.3], speed: 0.8 }, roughness: 0.5 }));
+    potFern.position.set(-2.55, 0.47, 1.05); potFern.scale.set(0.95, 0.8, 0.95); potFern.rotation.y = 0.6;
+    potFern.castShadow = true; potFern.receiveShadow = true;
+    root.add(potFern);
+  }
 
   // A tactile oiled table, linen and celadon tea set occupy the seated near field.
   const table = new THREE.Group(); root.add(table);
@@ -561,7 +594,7 @@ export function createMorningPorch(scene: THREE.Scene, camera: THREE.Perspective
     // Near garden stays crisp; mist lies in the hollow and in banks between the tree rows, lit gold toward the sun.
     createVolume: () => createWoodsVolume({
       canopy, toSun: TO_SUN, sun: new THREE.Color(1.0, 0.76, 0.5).multiplyScalar(1.35), ambient: new THREE.Color(0.34, 0.4, 0.52).multiplyScalar(0.22),
-      haze: [0.0034, 0.07, -1.2, 140], mist: [0.06, 0.55, 0.1, 0.03], anisotropy: 0.66, steps: 28,
+      haze: [0.0034, 0.12, -1.2, 140], mist: [0.06, 0.55, 0.1, 0.03], anisotropy: 0.66, steps: 28,
       clear: [3, 12], banks: [[26, 7, 0.05, 1.9], [50, 10, 0.03, 2.4], [80, 16, 0.02, 3]],
     }),
     resize(aspect) {

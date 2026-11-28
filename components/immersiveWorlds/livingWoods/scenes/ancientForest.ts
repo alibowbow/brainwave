@@ -81,11 +81,12 @@ export function createAncientForest(scene: THREE.Scene, camera: THREE.Perspectiv
 
   // ---- Old-growth bark: deep furrows, moss up the shaded flank and over the roots ----------------
   const barkMaterial = applyFoliageShading(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.9 }), {
-    key: 'ancient-bark', scale: 1.5, stretch: 7, depth: 0.13, plate: '#94897a', fissure: '#0c0907',
+    // Fine furrows in the shading (many per metre) over the broad modelled ridges of the geometry.
+    key: 'ancient-bark', scale: 5.5, stretch: 6, depth: 0.04, plate: '#94897a', fissure: '#0c0907',
     lichen: { color: '#a9b297', amount: 0.55 }, moss: { color: '#4b6a1f', amount: 0.8, below: 1.1, side: new THREE.Vector3(0.3, 0, 1), up: 0.9 },
   }), { key: 'ancient-bark', canopy, wind });
   const farBarkMaterial = applyFoliageShading(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.9 }), {
-    key: 'ancient-far-bark', scale: 1.9, stretch: 6, depth: 0.06, plate: '#625b50', fissure: '#14110d',
+    key: 'ancient-far-bark', scale: 6, stretch: 6, depth: 0.03, plate: '#6a6255', fissure: '#14110d',
     lichen: { color: '#8c9680', amount: 0.35 }, moss: { color: '#465f22', amount: 0.55, below: 0.8, side: new THREE.Vector3(0.3, 0, 1) },
   }), { key: 'ancient-far-bark', canopy, wind });
 
@@ -182,7 +183,7 @@ export function createAncientForest(scene: THREE.Scene, camera: THREE.Perspectiv
   }
   const forest: TreeBuild[] = treeSpots.map(([x, z, r, h], i) => buildTree({
     seed: 40 + i, base: new THREE.Vector3(x, groundY(x, z) - 0.08, z), height: h, radius: r, form: 'column',
-    gnarl: 0.4, flare: i < 12 ? 0.85 : 0.6, buttresses: i < 12 ? 5 : 3, crownStart: 0.45 + random() * 0.2, limbs: i < 12 ? 7 : 5, levels: 1, children: 3,
+    gnarl: 0.22, flare: i < 12 ? 0.85 : 0.6, buttresses: i < 12 ? 5 : 3, crownStart: 0.45 + random() * 0.2, limbs: i < 12 ? 7 : 5, levels: 1, children: 3,
     spread: 0.2, curl: -0.15, radial: i < 12 ? 26 : 10, ringsPerMetre: i < 12 ? 3 : 0.8, displace: i < 12 ? 0.04 : 0, barkScale: 1.9, barkStretch: 6, flex: 0.2,
     leaves: { cardsPerTwig: i < 12 ? 16 : 11, size: 1.9, reach: 0.85, crownNormals: 0.8, shade: [0.22, 1], fill: 0.2 },
   }));
@@ -401,7 +402,7 @@ void main() {
     prepare(renderer) { environment = bakeEnvironment(renderer, scene, sky, { intensity: 0.95, canopy: { color: new THREE.Color(0.05, 0.085, 0.04), cover: 0.85 } }); },
     createVolume: () => createWoodsVolume({
       canopy, toSun: TO_SUN, sun: new THREE.Color(1, 0.9, 0.72).multiplyScalar(3.2), ambient: new THREE.Color(0.06, 0.09, 0.07).multiplyScalar(0.6),
-      haze: [0.0065, 0.02, -0.2, 70], mist: [0.016, 1.0, 0.09, 0.03], anisotropy: 0.72, steps: 32, clear: [2, 7],
+      haze: [0.0065, 0.02, -0.2, 70], mist: [0.011, 1.0, 0.09, 0.03], anisotropy: 0.72, steps: 32, clear: [2, 7],
     }),
     update(now: number) {
       time.value = now;

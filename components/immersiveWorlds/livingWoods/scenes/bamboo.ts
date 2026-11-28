@@ -118,7 +118,9 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   const fog = new THREE.FogExp2(0xffffff, 0.013);
   fog.color.setRGB(0.12, 0.16, 0.11);
   scene.fog = fog;
-  createSun(scene, { toSun: TO_SUN, color: '#fff1cc', intensity: 6.5, target: new THREE.Vector3(0, 0, -4), box: [-16, 16, -14, 18], distance: 46, radius: 2.5, normalBias: 0.04 });
+  const sun = createSun(scene, { toSun: TO_SUN, color: '#fff1cc', intensity: 6.5, target: new THREE.Vector3(0, 0, -4), box: [-16, 16, -14, 18], distance: 46, radius: 2.5, normalBias: 0.04 });
+  // Objects kept out of the stream reflection (layer 1) still cast shadows.
+  sun.shadow.camera.layers.enable(1);
   const canopy = layerCanopy({
     key: 'bamboo', toSun: TO_SUN, height: 11, scale: 0.11, cover: 0.2, softness: 0.1, floor: 0.06, time,
     clearings: [
@@ -133,7 +135,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     key: 'bamboo-floor', soil: '#2e2418', litter: '#9a8050', litterDark: '#43351f', moss: '#4a6026', mossAmount: 0.3, bump: 0.6, carpet: { cells: 7, aspect: 7, cover: 0.95 },
   }), { key: 'bamboo-floor', canopy });
   const ground = new THREE.Mesh(terrainGeometry({ width: 100, zNear: 8, zFar: -75, columns: 170, rows: 160, height: forestFloor }), floorMaterial);
-  ground.receiveShadow = true; root.add(ground);
+  ground.receiveShadow = true; ground.layers.set(1); root.add(ground);
   const bedMaterial = applyFoliageShading(applyRockSurface(new THREE.MeshStandardMaterial({ color: '#6b6c58', roughness: 0.6 }), {
     key: 'bamboo-bed', scale: 5, bump: 0.8, wetness: 1, drips: 0, stainAmount: 0.3, strata: 0, algae: '#4a5a2c', algaeAmount: 0.4, waterY: 0.12, wetBand: 0.2,
   }), { key: 'bamboo-bed', canopy });
@@ -223,7 +225,8 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
 
   // ---- Culms, branches and leaf sprays ------------------------------------------------------------
   const culmWriter = new Writer(), branchWriter = new Writer(), leafWriter = new Writer();
-  type Culm = { x: number; z: number; height: number; radius: number; near: boolean };
+  const culmWriterFar = new Writer(), leafWriterFar = new Writer();
+  type Culm = { x: number; z: number; height: number; radius: number; near: boolean; reflect?: boolean };
   const culms: Culm[] = [];
   for (const side of [-1, 1]) {
     for (let clump = 0; clump < 30; clump++) {
@@ -234,10 +237,15 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     }
   }
   culms.push({ x: -2.65, z: 3.25, height: 15.2, radius: 0.11, near: true }, { x: 2.88, z: 1.25, height: 16.4, radius: 0.12, near: true }, { x: -2.15, z: -2.8, height: 14, radius: 0.09, near: true });
-  for (const c of culms) c.near = c.near || (Math.hypot(c.x, c.z - 2) < 9);
+  for (const c of culms) {
+    c.near = c.near || (Math.hypot(c.x, c.z - 2) < 9);
+    c.reflect = Math.abs(c.x - streamCenter(c.z)) < streamWidth(c.z) + 4.5;
+  }
   const up = new THREE.Vector3(0, 1, 0);
   const tmp = new THREE.Vector3(), n = new THREE.Vector3();
   culms.forEach((culm, ci) => {
+    // Culms near the water are mirrored by the stream; the rest skip the reflection pass (layer 1).
+    const cw = culm.reflect ? culmWriter : culmWriterFar, lw = culm.reflect ? leafWriter : leafWriterFar;
     const lean: [number, number] = [range(-0.7, 0.7), range(-0.6, 0.6)];
     const phase = rng() * Math.PI * 2;
     const base = new THREE.Vector3(culm.x, forestFloor(culm.x, culm.z) - 0.08, culm.z);
@@ -260,15 +268,15 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
         const taper = R * (1 - 0.42 * y / H);
         const ridge = culm.near ? 1 + 0.06 * Math.exp(-(((f - 0.012) / 0.02) ** 2)) - 0.012 * Math.exp(-(((f - 1) / 0.08) ** 2)) : 1;
         const c = centre(y).clone();
-        const rowStart = culmWriter.count;
+        const rowStart = cw.count;
         for (let j = 0; j <= radial; j++) {
           const a = (j / radial) * Math.PI * 2;
           n.set(Math.cos(a), 0, Math.sin(a));
-          culmWriter.vertex(c.clone().addScaledVector(n, taper * ridge), n, j / radial, y, color, [trunkW(y), 0, 0], [phase, phase], [f, i / nodes]);
+          cw.vertex(c.clone().addScaledVector(n, taper * ridge), n, j / radial, y, color, [trunkW(y), 0, 0], [phase, phase], [f, i / nodes]);
         }
         if (f > 0 || i > 0) {
           const prev = rowStart - (radial + 1);
-          for (let j = 0; j < radial; j++) culmWriter.indices.push(prev + j, rowStart + j, prev + j + 1, prev + j + 1, rowStart + j, rowStart + j + 1);
+          for (let j = 0; j < radial; j++) cw.indices.push(prev + j, rowStart + j, prev + j + 1, prev + j + 1, rowStart + j, rowStart + j + 1);
         }
       }
       // Branches leave the upper nodes, alternating sides; leaf sprays hang from their twigs.
@@ -319,17 +327,17 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
               const column = Math.floor(rng() * 2);
               const origin = end.p.clone().addScaledVector(hang, -size * 0.06);
               const shade = range(0.75, 1.05) * (0.6 + 0.4 * Math.min(1, nodeY / H + 0.2));
-              const s = leafWriter.count;
+              const s = lw.count;
               for (let row = 0; row <= 2; row++) for (let col = 0; col <= 2; col++) {
                 const u = col / 2, v = row / 2;
                 const p = origin.clone().addScaledVector(right, (u - 0.5) * size).addScaledVector(hang, v * size)
                   .addScaledVector(face, (((u - 0.5) * 2) ** 2) * size * 0.08 - v * v * size * 0.1);
                 const nn = face.clone().lerp(new THREE.Vector3(0, 1, 0), 0.45).normalize();
-                leafWriter.vertex(p, nn, (column + u) / 2, v, new THREE.Color(shade, shade, shade), [w0, end.w, 0.3 + 0.7 * v], [phase, phase + b], [0, 0]);
+                lw.vertex(p, nn, (column + u) / 2, v, new THREE.Color(shade, shade, shade), [w0, end.w, 0.3 + 0.7 * v], [phase, phase + b], [0, 0]);
               }
               for (let row = 0; row < 2; row++) for (let col = 0; col < 2; col++) {
                 const a = s + row * 3 + col;
-                leafWriter.indices.push(a, a + 1, a + 3, a + 1, a + 4, a + 3);
+                lw.indices.push(a, a + 1, a + 3, a + 1, a + 4, a + 3);
               }
             }
           }
@@ -341,6 +349,8 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   const culmMaterial = applyFoliageShading(applyCulmSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', vertexColors: true, roughness: 0.34, metalness: 0 })), { key: 'bamboo-culms', canopy, wind });
   const culmMesh = new THREE.Mesh(culmWriter.geometry(true), culmMaterial);
   culmMesh.castShadow = true; culmMesh.receiveShadow = true; root.add(culmMesh);
+  const culmMeshFar = new THREE.Mesh(culmWriterFar.geometry(true), culmMaterial);
+  culmMeshFar.castShadow = true; culmMeshFar.receiveShadow = true; culmMeshFar.layers.set(1); root.add(culmMeshFar);
   const twigMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ color: '#6d7a3c', roughness: 0.55 }), { key: 'bamboo-twigs', canopy, wind });
   const twigMesh = new THREE.Mesh(branchWriter.geometry(false), twigMaterial);
   twigMesh.castShadow = true; twigMesh.receiveShadow = true; twigMesh.layers.set(1); root.add(twigMesh);
@@ -350,6 +360,8 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
   });
   const leafMesh = new THREE.Mesh(leafWriter.geometry(false), leafMaterial);
   leafMesh.castShadow = true; leafMesh.receiveShadow = true; root.add(leafMesh);
+  const leafMeshFar = new THREE.Mesh(leafWriterFar.geometry(false), leafMaterial);
+  leafMeshFar.castShadow = true; leafMeshFar.receiveShadow = true; leafMeshFar.layers.set(1); root.add(leafMeshFar);
 
   // ---- Streamside sedges and fallen bamboo leaves ---------------------------------------------------
   const sedgeWind = { time, mode: 'height' as const, height: 1, sway: 0.07, flutter: 0.015, direction: [1, 0.25] as [number, number], speed: 1 };
@@ -368,7 +380,7 @@ export function createBamboo(scene: THREE.Scene, camera: THREE.PerspectiveCamera
     const h = 0.25 + r() * 0.5;
     return { x, y: Math.max(0.06, forestFloor(x, z)) - 0.01, z, yaw: a + (r() - 0.5) * 0.8, tilt: 0.2 + r() * 0.5, scale: new THREE.Vector3(0.012 + r() * 0.008, h, h), color: srgb(0.19 + r() * 0.07, 0.42 + r() * 0.2, 0.24 + r() * 0.14) };
   });
-  root.add(instanced(bladeGeometry(3, 0.55), sedges, sedgeRecords, { cast: false, receive: true }));
+  root.add(instanced(bladeGeometry(2, 0.55), sedges, sedgeRecords, { cast: false, receive: true }));
   const litterAtlas = litterTexture({ seed: 19, colors: ['#a48a54', '#7d6a40', '#c0a464', '#8e7a4e'], narrow: true });
   const litterMaterial = applyFoliageShading(new THREE.MeshStandardMaterial({ map: litterAtlas, alphaTest: 0.5, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.8 }), { key: 'bamboo-litter', canopy, coverage: true });
   for (let cell = 0; cell < 4; cell++) {

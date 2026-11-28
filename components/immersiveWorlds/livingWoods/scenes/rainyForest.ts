@@ -7,6 +7,7 @@ import { broadleafClusterTexture, fernFrondTexture, litterTexture } from '../../
 import { boulderGeometry } from '../../shared/render/rockGeometry';
 import { applyRockSurface } from '../../shared/render/rockSurface';
 import { createRainLayer, createRainSplashes, type RainLayer } from '../../shared/render/rainStreaks';
+import { applyWetSurface } from '../../shared/render/wetSurface';
 import { seeded } from '../../shared/render/noise';
 import {
   applyDewGlints, applyForestFloor, bakeEnvironment, createSky, createSun, createWoodsVolume, fernCrownGeometry, fernMaterial,
@@ -87,7 +88,7 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
 
   // ---- Soaked trunks: dark, glossy bark with moss and run-off streaks ----------------------------
   const barkMaterial = applyFoliageShading(applyBarkSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.85 }), {
-    key: 'rainy-bark', scale: 1.7, stretch: 5, depth: 0.035, plate: '#5f5a4e', fissure: '#14120e', wetness: 0.9,
+    key: 'rainy-bark', scale: 4.5, stretch: 6, depth: 0.025, plate: '#5f5a4e', fissure: '#14120e', wetness: 0.9,
     lichen: { color: '#8f9e84', amount: 0.32 }, moss: { color: '#40691f', amount: 0.85, below: 1.4, side: new THREE.Vector3(0.2, 0, 1), up: 0.95 },
   }), { key: 'rainy-bark', canopy, wind });
   const fixed: Array<[number, number, number, number]> = [
@@ -150,9 +151,10 @@ export function createRainyForest(scene: THREE.Scene, camera: THREE.PerspectiveC
   trees.forEach(t => { t.bark.dispose(); t.leaves?.dispose(); });
 
   // ---- Wet floor, puddles and stones --------------------------------------------------------------
-  const floorMaterial = applyFoliageShading(applyForestFloor(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.85 }), {
+  // Soaked litter: a soft water sheen over everything (rough enough that leaf-edge relief never sparkles into noise).
+  const floorMaterial = applyWetSurface(applyFoliageShading(applyForestFloor(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.85 }), {
     key: 'rainy-floor', soil: '#2b2218', litter: '#6a4a2a', litterDark: '#2a1c11', moss: '#3b601d', mossAmount: 0.55, wetness: 0.85, bump: 0.7, carpet: { cells: 10, aspect: 2.7, cover: 0.62 },
-  }), { key: 'rainy-floor', canopy });
+  }), { key: 'rainy-floor', canopy }), { key: 'rainy-floor-wet', time, wetness: 0.45, darkening: 0.85, wetRoughness: 0.34 });
   const ground = new THREE.Mesh(terrainGeometry({ width: 90, zNear: 7, zFar: -70, columns: 170, rows: 160, height: groundY }), floorMaterial);
   ground.receiveShadow = true; scene.add(ground);
 

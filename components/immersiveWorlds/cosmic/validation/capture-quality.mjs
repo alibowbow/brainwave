@@ -2,7 +2,8 @@
 // into a temporary folder (never into public/), serves it and writes PNGs.
 //   COSMIC_QA_OUTPUT=/tmp/claude-0/cosmic-captures/after node components/immersiveWorlds/cosmic/validation/capture-quality.mjs
 // COSMIC_QA_QUERY=post=off captures the direct (pre-pipeline) renderer for a
-// before/after comparison. COSMIC_QA_ACTIVE=<frames> runs the animation and
+// before/after comparison; COSMIC_QA_QUERY=t=<seconds> starts the scene clock
+// there (compare moments of slow motion). COSMIC_QA_ACTIVE=<frames> runs the animation and
 // captures after that many frames; otherwise the reduced-motion still is used.
 // COSMIC_QA_VIEWPORTS narrows the run (desktop,portrait). COSMIC_QA_PORT
 // overrides the preview port (default 4318). Any page or shader error fails

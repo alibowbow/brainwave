@@ -25,8 +25,16 @@ import { supportsHdrTargets } from '../shared/render/hdrPipeline';
  *   the planet's shadow in world coordinates.
  */
 
-/** Direction toward the key star, world space. Lighting, rings and dust share it. */
-export const COSMIC_SUN_DIRECTION = new THREE.Vector3(-.74, .42, -.52).normalize();
+/**
+ * Direction toward the key star, world space. Lighting, rings and dust share it.
+ * The star stands on the left, behind the seat's shoulder: the garden is
+ * lit from the left three-quarters (forms read on both sides of the frame,
+ * shadows fall across the terrace toward the right), the gas giant shows
+ * a gibbous day side, and the star sits on the far side of the ring plane, so
+ * the ring's shadow lies across the visible globe and the globe's shadow cuts
+ * across the rings beside it.
+ */
+export const COSMIC_SUN_DIRECTION = new THREE.Vector3(-.80, .45, .40).normalize();
 /** Linear radiance scale of direct starlight (matches the key light intensity). */
 export const COSMIC_SUN_IRRADIANCE = 3.4;
 export const COSMIC_SUN_COLOR = new THREE.Color(1.0, .93, .84);
@@ -36,7 +44,7 @@ export const COSMIC_PLANET_RADIUS = 16.8;
 export const COSMIC_RING_SHADOW_EDGES = [15.5, 17.3] as const;
 const RING_INNER = 20.3;
 const RING_OUTER = 30.6;
-const RING_ROTATION = new THREE.Euler(1.48, .40, 0);
+const RING_ROTATION = new THREE.Euler(1.46, .16, 0);
 
 const v3 = (v: THREE.Vector3) => `vec3(${v.x.toFixed(5)}, ${v.y.toFixed(5)}, ${v.z.toFixed(5)})`;
 const SUN = v3(COSMIC_SUN_DIRECTION);
@@ -55,9 +63,16 @@ float nz2(vec3 p) { return nz(p) * .62 + nz(p * 2.71 + .37) * .38; }
 const RING_PROFILE = /* glsl */ `
 float ringHash(float x) { return fract(sin(x * 127.1) * 43758.5453); }
 float ringNoise(float x) { float i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f); return mix(ringHash(i), ringHash(i + 1.0), f); }
+// A narrow empty gap centred at c, w wide (normalised radius). Gaps thinner
+// than a pixel fade to a partial darkening instead of shimmering.
+float ringGap(float x, float c, float w, float px) {
+  float cover = 1.0 - smoothstep(w * .5, w * .5 + max(px, w * .3), abs(x - c));
+  return 1.0 - cover * clamp(w / max(px, 1e-5), 0.0, 1.0) * .96;
+}
 float ringTau(float r, float pixel) {
   float x = (r - ${RING_INNER.toFixed(2)}) / ${(RING_OUTER - RING_INNER).toFixed(2)};
   if (x < 0.0 || x > 1.0) return 0.0;
+  float px = pixel / ${(RING_OUTER - RING_INNER).toFixed(2)};
   float c = 0.07 + 0.05 * smoothstep(0.05, 0.2, x);
   float b = smoothstep(0.20, 0.25, x) * (1.0 - smoothstep(0.575, 0.592, x)) * (1.05 + 0.7 * smoothstep(0.3, 0.52, x));
   float a = smoothstep(0.655, 0.675, x) * (1.0 - smoothstep(0.955, 0.985, x)) * 0.55;
@@ -72,7 +87,16 @@ float ringTau(float r, float pixel) {
                      + 0.45 * fade1 * (ringNoise(r * 6.3 + 3.0) - 0.5) * 2.0
                      + 0.35 * fade2 * (ringNoise(r * 23.0 + 7.0) - 0.5) * 2.0
                      + 0.25 * fade3 * (ringNoise(r * 71.0 + 1.0) - 0.5) * 2.0;
-  return 0.55 * tau * max(detail, 0.05) * (smoothstep(0.0, 0.02, x) * (1.0 - smoothstep(0.985, 1.0, x)));
+  // Fine gaps cleared by embedded moonlets and resonances: Maxwell and Bond in
+  // the faint inner ring, a pair of dark lanes in the bright ring, Huygens at
+  // the inner edge of the wide division, Encke and Keeler in the outer ring.
+  float gaps = ringGap(x, .085, .006, px) * ringGap(x, .142, .004, px)
+             * ringGap(x, .318, .003, px) * ringGap(x, .447, .0025, px)
+             * ringGap(x, .598, .008, px) * ringGap(x, .628, .003, px)
+             * ringGap(x, .742, .002, px) * ringGap(x, .812, .0025, px) * ringGap(x, .968, .004, px);
+  // Spiral density waves: tightly wound ripples in the outer ring.
+  float waves = 1.0 + .22 * smoothstep(.70, .76, x) * (1.0 - smoothstep(.86, .9, x)) * sin(r * 160.0) * fade3;
+  return 0.55 * tau * max(detail, 0.05) * gaps * waves * (smoothstep(0.0, 0.02, x) * (1.0 - smoothstep(0.985, 1.0, x)));
 }
 `;
 
@@ -102,6 +126,7 @@ vec4 nebulaMarch(vec3 d) {
   float kC = exp(-pow(acos(clamp(dot(d, knotC), -1.0, 1.0)) / .08, 2.0));
   float knots = kA * .3 + kB * .8 + kC * .7;
   float dt = .72 / float(NEB_STEPS);
+  float ridge = 0.0;
   for (int i = 0; i < NEB_STEPS; i++) {
     float t = .30 + (float(i) + .5) * dt;
     vec3 p = d * t;
@@ -115,10 +140,19 @@ vec4 nebulaMarch(vec3 d) {
     vec4 fine = texture(uNoise, r * 2.6 + vec3(.71, .19, .52));
     float gas = sheet * smoothstep(.44, .64, cloud + (fine.g - .5) * .26);
     // Ridged filaments carve dust lanes and their bright rims.
-    float ridge = 1.0 - abs(fine.r - .5) * 2.0;
+    ridge = 1.0 - abs(fine.r - .5) * 2.0;
     float lane = sheet * smoothstep(.66, .92, ridge) * smoothstep(.42, .58, cloud);
     float globule = sheet * smoothstep(.60, .70, nz(r * .9 + 5.3)) * .8;
     float dust = lane * 1.6 + globule;
+    // A nearer, separate layer of cold dark cloud drifts in front of the glowing
+    // sheet: sharp-edged, starless, with only a warm silver lining toward the
+    // star. It gives the nebula depth instead of one painted layer.
+    float nearLayer = 1.0 - smoothstep(.44, .56, t);
+    float fh = dot(p, band) + .05 + w.x * .30;
+    float fgSheet = exp(-fh * fh / .018);
+    float fgCloud = smoothstep(.54, .66, nz2(r * 1.7 + 7.7) + (fine.r - .5) * .30);
+    float fgDust = nearLayer * fgSheet * fgCloud * 2.2;
+    dust += fgDust;
     float hue = smoothstep(.36, .66, nz(r * .62 + 11.0));
     vec3 teal = vec3(.050, .245, .300);
     vec3 rose = vec3(.380, .085, .135);
@@ -129,10 +163,16 @@ vec4 nebulaMarch(vec3 d) {
     // Star-forming regions: hot gas brightens where the cloud is densest,
     // following its filaments rather than forming a smooth blob.
     float clump = smoothstep(.52, .78, cloud + (fine.b - .5) * .3);
-    emission += vec3(1.0, .55, .62) * knots * depthBand * clump * gas * 22.0;
-    emission += vec3(.55, .85, .90) * knots * depthBand * clump * smoothstep(.3, .7, fine.a) * 4.0;
+    // Ionisation structure around the young clusters: hot teal-white oxygen
+    // glow at the heart, a ring of rose hydrogen around it.
+    float core = smoothstep(.55, .95, knots);
+    emission += mix(vec3(1.0, .42, .52), vec3(.62, .92, .95), core) * knots * depthBand * clump * gas * 24.0;
+    emission += vec3(.55, .85, .90) * knots * depthBand * clump * smoothstep(.3, .7, fine.a) * 5.0;
+    // Bright ionisation fronts where dust lanes meet glowing gas.
+    emission += vec3(1.0, .62, .55) * gas * smoothstep(.45, .7, ridge) * (1.0 - smoothstep(.8, .95, ridge)) * (.1 + 2.5 * knots) * .5;
     // Dust near the star reflects warm starlight; distant dust only blocks.
     emission += vec3(.95, .64, .36) * (dust * .9 + gas * .45 + .008) * starGlow * .55;
+    emission += vec3(1.0, .72, .45) * fgDust * smoothstep(.6, .75, fgCloud + fine.g * .2) * starGlow * .25;
     // A faint unresolved stellar glow along the band.
     emission += vec3(.020, .018, .026) * sheet;
     float extinction = dust * 10.0 + gas * .35;
@@ -147,7 +187,7 @@ vec4 nebulaMarch(vec3 d) {
 `;
 
 const NEBULA_BAKE_FRAGMENT = /* glsl */ `
-#define NEB_STEPS 40
+#define NEB_STEPS 48
 ${NOISE}
 ${NEBULA_MARCH}
 varying vec3 vDirection;
@@ -174,10 +214,20 @@ void main() {
 #else
   vec4 nebula = nebulaMarch(d);
 #endif
-  // Gentle fine grain restores some crispness lost to the cube resolution; it
-  // only modulates existing gas, so empty space stays empty.
-  float grain = texture(uNoise, d * 7.3 + .2).b;
-  vec3 color = nebula.rgb * uNebulaGain * (.84 + .32 * grain);
+  // Fine structure layered live over the baked gas, at a scale the cube cannot
+  // hold: ridged dust filaments carve dark lanes with bright ionised rims, and
+  // thin wisps streak the glow. It only modulates existing gas, so empty
+  // space stays empty and the stars between the clouds stay clean.
+  // The next two octaves of the gas field, which the cube cannot hold, are
+  // added live as gentle clumping. Noise is stretched a little across the band
+  // normal, so structure streams with the flow. It only modulates existing
+  // gas: empty space stays empty and the stars between clouds stay clean.
+  vec3 neb = nebula.rgb;
+  vec3 bandN = vec3(.431, -.843, -.323);
+  vec3 q = d + bandN * dot(d, bandN) * 1.2;
+  float n1 = texture(uNoise, q * 5.2 + .13).r;
+  float n2 = texture(uNoise, q * 10.4 + vec3(n1 * .2) + .51).g;
+  vec3 color = neb * (.80 + .30 * n1 + .14 * n2) * uNebulaGain;
   // The star: tiny bright disc with limb darkening and a soft corona.
   float c = clamp(dot(d, uStarLocal), -1.0, 1.0);
   float angle = acos(c);
@@ -197,6 +247,7 @@ const STAR_VERTEX = /* glsl */ `
 attribute vec4 aStar;   // brightness, temperature (0 cool .. 1 hot), phase, size
 uniform float uTime;
 uniform float uPixelRatio;
+uniform float uTwinkle;
 #ifdef NEBULA_BAKED
 uniform samplerCube uNebula;
 #endif
@@ -212,12 +263,20 @@ void main() {
 #ifdef NEBULA_BAKED
   extinction = pow(texture(uNebula, dir).a, .8);
 #endif
-  // No flashing: a slight change over well over a minute.
-  float slow = .93 + .07 * sin(uTime * .035 + aStar.z * 6.2831);
-  vColor = blackbody(aStar.y) * aStar.x * extinction * slow;
+  // Scintillation as in the shared night sky: three incommensurate rates per
+  // star, so no two stars and no two moments line up. Brighter stars shimmer
+  // most; it is a soft flicker, never a flash.
+  float seed = aStar.z * 6.2831853;
+  float flicker = .5 * sin(uTime * (1.6 + aStar.z * 2.1) + seed * 9.0)
+                + .3 * sin(uTime * (2.9 + aStar.y * 2.3) + seed * 4.0)
+                + .2 * sin(uTime * (.7 + aStar.z * 1.1) + seed * 13.0);
+  float weight = uTwinkle * smoothstep(.15, 1.6, aStar.x);
+  float twinkle = max(.2, 1.0 + weight * flicker);
+  vColor = blackbody(aStar.y) * aStar.x * extinction * twinkle;
   vec4 mv = modelViewMatrix * vec4(position, 1.0);
   gl_Position = projectionMatrix * mv;
-  float size = aStar.w * uPixelRatio;
+  float swell = 1.0 + uTwinkle * .5 * smoothstep(1.0, 4.0, aStar.x) * clamp(twinkle - 1.0, -1.0, 1.0);
+  float size = aStar.w * uPixelRatio * swell;
   gl_PointSize = size;
   // Keep total flux independent of the sprite size.
   vColor *= 2.4 / max(aStar.w * aStar.w, 1.0);
@@ -230,6 +289,49 @@ void main() {
   float d = length(gl_PointCoord - .5) * 2.0;
   float profile = exp(-d * d * 4.5) + .06 * exp(-d * d * .9);
   gl_FragColor = vec4(vColor * profile * (1.0 - smoothstep(.85, 1.0, d)), 1.0);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}
+`;
+
+// The brightest stars get a soft four-point diffraction cross that breathes
+// with their scintillation (an optics cue the eye reads as sparkle).
+const SPIKE_VERTEX = /* glsl */ `
+attribute vec4 aStar;
+uniform float uTime;
+uniform float uPixelRatio;
+#ifdef NEBULA_BAKED
+uniform samplerCube uNebula;
+#endif
+varying vec3 vColor;
+varying float vRotation;
+void main() {
+  vec3 dir = normalize(position);
+  float extinction = 1.0;
+#ifdef NEBULA_BAKED
+  extinction = pow(texture(uNebula, dir).a, .8);
+#endif
+  float seed = aStar.z * 6.2831853;
+  float flicker = .5 * sin(uTime * (1.6 + aStar.z * 2.1) + seed * 9.0) + .3 * sin(uTime * (2.9 + aStar.y * 2.3) + seed * 4.0);
+  vColor = mix(vec3(1.0, .80, .62), vec3(.72, .84, 1.0), aStar.y) * aStar.x * extinction * (.75 + .25 * flicker) * .016;
+  vRotation = .26 + aStar.z * .08;
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * mv;
+  gl_PointSize = (20.0 + aStar.x * 2.2) * uPixelRatio * (.92 + .08 * flicker);
+}
+`;
+
+const SPIKE_FRAGMENT = /* glsl */ `
+varying vec3 vColor;
+varying float vRotation;
+void main() {
+  vec2 p = (gl_PointCoord - .5) * 2.0;
+  float c = cos(vRotation), s = sin(vRotation);
+  p = vec2(c * p.x - s * p.y, s * p.x + c * p.y);
+  float r = length(p);
+  float spikes = exp(-abs(p.y) * 70.0) * exp(-abs(p.x) * 3.2) + exp(-abs(p.x) * 70.0) * exp(-abs(p.y) * 3.2);
+  float halo = exp(-r * r * 9.0) * .35;
+  gl_FragColor = vec4(vColor * (spikes + halo) * (1.0 - smoothstep(.8, 1.0, r)), 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }
@@ -324,6 +426,18 @@ void main() {
     // Very slow differential zonal flow.
     float lon = atan(n.z, n.x) + uTime * (.0006 + .0004 * sin(lat * 9.0));
     albedo = texture(uAlbedo, vec2(lon / 6.2831853 + .5, lat / 3.1415927 + .5)).rgb;
+    // Live turbulence: eddies churn slowly inside each band while neighbouring
+    // bands slide past each other (differential rotation, jets alternate).
+    float jet = uTime * (.0016 * sin(lat * 11.0) + .0007 * sin(lat * 27.0));
+    float c0 = cos(lat);
+    vec3 q = vec3(cos(lon + jet) * c0 * 2.4, lat * 7.5, sin(lon + jet) * c0 * 2.4);
+    float e1 = nz(q * .45 + vec3(0.0, uTime * .0011, 0.0));
+    float e2 = nz(q * 1.25 + vec3(e1 * 1.9, 0.0, e1 * 1.4) + vec3(.3, .1, uTime * .0017));
+    float e3 = nz(q * 3.1 + vec3(e2 * 2.4, 0.0, e2 * 1.8) + 2.7);
+    float eddy = (e2 - .5) * .7 + (e3 - .5) * .45;
+    // Bright convective plumes and dark barges ride the belts.
+    albedo *= .92 + .34 * eddy;
+    albedo = mix(albedo, albedo * vec3(1.12, 1.06, .96), smoothstep(.62, .78, e3) * .5);
   }
   vec3 N = normalize(vWorldNormal);
   vec3 V = normalize(cameraPosition - vWorldPosition);
@@ -363,7 +477,7 @@ void main() {
     float oval = exp(-pow((colat - .36 - (nz(curtainP * 2.0) - .5) * .2) / .045, 2.0));
     float rays = .5 + .5 * sin(lon * 38.0 + nz(curtainP * 3.0) * 9.0);
     float glow = oval * (.12 + .88 * curtain) * (.55 + .45 * rays) * night * (.55 + .45 * muV);
-    color += (vec3(.10, .80, .52) * .55 + vec3(.40, .20, .80) * .14 * smoothstep(.3, .42, colat)) * glow;
+    color += (vec3(.10, .80, .52) * .035 + vec3(.40, .20, .80) * .012 * smoothstep(.3, .42, colat)) * glow;
     // Faint high-altitude airglow keeps the night disc from reading as a hole.
     color += vec3(.010, .016, .026) * (.4 + .6 * pow(1.0 - muV, 2.0)) * night;
     // The bright nebula lights the night side very faintly; belts stay legible.
@@ -467,9 +581,11 @@ void main() {
   float shadow = smoothstep(${COSMIC_RING_SHADOW_EDGES[0].toFixed(2)}, ${COSMIC_RING_SHADOW_EDGES[1].toFixed(2)}, distanceFromRay);
   shadow = mix(1.0, shadow, smoothstep(0.0, 2.0, projection));
   float x = (r - ${RING_INNER.toFixed(2)}) / ${(RING_OUTER - RING_INNER).toFixed(2)};
-  vec3 albedo = mix(vec3(.30, .29, .28), vec3(.60, .50, .38), smoothstep(.18, .5, x));
-  albedo = mix(albedo, vec3(.50, .48, .46), smoothstep(.62, .9, x));
-  albedo *= .75 + .5 * ringNoise(r * 3.1 + 5.0);
+  // Dusty blue-grey inner ring, peach-tan bright ring, neutral grey outer ring,
+  // with fine radial colour banding (composition changes ringlet to ringlet).
+  vec3 albedo = mix(vec3(.26, .27, .29), vec3(.64, .52, .38), smoothstep(.18, .42, x));
+  albedo = mix(albedo, vec3(.52, .49, .45), smoothstep(.6, .7, x));
+  albedo *= .72 + .42 * ringNoise(r * 3.1 + 5.0) + .16 * (ringNoise(r * 13.0 + 2.0) - .5) * (1.0 - smoothstep(.04, .12, max(fwidth(r), 1e-4)));
   vec3 color = albedo * ${SUN_RADIANCE} * phase * slab * shadow * .20;
   float alpha = 1.0 - exp(-tau / muV);
   // A faint glow from planetshine keeps shadowed ring texture readable.
@@ -541,6 +657,8 @@ export function createCosmicSky(): CosmicSky {
   const starCount = 22000;
   const positions = new Float32Array(starCount * 3);
   const data = new Float32Array(starCount * 4);
+  const heroPositions: number[] = [];
+  const heroData: number[] = [];
   const bandNormal = new THREE.Vector3(.431, -.843, -.323).normalize();
   const direction = new THREE.Vector3();
   for (let i = 0; i < starCount; i += 1) {
@@ -561,11 +679,12 @@ export function createCosmicSky(): CosmicSky {
     const temperature = Math.pow(random(), hero ? .6 : 1.3);
     const size = hero ? 2.4 + random() * .9 : 1.1 + Math.min(1.3, Math.sqrt(brightness) * .5);
     data.set([brightness, temperature, random(), size], i * 4);
+    if (brightness > 7.5) { heroPositions.push(direction.x * distance, direction.y * distance, direction.z * distance); heroData.push(brightness, temperature, data[i * 4 + 2], size); }
   }
   const starGeometry = ownGeometry(new THREE.BufferGeometry());
   starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   starGeometry.setAttribute('aStar', new THREE.BufferAttribute(data, 4));
-  const starUniforms = { uTime: timeUniform, uPixelRatio: { value: 1 }, uNebula: nebulaUniform };
+  const starUniforms = { uTime: timeUniform, uPixelRatio: { value: 1 }, uNebula: nebulaUniform, uTwinkle: { value: .55 } };
   const starMaterial = ownMaterial(new THREE.ShaderMaterial({
     uniforms: starUniforms,
     vertexShader: STAR_VERTEX,
@@ -580,6 +699,18 @@ export function createCosmicSky(): CosmicSky {
   stars.frustumCulled = false;
   stars.onBeforeRender = (renderer) => { starUniforms.uPixelRatio.value = Math.min(2, renderer.getPixelRatio()); };
   group.add(stars);
+  const spikeGeometry = ownGeometry(new THREE.BufferGeometry());
+  spikeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(heroPositions, 3));
+  spikeGeometry.setAttribute('aStar', new THREE.Float32BufferAttribute(heroData, 4));
+  const spikeMaterial = ownMaterial(new THREE.ShaderMaterial({
+    uniforms: starUniforms, vertexShader: SPIKE_VERTEX, fragmentShader: SPIKE_FRAGMENT,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  }));
+  const spikes = new THREE.Points(spikeGeometry, spikeMaterial);
+  spikes.name = 'bright-star-diffraction';
+  spikes.renderOrder = -69;
+  spikes.frustumCulled = false;
+  group.add(spikes);
 
   const ringQuaternion = new THREE.Quaternion().setFromEuler(RING_ROTATION);
   const ringNormalLocal = new THREE.Vector3(0, 0, 1).applyQuaternion(ringQuaternion);
@@ -698,7 +829,8 @@ export function createCosmicSky(): CosmicSky {
         nebulaUniform.value = nebulaTarget.texture;
         domeMaterial.defines = { ...domeMaterial.defines, NEBULA_BAKED: '' };
         starMaterial.defines = { ...starMaterial.defines, NEBULA_BAKED: '' };
-        domeMaterial.needsUpdate = true; starMaterial.needsUpdate = true;
+        spikeMaterial.defines = { ...spikeMaterial.defines, NEBULA_BAKED: '' };
+        domeMaterial.needsUpdate = true; starMaterial.needsUpdate = true; spikeMaterial.needsUpdate = true;
         // Image-based ambient light from the real nebula (no star disc in it).
         const pmrem = new THREE.PMREMGenerator(renderer);
         environment = pmrem.fromCubemap(nebulaTarget.texture);

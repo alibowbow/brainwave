@@ -6,6 +6,9 @@ import { createRockMaterial } from '../shared/render/rockSurface';
 import { boulderGeometry } from '../shared/render/rockGeometry';
 import { fbm3, noise3, ridged3 } from '../shared/render/noise';
 import { COSMIC_SUN_COLOR, COSMIC_SUN_DIRECTION, COSMIC_SUN_IRRADIANCE } from './sky';
+import { createIslandSet, type IslandSpec } from './islands';
+import { createVegetationMaterials, createGlowLights, addGlowLighting, addGrass, addVine, VegetationBuffer } from './vegetation';
+import { createGlowFlora, type GlowPlanting } from './glowFlora';
 
 /** Every texture and mesh here is generated locally; no downloaded artwork. */
 export function seededRandom(seed: number) {
@@ -22,7 +25,7 @@ const VIEWPOINT = new THREE.Vector3(0, 1.65, 5.8);
 const smoothstep = (a: number, b: number, x: number) => { const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 
 interface Basin { x: number; z: number; rx: number; rz: number; depth: number }
-interface IslandShape { geometry: THREE.BufferGeometry; rim(angle: number): THREE.Vector3; heightAt(x: number, z: number): number }
+interface IslandShape { geometry: THREE.BufferGeometry; rim(angle: number): THREE.Vector3; heightAt(x: number, z: number): number; inside(x: number, z: number): number; outlineAt(angle: number): number }
 
 /**
  * A floating island: a gently domed, mossy cap with an irregular outline and
@@ -117,81 +120,15 @@ function islandGeometry(seed: number, radius: number, depth: number, options: { 
       const angle = Math.atan2(z / squash, x);
       return capY(x, z, Math.min(1, Math.hypot(x, z / squash) / outlineAt(angle)));
     },
+    /** Radial fraction of the outline at (x, z): below 1 is on the cap. */
+    inside(x, z) {
+      return Math.hypot(x, z / squash) / outlineAt(Math.atan2(z / squash, x));
+    },
+    outlineAt,
   };
 }
 
-/** A thin ribbon of water leaving an island's lip, widening into spray. */
-function waterfallGeometry(start: THREE.Vector3, outward: THREE.Vector3, across: THREE.Vector3, width: number, length: number) {
-  const rows = 28;
-  const positions: number[] = [], uvs: number[] = [], indices: number[] = [];
-  const p = new THREE.Vector3();
-  for (let k = 0; k <= rows; k++) {
-    const v = k / rows;
-    const out = .05 + .55 * Math.sqrt(v) * (length / 5);
-    const w = width * (1 + 2.2 * v * v);
-    for (const side of [0, 1]) {
-      p.copy(start).addScaledVector(outward, out).addScaledVector(across, (side - .5) * w);
-      p.y -= v * length;
-      positions.push(p.x, p.y, p.z); uvs.push(side, v);
-    }
-    if (k < rows) { const a = k * 2; indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
-  }
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-  geometry.setIndex(indices);
-  geometry.computeBoundingSphere();
-  return geometry;
-}
-
-const WATERFALL_VERTEX = /* glsl */ `
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const WATERFALL_FRAGMENT = /* glsl */ `
-precision highp sampler3D;
-uniform sampler3D uNoise;
-uniform float uTime;
-uniform float uSeed;
-uniform vec3 uLight;
-varying vec2 vUv;
-void main() {
-  float across = abs(vUv.x - .5) * 2.0;
-  vec3 q = vec3(vUv.x * 1.6 + uSeed, vUv.y * .45 - uTime * .07, uSeed * .37);
-  float body = dot(texture(uNoise, q), vec4(.5, .3, .2, 0.0));
-  float strands = smoothstep(.40, .66, texture(uNoise, vec3(vUv.x * 3.7 + uSeed, vUv.y * .8 - uTime * .14, .5)).g);
-  float core = 1.0 - smoothstep(.25 + .45 * vUv.y, 1.0, across);
-  float fade = (1.0 - smoothstep(.30, .97, vUv.y)) * smoothstep(0.0, .05, vUv.y);
-  float alpha = core * fade * (.22 + .78 * mix(body, strands, .55)) * .8;
-  vec3 color = uLight * (.55 + .9 * strands) + vec3(.012, .020, .026);
-  gl_FragColor = vec4(color * alpha, alpha);
-  #include <tonemapping_fragment>
-  #include <colorspace_fragment>
-}
-`;
-
-function mistTexture() {
-  const size = 64;
-  const data = new Uint8Array(size * size * 4);
-  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-    const dx = (x + .5) / size * 2 - 1, dy = (y + .5) / size * 2 - 1;
-    const r = Math.min(1, Math.hypot(dx, dy));
-    const n = .75 + .25 * noise3(dx * 3.1, dy * 3.1, 4.2);
-    const a = Math.pow(1 - r, 2.2) * n;
-    const i = (y * size + x) * 4;
-    data[i] = data[i + 1] = data[i + 2] = 255; data[i + 3] = Math.round(THREE.MathUtils.clamp(a, 0, 1) * 255);
-  }
-  const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
-  texture.magFilter = texture.minFilter = THREE.LinearFilter;
-  texture.needsUpdate = true;
-  return texture;
-}
-
-const WATER_FRAGMENT = /* glsl */ `
+const WATER_FRAGMENT = () => /* glsl */ `
 uniform sampler2D tDiffuse;
 uniform float uTime;
 uniform vec3 uPulse;
@@ -210,9 +147,24 @@ vec2 waveSlope(vec2 p, float t) {
   s += d4 * cos(dot(d4, p) * 21.0 - t * 1.1 + .4) * .0025;
   return s;
 }
+vec2 dripHash(float n) { return fract(sin(vec2(n * 12.9898, n * 78.233)) * 43758.5453); }
 void main() {
   vec2 p = vWorld.xz;
   vec2 slope = waveSlope(p, uTime);
+  // Now and then a drop from the overhanging plants rings the still surface:
+  // three slow sources, each at a new spot every nine to fourteen seconds.
+  for (int k = 0; k < 3; k++) {
+    float period = 9.0 + float(k) * 2.4;
+    float shifted = uTime + float(k) * 3.7;
+    float cycle = floor(shifted / period);
+    float age = shifted - cycle * period;
+    vec2 centre = vec2(${POND.x.toFixed(2)}, ${POND.z.toFixed(2)}) + (dripHash(cycle * 3.0 + float(k) * 17.0) - .5) * vec2(${(POND.rx * 1.5).toFixed(2)}, ${(POND.rz * 1.5).toFixed(2)});
+    vec2 dv = p - centre;
+    float d = length(dv);
+    float front = d - age * .23;
+    float envelope = exp(-age * .32) * smoothstep(0.0, .3, age) * exp(-d * .5);
+    slope += dv / max(d, 1e-3) * cos(front * 34.0) * exp(-front * front * 30.0) * envelope * .020;
+  }
   float dist = length(p - uPulse.xz);
   float envelope = sin(clamp(uAge / 8.0, 0.0, 1.0) * 3.14159);
   float ring = exp(-pow(dist - uAge * .34, 2.0) * 4.0) * envelope;
@@ -249,33 +201,29 @@ export interface CosmicGardenOptions {
 /** A seated terrace: stone continues behind the camera; the basin is below eye level. */
 export function createGarden(options: CosmicGardenOptions) {
   const group = new THREE.Group(); group.name = 'cosmic-living-terrace';
-  const terraceRock = createRockMaterial('#8a857a', {
+  const glow = createGlowLights();
+  const terraceRock = addGlowLighting(createRockMaterial('#7f7a6f', {
     key: 'cosmic-terrace', scale: 1.15, strata: .35, bump: 1.1, cavity: .55, stainAmount: .25, drips: .08,
     // The ground sits only a hand above the pond, so its wet line is set lower
     // to keep moss on the terrace while the basin slope stays wet and dark.
     waterY: WATER_Y - .26, wetBand: .2, wetRoughness: .14, algae: '#2c4733', algaeAmount: .45,
-    moss: { color: '#41592f', amount: .95 },
-  });
-  const rimRock = createRockMaterial('#8a8377', {
+    moss: { color: '#34492a', amount: 1 },
+  }), glow, 'vRockWorld', 'cosmic-terrace', 'rockMoss * .5');
+  const rimRock = addGlowLighting(createRockMaterial('#8a8377', {
     key: 'cosmic-rim', scale: 2.6, strata: .3, bump: 1.8, cavity: .75, stain: '#6e5238', stainAmount: .3, drips: .15,
     waterY: WATER_Y, wetBand: .2, wetRoughness: .1, algae: '#2f4a33', algaeAmount: .55,
-    moss: { color: '#465f33', amount: .6 },
-  });
-  const islandRock = createRockMaterial('#9d9282', {
-    key: 'cosmic-island', scale: .85, strata: .85, bump: 1.25, cavity: .62, stain: '#7b5536', stainAmount: .32, drips: .12,
-    moss: { color: '#3f5a30', amount: .9 },
-  });
-  const materials: THREE.Material[] = [terraceRock, rimRock, islandRock];
+    moss: { color: '#3d5a2d', amount: .85 },
+  }), glow, 'vRockWorld', 'cosmic-rim', 'rockMoss');
+  const materials: THREE.Material[] = [terraceRock, rimRock];
   const geometries: THREE.BufferGeometry[] = [];
-  const textures: THREE.Texture[] = [];
   const botany = createBotanyMaterials();
+  botany.uniforms.uBotanyKeyDir.value.copy(COSMIC_SUN_DIRECTION);
   const plants: ReturnType<typeof createPlant>[] = [];
   const interactables: THREE.Object3D[] = [];
-  const islands: { object: THREE.Group; x: number; y: number; phase: number; scale: number }[] = [];
-  const falls: { island: THREE.Group; bottom: THREE.Vector3; radius: number; sprite: THREE.Sprite }[] = [];
-  const floaters: { mesh: THREE.Mesh; y: number; phase: number }[] = [];
   const timeUniform = { value: 0 };
   const random = seededRandom(81102);
+  const sunRadiance = COSMIC_SUN_COLOR.clone().multiplyScalar(COSMIC_SUN_IRRADIANCE / Math.PI);
+  const vegetation = createVegetationMaterials({ sun: COSMIC_SUN_DIRECTION, sunRadiance, glow });
 
   // Boulder shapes at three levels of detail, normalised to a unit box.
   const big = [11, 12, 13].map(seed => boulderGeometry(seed, 4));
@@ -291,15 +239,14 @@ export function createGarden(options: CosmicGardenOptions) {
     m.castShadow = true; m.receiveShadow = true; m.userData.cosmicStone = true; parent.add(m); return m;
   };
   let ground: ((x: number, z: number) => number) | null = null;
-  const plant = (parent: THREE.Object3D, kind: PlantKind, x: number, y: number, z: number, scale: number, seed: number) => {
-    // On the terrace, plants follow the actual ground height.
-    if (parent === group && ground) y = ground(x, z) - .03;
+  const plant = (kind: PlantKind, x: number, z: number, scale: number, seed: number) => {
+    // Plants follow the actual ground height and cast (baked) shadows across it.
+    const y = (ground ? ground(x, z) : 0) - .03;
     const p = createPlant(kind, seed, botany); p.group.position.set(x, y, z); p.group.scale.setScalar(scale); p.group.rotation.y = seed * .79;
-    parent.add(p.group);
-    // Terrace plants cast (baked) shadows across the ground; island plants are
-    // small details the pond reflection and shadow map can skip.
-    if (parent === group) { p.group.userData.nearPosition = { x, z }; p.group.traverse(o => { o.castShadow = true; }); }
-    else p.group.traverse(o => o.layers.set(COSMIC_DETAIL_LAYER));
+    group.add(p.group);
+    p.group.userData.nearPosition = { x, z }; p.group.traverse(o => { o.castShadow = true; });
+    // Plants on the near side of the pond never appear in its reflection.
+    if (z > POND.z + .6) p.group.traverse(o => o.layers.set(COSMIC_DETAIL_LAYER));
     plants.push(p); interactables.push(...p.interactables); return p;
   };
 
@@ -314,14 +261,30 @@ export function createGarden(options: CosmicGardenOptions) {
   terrace.position.set(0, 0, .8); terrace.castShadow = true; terrace.receiveShadow = true;
   group.add(terrace);
   ground = (x, z) => terraceShape.heightAt(x, z - .8);
+  // Planting samples the ground tens of thousands of times: a baked height
+  // grid (bilinear) keeps start-up cheap; placement only needs centimetres.
+  const GRID = 160, GX0 = -7.6, GZ0 = -7.0, GSTEP = 15.2 / (GRID - 1);
+  const heights = new Float32Array(GRID * GRID);
+  for (let j = 0; j < GRID; j++) for (let i = 0; i < GRID; i++) heights[j * GRID + i] = terraceShape.heightAt(GX0 + i * GSTEP, GZ0 + j * GSTEP - .8);
+  const groundAt = (x: number, z: number) => {
+    const u = THREE.MathUtils.clamp((x - GX0) / GSTEP, 0, GRID - 1.001), v = THREE.MathUtils.clamp((z - GZ0) / GSTEP, 0, GRID - 1.001);
+    const i = Math.floor(u), j = Math.floor(v), fu = u - i, fv = v - j, k = j * GRID + i;
+    return (heights[k] * (1 - fu) + heights[k + 1] * fu) * (1 - fv) + (heights[k + GRID] * (1 - fu) + heights[k + GRID + 1] * fu) * fv;
+  };
+  ground = groundAt;
 
-  // Worn rim stones around the basin, partly in the water.
-  for (let i = 0; i < 30; i++) {
-    const a = i / 30 * Math.PI * 2 + (random() - .5) * .08;
-    const e = 1.0 + (random() - .3) * .07;
-    const size = random() < .25 ? 1.5 : random() < .5 ? .6 : 1;
-    rock(group, [POND.x + Math.cos(a) * 2.66 * e, -.27 + random() * .05, POND.z + Math.sin(a) * 3.0 * e],
-      [(.26 + random() * .22) * size, (.09 + random() * .07) * Math.sqrt(size), (.22 + random() * .2) * size], rimRock, i);
+  // Worn rim stones around the basin, partly in the water: clustered, with
+  // gaps where turf and plants reach the water, a few broad flat slabs among
+  // rounded cobbles, some sunk deep and some standing proud.
+  for (let i = 0; i < 34; i++) {
+    const a = i / 34 * Math.PI * 2 + (random() - .5) * .2;
+    if (Math.sin(a * 3 + 1.3) > .82 && random() < .7) continue;
+    const e = 1.0 + (random() - .35) * .1;
+    const roll = random();
+    const size = roll < .14 ? 1.9 : roll < .4 ? .55 : roll < .6 ? .8 : 1.1;
+    const flat = roll < .14 ? .55 : 1;
+    rock(group, [POND.x + Math.cos(a) * 2.66 * e, -.32 + random() * .09, POND.z + Math.sin(a) * 3.0 * e],
+      [(.24 + random() * .22) * size, (.09 + random() * .08) * Math.sqrt(size) * flat, (.2 + random() * .2) * size], rimRock, i);
   }
   // Submerged pebbles on the basin floor beneath the reflective surface.
   for (let i = 0; i < 36; i++) {
@@ -329,110 +292,118 @@ export function createGarden(options: CosmicGardenOptions) {
     rock(group, [POND.x + Math.cos(a) * r, -.56 + random() * .05, POND.z + Math.sin(a) * r * 1.1],
       [.07 + random() * .12, .03 + random() * .03, .06 + random() * .12], rimRock, i + 3);
   }
-  // Close tactile, asymmetric foreground: broad fronds and pale worn seating stones.
-  const near: [PlantKind, number, number, number, number][] = [
-    ['broadleaf', -3.5, -.16, 2.5, 1.65], ['fern', -2.55, -.14, 3.9, 1.2], ['fern', -4.0, -.18, .1, 1.8],
-    ['broadleaf', 3.55, -.14, 1.0, 1.75], ['fern', 2.6, -.15, 3.5, 1.35], ['grass', 4.5, -.1, 2.8, 1.7],
-    ['blossom', -2.9, -.1, -2.5, 1.15], ['blossom', 3.3, -.12, -2, 1.25], ['fern', -4.8, -.16, -2.7, 1.5],
-    ['broadleaf', 4.5, -.16, -3.8, 1.35], ['grass', -3.3, -.14, -4, 1.1], ['grass', 2.7, -.12, -4.2, 1.0],
+  // Close, asymmetric foreground: ferns and broad fronds frame the seat; the
+  // glowing flora gathers at the water's edge.
+  const near: [PlantKind, number, number, number][] = [
+    ['broadleaf', -3.5, 2.5, 1.65], ['fern', -2.55, 3.9, 1.2], ['fern', -4.0, .1, 1.8],
+    ['broadleaf', 3.55, 1.0, 1.6], ['fern', 2.6, 3.5, 1.35], ['grass', 4.5, 2.8, 1.7],
+    ['blossom', -2.9, -2.5, 1.05], ['fern', 3.6, -2.4, 1.3], ['fern', -4.8, -2.7, 1.5],
+    ['broadleaf', 4.5, -3.8, 1.35], ['grass', -3.3, -4, 1.1], ['grass', 2.9, -4.4, 1.0],
   ];
-  near.forEach(([kind, x, y, z, s], i) => plant(group, kind, x, y, z, s, 120 + i));
-  plant(group, 'fern', -3.55, -.13, 1.3, 1.1, 192);
-  plant(group, 'broadleaf', 3.3, -.14, 3.45, 1.5, 193);
-  plant(group, 'fern', 4, -.1, -.6, 1.5, 194);
-  plant(group, 'grass', -4, -.1, 3.25, 1.0, 195);
-  plant(group, 'blossom', 1.9, -.12, 2.3, .9, 196);
-  plant(group, 'grass', -1.6, -.12, 2.9, .9, 197);
-  rock(group, [-3.6, ground(-3.6, 3.4) + .12, 3.4], [1.05, .42, .85], rimRock, 2);
-  rock(group, [3.75, ground(3.75, 4.15) + .05, 4.15], [.85, .32, .95], rimRock, 4);
+  near.forEach(([kind, x, z, s], i) => plant(kind, x, z, s, 120 + i));
+  plant('fern', -3.55, 1.3, 1.1, 192);
+  plant('fern', 4, -.6, 1.5, 194);
+  plant('grass', -4, 3.25, 1.0, 195);
+  plant('blossom', 1.9, 2.5, .8, 196);
+  rock(group, [-3.6, groundAt(-3.6, 3.4) + .12, 3.4], [1.05, .42, .85], rimRock, 2);
+  rock(group, [3.75, groundAt(3.75, 4.15) + .05, 4.15], [.85, .32, .95], rimRock, 4);
   for (let i = 0; i < 18; i++) {
     const a = random() * Math.PI * 2;
     const x = Math.cos(a) * (3.7 + random() * 1.4), z = POND.z + Math.sin(a) * (4.1 + random());
-    rock(group, [x, ground(x, z) + .01, z], [.22 + random() * .3, .07 + random() * .07, .2 + random() * .32], terraceRock, i + 7);
-  }
-  // Three small stones float above the pond, each on its own slow drift.
-  for (let i = 0; i < 3; i++) {
-    const m = new THREE.Mesh(medium[i], rimRock);
-    const position = [[-1.35, .55, -2.6], [1.65, .95, -3.2], [.35, 1.3, -4.4]][i];
-    m.position.set(position[0], position[1], position[2]);
-    m.scale.set(.16 + i * .03, .11 + i * .02, .14 + i * .03);
-    m.rotation.set(i * .6, i * 1.3, i * .2);
-    m.receiveShadow = true;
-    m.name = 'cosmic-floating-stone';
-    group.add(m); floaters.push({ mesh: m, y: position[1], phase: i * 2.1 + .4 });
+    rock(group, [x, groundAt(x, z) + .01, z], [.22 + random() * .3, .07 + random() * .07, .2 + random() * .32], terraceRock, i + 7);
   }
 
-  // Hanging gardens occupy distinct depths, never a rotating tabletop diorama.
-  const waterfallMaterials: THREE.ShaderMaterial[] = [];
-  const mistMap = mistTexture(); textures.push(mistMap);
-  const mistMaterial = new THREE.SpriteMaterial({ map: mistMap, color: new THREE.Color(.42, .48, .52), transparent: true, depthWrite: false, opacity: .55 });
-  materials.push(mistMaterial);
-  const sunLight = new THREE.Vector3(COSMIC_SUN_COLOR.r, COSMIC_SUN_COLOR.g, COSMIC_SUN_COLOR.b).multiplyScalar(COSMIC_SUN_IRRADIANCE / Math.PI * .55);
-  const makeIsland = (x: number, y: number, z: number, s: number, seed: number, rotation: number, fallAngle?: number) => {
-    const g = new THREE.Group(); g.position.set(x, y, z); g.scale.setScalar(s); g.rotation.y = rotation; group.add(g);
-    const shape = islandGeometry(seed, 3.0, 4.3, { segments: 96, capRings: 12, sideRings: 30 });
-    geometries.push(shape.geometry);
-    const mass = new THREE.Mesh(shape.geometry, islandRock); mass.castShadow = true; mass.receiveShadow = true; mass.name = 'cosmic-floating-island'; g.add(mass);
-    // Hanging crags break the single-cone silhouette of the underside.
-    for (let j = 0; j < 3; j++) {
-      const a = seed * .9 + j * 2.1;
-      const r = 1.0 + (j % 2) * .7;
-      rock(g, [Math.cos(a) * r, -1.5 - j * .45, Math.sin(a) * r * .8], [.75 + (j % 2) * .3, 1.35 + j * .3, .7], islandRock, seed + 11 + j);
-    }
-    for (let j = 0; j < 6; j++) {
-      const a = j / 6 * Math.PI * 2 + seed;
-      const rimPoint = shape.rim(a).multiplyScalar(.9);
-      rock(g, [rimPoint.x, rimPoint.y + .05, rimPoint.z], [.5 + (j % 3) * .15, .26, .42], islandRock, seed + j);
-    }
-    plant(g, 'broadleaf', -.9, .12, -.4, 2.0, seed + 2);
-    plant(g, 'fern', -1.35, .08, .3, 1.25, seed + 15);
-    plant(g, 'broadleaf', .45, .12, .45, 1.15, seed + 18);
-    plant(g, 'grass', 1.85, .06, -.5, 1.6, seed + 17);
-    plant(g, 'fern', 1.2, .12, .1, 1.45, seed + 5);
-    plant(g, 'grass', -1.8, .04, .3, 1.1, seed + 4);
-    plant(g, 'blossom', .7, .13, -.8, 1.6, seed + 8);
-    // Ferns spill over the rim and hang down the cliff faces.
-    for (let k = 0; k < 2; k++) {
-      const a = seed * 1.7 + k * 2.6 + .4;
-      const rimPoint = shape.rim(a);
-      const hanging = plant(g, 'fern', rimPoint.x * .97, rimPoint.y - .12, rimPoint.z * .97, .75 + (k % 2) * .2, seed + 60 + k);
-      hanging.group.rotation.set(0, 0, 0);
-      const outward = new THREE.Vector3(rimPoint.x, 0, rimPoint.z).normalize();
-      const axis = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), outward).normalize();
-      hanging.group.quaternion.setFromAxisAngle(axis, 1.9 + (k % 3) * .15);
-    }
-    if (fallAngle !== undefined) {
-      g.updateMatrixWorld(true);
-      const start = shape.rim(fallAngle);
-      const outward = new THREE.Vector3(start.x, 0, start.z).normalize();
-      const toViewer = g.worldToLocal(VIEWPOINT.clone()).sub(start).setY(0).normalize();
-      const across = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), toViewer).normalize();
-      const length = 4.0;
-      const geometry = waterfallGeometry(start.clone().addScaledVector(outward, .06), outward, across, .26, length);
-      geometries.push(geometry);
-      const material = new THREE.ShaderMaterial({
-        uniforms: { uNoise: { value: options.noise }, uTime: timeUniform, uSeed: { value: seed * .137 }, uLight: { value: sunLight } },
-        vertexShader: WATERFALL_VERTEX, fragmentShader: WATERFALL_FRAGMENT,
-        transparent: true, premultipliedAlpha: true, depthWrite: false, side: THREE.DoubleSide,
-      });
-      waterfallMaterials.push(material); materials.push(material);
-      const ribbon = new THREE.Mesh(geometry, material); ribbon.name = 'cosmic-island-waterfall'; ribbon.renderOrder = 3;
-      ribbon.layers.set(COSMIC_DETAIL_LAYER); g.add(ribbon);
-      const bottom = start.clone().addScaledVector(outward, .55).add(new THREE.Vector3(0, -length * .92, 0));
-      const sprite = new THREE.Sprite(mistMaterial); sprite.position.copy(bottom); sprite.scale.setScalar(2.4); sprite.renderOrder = 4;
-      sprite.layers.set(COSMIC_DETAIL_LAYER); g.add(sprite);
-      falls.push({ island: g, bottom, radius: 1.0 * s, sprite });
-    }
-    islands.push({ object: g, x, y, phase: seed, scale: s }); return g;
+  // A living carpet on the terrace: short, dense grass that follows the ground,
+  // thinning to moss and bare stone in patches and leaving the rim stones clear.
+  const inPond = (x: number, z: number, margin: number) => ((x - POND.x) / (POND.rx + margin)) ** 2 + ((z - POND.z) / (POND.rz + margin)) ** 2 < 1;
+  const terraceGrass = (u: number, v: number) => {
+    const x = (u - .5) * 14.6, z = -6.9 + v * 12.6;
+    if (terraceShape.inside(x, z - .8) > .965 || inPond(x, z, .32)) return null;
+    const y = groundAt(x, z);
+    const e = .05;
+    const normal = new THREE.Vector3(groundAt(x - e, z) - groundAt(x + e, z), 2 * e, groundAt(x, z - e) - groundAt(x, z + e)).normalize();
+    const patch = fbm3(x * .42 + 3.1, 0.7, z * .42, 3);
+    // Thinner on the damp basin slope, fuller toward the plantings.
+    const nearWater = inPond(x, z, .9) ? .55 : 1;
+    return { position: new THREE.Vector3(x, y - .02, z), normal, density: THREE.MathUtils.clamp((.95 - patch * 1.2) * nearWater, .12, 1), dry: THREE.MathUtils.clamp(patch + .15, 0, 1) };
   };
-  makeIsland(-10, 2.6, -20, 1.45, 31, .5, 1.05);
-  makeIsland(9.8, .75, -16, 1.15, 45, 0, 2.2);
-  makeIsland(-1.6, .55, -36, 1.0, 61, 0);
-  makeIsland(18, 4.4, -43, 1.9, 76, 0, 2.5).rotation.z = -.08;
-  makeIsland(-18, -1.4, -44, 1.45, 94, 0);
-  makeIsland(5, 7.4, -57, .8, 112, 0);
-  // Small stepped stones across the void connect the garden without becoming UI.
-  for (let i = 0; i < 7; i++) rock(group, [-4.9 - i * .65, -.3 + i * .2, -6 - i * 1.35], [.62 - i * .04, .22, .48], rimRock, 3 + i);
+  const farGrass = new VegetationBuffer(), nearGrass = new VegetationBuffer();
+  const grassPalette = {
+    root: new THREE.Color(.020, .034, .016), mid: new THREE.Color(.070, .125, .042),
+    tip: new THREE.Color(.17, .24, .08), dry: new THREE.Color(.25, .22, .10),
+  };
+  // Beyond the pond (and so in its reflection) and in front of it (not reflected).
+  addGrass(farGrass, { seed: 71, count: 11000, sample: (u, v) => { const hit = terraceGrass(u, v * .42); return hit && hit.position.z < POND.z - .4 ? hit : null; }, height: [.06, .22], width: [.02, .036], sway: .025, palette: grassPalette });
+  addGrass(nearGrass, { seed: 72, count: 15000, sample: (u, v) => { const hit = terraceGrass(u, .3 + v * .7); return hit && hit.position.z >= POND.z - .4 ? hit : null; }, height: [.06, .24], width: [.02, .036], sway: .025, palette: grassPalette });
+  // The terrace's own far edge: a ragged fringe and vines spill into the void.
+  for (let i = 0; i < 26; i++) {
+    const angle = -Math.PI * (.12 + .76 * i / 26) + (random() - .5) * .05;
+    const r = terraceShape.outlineAt(angle) * .99;
+    const x = Math.cos(angle) * r, z = Math.sin(angle) * r + .8;
+    const outward = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
+    addVine(farGrass, { seed: 900 + i, start: new THREE.Vector3(x, groundAt(x, z) - .08, z), outward, length: 1.2 + random() * 3.2, leafSize: .07, sway: .05,
+      leafColor: new THREE.Color(.035, .07, .03), stemColor: new THREE.Color(.045, .055, .03), wallDistance: t => -.08 * Math.min(1, t * 4) + .1 * t });
+  }
+  addGrass(farGrass, {
+    seed: 73, count: 1400, height: [.16, .36], width: [.016, .028], sway: .04, palette: grassPalette,
+    sample: (u, v) => {
+      const angle = -Math.PI * (.08 + .84 * u), rr = .955 + .04 * v;
+      const r = terraceShape.outlineAt(angle) * rr;
+      const x = Math.cos(angle) * r, z = Math.sin(angle) * r + .8;
+      return { position: new THREE.Vector3(x, groundAt(x, z) - .02, z), normal: new THREE.Vector3(Math.cos(angle) * .7, .7, Math.sin(angle) * .7).normalize() };
+    },
+    lean: p => new THREE.Vector3(p.x, -1.2, p.z - .8).normalize(),
+  });
+  for (const [buffer, layer, name] of [[farGrass, 0, 'cosmic-terrace-grass-far'], [nearGrass, COSMIC_DETAIL_LAYER, 'cosmic-terrace-grass-near']] as const) {
+    const geometry = buffer.geometry(); geometries.push(geometry);
+    const mesh = new THREE.Mesh(geometry, vegetation.foliage);
+    mesh.name = name; mesh.receiveShadow = true; mesh.layers.set(layer);
+    group.add(mesh);
+  }
+
+  // Bioluminescent flora along the water's edge and among the foreground plants.
+  const plantings: GlowPlanting[] = [
+    { kind: 'lantern', x: -2.15, z: -3.85, scale: 1.0, seed: 11, hue: 0 },
+    { kind: 'lantern', x: 2.35, z: -3.95, scale: 1.1, seed: 12, hue: 1 },
+    { kind: 'lantern', x: -3.15, z: .75, scale: 1.15, seed: 13, hue: 0 },
+    { kind: 'lantern', x: 3.05, z: 1.85, scale: 1.0, seed: 14, hue: 2 },
+    { kind: 'lantern', x: .95, z: 3.35, scale: .8, seed: 15, hue: 0 },
+    { kind: 'caps', x: -2.75, z: -.75, scale: 1.2, seed: 21, hue: 0 },
+    { kind: 'caps', x: 2.8, z: -1.9, scale: 1.1, seed: 22, hue: 1 },
+    { kind: 'caps', x: .35, z: -4.45, scale: 1.0, seed: 23, hue: 0 },
+    { kind: 'caps', x: -1.95, z: 1.85, scale: .9, seed: 24, hue: 3 },
+    { kind: 'tendrils', x: -1.05, z: -4.35, scale: 1.0, seed: 31, hue: 1 },
+    { kind: 'tendrils', x: 1.55, z: -4.25, scale: 1.1, seed: 32, hue: 0 },
+    { kind: 'tendrils', x: -3.65, z: -1.65, scale: 1.2, seed: 33, hue: 3 },
+    { kind: 'tendrils', x: 3.45, z: -.25, scale: 1.1, seed: 34, hue: 0 },
+    { kind: 'tendrils', x: -.55, z: 2.95, scale: .9, seed: 35, hue: 1 },
+  ];
+  plantings.forEach(p => { p.y = groundAt(p.x, p.z) - .02; });
+  const flora = createGlowFlora({
+    plantings, material: vegetation.glow, glow, time: timeUniform,
+    // Flora beyond the pond appears in its reflection; nearer flora cannot.
+    // The far corner lanterns stay out of it: on a phone their reflection
+    // shows while the plant itself is hidden behind the foreground leaves.
+    reflectionLayer: p => p.z < POND.z - 1.2 && Math.abs(p.x) < 2 ? 0 : COSMIC_DETAIL_LAYER,
+  });
+  group.add(flora.group);
+  interactables.push(...flora.interactables);
+
+  // Hanging gardens occupy distinct depths, never a rotating tabletop diorama.
+  const sunLight = new THREE.Vector3(COSMIC_SUN_COLOR.r, COSMIC_SUN_COLOR.g, COSMIC_SUN_COLOR.b).multiplyScalar(COSMIC_SUN_IRRADIANCE / Math.PI * .55);
+  const specs: IslandSpec[] = [
+    { x: -10, y: 2.6, z: -20, scale: 1.45, seed: 31, rotation: .5, fall: 1.05, tree: true },
+    { x: 9.8, y: .75, z: -16, scale: 1.15, seed: 45, rotation: 0, fall: 2.2, tree: true },
+    { x: -1.6, y: .55, z: -36, scale: 1.0, seed: 61, rotation: 0, detail: .6 },
+    { x: 18, y: 4.4, z: -43, scale: 1.9, seed: 76, rotation: 0, fall: 2.5, tree: true, detail: .7 },
+    { x: -18, y: -1.4, z: -44, scale: 1.45, seed: 94, rotation: 0, detail: .55 },
+    { x: 5, y: 7.4, z: -57, scale: .8, seed: 112, rotation: 0, detail: .4 },
+  ];
+  const islandSet = createIslandSet(specs, {
+    noise: options.noise, vegetation, time: timeUniform, sunLight, viewpoint: VIEWPOINT, detailLayer: COSMIC_DETAIL_LAYER,
+  });
+  islandSet.islands.forEach(island => group.add(island.group));
+  islandSet.islands[3].group.rotation.z = -.08;
 
   const waterGeometry = new THREE.CircleGeometry(1, 96); geometries.push(waterGeometry);
   const water = new Reflector(waterGeometry, {
@@ -447,7 +418,7 @@ export function createGarden(options: CosmicGardenOptions) {
       },
       vertexShader: `uniform mat4 textureMatrix;varying vec4 vReflection;varying vec3 vWorld;
       void main(){vWorld=(modelMatrix*vec4(position,1.)).xyz;vReflection=textureMatrix*vec4(position,1.);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-      fragmentShader: WATER_FRAGMENT,
+      fragmentShader: WATER_FRAGMENT(),
     },
   });
   water.name = 'cosmic-reflecting-pool'; water.rotation.x = -Math.PI / 2; water.position.set(POND.x, WATER_Y, POND.z); water.scale.set(POND.rx, POND.rz, 1);
@@ -455,21 +426,27 @@ export function createGarden(options: CosmicGardenOptions) {
   waterMaterial.transparent = true; waterMaterial.premultipliedAlpha = true; water.renderOrder = 2;
   group.add(water); interactables.push(water);
   const waterUniforms = waterMaterial.uniforms;
+  // three's Reflector clones the viewing camera, layers included. Keep its
+  // reflection camera on layer 0 so the detail layer (island plants, falls,
+  // near foliage and flora) really stays out of the pond pass.
+  const reflectorBeforeRender = water.onBeforeRender;
+  water.onBeforeRender = function (renderer, scene, camera, geometry, material, renderGroup) {
+    water.getReflectionCamera(camera).layers.set(0);
+    reflectorBeforeRender.call(this, renderer, scene, camera, geometry, material, renderGroup);
+  };
 
-  // Static stones share a draw per material/parent; floating islands keep local transforms.
-  const parents = [group, ...islands.map(i => i.object)];
-  for (const parent of parents) {
-    const buckets = new Map<THREE.Material, THREE.Mesh[]>();
-    for (const child of [...parent.children]) if (child instanceof THREE.Mesh && child.userData.cosmicStone) {
-      const material = child.material as THREE.Material;
-      const bucket = buckets.get(material) ?? []; bucket.push(child); buckets.set(material, bucket);
-    }
-    for (const [material, meshes] of buckets) {
-      const pieces = meshes.map(mesh => { mesh.updateMatrix(); return mesh.geometry.clone().applyMatrix4(mesh.matrix); });
-      const merged = mergeGeometries(pieces); pieces.forEach(g => g.dispose());
-      if (merged) { geometries.push(merged); const batch = new THREE.Mesh(merged, material); batch.castShadow = true; batch.receiveShadow = true; parent.add(batch); meshes.forEach(mesh => parent.remove(mesh)); }
-    }
+  // Static stones share a draw per material.
+  const buckets = new Map<THREE.Material, THREE.Mesh[]>();
+  for (const child of [...group.children]) if (child instanceof THREE.Mesh && child.userData.cosmicStone) {
+    const material = child.material as THREE.Material;
+    const bucket = buckets.get(material) ?? []; bucket.push(child); buckets.set(material, bucket);
   }
+  for (const [material, meshes] of buckets) {
+    const pieces = meshes.map(mesh => { mesh.updateMatrix(); return mesh.geometry.clone().applyMatrix4(mesh.matrix); });
+    const merged = mergeGeometries(pieces); pieces.forEach(g => g.dispose());
+    if (merged) { geometries.push(merged); const batch = new THREE.Mesh(merged, material); batch.castShadow = true; batch.receiveShadow = true; group.add(batch); meshes.forEach(mesh => group.remove(mesh)); }
+  }
+  const falls = islandSet.islands.filter(island => island.mist);
   const scratch = new THREE.Vector3();
   let disposed = false;
   return {
@@ -477,12 +454,10 @@ export function createGarden(options: CosmicGardenOptions) {
     update(time: number, pulse?: { position: THREE.Vector3; age: number } | null) {
       if (disposed) return;
       timeUniform.value = time;
+      vegetation.time.value = time;
       plants.forEach(p => p.update(time, pulse));
-      islands.forEach(({ object, y, phase }) => { object.position.y = y + Math.sin(time * .065 + phase) * .055; });
-      floaters.forEach(({ mesh, y, phase }) => {
-        mesh.position.y = y + Math.sin(time * .19 + phase) * .045;
-        mesh.rotation.y = phase + time * .021;
-      });
+      islandSet.update(time);
+      flora.update(time);
       waterUniforms.uTime.value = time; waterUniforms.uAge.value = pulse?.age ?? 20;
       if (pulse) waterUniforms.uPulse.value.copy(pulse.position);
     },
@@ -490,32 +465,33 @@ export function createGarden(options: CosmicGardenOptions) {
     writeOccluders(out: THREE.Vector4[]) {
       out.forEach(v => v.set(0, 0, 0, 0));
       out[0]?.set(0, -2.6, .8, 6.8);
-      islands.forEach(({ object, scale }, index) => {
+      islandSet.islands.forEach(({ group: island, spec }, index) => {
         const target = out[index + 1];
         if (!target) return;
-        target.set(object.position.x, object.position.y - 1.15 * scale, object.position.z, 2.85 * scale);
+        target.set(island.position.x, island.position.y - 1.15 * spec.scale, island.position.z, 2.85 * spec.scale);
       });
     },
     writeMist(out: THREE.Vector4[]) {
       out.forEach(v => v.set(0, 0, 0, 0));
-      falls.forEach(({ island, bottom, radius }, index) => {
-        if (!out[index]) return;
+      falls.forEach(({ group: island, mist, spec }, index) => {
+        if (!out[index] || !mist) return;
         island.updateMatrixWorld();
-        scratch.copy(bottom).applyMatrix4(island.matrixWorld);
-        out[index].set(scratch.x, scratch.y, scratch.z, radius);
+        scratch.copy(mist).applyMatrix4(island.matrixWorld);
+        out[index].set(scratch.x, scratch.y, scratch.z, 1.1 * spec.scale);
       });
     },
-    /** The volume pass draws mist itself; the direct path keeps soft sprites. */
-    setPostActive(active: boolean) { falls.forEach(({ sprite }) => { sprite.visible = !active; }); },
+    /** The volume pass draws mist itself; the spray particles read on both paths. */
+    setPostActive(_active: boolean) { /* nothing to toggle */ },
     setAspect(aspect: number) {
       const narrow = aspect < .8;
-      for (const p of plants) { const base = p.group.userData.nearPosition; if (base) p.group.position.x = base.x * (narrow ? .40 : 1); }
-      for (const island of islands) island.object.position.x = island.x * (narrow ? .58 : 1);
+      for (const p of plants) { const base = p.group.userData.nearPosition; if (base) p.group.position.x = base.x * (narrow ? .5 : 1); }
+      for (const island of islandSet.islands) island.group.position.x = island.spec.x * (narrow ? .58 : 1);
     },
     dispose() {
       if (disposed) return; disposed = true;
       plants.forEach(p => p.dispose()); botany.dispose();
-      geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose());
+      islandSet.dispose(); flora.dispose(); vegetation.dispose();
+      geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose());
       water.dispose(); group.clear();
     },
   };

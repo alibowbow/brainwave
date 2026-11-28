@@ -52,6 +52,72 @@ one-shot hook is added, it should schedule a quiet note through the existing bus
 with a long attack and cooldown. This pilot contains no sound files, media element,
 oscillator, AudioContext, autoplay attempt, or independent player.
 
+## Living landmasses pass · 2026-11-28
+
+A structural rebuild after the HDR upgrade still read as a collage. Everything
+below is procedural three.js code (no models, textures or HDRIs).
+
+- **One key, one place.** The star now stands behind the seat's left shoulder
+  (`COSMIC_SUN_DIRECTION` = (-0.80, 0.45, 0.40)), about 27° up, so island faces,
+  plants and stone on both sides of the frame read with form and shadows fall
+  across the terrace. The ring plane (`RING_ROTATION` = 1.46, 0.16, 0) was
+  re-solved with it: the star is about 32° beyond the ring plane from the seat,
+  so the ring's shadow lies as a dark, gap-striped band across the visible
+  gibbous globe (phase ≈ 64°) and the globe's shadow cuts across the rings
+  beside its limb. The warm planet bounce and the nebula image light stay the
+  only other sources; glowing plants add a soft local light (below).
+- **Floating islands (`islands.ts`).** Each mass is welded from a rolling turf
+  cap (a rise, hummocks, a lip that lifts and dips around the island, two or
+  three embedded outcrops), a rounded soil shoulder, a cliff of sediment beds
+  (per-bed hardness → ledges over recessed soft beds, buttresses and bays,
+  runnels) and an underside that splits into three to five hanging crags. The
+  strata palette is applied per pixel in object space (crisp beds with dark
+  seams, laminations, mineral seeps, moss on ledges, derivative bump), so
+  nothing swims as islands move. The cap carries a grass carpet that follows the
+  terrain and a long fringe that droops over the lip, shrub clumps, small trees
+  with full layered crowns on three islands, clumps of hanging roots, root hairs
+  under the crags and vines down the cliffs, plus a few bioluminescent clumps.
+  Waterfalls leave the lip on a ballistic arc as long, slow threads that fray
+  and dissolve into spray points and a tall, multiply-scattering mist plume in
+  the dust volume. Islands bob on two incommensurate rhythms each and rock a
+  hair (no two in sync).
+- **Gas giant and rings (`sky.ts`).** Live three-octave eddy turbulence rides
+  the baked bands with alternating jets (differential rotation); the analytic
+  limb scattering shell is unchanged. Rings gain nine pixel-aware fine gaps,
+  radial colour banding and density waves; aurora is reduced to a faint hint.
+- **Nebula and stars.** The bake is a 48-step march with a separate nearer layer
+  of cold dark dust (depth), ionisation colour (teal-white cores, rose hydrogen
+  rings) and fronts where lanes meet gas; the dome adds two finer octaves of the
+  same field live as gentle clumping. Stars scintillate with the shared night
+  sky's three-rate formula (soft, never flashing) and about 80 of the brightest
+  carry a faint four-point diffraction cross.
+- **Foreground (`glowFlora.ts`, `vegetation.ts`, `botany.ts`).** Lantern lilies
+  (translucent bells lit by a glowing pistil), glow-cap mushrooms on the rim
+  stones and spark-tendril tufts pulse on their own slow phases (~15 s); spores
+  rise from them and fade. The eight strongest clusters feed `GLOW_LIGHTS`,
+  which lights nearby grass and stone (albedo-weighted), and faint luminous
+  lichen grows on mossy stone. About 26 k grass blades carpet the terrace (the
+  half beyond the pond is reflected), with a fringe and vines on its far edge.
+  Broad leaves are deeper, waxier greens with pale midribs, wine-red undersides
+  and slow waves of light along glowing veins; moon blossoms glow lavender. Rim
+  stones are clustered with gaps, slabs among cobbles, heavier moss. The pool
+  adds three slow drip-ring sources to its analytic ripples and reflects the
+  glowing flora beyond it.
+- **Reflection layer fix.** three's `Reflector` clones the viewing camera,
+  layers included, so the detail layer had silently been rendered into the
+  pond as well. The garden now pins the reflection camera to layer 0, so island
+  vegetation, falls, near foliage and near flora really skip the pond pass.
+- **Budget.** The scene graph is about 0.57 M triangles (tested below 0.9 M);
+  the renderer reported about 0.78 M triangles per frame (main view plus
+  reflection; the shadow map is baked) and 133 draw calls in the SwiftShader
+  desktop capture, down from 1.35 M / 356 before this pass. Added shader cost: the object-space island
+  shader (four 3D-noise taps plus a derivative bump), two extra noise taps in
+  the nebula dome, an eight-light glow loop on grass, foliage and stone, and the
+  waterfall/spray/spore shaders. No new full-screen pass.
+
+Captures for this pass use `COSMIC_QA_QUERY=t=<seconds>` (the harness starts the
+scene clock there) to compare moments of the slow motion.
+
 ## HDR upgrade · 2026-11
 
 The garden now renders through the shared HDR pipeline
@@ -61,8 +127,9 @@ material outputs linear HDR radiance; on the direct fallback (no float colour
 buffers, or `?post=off` in the harness) three's own ACES and sRGB conversion
 apply to the same values, with exponential fog standing in for the dust volume.
 
-- **Light rule.** One key: a distant star just outside the desktop frame (left),
-  `COSMIC_SUN_DIRECTION` in `sky.ts`, with a 2048 shadow map over the terrace.
+- **Light rule.** One key: a distant star outside the frame (left; moved behind
+  the seat's shoulder in the 2026-11-28 pass), `COSMIC_SUN_DIRECTION` in
+  `sky.ts`, with a 2048 shadow map over the terrace.
   Ambient is image-based light prefiltered from the baked nebula (PMREM), plus a
   dim warm directional bounce from the gas giant. The old hemisphere flood, rim
   and point fill lights are gone.
@@ -109,7 +176,8 @@ apply to the same values, with exponential fog standing in for the dust volume.
   with the existing pixel-ratio and 768 reflection reductions.
 
 Island foliage, island waterfalls and mist live on `COSMIC_DETAIL_LAYER`, which
-the main camera and the touch raycaster include but the pond reflection skips.
+the main camera and the touch raycaster include but the pond reflection skips
+(enforced on the reflection camera since the 2026-11-28 pass).
 
 Before/after evidence (BEFORE = the previous renderer, AFTER = this upgrade,
 SwiftShader, DPR 1, reduced-motion stills at time 0) is in
@@ -239,7 +307,7 @@ See [validation/RESULTS.md](validation/RESULTS.md) for actual results and limits
 ## Known limits
 
 - HDR upgrade: native phone GPU cost was not measured. The pipeline, a 1024
-  reflection pass, half-resolution dust and roughly 1.3 M drawn triangles per
+  reflection pass, half-resolution dust and roughly 0.8 M drawn triangles per
   frame (main view plus reflection) are plausible for recent phones but unproven;
   the measured quality tier is the only safety valve. Dust light shafts from the
   islands are subtle because the star sits outside the frame.

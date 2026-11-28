@@ -54,7 +54,7 @@ export default function CosmicWorld({active,onInteract,subscribeEvents}:CosmicWo
     return subscribeEvents(type=>{if((type==='bowl'||type==='chimes')&&holderRef.current)cosmicHost.soundEvent(holderRef.current);});
   },[motion,subscribeEvents]);
   const touch=()=>{if(!holderRef.current)return;const event=cosmicHost.touchNearest(holderRef.current);if(event)callback.current?.(event);};
-  return <div ref={rootRef} className="cosmic-world" data-state={status} data-motion={motion?'running':'paused'} aria-label="우주 공중정원 — 잎과 물, 행성이 있는 고요한 공간">
+  return <div ref={rootRef} className="cosmic-world" data-state={status} data-motion={motion?'running':'paused'} aria-label="우주 공중정원 — 폭포가 흐르는 떠 있는 섬, 은은히 빛나는 꽃과 연못, 고리 행성과 성운이 있는 고요한 공간">
     <div className="cosmic-world-fallback" aria-hidden="true" />
     <div className="cosmic-world-mount" ref={mountRef}/>
     {status==='ready'&&motion?<button className="cosmic-world-access" onPointerDownCapture={e=>e.stopPropagation()} onClick={touch}>가까운 빛에 손길 보내기</button>:null}

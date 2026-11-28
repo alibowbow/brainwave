@@ -48,6 +48,8 @@ float sunVisibility(vec3 p) {
   }
   return visible;
 }
+// Share of the current sample's density that is waterfall mist (set by density()).
+float gMistShare = 0.0;
 float density(vec3 p, float t) {
   // Dust gathers around the garden; open space beyond stays clear.
   float layer = exp(-max(p.y - 2.5, 0.0) / 2.6 - max(-5.0 - p.y, 0.0) / 5.0) * exp(-max(length(p.xz - vec2(0.0, -18.0)) - 22.0, 0.0) / 14.0);
@@ -59,14 +61,17 @@ float density(vec3 p, float t) {
   // Clear air around the seat: only long paths between islands gather haze,
   // so the sky overhead stays crisp.
   d *= smoothstep(5.0, 24.0, t);
+  float mist = 0.0;
   for (int i = 0; i < ${MAX_MIST}; i++) {
     vec4 m = uMist[i];
     if (m.w <= 0.0) continue;
-    vec3 o = (p - m.xyz) / vec3(m.w, m.w * 1.4, m.w);
+    // A tall plume: spray hangs under the fall and billows as it drifts down.
+    vec3 o = (p - m.xyz) / vec3(m.w, m.w * 1.8, m.w);
     float puff = exp(-dot(o, o) * 1.6);
-    d += puff * .55 * (.45 + detail);
+    mist += puff * .42 * (.45 + detail);
   }
-  return d;
+  gMistShare = mist / max(d + mist, 1e-5);
+  return d + mist;
 }
 void main() {
   vec3 ro, rd; float surface;
@@ -89,7 +94,9 @@ void main() {
     vec3 p = ro + rd * t;
     float sigma = density(p, t);
     if (sigma < 1e-5) continue;
-    vec3 radiance = uSunColor * phase * sunVisibility(p) + uAmbient;
+    // Dense spray scatters many times: it glows white from every side, not
+    // only toward the star.
+    vec3 radiance = uSunColor * (phase + gMistShare * 1.5) * sunVisibility(p) + uAmbient * (1.0 + gMistShare * 2.5);
     float stepT = exp(-sigma * dt);
     scatter += transmittance * radiance * (1.0 - stepT);
     transmittance *= stepT;

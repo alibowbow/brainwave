@@ -183,6 +183,12 @@ export interface GardenVolumeOptions {
   ambient: THREE.Color;
   /** Density per metre at `base` height, height falloff per metre, base height, maximum march distance. */
   haze: [number, number, number, number];
+  /**
+   * Aerial haze only at real distance: density ramps from `near` (fraction of
+   * full) at `start` metres to full at `end`, so clear air never veils the
+   * near garden while the far ridges still recede.
+   */
+  clear?: { start: number; end: number; near: number };
   /** Path length used for sky pixels. */
   skyDistance: number;
   /** The sail as a horizontal rectangle (height, x min, x max, z min, z max) that blocks the sun. */
@@ -200,6 +206,7 @@ uniform vec3 uVolToSun;
 uniform vec3 uVolSun;
 uniform vec3 uVolAmbient;
 uniform vec4 uVolHaze;
+uniform vec3 uVolClear;
 uniform float uVolSky;
 uniform float uVolSailY;
 uniform vec4 uVolSail;
@@ -228,7 +235,8 @@ void main() {
     float dt = t - previous;
     previous = t;
     vec3 p = ro + rd * t;
-    float density = uVolHaze.x * exp(-max(p.y - uVolHaze.z, 0.0) * uVolHaze.y) * (0.8 + 0.2 * bwValue(p * 0.05 + vec3(uTime * 0.01, 0.0, 0.0)));
+    float density = uVolHaze.x * exp(-max(p.y - uVolHaze.z, 0.0) * uVolHaze.y) * (0.8 + 0.2 * bwValue(p * 0.05 + vec3(uTime * 0.01, 0.0, 0.0)))
+      * mix(uVolClear.z, 1.0, smoothstep(uVolClear.x, uVolClear.y, t));
     float sun = bwCanopy(p) * sailShade(p);
     vec3 radiance = uVolSun * phase * sun + uVolAmbient;
     float stepT = exp(-density * dt);
@@ -246,6 +254,7 @@ void main() {
       uVolSun: { value: new THREE.Vector3(o.sun.r, o.sun.g, o.sun.b) },
       uVolAmbient: { value: new THREE.Vector3(o.ambient.r, o.ambient.g, o.ambient.b) },
       uVolHaze: { value: new THREE.Vector4(...o.haze) },
+      uVolClear: { value: new THREE.Vector3(o.clear?.start ?? 0, o.clear?.end ?? 1e-3, o.clear?.near ?? 1) },
       uVolSky: { value: o.skyDistance },
       uVolSailY: { value: o.sail[0] },
       uVolSail: { value: new THREE.Vector4(o.sail[1], o.sail[2], o.sail[3], o.sail[4]) },

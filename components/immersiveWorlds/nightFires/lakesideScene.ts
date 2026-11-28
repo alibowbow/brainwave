@@ -9,8 +9,9 @@ import { createNightVolume } from './atmosphere';
 import { boulderGeometry, createFoliageMaterial, createGroundMaterial, createTerrainMaterial, leafSprayTexture, ridgeGeometry } from './landscape';
 import { buildForest, forestMaterial, scatterForest } from './forest';
 import { createGrass, scatter } from './coastFlora';
-import { applyFabricSurface } from '../shared/render/fabricSurface';
+import { applyFabricSurface, createFabricMaterial } from '../shared/render/fabricSurface';
 import { createNightClouds } from './nightClouds';
+import { noise3 } from '../shared/render/noise';
 
 const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 const shore = (x: number) => -5.6 + Math.sin(x * .29 + .8) * .48 + Math.cos(x * .7) * .18 + Math.min(Math.abs(x) * .11, 1.5);
@@ -44,6 +45,8 @@ uniform vec3 uFirePos;
 uniform vec3 uFarLight;
 uniform vec3 uFarColor;
 uniform float uMoonGlint;
+uniform vec3 uTentGlowPos;
+uniform vec3 uTentGlowColor;
 varying vec3 vWorld;
 float lakeShore(float x) { return -5.6 + sin(x * .29 + .8) * .48 + cos(x * .7) * .18 + min(abs(x) * .11, 1.5); }
 float rippleHeight(vec2 p, float t) {
@@ -71,6 +74,16 @@ void main() {
   float t = uTime;
   vec3 V = normalize(cameraPosition - vWorld);
   vec2 dpx = dFdx(p), dpy = dFdy(p);
+  // Swash: little waves run up between the stones and drain back, two unsynchronised trains.
+  float shoreD = lakeShore(p.x) - p.y;
+  float lapA = fract(t / 6.3 - p.x * 0.06);
+  float lapB = fract(t / 9.1 - p.x * 0.04 + 0.37);
+  float run = 0.62 * smoothstep(0.0, 0.18, lapA) * (1.0 - smoothstep(0.18, 1.0, lapA)) + 0.38 * smoothstep(0.0, 0.18, lapB) * (1.0 - smoothstep(0.18, 1.0, lapB));
+  float laceN = texture(uSkyNoise, vec3(p * 0.9 + vec2(0.0, t * 0.02), t * 0.04)).r;
+  float laceF = texture(uSkyNoise, vec3(p * 2.6 - vec2(t * 0.015, 0.0), 0.7 + t * 0.06)).g;
+  float wetLine = shoreD + 0.06 + 0.42 * run + 0.06 * (laceN - 0.5);
+  float edgeWidth = 0.004 + length(fwidth(p)) * 0.7;
+  if (wetLine < -edgeWidth) discard;
   // Calm slicks drift over the lake; inside them the short waves die down.
   float calm = mix(0.35, 1.0, smoothstep(0.34, 0.66, texture(uSkyNoise, vec3(p * 0.008 + vec2(0.0011, 0.0016) * t, 0.31 + t * 0.001)).r));
   vec2 slope = vec2(0.0);
@@ -127,16 +140,30 @@ void main() {
   color += uFireGlow * uWarmth * fireFall * (0.25 + 3.2 * caustic) * shallow * shallow * (1.0 - fresnel) * 0.6;
   // A low warm sheen where the firelight grazes the near water.
   color += uFireGlow * uWarmth * fireFall * 0.22 * fresnel * smoothstep(-14.0, -5.5, vWorld.z);
-  gl_FragColor = vec4(color, 1.);
+  // The tent's glow falls on the shallows beside it.
+  vec3 toTent = uTentGlowPos - vWorld;
+  color += uTentGlowColor * (0.3 + 2.2 * caustic) * shallow * (1.0 - fresnel) / (dot(toTent, toTent) * 0.3 + 1.0);
+  // Lace foam on the swash edge and in the draining film behind it, lit by fire and sky.
+  float edgeFoam = (1.0 - smoothstep(0.0, 0.05 + 0.05 * laceF, wetLine)) * (0.5 + 0.5 * smoothstep(0.4, 0.7, laceN));
+  float drainLace = smoothstep(0.52, 0.74, laceN * 0.6 + laceF * 0.55) * (1.0 - smoothstep(0.0, 0.9, wetLine)) * (0.45 + 0.55 * (1.0 - run));
+  float foam = clamp(max(edgeFoam, drainLace * 0.75), 0.0, 1.0) / (1.0 + length(fwidth(p)) * 1.5);
+  vec3 foamColor = bwNightSkyBase(vec3(0.0, 1.0, 0.0)) * 0.4 + uFireGlow * uWarmth * fireFall * 0.9 + uTentGlowColor / (dot(toTent, toTent) * 0.3 + 1.0) * 0.6;
+  color = mix(color, foamColor, foam);
+  // A film only millimetres deep over the beach: mostly transparent (alpha to coverage).
+  float film = smoothstep(-edgeWidth, edgeWidth, wetLine) * mix(0.4, 1.0, smoothstep(-0.1, 0.5, shoreD + wetLine * 0.5));
+  gl_FragColor = vec4(color, max(film, foam * smoothstep(-edgeWidth, edgeWidth, wetLine)));
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }
 `;
 
 /**
- * Tent cotton: the shared plain weave, plus felled seams every canvas width
- * (0.75 m along the tent), a hem at the eave, ridge tape and rain grime low
- * down. A lamp inside shows through the cloth; doubled seams let less through.
+ * Tent cotton duck: the shared plain weave plus slubby warp/weft grain that
+ * survives at a distance, felled seams every canvas width (0.75 m along the
+ * tent), a hem at the eave, ridge tape, double-layer reinforcement patches at
+ * the pullouts and pole ends, rain grime low down and patchy weathering.
+ * The lamp inside shows through the cloth: brighter where the canvas is thin
+ * and mottled with the weave, darker where seams and patches double it.
  */
 function tentCanvas(color: THREE.ColorRepresentation, key: string, glow: { position: { value: THREE.Vector3 }; strength: { value: number } }, seams: boolean) {
   const material = new THREE.MeshStandardMaterial({ color, roughness: .88, metalness: 0, side: THREE.DoubleSide });
@@ -147,6 +174,12 @@ function tentCanvas(color: THREE.ColorRepresentation, key: string, glow: { posit
       .replace('#include <common>', '#include <common>\nuniform vec3 uTentGlowPos;\nuniform float uTentGlowStrength;')
       .replace('#include <color_fragment>', `#include <color_fragment>
 float tentBand = 0.0;
+float tentPatch = 0.0;
+// Slub grain: thicker threads run as fine streaks along warp and weft.
+vec2 grainUv = vSurfaceUv * vec2(1.0, 1.15);
+float grainAa = clamp(1.6 - length(fwidth(grainUv)) * 70.0, 0.0, 1.0);
+float tentGrain = (bwNoise(vec3(grainUv.x * 70.0, grainUv.y * 3.0, 2.0)) * 0.55 + bwNoise(vec3(grainUv.x * 3.0, grainUv.y * 70.0, 5.0)) * 0.45) * grainAa;
+float tentMottle = bwFbm3(vec3(vSurfaceUv * vec2(5.0, 4.0), 7.0));
 ${seams ? `{
   float seamAa = fwidth(vSurfaceUv.y) * 1.5 + 0.002;
   float seamDistance = abs(fract(vSurfaceUv.y * 1.3333 + 0.5) - 0.5) / 1.3333;
@@ -154,19 +187,50 @@ ${seams ? `{
   float hem = smoothstep(1.9 - seamAa, 1.92, vSurfaceUv.x);
   float tape = 1.0 - smoothstep(0.035, 0.035 + seamAa, vSurfaceUv.x);
   tentBand = max(seam, max(hem, tape));
+  // Reinforcement patches: at the corner and mid-eave pullouts and at both pole ends of the ridge.
+  vec2 pu = vSurfaceUv;
+  float eavePatch = step(1.7, pu.x) * max(max(step(pu.y, 0.3), step(2.7, pu.y)), step(abs(pu.y - 1.5), 0.2));
+  float ridgePatch = step(pu.x, 0.24) * max(step(pu.y, 0.22), step(2.78, pu.y));
+  tentPatch = max(eavePatch, ridgePatch);
   float grime = smoothstep(1.45, 2.0, vSurfaceUv.x) * (0.55 + 0.45 * bwNoise(vSurfaceWorld * 3.0));
   float weather = bwFbm3(vSurfaceWorld * vec3(0.9, 2.2, 0.9) + 4.0);
-  diffuseColor.rgb *= mix(1.0, 0.92, tentBand) * (1.0 - 0.3 * grime) * (0.92 + 0.16 * weather);
-  surfaceHeight += tentBand * 0.0015;
-}` : ''}`)
+  diffuseColor.rgb *= mix(1.0, 0.92, tentBand) * mix(1.0, 0.94, tentPatch) * (1.0 - 0.3 * grime) * (0.92 + 0.16 * weather);
+  surfaceHeight += tentBand * 0.0015 + tentPatch * 0.0008;
+}` : ''}
+diffuseColor.rgb *= 0.95 + 0.1 * tentGrain + 0.06 * tentMottle;
+surfaceHeight += tentGrain * 0.0003;`)
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
 {
   vec3 toLight = vSurfaceWorld - uTentGlowPos;
   float through = uTentGlowStrength / (dot(toLight, toLight) + 0.35);
-  totalEmissiveRadiance += vec3(1.0, 0.62, 0.32) * diffuseColor.rgb * through * (1.0 - 0.45 * tentBand);
+  float thin = (0.78 + 0.3 * tentMottle + 0.18 * tentGrain) * (1.0 - 0.55 * tentBand) * (1.0 - 0.5 * tentPatch);
+  totalEmissiveRadiance += vec3(1.0, 0.6, 0.3) * diffuseColor.rgb * through * thin;
 }`);
   };
-  return applyFabricSurface(material, { key: `lakeside-tent-${key}`, weave: 'plain', threads: [420, 420], heather: .7, threadContrast: .4, fuzz: .25, depth: .0004 });
+  return applyFabricSurface(material, { key: `lakeside-tent-${key}`, weave: 'plain', threads: [240, 240], heather: .8, threadContrast: .5, fuzz: .3, depth: .0005 });
+}
+
+/**
+ * Chars the +y end of a bark-covered log (object space, the log's half-length
+ * given): crazed black char over the last `reach` metres, with a faint glow
+ * still alive in the deepest cracks at the tip.
+ */
+function charredEnd(material: THREE.MeshStandardMaterial, reach: number, halfLength = .403) {
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+float charAmount = smoothstep(${(halfLength - reach).toFixed(3)}, ${(halfLength - .015).toFixed(3)}, vBarkObject.z + 0.04 * bwNoise(vBarkObject * 12.0));
+float charCrack = 1.0 - smoothstep(0.0, 0.12, abs(bwNoise(vBarkObject * vec3(16.0, 16.0, 6.0))));
+diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.024, 0.02, 0.017) * (0.7 + 0.6 * bwNoise(vBarkObject * 34.0)), charAmount);
+roughnessFactor = mix(roughnessFactor, 0.62, charAmount);`)
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+totalEmissiveRadiance += vec3(1.0, 0.28, 0.04) * charCrack * pow(charAmount, 4.0) * 0.4;`);
+  };
+  const base = material.customProgramCacheKey.bind(material);
+  material.customProgramCacheKey = () => `${base()}|night-charred-end-v1`;
+  return material;
 }
 
 /** All geometry and shading are original. Distances are metres; the viewpoint is a seated camper. */
@@ -191,8 +255,8 @@ export function buildLakesideWorld(): WorldRecipe {
   scene.add(sky.group);
   // Thin streaks of cloud catch the last rose light on the side of the afterglow.
   const clouds = createNightClouds({
-    noise, glowDirection: afterglow, moonDirection: moonDir, cover: .4,
-    lit: new THREE.Color(.15, .068, .072), shade: new THREE.Color(.02, .017, .036), moon: new THREE.Color(.1, .094, .088),
+    noise, glowDirection: afterglow, moonDirection: moonDir, cover: .41,
+    lit: new THREE.Color(.19, .085, .088), shade: new THREE.Color(.022, .018, .038), moon: new THREE.Color(.1, .094, .088),
   });
   scene.add(clouds.mesh);
 
@@ -208,7 +272,7 @@ export function buildLakesideWorld(): WorldRecipe {
 
   const bark = barkMaterial('#5f5245', 'lakeside-firewood-bark', { furrows: 6, lichen: 0.2 });
   const darkMetal = new THREE.MeshStandardMaterial({ color: '#2e3332', roughness: .45, metalness: .9 });
-  const ropeMat = fabricMaterial('#b3ad97', 'lakeside-rope', { weave: 40 });
+  const ropeMat = fabricMaterial('#d3c7a8', 'lakeside-rope', { weave: 40 });
   const add = (object: THREE.Object3D) => { scene.add(object); return object; };
   const tube = (points: THREE.Vector3[], radius: number, mat: THREE.Material, segments = 24) => {
     const obj = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), segments, radius, 8, false), mat);
@@ -339,20 +403,24 @@ export function buildLakesideWorld(): WorldRecipe {
   skyline.magFilter = skyline.minFilter = THREE.LinearFilter;
   skyline.wrapS = skyline.wrapT = THREE.ClampToEdgeWrapping;
   skyline.needsUpdate = true;
+  // Where the lamp inside the tent sits (set with the layout): its glow reaches the shallows.
+  const tentGlowSpot = new THREE.Vector3(-2.6, .4, -3.9);
   const waterUniforms = {
     ...sky.uniforms, uTime: { value: 0 }, uWarmth: { value: .55 }, uSkyline: { value: skyline },
     uHill: { value: new THREE.Vector3(.004, .005, .008) }, uHillHaze: { value: new THREE.Vector3(.016, .014, .024) },
     uFireGlow: { value: new THREE.Vector3(.5, .2, .06) }, uFirePos: { value: new THREE.Vector3(firePosition[0], .4, firePosition[2]) },
     uFarLight: { value: farLight }, uFarColor: { value: new THREE.Vector3(1.0, .58, .26).multiplyScalar(.0022) }, uMoonGlint: { value: .00013 },
+    uTentGlowPos: { value: tentGlowSpot }, uTentGlowColor: { value: new THREE.Vector3(.16, .08, .03) },
   };
-  const waterMaterial = new THREE.ShaderMaterial({ uniforms: waterUniforms, vertexShader: WATER_VERTEX, fragmentShader: WATER_FRAGMENT });
+  // The front edge reaches 0.75 m up the beach; the shader cuts it at the moving swash line.
+  const waterMaterial = new THREE.ShaderMaterial({ uniforms: waterUniforms, vertexShader: WATER_VERTEX, fragmentShader: WATER_FRAGMENT, alphaToCoverage: true });
   const waterGeometry = new THREE.PlaneGeometry(230, 210, 128, 100);
   waterGeometry.rotateX(-Math.PI / 2);
   waterGeometry.translate(0, -.035, -108);
   const wp = waterGeometry.attributes.position;
   for (let i = 0; i < wp.count; i++) {
     const z = wp.getZ(i); const near = THREE.MathUtils.clamp((z + 11) / 8, 0, 1);
-    wp.setZ(i, z + near * (shore(wp.getX(i)) + 3));
+    wp.setZ(i, z + near * (shore(wp.getX(i)) + 3.75));
   }
   wp.needsUpdate = true;
   const water = new THREE.Mesh(waterGeometry, waterMaterial);
@@ -388,7 +456,7 @@ export function buildLakesideWorld(): WorldRecipe {
   // from the pullouts, felled seams join the canvas widths, and the lamp inside
   // glows through the cloth (darker where the seams double it).
   const tent = new THREE.Group(); tent.position.set(-3.06, 0, -3.3); tent.rotation.y = -.17; add(tent);
-  const tentGlowPosition = { value: new THREE.Vector3() };
+  const tentGlowPosition = { value: tentGlowSpot };
   const tentGlowStrength = { value: .15 };
   const canvasMat = tentCanvas('#b0a587', 'fly', { position: tentGlowPosition, strength: tentGlowStrength }, true);
   const canvasDark = fabricMaterial('#6f705d', 'lakeside-tent-trim', { side: THREE.DoubleSide, weave: 160 });
@@ -399,7 +467,10 @@ export function buildLakesideWorld(): WorldRecipe {
     // Held at the poles (t = 0, 1), the corners and the mid-eave pullout (s = 1, t = .5).
     const span = Math.abs(Math.sin(t * Math.PI * 2));
     const ridge = ridgeHeight - .085 * Math.sin(t * Math.PI) - t * .06;
-    const billow = Math.sin(s * Math.PI) * (.1 + .045 * span) + .03 * s * s * span;
+    // Old canvas never hangs evenly: one side slacker, soft lumps where the cloth has stretched.
+    const slack = side < 0 ? 1.18 : 1;
+    const lumps = (noise3(s * 3.1 + side * 5, t * 4.3, 1.7) * .024 + noise3(s * 7.3 + side, t * 9.1, 4.2) * .008) * Math.sin(s * Math.PI) * Math.sqrt(Math.sin(t * Math.PI));
+    const billow = (Math.sin(s * Math.PI) * (.1 + .045 * span) + .03 * s * s * span) * slack + lumps;
     // Stress folds fan out from each pullout toward the ridge ends.
     let folds = 0;
     for (const sign of [-1, 1]) {
@@ -451,7 +522,13 @@ export function buildLakesideWorld(): WorldRecipe {
   const pad = mesh(new THREE.BoxGeometry(.79, .08, 1.95), sleeping, [-.45, .12, -.2]); tent.add(pad);
   for (let i = 0; i < 12; i++) tent.add(mesh(new THREE.CapsuleGeometry(.08, .58, 4, 10), sleeping, [-.45, .19, -.99 + i * .143], [0, 0, Math.PI / 2]));
   const pillow = mesh(new THREE.SphereGeometry(.3, 24, 16), canvasInside, [-.46, .26, -1.02]); pillow.scale.set(1.19, .36, .68); tent.add(pillow);
-  const innerGlow = new THREE.PointLight('#ffad5e', 2.2, 4.2, 2); innerGlow.position.set(.45, .55, -.75); tent.add(innerGlow);
+  // A small candle lantern on the groundsheet is the warm source the canvas glows with.
+  const innerGlow = new THREE.PointLight('#ffad5e', 2.2, 4.2, 2); innerGlow.position.set(.5, .32, -.7); tent.add(innerGlow);
+  const candleGlass = mesh(new THREE.CylinderGeometry(.045, .05, .13, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffc27a').multiplyScalar(3.2) }), [.5, .13, -.7]);
+  candleGlass.castShadow = false;
+  tent.add(candleGlass);
+  tent.add(mesh(new THREE.CylinderGeometry(.03, .055, .04, 16), darkMetal, [.5, .215, -.7]));
+  tent.add(mesh(new THREE.CylinderGeometry(.058, .058, .02, 16), darkMetal, [.5, .06, -.7]));
   // Guy lines from the corners, the mid-eave pullouts and the front pole, each to a driven peg.
   const pegWood = woodMaterial('#8a6d4f', 'lakeside-pegs', { axis: 'y', ring: 40, weathered: .5 });
   const guy = (anchor: THREE.Vector3, peg: THREE.Vector3) => {
@@ -467,8 +544,10 @@ export function buildLakesideWorld(): WorldRecipe {
   guy(V(0, ridgeHeight, frontZ), V(0, .06, frontZ + 1.04));
 
   // Empty folding chair opposite the tent: rails, sagging canvas and a draped throw.
-  const chair = new THREE.Group(); chair.position.set(2.16, .02, -1.65); chair.rotation.y = -.34; add(chair);
-  const chairCanvas = fabricMaterial('#5f6150', 'lakeside-chair', { side: THREE.DoubleSide, weave: 140 });
+  // It is turned toward the fire, so the flames light its canvas and frame from the side.
+  const chair = new THREE.Group(); chair.position.set(2.16, .02, -1.65); chair.rotation.y = -.85; add(chair);
+  const chairCanvas = createFabricMaterial('#8a4c3a', { key: 'lakeside-chair-canvas', weave: 'twill', threads: [150, 150], heather: .7, threadContrast: .5, fuzz: .35, depth: .0006, sheen: .5, sheenColor: '#d09a7c', roughness: .82 }, { side: THREE.DoubleSide });
+  const chairFrame = new THREE.MeshStandardMaterial({ color: '#8b8e8c', roughness: .38, metalness: .9 });
   function fabricPatch(width: number, depth: number, height: number, back: boolean) {
     const geo = new THREE.PlaneGeometry(width, depth, 22, 20); const pos = geo.attributes.position;
     for (let i = 0; i < pos.count; i++) {
@@ -482,14 +561,14 @@ export function buildLakesideWorld(): WorldRecipe {
   const armWood = woodMaterial('#7a5f45', 'lakeside-chair-arm', { axis: 'y', ring: 40, weathered: .2, roughness: .6 });
   for (const side of [-1, 1]) {
     const x = side * .39;
-    chair.add(beam(V(x, .03, .39), V(x, 1.37, -.45), .022, darkMetal));
-    chair.add(beam(V(x, .03, -.43), V(x, .65, .31), .022, darkMetal));
+    chair.add(beam(V(x, .03, .39), V(x, 1.37, -.45), .022, chairFrame));
+    chair.add(beam(V(x, .03, -.43), V(x, .65, .31), .022, chairFrame));
     chair.add(beam(V(x, .63, .34), V(x, .7, -.37), .03, armWood));
     chair.add(mesh(new THREE.SphereGeometry(.04, 16, 10), darkMetal, [x, .40, .0]));
   }
-  chair.add(beam(V(-.39, .57, .3), V(.39, .57, .3), .02, darkMetal));
-  chair.add(beam(V(-.39, 1.32, -.45), V(.39, 1.32, -.45), .02, darkMetal));
-  chair.add(beam(V(-.39, .56, -.32), V(.39, .56, -.32), .02, darkMetal));
+  chair.add(beam(V(-.39, .57, .3), V(.39, .57, .3), .02, chairFrame));
+  chair.add(beam(V(-.39, 1.32, -.45), V(.39, 1.32, -.45), .02, chairFrame));
+  chair.add(beam(V(-.39, .56, -.32), V(.39, .56, -.32), .02, chairFrame));
   const throwMat = fabricMaterial('#a26c58', 'lakeside-throw', { side: THREE.DoubleSide, weave: 70 });
   const throwGeo = new THREE.PlaneGeometry(.47, .68, 25, 25); const tp = throwGeo.attributes.position;
   for (let i = 0; i < tp.count; i++) {
@@ -501,13 +580,49 @@ export function buildLakesideWorld(): WorldRecipe {
 
   const campfire = fire(firePosition, .74, { noise, lightIntensity: 7.5, bounceIntensity: 1.4 });
   add(campfire.group);
-  // Split firewood with growth rings: tactile, off-centre foreground objects.
-  const endGrain = woodMaterial('#9c8462', 'lakeside-log-ends', { axis: 'z', ring: 60, weathered: .25 });
-  for (let i = 0; i < 4; i++) {
-    const a = V(-2.08 + i * .11, .12 + (i > 2 ? .17 : 0), .21 + i * .08), b = a.clone().add(V(.67, -.015, .29));
-    add(beam(a, b, .095, bark, 20));
-    const end = mesh(new THREE.CircleGeometry(.082, 28), endGrain, [b.x, b.y, b.z]); end.quaternion.setFromUnitVectors(V(0, 0, 1), b.clone().sub(a).normalize()); end.position.addScaledVector(b.clone().sub(a).normalize(), .001); add(end);
-  }
+  // Firewood by the fire: a round log with ridged bark whose near end was charred in
+  // the flames, and split halves and quarters showing pale heartwood, ring-marked ends.
+  const endGrain = woodMaterial('#a48a66', 'lakeside-log-ends', { axis: 'y', ring: 55, weathered: .25 });
+  const splitWood = woodMaterial('#a98d69', 'lakeside-split-faces', { axis: 'y', ring: 22, weathered: .35, roughness: .85 });
+  splitWood.side = THREE.DoubleSide;
+  const charredCap = new THREE.MeshStandardMaterial({ color: '#1d1814', roughness: .7, metalness: 0 });
+  const logBark = barkMaterial('#6a5847', 'lakeside-log-bark', { furrows: 6, lichen: .3 });
+  const charredBark = charredEnd(barkMaterial('#6a5847', 'lakeside-log-bark-charred', { furrows: 6, lichen: .2 }), .28, .403);
+  const firewood = (a: THREE.Vector3, b: THREE.Vector3, radius: number, sweep: number, roll: number, seed: number, burnt = false) => {
+    const length = a.distanceTo(b);
+    const g = new THREE.CylinderGeometry(radius * .96, radius, length, 20, 10, false, roll, sweep);
+    const p = g.attributes.position as THREE.BufferAttribute;
+    // Bark ridges, a slight taper and a lumpy, not quite round section.
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i), r = Math.hypot(x, z);
+      if (r < radius * .5) continue;
+      const angle = Math.atan2(z, x);
+      const k = 1 + .05 * Math.sin(angle * 3 + seed) + .03 * noise3(Math.cos(angle) * 2 + seed, y * 3, Math.sin(angle) * 2) + .025 * Math.abs(noise3(Math.cos(angle) * 9, y * 1.2 + seed, Math.sin(angle) * 9));
+      p.setXYZ(i, x * k, y, z * k);
+    }
+    g.computeVertexNormals();
+    const log = new THREE.Mesh(g, [burnt ? charredBark : logBark, burnt ? charredCap : endGrain, endGrain]);
+    log.castShadow = log.receiveShadow = true;
+    log.position.copy(a).add(b).multiplyScalar(.5);
+    log.quaternion.setFromUnitVectors(V(0, 1, 0), b.clone().sub(a).normalize());
+    // Split faces of halves and quarters: flat heartwood with the grain along the log.
+    if (sweep < Math.PI * 1.99) for (const theta of [roll, roll + sweep]) {
+      const face = new THREE.PlaneGeometry(radius * .97, length * .999);
+      face.translate(radius * .485, 0, 0);
+      face.rotateY(theta - Math.PI / 2);
+      const split = new THREE.Mesh(face, splitWood);
+      split.castShadow = split.receiveShadow = true;
+      log.add(split);
+    }
+    add(log);
+  };
+  // Laid so the split faces turn up and toward the fire: a round log at the back with
+  // its charred end toward the hearth, a half split resting on it flat side up, and
+  // quarters in front showing pale heartwood.
+  firewood(V(-2.15, .1, .15), V(-1.4, .1, .46), .1, Math.PI * 2, 0, 1, true);
+  firewood(V(-2.02, .295, .25), V(-1.38, .29, .52), .085, Math.PI, 0, 3);
+  firewood(V(-1.98, .09, .52), V(-1.33, .09, .8), .09, Math.PI / 2, Math.PI / 2, 2);
+  firewood(V(-2.28, .085, .47), V(-1.7, .085, .74), .085, Math.PI / 2, Math.PI / 2, 4);
 
   // A low hand-built camp table at arm's reach with planks, a mug, a book and the lantern.
   const table = new THREE.Group(); table.position.set(.62, 0, 1.31); table.rotation.y = -.08; add(table);
@@ -865,6 +980,7 @@ diffuseColor.rgb *= mix(vec3(1.0), vec3(0.08, 0.07, 0.065), birchMark) * (1.0 - 
       tent.position.z = portrait ? -3.80 : -3.3;
       chair.position.x = portrait ? 1.40 : 2.16;
       chair.position.z = portrait ? -2.15 : -1.65;
+      chair.rotation.y = portrait ? -.65 : -.85;
       table.position.x = portrait ? .36 : .62;
       lamp.group.position.x = portrait ? .59 : 1.16;
       for (const steam of steamObjects) steam.position.x = steamOrigin.x + (portrait ? -.26 : 0);

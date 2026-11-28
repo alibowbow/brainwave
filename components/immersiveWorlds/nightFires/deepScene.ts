@@ -7,11 +7,62 @@ import { bakeNightEnvironment, createNightSky } from '../shared/render/skyNight'
 import { createNightVolume } from './atmosphere';
 import { boulderGeometry, coniferGeometry, createFoliageMaterial, createGroundMaterial, createTerrainMaterial, needleSprayTexture, ridgeGeometry } from './landscape';
 import { addTreeSway, buildForest, forestMaterial, scatterForest } from './forest';
+import { alpineRidgeGeometry, createAlpineMaterial } from './alpine';
+import { applyRockSurface, type RockSurfaceOptions } from '../shared/render/rockSurface';
 
 const direction = (azimuthDegrees: number, elevationDegrees: number) => {
   const a = THREE.MathUtils.degToRad(azimuthDegrees), e = THREE.MathUtils.degToRad(elevationDegrees);
   return new THREE.Vector3(Math.sin(a) * Math.cos(e), Math.sin(e), -Math.cos(a) * Math.cos(e));
 };
+
+/** Weathered stone with crustose lichen: pale grey-green and ochre rosettes, mostly on the tops. */
+function lichenStone(color: THREE.ColorRepresentation, options: RockSurfaceOptions, amount: number) {
+  const material = new THREE.MeshStandardMaterial({ color, roughness: options.dryRoughness ?? 0.86, metalness: 0 });
+  material.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+{
+  vec3 lichenP = vRockWorld * 9.0;
+  float rosette = smoothstep(0.5, 0.66, bwNoise(lichenP) * 0.7 + bwNoise(lichenP * 2.7 + 3.1) * 0.45);
+  float specks = smoothstep(0.6, 0.7, bwNoise(lichenP * 4.1 + 9.0)) * clamp(1.5 - length(fwidth(lichenP)) * 4.0, 0.0, 1.0);
+  float facing = smoothstep(-0.2, 0.7, normalize(vRockNormal).y);
+  float lichen = clamp(rosette * 0.85 + specks * 0.5, 0.0, 1.0) * (0.3 + 0.7 * facing) * ${amount.toFixed(3)};
+  vec3 lichenColor = mix(vec3(0.6, 0.64, 0.52), vec3(0.7, 0.57, 0.3), smoothstep(0.35, 0.7, bwNoise(lichenP * 0.45 + 2.0)));
+  diffuseColor.rgb = mix(diffuseColor.rgb, lichenColor, lichen);
+}`);
+  };
+  return applyRockSurface(material, options);
+}
+
+/**
+ * Needle cards that read as a dense, dark crown: low albedo, and the moon only
+ * as a thin cool rim where the crown turns away from the eye toward the light.
+ */
+function rimNeedles(material: THREE.MeshStandardMaterial) {
+  material.color.setScalar(0.22);
+  material.envMapIntensity = 0.2;
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+#if NUM_DIR_LIGHTS > 0
+{
+  vec3 rimN = normalize(normal);
+  float edge = pow(1.0 - abs(dot(rimN, normalize(vViewPosition))), 3.0);
+  float toMoon = max(dot(rimN, directionalLights[0].direction), 0.0);
+  totalEmissiveRadiance += directionalLights[0].color * edge * toMoon * 0.035;
+}
+#endif`);
+    // Most of each card sits inside the crown: let direct moonlight in only near the rim.
+    shader.fragmentShader = shader.fragmentShader.replace('#include <lights_fragment_begin>', `
+float crownInside = 1.0 - pow(1.0 - abs(dot(normalize(normal), normalize(vViewPosition))), 2.0);
+#include <lights_fragment_begin>`).replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
+reflectedLight.directDiffuse *= (1.0 - 0.9 * crownInside) * 0.55;
+reflectedLight.directSpecular *= 1.0 - 0.9 * crownInside;`);
+  };
+  const base = material.customProgramCacheKey.bind(material);
+  material.customProgramCacheKey = () => `${base()}|night-rim-needles-v1`;
+  return material;
+}
 
 /** Original mountain lookout: moonlit ridge layers over a misty valley, a stone parapet and a lantern on a timber seat. */
 export function buildDeepNightWorld(): WorldRecipe {
@@ -46,22 +97,26 @@ export function buildDeepNightWorld(): WorldRecipe {
   moonLight.target.position.set(0, 0, 2);
   scene.add(moonLight, moonLight.target);
 
-  // Layered ranges across the valley, each eroded, the farthest snow-dusted.
-  const layers: Array<[number, number, number, number, Array<[number, number, number]>, number, string, string, number, number]> = [
-    [-215, 560, 70, -18, [[-160, 44, 50], [-60, 56, 40], [40, 48, 46], [150, 60, 50]], 735, '#727c8c', '#252d32', 10, 28],
-    [-152, 440, 60, -16, [[-140, 30, 38], [-40, 38, 30], [70, 34, 36], [170, 28, 40]], 752, '#5d6672', '#1e272b', 12, 40],
-    [-104, 330, 50, -14, [[-110, 20, 30], [-20, 16, 26], [60, 24, 28]], 781, '#4c535a', '#1b2427', 16, 99],
-    [-70, 250, 38, -12, [[-80, 12, 24], [10, 7, 22], [85, 13, 26]], 799, '#41474a', '#182023', 99, 99],
+  // Layered ranges across the valley. The three far ones are carved alpine ranges
+  // (jagged crests, fall-line ribs, cliff bands, snow in the couloirs); the nearest
+  // is a forested foothill that carries the valley's trees and village.
+  const layers: Array<[number, number, number, number, Array<[number, number, number]>, number, string, string, number, number, [number, number]]> = [
+    [-215, 560, 70, -18, [[-160, 44, 50], [-60, 56, 40], [40, 48, 46], [150, 60, 50]], 735, '#7d8491', '#2c3138', 2, 10, [380, 60]],
+    [-152, 440, 60, -16, [[-140, 30, 38], [-40, 38, 30], [70, 34, 36], [170, 28, 40]], 752, '#686f7a', '#262b30', 6, 14, [320, 54]],
+    [-104, 330, 50, -14, [[-110, 20, 30], [-20, 16, 26], [60, 24, 28]], 781, '#565c63', '#1f2428', 2, 6, [260, 46]],
   ];
-  const nearestLayer: THREE.BufferGeometry[] = [];
-  for (const [z, width, depth, base, peaks, seed, rock, forest, treeLine, snowLine] of layers) {
-    const geometry = ridgeGeometry({ z, width, depth, base, peaks, seed, relief: 0.45, crest: 0.5, segments: [280, 48] });
-    const ridge = new THREE.Mesh(geometry, createTerrainMaterial({ key: `deep-layer-${seed}`, rock, forest, treeLine, snowLine, bump: 1 }));
-    ridge.receiveShadow = true;
-    ridge.name = `Ridge layer ${seed}`;
-    scene.add(ridge);
-    if (seed === 799) nearestLayer.push(geometry);
+  for (const [z, width, depth, base, peaks, seed, rock, rockDark, treeLine, snowLine, segments] of layers) {
+    const geometry = alpineRidgeGeometry({ z, width, depth, base, peaks, seed, segments });
+    const range = new THREE.Mesh(geometry, createAlpineMaterial({ key: `deep-range-${seed}`, rock, rockDark, scree: '#6c6f72', forest: '#1d2623', treeLine, snowLine, moonGain: 2.6, skyGain: 1.5 }));
+    range.receiveShadow = true;
+    range.name = `Alpine range ${seed}`;
+    scene.add(range);
   }
+  const nearestLayer = [ridgeGeometry({ z: -70, width: 250, depth: 38, base: -12, peaks: [[-80, 12, 24], [10, 7, 22], [85, 13, 26]], seed: 799, relief: 0.45, crest: 0.5, segments: [280, 48] })];
+  const foothill = new THREE.Mesh(nearestLayer[0], createTerrainMaterial({ key: 'deep-layer-799', rock: '#41474a', forest: '#182023', treeLine: 99, snowLine: 99, bump: 1 }));
+  foothill.receiveShadow = true;
+  foothill.name = 'Ridge layer 799';
+  scene.add(foothill);
 
   // A broad nearer saddle falls away under the terrace; irregular contours reveal the basin.
   const terrainHeight = (x: number, z: number) => {
@@ -190,7 +245,7 @@ export function buildDeepNightWorld(): WorldRecipe {
   const onArc = (angle: number, radius: number) => new THREE.Vector3(CX + Math.cos(angle) * radius, 0, CZ + Math.sin(angle) * radius);
   const yawAt = (angle: number) => -angle + Math.PI / 2;
   const masonry = stoneMaterial('#7a7b74', { key: 'deep-masonry', scale: 3.4, bump: 1.9, stain: '#5c4a36', stainAmount: 0.28, cavity: 0.7, strata: 0.35, drips: 0.18, dryRoughness: 0.88, moss: { color: '#4a5a31', amount: 0.55 } });
-  const coping = stoneMaterial('#85857c', { key: 'deep-coping', scale: 2.6, bump: 1.4, stain: '#5f5040', stainAmount: 0.22, cavity: 0.55, strata: 0.15, drips: 0.1, dryRoughness: 0.84, moss: { color: '#55663a', amount: 0.75 } });
+  const coping = lichenStone('#85857c', { key: 'deep-coping-lichen', scale: 2.6, bump: 1.6, stain: '#5f5040', stainAmount: 0.25, cavity: 0.6, strata: 0.15, drips: 0.12, dryRoughness: 0.84, moss: { color: '#55663a', amount: 0.55 } }, 0.85);
   const mortar = stoneMaterial('#5e5b54', { key: 'deep-mortar', scale: 9, bump: 0.6, stain: '#4a4036', stainAmount: 0.3, cavity: 0.35, strata: 0.0, drips: 0.25, dryRoughness: 0.95 });
   const paving = stoneMaterial('#7a7e78', { key: 'deep-paving', scale: 3.2, bump: 1.0, stain: '#6b5a44', stainAmount: 0.2, cavity: 0.5, strata: 0.15, drips: 0.0, dryRoughness: 0.8, moss: { color: '#3f4c2d', amount: 0.25 } });
   const plinthGeometry = new THREE.CylinderGeometry(R + 0.48, R + 1.2, 2.4, 96, 10, false);
@@ -284,20 +339,26 @@ export function buildDeepNightWorld(): WorldRecipe {
   faceParts.forEach((g) => g.dispose());
   face.name = 'Rubble parapet';
   scene.add(face);
-  // Flat coping slabs, slightly overhanging, chipped on their edges.
+  // Coping: hand-set capstones of mixed size and age. Long slabs, short blocks and
+  // the odd pair of small stones; some sharp-edged, some worn round, a few settled
+  // out of line; lichen rosettes on their weathered tops.
   const copingParts: THREE.BufferGeometry[] = [];
   for (let angle = A0, k = 0; angle < A1; k++) {
-    const length = 0.55 + random() * 0.3;
+    const kind = random();
+    const length = kind < 0.2 ? 0.3 + random() * 0.15 : kind < 0.75 ? 0.5 + random() * 0.3 : 0.85 + random() * 0.25;
     const step = length / (R + 0.2);
     const mid = angle + step * 0.5;
-    angle += step + 0.014 / (R + 0.2);
-    const thickness = 0.085 + random() * 0.02;
-    const g = boulderGeometry(4700 + k * 13, 5, 10, 0.03, true);
-    const centre = onArc(mid, R + 0.19);
-    centre.y = WALL_TOP + thickness / 2 + 0.004;
+    angle += step + (0.008 + random() * 0.012) / (R + 0.2);
+    const thickness = 0.07 + random() * 0.07;
+    const depth = 0.22 + random() * 0.07;
+    const worn = random();
+    const g = boulderGeometry(4700 + k * 13, 5, 7 + Math.floor(random() * 8), 0.02 + worn * 0.1, worn < 0.75);
+    const centre = onArc(mid, R + 0.16 + (random() - .5) * 0.06);
+    centre.y = WALL_TOP + thickness / 2 + 0.004 + (random() - .5) * 0.012;
+    const settle = random() < 0.15 ? 1 : 0.35;
     g.applyMatrix4(new THREE.Matrix4().compose(centre,
-      new THREE.Quaternion().setFromEuler(new THREE.Euler((random() - .5) * .03, yawAt(mid) + (random() - .5) * .04, (random() - .5) * .025)),
-      new THREE.Vector3(length / 2 - 0.006, thickness / 2, 0.27)));
+      new THREE.Quaternion().setFromEuler(new THREE.Euler((random() - .5) * .06 * settle, yawAt(mid) + (random() - .5) * .1 * settle, (random() - .5) * .05 * settle)),
+      new THREE.Vector3(length / 2 - 0.006, thickness / 2, depth)));
     copingParts.push(g);
   }
   const copingMesh = mesh(mergeGeometries(copingParts), coping);
@@ -361,10 +422,18 @@ export function buildDeepNightWorld(): WorldRecipe {
     lampLight.shadow.camera.near = 0.05;
     lampLight.shadow.camera.far = 6;
   }
-  // Warm light returned by the seat and paving around the lamp.
-  const lanternBounce = new THREE.PointLight('#f4b067', 0.55, 4.2, 2);
-  lanternBounce.position.set(lampSpot.x - 0.05, SEAT_TOP + 0.12, lampSpot.z + 0.45);
+  // A softer, wider falloff than a bare inverse square: the lantern's pool reaches
+  // the paving and the inner face of the parapet on both sides of the seat.
+  if (lampLight) { lampLight.distance = 8; lampLight.decay = 1.3; }
+  // Warm light returned by the seat, the piers and the paving in front of the lamp.
+  const lanternBounce = new THREE.PointLight('#f2a862', 0.55, 5, 1.6);
+  lanternBounce.position.set(lampSpot.x - 0.05, -0.02, lampSpot.z + 0.85);
   scene.add(lanternBounce);
+  // The night sky behind the viewer: a faint cool fill on the stone tops and the
+  // terrace, falling off before the valley so the far landscape stays backlit.
+  const skyFill = new THREE.PointLight('#8ea3c9', 3.6, 15, 1.1);
+  skyFill.position.set(0.6, 6.5, 8.5);
+  scene.add(skyFill);
 
   // Small alpine grass ribbons, rooted among the margins, respond only to a slow breeze.
   const bladePositions: number[] = [], bladeColors: number[] = [], bladeWeights: number[] = [], bladeIndices: number[] = [];
@@ -429,10 +498,8 @@ export function buildDeepNightWorld(): WorldRecipe {
   // throws their shadow toward the terrace.
   const swayTime = { value: 0 };
   const LEDGE_Y = -1.6;
-  const framingNeedles = addTreeSway(createFoliageMaterial(needleSprayTexture(41, '#26352a'), 'deep-framing-spruce'), swayTime, LEDGE_Y, 9, 'deep-framing');
-  // The moon dominates the radiance probe: keep it from frosting the needle cards.
-  framingNeedles.envMapIntensity = 0.35;
-  framingNeedles.color.setScalar(0.6);
+  // Dark needles with only a thin cool rim of moonlight, never frosted.
+  const framingNeedles = rimNeedles(addTreeSway(createFoliageMaterial(needleSprayTexture(41, '#26352a'), 'deep-framing-spruce'), swayTime, LEDGE_Y, 9, 'deep-framing'));
   const framingBark = addTreeSway(barkMaterial('#4a3f36', 'deep-framing-bark', { furrows: 6, lichen: 0.35 }), swayTime, LEDGE_Y, 9, 'deep-framing-bark');
   const framingWood: THREE.BufferGeometry[] = [], framingFoliage: THREE.BufferGeometry[] = [], ledgeParts: THREE.BufferGeometry[] = [];
   for (const [x, z, height, seed] of [[-5.7, -2.3, 9, 61], [6.3, -3.7, 8, 83]] as Array<[number, number, number, number]>) {
@@ -520,7 +587,7 @@ export function buildDeepNightWorld(): WorldRecipe {
         // Valley mist pools below the ridges and drifts slowly across the basin.
         mist: { y: -7, thickness: 4, density: 0.03, start: 18, tint: new THREE.Color(0.95, 1.0, 1.1), drift: new THREE.Vector2(0.0035, 0.0012), contrast: 1.6 },
         // Fog lying between the far ridges: their feet fade, their crests stand clear.
-        upperMist: { y: 2, thickness: 3.5, density: 0.006, start: 95 },
+        upperMist: { y: 1, thickness: 3, density: 0.0042, start: 95 },
         glow: { position: new THREE.Vector3(lampSpot.x, SEAT_TOP + 0.2, lampSpot.z), color: new THREE.Color(1.0, 0.62, 0.3), density: 0.0035 },
       });
       volumeUniforms = volume.uniforms;
@@ -533,7 +600,7 @@ export function buildDeepNightWorld(): WorldRecipe {
       sky.update(elapsed);
       lamp.update(elapsed, dt);
       // Here the lantern is the only warm key: a stronger, wider pool than on a camp table.
-      if (lampLight) lampLight.intensity *= 2.4;
+      if (lampLight) lampLight.intensity *= 3.0;
       if (dt === 0 && bounceChanged) lanternBounce.intensity = bounceTarget;
       bounceChanged = false;
       lanternBounce.intensity += (bounceTarget - lanternBounce.intensity) * (1 - Math.exp(-Math.max(0, dt) * 2.4));

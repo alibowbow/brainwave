@@ -54,15 +54,22 @@ void main() {
   float t = uTime;
   float broad = texture(uNoise, vec3(q.x * 0.45 + t * 0.0016, q.y * 1.7, 0.21 + t * 0.0006)).r;
   float fine = texture(uNoise, vec3(q.x * 1.4 - t * 0.0011, q.y * 4.3 + 0.4, 0.63)).g;
-  float n = broad * 0.68 + fine * 0.42;
-  float density = smoothstep(1.02 - uCover, 1.25 - uCover, n);
-  // Lost in the horizon haze below, thinning out toward the zenith.
-  density *= smoothstep(0.015, 0.09, h) * (1.0 - smoothstep(0.32, 0.75, h));
-  if (density < 0.003) discard;
   float toward = dot(normalize(vec3(dir.x, 0.0, dir.z) + 1e-5), uGlowDir) * 0.5 + 0.5;
-  vec3 color = mix(uShade, uLit, pow(toward, 2.4) * (1.0 - 0.55 * smoothstep(0.04, 0.35, h)));
-  // Thin edges let more light through: brighter rims around each streak.
-  color *= 0.75 + 0.6 * (1.0 - smoothstep(0.0, 0.6, density));
+  float glowSide = pow(toward, 3.0);
+  float n = broad * 0.68 + fine * 0.42;
+  // More cloud over the afterglow, where a low deck of long streaks lies along the horizon.
+  float cover = uCover + 0.1 * glowSide;
+  float density = smoothstep(1.02 - cover, 1.25 - cover, n);
+  float deck = texture(uNoise, vec3(q.x * 0.22 + t * 0.0012, q.y * 0.8 + 0.5, 0.45)).b;
+  float lowDeck = smoothstep(0.5, 0.68, deck + fine * 0.2) * (1.0 - smoothstep(0.05, 0.16, h)) * (0.35 + 0.65 * glowSide);
+  density = max(density * (1.0 - smoothstep(0.32, 0.75, h)), lowDeck);
+  // Lost in the horizon haze below.
+  density *= smoothstep(0.012, 0.07, h);
+  if (density < 0.003) discard;
+  vec3 color = mix(uShade, uLit, pow(toward, 2.4) * (1.0 - 0.5 * smoothstep(0.04, 0.35, h)));
+  // Thin edges let more light through: rims glow, rose on the afterglow side.
+  float rim = 1.0 - smoothstep(0.0, 0.55, density);
+  color *= 0.7 + (0.55 + 0.9 * glowSide) * rim;
   float m = max(dot(dir, uMoonDir), 0.0);
   color += uMoonLight * (pow(m, 80.0) * 1.2 + pow(m, 10.0) * 0.08) * (1.2 - density);
   gl_FragColor = vec4(color, clamp(density, 0.0, 0.9));

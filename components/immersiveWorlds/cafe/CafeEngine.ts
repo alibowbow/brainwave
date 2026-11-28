@@ -219,12 +219,23 @@ export class CafeEngine {
   }
   /** Harness-only: viewport-relative points (0..1) that land on each interactive object. */
   interactionPointsForQA(){
-    const project=(v:T.Vector3)=>{const q=v.clone().project(this.camera);return {x:(q.x+1)/2,y:(1-q.y)/2};};
+    // Start from each object's projected centre, then search outward with the
+    // engine's own raycaster until the hit really is that object (never off-screen).
+    const find=(kind:CafeInteraction,seed:T.Vector3)=>{
+      const q=seed.clone().project(this.camera),sx=(q.x+1)/2,sy=(1-q.y)/2,pointer=new T.Vector2();
+      for(let ring=0;ring<=24;ring++)for(let i=0,n=Math.max(1,ring*8);i<n;i++){
+        const a=i/n*Math.PI*2,x=sx+Math.cos(a)*ring*.012,y=sy+Math.sin(a)*ring*.012;
+        if(x<.03||x>.97||y<.03||y>.97)continue;
+        this.raycaster.setFromCamera(pointer.set(x*2-1,1-y*2),this.camera);
+        if(this.raycaster.intersectObjects(this.world.interactables,false)[0]?.object.userData.interaction===kind)return {x,y};
+      }
+      return {x:sx,y:sy};
+    };
     const s=this.shot,g=this.world.glass,scale=s.lampScale;
     return {
-      cup:project(new T.Vector3(s.cup.x,s.cup.y+.07,s.cup.z+.04)),
-      lamp:project(new T.Vector3(s.lamp.x,s.lamp.y+.43*scale,s.lamp.z+.12*scale)),
-      window:project(new T.Vector3(s.cup.x*.4+s.lamp.x*.6+.1,g.y+.55,g.z)),
+      cup:find('cup',new T.Vector3(s.cup.x,s.cup.y+.07,s.cup.z+.04)),
+      lamp:find('lamp',new T.Vector3(s.lamp.x,s.lamp.y+.43*scale,s.lamp.z+.12*scale)),
+      window:find('window',new T.Vector3((s.cup.x+s.lamp.x)/2+.25,1.25,g.z)),
     };
   }
   /** Paused harness-only: move scene time forward (rain, steam, patrons) and draw one frame. */

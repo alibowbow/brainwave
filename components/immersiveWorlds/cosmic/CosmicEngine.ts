@@ -108,8 +108,8 @@ export class CosmicEngine implements LiveSceneEngine {
     if(!directPreferred){
       const sky=this.sky;
       this.post=HdrPipeline.create(this.renderer,{settings:COSMIC_POST,volume:()=>{
-        this.dust=createDustVolume({noise:sky.noise,sun:COSMIC_SUN_DIRECTION,sunColor:COSMIC_SUN_COLOR.clone().multiply(new THREE.Color(.86,.92,1.0)).multiplyScalar(.030*COSMIC_SUN_IRRADIANCE),
-          ambient:new THREE.Color(.006,.008,.014),density:.016,maxDistance:95});
+        this.dust=createDustVolume({noise:sky.noise,sun:COSMIC_SUN_DIRECTION,sunColor:COSMIC_SUN_COLOR.clone().multiply(new THREE.Color(.86,.92,1.0)).multiplyScalar(.040*COSMIC_SUN_IRRADIANCE),
+          ambient:new THREE.Color(.006,.008,.014),density:.019,maxDistance:95});
         return this.dust;
       }});
     }
@@ -136,7 +136,8 @@ export class CosmicEngine implements LiveSceneEngine {
   private buildSeeds(){
     const random=seededRandom(312);const positions:number[]=[],phases:number[]=[],sizes:number[]=[],warmth:number[]=[];
     for(let i=0;i<90;i++){
-      const p=new THREE.Vector3((random()-.5)*14,.35+random()*5.2,2.2-random()*20);
+      // Motes drift low around the garden and the pond, never across the planet.
+      const p=new THREE.Vector3((random()-.5)*12,.1+random()*2.4,1.6-random()*10);
       this.seedLocations.push(p);positions.push(p.x,p.y,p.z);phases.push(random()*Math.PI*2);sizes.push(10+random()*16);warmth.push(random()<.7?1:0);
     }
     // A reachable light for keyboard and portrait view, quietly floating above the basin.

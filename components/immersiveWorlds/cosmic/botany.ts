@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { COSMIC_SUN_DIRECTION } from './sky';
 
 export type PlantKind = 'fern' | 'broadleaf' | 'grass' | 'blossom';
 
@@ -58,10 +59,12 @@ function randomFrom(seed: number): Random {
 
 function jade(random: Random, young = false): THREE.Color {
   // Natural, slightly olive greens; the light makes them glow, not the albedo.
+  // Deep, saturated shade-garden greens: the waxy sheen and the key light
+  // supply the highlights, so the albedo itself stays dark.
   return new THREE.Color().setHSL(
-    0.27 + random() * 0.07,
-    0.30 + random() * 0.16,
-    (young ? 0.20 : 0.12) + random() * 0.07,
+    0.28 + random() * 0.08,
+    0.38 + random() * 0.20,
+    (young ? 0.15 : 0.085) + random() * 0.06,
   );
 }
 
@@ -387,7 +390,7 @@ function growBlossom(leaves: BotanicalGeometry, stems: BotanicalGeometry, pollen
     for (let petal = 0; petal < 6; petal++) {
       const petalAngle = angle + (petal / 6) * TAU;
       const petalAxis = new THREE.Vector3(Math.sin(petalAngle), 0.10 + random() * 0.08, Math.cos(petalAngle));
-      const petalColor = new THREE.Color().setHSL(0.73 + random() * 0.035, 0.14 + random() * 0.12, 0.71 + random() * 0.14);
+      const petalColor = new THREE.Color().setHSL(0.72 + random() * 0.04, 0.24 + random() * 0.14, 0.56 + random() * 0.12);
       addLeaf(leaves, {
         root: top.clone().addScaledVector(petalAxis, 0.004), direction: petalAxis,
         length: 0.105 + random() * 0.025, width: 0.073 + random() * 0.012,
@@ -480,9 +483,9 @@ function createMaterial(uniforms: BotanyUniforms, kind: 'leaf' | 'stem' | 'polle
   const material = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     vertexColors: true,
-    roughness: kind === 'leaf' ? 0.58 : kind === 'pollen' ? 0.5 : 0.78,
+    roughness: kind === 'leaf' ? 0.5 : kind === 'pollen' ? 0.5 : 0.78,
     metalness: 0,
-    specularIntensity: kind === 'leaf' ? 0.45 : 0.4,
+    specularIntensity: kind === 'leaf' ? 0.36 : 0.4,
     side: kind === 'leaf' ? THREE.DoubleSide : THREE.FrontSide,
   });
   material.name = `Cosmic garden ${kind}`;
@@ -517,6 +520,12 @@ function createMaterial(uniforms: BotanyUniforms, kind: 'leaf' | 'stem' | 'polle
         // Older, sun-bleached tips and a slightly darker rim, like real laminae.
         diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.25, 1.12, 0.72), smoothstep(0.72, 1.0, leafY) * 0.35);
         diffuseColor.rgb *= 1.0 - 0.12 * pow(leafX, 4.0);
+        // Broad leaves carry a pale, waxy midrib band and wine-red undersides,
+        // like shade-garden understorey plants.
+        if (leafFamily < 0.5) {
+          diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.5, 1.7, 1.25), (1.0 - smoothstep(0.08, 0.22, leafX)) * 0.55);
+          if (!gl_FrontFacing) diffuseColor.rgb *= vec3(1.45, 0.62, 0.95);
+        }
       `).replace('#include <roughnessmap_fragment>', /* glsl */ `
         #include <roughnessmap_fragment>
         roughnessFactor *= 0.93 + leafGrain * 0.12 - leafVeins * 0.12;
@@ -537,10 +546,12 @@ function createMaterial(uniforms: BotanyUniforms, kind: 'leaf' | 'stem' | 'polle
         // Distant islands must not sparkle: the glow fades out beyond a few metres.
         float leafNear = 1.0 - smoothstep(6.0, 14.0, length(vViewPosition));
         float leafTips = (leafFamily > 0.5 && leafFamily < 1.5) ? smoothstep(0.65, 1.0, leafY) * step(0.8, leafSeed) * leafNear : 0.0;
-        float leafVeinGlow = leafFamily < 0.5 ? leafVeins * step(0.5, leafSeed) * 0.5 : 0.0;
+        float leafVeinGlow = leafFamily < 0.5 ? leafVeins * step(0.45, leafSeed) * 0.5 : 0.0;
+        // A slow wave of light runs up the glowing veins (no flashing).
+        leafVeinGlow *= 0.55 + 0.45 * sin(uBotanyTime * 0.42 - leafY * 2.5 + vBotanyData.x * 1.7);
         float leafHeart = leafFamily > 2.5 ? (1.0 - smoothstep(0.0, 0.45, leafY)) * 0.8 : 0.0;
         vec3 leafGlowColor = leafFamily > 2.5 ? vec3(0.60, 0.42, 0.95) : vec3(0.16, 0.85, 0.62);
-        outgoingLight += leafGlowColor * (leafTips * 0.10 + leafVeinGlow * 0.08 + leafHeart * 0.22) * leafBreath;
+        outgoingLight += leafGlowColor * (leafTips * 0.16 + leafVeinGlow * 0.30 * leafNear + leafHeart * 0.42) * leafBreath;
         outgoingLight += vec3(0.30, 0.95, 0.72) * vBotanyTouch * 0.55;
         #include <opaque_fragment>
       `);
@@ -560,7 +571,7 @@ function createMaterial(uniforms: BotanyUniforms, kind: 'leaf' | 'stem' | 'polle
       `);
     }
   };
-  material.customProgramCacheKey = () => `cosmic-botany-v3-${kind}`;
+  material.customProgramCacheKey = () => `cosmic-botany-v4-${kind}`;
   return material;
 }
 
@@ -569,7 +580,7 @@ export function createBotanyMaterials(): BotanyMaterialSet {
   const uniforms: BotanyUniforms = {
     uBotanyTime: { value: 0 },
     uBotanyPulse: { value: new THREE.Vector4(0, 0, 0, -1) },
-    uBotanyKeyDir: { value: new THREE.Vector3(-0.74, 0.42, -0.52).normalize() },
+    uBotanyKeyDir: { value: COSMIC_SUN_DIRECTION.clone() },
     uBotanyKeyColor: { value: new THREE.Vector3(1.0, 0.93, 0.84).multiplyScalar(3.4 / Math.PI) },
   };
   const materials = [createMaterial(uniforms, 'leaf'), createMaterial(uniforms, 'stem'), createMaterial(uniforms, 'pollen')] as const;

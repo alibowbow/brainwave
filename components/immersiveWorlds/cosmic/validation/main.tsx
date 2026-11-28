@@ -2,11 +2,20 @@ import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import CosmicWorld from '../CosmicWorld';
 import {preferDirectCosmicRendering} from '../CosmicEngine';
+import {cosmicHost} from '../cosmicHost';
 import type {BackgroundSoundType} from '../../../../types';
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './validation.css';
 // ?post=off renders the direct (pre-pipeline) path for before/after comparison.
 if(new URLSearchParams(location.search).get('post')==='off')preferDirectCosmicRendering(true);
+// t=<seconds> starts the scene clock there, so captures can compare moments of
+// slow motion on software rasterisers. Only this QA harness reads the value.
+const startTime=Number(new URLSearchParams(location.search).get('t'));
+if(Number.isFinite(startTime)&&startTime>0){
+ const host=cosmicHost as unknown as {configure:(engine:object)=>void};
+ const configure=host.configure.bind(host);
+ host.configure=engine=>{configure(engine);(engine as {time:number}).time=startTime;};
+}
 const listeners=new Set<(t:BackgroundSoundType)=>void>();
 function Harness(){
  const [active,setActive]=useState(!new URLSearchParams(location.search).has('still')),[mounted,setMounted]=useState(true),[second,setSecond]=useState(false),[events,setEvents]=useState(0);

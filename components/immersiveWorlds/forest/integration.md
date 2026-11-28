@@ -55,6 +55,47 @@ The owned harness supports `?paused=1&byte=1` to choose byte targets before
 construction. It retains truthful extension reports and does not patch WebGL.
 This is a diagnostic switch, not a required component prop or quality default.
 
+## HDR rendering upgrade (2026-11)
+
+The forest renders through the shared HDR pipeline
+(`../shared/render/hdrPipeline.ts`: multisampled half-float scene target, SSAO,
+a half-resolution 32-step volume pass, bloom, ACES, split-tone grade, vignette,
+grain) only when the forest's own policy reports `native-half-float`, every
+recorded framebuffer check is complete, and a half-float + depth-texture
+preflight target is complete (`hdr-pipeline-preflight` in `data-target-checks`).
+The forced-byte (`?byte=1`) and native-byte paths keep the direct renderer, with
+fog for aerial perspective and soft crossed shaft cards in place of the volume
+pass. The harness-only `?post=off` switch (`preferDirect`) does the same for
+before/after comparisons. `data-post` holds the pipeline report or `direct`;
+`data-post-reason` says why.
+
+The whole multi-pass image (planar reflection, scene, AO, volume, bloom, grade)
+is one submission inside the scheduler's fenced draw, so the at-most-two-batches
+contract, `data-frames`, `data-gpu-completed`, paused/static-dirty redraws,
+holder transfer, context loss and disposal behave as before. Pipeline targets
+are resized inside the fenced draw (`applySize`) and every new allocation is
+audited with `checkForestFramebuffer` before its first render (`data-post-checks`,
+replaced per allocation so resizes do not grow the report). An incomplete
+attachment disposes the pipeline and returns to the direct renderer
+(`data-post-reason="framebuffer-incomplete"`). The shadow audit is unchanged.
+On the HDR path the scene's programs are precompiled against a 1×1 half-float
+target, because Three disables tone mapping and sRGB output for render targets;
+custom shaders that include `tonemapping_fragment`/`colorspace_fragment` (sky,
+water, motes) therefore emit linear HDR there and display values on the direct
+path.
+
+Light comes from one motivated key: a low (20°) warm sun ahead of the seated
+viewer, behind the canopy (`forestLight.ts`). The canopy is a procedural light
+cookie in the plane projected along the sun; surfaces multiply the sun by it, the
+volume pass integrates shafts through it, and leaf clusters are thinned where it
+is open, so ground flecks, shafts and canopy holes line up. Ambient is a PMREM
+of a canopy-occluded probe (not the open sky) plus two small bounce lights.
+Leaf clusters, ferns, grass, litter, twigs, moss cushions and floating leaves are
+instanced; all tree wood is one merged mesh with a shared per-tree wind
+attribute. Canopy leaves do not cast shadow-map shadows (the cookie stands in);
+shadows stay static (`autoUpdate=false`) as before. Small undergrowth is hidden
+during the planar reflection pass to bound its cost.
+
 ```ts
 interface ForestInteraction {
   kind: 'water' | 'leaf';

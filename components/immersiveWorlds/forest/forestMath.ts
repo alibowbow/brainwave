@@ -23,6 +23,18 @@ export function groundHeight(x: number, z: number) {
 export const FOREST_LOOK = { yaw: 0.105, pitch: 0.057 };
 export const FOREST_FEEL = { follow: 0.38, settle: 2.8 };
 
+/** GPU twin of groundHeight() and pondRadius(), for water depth, bed shading and bark moss lines. */
+export const GLSL_GROUND = /* glsl */ `
+float forestPondRadius(vec2 p) { return length(vec2((p.x + 0.18) / 2.55, (p.y + 0.55) / 3.45)); }
+float forestGroundHeight(vec2 p) {
+  float r = forestPondRadius(p);
+  float basin = 0.32 - 0.77 * exp(-pow(r / 0.91, 6.0));
+  float hills = max(0.0, -p.y - 5.0) * 0.034;
+  float detail = sin(p.x * 1.7 + p.y * 0.37) * 0.064 + sin(p.y * 2.3 - p.x * 0.67) * 0.032;
+  return basin + hills + detail * min(1.0, r);
+}
+`;
+
 /** Preserve full native DPR on normal displays; cap only excessive pixel counts. */
 export function forestPixelRatio(width: number, height: number, deviceRatio: number) {
   return Math.max(1, Math.min(2, deviceRatio || 1, Math.sqrt(4_200_000 / Math.max(1, width * height))));

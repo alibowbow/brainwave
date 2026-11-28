@@ -106,6 +106,17 @@ The forest remains an independent bright morning 3D scene throughout.
 - Vertex wind on foliage must not move leaves away from separately rendered dew.
 - Touch picking needs the nearest visible occluder, so a foreground stone/log cannot trigger the pool behind it.
 
+## HDR upgrade note (2026-11)
+
+The 2026-11 rebuild replaced the tree, fern, ground and stone generation
+described above with independently written modules (`forestTrees.ts`,
+`forestUndergrowth.ts`, `forestStones.ts`, `forestLight.ts`). No reference
+source was consulted for it. Wind is still an approximation, now in three
+levels: a slow per-tree bend shared by wood and crown (from a per-vertex/per-
+instance tree attribute), per-cluster branch sway and per-vertex leaf flutter.
+It is still not an articulated branch simulation. Near broadleaf plants, their
+dew and the damped touch response are unchanged in geometry and behaviour.
+
 ## Review evidence outside the repository
 
 The following temporary screenshots were captured from the live reference pages and checked to exist. They are inspection evidence only, not application assets and not bundled with this PR:

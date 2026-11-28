@@ -4,8 +4,10 @@ import ForestWorld, { type ForestInteraction } from './ForestWorld';
 import { forestHost } from './forestHost';
 
 // An explicit byte-path test switch, chosen before renderer construction. It
-// does not hide extensions or replace WebGL functions.
-forestHost.configureDiagnosticTargets(new URLSearchParams(window.location.search).get('byte') === '1');
+// does not hide extensions or replace WebGL functions. `post=off` keeps the
+// direct renderer (no HDR pipeline) for before/after visual comparisons.
+const diagnosticQuery = new URLSearchParams(window.location.search);
+forestHost.configureDiagnosticTargets(diagnosticQuery.get('byte') === '1', diagnosticQuery.get('post') === 'off');
 
 const harnessStyle = `
   html, body, #forest-harness-root { margin: 0; width: 100%; height: 100%; overflow: hidden; }
@@ -53,7 +55,12 @@ interface VisibilitySample {
 }
 
 const delay = (milliseconds: number) => new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
-async function waitFor(condition: () => boolean, message: string, timeout = 15000) {
+// Waits are software-rasterizer allowances only. On SwiftShader a single HDR
+// forest frame can hold the page for tens of seconds (several times the earlier
+// direct renderer), delaying even React state changes. Waits scale; runtime pacing,
+// quality and every assertion stay the same.
+const SOFTWARE_FRAME_WAIT = Math.max(1, Number(new URLSearchParams(window.location.search).get('waitScale')) || 4);
+async function waitFor(condition: () => boolean, message: string, timeout = 15000 * SOFTWARE_FRAME_WAIT) {
   const began = performance.now();
   while (!condition()) {
     if (performance.now() - began > timeout) throw new Error(message);
@@ -190,13 +197,13 @@ function ForestHarness() {
     try {
       setSecond(false); setMounted(true); setReduced(false); setActive(true);
       if (result.environment.osReducedMotion) throw new Error('The actual OS reduced-motion preference is on. Turn it off before running motion assertions; the harness will not override it.');
-      await waitFor(() => isReady() && running(), 'The 3D scene did not become ready/running. Inspect fallback and console.', 90000);
+      await waitFor(() => isReady() && running(), 'The 3D scene did not become ready/running. Inspect fallback and console.', 90000 * SOFTWARE_FRAME_WAIT);
       const canvas = canvasNow()!;
       check('Actual rendered 3D canvas', canvas.width > 0 && canvas.height > 0 && Number(canvas.dataset.frames) > 0 && Number(canvas.dataset.triangles) > 0, snapshot(canvas));
       const framesBefore = Number(canvas.dataset.frames), timeBefore = Number(canvas.dataset.time), observedAt = performance.now();
       // Software WebGL may render below one frame per second. Assert actual
       // progress within a bounded test wait; do not alter runtime frame pacing.
-      await waitFor(() => Number(canvas.dataset.frames) > framesBefore && Number(canvas.dataset.time) > timeBefore, 'Active scene did not advance a frame and simulation time.', 30000);
+      await waitFor(() => Number(canvas.dataset.frames) > framesBefore && Number(canvas.dataset.time) > timeBefore, 'Active scene did not advance a frame and simulation time.', 30000 * SOFTWARE_FRAME_WAIT);
       const frameDelta = Number(canvas.dataset.frames) - framesBefore;
       check('Active animation advances', frameDelta > 0 && Number(canvas.dataset.time) > timeBefore, {
         frameDelta, timeDelta: Number(canvas.dataset.time) - timeBefore,
@@ -259,13 +266,13 @@ function ForestHarness() {
       const unit = Math.min(rect.width, rect.height), dragHits = countsRef.current.main;
       pointer(canvas, 'pointerdown', dragX, dragY);
       pointer(window, 'pointermove', dragX + unit * .22, dragY + unit * .04);
-      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) > .009, 'DOM drag did not move the camera.', 30000);
+      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) > .009, 'DOM drag did not move the camera.', 30000 * SOFTWARE_FRAME_WAIT);
       const peakYaw = Math.abs(Number(canvas.dataset.lookYaw));
       pointer(window, 'pointerup', dragX + unit * .22, dragY + unit * .04);
       await delay(120);
       const releaseYaw = Math.abs(Number(canvas.dataset.lookYaw));
       check('Gentle drag changes view without a tap', peakYaw > .009 && countsRef.current.main === dragHits, { peakYaw, callbacksBefore: dragHits, callbacksAfter: countsRef.current.main });
-      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, 'Camera did not slowly return after drag release.', 120000);
+      await waitFor(() => Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, 'Camera did not slowly return after drag release.', 120000 * SOFTWARE_FRAME_WAIT);
       check('View returns gradually after release', releaseYaw > peakYaw * .5 && Math.abs(Number(canvas.dataset.lookYaw)) < peakYaw * .65, { peakYaw, yaw120msAfterRelease: releaseYaw, finalYaw: Number(canvas.dataset.lookYaw) });
 
       const callbacksBeforeSecond = { ...countsRef.current };
@@ -305,11 +312,11 @@ function ForestHarness() {
         meaning: '5000 ms is the host retention timer, not a guarantee of GPU resource completion. The independent unit test proves that timer contract.',
       });
       setMounted(true);
-      await waitFor(() => isReady() && running() && canvasNow() !== canvas, 'Remount did not create a fresh ready engine.', 90000);
+      await waitFor(() => isReady() && running() && canvasNow() !== canvas, 'Remount did not create a fresh ready engine.', 90000 * SOFTWARE_FRAME_WAIT);
       const remounted = canvasNow()!;
       const remountFrames = Number(remounted.dataset.frames);
       const remountTime = Number(remounted.dataset.time);
-      await waitFor(() => Number(remounted.dataset.frames) > remountFrames && Number(remounted.dataset.time) > remountTime, 'Remounted engine did not advance a frame and simulation time.', 30000);
+      await waitFor(() => Number(remounted.dataset.frames) > remountFrames && Number(remounted.dataset.time) > remountTime, 'Remounted engine did not advance a frame and simulation time.', 30000 * SOFTWARE_FRAME_WAIT);
       check('Remount creates a fresh working engine', remounted !== canvas && Number(remounted.dataset.frames) > remountFrames && Number(remounted.dataset.time) > remountTime, snapshot(remounted));
     } catch (error) {
       check('QA sequence completed', false, error instanceof Error ? error.message : String(error));

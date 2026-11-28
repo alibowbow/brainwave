@@ -1,0 +1,611 @@
+{
+  "verificationId": "7bfbac42-4cc5-45db-a42d-fc9131d9354a",
+  "startedAt": "2026-11-28T01:13:33.290Z",
+  "sourceCommit": "d89e5572fc05e5a47f207439abe26597e862f669",
+  "sourceTree": "6168104022c68c35078d88c4062843915d0d4607",
+  "uncommitted": false,
+  "targetPreference": "byte",
+  "bundle": "cafe-pilot-BMuUaVKp.mjs",
+  "bundleSha256": "2009992689a7184f3384570511a5a935af95f4a4c2b3a421025c35f32dd48e2c",
+  "environmentSha256": "43bb5410f1ede07802bf3371ee2a9c3054abeaba1fb87eefb7bc992b1cac5d92",
+  "status": "passed",
+  "checks": [
+    "real WebGL scene (not fallback)",
+    "forced-byte reflection, refraction and bokeh",
+    "all scene and shadow framebuffers complete before drawing",
+    "byte path keeps the baked environment without runtime PMREM",
+    "byte path renders directly (no HDR pipeline)",
+    "actual GL target, cube face 4 and mip 1 restored",
+    "desktop: native canvas dimensions",
+    "fold-portrait: native canvas dimensions",
+    "fold-inner-portrait: native canvas dimensions",
+    "fold-landscape: native canvas dimensions",
+    "active=false freezes simulation",
+    "active=true advances actual rendered frames",
+    "rain/steam change real pixels",
+    "look drag turns the camera",
+    "release eases camera back",
+    "fullscreen moves same canvas",
+    "exit fullscreen returns same canvas",
+    "prefers-reduced-motion freezes simulation",
+    "application reduced-motion class freezes simulation",
+    "hidden visibility signal stops RAF",
+    "visible signal resumes",
+    "cup tap reaches optional callback",
+    "lamp tap reaches optional callback",
+    "window tap reaches optional callback",
+    "paused tap causes no scene reaction",
+    "last release disposes renderer after host grace period",
+    "remount creates a fresh working canvas",
+    "remount retains selected target policy and complete framebuffers",
+    "zero runtime or shader errors"
+  ],
+  "screenshots": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 850,
+      "bytes": 755092,
+      "sha256": "72160cbcba9e48227e01d23285a8e541204fc333736e1bf16592c32c544f8366",
+      "targets": [
+        {
+          "label": "refraction",
+          "width": 1280,
+          "height": 850,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "bokeh",
+          "width": 640,
+          "height": 425,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "reflection",
+          "width": 832,
+          "height": 553,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow",
+          "width": 2048,
+          "height": 2048,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-1",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-2",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        }
+      ]
+    },
+    {
+      "name": "fold-portrait",
+      "width": 412,
+      "height": 915,
+      "bytes": 303475,
+      "sha256": "57915dddcfdf6fe521a91f3894bc3ab79ce3a0c994d3a38476365ece13b6d3d8",
+      "targets": [
+        {
+          "label": "refraction",
+          "width": 412,
+          "height": 915,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "bokeh",
+          "width": 206,
+          "height": 458,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "reflection",
+          "width": 268,
+          "height": 595,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow",
+          "width": 2048,
+          "height": 2048,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-1",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-2",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        }
+      ]
+    },
+    {
+      "name": "fold-inner-portrait",
+      "width": 673,
+      "height": 841,
+      "bytes": 419561,
+      "sha256": "55649994ebeafb0c7e712ec633989dd9d9aa3e1d791dab21feaeb8333e6c0c92",
+      "targets": [
+        {
+          "label": "refraction",
+          "width": 673,
+          "height": 841,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "bokeh",
+          "width": 337,
+          "height": 421,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "reflection",
+          "width": 437,
+          "height": 547,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow",
+          "width": 2048,
+          "height": 2048,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-1",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-2",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        }
+      ]
+    },
+    {
+      "name": "fold-landscape",
+      "width": 915,
+      "height": 412,
+      "bytes": 349056,
+      "sha256": "543430ee8c4b63c540c163f6be6e7cf76118c55def61a0a44100c0df62c7fa77",
+      "targets": [
+        {
+          "label": "refraction",
+          "width": 915,
+          "height": 412,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "bokeh",
+          "width": 458,
+          "height": 206,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "reflection",
+          "width": 595,
+          "height": 268,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow",
+          "width": 2048,
+          "height": 2048,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-1",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        },
+        {
+          "label": "pcf-shadow-2",
+          "width": 1024,
+          "height": 1024,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": 1014,
+          "status": 36053,
+          "complete": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "targetAudit": {
+    "capability": {
+      "type": 1009,
+      "preference": "byte",
+      "extensions": {
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true
+      },
+      "probes": [
+        {
+          "label": "capability-probe",
+          "width": 4,
+          "height": 4,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        }
+      ]
+    },
+    "fallbackReason": null,
+    "targets": [
+      {
+        "label": "refraction",
+        "width": 1280,
+        "height": 850,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "bokeh",
+        "width": 640,
+        "height": 425,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": null,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "reflection",
+        "width": 832,
+        "height": 553,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": null,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "pcf-shadow",
+        "width": 2048,
+        "height": 2048,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "pcf-shadow-1",
+        "width": 1024,
+        "height": 1024,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "pcf-shadow-2",
+        "width": 1024,
+        "height": 1024,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      }
+    ],
+    "environment": {
+      "kind": "baked-cubeuv",
+      "type": 1016,
+      "internalFormat": "RGBA16F",
+      "mapping": 306,
+      "width": 768,
+      "height": 1024,
+      "runtimePmrem": false
+    }
+  },
+  "post": "direct",
+  "targetState": {
+    "face": 4,
+    "mip": 1,
+    "probeRestored": true,
+    "reflectorRestored": true,
+    "frameRestored": true,
+    "glError": 0
+  },
+  "tapPoints": {
+    "cup": {
+      "x": 0.47148247034584223,
+      "y": 0.776812802795382
+    },
+    "lamp": {
+      "x": 0.22025065441544178,
+      "y": 0.2998054617534336
+    },
+    "window": {
+      "x": 0.5800837326791506,
+      "y": 0.3063763176284313
+    }
+  },
+  "remountAudit": {
+    "capability": {
+      "type": 1009,
+      "preference": "byte",
+      "extensions": {
+        "colorBufferFloat": true,
+        "colorBufferHalfFloat": true
+      },
+      "probes": [
+        {
+          "label": "capability-probe",
+          "width": 4,
+          "height": 4,
+          "type": 1009,
+          "format": 1023,
+          "internalFormat": "RGBA8",
+          "samples": 0,
+          "depthTextureType": null,
+          "status": 36053,
+          "complete": true
+        }
+      ]
+    },
+    "fallbackReason": null,
+    "targets": [
+      {
+        "label": "refraction",
+        "width": 800,
+        "height": 600,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "bokeh",
+        "width": 400,
+        "height": 300,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": null,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "reflection",
+        "width": 520,
+        "height": 390,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": null,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "pcf-shadow",
+        "width": 2048,
+        "height": 2048,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "pcf-shadow-1",
+        "width": 1024,
+        "height": 1024,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      },
+      {
+        "label": "pcf-shadow-2",
+        "width": 1024,
+        "height": 1024,
+        "type": 1009,
+        "format": 1023,
+        "internalFormat": "RGBA8",
+        "samples": 0,
+        "depthTextureType": 1014,
+        "status": 36053,
+        "complete": true
+      }
+    ],
+    "environment": {
+      "kind": "baked-cubeuv",
+      "type": 1016,
+      "internalFormat": "RGBA16F",
+      "mapping": 306,
+      "width": 768,
+      "height": 1024,
+      "runtimePmrem": false
+    }
+  },
+  "note": "Chromium 153, SwiftShader software WebGL2, DPR 1; Fold-like viewport emulation, not physical Fold. Hidden signal injected; native tab background behavior not independently exercised.",
+  "finishedAt": "2026-11-28T01:32:39.604Z"
+}

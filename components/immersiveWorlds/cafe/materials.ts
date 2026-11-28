@@ -1,216 +1,226 @@
 import * as THREE from 'three';
+import { createWoodMaterial } from '../shared/render/woodSurface';
+import { createFabricMaterial } from '../shared/render/fabricSurface';
+import { createGlazeMaterial, createPlasterMaterial, glslFloat, glslVec3, patchSurface } from '../shared/render/interiorSurface';
 
-/** Original, deterministic cafe surfaces. All maps are generated locally. */
+/*
+ * Café surfaces. Every material is evaluated procedurally in the fragment
+ * shader (world or object space), so nothing tiles, blurs up close or needs an
+ * image file: varnished and stained timber, lime plaster, running-bond brick,
+ * linen, velvet, glazed stoneware, brushed brass and rain-wet asphalt. The
+ * shared wood, fabric and interior surfaces are reused; brick, brass, coffee
+ * and the wet street are small café-owned patches on the same building blocks.
+ */
 export interface CafeMaterials {
+  /** Varnished oak for the window table and counter tops (grain along x). */
   oak: THREE.MeshStandardMaterial;
+  /** Dark stained timber, grain along x (rails, sills, shelves). */
   darkWood: THREE.MeshStandardMaterial;
+  /** Dark stained timber, grain along y (posts, legs, mullions). */
+  darkWoodV: THREE.MeshStandardMaterial;
+  /** Wide varnished floor boards. */
+  floor: THREE.MeshStandardMaterial;
   plaster: THREE.MeshStandardMaterial;
+  brick: THREE.MeshStandardMaterial;
+  /** Natural linen (napkin, curtains, shade cloth); uv in metres. */
   fabric: THREE.MeshStandardMaterial;
+  /** Deep green cotton velvet for seats; uv in metres. */
+  velvet: THREE.MeshStandardMaterial;
+  /** Cream speckled stoneware (object space). */
   ceramic: THREE.MeshPhysicalMaterial;
-  brass: THREE.MeshStandardMaterial;
+  /** Unglazed foot ring clay. */
+  clay: THREE.MeshStandardMaterial;
+  brass: THREE.MeshPhysicalMaterial;
+  chrome: THREE.MeshPhysicalMaterial;
   coffee: THREE.MeshPhysicalMaterial;
   leather: THREE.MeshStandardMaterial;
   pavement: THREE.MeshPhysicalMaterial;
   foliage: THREE.MeshStandardMaterial;
+  soil: THREE.MeshStandardMaterial;
   textures: THREE.Texture[];
   dispose(): void;
 }
 
-type Pixel = readonly [number, number, number, number, number];
-
-function seeded(seed: number) {
-  let state = seed >>> 0;
-  return () => {
-    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
-    return state / 4294967296;
-  };
+/** Brushed brass: fine directional streaks and a soft tarnish in low-lying areas. */
+function createBrass(color: THREE.ColorRepresentation, key: string, roughness = 0.3) {
+  const material = new THREE.MeshPhysicalMaterial({ color, metalness: 1, roughness });
+  return patchSurface(material, {
+    key: `brass|${key}`,
+    color: `
+float brStreak = bwNoise(vec3(vSurface.xz * vec2(4.0, 4.0), vSurface.y * 380.0)) * bwResolve(length(fwidth(vSurface)) * 380.0);
+float brTarnish = smoothstep(0.1, 0.8, bwFbm3(vSurface * 6.0 + 2.0));
+diffuseColor.rgb *= (0.93 + 0.07 * brStreak) * mix(1.0, 0.72, brTarnish * 0.55);`,
+    roughness: 'roughnessFactor = clamp(roughnessFactor + 0.08 * brStreak + 0.18 * brTarnish, 0.08, 1.0);',
+  });
 }
 
-// A repeating value field: unlike white-noise overlays, this gives continuous
-// mineral clouds and fibres at several physical scales without image assets.
-function makeNoise(seed: number) {
-  const random = seeded(seed);
-  const size = 128;
-  const values = Float32Array.from({ length: size * size }, random);
-  return (x: number, y: number) => {
-    const ix = Math.floor(x);
-    const iy = Math.floor(y);
-    const tx = x - ix;
-    const ty = y - iy;
-    const sx = tx * tx * (3 - 2 * tx);
-    const sy = ty * ty * (3 - 2 * ty);
-    const a = values[(iy & 127) * size + (ix & 127)];
-    const b = values[(iy & 127) * size + ((ix + 1) & 127)];
-    const c = values[((iy + 1) & 127) * size + (ix & 127)];
-    const d = values[((iy + 1) & 127) * size + ((ix + 1) & 127)];
-    return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
-  };
+/** Running-bond brick with recessed lime mortar, per-brick tone and chipped arrises. */
+function createBrick(color: THREE.ColorRepresentation, mortar: THREE.ColorRepresentation, key: string) {
+  const material = new THREE.MeshStandardMaterial({ color, roughness: 0.88 });
+  return patchSurface(material, {
+    key: `brick|${key}`,
+    color: `
+// Course along y; the brick run follows whichever horizontal axis the wall faces.
+vec3 bkN = abs(normalize(vSurfaceNormal));
+vec2 bkP = vec2(bkN.x > bkN.z ? vSurface.z : vSurface.x, vSurface.y);
+vec2 bkSize = vec2(0.215, 0.075);
+float bkRow = floor(bkP.y / bkSize.y);
+float bkX = bkP.x / bkSize.x + 0.5 * mod(bkRow, 2.0) + 0.13 * bwHash1(vec3(bkRow, 3.0, 1.0));
+vec2 bkCell = vec2(floor(bkX), bkRow);
+vec2 bkF = vec2(fract(bkX) * bkSize.x, fract(bkP.y / bkSize.y) * bkSize.y);
+float bkJoint = 0.0095;
+float bkEdge = min(min(bkF.x, bkSize.x - bkF.x), min(bkF.y, bkSize.y - bkF.y));
+float bkChip = bwNoise(vec3(bkP * 60.0, 1.0)) * 0.004;
+float bkPix = max(length(fwidth(bkP)), 1e-5);
+float bkBody = smoothstep(bkJoint, bkJoint + max(0.004, bkPix * 1.5), bkEdge + bkChip);
+float bkId = bwHash1(vec3(bkCell, 5.0));
+float bkBurn = bwFbm3(vec3(bkP * 7.0, bkId * 10.0));
+vec3 bkColor = diffuseColor.rgb * (0.72 + 0.5 * bkId) * (0.9 + 0.18 * bkBurn);
+bkColor = mix(bkColor, bkColor * vec3(0.78, 0.7, 0.66), smoothstep(0.55, 0.95, bwHash1(vec3(bkCell, 9.0))) * 0.6);
+float bkSoot = smoothstep(0.2, 0.9, bwFbm3(vec3(bkP * 0.6, 4.0)));
+bkColor *= 1.0 - 0.25 * bkSoot;
+vec3 bkMortar = ${glslVec3(mortar)} * (0.85 + 0.2 * bwNoise(vec3(bkP * 90.0, 2.0)));
+diffuseColor.rgb = mix(bkMortar, bkColor, bkBody);`,
+    height: '(bkBody * 0.006 + bkBurn * 0.0006 * bkBody) ',
+    roughness: 'roughnessFactor = clamp(mix(0.97, roughnessFactor - 0.08 * bkBurn, bkBody), 0.4, 1.0);',
+  });
 }
 
-function clampByte(value: number) {
-  return Math.max(0, Math.min(255, Math.round(value)));
+/**
+ * Rain-wet asphalt: world-space puddles become near-mirror patches, the
+ * aggregate stays rough between them, and a slow ripple field (rain hitting
+ * the water) roughens the puddles without ever looking like a grid.
+ */
+function createWetStreet(key: string) {
+  const time = { value: 0 };
+  const material = new THREE.MeshPhysicalMaterial({ color: '#2a2d30', roughness: 0.5, clearcoat: 1, clearcoatRoughness: 0.06 });
+  patchSurface(material, {
+    key: `wet-street|${key}`,
+    uniforms: { uRainTime: time },
+    fragmentHeader: 'uniform float uRainTime;',
+    color: `
+vec2 wsP = vSurfaceWorld.xz;
+float wsPuddle = smoothstep(0.02, 0.32, bwFbm3(vec3(wsP * 0.32, 1.7)) + 0.12 * bwNoise(vec3(wsP * 2.1, 3.0)));
+float wsAgg = bwValue(vec3(wsP * 140.0, 0.0)) * bwResolve(length(fwidth(wsP)) * 140.0);
+float wsRipple = bwNoise(vec3(wsP * 9.0, uRainTime * 0.9));
+vec3 wsColor = diffuseColor.rgb * (0.86 + 0.28 * wsAgg) * mix(1.0, 0.55, wsPuddle);
+diffuseColor.rgb = wsColor;`,
+    height: '(wsAgg * 0.0012 * (1.0 - wsPuddle) + wsRipple * 0.00025 * wsPuddle)',
+    roughness: 'roughnessFactor = mix(clamp(roughnessFactor + 0.3 * wsAgg, 0.2, 1.0), 0.05 + 0.04 * abs(wsRipple), wsPuddle);',
+    lights: `#ifdef USE_CLEARCOAT
+material.clearcoat *= mix(0.35, 1.0, wsPuddle);
+#endif`,
+  });
+  material.userData.rainTime = time;
+  return material;
+}
+
+/** A flat white: tan crema, a darker rim and a soft microfoam heart poured into it. */
+function createCoffee(key: string) {
+  const material = new THREE.MeshPhysicalMaterial({ color: '#4a2812', roughness: 0.2, clearcoat: 0.8, clearcoatRoughness: 0.08 });
+  return patchSurface(material, {
+    key: `coffee|${key}`,
+    objectSpace: true,
+    color: `
+vec2 cfP = vSurface.xz / ${glslFloat(0.0715)};
+float cfR = length(cfP);
+float cfSwirl = bwFbm3(vec3(cfP * 3.0, 2.0));
+// Heart: two lobes and a point, drawn toward the handle side, with a pulled stem.
+vec2 cfH = vec2(cfP.x * 1.15, cfP.y + 0.08);
+float cfHeart = length(vec2(abs(cfH.x) - 0.2, cfH.y + 0.05 - 0.55 * abs(cfH.x))) - 0.32;
+float cfStem = abs(cfP.x + 0.02 * sin(cfP.y * 9.0)) - 0.025 * (1.0 - smoothstep(-0.2, 0.7, cfP.y));
+float cfFoam = 1.0 - smoothstep(-0.04, 0.07, min(cfHeart + 0.05 * cfSwirl, max(cfStem, cfP.y - 0.75)));
+float cfRim = smoothstep(0.78, 1.0, cfR);
+vec3 cfCrema = mix(vec3(0.34, 0.18, 0.075), vec3(0.2, 0.1, 0.04), cfRim) * (0.9 + 0.2 * cfSwirl);
+vec3 cfColor = mix(cfCrema, vec3(0.6, 0.48, 0.34) * (0.92 + 0.1 * cfSwirl), cfFoam * (1.0 - cfRim) * 0.9);
+cfColor *= 0.94 + 0.1 * bwNoise(vec3(cfP * 70.0, 1.0)) * bwResolve(length(fwidth(cfP)) * 70.0);
+diffuseColor.rgb = cfColor;`,
+    roughness: 'roughnessFactor = clamp(roughnessFactor + 0.4 * cfFoam, 0.05, 1.0);',
+  });
+}
+
+/**
+ * Varnished flat-sawn oak for horizontal tops (grain along world x). A glued
+ * panel of wide boards: each has its own tone and an inclined pith just under
+ * the surface, so growth rings open into cathedral arches that drift along the
+ * length. Relief stays microscopic: the varnish coat is what you see.
+ */
+function createSlabOak(color: THREE.ColorRepresentation, key: string) {
+  const material = new THREE.MeshPhysicalMaterial({ color, roughness: 0.48, clearcoat: 0.85, clearcoatRoughness: 0.09 });
+  return patchSurface(material, {
+    key: `slab-oak|${key}`,
+    color: `
+float soX = vSurfaceWorld.x, soZ = vSurfaceWorld.z;
+float soBoard = floor((soZ + 7.0) / 0.31);
+float soH = bwHash1(vec3(soBoard, 7.0, 3.0));
+float soCentre = (soBoard + 0.5) * 0.31 - 7.0 + (soH - 0.5) * 0.14 + 0.025 * sin(soX * 1.3 + soH * 6.0);
+float soDepth = 0.02 + 0.05 * fract(soH * 7.3) + 0.028 * sin(soX * (0.7 + 0.4 * soH) + soH * 4.0);
+float soWarp = bwFbm3(vec3(soX * 0.8, soZ * 3.0, soH * 5.0)) * 0.01 + bwNoise(vec3(soX * 5.0, soZ * 26.0, 1.0)) * 0.0016;
+float soR = sqrt((soZ - soCentre) * (soZ - soCentre) + soDepth * soDepth) + soWarp;
+float soRings = soR * (95.0 + 45.0 * soH);
+float soF = fract(soRings);
+float soLate = smoothstep(0.5, 0.82, soF) * (1.0 - smoothstep(0.86, 1.0, soF));
+soLate = mix(0.32, soLate, bwResolve(fwidth(soRings) * 1.5));
+float soZf = fwidth(soZ);
+float soFibre = bwNoise(vec3(soX * 7.0, soZ * 480.0, 2.0)) * bwResolve(soZf * 480.0);
+float soPore = smoothstep(0.62, 0.95, bwValue(vec3(soX * 45.0, soZ * 820.0, 5.0))) * bwResolve(soZf * 820.0);
+float soRay = smoothstep(0.8, 0.98, bwValue(vec3(soX * 14.0, soZ * 160.0, 9.0))) * bwResolve(soZf * 160.0);
+float soTone = 0.9 + 0.18 * (soH - 0.5) + 0.1 * bwFbm3(vec3(soX * 0.6, soZ * 1.4, 3.0));
+vec3 soColor = diffuseColor.rgb * soTone;
+soColor = mix(soColor, soColor * vec3(0.6, 0.5, 0.42), soLate * 0.78);
+soColor *= (0.96 + 0.07 * soFibre) * (1.0 - 0.22 * soPore) * (1.0 + 0.08 * soRay);
+float soWear = smoothstep(0.35, 0.85, bwFbm3(vec3(soX * 1.6, soZ * 1.6, 8.0)));
+diffuseColor.rgb = soColor;`,
+    height: '(-soPore * 0.00006 + soFibre * 0.000015)',
+    roughness: 'roughnessFactor = clamp(roughnessFactor + 0.12 * soPore + 0.06 * soLate + 0.12 * soWear, 0.05, 1.0);',
+    lights: `#ifdef USE_CLEARCOAT
+material.clearcoatRoughness = clamp(material.clearcoatRoughness + 0.14 * soWear, 0.0, 1.0);
+#endif`,
+  });
 }
 
 export function makeCafeMaterials(): CafeMaterials {
-  const textures: THREE.Texture[] = [];
-  const noise = makeNoise(36092);
-  const random = seeded(110640);
-
-  const surface = (width: number, height: number, sample: (u: number, v: number) => Pixel) => {
-    const canvases = Array.from({ length: 3 }, () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      return canvas;
-    });
-    const contexts = canvases.map(canvas => {
-      const context = canvas.getContext('2d');
-      if (!context) throw new Error('Cafe surface canvas unavailable');
-      return context;
-    });
-    const data = contexts.map(context => context.createImageData(width, height));
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const [r, g, b, elevation, roughness] = sample(x / width, y / height);
-        const offset = (y * width + x) * 4;
-        data[0].data[offset] = clampByte(r);
-        data[0].data[offset + 1] = clampByte(g);
-        data[0].data[offset + 2] = clampByte(b);
-        data[0].data[offset + 3] = 255;
-        for (let index = 1; index < 3; index++) {
-          const gray = clampByte((index === 1 ? elevation : roughness) * 255);
-          data[index].data[offset] = gray;
-          data[index].data[offset + 1] = gray;
-          data[index].data[offset + 2] = gray;
-          data[index].data[offset + 3] = 255;
-        }
-      }
-    }
-    const maps = canvases.map((canvas, index) => {
-      contexts[index].putImageData(data[index], 0, 0);
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.colorSpace = index === 0 ? THREE.SRGBColorSpace : THREE.NoColorSpace;
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-      texture.anisotropy = 8;
-      texture.name = `cafe-local-surface-${textures.length}`;
-      textures.push(texture);
-      return texture;
-    });
-    return { map: maps[0], bumpMap: maps[1], roughnessMap: maps[2] };
-  };
-
-  const wood = surface(1024, 1024, (u, v) => {
-    // Longitudinal fibres dominate. Unequal growth widths and locally bending
-    // grain avoid the equally spaced high-contrast rings of imitation wood.
-    const longitudinal = noise(u * 1.7 + 17, v * 23 + 39) - 0.5;
-    const curl = (noise(u * 2.8, v * 7) - 0.5) * 0.019
-      + (noise(u * 9, v * 3 + 71) - 0.5) * 0.0025;
-    const dx = (u - 0.72) * 3.1;
-    const dy = (v - 0.38) * 9.5;
-    const knotRadius = Math.sqrt(dx * dx + dy * dy + 0.008);
-    const knotInfluence = Math.exp(-(dx * dx * 8 + dy * dy * 3));
-    const across = v + curl + knotInfluence * (knotRadius * 0.023 - dy * 0.018);
-    const growth = across * 46 + noise(u * 0.9 + 31, across * 13) * 5;
-    const latewood = Math.pow(Math.sin(growth * Math.PI * 2) * 0.5 + 0.5, 13)
-      * (0.22 + noise(u * 9 + 53, across * 51) * 0.78);
-    const fiber = noise(u * 7.5, across * 390) - 0.5;
-    const hairline = noise(u * 31 + 11, across * 478 + 27) - 0.5;
-    // Open elongated pores and pale ray flecks break up the satin grain at
-    // grazing angles without painting broad dark stripes onto the surface.
-    const pore = Math.pow(Math.max(0, (noise(u * 67 + 41, across * 360) - 0.70) / 0.30), 1.6);
-    const paleRay = Math.pow(Math.max(0, (noise(u * 13 + 87, across * 102 + 13) - 0.73) / 0.27), 1.4);
-    const mineral = noise(u * 2.2 + 67, across * 69 + 23) - 0.5;
-    const tone = longitudinal * 25 + mineral * 12 + fiber * 13 + hairline * 4
-      - latewood * 10 - pore * 28 + paleRay * 16;
-    const knotCore = Math.exp(-knotRadius * knotRadius * 35) * 8;
-    return [
-      147 + tone - knotCore,
-      134 + tone * 0.94 - knotCore * 0.9,
-      116 + tone * 0.84 - knotCore * 0.75,
-      0.51 + fiber * 0.10 + hairline * 0.025 - latewood * 0.045 - pore * 0.20 + paleRay * 0.025,
-      0.69 + longitudinal * 0.08 + fiber * 0.075 + pore * 0.12 - paleRay * 0.03,
-    ];
-  });
-
-  const plasterMaps = surface(512, 512, (u, v) => {
-    const cloud = noise(u * 7, v * 7) * 0.6 + noise(u * 28, v * 28) * 0.4 - 0.5;
-    const grit = random() - 0.5;
-    const tone = cloud * 11 + grit * 3;
-    return [190 + tone, 181 + tone, 158 + tone, 0.5 + cloud * 0.12 + grit * 0.18, 0.9 + cloud * 0.09];
-  });
-
-  const linen = surface(512, 512, (u, v) => {
-    const threadX = u * 104 + noise(u * 10, v * 8) * 0.24;
-    const threadY = v * 104 + noise(u * 8, v * 10) * 0.24;
-    const over = (Math.floor(threadX) + Math.floor(threadY)) % 2;
-    const warp = Math.pow(Math.sin(threadX * Math.PI), 2);
-    const weft = Math.pow(Math.sin(threadY * Math.PI), 2);
-    const weave = (over ? warp * 0.7 + weft * 0.3 : weft * 0.7 + warp * 0.3);
-    const fibers = random() - 0.5;
-    const natural = noise(u * 14, v * 14) - 0.5;
-    const slub = noise(u * 3 + 21, v * 93) * 0.5 + noise(u * 93, v * 3 + 43) * 0.5 - 0.5;
-    const tone = (weave - 0.5) * 25 + natural * 8 + slub * 13 + fibers * 5;
-    return [152 + tone, 154 + tone, 142 + tone * 0.92, 0.19 + weave * 0.62 + fibers * 0.07 + slub * 0.06, 0.95];
-  });
-
-  const glaze = surface(512, 256, (u, v) => {
-    const clay = noise(u * 20, v * 10) - 0.5;
-    const speck = Math.pow(Math.max(0, (noise(u * 146 + 3, v * 81 + 16) - 0.79) / 0.21), 0.85) * 24;
-    const pinhole = random() > 0.997 ? 15 : 0;
-    const tone = clay * 3 - speck - pinhole;
-    return [233 + tone, 230 + tone, 219 + tone * 0.92, 0.5 + clay * 0.026 - speck * 0.0007, 0.67 + clay * 0.14 + speck * 0.0014];
-  });
-
-  const hide = surface(256, 256, (u, v) => {
-    const grain = noise(u * 90, v * 90);
-    const mottling = noise(u * 12, v * 12) - 0.5;
-    const tone = (grain - 0.5) * 12 + mottling * 9;
-    return [99 + tone, 66 + tone * 0.75, 44 + tone * 0.55, 0.2 + grain * 0.55, 0.67 + grain * 0.23];
-  });
-
-  const road = surface(512, 512, (u, v) => {
-    const grit = random();
-    const puddle = noise(u * 5, v * 7);
-    const aggregate = noise(u * 170, v * 170);
-    const wet = Math.min(1, Math.max(0, (puddle - 0.26) * 2.1));
-    const tone = aggregate * 13 + grit * 5 - wet * 7;
-    return [43 + tone, 48 + tone, 49 + tone, 0.43 + aggregate * (1 - wet) * 0.23 + grit * 0.04, 0.14 + (1 - wet) * 0.55];
-  });
-
-  const oak = new THREE.MeshStandardMaterial({ ...wood, roughness: 1, bumpScale: 0.0045, envMapIntensity: 0.62 });
-  oak.name = 'Cafe natural satin oak';
-  const darkWood = new THREE.MeshStandardMaterial({ ...wood, color: 0x817b72, roughness: 1, bumpScale: 0.004, envMapIntensity: 0.55 });
-  darkWood.name = 'Cafe dark stained oak';
-  const plaster = new THREE.MeshStandardMaterial({ ...plasterMaps, roughness: 1, bumpScale: 0.014 });
-  plaster.name = 'Cafe limewashed plaster';
-  const fabric = new THREE.MeshStandardMaterial({ ...linen, roughness: 1, bumpScale: 0.004, envMapIntensity: 0.45 });
+  const oak = createSlabOak('#8f6a44', 'cafe-oak');
+  oak.name = 'Cafe varnished oak';
+  const darkWood = createWoodMaterial('#4a3222', { key: 'cafe-dark-x', axis: 'x', rings: 130, figure: 0.5, pores: 0.35, wear: 0.12, varnish: 0.45, roughness: 0.5 }, { clearcoatRoughness: 0.22 });
+  darkWood.name = 'Cafe stained walnut (horizontal grain)';
+  const darkWoodV = createWoodMaterial('#4a3222', { key: 'cafe-dark-y', axis: 'y', rings: 130, figure: 0.5, pores: 0.35, wear: 0.12, varnish: 0.45, roughness: 0.5 }, { clearcoatRoughness: 0.22 });
+  darkWoodV.name = 'Cafe stained walnut (vertical grain)';
+  const floor = createWoodMaterial('#6a4a33', { key: 'cafe-floor', axis: 'z', rings: 110, figure: 0.55, pores: 0.4, wear: 0.35, varnish: 0.4, roughness: 0.48,
+    planks: { width: 0.165, length: 1.9, bevel: 0.0035, tone: 0.34 } }, { clearcoatRoughness: 0.2 });
+  floor.name = 'Cafe varnished floor boards';
+  const plaster = createPlasterMaterial('#9c8468', { key: 'cafe-plaster', floorY: 0, stains: 0.45, bump: 1.1 });
+  plaster.name = 'Cafe warm lime plaster';
+  const brick = createBrick('#8a4f37', '#a59886', 'cafe-brick');
+  brick.name = 'Cafe exposed brick';
+  const fabric = createFabricMaterial('#b8ab92', { key: 'cafe-linen', weave: 'plain', threads: [420, 420], heather: 0.55, threadContrast: 0.5, fuzz: 0.45, depth: 0.0004, sheen: 0.4, roughness: 0.9 });
   fabric.name = 'Cafe woven linen';
-  const ceramic = new THREE.MeshPhysicalMaterial({
-    ...glaze, roughness: 0.53, bumpScale: 0.001,
-    clearcoat: 0.32, clearcoatRoughness: 0.26,
-  });
+  const velvet = createFabricMaterial('#2c473c', { key: 'cafe-velvet', weave: 'velvet', threads: [260, 260], heather: 0.7, fuzz: 0.55, depth: 0.0005, sheen: 1, sheenColor: '#9cc2ac', roughness: 0.85 });
+  velvet.name = 'Cafe green cotton velvet';
+  const ceramic = createGlazeMaterial('#e6ddcb', { key: 'cafe-cup', speckle: 0.45, pool: '#c4a983' }, { roughness: 0.28, clearcoat: 0.9, clearcoatRoughness: 0.07 });
   ceramic.name = 'Cafe speckled stoneware';
-  const brass = new THREE.MeshStandardMaterial({ color: 0xb29251, metalness: 0.82, roughness: 0.29 });
+  const clay = new THREE.MeshStandardMaterial({ color: '#8d725a', roughness: 0.95 });
+  clay.name = 'Cafe unglazed foot ring';
+  const brass = createBrass('#c79b5c', 'cafe-brass', 0.3);
   brass.name = 'Cafe brushed brass';
-  const coffee = new THREE.MeshPhysicalMaterial({
-    color: 0x291509, roughness: 0.15, metalness: 0.03,
-    clearcoat: 1, clearcoatRoughness: 0.06,
-  });
+  const chrome = new THREE.MeshPhysicalMaterial({ color: '#d6d8da', metalness: 1, roughness: 0.16 });
+  chrome.name = 'Cafe espresso chrome';
+  const coffee = createCoffee('cafe-coffee');
   coffee.name = 'Cafe fresh coffee';
-  const leather = new THREE.MeshStandardMaterial({ ...hide, roughness: 0.82, bumpScale: 0.006 });
+  const leather = new THREE.MeshStandardMaterial({ color: '#5e3a24', roughness: 0.7 });
   leather.name = 'Cafe cognac leather';
-  const pavement = new THREE.MeshPhysicalMaterial({
-    ...road, roughness: 0.85, bumpScale: 0.012,
-    clearcoat: 0.8, clearcoatRoughness: 0.1,
-  });
-  pavement.name = 'Cafe rain-wet pavement';
-  const foliage = new THREE.MeshStandardMaterial({ color: 0x3f6643, roughness: 0.73, side: THREE.DoubleSide });
+  const pavement = createWetStreet('cafe-street');
+  pavement.name = 'Cafe rain-wet street';
+  const foliage = new THREE.MeshStandardMaterial({ color: '#33573a', roughness: 0.62, side: THREE.DoubleSide });
   foliage.name = 'Cafe deep green foliage';
+  const soil = new THREE.MeshStandardMaterial({ color: '#2a1f17', roughness: 1 });
+  soil.name = 'Cafe potting soil';
 
-  const materials = new Set<THREE.Material>([oak, darkWood, plaster, fabric, ceramic, brass, coffee, leather, pavement, foliage]);
+  const materials = new Set<THREE.Material>([oak, darkWood, darkWoodV, floor, plaster, brick, fabric, velvet, ceramic, clay, brass, chrome, coffee, leather, pavement, foliage, soil]);
+  const textures: THREE.Texture[] = [];
   let disposed = false;
   return {
-    oak, darkWood, plaster, fabric, ceramic, brass, coffee, leather, pavement, foliage, textures,
+    oak, darkWood, darkWoodV, floor, plaster, brick, fabric, velvet, ceramic, clay, brass, chrome, coffee, leather, pavement, foliage, soil, textures,
     dispose() {
       if (disposed) return;
       disposed = true;
@@ -218,4 +228,24 @@ export function makeCafeMaterials(): CafeMaterials {
       for (const texture of new Set(textures)) texture.dispose();
     },
   };
+}
+
+/**
+ * Box and slab UVs in metres, chosen per face from the dominant normal axis,
+ * so woven surfaces keep the same thread size on every face.
+ */
+export function metricUv(geometry: THREE.BufferGeometry) {
+  const position = geometry.getAttribute('position');
+  const normal = geometry.getAttribute('normal');
+  const uv = geometry.getAttribute('uv');
+  if (!position || !normal || !uv) return geometry;
+  for (let i = 0; i < position.count; i++) {
+    const nx = Math.abs(normal.getX(i)), ny = Math.abs(normal.getY(i)), nz = Math.abs(normal.getZ(i));
+    const x = position.getX(i), y = position.getY(i), z = position.getZ(i);
+    if (nx >= ny && nx >= nz) uv.setXY(i, z, y);
+    else if (ny >= nz) uv.setXY(i, x, z);
+    else uv.setXY(i, x, y);
+  }
+  uv.needsUpdate = true;
+  return geometry;
 }

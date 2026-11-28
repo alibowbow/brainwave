@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createGlazeMaterial } from '../shared/render/interiorSurface';
 
 type ShelfMaterials = {
   oak: THREE.Material;
@@ -23,22 +24,15 @@ export function buildCafeShelves(m: ShelfMaterials): {
     materials.push(result);
     return result;
   };
-  const glazed = (color: string) => {
-    const result = m.ceramic.clone();
-    if (result instanceof THREE.MeshStandardMaterial) {
-      result.color.set(color);
-      result.roughness = .56;
-      if (result instanceof THREE.MeshPhysicalMaterial) {
-        result.clearcoat = .30;
-        result.clearcoatRoughness = .34;
-      }
-    }
+  // Each glaze is its own fired stoneware: speckle and pooled colour differ.
+  const glazed = (color: string, pool: string, key: string) => {
+    const result = createGlazeMaterial(color, { key: `cafe-shelf-${key}`, speckle: .55, pool }, { roughness: .34, clearcoat: .7, clearcoatRoughness: .14 });
     materials.push(result);
     return result;
   };
-  const stone = glazed('#8d9781');
-  const cream = glazed('#c6bda7');
-  const umber = glazed('#806750');
+  const stone = glazed('#7d8a76', '#4f5d52', 'celadon');
+  const cream = glazed('#cfc5ae', '#a8957a', 'cream');
+  const umber = glazed('#7a5a40', '#3f2a1c', 'umber');
   const ink = material('#374441');
   const paper = material('#b4a180', .98);
   const russet = material('#77604f', .96);
@@ -48,8 +42,9 @@ export function buildCafeShelves(m: ShelfMaterials): {
   if (leafMaterial instanceof THREE.MeshStandardMaterial) leafMaterial.color.set('#3b5140');
   leafMaterial.side = THREE.DoubleSide;
   materials.push(leafMaterial);
+  // Warm LED strip under each shelf: an HDR emitter that blooms softly.
   const strip = new THREE.MeshStandardMaterial({
-    color: '#ba9670', emissive: '#e9b574', emissiveIntensity: .38, roughness: .75,
+    color: '#ba9670', emissive: '#ffc27e', emissiveIntensity: 7, roughness: .75,
   });
   materials.push(strip);
 

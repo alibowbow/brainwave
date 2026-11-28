@@ -60,6 +60,9 @@ try{
  // rendering can starve headless capture; both samples retain the same paused UI.
  await press('Pause');await page.waitForFunction(()=>document.querySelector('canvas').dataset.running==='false');const frameA=await page.screenshot();
  await press('Resume');await waitFrames();await press('Pause');await page.waitForFunction(()=>document.querySelector('canvas').dataset.running==='false');const frameB=await page.screenshot();check('rain/steam change real pixels',!frameA.equals(frameB));await press('Resume');
+ // Let the resumed frames run first: React re-attaches the look-drag listeners in the
+ // same commit that restarts RAF, and slow software frames can delay that commit.
+ await waitFrames();
  await page.evaluate(()=>{const c=document.querySelector('canvas');window.savedCafeCanvas=c;const p={bubbles:true,isPrimary:true,pointerId:8,pointerType:'mouse',button:0,clientX:350,clientY:220};c.dispatchEvent(new PointerEvent('pointerdown',p));window.dispatchEvent(new PointerEvent('pointermove',{...p,clientX:510}));});
  await waitFrames();check('look drag turns the camera',Number((await data()).yaw)>.0001);const yawBefore=Number((await data()).yaw);
  await page.evaluate(()=>window.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,isPrimary:true,pointerId:8,pointerType:'mouse',button:0,clientX:510,clientY:220})));

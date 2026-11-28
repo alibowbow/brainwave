@@ -12,7 +12,7 @@ import { createRainLayer, createRainSplashes } from '../../shared/render/rainStr
 import { assignProbe, captureProbe, captureSkyProbe, createSky } from './atmosphere';
 import { applyFoliage, applyGround, patch, TimberSet } from './surfaces';
 import { createWoodMaterial } from '../../shared/render/woodSurface';
-import { createPlasterMaterial } from '../../shared/render/interiorSurface';
+import { createGlazeMaterial, createPlasterMaterial } from '../../shared/render/interiorSurface';
 import { boulderGeometry, limbGeometry } from './geometry';
 
 /* Original procedural geometry and shaders. No third-party art assets.
@@ -69,59 +69,66 @@ function petalGeometry() {
   return g;
 }
 
-const GLASS_W = 5.72, GLASS_H = 2.69;
+// The pane runs down behind the bottom rail (GLASS_SEAT), so no sliver of garden shows
+// unglazed between the glass edge and the rail.
+const GLASS_W = 5.72, GLASS_H = 2.78, GLASS_SEAT = 0.07;
 const BOWL = new THREE.Vector3(0.38, 0.733, 0.44);
+/**
+ * Sill board frame. The pith line climbs through the board at SILL_TILT and would leave
+ * the top face just past its left end (x = -4.2), so every growth ring meets the face in
+ * a long arch whose tip points along the board: flat-sawn cathedral figure.
+ */
+const SILL_TILT = 0.06, SILL_RUNOUT = 0.02, SILL_PITH_Y = 0.055 + 4.2 * SILL_TILT;
 
 /** Garden view distance is written into alpha (0..1 over this range) for the glass depth of field. */
 const DEPTH_RANGE = 40;
 
 const GLASS_FRAGMENT = /* glsl */ `
+#define GLASS_SEAT ${GLASS_SEAT.toFixed(3)}
 ${GLSL_NOISE}
 ${GLSL_COLOR}
 uniform sampler2D uScene; uniform vec2 uResolution; uniform float uTime; uniform vec2 uTouch; uniform float uTouchStrength;
-uniform vec3 uRoom; uniform vec3 uMistTint; uniform float uFocus;
+uniform vec3 uRoom; uniform vec3 uMistTint; uniform float uFocus; uniform vec2 uLamp; uniform vec3 uLampColor;
 varying vec2 vUv;
 const vec2 GLASS = vec2(${GLASS_W.toFixed(3)}, ${GLASS_H.toFixed(3)});
 const float DEPTH_RANGE = ${DEPTH_RANGE.toFixed(1)};
-// One layer of beaded drops; cell and radii in metres. xy: lens normal, z: coverage.
-vec3 beads(vec2 m, float cell, float seed, float rMin, float rMax, float density) {
+vec4 sceneAt(vec2 uv, float lod) { return textureLod(uScene, clamp(uv, vec2(0.002), vec2(0.998)), lod); }
+// One layer of beaded drops; cell and radii in metres. xy: lens normal, z: coverage, w: cell hash.
+vec4 beads(vec2 m, float cell, float seed, float rMin, float rMax, float density) {
   vec2 id = floor(m / cell);
   vec3 h = bwHash3(vec3(id, seed));
   vec2 c = (id + 0.2 + 0.6 * h.xy) * cell;
   float r = mix(rMin, rMax, h.z * h.z);
   vec2 q = (m - c) / r;
-  q.y *= 0.88 + 0.2 * h.x;                      // gravity flattens the top a little
+  // Gravity: the top is flatter and the belly hangs a little.
+  q.y *= q.y > 0.0 ? 1.12 + 0.12 * h.x : 0.9;
+  q.x *= 0.92 + 0.16 * h.y;
   float d = length(q);
   float present = step(1.0 - density, fract(h.z * 7.31 + h.x));
   // Edge antialiased over about a pixel at this distance.
-  float edge = clamp(fwidth(d) * 1.2, 0.04, 0.4);
+  float edge = clamp(fwidth(d) * 1.2, 0.04, 0.5);
   float mask = (1.0 - smoothstep(1.0 - edge, 1.0, d)) * present;
-  return vec3(q * mask, mask);
+  return vec4(q * mask, mask, h.y);
 }
-// The garden through clean glass is out of focus: the focus sits on the pane.
-// Blur grows with the distance written into alpha; bright points bloom into discs.
-vec3 bokeh(vec2 uv, float scale) {
+// Focus sits on the pane, so the garden behind is out of focus: the blur radius grows
+// with the distance each surface wrote into alpha. The refraction target is mipmapped,
+// so a dozen prefiltered taps give a smooth disc instead of a noisy scatter.
+vec3 defocus(vec2 uv, float scale, float extra) {
   vec2 px = 1.0 / uResolution;
-  float dist = max(texture2D(uScene, uv).a * DEPTH_RANGE, uFocus);
-  float coc = scale * clamp(1.0 - uFocus / dist, 0.12, 1.0);
-  float spin = bwIgn(gl_FragCoord.xy) * 6.2831853;
+  float dist = max(sceneAt(uv, 2.0).a * DEPTH_RANGE, uFocus);
+  float coc = scale * clamp(1.0 - uFocus / dist, 0.08, 1.0) + extra;
+  float lod = log2(max(coc * 0.6, 1.0));
+  float spin = bwIgn(gl_FragCoord.xy) * 1.5;
   vec3 sum = vec3(0.0); float weight = 0.0;
-  for (int i = 0; i < 16; i++) {
-    float t = (float(i) + 0.5) / 16.0;
+  for (int i = 0; i < 12; i++) {
+    float t = (float(i) + 0.5) / 12.0;
     float a = float(i) * 2.39996 + spin;
-    vec2 o = vec2(cos(a), sin(a)) * sqrt(t) * coc * px;
-    vec3 c = texture2D(uScene, clamp(uv + o, vec2(0.002), vec2(0.998))).rgb;
-    float w = 1.0 + 3.0 * smoothstep(0.35, 2.2, bwLuma(c));
+    vec3 c = sceneAt(uv + vec2(cos(a), sin(a)) * sqrt(t) * coc * px, lod).rgb;
+    // Only true highlights bloom into discs; the bright sky must not eat the crowns.
+    float w = 1.0 + 1.5 * smoothstep(1.4, 4.0, bwLuma(c));
     sum += c * w; weight += w;
   }
   return sum / weight;
-}
-// Inside a drop the inverted image is small and nearly sharp.
-vec3 lensView(vec2 uv) {
-  vec2 px = 1.0 / uResolution;
-  return (texture2D(uScene, clamp(uv, vec2(0.002), vec2(0.998))).rgb * 2.0
-    + texture2D(uScene, clamp(uv + vec2(px.x, 0.0), vec2(0.002), vec2(0.998))).rgb
-    + texture2D(uScene, clamp(uv + vec2(0.0, px.y), vec2(0.002), vec2(0.998))).rgb) * 0.25;
 }
 void main() {
   vec2 screenUv = gl_FragCoord.xy / uResolution;
@@ -131,70 +138,100 @@ void main() {
   vec2 traceDelta = (vUv - uTouch) * vec2(GLASS.x / GLASS.y, 1.0);
   float wiped = exp(-dot(traceDelta, traceDelta) * 48.0) * uTouchStrength;
 
-  // Running drops: each lane releases a drop that creeps, pauses and slides,
-  // leaving a clear trail dotted with the beads it shed.
+  // Running drops: each lane releases a drop that creeps, pauses and slides, drawing a
+  // clean lane through the beads with a few small beads it left behind.
   vec2 slide = vec2(0.0); float slideMask = 0.0, trail = 0.0;
-  for (int i = 0; i < 2; i++) {
-    float lane = 0.17 + float(i) * 0.1;
-    float id = floor((m.x + float(i) * 0.05) / lane);
-    vec3 h = bwHash3(vec3(id, float(i) + 40.0, 3.0));
-    float x = (id + 0.25 + 0.5 * h.x) * lane - float(i) * 0.05 + 0.005 * sin(m.y * 19.0 + h.y * 9.0);
-    float speed = 0.04 + 0.07 * h.y;
+  for (int i = 0; i < 3; i++) {
+    float fi = float(i);
+    float lane = 0.3 + fi * 0.11;
+    float shift = fi * 0.071;
+    float id = floor((m.x + shift) / lane);
+    vec3 h = bwHash3(vec3(id, fi + 40.0, 3.0));
+    float x0 = (id + 0.25 + 0.5 * h.x) * lane - shift;
+    float speed = 0.025 + 0.05 * h.y;
     float phase = uTime * speed + h.z * 9.0;
-    float progress = floor(phase) + smoothstep(0.3, 1.0, fract(phase));
-    float headY = GLASS.y + 0.2 - mod(progress * 0.5, GLASS.y + 0.6);
-    float r = 0.012 + 0.008 * h.x;
-    vec2 q = (m - vec2(x, headY)) / vec2(r, r * 1.3);
+    // Stop-go creep: progress advances in fits as the drop gathers water.
+    float progress = floor(phase) + smoothstep(0.35, 1.0, fract(phase));
+    float headY = GLASS.y + 0.25 - mod(progress * 0.42 + h.x * 2.0, GLASS.y + 0.9);
+    // The path wanders a little as it finds the wet line.
+    float x = x0 + 0.006 * sin(m.y * 17.0 + h.y * 9.0) + 0.003 * sin(m.y * 41.0 + h.z * 5.0);
+    float r = 0.013 + 0.008 * h.x;
+    vec2 q = (m - vec2(x, headY)) / vec2(r, r * 1.25);
+    // A short neck above the head, like a pulled bead.
+    float neck = max(0.0, q.y);
+    q.x /= 1.0 - 0.55 * smoothstep(0.0, 1.6, neck);
+    q.y = q.y > 0.0 ? q.y * 0.62 : q.y;
     float d = length(q);
-    float alive = step(0.3, h.y);
-    float mask = (1.0 - smoothstep(0.82, 1.0, d)) * alive;
-    slide += q * mask; slideMask = max(slideMask, mask);
+    float alive = step(0.45, h.y);
+    float mask = (1.0 - smoothstep(1.0 - clamp(fwidth(d) * 1.2, 0.04, 0.4), 1.0, d)) * alive;
+    if (mask > slideMask) { slide = q * mask; slideMask = mask; }
     float behind = m.y - headY;
-    trail = max(trail, (1.0 - smoothstep(0.002, 0.0045, abs(m.x - x))) * smoothstep(0.0, 0.02, behind) * (1.0 - smoothstep(0.25, 0.85, behind)) * alive);
+    float width = 0.004 + 0.0025 * h.z;
+    trail = max(trail, (1.0 - smoothstep(width * 0.6, width, abs(m.x - x))) * smoothstep(0.0, 0.03, behind) * (1.0 - smoothstep(0.35, 1.1, behind)) * alive);
   }
   // Seen from across the room, so the beads are drawn at the size a close look would remember.
-  vec3 dust = beads(m, 0.022, 7.0, 0.0016, 0.0026, 0.3);            // tiny static beads
-  vec3 small = beads(m + 0.005, 0.036, 1.0, 0.003, 0.0062, 0.45);
-  vec3 medium = beads(m + 0.011, 0.085, 2.0, 0.0065, 0.013, 0.45);
-  vec3 large = beads(m + 0.031, 0.19, 3.0, 0.013, 0.024, 0.42);
-  vec3 trailBeads = beads(vec2(m.x * 3.0, m.y), 0.024, 5.0, 0.0026, 0.004, 0.7) * vec3(1.0, 1.0, trail);
-  float clear = max(trail * 0.9, wiped);
-  vec3 drop = vec3(0.0);
+  vec4 fine = beads(m, 0.016, 7.0, 0.0012, 0.0022, 0.55);             // tiny static beads
+  vec4 small = beads(m + 0.005, 0.03, 1.0, 0.0026, 0.0052, 0.5);
+  vec4 medium = beads(m + 0.011, 0.07, 2.0, 0.006, 0.011, 0.5);
+  vec4 large = beads(m + 0.031, 0.16, 3.0, 0.012, 0.022, 0.6);
+  vec4 trailBeads = beads(vec2(m.x * 2.0, m.y), 0.03, 5.0, 0.0018, 0.003, 0.55) * vec4(1.0, 1.0, trail, 1.0);
+  float clear = max(trail, wiped);
+  vec4 drop = vec4(0.0);
   float coverage = 0.0, size = 0.0;
-  if (dust.z * (1.0 - clear) > coverage) { drop = dust; coverage = dust.z * (1.0 - clear); size = 0.3; }
-  if (small.z * (1.0 - clear) > coverage) { drop = small; coverage = small.z * (1.0 - clear); size = 0.5; }
+  if (fine.z * (1.0 - clear) > coverage) { drop = fine; coverage = fine.z * (1.0 - clear); size = 0.2; }
+  if (small.z * (1.0 - clear) > coverage) { drop = small; coverage = small.z * (1.0 - clear); size = 0.45; }
   if (medium.z * (1.0 - clear) > coverage) { drop = medium; coverage = medium.z * (1.0 - clear); size = 0.75; }
   if (large.z * (1.0 - clear) > coverage) { drop = large; coverage = large.z * (1.0 - clear); size = 1.0; }
-  if (trailBeads.z * (1.0 - wiped) > coverage) { drop = trailBeads; coverage = trailBeads.z * (1.0 - wiped); size = 0.35; }
-  if (slideMask > coverage) { drop = vec3(slide, slideMask); coverage = slideMask; size = 1.0; }
+  if (trailBeads.z * (1.0 - wiped) > coverage) { drop = trailBeads; coverage = trailBeads.z * (1.0 - wiped); size = 0.3; }
+  if (slideMask > coverage) { drop = vec4(slide, slideMask, 0.5); coverage = slideMask; size = 1.0; }
   vec2 n = drop.xy;
-  float nn = clamp(dot(n, n), 0.0, 1.0);
-  float d = sqrt(nn);
+  float d = clamp(length(n), 0.0, 1.0);
 
-  // A thin film bends the view slightly; condensation mists the lower pane and its edges.
-  vec2 film = vec2(bwNoise(vec3(m * 3.0, uTime * 0.02)), bwNoise(vec3(m * 3.0 + 7.0, uTime * 0.02))) * 0.0012;
-  float fromEdge = min(min(m.x, GLASS.x - m.x), m.y);
-  float mist = 0.06 + 0.62 * (1.0 - smoothstep(0.0, 1.1, m.y)) + 0.3 * (1.0 - smoothstep(0.0, 0.45, fromEdge));
-  mist += 0.18 * bwFbm3(vec3(m * 1.2, 2.0));
-  mist = clamp(mist, 0.0, 1.0) * (1.0 - clear) * (1.0 - coverage);
+  // Condensation on the room side: thickest at the cool sill and the corners, thinning
+  // upward in soft breath-like patches.
+  vec2 film = vec2(bwNoise(vec3(m * 3.0, uTime * 0.02)), bwNoise(vec3(m * 3.0 + 7.0, uTime * 0.02))) * 0.0010;
+  m.y -= GLASS_SEAT;                           // measured from the visible bottom edge
+  float fromSide = min(m.x, GLASS.x - m.x);
+  float patches = bwFbm3(vec3(m * vec2(0.9, 1.4), 2.0));
+  float mist = 0.82 * (1.0 - smoothstep(-0.05, 0.95 + 0.35 * patches, m.y));
+  mist = max(mist, 0.55 * (1.0 - smoothstep(0.0, 0.5, fromSide)) * (1.0 - smoothstep(0.6, 2.2, m.y)));
+  mist += 0.1 * patches;
+  // The mist is on the room side: drops sliding outside do not clear it, a finger does.
+  mist = clamp(mist, 0.0, 1.0) * (1.0 - wiped);
 
-  // Each drop is a tiny lens: a minified, inverted view of the garden behind it.
-  vec2 lens = -n * (0.028 + 0.045 * size) * (0.7 + 0.5 * nn);
-  vec3 colour = coverage > 0.02 ? lensView(screenUv + film + lens) : vec3(0.0);
-  vec3 background = bokeh(screenUv + film, (7.0 + 9.0 * mist) * pixelScale);
-  background = mix(background, background * 0.86 + uMistTint, mist * 0.55);
-  colour = mix(background, colour, coverage);
-  // Total internal reflection darkens the rim; light gathers in a bright lower crescent.
-  float rim = smoothstep(0.55, 0.97, d) * coverage;
-  colour *= 1.0 - 0.75 * rim * mix(0.3, 1.0, size);
-  float crescent = smoothstep(-0.15, -0.75, n.y) * smoothstep(0.35, 0.75, d) * (1.0 - smoothstep(0.8, 0.97, d)) * coverage;
-  colour += vec3(1.35, 1.45, 1.48) * crescent * 0.7 * size;
-  vec2 glintAt = n - vec2(-0.32, 0.44);
-  colour += vec3(2.6, 2.75, 2.8) * exp(-dot(glintAt, glintAt) * 70.0) * coverage;
-  // Wet trails stay clear and catch a faint edge highlight.
-  colour += vec3(0.18) * trail * (1.0 - coverage) * 0.2;
-  // Faint reflection of the warm room on the glass.
-  colour += uRoom * 0.035;
+  // The garden: out of focus, more so through the mist.
+  vec3 background = defocus(screenUv + film, 9.0 * pixelScale, 10.0 * mist * pixelScale);
+
+  // Each drop is a tiny lens: a minified, inverted and nearly sharp view of the garden.
+  vec3 colour = background;
+  if (coverage > 0.01) {
+    vec2 lens = -n * (0.022 + 0.05 * size) * (0.75 + 0.45 * d * d);
+    vec2 pxl = 1.0 / uResolution;
+    vec3 inside = (sceneAt(screenUv + film + lens, 0.0).rgb * 2.0 + sceneAt(screenUv + film + lens + vec2(pxl.x, 0.0), 0.0).rgb
+      + sceneAt(screenUv + film + lens + vec2(0.0, pxl.y), 0.0).rgb) * 0.25;
+    // The garden in a drop is a touch clearer and darker than the glare around it.
+    inside *= 0.92;
+    // Total internal reflection darkens the rim to a thin dark ring.
+    float rim = smoothstep(0.6, 0.98, d);
+    inside *= 1.0 - 0.8 * rim * mix(0.35, 1.0, size);
+    // The bead focuses the bright sky above into a lower crescent of light.
+    float crescent = smoothstep(-0.2, -0.8, n.y) * smoothstep(0.3, 0.72, d) * (1.0 - smoothstep(0.78, 0.95, d));
+    inside += vec3(0.95, 1.05, 1.08) * crescent * (0.35 + 0.65 * size) * 0.9;
+    // A small sharp glint: the lamp behind the viewer, up and to the right.
+    vec2 glintAt = n - vec2(0.3, 0.42);
+    float glint = exp(-dot(glintAt, glintAt) * 90.0) * smoothstep(0.25, 0.7, size + 0.3);
+    inside += mix(vec3(1.9, 2.0, 2.05), uLampColor * 2.4, 0.6) * glint;
+    // Beads behind thick condensation are softened by it.
+    colour = mix(background, inside, coverage * (1.0 - 0.45 * mist));
+  }
+  // Condensation scatters the daylight: a soft, cool, desaturated veil over everything.
+  float lum = bwLuma(colour);
+  colour = mix(colour, mix(vec3(lum), colour, 0.6) * 0.82 + uMistTint, mist * 0.62);
+  // Faint reflections of the warm room on the glass, strongest where the lamp mirrors.
+  vec2 lampDelta = (vUv - uLamp) * vec2(GLASS.x / GLASS.y, 1.0);
+  float lampHaze = exp(-dot(lampDelta, lampDelta) * 9.0);
+  float lampShade = 1.0 - smoothstep(0.035, 0.07, length(lampDelta * vec2(1.0, 1.25)));
+  colour += uRoom * 0.03 + uLampColor * (0.05 * lampHaze + 0.13 * lampShade) * (0.7 + 0.3 * mist);
   gl_FragColor = vec4(colour, 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -217,20 +254,22 @@ gl_FragColor.a = clamp(length(vViewPosition) / ${DEPTH_RANGE.toFixed(1)}, 0.0, 1
 export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const rnd = random(83059);
   const time = { value: 0 };
-  scene.background = new THREE.Color('#a6bab6');
-  scene.fog = new THREE.FogExp2('#7a8c86', 0.03);
+  scene.background = new THREE.Color(0.7, 0.8, 0.78);
+  // Rain haze: the far wall and trees lift toward the grey-green of the overcast.
+  scene.fog = new THREE.FogExp2(new THREE.Color(0.5, 0.6, 0.57), 0.048);
   const garden = new THREE.Group(); scene.add(garden);
   const disposables: { dispose(): void }[] = [];
 
   // ---- Sky and light ------------------------------------------------------------------
   const glowDirection = new THREE.Vector3(-0.3, 0.6, -0.75).normalize();
   const sky = createSky({
-    time, zenith: new THREE.Color(1.62, 1.82, 1.84), horizon: new THREE.Color(1.08, 1.24, 1.22),
-    cloudDark: new THREE.Color(0.9, 1.02, 1.02), cloudLight: new THREE.Color(1.7, 1.9, 1.9),
-    glowDirection, glow: new THREE.Color(0.35, 0.34, 0.3), ground: new THREE.Color(0.1, 0.12, 0.09), coverage: 0.85, scale: 0.8, drift: 0.012,
+    // A low, even rain overcast: cool grey-green rather than white glare.
+    time, zenith: new THREE.Color(1.12, 1.3, 1.28), horizon: new THREE.Color(0.8, 0.95, 0.91),
+    cloudDark: new THREE.Color(0.62, 0.74, 0.72), cloudLight: new THREE.Color(1.18, 1.36, 1.33),
+    glowDirection, glow: new THREE.Color(0.18, 0.19, 0.16), ground: new THREE.Color(0.1, 0.12, 0.09), coverage: 0.85, scale: 0.8, drift: 0.012,
   });
   scene.add(sky.mesh);
-  const daylight = new THREE.DirectionalLight('#e7f1f1', 1.25); daylight.position.set(-5, 12, -3);
+  const daylight = new THREE.DirectionalLight('#dce9e4', 1.15); daylight.position.set(-5, 12, -3);
   daylight.name = 'window-garden-daylight';
   daylight.castShadow = true; daylight.shadow.mapSize.set(1024, 1024);
   daylight.shadow.camera.left = -8; daylight.shadow.camera.right = 8; daylight.shadow.camera.top = 7; daylight.shadow.camera.bottom = -4;
@@ -246,10 +285,10 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   windowLight.castShadow = true; windowLight.shadow.mapSize.set(512, 512); windowLight.shadow.bias = -0.0005; windowLight.shadow.normalBias = 0.03; windowLight.shadow.radius = 5;
   windowLight.shadow.autoUpdate = false; windowLight.shadow.needsUpdate = true;
   scene.add(windowLight, windowLight.target);
-  const roomLight = new THREE.PointLight('#ffc98e', 1.1, 8, 2); roomLight.position.set(1.7, 2.5, 2.7); scene.add(roomLight);
+  const roomLight = new THREE.PointLight('#ffc98e', 0.85, 8, 2); roomLight.position.set(1.7, 2.5, 2.7); scene.add(roomLight);
   // A table lamp behind the viewer throws a warm pool across the sill and the bowl.
-  const lampPool = new THREE.SpotLight('#ffa95c', 24, 6, 0.34, 1, 2);
-  lampPool.position.set(1.45, 2.35, 2.5); lampPool.target.position.set(0.5, 0.72, 0.62);
+  const lampPool = new THREE.SpotLight('#ffb36e', 14, 6, 0.38, 1, 2);
+  lampPool.position.set(1.25, 2.9, 2.0); lampPool.target.position.set(0.45, 0.725, 0.72);
   lampPool.castShadow = true; lampPool.shadow.mapSize.set(512, 512); lampPool.shadow.bias = -0.0005; lampPool.shadow.normalBias = 0.03; lampPool.shadow.radius = 6;
   lampPool.shadow.autoUpdate = false; lampPool.shadow.needsUpdate = true;
   scene.add(lampPool, lampPool.target);
@@ -260,30 +299,41 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   // Oiled timber with a satin coat: real grain, worn patches, a second sharp reflection.
   const frameY = createWoodMaterial('#6b4a30', { key: 'window-frame-y', axis: 'y', rings: 22, figure: 0.55, pores: 0.35, wear: 0.2, varnish: 0.35, roughness: 0.52 }, { clearcoatRoughness: 0.24 });
   const frameX = createWoodMaterial('#6b4a30', { key: 'window-frame-x', axis: 'x', rings: 22, figure: 0.55, pores: 0.35, wear: 0.2, varnish: 0.35, roughness: 0.52 }, { clearcoatRoughness: 0.24 });
-  // The sill: wider, softer figure; a worn, paler nose; a damp ring and drip marks by the bowl.
-  // Real growth rings are millimetres apart. Seen this flat, wide procedural rings
-  // foreshorten into even horizontal stripes; fine rings filter to a tone instead and
-  // the figure comes from broad tonal flow, turned a few degrees off the board.
-  const sillWood = patch(createWoodMaterial('#946c48', { key: 'window-sill', axis: 'x', objectSpace: true, rings: 75, figure: 0.4, pores: 0.3, wear: 0.3, varnish: 0.45, roughness: 0.5 }, { clearcoatRoughness: 0.2 }), {
+  // The sill is one long flat-sawn board of oiled timber. Its pith line runs a few degrees
+  // off the face (the board is tilted in its own object space), so growth rings break the
+  // surface in long cathedral arches. With the pith line parallel to the face, as before,
+  // the rings could only run the full width in even bands: the smeared horizontal stripes.
+  // A worn, paler nose; a damp ring where the bowl first stood; a few drips.
+  const sillWood = patch(createWoodMaterial('#7d5537', {
+    key: 'window-sill', axis: 'x', objectSpace: true, pith: [0.1, SILL_PITH_Y], rings: 36, figure: 0.34, pores: 0.45, wear: 0.4, bump: 0.5, varnish: 0.16, roughness: 0.56,
+  }, { clearcoatRoughness: 0.3 }), {
     key: 'window-sill-wear', fragmentCommon: 'float sillWet; float sillNose;',
     color: `{
   vec3 p = vSurfWorld; vec3 nrm = normalize(vSurfNormal);
   sillNose = smoothstep(0.2, 0.65, nrm.z) * smoothstep(0.2, 0.65, nrm.y);
   float top = smoothstep(0.85, 0.97, nrm.y);
-  vec2 b = p.xz - vec2(${BOWL.x.toFixed(3)}, ${BOWL.z.toFixed(3)});
+  vec2 b = p.xz - vec2(${(BOWL.x + 0.12).toFixed(3)}, ${(BOWL.z + 0.1).toFixed(3)});
   float r = length(b), a = atan(b.y, b.x);
-  float ring = 1.0 - smoothstep(0.003, 0.011, abs(r - 0.172 - 0.006 * sin(a * 3.0 + 1.0)));
-  float under = (1.0 - smoothstep(0.15, 0.19, r)) * 0.6;
-  // A few drips that ran off the bowl and from wet hands.
-  vec2 cell = floor(p.xz / 0.06);
+  // The ring the wet foot left, partly under the bowl and partly in front of it.
+  float wobble = 0.006 * sin(a * 3.0 + 1.0) + 0.003 * sin(a * 7.0);
+  float band = abs(r - 0.2 - wobble);
+  float ring = (1.0 - smoothstep(0.004, 0.016, band)) * (0.6 + 0.4 * smoothstep(-0.6, 0.6, sin(a * 2.0 + 0.7)));
+  float inner = (1.0 - smoothstep(0.15, 0.2, r)) * 0.3;
+  // A few drips shaken off the bowl.
+  vec2 cell = floor(p.xz / 0.055);
   vec3 h = bwHash3(vec3(cell, 21.0));
-  vec2 spot = (cell + 0.25 + 0.5 * h.xy) * 0.06;
-  float drip = (1.0 - smoothstep(0.004, 0.01 + 0.008 * h.z, length(p.xz - spot))) * step(0.72, h.z) * (1.0 - smoothstep(0.25, 0.6, r));
-  sillWet = clamp(max(max(ring * 0.9, under), drip), 0.0, 1.0) * top;
-  diffuseColor.rgb *= mix(1.0, 0.6, sillWet);
-  diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 1.3 + 0.015, sillNose * 0.55);
+  vec2 spot = (cell + 0.25 + 0.5 * h.xy) * 0.055;
+  vec2 bowlAt = p.xz - vec2(${BOWL.x.toFixed(3)}, ${BOWL.z.toFixed(3)});
+  float drip = (1.0 - smoothstep(0.003, 0.007 + 0.006 * h.z, length(p.xz - spot))) * step(0.7, h.z) * (1.0 - smoothstep(0.3, 0.55, length(bowlAt)));
+  sillWet = clamp(max(max(ring * 0.9, inner), drip), 0.0, 1.0) * top;
+  // Long irregular streaks of darker heartwood and paler sapwood along the board.
+  float heart = bwFbm3(vec3(p.x * 0.55, p.z * 6.5, 3.0)) + 0.5 * bwFbm3(vec3(p.x * 2.1, p.z * 19.0, 8.0));
+  diffuseColor.rgb *= 1.0 + 0.2 * heart;
+  diffuseColor.rgb *= mix(1.0, 0.5, sillWet);
+  // Hands and sleeves have rubbed the nose pale and dry.
+  diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 1.32 + 0.012, sillNose * 0.6);
 }`,
-    roughness: 'roughnessFactor = mix(roughnessFactor, 0.1, sillWet); roughnessFactor += 0.18 * sillNose;',
+    roughness: 'roughnessFactor = mix(roughnessFactor, 0.34, sillWet); roughnessFactor += 0.16 * sillNose;',
   });
   const plaster = createPlasterMaterial('#c6bca7', { key: 'window-wall', floorY: -0.8, stains: 0.2, bump: 0.6 });
   const bronze = new THREE.MeshStandardMaterial({ color: '#6e5c3c', roughness: 0.38, metalness: 0.85 });
@@ -315,10 +365,12 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const sashMesh = frame.build(frameY, 'window-sash');
   const railMesh = rails.build(frameX, 'window-rails');
   const apronMesh = sill.build(frameX, 'window-sill-apron');
+  // The board is tilted and turned in its own frame (the mesh turns it back level), so
+  // the pith line dips through the face and the grain runs a little off the edges.
   const sillGeometry = new RoundedBoxGeometry(6.8, 0.11, 1.15, 3, 0.03);
-  sillGeometry.rotateY(-0.045);
+  sillGeometry.rotateZ(-SILL_TILT).rotateY(-SILL_RUNOUT);
   const sillMesh = new THREE.Mesh(sillGeometry, sillWood);
-  sillMesh.name = 'window-sill'; sillMesh.rotation.y = 0.045; sillMesh.position.set(0, 0.67, 0.44);
+  sillMesh.name = 'window-sill'; sillMesh.rotation.set(0, SILL_RUNOUT, SILL_TILT, 'ZYX'); sillMesh.position.set(0, 0.67, 0.44);
   sillMesh.castShadow = sillMesh.receiveShadow = true;
   scene.add(sashMesh, railMesh, apronMesh, sillMesh);
   const glassOccluders: THREE.Object3D[] = [sashMesh, railMesh, apronMesh, sillMesh];
@@ -347,25 +399,26 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
 
   // A celadon bowl on the sill, with water and fallen sepals.
   const bowlProfile = [new THREE.Vector2(0.035, 0), new THREE.Vector2(0.16, 0.016), new THREE.Vector2(0.24, 0.085), new THREE.Vector2(0.254, 0.13), new THREE.Vector2(0.24, 0.137), new THREE.Vector2(0.222, 0.09), new THREE.Vector2(0.148, 0.036), new THREE.Vector2(0.04, 0.025)];
-  const ceramic = new THREE.MeshPhysicalMaterial({ color: '#8fa69c', roughness: 0.32, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08 });
+  const ceramic = createGlazeMaterial('#a3b8aa', { key: 'window-celadon', speckle: 0.2, pool: '#6e9081' }, { roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.06 });
   const bowl = new THREE.Mesh(new THREE.LatheGeometry(bowlProfile, 72), ceramic);
   bowl.position.copy(BOWL); bowl.receiveShadow = bowl.castShadow = true; scene.add(bowl);
   const bowlWater = new THREE.Mesh(new THREE.CircleGeometry(0.197, 48), new THREE.MeshStandardMaterial({ color: '#2c3d38', roughness: 0.04, metalness: 0 }));
   bowlWater.rotation.x = -Math.PI / 2; bowlWater.position.set(0.38, 0.82, 0.44); scene.add(bowlWater);
   // Beads of water standing on the oiled sill.
   const beadGeometry = new THREE.SphereGeometry(1, 18, 8, 0, Math.PI * 2, 0, Math.PI / 2);
-  const beadMat = new THREE.MeshPhysicalMaterial({ color: '#a9bcb6', roughness: 0.03, metalness: 0, transparent: true, opacity: 0.55, clearcoat: 1, clearcoatRoughness: 0.02, depthWrite: false });
-  const sillBeads = new THREE.InstancedMesh(beadGeometry, beadMat, 14);
+  const beadMat = new THREE.MeshPhysicalMaterial({ color: '#3b2c20', roughness: 0.02, metalness: 0, transparent: true, opacity: 0.55, clearcoat: 1, clearcoatRoughness: 0.02, depthWrite: false });
+  const sillBeads = new THREE.InstancedMesh(beadGeometry, beadMat, 9);
   const beadDummy = new THREE.Object3D();
-  for (let i = 0; i < 14; i++) {
-    const a = rnd() * Math.PI * 2, rr = 0.22 + rnd() * 0.45, size = 0.004 + rnd() * 0.007;
-    beadDummy.position.set(BOWL.x + Math.cos(a) * rr * 1.3, 0.7252, Math.min(0.99, BOWL.z + Math.sin(a) * rr * 0.8));
-    beadDummy.scale.set(size * (1 + rnd() * 0.4), size * 0.45, size); beadDummy.updateMatrix();
+  for (let i = 0; i < 9; i++) {
+    // Shaken off the bowl: mostly in front of it and to the lamp side.
+    const a = 0.15 + rnd() * 2.2, rr = 0.29 + rnd() * 0.24, size = 0.006 + rnd() * 0.008;
+    beadDummy.position.set(BOWL.x + Math.cos(a) * rr * 1.2, 0.7252, Math.min(0.99, BOWL.z + Math.sin(a) * rr * 0.75));
+    beadDummy.scale.set(size * (1 + rnd() * 0.4), size * 0.5, size); beadDummy.updateMatrix();
     sillBeads.setMatrixAt(i, beadDummy.matrix);
   }
   scene.add(sillBeads);
   for (let i = 0; i < 3; i++) {
-    const p = new THREE.Mesh(petalGeometry(), new THREE.MeshStandardMaterial({ color: i === 1 ? '#a4a1d2' : '#8da6d0', side: THREE.DoubleSide, roughness: 0.55 }));
+    const p = new THREE.Mesh(petalGeometry(), new THREE.MeshStandardMaterial({ color: i === 1 ? '#8582bd' : '#7290bd', side: THREE.DoubleSide, roughness: 0.4 }));
     p.rotation.set(-Math.PI / 2, 0, rnd() * 6.28); p.scale.setScalar(0.075);
     p.position.set(0.31 + rnd() * 0.13, 0.822, 0.38 + rnd() * 0.13); scene.add(p);
   }
@@ -486,11 +539,11 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
     for (let n = 0; n < 7; n++) {
       const centre = start.clone().lerp(tip, 0.42 + n * 0.077);
       const side = n % 2 ? 1 : -1, end = centre.clone().add(new THREE.Vector3(side * (0.9 + rnd()), 0.1 + rnd() * 0.4, rnd() - 0.5));
-      bambooParts.push(limbGeometry([centre, end], 0.009, 0.004, 4, 2));
       for (let f = 0; f < 9; f++) {
         dummy.position.copy(centre).lerp(end, (f + 1) / 10);
-        dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(side * (f % 2 ? 0.2 : 0.9), -0.12 - rnd() * 0.7, 0.4).normalize());
-        dummy.scale.set(0.09, 0.48 + rnd() * 0.23, 0.3); dummy.updateMatrix(); bambooLeaves.push(dummy.matrix.clone());
+        // Leaves hang in drooping sprays, so through the haze the grove reads as soft masses.
+        dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(side * (f % 2 ? 0.3 : 0.8), -0.45 - rnd() * 0.8, (rnd() - 0.3) * 0.8).normalize());
+        dummy.scale.set(0.16, 0.5 + rnd() * 0.25, 0.3); dummy.updateMatrix(); bambooLeaves.push(dummy.matrix.clone());
       }
     }
   }
@@ -501,6 +554,7 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
 
   // Broad-leaf trees overlap behind the wall; branch-led clumps avoid a repeated sphere hedge.
   const canopyMatrices: THREE.Matrix4[] = [], canopyColors: THREE.Color[] = [];
+  const massMatrices: THREE.Matrix4[] = [], massColors: THREE.Color[] = [];
   const barkParts: THREE.BufferGeometry[] = [];
   for (const [tx, tz, height] of [[-9, -13, 6.7], [-3.5, -13.8, 7.4], [3.4, -14.3, 7.2], [9.2, -12, 7.0]]) {
     const base = new THREE.Vector3(tx, 0, tz), trunkTop = new THREE.Vector3(tx + 0.45, height * 0.65, tz - 0.25);
@@ -513,6 +567,14 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       // Leaves gather in clumps around the twig ends rather than one even cloud.
       for (let c = 0; c < 3; c++) {
         const clump = fork.clone().lerp(tip, 0.5 + c * 0.25).add(new THREE.Vector3((rnd() - 0.5) * 0.8, (rnd() - 0.2) * 0.5, (rnd() - 0.5) * 0.6));
+        // A shaded inner mass fills each clump, so through the rain and the soft focus the
+        // crowns read as clumped foliage rather than leaf cards against the sky.
+        dummy.position.copy(clump).add(new THREE.Vector3(0, -0.08, 0));
+        dummy.quaternion.setFromEuler(new THREE.Euler(rnd() * 0.5, rnd() * 6.28, rnd() * 0.5));
+        const mass = 0.48 + rnd() * 0.16;
+        dummy.scale.set(mass * (1.05 + rnd() * 0.25), mass * (0.72 + rnd() * 0.18), mass); dummy.updateMatrix();
+        massMatrices.push(dummy.matrix.clone());
+        massColors.push(new THREE.Color().setHSL(0.26 + rnd() * 0.04, 0.32 + rnd() * 0.12, 0.085 + rnd() * 0.05));
         for (let l = 0; l < 44; l++) {
           const n = new THREE.Vector3(rnd() - 0.5, rnd() - 0.35, rnd() - 0.5).normalize();
           dummy.position.copy(clump).addScaledVector(n, 0.75 * Math.cbrt(rnd()));
@@ -530,6 +592,19 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const canopy = new THREE.InstancedMesh(leafG, foliage('window-canopy', '#e5ebd5'), canopyMatrices.length);
   canopyMatrices.forEach((m, i) => { canopy.setMatrixAt(i, m); canopy.setColorAt(i, canopyColors[i]); });
   canopy.receiveShadow = true; garden.add(canopy);
+  const massGeometry = new THREE.SphereGeometry(1, 14, 10);
+  const massPositions = massGeometry.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < massPositions.count; i++) {
+    const x = massPositions.getX(i), y = massPositions.getY(i), z = massPositions.getZ(i);
+    const lumps = 1 + 0.24 * fbm3(x * 1.9 + 4, y * 1.9, z * 1.9, 3);
+    massPositions.setXYZ(i, x * lumps, y * lumps, z * lumps);
+  }
+  massGeometry.computeVertexNormals();
+  const crownMass = new THREE.InstancedMesh(massGeometry, applyWetSurface(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.62 }), {
+    key: 'window-crown-mass', time, wetness: 0.5, darkening: 0.9, wetRoughness: 0.3,
+  }), massMatrices.length);
+  massMatrices.forEach((m, i) => { crownMass.setMatrixAt(i, m); crownMass.setColorAt(i, massColors[i]); });
+  crownMass.receiveShadow = true; garden.add(crownMass);
 
   // Small ground plants establish scale between path and flower beds.
   const fernMatrices: THREE.Matrix4[] = [];
@@ -581,7 +656,9 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
   const glassUniforms = {
     uScene: { value: null as THREE.Texture | null }, uResolution: { value: new THREE.Vector2(1, 1) }, uTime: time,
     uTouch: { value: new THREE.Vector2(-2, -2) }, uTouchStrength: { value: 0 }, uRoom: { value: new THREE.Color(0.12, 0.085, 0.055) },
-    uMistTint: { value: new THREE.Color(0.17, 0.2, 0.195) }, uFocus: { value: 3.1 },
+    uMistTint: { value: new THREE.Color(0.15, 0.18, 0.175) }, uFocus: { value: 3.1 },
+    // Where the lamp behind the viewer mirrors in the pane (set with the camera).
+    uLamp: { value: new THREE.Vector2(0.65, 0.43) }, uLampColor: { value: new THREE.Color(1.0, 0.56, 0.25) },
   };
   const glassMat = new THREE.ShaderMaterial({
     uniforms: glassUniforms, transparent: false, depthWrite: true, toneMapped: true,
@@ -589,7 +666,12 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
     fragmentShader: GLASS_FRAGMENT,
   });
   const glass = new THREE.Mesh(new THREE.PlaneGeometry(GLASS_W, GLASS_H), glassMat);
-  glass.position.set(0, 2.15, -0.012); scene.add(glass);
+  glass.position.set(0, 2.15 - (GLASS_H - 2.69) / 2, -0.012); scene.add(glass);
+  // Everything on the room side of the pane. The glass only ever shows what lies behind
+  // it, so the refraction pass leaves these out: no dark frame bleeds into the blurred
+  // garden or the drop lenses, and the costly timber is drawn once per frame.
+  const roomSide = scene.children.filter(object => object !== garden && object !== sky.mesh && object !== glass && !(object as THREE.Light).isLight);
+  const shadowLights = [daylight, windowLight, lampPool];
   const raycaster = new THREE.Raycaster(), viewport = new THREE.Vector2();
   let traceAge = 100, currentTime = 0;
   const probes: THREE.WebGLRenderTarget[] = [];
@@ -599,12 +681,18 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
     camera.position.set(aspect < 0.85 ? -0.08 : 0.12, aspect < 0.85 ? 1.42 : 1.47, aspect < 0.85 ? 3.15 : 3.05);
     camera.lookAt(aspect < 0.85 ? -0.07 : 0, aspect < 0.85 ? 1.45 : 1.38, -3.5);
     camera.updateProjectionMatrix();
+    // Mirror the lamp in the pane's plane and find where the eye ray to it crosses the glass.
+    const mirrored = lampPool.position.clone(); mirrored.z = 2 * glass.position.z - mirrored.z;
+    const t = (glass.position.z - camera.position.z) / (mirrored.z - camera.position.z);
+    const hit = camera.position.clone().lerp(mirrored, t);
+    glassUniforms.uLamp.value.set((hit.x - glass.position.x) / GLASS_W + 0.5, (hit.y - glass.position.y) / GLASS_H + 0.5);
   };
   return {
     resize,
     post: {
-      exposure: 1.0, bloomStrength: 0.06, bloomThreshold: 0, aoStrength: 0.8, aoRadius: 0.3,
-      saturation: 1.02, contrast: 1.08, shadowTint: [0.96, 0.97, 1.03], highlightTint: [1.03, 1.0, 0.96], vignette: 0.45, grain: 0.028,
+      // Cool, neutral grade: the only warmth is the lamp in the room.
+      exposure: 1.05, bloomStrength: 0.06, bloomThreshold: 0, aoStrength: 0.8, aoRadius: 0.3,
+      saturation: 1.06, contrast: 1.1, shadowTint: [0.97, 1.0, 1.02], highlightTint: [1.0, 1.0, 0.99], vignette: 0.45, grain: 0.028,
     },
     prepare(live, hdr) {
       if (!hdr) return;
@@ -636,12 +724,19 @@ export const buildWindow: WorldBuilder = ({ scene, camera, renderer }) => {
       const target = refraction.ensure(Math.max(1, viewport.x), Math.max(1, viewport.y));
       glassUniforms.uScene.value = target.texture; glassUniforms.uResolution.value.copy(viewport);
       const glassVisible = glass.visible;
+      // Static shadow maps are drawn by the first pass that needs them; that pass must
+      // still see the frame and sill that cast them.
+      const hideRoom = !shadowLights.some(light => light.shadow.needsUpdate);
       try {
         glass.visible = false;
+        if (hideRoom) roomSide.forEach(object => { object.visible = false; });
         withRainRenderTargetState(renderer, () => {
           renderer.setRenderTarget(target, 0, 0); renderer.clear(); renderer.render(scene, camera);
         });
-      } finally { glass.visible = glassVisible; }
+      } finally {
+        glass.visible = glassVisible;
+        if (hideRoom) roomSide.forEach(object => { object.visible = true; });
+      }
     },
     interact(x, y, explicit) {
       if (explicit) glassUniforms.uTouch.value.set(0.52, 0.43);

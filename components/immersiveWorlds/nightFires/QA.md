@@ -2,7 +2,28 @@
 
 Three independent first-person worlds are implemented. The coordinator's visible-chrome input issue is fixed inside this group. Only the two assigned nightFires roots change. Shared core, protected worlds, package files and CI remain untouched. PR #60 stays draft and must not be merged by this worker.
 
-## Latest: HDR night upgrade (2026-11-27)
+## Latest: 모닥불 밤 rebuilt as the poster's campfire by the sea (2026-11-28)
+
+The home card for `amb:campfire_night` shows `campfire-loop-poster-v2.webp`: a campfire by a violet sea inlet at nightfall. Its world (id `mountain`, `MountainCampfireWorld`, same registry entry and bridge mapping) was a mountain clearing with no water. It is now recomposed after the poster, code only, on the shared HDR pipeline. The lakeside camp (`nature:campfire`) and the deep night are untouched; `scenery.ts` only exports three hearth helpers, and `nightEngine.ts` gains a QA-only clock offset (zero in the app).
+
+| Part | Implementation |
+| --- | --- |
+| Sky (`coastSky.ts`) | Three-stop violet gradient with a rose afterglow, drifting stratocumulus whose edges catch the afterglow in pink (two-tap self-shadowing in the noise volume), and the first stars: hidden by cloud and by the bright lower sky, with the shared twinkle model (`twinkle` 0.7). The dome is baked into the radiance probe. |
+| Water (`coastWater.ts`) | Eight wind-wave trains with deep-water dispersion, each filtered by its own footprint along its direction; drifting calm slicks; capillary ripples near the eye whose lost variance becomes glint roughness. Reflects the drawn sky (clouds included), the hills from a precomputed skyline seen through the same haze, and the pines, spruce and jetty from analytic shapes. A distant cabin's two lights stretch into wavering slope-space glint columns. One analytic shore is shared with the terrain mesh: a quick run-up and slow drain moves the waterline over the pebbles (two unsynchronised trains), with lace foam on the swash, the drain, around rocks and posts; shallow water is premultiplied so the firelit pebbles show through. |
+| Land and trees | Low bank, pebble beach (drain-wet film in the ground shader), a cove and a pine point; layered hazy hills and an island of spruce; tall pines with tufted crowns (needle-tuft cards drawn in code) on the left; a spruce stand and a forested shore receding on the right. |
+| Fire (`coastHearth.ts`) | Teepee of split wedges (pith at the apex, bark on the back, rings on the split faces via `woodSurface`), sooted and glowing at the base, two burnt chunks in the coal bed, rounded beach stones; the shared ray-marched flame, embers and flicker; soft-shadowed key light. |
+| Props (`coastProps.ts`) | Weathered deck on posts out over the water with a rail (`woodSurface`, per-board frames), folding director's chair (`fabricSurface` canvas), stacked firewood with bark and end grain, slatted crate with kindling, hurricane lantern (tarnished brass, glowing globe, warm secondary light with small shadows), chipped enamel mug. |
+| Plants (`coastFlora.ts`) | Lavender (silver-green leaves, stems, floret spikes drawn in code) and tussock grass sharing one slow, unsynchronised wind. Portrait moves the lantern, mug, firewood, crate and chair into a narrower semicircle and shows a few extra foreground clumps. |
+
+Evidence (1280×800 and 390×844, DPR 1, SwiftShader with `hdr=force`): [desktop BEFORE/AFTER](qa/evidence/hdr-upgrade/mountain-compare-desktop.jpg) and [portrait](qa/evidence/hdr-upgrade/mountain-compare-portrait.jpg) keep the original pre-HDR BEFORE on the left; [poster beside the final desktop frame](qa/evidence/hdr-upgrade/mountain-vs-poster.jpg); [animated frame at t = 4.4 s](qa/evidence/hdr-upgrade/mountain-active.jpg).
+
+Motion, share of pixels changing by more than 6/255 between the paused t = 0 frame and an animated frame at t = 4.4 s (`NIGHT_QA_QUERY=t=3.2 NIGHT_QA_ACTIVE=24`): mid-distance water 67 %, cove shore and swash 57 %, flame 29 %, lavender 28 %, sky 7 % (cloud drift, stars), ground 2 %. An earlier pair of animated frames 3.2 s apart (t = 1.3 s and 4.5 s) gave 72 % / 58 % / 32 % / 53 % for water, shore, flame and lavender.
+
+Triangles per frame (renderer counter over the whole HDR frame): 0.84 M desktop / 0.83 M portrait on a layout frame that also re-renders every shadow map; 0.35 M on ordinary animated frames (shadow maps are static). The previous mountain clearing counted 1.87 M on its layout frame. These are SwiftShader counts only: no phone GPU, frame rate, thermal or battery measurement was made.
+
+Reproduce: `NIGHT_QA_PORT=4323 NIGHT_QA_WORLDS=mountain NIGHT_QA_OUTPUT=/tmp/campfire node components/immersiveWorlds/nightFires/qa/capture-quality.mjs`.
+
+## HDR night upgrade (2026-11-27)
 
 Goal: lift the three worlds from "PS2" toward console-era night rendering with code only (no external models, textures or HDRIs). The engine now renders through the shared HDR pipeline (half-float MSAA, SSAO, half-resolution volume pass, bloom, ACES grade); without float targets, or with `?post=off`, it keeps the direct renderer with simple fog.
 

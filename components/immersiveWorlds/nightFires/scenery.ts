@@ -195,7 +195,7 @@ normal = nightBump(-vViewPosition, normal, fWeave * 0.00025 + fSlub * 0.0004, 1.
 /* ------------------------------------------------------------------------- */
 
 /** Alligator-charred wood with glowing cracks; per-vertex heat from `aLog.z`. */
-function charMaterial(time: { value: number }, boost: { value: number }) {
+export function charMaterial(time: { value: number }, boost: { value: number }) {
   const material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.62, metalness: 0 });
   material.onBeforeCompile = (shader) => {
     shader.uniforms.uCharTime = time;
@@ -270,7 +270,7 @@ normal = nightBump(-vViewPosition, normal, smoothstep(0.0, 0.2, cv.x) * 0.0025 +
 }
 
 /** Coals and ash: veins of glowing heat, cooler ash coats on top; heat from `aHeat`. */
-function emberBedMaterial(time: { value: number }, boost: { value: number }, kind: 'coal' | 'ash') {
+export function emberBedMaterial(time: { value: number }, boost: { value: number }, kind: 'coal' | 'ash') {
   const material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: kind === 'ash' ? 0.98 : 0.7, metalness: 0 });
   material.onBeforeCompile = (shader) => {
     shader.uniforms.uEmberTime = time;
@@ -317,7 +317,7 @@ normal = nightBump(-vViewPosition, normal, eVein * -0.003 + eAsh * 0.002, 1.0);
 }
 
 /** Split, charred log with recessed ends; `aLog` = (around, along, heat, period). */
-function charredLogGeometry(length: number, radius: number, variation: number) {
+export function charredLogGeometry(length: number, radius: number, variation: number) {
   const segments = 44, axial = 18, rings = 5;
   const positions: number[] = [], logData: number[] = [], indices: number[] = [];
   const cellsAround = Math.max(10, Math.round(radius * tau * 30));

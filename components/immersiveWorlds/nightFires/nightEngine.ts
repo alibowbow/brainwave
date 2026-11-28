@@ -14,6 +14,10 @@ const builders = { mountain: buildMountainWorld, deep: buildDeepNightWorld, lake
 // The isolated QA harness can request the previous direct path for comparisons.
 let directPreferred = false;
 export function preferDirectNightRendering(value: boolean) { directPreferred = value; }
+// The QA harness can start the clock later, to compare moments seconds apart without
+// rendering every frame in between on a software rasteriser. Zero in the app.
+let qaStartTime = 0;
+export function setNightQaStartTime(seconds: number) { qaStartTime = Math.max(0, seconds); }
 
 export class NightEngine implements LiveSceneEngine {
   private renderer: THREE.WebGLRenderer;
@@ -59,6 +63,7 @@ export class NightEngine implements LiveSceneEngine {
   async init() {
     const recipe = builders[this.world]();
     this.recipe = recipe;
+    this.elapsed = qaStartTime;
     if (typeof recipe.scene.userData.exposure === 'number') this.renderer.toneMappingExposure = recipe.scene.userData.exposure;
     // GPU-dependent setup (radiance probes) needs the live renderer.
     recipe.prepare?.(this.renderer);
